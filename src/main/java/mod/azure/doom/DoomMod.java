@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import mod.azure.doom.block.GunTableBlock;
 import mod.azure.doom.client.gui.GunTableScreenHandler;
 import mod.azure.doom.config.DoomConfig;
@@ -105,7 +105,7 @@ public class DoomMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		AutoConfig.register(DoomConfig.class, Toml4jConfigSerializer::new);
+		AutoConfig.register(DoomConfig.class, GsonConfigSerializer::new);
 		config = AutoConfig.getConfigHolder(DoomConfig.class).getConfig();
 		DoomBlocks.init();
 		ITEMS = new DoomItems();

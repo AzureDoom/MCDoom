@@ -1,8 +1,8 @@
-v.4.0.7
+v.4.0.8
 
-- Fixed up Patchouli book. 
-- Fixed advancements for new players.
-- Fixed Icon of Sin and Arch Maykr attacks.
+- New License
+- New Config, old configs now longer work
+	- Mob Spawns are now configurable with biome tags and biome registery names.
 
 **KNOWN BUGS**
 - REI isn't working correctly, go blame https://github.com/Siphalor/nbt-crafting/issues/83
