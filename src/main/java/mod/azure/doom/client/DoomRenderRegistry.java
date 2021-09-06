@@ -64,6 +64,7 @@ import mod.azure.doom.client.render.projectiles.RocketRender;
 import mod.azure.doom.client.render.projectiles.ShotgunShellRender;
 import mod.azure.doom.client.render.projectiles.UnmaykrBulletRender;
 import mod.azure.doom.client.render.projectiles.entity.ArchvileFiringRender;
+import mod.azure.doom.client.render.projectiles.entity.BloodBoltRender;
 import mod.azure.doom.client.render.projectiles.entity.ChainBladeRender;
 import mod.azure.doom.client.render.projectiles.entity.ChaingunMobRender;
 import mod.azure.doom.client.render.projectiles.entity.DroneBoltRender;
@@ -237,6 +238,8 @@ public class DoomRenderRegistry {
 				(ctx) -> new ChainBladeRender(ctx));
 		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.DRONEBOLT_MOB,
 				(ctx) -> new DroneBoltRender(ctx));
+		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.BLOODBOLT_MOB,
+				(ctx) -> new BloodBoltRender(ctx));
 
 		BlockEntityRendererRegistry.INSTANCE.register(DoomMod.TOTEM,
 				(BlockEntityRendererFactory.Context rendererDispatcherIn) -> new TotemRender());

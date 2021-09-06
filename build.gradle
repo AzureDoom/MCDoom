@@ -79,8 +79,6 @@ dependencies {
         exclude(group: "me.shedaniel")
         exclude(group: "net.fabricmc")
     }	
-	modImplementation 'curse.maven:REI-310111:3424130'
-	modImplementation 'curse.maven:architectury-fabric-419697:3427341'
 	modImplementation 'curse.maven:modmenu-308702:3348711'
 	modImplementation 'curse.maven:TDI-245733:3358651'
 	modImplementation 'curse.maven:cca-318449:3380730'
