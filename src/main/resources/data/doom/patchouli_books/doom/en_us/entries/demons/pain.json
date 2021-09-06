@@ -1,0 +1,19 @@
+{
+	"name": "Pain Elemental",
+	"icon": "doom:soulcube",
+	"category": "doom:mob_category",	
+	"secret":false,
+	"read_by_default":true,
+	
+	"pages": [
+		{
+			"type": "text",
+			"text": "What a name. And what a guy. Killing him is almost as bad as letting him live."
+		},
+		{
+			"type": "entity",
+			"entity": "doom:painelemental",
+			"offset": 0.2
+		}
+	]
+}

@@ -1,0 +1,20 @@
+{
+	"name": "Shotgun",
+	"icon": "doom:shotgun",
+	"category": "doom:weapons_category",
+	"pages": [
+		{
+			"type": "spotlight",
+			"item": "doom:shotgun",
+			"link_recipe": true
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:shotgun"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:shotgun_shell"
+		}
+	]
+}

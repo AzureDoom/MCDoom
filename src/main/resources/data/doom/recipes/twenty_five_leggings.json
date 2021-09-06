@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "doom:twenty_five_leggings"
+  },
+  "type": "minecraft:crafting_shaped",
+   "pattern": [
+        "@",
+        "#"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:gray_dye"
+        },
+		"@": {
+			"item": "doom:doom_leggings"
+		}
+    }
+}

@@ -1,0 +1,193 @@
+buildscript {
+    repositories {
+    	maven { url  = 'https://plugins.gradle.org/m2/' }
+    }
+}
+
+plugins {
+	id 'fabric-loom' version '0.7-SNAPSHOT'
+	id 'maven-publish'
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
+}
+
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+archivesBaseName = project.archives_base_name
+version = project.mod_version
+group = project.maven_group
+
+
+repositories {
+	maven {
+		url = "https://maven.theillusivec4.top/"
+	}
+	maven {	
+		url = 'https://maven.fabricmc.net/io/github/prospector/modmenu/'
+	}
+	maven {
+        name = "Ladysnake Libs"
+        url = 'https://dl.bintray.com/ladysnake/libs'
+    }
+	maven {
+        url = "https://www.cursemaven.com"
+    }
+     maven {
+        name = "OnyxStudios"
+        url = "https://maven.abusedmaster.xyz"
+    }
+    maven {
+        name "Siphalor's Maven"
+        url "https://maven.siphalor.de"
+    }
+    maven { url "https://maven.shedaniel.me/" }
+    maven { url = 'https://maven.terraformersmc.com/' }
+    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+    maven { url 'https://maven.blamejared.com' }
+    maven { url  = 'https://plugins.gradle.org/m2/' }
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modImplementation("software.bernie.geckolib:geckolib-fabric-1.16.5:3.0.45:dev") {
+    	exclude(group: "com.terraformersmc.modmenu")
+        exclude(group: "io.github.prospector")
+        exclude(group: "me.shedaniel")
+    }
+	modImplementation("top.theillusivec4.curios:curios-fabric:${curios_version}") {
+    	exclude(group: "com.terraformersmc.modmenu")
+        exclude(group: "io.github.prospector")
+        exclude(group: "me.shedaniel")
+    }
+	modImplementation("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${cardinal_version}") {
+    	exclude(group: "com.terraformersmc.modmenu")
+        exclude(group: "io.github.prospector")
+        exclude(group: "me.shedaniel")
+    }
+    modImplementation("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${cardinal_version}") {
+    	exclude(group: "com.terraformersmc.modmenu")
+        exclude(group: "io.github.prospector")
+        exclude(group: "me.shedaniel")
+    }
+    modImplementation("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-world:${cardinal_version}") {
+    	exclude(group: "com.terraformersmc.modmenu")
+        exclude(group: "io.github.prospector")
+        exclude(group: "me.shedaniel")
+    }
+	modImplementation("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-chunk:${cardinal_version}") {
+    	exclude(group: "com.terraformersmc.modmenu")
+        exclude(group: "io.github.prospector")
+        exclude(group: "me.shedaniel")
+    }
+    modApi "me.shedaniel.cloth:cloth-config-fabric:4.11.19"
+    modImplementation "vazkii.patchouli:Patchouli:1.16.4-51-FABRIC"
+
+	modImplementation("de.siphalor:nbtcrafting-1.16:2+") {
+    	exclude(group: "com.terraformersmc.modmenu")
+        exclude(group: "io.github.prospector")
+        exclude(group: "me.shedaniel")
+    }
+	include "de.siphalor:nbtcrafting-1.16:2+"	
+	modImplementation 'curse.maven:modmenu-308702:3268909'
+	//modImplementation 'curse.maven:TDI-245733:3144149'
+	//modImplementation 'curse.maven:HWG-448106:3230994'
+    modApi("com.github.Shnupbups:Piglib:1.0.2-1.16") {
+    	exclude(group: "com.terraformersmc.modmenu")
+        exclude(group: "io.github.prospector")
+        exclude(group: "me.shedaniel")
+    }
+	include "com.github.Shnupbups:Piglib:1.0.2-1.16"
+}
+
+processResources {
+    inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+processResources {
+	doLast {
+        def jsonMinifyStart = System.currentTimeMillis()
+        def jsonMinified = 0
+        def jsonBytesSaved = 0
+        fileTree(dir: outputs.files.asPath, include: '**/*.json').each { 
+            File file = it
+            jsonMinified++
+            def oldLength = file.length()
+            file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
+            jsonBytesSaved += oldLength - file.length()
+        }
+        println('Minified ' + jsonMinified + ' json files. Saved ' + jsonBytesSaved + ' bytes. Took ' + (System.currentTimeMillis() - jsonMinifyStart) + 'ms.')
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+	def targetVersion = 8
+	if (JavaVersion.current().isJava9Compatible()) {
+		 it.options.release = targetVersion
+	}
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+java {
+	withSourcesJar()
+}
+
+jar {
+	from "LICENSE"
+}
+
+minecraft {
+	accessWidener "src/main/resources/doom.accesswidener"
+}
+
+if (file('key.properties').exists()) {
+    curseforge {
+
+    	def curseProp = new Properties()
+    	File secretPropsFile = file("key.properties")
+    	curseProp.load(secretPropsFile.newInputStream())
+
+    	project {
+        	apiKey = curseProp.getProperty('curseKey')
+        	id = "${curse_id}"
+        	releaseType = "${curse_release}"
+        	changelogType = 'text'
+        	changelog = file('CHANGELOG.txt')
+        	addGameVersion("1.16.5")
+        	addGameVersion("Fabric")
+        	addGameVersion("Java 8")
+
+        	relations {
+            	requiredDependency 'fabric-api'  
+            	requiredDependency 'geckolib' 
+            	optionalDependency 'patchouli-fabric'   
+            	requiredDependency 'curios-fabric'     
+            	requiredDependency 'cloth-config'  
+        	}
+        	mainArtifact(remapJar)
+
+        	afterEvaluate {
+            	uploadTask.dependsOn("remapJar")
+        	}
+    	}
+    	options {
+    		//debug = true
+        	forgeGradleIntegration = false
+    	}
+    }
+}

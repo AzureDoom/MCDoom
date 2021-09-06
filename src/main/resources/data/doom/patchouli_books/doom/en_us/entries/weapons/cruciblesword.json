@@ -1,0 +1,17 @@
+{
+	"name": "Crucible Sword",
+	"icon": "doom:cruciblesword",
+	"category": "doom:weapons_category",	
+	"pages": [
+		{
+			"type": "crafting",
+			"title": "Crucible Sword  (Closed)",
+			"recipe": "doom:cruciblesword_closed"
+		},
+		{
+			"type": "crafting",
+			"title": "Crucible Sword",
+			"recipe": "doom:cruciblesword"
+		}
+	]
+}

@@ -1,0 +1,26 @@
+{
+	"name": "Hotrod Doom Armor",
+	"icon": "doom:hotrod_helmet",
+	"category": "doom:armor_category",
+	"secret": false,
+	"read_by_default": true,
+	"pages": [
+		{
+			"type": "entity",
+			"name": "Hotrod Doom Armor",
+			"entity": "minecraft:armor_stand{Invisible:1, ArmorItems:[{id:'doom:hotrod_boots',Count:1},{id:'doom:hotrod_leggings',Count:1},{id:'doom:hotrod_chestplate',Count:1},{id:'doom:hotrod_helmet',Count:1}]}",
+			"rotate": true,
+			"text": "Does putting Flames on your armor make you kill faster? Not sure but it does make you look hot!"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:hotrod_helmet",
+			"recipe2": "doom:hotrod_chestplate"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:hotrod_leggings",
+			"recipe2": "doom:hotrod_boots"
+		}
+	]
+}

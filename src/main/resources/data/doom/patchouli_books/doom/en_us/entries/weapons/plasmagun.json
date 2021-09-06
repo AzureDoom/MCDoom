@@ -1,0 +1,20 @@
+{
+	"name": "Plasma Gun",
+	"icon": "doom:plasmagun",
+	"category": "doom:weapons_category",
+	"pages": [
+		{
+			"type": "spotlight",
+			"item": "doom:plasmagun",
+			"link_recipe": true
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:plasmagun"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:energy_cells"
+		}
+	]
+}

@@ -1,0 +1,26 @@
+{
+	"name": "Imp",
+	"icon": "doom:soulcube",
+	"category": "doom:mob_category",	
+	"secret":false,
+	"read_by_default":true,
+	
+	"pages": [
+		{
+			"type": "text",
+			"text": "The most common of the Nether spawn."
+		},
+		{
+			"type": "entity",
+			"entity": "doom:imp"
+		},
+		{
+			"type": "entity",
+			"entity": "doom:imp2016"
+		},
+		{
+			"type": "entity",
+			"entity": "doom:nightmare_imp"
+		}
+	]
+}

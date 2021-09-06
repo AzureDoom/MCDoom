@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "doom:shotgun_shells"
+  },
+  "type": "minecraft:crafting_shaped",
+   "pattern": [
+        " # ",
+        " $ ",
+        " # "
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:iron_ingot"
+        },
+        "$": {
+            "item": "minecraft:gunpowder"
+        }
+    }
+}

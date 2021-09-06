@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "azurejarjar",
+	"version": "${version}",
+	"name": "Jar Jar Binks Fabric",
+	"description": "This is my Fabric port of my Forge Jar Jar Binks mod!",
+	"authors": [
+		"AzureDoomC"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "none"
+	},
+	"license": "MIT",
+	"icon": "assets/azurejarjar/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"mod.azure.jarjar.JarJarMod"
+		],
+		"client": [
+			"mod.azure.jarjar.client.Clientnit"
+		]
+	},
+	"mixins": [
+		"azurejarjar.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.7.4",
+		"fabric": "*",
+		"minecraft": "1.16.x"
+	},
+	"suggests": {
+		"flamingo": "*"
+	},
+	"accessWidener" : "azurejarjar.accesswidener"
+}

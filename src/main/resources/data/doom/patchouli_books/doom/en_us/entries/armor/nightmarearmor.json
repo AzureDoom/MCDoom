@@ -1,0 +1,27 @@
+{
+	"name": "Nightmare Doom Armor",
+	"icon": "doom:nightmare_doom_helmet",
+	"category": "doom:armor_category",
+	"secret": false,
+	"read_by_default": true,
+	"pages": [
+		{
+			"type": "entity",
+			"name": "Nightmare Doom Armor",
+			"entity": "minecraft:armor_stand{Invisible:1, ArmorItems:[{id:'doom:nightmare_doom_boots',Count:1},{id:'doom:nightmare_doom_leggings',Count:1},{id:'doom:nightmare_doom_chestplate',Count:1},{id:'doom:nightmare_doom_helmet',Count:1}]}",
+			"rotate": true,
+			"offset": 0.3,
+			"text": "TThe dark and twisted version of the DOOMicorn."
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:nightmare_doom_helmet",
+			"recipe2": "doom:nightmare_doom_chestplate"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:nightmare_doom_leggings",
+			"recipe2": "doom:nightmare_doom_boots"
+		}
+	]
+}

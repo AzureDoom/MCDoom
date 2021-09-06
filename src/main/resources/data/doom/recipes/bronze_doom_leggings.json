@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "doom:bronze_doom_leggings"
+  },
+  "type": "minecraft:crafting_shaped",
+   "pattern": [
+        "@",
+        "#"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:orange_dye"
+        },
+		"@": {
+			"item": "doom:doom_leggings"
+		}
+    }
+}

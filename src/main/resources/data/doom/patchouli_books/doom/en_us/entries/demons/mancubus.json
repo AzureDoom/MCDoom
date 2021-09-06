@@ -1,0 +1,18 @@
+{
+	"name": "Mancubus",
+	"icon": "doom:soulcube",
+	"category": "doom:mob_category",	
+	"secret":false,
+	"read_by_default":true,
+	
+	"pages": [
+		{
+			"type": "text",
+			"text": "The Mancubus, hulking behemoth of the Nether world."
+		},
+		{
+			"type": "entity",
+			"entity": "doom:mancubus"
+		}
+	]
+}

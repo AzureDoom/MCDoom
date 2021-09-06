@@ -1,0 +1,20 @@
+{
+	"name": "Super Shotgun",
+	"icon": "doom:supershotgun",
+	"category": "doom:weapons_category",
+	"pages": [
+		{
+			"type": "spotlight",
+			"item": "doom:supershotgun",
+			"link_recipe": true
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:supershotgun"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:shotgun_shell"
+		}
+	]
+}

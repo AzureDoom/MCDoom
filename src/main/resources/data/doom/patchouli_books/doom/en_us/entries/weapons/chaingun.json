@@ -1,0 +1,20 @@
+{
+	"name": "Chaingun",
+	"icon": "doom:chaingun",
+	"category": "doom:weapons_category",
+	"pages": [
+		{
+			"type": "spotlight",
+			"item": "doom:chaingun",
+			"link_recipe": true
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:chaingun"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:chaingun_bullets"
+		}
+	]
+}

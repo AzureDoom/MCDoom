@@ -1,0 +1,18 @@
+{
+	"name": "Shotgun guy",
+	"icon": "doom:soulcube",
+	"category": "doom:mob_category",	
+	"secret":false,
+	"read_by_default":true,
+	
+	"pages": [
+		{
+			"type": "text",
+			"text": "Same as the Former Humans, but much meaner, and tougher. These walking shotguns provide you with a few extra holes if you're not careful!"
+		},
+		{
+			"type": "entity",
+			"entity": "doom:shotgunguy"
+		}
+	]
+}

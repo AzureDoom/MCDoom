@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"OCO",
+		"OEO",
+		"OOO"
+	],
+	"key": {
+		"O": {
+			"item": "minecraft:iron_block"
+		},
+		"E": {
+			"item": "minecraft:tnt"
+		},
+		"C": {
+			"item": "minecraft:green_dye"
+		}
+	},
+	"result": {
+		"item": "doom:barrel"
+	}
+}

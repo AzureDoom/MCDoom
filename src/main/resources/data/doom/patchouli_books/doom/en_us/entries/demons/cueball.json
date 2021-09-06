@@ -1,0 +1,19 @@
+{
+	"name": "Cueball",
+	"icon": "doom:soulcube",
+	"category": "doom:mob_category",	
+	"secret":false,
+	"read_by_default":true,
+	
+	"pages": [
+		{
+			"type": "text",
+			"text": "Former Illager, these malformed zombies were rendered inept during the war for the Overworld. Their bodies are now a disturbing fusion of body, bone, and barrel."
+		},
+		{
+			"type": "entity",
+			"entity": "doom:cueball",
+			"scale": 0.9
+		}
+	]
+}

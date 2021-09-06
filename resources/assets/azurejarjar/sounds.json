@@ -1,0 +1,20 @@
+{
+	"jarjar.howwude": {
+		"category": "music", "sounds": [{"name": "azurejarjar:howwude", "stream": true}]
+	},
+	"jarjar.jarjarluvsyou": {
+		"category": "music", "sounds": [{"name": "azurejarjar:jarjarluvsyou", "stream": true}]
+	},
+	"jarjar.meesadoanuthin": {
+		"category": "music", "sounds": [{"name": "azurejarjar:meesadoanuthin", "stream": true}]
+	},
+	"jarjar.yousamaystrike": {
+		"category": "music", "sounds": [{"name": "azurejarjar:yousamaystrike", "stream": true}]
+	},
+	"jarjar.yousagonnadie": {
+		"category": "music", "sounds": [{"name": "azurejarjar:yousagonnadie", "stream": true}]
+	},
+	"jarjar.uhohyousadidafuckywucky": {
+		"category": "music", "sounds": [{"name": "azurejarjar:uhohyousadidafuckywucky", "stream": true}]
+	}
+}

@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "doom:phobos_doom_helmet",
+    "doom:phobos_doom_chestplate",
+    "doom:phobos_doom_leggings",
+    "doom:phobos_doom_boots",
+    "doom:gold_doom_helmet",
+    "doom:gold_doom_chestplate",
+    "doom:gold_doom_leggings",
+    "doom:gold_doom_boots"
+  ]
+}

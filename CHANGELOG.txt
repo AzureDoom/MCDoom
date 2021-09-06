@@ -1,0 +1,3 @@
+v.4.0.6
+
+- Fixed Icon of Sin and Arch Maykr attacks.

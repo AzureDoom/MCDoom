@@ -1,0 +1,291 @@
+{
+    "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
+    "textures": {
+        "shell": "doom:items/shell",
+        "shell_box": "doom:items/shell_box"
+    },
+    "display": {
+        "gui": {
+            "rotation": [ 29, 136, 0 ],
+            "translation": [ 0.7, 11.5, 0 ],
+            "scale": [ 2.5, 2.5, 2.5 ]
+        },
+        "ground": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ -1.5, 6, -0.5 ],
+            "scale": [ 1.5, 1.5, 1.5 ]
+        },
+        "fixed": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ -2, 12, -3.1 ],
+            "scale": [ 2, 2, 2 ]
+        },
+        "head": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ -0.8, 8, -2.4 ],
+            "scale": [ 1, 1, 1 ]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 3, 115, 0 ],
+            "translation": [ 0, 8, 3 ],
+            "scale": [ 1, 1, 0.8 ]
+        },
+        "thirdperson_righthand": {
+            "rotation": [ 91, 0, 0 ],
+            "translation": [ -1, 1.9, 8.5 ],
+            "scale": [ 1, 1, 1 ]
+        }
+    },
+    "elements": [
+        {
+            "name": "Box Bottom",
+            "from": [ 7, 0, 7 ], 
+            "to": [ 11, 0, 10 ], 
+            "faces": {
+                "up": { "texture": "#shell_box", "uv": [ 0, 7, 4, 10 ] },
+                "down": { "texture": "#shell_box", "uv": [ 12, 13, 16, 16 ] }
+            }
+        },
+        {
+            "name": "Box Front",
+            "from": [ 7, 0, 7 ], 
+            "to": [ 11, 2, 7 ], 
+            "faces": {
+                "north": { "texture": "#shell_box", "uv": [ 5, 11, 9, 13 ] },
+                "south": { "texture": "#shell_box", "uv": [ 7, 5, 11, 7 ] }
+            }
+        },
+        {
+            "name": "Box Fold",
+            "from": [ 7, 4.941, 8.765 ], 
+            "to": [ 11, 5.441, 8.765 ], 
+            "rotation": { "origin": [ 8, 5, 8 ], "axis": "x", "angle": 45.0 },
+            "faces": {
+                "north": { "texture": "#shell_box", "uv": [ 12, 7, 16, 7.5 ] },
+                "south": { "texture": "#shell_box", "uv": [ 12, 7, 16, 7.5 ] }
+            }
+        },
+        {
+            "name": "Box Right",
+            "from": [ 7, 0, 7 ], 
+            "to": [ 7, 2, 10 ], 
+            "faces": {
+                "east": { "texture": "#shell_box", "uv": [ 4, 5, 7, 7 ] },
+                "west": { "texture": "#shell_box", "uv": [ 9, 11, 12, 13 ] }
+            }
+        },
+        {
+            "name": "Box Left",
+            "from": [ 11, 0, 7 ], 
+            "to": [ 11, 2, 10 ], 
+            "faces": {
+                "east": { "texture": "#shell_box", "uv": [ 2, 11, 5, 13 ] },
+                "west": { "texture": "#shell_box", "uv": [ 11, 5, 14, 7 ] }
+            }
+        },
+        {
+            "name": "Box Back",
+            "from": [ 7, 0, 10 ], 
+            "to": [ 11, 2, 10 ], 
+            "faces": {
+                "north": { "texture": "#shell_box", "uv": [ 0, 5, 4, 7 ] },
+                "south": { "texture": "#shell_box", "uv": [ 12, 11, 16, 13 ] }
+            }
+        },
+        {
+            "name": "Box Top",
+            "from": [ 7, 2, 10 ], 
+            "to": [ 11, 5, 10 ], 
+            "rotation": { "origin": [ 8, 2, 10 ], "axis": "x", "angle": -22.5 },
+            "faces": {
+                "north": { "texture": "#shell_box", "uv": [ 0, 2, 4, 5 ] },
+                "south": { "texture": "#shell_box", "uv": [ 12, 8, 16, 11 ] }
+            }
+        },
+        {
+            "name": "Shell Base",
+            "from": [ 10.11, 0.01, 9.11 ], 
+            "to": [ 10.89, 2.01, 9.89 ], 
+            "faces": {
+                "north": { "texture": "#shell", "uv": [ 15, 13, 15.78, 16 ], "rotation": 180 },
+                "east": { "texture": "#shell", "uv": [ 14, 13, 14.78, 16 ], "rotation": 180 },
+                "south": { "texture": "#shell", "uv": [ 13, 14, 13.78, 16 ], "rotation": 180 },
+                "west": { "texture": "#shell", "uv": [ 12, 13, 12.78, 16 ], "rotation": 180 },
+                "up": { "texture": "#shell", "uv": [ 8, 13, 8.78, 13.78 ] },
+                "down": { "texture": "#shell", "uv": [ 15, 13, 15.78, 13.78 ] }
+            }
+        },
+        {
+            "name": "Shell Side 1",
+            "from": [ 10.89, 0.01, 9.21 ], 
+            "to": [ 10.98, 2.01, 9.79 ], 
+            "faces": {
+                "north": { "texture": "#shell", "uv": [ 14, 13, 14.09, 16 ], "rotation": 180 },
+                "east": { "texture": "#shell", "uv": [ 12, 13, 12.58, 16 ], "rotation": 180 },
+                "south": { "texture": "#shell", "uv": [ 14, 13, 14.09, 16 ], "rotation": 180 },
+                "up": { "texture": "#shell", "uv": [ 1, 10, 1.09, 10.58 ] },
+                "down": { "texture": "#shell", "uv": [ 15, 14, 15.09, 13.58 ] }
+            }
+        },
+        {
+            "name": "Shell Side 2",
+            "from": [ 10.02, 0.01, 9.21 ], 
+            "to": [ 10.11, 2.01, 9.79 ], 
+            "faces": {
+                "north": { "texture": "#shell", "uv": [ 14, 13, 14.09, 16 ], "rotation": 180 },
+                "south": { "texture": "#shell", "uv": [ 14, 13, 14.09, 16 ], "rotation": 180 },
+                "west": { "texture": "#shell", "uv": [ 14, 13, 14.58, 16 ], "rotation": 180 },
+                "up": { "texture": "#shell", "uv": [ 8, 12, 8.09, 12.58 ] },
+                "down": { "texture": "#shell", "uv": [ 15, 13, 15.09, 13.58 ] }
+            }
+        },
+        {
+            "name": "Shell Side 3",
+            "from": [ 10.21, 0.01, 9.89 ], 
+            "to": [ 10.79, 2.01, 9.98 ], 
+            "faces": {
+                "east": { "texture": "#shell", "uv": [ 14, 13, 14.09, 16 ], "rotation": 180 },
+                "south": { "texture": "#shell", "uv": [ 13, 13, 13.58, 16 ], "rotation": 180 },
+                "west": { "texture": "#shell", "uv": [ 14, 13, 14.09, 16 ], "rotation": 180 },
+                "up": { "texture": "#shell", "uv": [ 1, 11, 1.58, 11.09 ] },
+                "down": { "texture": "#shell", "uv": [ 15, 13, 15.58, 13.09 ] }
+            }
+        },
+        {
+            "name": "Shell Side 4",
+            "from": [ 10.21, 0.01, 9.02 ], 
+            "to": [ 10.79, 2.01, 9.11 ], 
+            "faces": {
+                "north": { "texture": "#shell", "uv": [ 15, 13, 15.58, 16 ], "rotation": 180 },
+                "east": { "texture": "#shell", "uv": [ 14, 13, 14.09, 16 ], "rotation": 180 },
+                "west": { "texture": "#shell", "uv": [ 14, 13, 14.09, 16 ], "rotation": 180 },
+                "up": { "texture": "#shell", "uv": [ 15, 15, 15.58, 15.09 ] },
+                "down": { "texture": "#shell", "uv": [ 15, 13, 15.58, 13.09 ] }
+            }
+        },
+        {
+            "name": "Shell Bottom Center",
+            "from": [ 10, 2.011, 8.99 ], 
+            "to": [ 11, 2.011, 9.99 ], 
+            "faces": {
+                "up": { "texture": "#shell", "uv": [ 0, 7, 9, 16 ] },
+                "down": { "texture": "#shell", "uv": [ 0, 7, 9, 16 ] }
+            }
+        },
+        {
+            "name": "Box Vert Slot Divider 1",
+            "from": [ 10, 0, 7 ], 
+            "to": [ 10, 1, 10 ], 
+            "faces": {
+                "east": { "texture": "#shell_box", "uv": [ 0, 0, 3, 1 ] },
+                "west": { "texture": "#shell_box", "uv": [ 0, 0, 3, 1 ] }
+            }
+        },
+        {
+            "name": "Box Vert Slot Divider 2",
+            "from": [ 9, 0, 7 ], 
+            "to": [ 9, 1, 10 ], 
+            "faces": {
+                "east": { "texture": "#shell_box", "uv": [ 0, 0, 3, 1 ] },
+                "west": { "texture": "#shell_box", "uv": [ 0, 0, 3, 1 ] }
+            }
+        },
+        {
+            "name": "Box Vert Slot Divider 3",
+            "from": [ 8, 0, 7 ], 
+            "to": [ 8, 1, 10 ], 
+            "faces": {
+                "east": { "texture": "#shell_box", "uv": [ 0, 0, 3, 1 ] },
+                "west": { "texture": "#shell_box", "uv": [ 0, 0, 3, 1 ] }
+            }
+        },
+        {
+            "name": "Box Horz Slot Divider 2",
+            "from": [ 7, 0, 8 ], 
+            "to": [ 11, 1, 8 ], 
+            "faces": {
+                "north": { "texture": "#shell_box", "uv": [ 0, 0, 4, 1 ] },
+                "south": { "texture": "#shell_box", "uv": [ 0, 0, 4, 1 ] }
+            }
+        },
+        {
+            "name": "Box Horz Slot Divider 3",
+            "from": [ 7, 0, 9 ], 
+            "to": [ 11, 1, 9 ], 
+            "faces": {
+                "north": { "texture": "#shell_box", "uv": [ 0, 0, 4, 1 ] },
+                "south": { "texture": "#shell_box", "uv": [ 0, 0, 4, 1 ] }
+            }
+        },
+        {
+            "name": "Shell 2 Base",
+            "from": [ 9.11, 0.01, 9.11 ], 
+            "to": [ 9.89, 2.01, 9.89 ], 
+            "faces": {
+                "north": { "texture": "#shell", "uv": [ 15, 13, 15.78, 16 ], "rotation": 180 },
+                "east": { "texture": "#shell", "uv": [ 14, 13, 14.78, 16 ], "rotation": 180 },
+                "south": { "texture": "#shell", "uv": [ 13, 14, 13.78, 16 ], "rotation": 180 },
+                "west": { "texture": "#shell", "uv": [ 12, 13, 12.78, 16 ], "rotation": 180 },
+                "up": { "texture": "#shell", "uv": [ 8, 13, 8.78, 13.78 ] },
+                "down": { "texture": "#shell", "uv": [ 15, 13, 15.78, 13.78 ] }
+            }
+        },
+        {
+            "name": "Shell 2 Bottom Center",
+            "from": [ 9, 2.011, 8.99 ], 
+            "to": [ 10, 2.011, 9.99 ], 
+            "faces": {
+                "up": { "texture": "#shell", "uv": [ 0, 7, 9, 16 ] },
+                "down": { "texture": "#shell", "uv": [ 0, 7, 9, 16 ] }
+            }
+        },
+        {
+            "name": "Shell 2 Side 4",
+            "from": [ 9.21, 0.01, 9.02 ], 
+            "to": [ 9.79, 2.01, 9.11 ], 
+            "faces": {
+                "north": { "texture": "#shell", "uv": [ 15, 13, 15.58, 16 ], "rotation": 180 },
+                "east": { "texture": "#shell", "uv": [ 14, 13, 14.09, 16 ], "rotation": 180 },
+                "west": { "texture": "#shell", "uv": [ 14, 13, 14.09, 16 ], "rotation": 180 },
+                "up": { "texture": "#shell", "uv": [ 15, 15, 15.58, 15.09 ] },
+                "down": { "texture": "#shell", "uv": [ 15, 13, 15.58, 13.09 ] }
+            }
+        },
+        {
+            "name": "Shell 2 Side 2",
+            "from": [ 9.02, 0.01, 9.21 ], 
+            "to": [ 9.11, 2.01, 9.79 ], 
+            "faces": {
+                "north": { "texture": "#shell", "uv": [ 14, 13, 14.09, 16 ], "rotation": 180 },
+                "south": { "texture": "#shell", "uv": [ 14, 13, 14.09, 16 ], "rotation": 180 },
+                "west": { "texture": "#shell", "uv": [ 14, 13, 14.58, 16 ], "rotation": 180 },
+                "up": { "texture": "#shell", "uv": [ 8, 12, 8.09, 12.58 ] },
+                "down": { "texture": "#shell", "uv": [ 15, 13, 15.09, 13.58 ] }
+            }
+        },
+        {
+            "name": "Shell 2 Side 1",
+            "from": [ 9.89, 0.01, 9.21 ], 
+            "to": [ 9.98, 2.01, 9.79 ], 
+            "faces": {
+                "north": { "texture": "#shell", "uv": [ 14, 13, 14.09, 16 ], "rotation": 180 },
+                "east": { "texture": "#shell", "uv": [ 12, 13, 12.58, 16 ], "rotation": 180 },
+                "south": { "texture": "#shell", "uv": [ 14, 13, 14.09, 16 ], "rotation": 180 },
+                "up": { "texture": "#shell", "uv": [ 1, 10, 1.09, 10.58 ] },
+                "down": { "texture": "#shell", "uv": [ 15, 14, 15.09, 13.58 ] }
+            }
+        },
+        {
+            "name": "Shell 2 Side 3",
+            "from": [ 9.21, 0.01, 9.89 ], 
+            "to": [ 9.79, 2.01, 9.98 ], 
+            "faces": {
+                "east": { "texture": "#shell", "uv": [ 14, 13, 14.09, 16 ], "rotation": 180 },
+                "south": { "texture": "#shell", "uv": [ 13, 13, 13.58, 16 ], "rotation": 180 },
+                "west": { "texture": "#shell", "uv": [ 14, 13, 14.09, 16 ], "rotation": 180 },
+                "up": { "texture": "#shell", "uv": [ 1, 11, 1.58, 11.09 ] },
+                "down": { "texture": "#shell", "uv": [ 15, 13, 15.58, 13.09 ] }
+            }
+        }
+    ]
+}

@@ -1,0 +1,120 @@
+{
+	"pools": [
+		{
+			"name": "main",
+			"rolls": 1,
+			"entries": [
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:inmortalsphere"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:invisiblesphere"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:megasphere"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:powersphere"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:soulcube"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:daisy"
+				},
+				{
+					"type": "minecraft:item",
+					"functions": [
+						{
+							"function": "minecraft:set_nbt",
+							"tag": "{StoredEnchantments:[{id:\"doom:leaping_doom\",lvl:1s}]}"
+						}
+					],
+					"name": "minecraft:enchanted_book"
+				},
+				{
+					"name": "minecraft:map",
+					"type": "minecraft:item",
+					"weight": 1,
+					"functions": [
+						{
+							"function": "minecraft:exploration_map",
+							"destination": "doom:titan_skull",
+							"decoration": "banner_gray",
+							"zoom": 4,
+							"skip_existing_chunks": true
+						}
+					]
+				},
+				{
+					"name": "minecraft:map",
+					"type": "minecraft:item",
+					"weight": 1,
+					"functions": [
+						{
+							"function": "minecraft:exploration_map",
+							"destination": "doom:portal",
+							"decoration": "banner_gray",
+							"zoom": 4,
+							"skip_existing_chunks": true
+						}
+					]
+				},
+				{
+					"name": "minecraft:map",
+					"type": "minecraft:item",
+					"weight": 1,
+					"functions": [
+						{
+							"function": "minecraft:exploration_map",
+							"destination": "doom:maykr",
+							"decoration": "banner_gray",
+							"zoom": 4,
+							"skip_existing_chunks": true
+						}
+					]
+				},
+				{
+					"name": "minecraft:map",
+					"type": "minecraft:item",
+					"weight": 1,
+					"functions": [
+						{
+							"function": "minecraft:exploration_map",
+							"destination": "doom:motherdemon",
+							"decoration": "banner_gray",
+							"zoom": 4,
+							"skip_existing_chunks": true
+						}
+					]
+				},
+				{
+					"name": "minecraft:map",
+					"type": "minecraft:item",
+					"weight": 1,
+					"functions": [
+						{
+							"function": "minecraft:exploration_map",
+							"destination": "doom:archmaykr",
+							"decoration": "banner_gray",
+							"zoom": 4,
+							"skip_existing_chunks": true
+						}
+					]
+				}
+			]
+		}
+	]
+}
