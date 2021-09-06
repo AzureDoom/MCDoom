@@ -1,3 +1,5 @@
-v.4.0.6
+v.4.0.7
 
-- Fixed Icon of Sin and Arch Maykr attacks.
+- New License
+- New Config, old configs now longer work
+	- Mob Spawns are now configurable with biome tags and biome registery names.
