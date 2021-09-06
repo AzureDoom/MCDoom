@@ -1,20 +1,12 @@
 {
-	"type": "minecraft:crafting_shaped",
-	"pattern": [
-		"ap"
-	],
-	"key": {
-		"a": {
-			"item": "doom:argent_energy"
-		},
-		"p": {
-			"item": "minecraft:paper"
-		}
-	},
-	"result": {
-		"item": "patchouli:guide_book",
-		"data": {
-			"patchouli:book": "doom:doom"
-		}
-	}
+  "type": "patchouli:shapeless_book_recipe",
+  "ingredients": [
+    {
+      "item": "doom:argent_energy"
+    },
+    {
+      "item": "minecraft:paper"
+    }
+  ],
+  "book": "doom:doom"
 }

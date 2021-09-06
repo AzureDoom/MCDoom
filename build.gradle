@@ -51,34 +51,12 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation("software.bernie.geckolib:geckolib-fabric-1.17:3.0.11:dev") {
-    	exclude(group: "com.terraformersmc.modmenu")
-        exclude(group: "io.github.prospector")
-        exclude(group: "me.shedaniel")
-        exclude(group: "net.fabricmc")
-    }
-    modCompileOnly("vazkii.patchouli:Patchouli:1.17-55-FABRIC-SNAPSHOT") {
-    	exclude(group: "com.terraformersmc.modmenu")
-        exclude(group: "io.github.prospector")
-        exclude(group: "me.shedaniel")
-        exclude(group: "net.fabricmc")
-    }
+    modImplementation "software.bernie.geckolib:geckolib-fabric-1.17:3.0.11:dev"
+    modCompileOnly "vazkii.patchouli:Patchouli:1.17-55-FABRIC-SNAPSHOT"
 	modImplementation 'curse.maven:trinkets-341284:3387025'
     modApi("me.shedaniel.cloth:cloth-config-fabric:5.0.34") {
     	exclude(group: "com.terraformersmc.modmenu")
     }
-	modCompileOnly("de.siphalor:nbtcrafting-1.17:2.0.20+mc1.17.1") {
-    	exclude(group: "com.terraformersmc.modmenu")
-        exclude(group: "io.github.prospector")
-        exclude(group: "me.shedaniel")
-        exclude(group: "net.fabricmc")
-    }
-	include("de.siphalor:nbtcrafting-1.17:2.0.20+mc1.17.1") {
-    	exclude(group: "com.terraformersmc.modmenu")
-        exclude(group: "io.github.prospector")
-        exclude(group: "me.shedaniel")
-        exclude(group: "net.fabricmc")
-    }	
 	modImplementation 'curse.maven:modmenu-308702:3348711'
 	modImplementation 'curse.maven:TDI-245733:3358651'
 	modImplementation 'curse.maven:cca-318449:3380730'
