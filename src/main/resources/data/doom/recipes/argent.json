@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "doom:argent_block"
+    }
+  ],
+  "result": {
+    "item": "doom:argent_energy",
+    "count": 9
+  }
+}

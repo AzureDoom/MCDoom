@@ -1,0 +1,20 @@
+{
+	"name": "Rocket Launcher",
+	"icon": "doom:rocketlauncher",
+	"category": "doom:weapons_category",
+	"pages": [
+		{
+			"type": "spotlight",
+			"item": "doom:rocketlauncher",
+			"link_recipe": true
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:rocketlauncher"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:rocket"
+		}
+	]
+}

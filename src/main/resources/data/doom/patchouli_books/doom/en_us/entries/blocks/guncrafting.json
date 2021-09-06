@@ -1,0 +1,33 @@
+{
+	"name": "Gun Crafter",
+	"icon": "doom:gun_table",
+	"category": "doom:blocks_category",
+	"pages": [
+		{
+			"type": "spotlight",
+			"item": "doom:gun_table",
+			"link_recipe": true,
+			"text": "Created to craft all the weapons of war you'll need against the forces of the Nether."
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"101"
+					]
+				],
+				"mapping": {
+					"0": "doom:gun_table",
+					"1": "minecraft:air"
+				}
+			}
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:gun_table"
+		}
+	]
+}

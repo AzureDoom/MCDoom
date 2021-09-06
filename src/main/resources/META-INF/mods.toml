@@ -1,0 +1,30 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="CC-BY-NC-4.0"
+[[mods]]
+modId="doom"
+version="${file.jarVersion}"
+displayName="Doom Mod"
+logoFile="doomlogo.png"
+authors="AzureDoomC" 
+description='''
+Adds Doom into Minecraft
+'''
+[[dependencies.doom]]
+    modId="curios"
+    mandatory=true
+   	versionRange="[1.16.5-4.0.5.1,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.geckolib]]
+    modId="geckolib3"
+    mandatory=true
+    versionRange="[3.0.39,)"
+    ordering="BEFORE"
+    side="BOTH"
+[[dependencies.forge]]
+    modId="forge"
+    mandatory=true 
+    versionRange="[36.1.13,)" 
+    ordering="NONE"
+    side="BOTH"

@@ -1,0 +1,36 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"idle": {
+			"loop": true
+		},
+		"firing": {
+			"animation_length": 0.24,
+			"bones": {
+				"plasmagun_pulling_0": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.08": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutSine"
+						},
+						"0.16": {
+							"vector": [0, 0, 2],
+							"easing": "easeInOutSine"
+						},
+						"0.24": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					}
+				}
+			}
+		}
+	},
+	"geckolib_format_version": 2
+}

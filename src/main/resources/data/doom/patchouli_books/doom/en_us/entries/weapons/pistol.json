@@ -1,0 +1,20 @@
+{
+	"name": "Pistol",
+	"icon": "doom:pistol",
+	"category": "doom:weapons_category",
+	"pages": [
+		{
+			"type": "spotlight",
+			"item": "doom:pistol",
+			"link_recipe": true
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:pistol"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:bullets"
+		}
+	]
+}

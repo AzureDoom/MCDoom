@@ -1,0 +1,18 @@
+{
+	"name": "Mother Demon",
+	"icon": "doom:soulcube",
+	"category": "doom:mob_category",	
+	"secret":false,
+	"read_by_default":true,
+	
+	"pages": [
+		{
+			"type": "text",
+			"text": "The Mother of the Damned found in the Nether, her power is only beat by her strongest offspring, the Icon of Sin."
+		},
+		{
+			"type": "entity",
+			"entity": "doom:motherdemon"
+		}
+	]
+}

@@ -1,0 +1,26 @@
+{
+	"name": "Maykr Doom Armor",
+	"icon": "doom:maykr_doom_helmet",
+	"category": "doom:armor_category",
+	"secret": false,
+	"read_by_default": true,
+	"pages": [
+		{
+			"type": "entity",
+			"name": "Maykr Doom Armor",
+			"entity": "minecraft:armor_stand{Invisible:1, ArmorItems:[{id:'doom:maykr_doom_boots',Count:1},{id:'doom:maykr_doom_leggings',Count:1},{id:'doom:maykr_doom_chestplate',Count:1},{id:'doom:maykr_doom_helmet',Count:1}]}",
+			"rotate": true,
+			"text": "Built from the shells of the fallen Aether inhabitants."
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:maykr_doom_helmet",
+			"recipe2": "doom:maykr_doom_chestplate"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:maykr_doom_leggings",
+			"recipe2": "doom:maykr_doom_boots"
+		}
+	]
+}

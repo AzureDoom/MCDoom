@@ -1,0 +1,19 @@
+{
+	"result": {
+		"item": "doom:argent_pickaxe"
+	},
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"$$$",
+		" I ",
+		" I "
+	],
+	"key": {
+		"I": {
+			"item": "minecraft:stick"
+		},
+		"$": {
+			"item": "doom:argent_energy"
+		}
+	}
+}

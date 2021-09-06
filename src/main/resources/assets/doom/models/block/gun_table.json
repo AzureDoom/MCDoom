@@ -1,0 +1,109 @@
+{
+  "credit": "Made with Blockbench",
+  "parent": "builtin/entity",
+	"textures": {
+		"particle": "doom:blocks/barrel_bottom"
+	},
+  "texture_size": [
+    128,
+    128
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "scale": [
+        0.1,
+        0.1,
+        0.1
+      ]
+    },
+    "thirdperson_lefthand": {
+      "scale": [
+        0.1,
+        0.1,
+        0.1
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        43,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        -0.75
+      ],
+      "scale": [
+        0.1,
+        0.1,
+        0.1
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        43,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        -0.75
+      ],
+      "scale": [
+        0.1,
+        0.1,
+        0.1
+      ]
+    },
+    "ground": {
+      "scale": [
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    "gui": {
+      "rotation": [
+        38,
+        -31,
+        0
+      ],
+      "translation": [
+        0,
+        -2.75,
+        0
+      ],
+      "scale": [
+        0.35,
+        0.35,
+        0.35
+      ]
+    },
+    "head": {
+      "scale": [
+        0,
+        0,
+        0
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        -90,
+        0
+      ],
+      "translation": [
+        0,
+        -2.5,
+        -0.5
+      ],
+      "scale": [
+        0.35,
+        0.35,
+        0.35
+      ]
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+	"name": "25th Anniversary Armor",
+	"icon": "doom:twenty_five_helmet",
+	"category": "doom:armor_category",
+	"secret": false,
+	"read_by_default": true,
+	"pages": [
+		{
+			"type": "entity",
+			"name": "25th Anniversary Armor",
+			"entity": "minecraft:armor_stand{Invisible:1, ArmorItems:[{id:'doom:twenty_five_boots',Count:1},{id:'doom:twenty_five_leggings',Count:1},{id:'doom:twenty_five_chestplate',Count:1},{id:'doom:twenty_five_helmet',Count:1}]}",
+			"rotate": true,
+			"text": "The Armor fitting only for the slayer, killing Demons for 25 years."
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:twenty_five_helmet",
+			"recipe2": "doom:twenty_five_chestplate"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:twenty_five_leggings",
+			"recipe2": "doom:twenty_five_boots"
+		}
+	]
+}

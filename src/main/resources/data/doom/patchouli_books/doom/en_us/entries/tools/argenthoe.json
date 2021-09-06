@@ -1,0 +1,16 @@
+{
+	"name": "Argent Hoe",
+	"icon": "doom:argent_hoe",
+	"category": "doom:tools_category",
+	"pages": [
+		{
+			"type": "spotlight",
+			"item": "doom:argent_hoe",
+			"link_recipe": true
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:argent_hoe"
+		}
+	]
+}

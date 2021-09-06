@@ -1,0 +1,71 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 32,
+				"texture_height": 32,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+					"name": "bone",
+					"pivot": [0, 3, 0],
+					"cubes": [
+						{
+							"origin": [-3, 0, -3],
+							"size": [6, 6, 6],
+							"uv": {
+								"north": {"uv": [6, 6], "uv_size": [6, 6]},
+								"east": {"uv": [6, 6], "uv_size": [6, 6]},
+								"south": {"uv": [6, 6], "uv_size": [6, 6]},
+								"west": {"uv": [6, 6], "uv_size": [6, 6]},
+								"up": {"uv": [6, 6], "uv_size": [6, 6]},
+								"down": {"uv": [6, 12], "uv_size": [6, -6]}
+							}
+						},
+						{
+							"origin": [-4, 1, -2],
+							"size": [8, 4, 4],
+							"uv": {
+								"north": {"uv": [18, 0], "uv_size": [8, 4]},
+								"east": {"uv": [7, 7], "uv_size": [4, 4]},
+								"south": {"uv": [18, 0], "uv_size": [8, 4]},
+								"west": {"uv": [7, 7], "uv_size": [4, 4]},
+								"up": {"uv": [18, 0], "uv_size": [8, 4]},
+								"down": {"uv": [18, 4], "uv_size": [8, -4]}
+							}
+						},
+						{
+							"origin": [-2, 1, -4],
+							"size": [4, 4, 8],
+							"uv": {
+								"north": {"uv": [7, 7], "uv_size": [4, 4]},
+								"east": {"uv": [18, 0], "uv_size": [8, 4]},
+								"south": {"uv": [7, 7], "uv_size": [4, 4]},
+								"west": {"uv": [18, 0], "uv_size": [8, 4]},
+								"up": {"uv": [22, 4], "uv_size": [4, 8]},
+								"down": {"uv": [22, 12], "uv_size": [4, -8]}
+							}
+						},
+						{
+							"origin": [-2, -1, -2],
+							"size": [4, 8, 4],
+							"uv": {
+								"north": {"uv": [22, 4], "uv_size": [4, 8]},
+								"east": {"uv": [22, 4], "uv_size": [4, 8]},
+								"south": {"uv": [22, 4], "uv_size": [4, 8]},
+								"west": {"uv": [22, 4], "uv_size": [4, 8]},
+								"up": {"uv": [7, 7], "uv_size": [4, 4]},
+								"down": {"uv": [7, 11], "uv_size": [4, -4]}
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

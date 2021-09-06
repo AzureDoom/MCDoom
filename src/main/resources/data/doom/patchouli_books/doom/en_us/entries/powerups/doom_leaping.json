@@ -1,0 +1,15 @@
+{
+	"name": "Doom Leaping",
+	"icon": "minecraft:enchanted_book{StoredEnchantments:[{id:'doom:leaping_doom',lvl:1}]}",
+	"category": "doom:powerups_category",
+	"pages": [
+		{
+			"type": "spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'doom:leaping_doom',lvl:1}]}"
+		},
+		{
+			"type": "text",
+			"text": "Allows the player to perform mid-air jump, similar to that of Doom 2016/Eternal."
+		}
+	]
+}

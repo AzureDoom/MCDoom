@@ -1,0 +1,17 @@
+{
+	"name": "Argent Block",
+	"icon": "doom:argent_block",
+	"category": "doom:blocks_category",
+	"pages": [
+		{
+			"type": "spotlight",
+			"item": "doom:argent_block",
+			"link_recipe": true,
+			"text": "A solid block of Argent Energy!"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:argent_block"
+		}
+	]
+}

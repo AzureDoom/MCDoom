@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "doom:classic_doom_helmet"
+  },
+  "type": "minecraft:crafting_shaped",
+   "pattern": [
+        "   ",
+        "@@@",
+        "@#@"
+    ],
+    "key": {
+        "#": {
+            "item": "doom:argent_energy"
+        },
+		"@": {
+			"item": "doom:argent_plate"
+		}
+    }
+}

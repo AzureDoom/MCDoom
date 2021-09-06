@@ -1,0 +1,20 @@
+{
+	"name": "Lost Soul",
+	"icon": "doom:soulcube",
+	"category": "doom:mob_category",	
+	"secret":false,
+	"read_by_default":true,
+	
+	"pages": [
+		{
+			"type": "text",
+			"text": "Dumb. Tough. Flies. On fire. 'Nuff said."
+		},
+		{
+			"type": "entity",
+			"entity": "doom:lost_soul",
+			"scale": 0.7,
+			"offset": 0.3
+		}
+	]
+}

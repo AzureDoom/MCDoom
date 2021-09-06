@@ -1,0 +1,198 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net/' }
+		maven { url  = 'https://plugins.gradle.org/m2/' }
+        mavenCentral()
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+		classpath "com.wynprice.cursemaven:CurseMaven:2.1.5"
+        classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.4.0'
+        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+apply plugin: "com.wynprice.cursemaven"
+apply plugin: 'com.matthewprenger.cursegradle'
+apply plugin: 'org.spongepowered.mixin'
+
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
+version = "4.0.5"
+group = "mod.azure.doomweapon"
+archivesBaseName = "MCDoom-1.16.5"
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+minecraft {
+    mappings channel: 'official', version: '1.16.5'
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    runs {
+        client {
+            properties 'mixin.env.remapRefMap': 'true'
+            property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
+            workingDirectory project.file('run')
+            arg "-mixin.config=doom.mixins.json"
+            mods {
+                doomweapon {
+                    source sourceSets.main
+                }
+            }
+        }
+        server {
+            properties 'mixin.env.remapRefMap': 'true'
+            property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
+            workingDirectory project.file('run')
+            arg "-mixin.config=doom.mixins.json"
+            mods {
+                doomweapon {
+                    source sourceSets.main
+                }
+            }
+        }
+        data {
+            workingDirectory project.file('run')
+            properties 'mixin.env.remapRefMap': 'true'
+            property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
+            args '--mod', 'doomweapon', '--all', '--output', file('src/generated/resources/')
+            mods {
+                doomweapon {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+repositories {
+	maven {
+        name = "jitpack"
+        url "https://jitpack.io"
+    }
+    maven { url = "https://maven.theillusivec4.top/" }
+    maven {
+        url 'https://www.dogforce-games.com/maven/'
+    }
+    maven {
+        name = "CurseForge"
+        url = "https://minecraft.curseforge.com/api/maven/"
+    }
+    maven {
+        name = "Progwml6 maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
+    maven {
+        name = "ModMaven"
+        url = "https://modmaven.dev/"
+    }
+    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+    maven { url 'https://maven.blamejared.com' }
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.16.5-36.1.31'
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.1")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.1:api")
+	compileOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-50:api")
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-50")
+	compile fg.deobf("curse.maven:SD-392762:3069533")
+	compile fg.deobf("curse.maven:JEI-238222:3108050")
+	compile fg.deobf("curse.maven:TDI-245733:3144151")
+	compile fg.deobf("curse.maven:projectmmo-353935:3380498")
+	compile fg.deobf("curse.maven:worldedit-225608:3135187")
+	compile fg.deobf("curse.maven:wikizoomer-383277:3177817")
+	
+	//compile fg.deobf("curse.maven:epicfightmod-405076:3377306")
+	implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.16.5:3.0.43')
+	annotationProcessor 'org.spongepowered:mixin:0.8:processor'
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+jar {
+    manifest {
+        attributes([
+            "Specification-Title": "doom",
+            "Specification-Vendor": "azuredoom",
+            "Specification-Version": "1", // We are version 1 of ourselves
+            "Implementation-Title": project.name,
+            "Implementation-Version": "${version}",
+            "Implementation-Vendor" :"azuredoom",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            "MixinConfigs": "doom.mixins.json"
+        ])
+    }
+}
+
+def reobfFile = file("$buildDir/reobfJar/output.jar")
+def reobfArtifact = artifacts.add('default', reobfFile) {
+    type 'jar'
+    builtBy 'reobfJar'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
+        }
+    }
+}
+
+processResources {
+	doLast {
+        def jsonMinifyStart = System.currentTimeMillis()
+        def jsonMinified = 0
+        def jsonBytesSaved = 0
+        fileTree(dir: outputs.files.asPath, include: '**/*.json').each { 
+            File file = it
+            jsonMinified++
+            def oldLength = file.length()
+            file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
+            jsonBytesSaved += oldLength - file.length()
+        }
+        println('Minified ' + jsonMinified + ' json files. Saved ' + jsonBytesSaved + ' bytes. Took ' + (System.currentTimeMillis() - jsonMinifyStart) + 'ms.')
+    }
+}
+
+if (file('key.properties').exists()) {
+    curseforge {
+
+    	def curseProp = new Properties()
+    	File secretPropsFile = file("key.properties")
+    	curseProp.load(secretPropsFile.newInputStream())
+
+    	project {
+        	apiKey = curseProp.getProperty('curseKey')
+        	id = "${curse_id}"
+        	releaseType = "${curse_release}"
+        	changelogType = 'text'
+        	changelog = file('CHANGELOG.txt')
+        	addGameVersion("1.16.5")
+        	addGameVersion("Forge")
+        	addGameVersion("Java 8")
+
+        	relations {
+            	requiredDependency 'curios'  
+            	requiredDependency 'geckolib' 
+            	requiredDependency 'citadel' 
+            	optionalDependency 'project-mmo'   
+            	optionalDependency 'patchouli'     
+        	}
+    	}
+    }
+}
+
+mixin {
+    add sourceSets.main, "doom.refmap.json"
+}

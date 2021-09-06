@@ -1,0 +1,26 @@
+{
+	"name": "Bronze Doom Armor",
+	"icon": "doom:bronze_doom_helmet",
+	"category": "doom:armor_category",
+	"secret": false,
+	"read_by_default": true,
+	"pages": [
+		{
+			"type": "entity",
+			"name": "Bronze Doom Armor",
+			"entity": "minecraft:armor_stand{Invisible:1, ArmorItems:[{id:'doom:bronze_doom_boots',Count:1},{id:'doom:bronze_doom_leggings',Count:1},{id:'doom:bronze_doom_chestplate',Count:1},{id:'doom:bronze_doom_helmet',Count:1}]}",
+			"rotate": true,
+			"text": "Not much is known about this Armor."
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:bronze_doom_helmet",
+			"recipe2": "doom:bronze_doom_chestplate"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:bronze_doom_leggings",
+			"recipe2": "doom:bronze_doom_boots"
+		}
+	]
+}

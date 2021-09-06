@@ -1,0 +1,23 @@
+{
+	"name": "Chainsaw",
+	"icon": "doom:chainsaw",
+	"category": "doom:weapons_category",
+	"pages": [
+		{
+			"type": "crafting",
+			"recipe": "doom:chainsaw"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:chainsaw64"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:chainsaweternal"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:gas_barrel"
+		}
+	]
+}

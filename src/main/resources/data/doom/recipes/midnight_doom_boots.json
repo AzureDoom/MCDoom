@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "doom:midnight_doom_boots"
+  },
+  "type": "minecraft:crafting_shaped",
+   "pattern": [
+        "@",
+        "#"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:light_gray_dye"
+        },
+		"@": {
+			"item": "doom:doom_boots"
+		}
+    }
+}

@@ -1,0 +1,17 @@
+{
+	"name": "Doom Hunter",
+	"icon": "doom:soulcube",
+	"category": "doom:mob_category",
+	"secret": false,
+	"read_by_default": true,
+	"pages": [
+		{
+			"type": "text",
+			"text": "While the majority of its components are now cybernetic it retains a high degree of mental faculty - a sentient, brutal haunting instinct augmented with the armaments of a tank division."
+		},
+		{
+			"type": "entity",
+			"entity": "doom:doom_hunter"
+		}
+	]
+}

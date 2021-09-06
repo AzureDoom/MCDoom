@@ -1,0 +1,24 @@
+{
+	"name": "Arachnotron",
+	"icon": "doom:soulcube",
+	"category": "doom:mob_category",	
+	"secret":false,
+	"read_by_default":true,
+	
+	"pages": [
+		{
+			"type": "text",
+			"text": "They are the small offspring of the Spider Demon. They are nastier offensively, but they can't stand the same level of damage as their mothers before going legs up."
+		},
+		{
+			"type": "entity",
+			"entity": "doom:arachnotron",
+			"scale": 0.9
+		},
+		{
+			"type": "entity",
+			"entity": "doom:arachnotroneternal",
+			"scale": 0.9
+		}
+	]
+}

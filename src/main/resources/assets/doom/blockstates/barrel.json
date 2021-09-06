@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=north": { "model": "doom:block/barrel" },
+        "facing=south": { "model": "doom:block/barrel", "y": 180 },
+        "facing=west":  { "model": "doom:block/barrel", "y": 270 },
+        "facing=east":  { "model": "doom:block/barrel", "y": 90 }
+    }
+}

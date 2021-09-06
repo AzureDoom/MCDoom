@@ -1,0 +1,402 @@
+{
+	"name": "E1M1 Block",
+	"icon": "doom:e1m1_block1",
+	"category": "doom:blocks_category",
+	"pages": [
+		{
+			"type": "spotlight",
+			"item": "doom:e1m1_block1",
+			"text": "E1M1 but in Minecraft! Found by Trading Level 3 Mason Villagers! There are 26 blocks in total."
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block1"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block2"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block3"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block4"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block5"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block6"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block7"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block8"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block9"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block10"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block11"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block12"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block13"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block14"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block15"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block16"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block17"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block18"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block19"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block20"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block21"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block22"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block23"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block24"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block25"
+				}
+			}
+		},
+		{
+			"type": "multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:e1m1_block26"
+				}
+			}
+		}
+	]
+}

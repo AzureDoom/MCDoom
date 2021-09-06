@@ -1,0 +1,22 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "doom:items/icon_icon",
+		"particle": "doom:items/icon_icon"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 0],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"east": {"uv": [0, 0, 1, 16], "texture": "#missing"},
+				"south": {"uv": [16, 0, 0, 16], "texture": "#0"},
+				"west": {"uv": [0, 0, 1, 16], "texture": "#missing"},
+				"up": {"uv": [0, 0, 16, 1], "texture": "#missing"},
+				"down": {"uv": [0, 0, 16, 1], "texture": "#missing"}
+			}
+		}
+	],
+	"display": {}
+}
