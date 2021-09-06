@@ -1,0 +1,16 @@
+{
+	"name": "Argent Shovel",
+	"icon": "doom:argent_shovel",
+	"category": "doom:tools_category",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "doom:argent_shovel",
+			"link_recipe": true
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "doom:argent_shovel"
+		}
+	]
+}

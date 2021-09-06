@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:entity",
+	"pools": [
+		{
+			"rolls": 1,
+			"entries": [
+				{
+					"type": "minecraft:item",
+					"name": "doom:shotgun_shells"
+				}
+			],
+			"conditions": [
+				{
+					"condition": "minecraft:killed_by_player"
+				}
+			]
+		}
+	]
+}

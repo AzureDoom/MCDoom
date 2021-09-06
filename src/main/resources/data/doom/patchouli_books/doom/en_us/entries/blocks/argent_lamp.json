@@ -1,0 +1,17 @@
+{
+	"name": "Argent Lamp",
+	"icon": "doom:argent_lamp_block",
+	"category": "doom:blocks_category",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "doom:argent_lamp_block",
+			"link_recipe": true,
+			"text": "Light your homes with the power of Argent!"
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "doom:argent_lamp"
+		}
+	]
+}

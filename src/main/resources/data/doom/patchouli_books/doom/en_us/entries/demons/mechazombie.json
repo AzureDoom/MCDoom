@@ -1,0 +1,19 @@
+{
+	"name": "Mecha Zombie",
+	"icon": "doom:soulcube",
+	"category": "doom:mob_category",	
+	"secret":false,
+	"read_by_default":true,
+	
+	"pages": [
+		{
+			"type": "patchouli:text",
+			"text": "Mecha Zombies pose a greater challenge then your basic Undead. Their arm cannon serves as a ranged energy weapon at long distances."
+		},
+		{
+			"type": "patchouli:entity",
+			"entity": "doom:mechazombie",
+			"offset": 0.2
+		}
+	]
+}

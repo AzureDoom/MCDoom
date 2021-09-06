@@ -1,0 +1,149 @@
+{
+	"type": "minecraft:chest",
+	"pools": [
+		{
+			"rolls": {
+				"min": 2.0,
+				"max": 6.0,
+				"type": "minecraft:uniform"
+			},
+			"entries": [
+				{
+					"type": "minecraft:item",
+					"weight": 5,
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"min": 2.0,
+								"max": 7.0,
+								"type": "minecraft:uniform"
+							}
+						}
+					],
+					"name": "minecraft:diamond"
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 15,
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"min": 2.0,
+								"max": 7.0,
+								"type": "minecraft:uniform"
+							}
+						}
+					],
+					"name": "minecraft:gold_ingot"
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 2,
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"min": 2.0,
+								"max": 6.0,
+								"type": "minecraft:uniform"
+							}
+						}
+					],
+					"name": "minecraft:emerald"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:icon_wall1"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:icon_wall2"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:icon_wall3"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:icon_wall4"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:icon_wall5"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:icon_wall6"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:icon_wall7"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:icon_wall8"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:icon_wall9"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:icon_wall10"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:icon_wall11"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:icon_wall12"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:icon_wall13"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:icon_wall14"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:icon_wall15"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "doom:icon_wall16"
+				},
+				{
+					"type": "minecraft:item",
+					"functions": [
+						{
+							"function": "minecraft:set_nbt",
+							"tag": "{StoredEnchantments:[{id:\"doom:leaping_doom\",lvl:1s}]}"
+						}
+					],
+					"name": "minecraft:enchanted_book"
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,22 @@
+{
+	"name": "Revenant",
+	"icon": "doom:soulcube",
+	"category": "doom:mob_category",	
+	"secret":false,
+	"read_by_default":true,
+	
+	"pages": [
+		{
+			"type": "patchouli:text",
+			"text": "Apparently when a demon dies, they pick him up, dust him off, wire him some combat gear, and send him back into battle. No rest for the wicked, eh? You wish your missiles did what his can do."
+		},
+		{
+			"type": "patchouli:entity",
+			"entity": "doom:revenant"
+		},
+		{
+			"type": "patchouli:entity",
+			"entity": "doom:revenant2016"
+		}
+	]
+}

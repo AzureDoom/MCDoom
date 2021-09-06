@@ -1,0 +1,22 @@
+{
+	"name": "Hell Knight",
+	"icon": "doom:soulcube",
+	"category": "doom:mob_category",	
+	"secret":false,
+	"read_by_default":true,
+	
+	"pages": [
+		{
+			"type": "patchouli:text",
+			"text": "Slightly easier to kill than our friend the Baron, but appear in larger numbers."
+		},
+		{
+			"type": "patchouli:entity",
+			"entity": "doom:hellknight"
+		},
+		{
+			"type": "patchouli:entity",
+			"entity": "doom:hellknight2016"
+		}
+	]
+}

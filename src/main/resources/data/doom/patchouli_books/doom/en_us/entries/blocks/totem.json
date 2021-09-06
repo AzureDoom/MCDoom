@@ -1,0 +1,28 @@
+{
+	"name": "Totem",
+	"icon": "doom:totem",
+	"category": "doom:blocks_category",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "doom:totem",
+			"link_recipe": true,
+			"text": "A beacon of necroplasmic dark-wave energy."
+		},
+		{
+			"type": "patchouli:multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:totem"
+				}
+			}
+		}
+	]
+}

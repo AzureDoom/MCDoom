@@ -1,0 +1,19 @@
+{
+	"name": "Whiplash",
+	"icon": "doom:soulcube",
+	"category": "doom:mob_category",
+	"secret": false,
+	"read_by_default": true,
+	"pages": [
+		{
+			"type": "patchouli:text",
+			"text": "A scavenger of the Nether, these elusive, serpentine demons move with great speed and agility. They are capable of striking from a great distance with retractable bladed whips concealed within their forearms."
+		},
+		{
+			"type": "patchouli:entity",
+			"entity": "doom:whiplash",
+			"scale": 0.9,
+			"offset": 0.3
+		}
+	]
+}

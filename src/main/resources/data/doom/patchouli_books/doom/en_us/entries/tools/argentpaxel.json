@@ -1,0 +1,16 @@
+{
+	"name": "Argent Paxel",
+	"icon": "doom:argent_paxel",
+	"category": "doom:tools_category",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "doom:argent_paxel",
+			"link_recipe": true
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "doom:argent_paxel"
+		}
+	]
+}

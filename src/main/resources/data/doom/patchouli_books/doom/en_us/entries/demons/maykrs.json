@@ -1,0 +1,33 @@
+{
+	"name": "Makyrs",
+	"icon": "doom:soulcube",
+	"category": "doom:mob_category",
+	"secret": false,
+	"read_by_default": true,
+	"pages": [
+		{
+			"type": "patchouli:text",
+			"text": "The End's population is mainly comprised of Drones, beings that exist as extensions of the Arch Maykr's will. "
+		},
+		{
+			"type": "patchouli:entity",
+			"entity": "doom:maykr_drone"
+		},
+		{
+			"type": "patchouli:text",
+			"text": "Blood Maykrs, a devoted and distinguished higher caste within The End, were corrupted and mutated by the waking will of the Icon of Sin. Now branded by the Icon's wrath, Blood Maykrs move amongst the demons freely as hellfire courses through their veins. Retaining their staffs and hurling them with thunderbolt force to harry their prey, the Blood Maykrs scour the dead skies of The End in unholy mockery of their former home."
+		},
+		{
+			"type": "patchouli:entity",
+			"entity": "doom:blood_maykr"
+		},
+		{
+			"type": "patchouli:text",
+			"text": "The Arch Maykr's is the most powerful leader in The End outside of the Enderdragon herself."
+		},
+		{
+			"type": "patchouli:entity",
+			"entity": "doom:arch_maykr"
+		}
+	]
+}

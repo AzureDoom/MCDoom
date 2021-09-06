@@ -1,0 +1,16 @@
+{
+	"name": "Power Sphere",
+	"icon": "doom:powersphere",
+	"category": "doom:powerups_category",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "doom:powersphere",
+			"link_recipe": true
+		},
+		{
+			"type": "patchouli:text",
+			"text": "You can feel your scars fading. Heals the player completely."
+		}
+	]
+}

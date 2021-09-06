@@ -1,0 +1,16 @@
+{
+	"name": "Invisible Sphere",
+	"icon": "doom:invisiblesphere",
+	"category": "doom:powerups_category",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "doom:invisiblesphere",
+			"link_recipe": true
+		},
+		{
+			"type": "patchouli:text",
+			"text": "The Demons never knew what hit them. Renders the Player Invisible for 1 minute."
+		}
+	]
+}

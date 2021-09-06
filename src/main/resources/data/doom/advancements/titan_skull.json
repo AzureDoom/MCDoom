@@ -1,0 +1,25 @@
+{
+	"display": {
+		"icon": {
+			"item": "doom:soulcube"
+		},
+		"title": {
+			"translate": "doom.achievement.titan_skull"
+		},
+		"description": {
+			"translate": "doom.achievement.titan_skull.desc"
+		},
+		"frame": "challenge"
+	},
+	"parent": "minecraft:nether/find_fortress",
+	"criteria": {
+		"requirement": {
+			"trigger": "minecraft:location",
+			"conditions": {
+				"location": {
+					"feature": "doom:titan_skull"
+				}
+			}
+		}
+	}
+}

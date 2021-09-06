@@ -1,0 +1,26 @@
+{
+  "variants": {
+    "facing=north": {
+      "y": 0,
+      "model": "doom:block/totem"
+    },
+    "facing=south": {
+      "y": 180,
+      "model": "doom:block/totem"
+    },
+    "facing=east": {
+      "y": 90,
+      "model": "doom:block/totem"
+    },
+    "facing=west": {
+      "y": 270,
+      "model": "doom:block/totem"
+    },
+    "facing=up": {
+      "model": "doom:block/totem"
+    },
+    "facing=down": {
+      "model": "doom:block/totem"
+    }
+  }
+}

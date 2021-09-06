@@ -1,0 +1,37 @@
+{
+	"parent": "minecraft:nether/root",
+	"display": {
+		"icon": {
+			"item": "doom:argent_energy"
+		},
+		"title": {
+			"translate": "doom.achievement.argent"
+		},
+		"description": {
+			"translate": "doom.achievement.argent.desc"
+		},
+		"frame": "task",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"argent": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"doom:argent_energy"
+						]
+					}
+				]
+			}
+		}
+	},
+	"requirements": [
+		[
+			"argent"
+		]
+	]
+}

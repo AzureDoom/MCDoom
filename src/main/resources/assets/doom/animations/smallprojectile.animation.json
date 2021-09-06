@@ -1,0 +1,17 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"idle": {
+			"loop": true,
+			"animation_length": 0.52,
+			"bones": {
+				"bone": {
+					"rotation": {
+						"vector": ["math.cos(query.anim_time * 360) * 18000", "math.cos(query.anim_time * 360) * 18000", "math.cos(query.anim_time * 360) * 18000"]
+					}
+				}
+			}
+		}
+	},
+	"geckolib_format_version": 2
+}

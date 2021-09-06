@@ -1,0 +1,20 @@
+{
+	"name": "Summoner",
+	"icon": "doom:soulcube",
+	"category": "doom:mob_category",	
+	"secret":false,
+	"read_by_default":true,
+	
+	"pages": [
+		{
+			"type": "patchouli:text",
+			"text": "The Summoner, a cunning adversary, is primarily a defensive summoning unit."
+		},
+		{
+			"type": "patchouli:entity",
+			"entity": "doom:summoner",
+			"scale": 0.7,
+			"offset": 0.3
+		}
+	]
+}

@@ -1,0 +1,19 @@
+{
+	"name": "Turret",
+	"icon": "doom:soulcube",
+	"category": "doom:mob_category",	
+	"secret":false,
+	"read_by_default":true,
+	
+	"pages": [
+		{
+			"type": "patchouli:text",
+			"text": "Stationary guards for the forces of Nether."
+		},
+		{
+			"type": "patchouli:entity",
+			"entity": "doom:turret",
+			"scale": 0.9
+		}
+	]
+}

@@ -1,0 +1,26 @@
+{
+	"name": "Jump Pad",
+	"icon": "doom:jump_pad",
+	"category": "doom:blocks_category",
+	"pages": [
+		{
+			"type": "patchouli:crafting",
+			"recipe": "doom:jump_pad"
+		},
+		{
+			"type": "patchouli:multiblock",
+			"enable_visualize": false,
+			"offset": [0, 4, 0],
+			"multiblock": {
+				"pattern": [
+					[
+						"0"
+					]
+				],
+				"mapping": {
+					"0": "doom:jump_pad"
+				}
+			}
+		}
+	]
+}

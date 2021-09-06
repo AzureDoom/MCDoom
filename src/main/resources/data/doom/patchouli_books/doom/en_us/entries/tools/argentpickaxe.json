@@ -1,0 +1,16 @@
+{
+	"name": "Argent Pickaxe",
+	"icon": "doom:argent_pickaxe",
+	"category": "doom:tools_category",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "doom:argent_pickaxe",
+			"link_recipe": true
+		},
+		{
+			"type": "patchouli:crafting",
+			"recipe": "doom:argent_pickaxe"
+		}
+	]
+}

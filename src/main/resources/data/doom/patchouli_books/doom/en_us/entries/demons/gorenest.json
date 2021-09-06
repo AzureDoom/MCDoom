@@ -1,0 +1,18 @@
+{
+	"name": "Gore Nest",
+	"icon": "doom:soulcube",
+	"category": "doom:mob_category",	
+	"secret":false,
+	"read_by_default":true,
+	
+	"pages": [
+		{
+			"type": "patchouli:text",
+			"text": "When enough corpses have been gathered, the ceremonial site becomes a Gore Nest. These sites, imbued with Nether energy from the rituals, act as umbilical cords to Nether. Extreme caution must be taken when approaching a Gore Nest. Attacking the nest, or indeed any demons within close proximity to the nest, will act as an alarm and siphon more demons from Nether."
+		},
+		{
+			"type": "patchouli:entity",
+			"entity": "doom:gore_nest"
+		}
+	]
+}

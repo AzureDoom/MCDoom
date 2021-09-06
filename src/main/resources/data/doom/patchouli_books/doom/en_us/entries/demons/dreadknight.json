@@ -1,0 +1,18 @@
+{
+	"name": "Dread Knight",
+	"icon": "doom:soulcube",
+	"category": "doom:mob_category",	
+	"secret":false,
+	"read_by_default":true,
+	
+	"pages": [
+		{
+			"type": "patchouli:text",
+			"text": "A variation of the Hell Knight breed, the Dread Knight has been modified and hardwired for aggression."
+		},
+		{
+			"type": "patchouli:entity",
+			"entity": "doom:dreadknight"
+		}
+	]
+}
