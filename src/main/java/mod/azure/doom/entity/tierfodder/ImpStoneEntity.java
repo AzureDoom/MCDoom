@@ -73,10 +73,8 @@ public class ImpStoneEntity extends DemonEntity implements IAnimatable {
 	@Override
 	protected void updatePostDeath() {
 		++this.deathTime;
-		if (this.deathTime == 50) {
+		if (this.deathTime == 40) {
 			this.remove(Entity.RemovalReason.KILLED);
-			if (world.isClient) {
-			}
 		}
 	}
 

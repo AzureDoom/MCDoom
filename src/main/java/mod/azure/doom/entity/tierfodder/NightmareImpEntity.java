@@ -84,7 +84,7 @@ public class NightmareImpEntity extends DemonEntity implements IAnimatable {
 	@Override
 	protected void updatePostDeath() {
 		++this.deathTime;
-		if (this.deathTime == 60) {
+		if (this.deathTime == 40) {
 			this.remove(Entity.RemovalReason.KILLED);
 			if (world.isClient) {
 			}

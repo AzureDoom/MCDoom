@@ -9,6 +9,7 @@ import mod.azure.doom.DoomMod;
 import mod.azure.doom.config.DoomConfig.MobStats;
 import mod.azure.doom.network.EntityPacket;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
@@ -104,6 +105,14 @@ public class DemonEntity extends HostileEntity implements Angerable {
 	@Override
 	public void chooseRandomAngerTime() {
 		this.setAngerTime(ANGER_TIME_RANGE.get(this.random));
+	}
+
+	@Override
+	protected void updatePostDeath() {
+		++this.deathTime;
+		if (this.deathTime == 40) {
+			this.remove(Entity.RemovalReason.KILLED);
+		}
 	}
 
 }
