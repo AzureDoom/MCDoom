@@ -45,6 +45,11 @@ public class Chainsaw extends Item {
 	}
 
 	@Override
+	public boolean isEnchantable(ItemStack stack) {
+		return false;
+	}
+
+	@Override
 	public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
 		LivingEntity user = (LivingEntity) entityIn;
 		PlayerEntity player = (PlayerEntity) entityIn;

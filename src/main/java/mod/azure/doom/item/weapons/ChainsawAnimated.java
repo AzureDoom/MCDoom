@@ -43,6 +43,11 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 		return PlayState.CONTINUE;
 	}
 
+	@Override
+	public boolean isEnchantable(ItemStack stack) {
+		return false;
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void registerControllers(AnimationData data) {

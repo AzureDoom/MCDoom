@@ -1,6 +1,5 @@
 {
 	"credit": "Made with Blockbench",
-	"parent": "item/box_of_shells",
 	"texture_size": [32, 32],
 	"textures": {
 		"0": "doom:items/chainsaw64",

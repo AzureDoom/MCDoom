@@ -32,6 +32,11 @@ public class AxeMarauderItem extends AxeItem {
 	}
 
 	@Override
+	public boolean isEnchantable(ItemStack stack) {
+		return false;
+	}
+
+	@Override
 	public boolean hasGlint(ItemStack stack) {
 		return false;
 	}
