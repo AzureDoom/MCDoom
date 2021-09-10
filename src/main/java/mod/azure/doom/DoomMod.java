@@ -49,6 +49,7 @@ import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
@@ -105,7 +106,7 @@ public class DoomMod implements ModInitializer {
 	public static final ItemGroup DoomPowerUPItemGroup = FabricItemGroupBuilder.create(new Identifier(MODID, "powerup"))
 			.icon(() -> new ItemStack(DoomItems.INMORTAL)).build();
 	public static final GunTableBlock GUN_TABLE = new GunTableBlock(
-			FabricBlockSettings.of(Material.METAL).strength(4.0f).nonOpaque());
+			FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL).strength(4.0f).nonOpaque());
 	public static ScreenHandlerType<GunTableScreenHandler> SCREEN_HANDLER_TYPE = ScreenHandlerRegistry
 			.registerSimple(GUN_TABLE_GUI, GunTableScreenHandler::new);
 	public static final RecipeSerializer<GunTableRecipe> GUN_TABLE_RECIPE_SERIALIZER = Registry

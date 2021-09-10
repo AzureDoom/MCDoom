@@ -16,6 +16,7 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.BlockMirror;
@@ -31,20 +32,20 @@ public class TotemBlock extends FacingBlock implements BlockEntityProvider {
 
 	protected Random RANDOM = new Random();
 	public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
-	private static final VoxelShape X_LENGTH1 = Block.createCuboidShape(5.299999999999999, 0, 5.3000000000000025, 10.7, 15.9,
-			10.600000000000001);
-	private static final VoxelShape X_LENGTH2 = Block.createCuboidShape(-0.20000000000000107, 10.100000000000001, 5.3000000000000025,
-			16.200000000000003, 15.4, 10.600000000000001);
-	private static final VoxelShape Y_LENGTH1 = Block.createCuboidShape(5.3000000000000025, 0, 5.299999999999999, 10.600000000000001,
-			15.9, 10.7);
-	private static final VoxelShape Y_LENGTH2 = Block.createCuboidShape(5.3000000000000025, 10.100000000000001, -0.20000000000000107,
-			10.600000000000001, 15.4, 16.200000000000003);
+	private static final VoxelShape X_LENGTH1 = Block.createCuboidShape(5.299999999999999, 0, 5.3000000000000025, 10.7,
+			15.9, 10.600000000000001);
+	private static final VoxelShape X_LENGTH2 = Block.createCuboidShape(-0.20000000000000107, 10.100000000000001,
+			5.3000000000000025, 16.200000000000003, 15.4, 10.600000000000001);
+	private static final VoxelShape Y_LENGTH1 = Block.createCuboidShape(5.3000000000000025, 0, 5.299999999999999,
+			10.600000000000001, 15.9, 10.7);
+	private static final VoxelShape Y_LENGTH2 = Block.createCuboidShape(5.3000000000000025, 10.100000000000001,
+			-0.20000000000000107, 10.600000000000001, 15.4, 16.200000000000003);
 	private static final VoxelShape X_AXIS_AABB = VoxelShapes.union(X_LENGTH1, X_LENGTH2);
 	private static final VoxelShape Z_AXIS_AABB = VoxelShapes.union(Y_LENGTH1, Y_LENGTH2);
 
 	public TotemBlock() {
-		super(FabricBlockSettings.of(Material.STONE).dropsNothing().breakByTool(FabricToolTags.PICKAXES, 3).nonOpaque()
-				.requiresTool().strength(3, 3).luminance(15));
+		super(FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.BONE)
+				.breakByTool(FabricToolTags.PICKAXES, 3).nonOpaque().requiresTool().strength(3, 3).luminance(15));
 	}
 
 	@Override
