@@ -26,18 +26,18 @@ public class DoomBlocks {
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, DoomMod.MODID);
 
 	public static final RegistryObject<Block> TOTEM = BLOCKS.register("totem",
-			() -> new TotemBlock((AbstractBlock.Properties.of(Material.METAL).strength(4.0f).sound(SoundType.METAL)
-					.harvestLevel(3).harvestTool(ToolType.PICKAXE).noDrops().requiresCorrectToolForDrops().strength(3.0F, 3.0F)
+			() -> new TotemBlock((AbstractBlock.Properties.of(Material.METAL).strength(4.0f).sound(SoundType.BONE_BLOCK)
+					.harvestLevel(3).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().strength(3.0F, 3.0F)
 					.noOcclusion())));
 
 	public static final RegistryObject<Block> GUN_TABLE = BLOCKS.register("gun_table", () -> new GunTableBlock(
-			(AbstractBlock.Properties.of(Material.METAL).strength(4.0f).sound(SoundType.GRASS).noOcclusion())));
+			(AbstractBlock.Properties.of(Material.METAL).strength(4.0f).sound(SoundType.METAL).noOcclusion())));
 
 	public static final RegistryObject<Block> BARREL_BLOCK = BLOCKS.register("barrel", () -> new BarrelBlock(
-			(AbstractBlock.Properties.of(Material.EXPLOSIVE).instabreak().sound(SoundType.GRASS).noOcclusion())));
+			(AbstractBlock.Properties.of(Material.EXPLOSIVE).instabreak().sound(SoundType.METAL).noOcclusion())));
 
 	public static final RegistryObject<Block> ARGENT_BLOCK = BLOCKS.register("argent_block", () -> new ArgentBlock(
-			(AbstractBlock.Properties.of(Material.HEAVY_METAL).strength(4.0F).sound(SoundType.BONE_BLOCK))));
+			(AbstractBlock.Properties.of(Material.HEAVY_METAL).strength(4.0F).sound(SoundType.METAL))));
 
 	public static final RegistryObject<Block> ARGENT_LAMP_BLOCK = BLOCKS.register("argent_lamp_block",
 			() -> new ArgentLampBlock(
