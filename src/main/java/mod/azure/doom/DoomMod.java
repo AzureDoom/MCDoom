@@ -45,6 +45,7 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
@@ -87,7 +88,7 @@ public class DoomMod implements ModInitializer {
 	public static final Identifier DARKLORDCRUCIBLE = new Identifier(MODID, "darklordcrucible");
 	public static final Identifier FALL_DISTANCE_PACKET_ID = new Identifier(MODID, "falldistance");
 	public static final GunTableBlock GUN_TABLE = new GunTableBlock(
-			FabricBlockSettings.of(Material.METAL).strength(4.0f).nonOpaque());
+			FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL).strength(4.0f).nonOpaque());
 	public static final ItemGroup DoomEggItemGroup = FabricItemGroupBuilder.create(new Identifier(MODID, "eggs"))
 			.icon(() -> new ItemStack(DoomItems.IMP_SPAWN_EGG)).build();
 	public static final ItemGroup DoomArmorItemGroup = FabricItemGroupBuilder.create(new Identifier(MODID, "armor"))

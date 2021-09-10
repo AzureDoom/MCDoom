@@ -8,6 +8,6 @@ import net.minecraft.sound.BlockSoundGroup;
 public class ArgentBlock extends Block {
 
 	public ArgentBlock() {
-		super(FabricBlockSettings.of(Material.STONE).sounds(BlockSoundGroup.BONE));
+		super(FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL));
 	}
 }

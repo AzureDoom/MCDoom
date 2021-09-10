@@ -20,6 +20,7 @@ import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
@@ -49,7 +50,7 @@ public class TotemBlock extends BlockWithEntity implements BlockEntityProvider {
 	protected Random RANDOM = new Random();
 
 	public TotemBlock() {
-		super(FabricBlockSettings.of(Material.STONE).dropsNothing().breakByTool(FabricToolTags.PICKAXES, 3).nonOpaque()
+		super(FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL).breakByTool(FabricToolTags.PICKAXES, 3).nonOpaque()
 				.requiresTool().strength(3, 3).luminance(15));
 	}
 
