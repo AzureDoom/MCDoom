@@ -1,5 +1,4 @@
-v.4.0.7
+v.4.0.8
 
-- New License
-- New Config, old configs now longer work
-	- Mob Spawns are now configurable with biome tags and biome registery names.
+- Updated Block Sounds.
+- Totem now drops itself.
