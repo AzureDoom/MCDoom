@@ -21,7 +21,6 @@ import mod.azure.doom.util.MobAttributes;
 import mod.azure.doom.util.MobSpawn;
 import mod.azure.doom.util.ModSoundEvents;
 import mod.azure.doom.util.registry.DoomBlocks;
-import mod.azure.doom.util.registry.DoomEnchantments;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
@@ -121,7 +120,6 @@ public class DoomMod implements ModInitializer {
 		SOUNDS = new ModSoundEvents();
 		MOBS = new ModEntityTypes();
 		PROJECTILES = new ProjectilesEntityRegister();
-		DoomEnchantments.init();
 		FuelRegistry.INSTANCE.add(DoomItems.ARGENT_ENERGY, 32767);
 		Registry.register(Registry.BLOCK, new Identifier(MODID, "gun_table"), GUN_TABLE);
 		ICON = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":icon",
