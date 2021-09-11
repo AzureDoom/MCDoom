@@ -4,7 +4,6 @@
 	"package": "mod.azure.doom.mixin",
 	"compatibilityLevel": "JAVA_16",
 	"client": [
-		"DoubleJumpMixin",
 		"HeldItemRendererMixin",
 		"WeaponRenderingMixin"
 	],
