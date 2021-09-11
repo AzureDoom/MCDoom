@@ -12,7 +12,6 @@ import com.mojang.serialization.Codec;
 import mod.azure.doom.client.ModItemModelsProperties;
 import mod.azure.doom.structures.DoomConfiguredStructures;
 import mod.azure.doom.structures.DoomStructures;
-import mod.azure.doom.util.DoomLeapEntityEvents;
 import mod.azure.doom.util.DoomVillagerTrades;
 import mod.azure.doom.util.LootHandler;
 import mod.azure.doom.util.SoulCubeHandler;
@@ -20,7 +19,6 @@ import mod.azure.doom.util.config.BiomeConfig;
 import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.registry.DoomBlocks;
-import mod.azure.doom.util.registry.DoomEnchantments;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomRecipes;
 import mod.azure.doom.util.registry.DoomScreens;
@@ -50,7 +48,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -94,7 +91,6 @@ public class DoomMod {
 		forgeBus.addGenericListener(Item.class, DoomMod::updatingItemsID);
 		MinecraftForge.EVENT_BUS.addListener(DoomVillagerTrades::onVillagerTradesEvent);
 		ModSoundEvents.MOD_SOUNDS.register(modEventBus);
-		DoomEnchantments.ENCHANTMENTS.register(modEventBus);
 		ModEntityTypes.ENTITY_TYPES.register(modEventBus);
 		DoomItems.ITEMS.register(modEventBus);
 		DoomBlocks.BLOCKS.register(modEventBus);
@@ -102,9 +98,6 @@ public class DoomMod {
 		DoomScreens.CONTAIN.register(modEventBus);
 		DoomRecipes.SERIAL.register(modEventBus);
 		MinecraftForge.EVENT_BUS.addListener(this::onBiomeLoad);
-		if (!ModList.get().isLoaded("leap")) {
-			MinecraftForge.EVENT_BUS.register(new DoomLeapEntityEvents());
-		}
 		GeckoLib.initialize();
 		GeckoLibNetwork.initialize();
 	}
