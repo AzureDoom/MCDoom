@@ -1,7 +1,7 @@
 package mod.azure.doom.util;
 
 import mod.azure.doom.util.registry.DoomItems;
-import net.minecraft.entity.merchant.villager.VillagerProfession;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.entity.merchant.villager.VillagerTrades;
 import net.minecraft.item.Items;
 import net.minecraftforge.event.village.VillagerTradesEvent;

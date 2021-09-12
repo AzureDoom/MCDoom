@@ -3,7 +3,7 @@ package mod.azure.doom.entity.tierheavy;
 import java.util.EnumSet;
 import java.util.Random;
 
-import javax.annotation.Nullable;
+import com.mojang.math.Vector3d;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
@@ -14,42 +14,42 @@ import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.config.EntityConfig;
 import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.block.BlockState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.Pose;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.MovementController;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
 import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
-import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -57,13 +57,14 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.shadowed.eliotlash.mclib.utils.MathHelper;
 
-public class CacodemonEntity extends DemonEntity implements IMob, IAnimatable {
+public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable {
 	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.CACODEMON);
-	public static final DataParameter<Integer> VARIANT = EntityDataManager.defineId(CacodemonEntity.class,
-			DataSerializers.INT);
+	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(CacodemonEntity.class,
+			EntityDataSerializers.INT);
 
-	public CacodemonEntity(EntityType<? extends CacodemonEntity> type, World worldIn) {
+	public CacodemonEntity(EntityType<? extends CacodemonEntity> type, Level worldIn) {
 		super(type, worldIn);
 		this.moveControl = new CacodemonEntity.MoveHelperController(this);
 	}
@@ -119,19 +120,19 @@ public class CacodemonEntity extends DemonEntity implements IMob, IAnimatable {
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.setVariant(compound.getInt("Variant"));
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT tag) {
+	public void addAdditionalSaveData(CompoundTag tag) {
 		super.addAdditionalSaveData(tag);
 		tag.putInt("Variant", this.getVariant());
 	}
 
 	public int getVariant() {
-		return MathHelper.clamp((Integer) this.entityData.get(VARIANT), 1, 2);
+		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 2);
 	}
 
 	public void setVariant(int variant) {
@@ -142,26 +143,25 @@ public class CacodemonEntity extends DemonEntity implements IMob, IAnimatable {
 		return 2;
 	}
 
-	@Nullable
 	@Override
-	public ILivingEntityData finalizeSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason,
-			@Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
+			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 		this.setVariant(this.random.nextInt());
 		return spawnDataIn;
 	}
 
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	public static float fireBallDirectHitDamage = 6.0F;
 
-	public static AttributeModifierMap.MutableAttribute createAttributes() {
+	public static AttributeSupplier.Builder createAttributes() {
 		fireBallDirectHitDamage = config.RANGED_ATTACK_DAMAGE;
-		return config.pushAttributes(MobEntity.createMobAttributes()
-				.add(Attributes.ATTACK_DAMAGE, config.MELEE_ATTACK_DAMAGE).add(Attributes.FOLLOW_RANGE, 25.0D));
+		return config.pushAttributes(Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE, config.MELEE_ATTACK_DAMAGE)
+				.add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.KNOCKBACK_RESISTANCE, 50D));
 	}
 
 	@Override
@@ -316,7 +316,7 @@ public class CacodemonEntity extends DemonEntity implements IMob, IAnimatable {
 		}
 
 		private boolean canReach(Vector3d p_220673_1_, int p_220673_2_) {
-			AxisAlignedBB axisalignedbb = this.parentEntity.getBoundingBox();
+			AABB axisalignedbb = this.parentEntity.getBoundingBox();
 
 			for (int i = 1; i < p_220673_2_; ++i) {
 				axisalignedbb = axisalignedbb.move(p_220673_1_);

@@ -7,21 +7,19 @@ import javax.annotation.Nullable;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.util.registry.DoomItems;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -36,16 +34,15 @@ public class DaisyItem extends Item {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		tooltip.add(new TranslationTextComponent("doom.daisy1.text").withStyle(TextFormatting.YELLOW)
-				.withStyle(TextFormatting.ITALIC));
-		tooltip.add(new TranslationTextComponent("doom.daisy2.text").withStyle(TextFormatting.ITALIC));
+	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+		tooltip.add(new TranslatableComponent("doom.daisy1.text").withStyle(ChatFormatting.YELLOW)
+				.withStyle(ChatFormatting.ITALIC));
+		tooltip.add(new TranslatableComponent("doom.daisy2.text").withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(final ItemStack stack, CompoundNBT unused) {
+	public ICapabilityProvider initCapabilities(final ItemStack stack, CompoundTag unused) {
 		ICurio curio = new ICurio() {
 			@Override
 			public boolean canRightClickEquip() {
@@ -54,30 +51,30 @@ public class DaisyItem extends Item {
 
 			@Override
 			public void onEquip(String identifier, int index, LivingEntity livingEntity) {
-				if (livingEntity instanceof PlayerEntity) {
-					startPowers((PlayerEntity) livingEntity);
+				if (livingEntity instanceof Player) {
+					startPowers((Player) livingEntity);
 				}
 			}
 
 			@Override
 			public void onUnequip(String identifier, int index, LivingEntity livingEntity) {
-				if (livingEntity instanceof PlayerEntity) {
-					stopPowers((PlayerEntity) livingEntity);
+				if (livingEntity instanceof Player) {
+					stopPowers((Player) livingEntity);
 				}
 			}
 
-			private void startPowers(PlayerEntity player) {
-				player.addEffect(new EffectInstance(Effects.MOVEMENT_SPEED, 10000000, 2));
+			private void startPowers(Player player) {
+				player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 10000000, 2));
 			}
 
-			private void stopPowers(PlayerEntity player) {
-				player.removeEffect(Effects.MOVEMENT_SPEED);
+			private void stopPowers(Player player) {
+				player.removeEffect(MobEffects.MOVEMENT_SPEED);
 			}
 
 			@Override
 			public void curioTick(String identifier, int index, LivingEntity livingEntity) {
-				if (livingEntity instanceof PlayerEntity) {
-					PlayerEntity player = ((PlayerEntity) livingEntity);
+				if (livingEntity instanceof Player) {
+					Player player = ((Player) livingEntity);
 					startPowers(player);
 				}
 			}
@@ -86,6 +83,11 @@ public class DaisyItem extends Item {
 			public boolean canEquip(String identifier, LivingEntity entityLivingBase) {
 				return !CuriosApi.getCuriosHelper().findEquippedCurio(DoomItems.DAISY.get(), entityLivingBase)
 						.isPresent();
+			}
+
+			@Override
+			public ItemStack getStack() {
+				return new ItemStack(DoomItems.DAISY.get());
 			}
 		};
 

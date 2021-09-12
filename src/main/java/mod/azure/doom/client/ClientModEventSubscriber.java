@@ -92,7 +92,6 @@ import mod.azure.doom.client.render.projectiles.BarenBlastRender;
 import mod.azure.doom.client.render.projectiles.BulletsRender;
 import mod.azure.doom.client.render.projectiles.ChaingunBulletRender;
 import mod.azure.doom.client.render.projectiles.EnergyRender;
-import mod.azure.doom.client.render.projectiles.HookRender;
 import mod.azure.doom.client.render.projectiles.RocketRender;
 import mod.azure.doom.client.render.projectiles.ShotgunShellRender;
 import mod.azure.doom.client.render.projectiles.UnmaykrBulletRender;
@@ -137,111 +136,102 @@ import mod.azure.doom.item.armor.ZombieDoomArmor;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomScreens;
 import mod.azure.doom.util.registry.ModEntityTypes;
-import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fmlclient.registry.ClientRegistry;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
 @EventBusSubscriber(modid = DoomMod.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientModEventSubscriber {
 
 	@SubscribeEvent
+	public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
+		event.registerEntityRenderer(ModEntityTypes.SHOTGUN_SHELL.get(), ShotgunShellRender::new);
+		event.registerEntityRenderer(ModEntityTypes.ARGENT_BOLT.get(), ArgentBoltRender::new);
+		event.registerEntityRenderer(ModEntityTypes.DRONEBOLT_MOB.get(), DroneBoltRender::new);
+		event.registerEntityRenderer(ModEntityTypes.UNMAYKR.get(), UnmaykrBulletRender::new);
+		event.registerEntityRenderer(ModEntityTypes.BULLETS.get(), BulletsRender::new);
+		event.registerEntityRenderer(ModEntityTypes.BFG_CELL.get(), BFGCellRender::new);
+		event.registerEntityRenderer(ModEntityTypes.ROCKET.get(), RocketRender::new);
+		event.registerEntityRenderer(ModEntityTypes.CHAINGUN_BULLET.get(), ChaingunBulletRender::new);
+		event.registerEntityRenderer(ModEntityTypes.BLOODBOLT_MOB.get(), BloodBoltRender::new);
+		event.registerEntityRenderer(ModEntityTypes.BARENBLAST.get(), BarenBlastRender::new);
+		event.registerEntityRenderer(ModEntityTypes.LOST_SOUL.get(), LostSoulRender::new);
+		event.registerEntityRenderer(ModEntityTypes.IMP.get(), ImpRender::new);
+		event.registerEntityRenderer(ModEntityTypes.ARACHNOTRON.get(), ArachnotronRender::new);
+		event.registerEntityRenderer(ModEntityTypes.NIGHTMARE_IMP.get(), NightmareImpRender::new);
+		event.registerEntityRenderer(ModEntityTypes.PINKY.get(), PinkyRender::new);
+		event.registerEntityRenderer(ModEntityTypes.CACODEMON.get(), CacodemonRender::new);
+		event.registerEntityRenderer(ModEntityTypes.ARCHVILE.get(), ArchvileRender::new);
+		event.registerEntityRenderer(ModEntityTypes.BARON.get(), BaronRender::new);
+		event.registerEntityRenderer(ModEntityTypes.MANCUBUS.get(), MancubusRender::new);
+		event.registerEntityRenderer(ModEntityTypes.SPIDERMASTERMIND.get(), SpiderMastermindRender::new);
+		event.registerEntityRenderer(ModEntityTypes.ZOMBIEMAN.get(), ZombiemanRender::new);
+		event.registerEntityRenderer(ModEntityTypes.REVENANT.get(), RevenantRender::new);
+		event.registerEntityRenderer(ModEntityTypes.IMP2016.get(), Imp2016Render::new);
+		event.registerEntityRenderer(ModEntityTypes.CHAINGUNNER.get(), ChaingunnerRender::new);
+		event.registerEntityRenderer(ModEntityTypes.SHOTGUNGUY.get(), ShotgunguyRender::new);
+		event.registerEntityRenderer(ModEntityTypes.MARAUDER.get(), MarauderRender::new);
+		event.registerEntityRenderer(ModEntityTypes.PAIN.get(), PainRender::new);
+		event.registerEntityRenderer(ModEntityTypes.HELLKNIGHT.get(), HellknightRender::new);
+		event.registerEntityRenderer(ModEntityTypes.CYBERDEMON.get(), CyberdemonRender::new);
+		event.registerEntityRenderer(ModEntityTypes.UNWILLING.get(), UnwillingRender::new);
+		event.registerEntityRenderer(ModEntityTypes.CYBERDEMON2016.get(), Cyberdemon2016Render::new);
+		event.registerEntityRenderer(ModEntityTypes.ICONOFSIN.get(), IconofsinRender::new);
+		event.registerEntityRenderer(ModEntityTypes.POSSESSEDSCIENTIST.get(), PossessedScientistRender::new);
+		event.registerEntityRenderer(ModEntityTypes.POSSESSEDSOLDIER.get(), PossessedSoldierRender::new);
+		event.registerEntityRenderer(ModEntityTypes.ENERGY_CELL_MOB.get(), EnergyCellMobRender::new);
+		event.registerEntityRenderer(ModEntityTypes.ENERGY_CELL.get(), EnergyRender::new);
+		event.registerEntityRenderer(ModEntityTypes.ROCKET_MOB.get(), RocketMobRender::new);
+		event.registerEntityRenderer(ModEntityTypes.CHAINGUN_MOB.get(), ChaingunMobRender::new);
+		event.registerEntityRenderer(ModEntityTypes.GORE_NEST.get(), GoreNestRender::new);
+		event.registerEntityRenderer(ModEntityTypes.MECHAZOMBIE.get(), MechaZombieRender::new);
+		event.registerEntityRenderer(ModEntityTypes.GARGOYLE.get(), GargoyleRender::new);
+		event.registerEntityRenderer(ModEntityTypes.HELLKNIGHT2016.get(), Hellknight2016Render::new);
+		event.registerEntityRenderer(ModEntityTypes.FIRING.get(), ArchvileFiringRender::new);
+		event.registerEntityRenderer(ModEntityTypes.CHAINBLADE.get(), ChainBladeRender::new);
+		event.registerEntityRenderer(ModEntityTypes.SPECTRE.get(), SpectreRender::new);
+		event.registerEntityRenderer(ModEntityTypes.CUEBALL.get(), CueBallRender::new);
+		event.registerEntityRenderer(ModEntityTypes.PROWLER.get(), ProwlerRender::new);
+		event.registerEntityRenderer(ModEntityTypes.DREADKNIGHT.get(), DreadKnightRender::new);
+		event.registerEntityRenderer(ModEntityTypes.IMP_STONE.get(), ImpStoneRender::new);
+		event.registerEntityRenderer(ModEntityTypes.TYRANT.get(), TyrantRender::new);
+		event.registerEntityRenderer(ModEntityTypes.POSSESSEDWORKER.get(), PossessedWorkerRender::new);
+		event.registerEntityRenderer(ModEntityTypes.DOOMHUNTER.get(), DoomHunterRender::new);
+		event.registerEntityRenderer(ModEntityTypes.PINKY2016.get(), Pinky2016Render::new);
+		event.registerEntityRenderer(ModEntityTypes.WHIPLASH.get(), WhiplashRender::new);
+		event.registerEntityRenderer(ModEntityTypes.BARON2016.get(), Baron2016Render::new);
+		event.registerEntityRenderer(ModEntityTypes.FIREBARON.get(), FireBaronRender::new);
+		event.registerEntityRenderer(ModEntityTypes.ARMORBARON.get(), ArmoredBaronRender::new);
+		event.registerEntityRenderer(ModEntityTypes.MAYKRDRONE.get(), MaykrDroneRender::new);
+		event.registerEntityRenderer(ModEntityTypes.BLOODMAYKR.get(), BloodMaykrRender::new);
+		event.registerEntityRenderer(ModEntityTypes.ARCHMAKER.get(), ArchMaykrRender::new);
+		event.registerEntityRenderer(ModEntityTypes.SPIDERMASTERMIND2016.get(), SpiderMastermind2016Render::new);
+		event.registerEntityRenderer(ModEntityTypes.ARACHNOTRONETERNAL.get(), ArachnotronEternalRender::new);
+		event.registerEntityRenderer(ModEntityTypes.ARCHVILEETERNAL.get(), ArchvileEternalRender::new);
+		event.registerEntityRenderer(ModEntityTypes.TENTACLE.get(), TentacleRender::new);
+		event.registerEntityRenderer(ModEntityTypes.MOTHERDEMON.get(), MotherDemonRender::new);
+		event.registerEntityRenderer(ModEntityTypes.TURRET.get(), TurretRender::new);
+		event.registerEntityRenderer(ModEntityTypes.SUMMONER.get(), SummonerRender::new);
+		event.registerEntityRenderer(ModEntityTypes.REVENANT2016.get(), Revenant2016Render::new);
+
+		event.registerEntityRenderer(ModEntityTypes.BARREL.get(), BarrelRender::new);
+		event.registerBlockEntityRenderer(ModEntityTypes.TOTEM.get(), TotemRender::new);
+		event.registerBlockEntityRenderer(ModEntityTypes.GUN_TABLE_ENTITY.get(), GunCraftingRender::new);
+	}
+
+	@SubscribeEvent
 	public static void onClientSetup(final FMLClientSetupEvent event) {
-		Keybindings.RELOAD = new KeyBinding("key." + DoomMod.MODID + ".reload", GLFW.GLFW_KEY_R,
+		Keybindings.RELOAD = new KeyMapping("key." + DoomMod.MODID + ".reload", GLFW.GLFW_KEY_R,
 				"key.categories." + DoomMod.MODID);
 		ClientRegistry.registerKeyBinding(Keybindings.RELOAD);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.BARREL.get(), BarrelRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.SHOTGUN_SHELL.get(), ShotgunShellRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.ARGENT_BOLT.get(), ArgentBoltRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.DRONEBOLT_MOB.get(), DroneBoltRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.UNMAYKR.get(), UnmaykrBulletRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.BULLETS.get(), BulletsRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.BFG_CELL.get(), BFGCellRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.ROCKET.get(), RocketRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.CHAINGUN_BULLET.get(),
-				ChaingunBulletRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.BLOODBOLT_MOB.get(), BloodBoltRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.BARENBLAST.get(), BarenBlastRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.LOST_SOUL.get(), LostSoulRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.IMP.get(), ImpRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.ARACHNOTRON.get(), ArachnotronRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.NIGHTMARE_IMP.get(), NightmareImpRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.PINKY.get(), PinkyRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.CACODEMON.get(), CacodemonRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.ARCHVILE.get(), ArchvileRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.BARON.get(), BaronRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.MANCUBUS.get(), MancubusRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.SPIDERMASTERMIND.get(),
-				SpiderMastermindRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.ZOMBIEMAN.get(), ZombiemanRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.REVENANT.get(), RevenantRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.IMP2016.get(), Imp2016Render::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.CHAINGUNNER.get(), ChaingunnerRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.SHOTGUNGUY.get(), ShotgunguyRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.MARAUDER.get(), MarauderRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.PAIN.get(), PainRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.HELLKNIGHT.get(), HellknightRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.CYBERDEMON.get(), CyberdemonRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.UNWILLING.get(), UnwillingRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.CYBERDEMON2016.get(),
-				Cyberdemon2016Render::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.ICONOFSIN.get(), IconofsinRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.POSSESSEDSCIENTIST.get(),
-				PossessedScientistRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.POSSESSEDSOLDIER.get(),
-				PossessedSoldierRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.ENERGY_CELL_MOB.get(),
-				EnergyCellMobRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.ENERGY_CELL.get(), EnergyRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.ROCKET_MOB.get(), RocketMobRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.CHAINGUN_MOB.get(), ChaingunMobRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.GORE_NEST.get(), GoreNestRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.MECHAZOMBIE.get(), MechaZombieRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.GARGOYLE.get(), GargoyleRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.HELLKNIGHT2016.get(),
-				Hellknight2016Render::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.FIRING.get(), ArchvileFiringRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.CHAINBLADE.get(), ChainBladeRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.SPECTRE.get(), SpectreRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.CUEBALL.get(), CueBallRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.PROWLER.get(), ProwlerRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.DREADKNIGHT.get(), DreadKnightRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.IMP_STONE.get(), ImpStoneRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.TYRANT.get(), TyrantRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.POSSESSEDWORKER.get(),
-				PossessedWorkerRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.DOOMHUNTER.get(), DoomHunterRender::new);
-
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.PINKY2016.get(), Pinky2016Render::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.WHIPLASH.get(), WhiplashRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.BARON2016.get(), Baron2016Render::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.FIREBARON.get(), FireBaronRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.ARMORBARON.get(), ArmoredBaronRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.MAYKRDRONE.get(), MaykrDroneRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.BLOODMAYKR.get(), BloodMaykrRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.ARCHMAKER.get(), ArchMaykrRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.SPIDERMASTERMIND2016.get(),
-				SpiderMastermind2016Render::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.ARACHNOTRONETERNAL.get(),
-				ArachnotronEternalRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.ARCHVILEETERNAL.get(),
-				ArchvileEternalRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.TENTACLE.get(), TentacleRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.MOTHERDEMON.get(), MotherDemonRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.TURRET.get(), TurretRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.SUMMONER.get(), SummonerRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.HOOK.get(), HookRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.REVENANT2016.get(), Revenant2016Render::new);
-
-		ClientRegistry.bindTileEntityRenderer(ModEntityTypes.TOTEM.get(), TotemRender::new);
-		ClientRegistry.bindTileEntityRenderer(ModEntityTypes.GUN_TABLE_ENTITY.get(), GunCraftingRender::new);
 
 		GeoArmorRenderer.registerArmorRenderer(DoomicornDoomArmor.class, new DoomicornRender());
 		GeoArmorRenderer.registerArmorRenderer(NightmareDoomArmor.class, new NightmareRender());
@@ -273,8 +263,7 @@ public class ClientModEventSubscriber {
 		GeoArmorRenderer.registerArmorRenderer(ZombieDoomArmor.class, new ZombieRender());
 		GeoArmorRenderer.registerArmorRenderer(SantaDoomArmor.class, new SantaRender());
 
-		RenderTypeLookup.setRenderLayer(DoomBlocks.JUMP_PAD.get(), RenderType.translucent());
-		ModItemModelsProperties.init();
-		ScreenManager.register(DoomScreens.SCREEN_HANDLER_TYPE.get(), GunTableScreen::new);
+		ItemBlockRenderTypes.setRenderLayer(DoomBlocks.JUMP_PAD.get(), RenderType.translucent());
+		MenuScreens.register(DoomScreens.SCREEN_HANDLER_TYPE.get(), GunTableScreen::new);
 	}
 }

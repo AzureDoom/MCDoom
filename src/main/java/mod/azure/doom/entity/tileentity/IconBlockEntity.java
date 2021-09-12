@@ -5,11 +5,11 @@ import javax.annotation.Nullable;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class IconBlockEntity extends TileEntity {
+public class IconBlockEntity extends BlockEntity {
 
 	public IconBlockEntity() {
 		super(ModEntityTypes.ICON.get());

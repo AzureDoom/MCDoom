@@ -4,46 +4,46 @@ import java.util.Random;
 import java.util.UUID;
 
 import mod.azure.doom.util.config.EntityConfig;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IAngerable;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.RangedInteger;
-import net.minecraft.util.TickRangeConverter;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.TimeUtil;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
-public class DemonEntity extends MonsterEntity implements IAngerable {
+public class DemonEntity extends Monster implements NeutralMob {
 
-	private static final DataParameter<Integer> ANGER_TIME = EntityDataManager.defineId(DemonEntity.class,
-			DataSerializers.INT);
-	public static final DataParameter<Integer> STATE = EntityDataManager.defineId(DemonEntity.class,
-			DataSerializers.INT);
-	private static final RangedInteger ANGER_TIME_RANGE = TickRangeConverter.rangeOfSeconds(20, 39);
+	private static final EntityDataAccessor<Integer> ANGER_TIME = SynchedEntityData.defineId(DemonEntity.class,
+			EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(DemonEntity.class,
+			EntityDataSerializers.INT);
+	private static final UniformInt ANGER_TIME_RANGE = TimeUtil.rangeOfSeconds(20, 39);
 	private UUID targetUuid;
 
-	protected DemonEntity(EntityType<? extends MonsterEntity> type, World worldIn) {
+	protected DemonEntity(EntityType<? extends Monster> type, Level worldIn) {
 		super(type, worldIn);
 		this.noCulling = true;
 	}
 
-	public static boolean passPeacefulAndYCheck(EntityConfig config, IWorld world,
-			SpawnReason reason, BlockPos pos, Random random) {
+	public static boolean passPeacefulAndYCheck(EntityConfig config, LevelAccessor world, MobSpawnType reason,
+			BlockPos pos, Random random) {
 		// peaceful check
 		if (world.getDifficulty() == Difficulty.PEACEFUL)
 			return false;
 		// pass through if natural spawn and using individual spawn rules
-		if ((reason != SpawnReason.CHUNK_GENERATION && reason != SpawnReason.NATURAL))
+		if ((reason != MobSpawnType.CHUNK_GENERATION && reason != MobSpawnType.NATURAL))
 			return !world.getBlockState(pos.below()).is(Blocks.NETHER_WART_BLOCK);
 		return !world.getBlockState(pos.below()).is(Blocks.NETHER_WART_BLOCK);
 	}
@@ -88,13 +88,13 @@ public class DemonEntity extends MonsterEntity implements IAngerable {
 	}
 
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override
 	public void startPersistentAngerTimer() {
-		this.setRemainingPersistentAngerTime(ANGER_TIME_RANGE.randomValue(this.random));
+		this.setRemainingPersistentAngerTime(ANGER_TIME_RANGE.sample(this.random));
 	}
 
 }

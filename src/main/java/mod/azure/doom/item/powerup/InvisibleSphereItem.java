@@ -3,25 +3,21 @@ package mod.azure.doom.item.powerup;
 import java.util.List;
 
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.util.PMMOCompat;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.UseAction;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.ModList;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.Level;
 
 public class InvisibleSphereItem extends Item {
 
@@ -30,18 +26,18 @@ public class InvisibleSphereItem extends Item {
 	}
 
 	@Override
-	public void onUseTick(World worldIn, LivingEntity livingEntityIn, ItemStack stack, int count) {
-		if (livingEntityIn instanceof ServerPlayerEntity) {
-			ServerPlayerEntity playerentity = (ServerPlayerEntity) livingEntityIn;
+	public void onUseTick(Level worldIn, LivingEntity livingEntityIn, ItemStack stack, int count) {
+		if (livingEntityIn instanceof ServerPlayer) {
+			ServerPlayer playerentity = (ServerPlayer) livingEntityIn;
 			if (!worldIn.isClientSide) {
-				livingEntityIn.addEffect(new EffectInstance(Effects.INVISIBILITY, 1200, 1));
-				if (ModList.get().isLoaded("pmmo")) {
-					PMMOCompat.awardInvisibleXp(playerentity);
-				}
-				if (!playerentity.abilities.instabuild) {
+				livingEntityIn.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 1200, 1));
+//				if (ModList.get().isLoaded("pmmo")) {
+//					PMMOCompat.awardInvisibleXp(playerentity);
+//				}
+				if (!playerentity.getAbilities().instabuild) {
 					stack.shrink(1);
 					if (stack.isEmpty()) {
-						playerentity.inventory.removeItem(stack);
+						playerentity.getInventory().removeItem(stack);
 					}
 				}
 			}
@@ -54,21 +50,20 @@ public class InvisibleSphereItem extends Item {
 	}
 
 	@Override
-	public UseAction getUseAnimation(ItemStack stack) {
-		return UseAction.NONE;
+	public UseAnim getUseAnimation(ItemStack stack) {
+		return UseAnim.NONE;
 	}
 
 	@Override
-	public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
 		ItemStack itemstack = playerIn.getItemInHand(handIn);
 		playerIn.startUsingItem(handIn);
-		return ActionResult.consume(itemstack);
+		return InteractionResultHolder.consume(itemstack);
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		tooltip.add(new TranslationTextComponent("doom.invisible.text").withStyle(TextFormatting.ITALIC));
+	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+		tooltip.add(new TranslatableComponent("doom.invisible.text").withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 

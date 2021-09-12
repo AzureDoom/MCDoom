@@ -3,32 +3,31 @@ package mod.azure.doom.entity.projectiles;
 import javax.annotation.Nullable;
 
 import mod.azure.doom.util.registry.ModEntityTypes;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 public class BarrelEntity extends Entity {
 
 	@Nullable
 	private LivingEntity tntPlacedBy;
 
-	public BarrelEntity(EntityType<?> entityTypeIn, World worldIn) {
+	public BarrelEntity(EntityType<?> entityTypeIn, Level worldIn) {
 		super(entityTypeIn, worldIn);
 		this.blocksBuilding = true;
 	}
 
 	protected void explode() {
-		this.level.explode(this, this.getX(), this.getY(), this.getZ(), 2.0F, true,
-				Explosion.Mode.NONE);
+		this.level.explode(this, this.getX(), this.getY(), this.getZ(), 2.0F, true, Explosion.BlockInteraction.NONE);
 	}
 
-	public BarrelEntity(World worldIn, double x, double y, double z, @Nullable LivingEntity igniter) {
+	public BarrelEntity(Level worldIn, double x, double y, double z, @Nullable LivingEntity igniter) {
 		this(ModEntityTypes.BARREL.get(), worldIn);
 		this.setPos(x, y, z);
 		double d0 = worldIn.random.nextDouble() * (double) ((float) Math.PI * 2F);
@@ -60,22 +59,22 @@ public class BarrelEntity extends Entity {
 			this.setDeltaMovement(this.getDeltaMovement().multiply(0.7D, -0.5D, 0.7D));
 		}
 
-		this.remove();
+		this.remove(RemovalReason.DISCARDED);
 		if (!this.level.isClientSide) {
 			this.explode();
 		}
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundNBT compound) {
+	protected void readAdditionalSaveData(CompoundTag compound) {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundNBT compound) {
+	protected void addAdditionalSaveData(CompoundTag compound) {
 	}
 
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

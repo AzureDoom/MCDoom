@@ -25,23 +25,19 @@ import mod.azure.doom.util.registry.DoomScreens;
 import mod.azure.doom.util.registry.ModEntitySpawn;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
+import net.minecraft.core.Registry;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome.Category;
-import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.FlatChunkGenerator;
-import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.biome.Biome.BiomeCategory;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -50,13 +46,12 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import software.bernie.geckolib3.GeckoLib;
 import software.bernie.geckolib3.network.GeckoLibNetwork;
 import top.theillusivec4.curios.api.SlotTypeMessage;
@@ -87,8 +82,6 @@ public class DoomMod {
 		forgeBus.addListener(EventPriority.NORMAL, this::addDimensionalSpacing);
 		forgeBus.addListener(EventPriority.HIGH, this::biomeModification);
 		// MinecraftForge.EVENT_BUS.addListener(this::gEvent);
-		forgeBus.addGenericListener(Block.class, DoomMod::updatingBlocksID);
-		forgeBus.addGenericListener(Item.class, DoomMod::updatingItemsID);
 		MinecraftForge.EVENT_BUS.addListener(DoomVillagerTrades::onVillagerTradesEvent);
 		ModSoundEvents.MOD_SOUNDS.register(modEventBus);
 		ModEntityTypes.ENTITY_TYPES.register(modEventBus);
@@ -127,28 +120,18 @@ public class DoomMod {
 			DoomConfiguredStructures.registerConfiguredStructures();
 		});
 	}
-
-//	public void gEvent(final EntityJoinWorldEvent event) {
-//		if (event.getEntity() instanceof PlayerEntity
-//				&& UUID.fromString("97aa8203-db55-4f41-b3c4-f5c52db4102d")
-//						.equals(((PlayerEntity) event.getEntity()).getUUID())
-//				|| UUID.fromString("380df991-f603-344c-a090-369bad2a924a")
-//						.equals(((PlayerEntity) event.getEntity()).getUUID())) {
-//			// will send thank you messages.
-//		}
-//	}
-
+	
 	public void biomeModification(final BiomeLoadingEvent event) {
-		if (event.getCategory().equals(Category.THEEND)) {
+		if (event.getCategory().equals(BiomeCategory.THEEND)) {
 			event.getGeneration().getStructures().add(() -> DoomConfiguredStructures.CONFIGURED_MAYKR);
 			event.getGeneration().getStructures().add(() -> DoomConfiguredStructures.CONFIGURED_ARCHMAYKR);
 		}
-		if (event.getCategory().equals(Category.NETHER)) {
+		if (event.getCategory().equals(BiomeCategory.NETHER)) {
 			event.getGeneration().getStructures().add(() -> DoomConfiguredStructures.CONFIGURED_TITAN_SKULL);
 			event.getGeneration().getStructures().add(() -> DoomConfiguredStructures.CONFIGURED_MOTHERDEMON);
 			event.getGeneration().getStructures().add(() -> DoomConfiguredStructures.CONFIGURED_NETHERPORTAL);
 		}
-		if (!(event.getCategory().equals(Category.NETHER) || event.getCategory().equals(Category.THEEND))) {
+		if (!(event.getCategory().equals(BiomeCategory.NETHER) || event.getCategory().equals(BiomeCategory.THEEND))) {
 			event.getGeneration().getStructures().add(() -> DoomConfiguredStructures.CONFIGURED_PORTAL);
 		}
 	}
@@ -193,26 +176,6 @@ public class DoomMod {
 		}
 	}
 
-	@SubscribeEvent
-	public static void updatingItemsID(final RegistryEvent.MissingMappings<Item> event) {
-		for (Mapping<Item> mapping : event.getAllMappings()) {
-			if (mapping.key.getNamespace().equals("doomweapon")) {
-				mapping.remap(
-						ForgeRegistries.ITEMS.getValue(new ResourceLocation(DoomMod.MODID, mapping.key.getPath())));
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public static void updatingBlocksID(RegistryEvent.MissingMappings<Block> event) {
-		for (Mapping<Block> mapping : event.getAllMappings()) {
-			if (mapping.key.getNamespace().equals("doomweapon")) {
-				mapping.remap(
-						ForgeRegistries.BLOCKS.getValue(new ResourceLocation(DoomMod.MODID, mapping.key.getPath())));
-			}
-		}
-	}
-
 	private void enqueueIMC(InterModEnqueueEvent event) {
 		InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
 				() -> SlotTypePreset.CHARM.getMessageBuilder().build());
@@ -220,35 +183,35 @@ public class DoomMod {
 				() -> SlotTypePreset.BELT.getMessageBuilder().build());
 	}
 
-	public static final ItemGroup DoomWeaponItemGroup = (new ItemGroup("doomweapons") {
+	public static final CreativeModeTab DoomWeaponItemGroup = (new CreativeModeTab("doomweapons") {
 		@Override
 		public ItemStack makeIcon() {
 			return new ItemStack(DoomItems.BFG_ETERNAL.get());
 		}
 	});
 
-	public static final ItemGroup DoomArmorItemGroup = (new ItemGroup("doomarmor") {
+	public static final CreativeModeTab DoomArmorItemGroup = (new CreativeModeTab("doomarmor") {
 		@Override
 		public ItemStack makeIcon() {
 			return new ItemStack(DoomItems.DOOM_HELMET.get());
 		}
 	});
 
-	public static final ItemGroup DoomBlockItemGroup = (new ItemGroup("doomblocks") {
+	public static final CreativeModeTab DoomBlockItemGroup = (new CreativeModeTab("doomblocks") {
 		@Override
 		public ItemStack makeIcon() {
 			return new ItemStack(DoomBlocks.BARREL_BLOCK.get());
 		}
 	});
 
-	public static final ItemGroup DoomEggItemGroup = (new ItemGroup("doomeggs") {
+	public static final CreativeModeTab DoomEggItemGroup = (new CreativeModeTab("doomeggs") {
 		@Override
 		public ItemStack makeIcon() {
 			return new ItemStack(DoomItems.IMP_SPAWN_EGG.get());
 		}
 	});
 
-	public static final ItemGroup DoomPowerUPItemGroup = (new ItemGroup("doompowerup") {
+	public static final CreativeModeTab DoomPowerUPItemGroup = (new CreativeModeTab("doompowerup") {
 		@Override
 		public ItemStack makeIcon() {
 			return new ItemStack(DoomItems.INMORTAL.get());

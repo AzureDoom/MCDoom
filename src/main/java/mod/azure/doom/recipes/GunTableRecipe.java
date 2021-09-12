@@ -5,20 +5,20 @@ import org.apache.commons.lang3.tuple.Pair;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.gui.weapons.DoomGunInventory;
 import mod.azure.doom.util.registry.DoomRecipes;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class GunTableRecipe implements IRecipe<DoomGunInventory>, Comparable<GunTableRecipe> {
+public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunTableRecipe> {
 
 	public static ResourceLocation RECIPE_TYPE_ID = new ResourceLocation(DoomMod.MODID, "guns");
-	public static final IRecipeType<GunTableRecipe> GUN_TABLE = IRecipeType
+	public static final RecipeType<GunTableRecipe> GUN_TABLE = RecipeType
 			.register(new ResourceLocation(DoomMod.MODID, "gun_table").toString());
 
 	public final ResourceLocation id;
@@ -32,7 +32,7 @@ public class GunTableRecipe implements IRecipe<DoomGunInventory>, Comparable<Gun
 	}
 
 	@Override
-	public boolean matches(DoomGunInventory inv, World world) {
+	public boolean matches(DoomGunInventory inv, Level world) {
 		for (int i = 0; i < 5; i++) {
 			ItemStack slotStack = inv.getItem(i);
 			Pair<Ingredient, Integer> pair = ingredients[i];
@@ -74,12 +74,12 @@ public class GunTableRecipe implements IRecipe<DoomGunInventory>, Comparable<Gun
 	}
 
 	@Override
-	public IRecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<?> getSerializer() {
 		return DoomRecipes.GUN_TABLE_RECIPE_SERIALIZER.get();
 	}
 
 	@Override
-	public IRecipeType<?> getType() {
+	public RecipeType<?> getType() {
 		return GUN_TABLE;
 	}
 

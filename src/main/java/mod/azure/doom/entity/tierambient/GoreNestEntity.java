@@ -9,22 +9,22 @@ import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.config.EntityConfig;
 import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
 import mod.azure.doom.util.registry.ModEntityTypes;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -73,7 +73,7 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable {
 		return this.factory;
 	}
 
-	public GoreNestEntity(EntityType<? extends GoreNestEntity> entityType, World worldIn) {
+	public GoreNestEntity(EntityType<? extends GoreNestEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 	}
 
@@ -83,11 +83,11 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static boolean spawning(EntityType<GoreNestEntity> p_223337_0_, IWorld p_223337_1_, SpawnReason reason,
+	public static boolean spawning(EntityType<GoreNestEntity> p_223337_0_, LevelAccessor p_223337_1_, MobSpawnType reason,
 			BlockPos p_223337_3_, Random p_223337_4_) {
 		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223337_3_, p_223337_4_);
 	}
@@ -100,18 +100,18 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable {
 		}
 	}
 
-	public static AttributeModifierMap.MutableAttribute createAttributes() {
-		return config.pushAttributes(MobEntity.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D));
+	public static AttributeSupplier.Builder createAttributes() {
+		return config.pushAttributes(Mob.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D));
 	}
 
 	@Override
-	public void onSyncedDataUpdated(DataParameter<?> key) {
+	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
 		super.onSyncedDataUpdated(key);
 	}
 
 	@Override
 	protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
-		if (!(damageSrc.getEntity() instanceof PlayerEntity)) {
+		if (!(damageSrc.getEntity() instanceof Player)) {
 			this.setHealth(5.0F);
 		} else {
 			this.remove();
@@ -121,7 +121,7 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable {
 	@Override
 	public void aiStep() {
 		if (this.level.isClientSide) {
-			this.level.addParticle(RedstoneParticleData.REDSTONE, this.getRandomX(0.5D), this.getRandomY(),
+			this.level.addParticle(DustParticleOptions.REDSTONE, this.getRandomX(0.5D), this.getRandomY(),
 					this.getRandomZ(0.5D), (this.random.nextDouble() - 0.5D) * 2.0D, -this.random.nextDouble(),
 					(this.random.nextDouble() - 0.5D) * 2.0D);
 			this.level.addParticle(ParticleTypes.SOUL, this.getRandomX(0.2D), this.getRandomY(), this.getRandomZ(0.5D),
@@ -184,12 +184,12 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT compound) {
+	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 	}
 

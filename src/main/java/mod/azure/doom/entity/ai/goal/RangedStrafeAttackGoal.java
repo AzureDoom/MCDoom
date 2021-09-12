@@ -4,8 +4,8 @@ import java.util.EnumSet;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 public class RangedStrafeAttackGoal extends Goal {
 	private final DemonEntity entity;
@@ -130,7 +130,7 @@ public class RangedStrafeAttackGoal extends Goal {
 		if (livingentity != null) {
 			double distanceToTargetSq = this.entity.distanceToSqr(livingentity.getX(), livingentity.getY(),
 					livingentity.getZ());
-			boolean inLineOfSight = this.entity.getSensing().canSee(livingentity);
+			boolean inLineOfSight = this.entity.getSensing().hasLineOfSight(livingentity);
 			if (inLineOfSight != this.seeTime > 0) {
 				this.seeTime = 0;
 			}

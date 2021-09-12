@@ -1,13 +1,13 @@
 package mod.azure.doom.entity.tileentity;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.NonNullList;
 
-public interface ImplementedInventory extends IInventory {
+public interface ImplementedInventory extends Container {
 
 	/**
 	 * Retrieves the item list of this inventory. Must return the same instance
@@ -70,7 +70,7 @@ public interface ImplementedInventory extends IInventory {
 	 */
 	@Override
 	default ItemStack removeItem(int slot, int count) {
-		ItemStack result = ItemStackHelper.removeItem(getItems(), slot, count);
+		ItemStack result = ContainerHelper.removeItem(getItems(), slot, count);
 		if (!result.isEmpty()) {
 			setChanged();
 		}
@@ -84,7 +84,7 @@ public interface ImplementedInventory extends IInventory {
 	 */
 	@Override
 	default ItemStack removeItemNoUpdate(int slot) {
-		return ItemStackHelper.takeItem(getItems(), slot);
+		return ContainerHelper.takeItem(getItems(), slot);
 	}
 
 	/**
@@ -125,7 +125,7 @@ public interface ImplementedInventory extends IInventory {
 	 * @return true if the player can use the inventory, false otherwise.
 	 */
 	@Override
-	default boolean stillValid(PlayerEntity player) {
+	default boolean stillValid(Player player) {
 		return true;
 	}
 }

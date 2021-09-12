@@ -3,21 +3,19 @@ package mod.azure.doom.item.armor;
 import java.util.List;
 
 import mod.azure.doom.DoomMod;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ArmorStandEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -40,10 +38,6 @@ public class SentinelDoomArmor extends GeoArmorItem implements IAnimatable {
 	}
 
 	private <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-		LivingEntity livingEntity = event.getExtraDataOfType(LivingEntity.class).get(0);
-		if (livingEntity instanceof ArmorStandEntity) {
-			return PlayState.STOP;
-		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
 	}
@@ -53,15 +47,15 @@ public class SentinelDoomArmor extends GeoArmorItem implements IAnimatable {
 		return this.factory;
 	}
 
-	public SentinelDoomArmor(IArmorMaterial materialIn, EquipmentSlotType slot) {
+	public SentinelDoomArmor(ArmorMaterial materialIn, EquipmentSlot slot) {
 		super(materialIn, slot, new Item.Properties().tab(DoomMod.DoomArmorItemGroup).stacksTo(1));
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		tooltip.add(new TranslationTextComponent("doom.sentinelarmor.text").withStyle(TextFormatting.YELLOW)
-				.withStyle(TextFormatting.ITALIC));
+	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+		tooltip.add(new TranslatableComponent("doom.sentinelarmor.text").withStyle(ChatFormatting.YELLOW)
+				.withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 
@@ -76,17 +70,17 @@ public class SentinelDoomArmor extends GeoArmorItem implements IAnimatable {
 	}
 
 	@Override
-	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
 		ItemStack stack = new ItemStack(this);
 		stack.hasTag();
 		stack.enchant(Enchantments.FIRE_PROTECTION, 1);
-		if ((group == DoomMod.DoomArmorItemGroup) || (group == ItemGroup.TAB_SEARCH)) {
+		if ((group == DoomMod.DoomArmorItemGroup) || (group == CreativeModeTab.TAB_SEARCH)) {
 			items.add(stack);
 		}
 	}
 
 	@Override
-	public void onCraftedBy(ItemStack stack, World worldIn, PlayerEntity playerIn) {
+	public void onCraftedBy(ItemStack stack, Level worldIn, Player playerIn) {
 		stack.hasTag();
 		stack.enchant(Enchantments.FIRE_PROTECTION, 1);
 	}

@@ -1,8 +1,8 @@
 package mod.azure.doom.entity.ai.goal;
 
 import mod.azure.doom.entity.DemonEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 
 public class DemonAttackGoal extends MeleeAttackGoal {
 	private final DemonEntity entity;
@@ -43,7 +43,7 @@ public class DemonAttackGoal extends MeleeAttackGoal {
 			this.mob.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
 			double d0 = this.mob.distanceToSqr(livingentity.getX(), livingentity.getY(), livingentity.getZ());
 			this.ticksUntilNextPathRecalculation = Math.max(this.ticksUntilNextPathRecalculation - 1, 0);
-			if ((this.followingTargetEvenIfNotSeen || this.mob.getSensing().canSee(livingentity))
+			if ((this.followingTargetEvenIfNotSeen || this.mob.getSensing().hasLineOfSight(livingentity))
 					&& this.ticksUntilNextPathRecalculation <= 0
 					&& (this.pathedTargetX == 0.0D && this.pathedTargetY == 0.0D && this.pathedTargetZ == 0.0D
 							|| livingentity.distanceToSqr(this.pathedTargetX, this.pathedTargetY,

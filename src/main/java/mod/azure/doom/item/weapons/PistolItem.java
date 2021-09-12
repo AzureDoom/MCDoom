@@ -9,15 +9,15 @@ import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.PistolLoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fml.network.PacketDistributor;
 import software.bernie.geckolib3.network.GeckoLibNetwork;
 import software.bernie.geckolib3.util.GeckoLibUtil;
@@ -35,9 +35,9 @@ public class PistolItem extends DoomBaseItem {
 	}
 
 	@Override
-	public void releaseUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
-		if (entityLiving instanceof PlayerEntity) {
-			PlayerEntity playerentity = (PlayerEntity) entityLiving;
+	public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
+		if (entityLiving instanceof Player) {
+			Player playerentity = (Player) entityLiving;
 			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
 				playerentity.getCooldowns().addCooldown(this, 5);
 				if (!worldIn.isClientSide) {
@@ -49,11 +49,11 @@ public class PistolItem extends DoomBaseItem {
 
 					stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
 					worldIn.addFreshEntity(abstractarrowentity);
-					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
-							playerentity.getZ(), ModSoundEvents.PISTOL_HIT.get(), SoundCategory.PLAYERS, 1.0F,
+					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(),
+							playerentity.getZ(), ModSoundEvents.PISTOL_HIT.get(), SoundSource.PLAYERS, 1.0F,
 							1.0F / (random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 					if (!worldIn.isClientSide) {
-						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);
+						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
 						final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
 								.with(() -> playerentity);
 						GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
@@ -63,15 +63,15 @@ public class PistolItem extends DoomBaseItem {
 		}
 	}
 
-	public BulletEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
+	public BulletEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
 		BulletEntity arrowentity = new BulletEntity(worldIn, shooter);
 		return arrowentity;
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
 		if (worldIn.isClientSide) {
-			if (((PlayerEntity) entityIn).getMainHandItem().getItem() instanceof PistolItem) {
+			if (((Player) entityIn).getMainHandItem().getItem() instanceof PistolItem) {
 				while (Keybindings.RELOAD.consumeClick() && isSelected) {
 					DoomPacketHandler.PISTOL.sendToServer(new PistolLoadingPacket(itemSlot));
 				}
@@ -79,15 +79,15 @@ public class PistolItem extends DoomBaseItem {
 		}
 	}
 
-	public static void reload(PlayerEntity user, Hand hand) {
+	public static void reload(Player user, InteractionHand hand) {
 		if (user.getMainHandItem().getItem() instanceof PistolItem) {
 			while (user.getItemInHand(hand).getDamageValue() != 0
 					&& user.inventory.countItem(DoomItems.BULLETS.get()) > 0) {
 				removeAmmo(DoomItems.BULLETS.get(), user);
 				user.getMainHandItem().hurtAndBreak(-10, user, s -> user.broadcastBreakEvent(hand));
 				user.getMainHandItem().setPopTime(3);
-				user.getCommandSenderWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
-						ModSoundEvents.CLIPRELOAD.get(), SoundCategory.PLAYERS, 1.00F, 1.0F);
+				user.getCommandSenderWorld().playSound((Player) null, user.getX(), user.getY(), user.getZ(),
+						ModSoundEvents.CLIPRELOAD.get(), SoundSource.PLAYERS, 1.00F, 1.0F);
 			}
 		}
 	}

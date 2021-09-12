@@ -7,32 +7,32 @@ import java.util.Optional;
 import mod.azure.doom.recipes.GunTableRecipe;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomScreens;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.play.server.SSetSlotPacket;
-import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.world.World;
+import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
 
-public class GunTableScreenHandler extends Container {
-	private final PlayerInventory playerInventory;
+public class GunTableScreenHandler extends AbstractContainerMenu {
+	private final Inventory playerInventory;
 	private final DoomGunInventory gunTableInventory;
-	private final IWorldPosCallable context;
+	private final ContainerLevelAccess context;
 	@SuppressWarnings("unused")
 	private int recipeIndex;
 
 	// client
-	public GunTableScreenHandler(int syncId, PlayerInventory playerInventory) {
-		this(syncId, playerInventory, IWorldPosCallable.NULL);
+	public GunTableScreenHandler(int syncId, Inventory playerInventory) {
+		this(syncId, playerInventory, ContainerLevelAccess.NULL);
 	}
 
 	// server
-	public GunTableScreenHandler(int syncId, PlayerInventory playerInventory, IWorldPosCallable context) {
+	public GunTableScreenHandler(int syncId, Inventory playerInventory, ContainerLevelAccess context) {
 		super(DoomScreens.SCREEN_HANDLER_TYPE.get(), syncId);
 		this.playerInventory = playerInventory;
 		this.gunTableInventory = new DoomGunInventory(this);
@@ -57,10 +57,9 @@ public class GunTableScreenHandler extends Container {
 
 	}
 
-	protected static void updateResult(int syncId, World world, PlayerEntity player,
-			DoomGunInventory craftingInventory) {
+	protected static void updateResult(int syncId, Level world, Player player, DoomGunInventory craftingInventory) {
 		if (!world.isClientSide()) {
-			ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
+			ServerPlayer serverPlayerEntity = (ServerPlayer) player;
 			ItemStack itemStack = ItemStack.EMPTY;
 			Optional<GunTableRecipe> optional = world.getServer().getRecipeManager()
 					.getRecipeFor(GunTableRecipe.GUN_TABLE, craftingInventory, world);
@@ -70,18 +69,18 @@ public class GunTableScreenHandler extends Container {
 			}
 
 			craftingInventory.setItem(5, itemStack);
-			serverPlayerEntity.connection.send(new SSetSlotPacket(syncId, 5, itemStack));
+			serverPlayerEntity.connection.send(new ClientboundContainerSetSlotPacket(syncId, 0, 5, itemStack));
 		}
 	}
 
-	public void onContentChanged(IInventory inventory) {
+	public void onContentChanged(Container inventory) {
 		this.context.execute((world, blockPos) -> {
 			updateResult(this.containerId, world, this.playerInventory.player, this.gunTableInventory);
 		});
 	}
 
 	@Override
-	public boolean stillValid(PlayerEntity player) {
+	public boolean stillValid(Player player) {
 		return stillValid(context, player, DoomBlocks.GUN_TABLE.get());
 	}
 
@@ -89,7 +88,7 @@ public class GunTableScreenHandler extends Container {
 		return false;
 	}
 
-	public ItemStack quickMoveStack(PlayerEntity player, int index) {
+	public ItemStack quickMoveStack(Player player, int index) {
 		ItemStack itemStack = ItemStack.EMPTY;
 		Slot slot = this.slots.get(index);
 		if (slot != null && slot.hasItem()) {
@@ -194,16 +193,15 @@ public class GunTableScreenHandler extends Container {
 				&& ItemStack.isSameIgnoreDurability(itemStack, otherItemStack);
 	}
 
-	public void removed(PlayerEntity player) {
+	public void removed(Player player) {
 		super.removed(player);
 		if (!this.playerInventory.player.level.isClientSide) {
-			if (player.isAlive()
-					&& (!(player instanceof ServerPlayerEntity) || !((ServerPlayerEntity) player).hasDisconnected())) {
-				player.inventory.placeItemBackInInventory(player.level, this.gunTableInventory.removeItemNoUpdate(0));
-				player.inventory.placeItemBackInInventory(player.level, this.gunTableInventory.removeItemNoUpdate(1));
-				player.inventory.placeItemBackInInventory(player.level, this.gunTableInventory.removeItemNoUpdate(2));
-				player.inventory.placeItemBackInInventory(player.level, this.gunTableInventory.removeItemNoUpdate(3));
-				player.inventory.placeItemBackInInventory(player.level, this.gunTableInventory.removeItemNoUpdate(4));
+			if (player.isAlive() && (!(player instanceof ServerPlayer) || !((ServerPlayer) player).hasDisconnected())) {
+				player.getInventory().placeItemBackInInventory(this.gunTableInventory.removeItemNoUpdate(0));
+				player.getInventory().placeItemBackInInventory(this.gunTableInventory.removeItemNoUpdate(1));
+				player.getInventory().placeItemBackInInventory(this.gunTableInventory.removeItemNoUpdate(2));
+				player.getInventory().placeItemBackInInventory(this.gunTableInventory.removeItemNoUpdate(3));
+				player.getInventory().placeItemBackInInventory(this.gunTableInventory.removeItemNoUpdate(4));
 			} else {
 				ItemStack itemStack0 = this.gunTableInventory.removeItemNoUpdate(0);
 				ItemStack itemStack1 = this.gunTableInventory.removeItemNoUpdate(1);

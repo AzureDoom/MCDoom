@@ -2,7 +2,7 @@ package mod.azure.doom.client.models.armor;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.armor.CrimsonDoomArmor;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class CrimsonModel extends AnimatedGeoModel<CrimsonDoomArmor> {

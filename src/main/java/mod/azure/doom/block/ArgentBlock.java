@@ -1,11 +1,11 @@
 package mod.azure.doom.block;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
 
 public class ArgentBlock extends Block {
 
-	public ArgentBlock(AbstractBlock.Properties properties) {
+	public ArgentBlock(BlockBehaviour.Properties properties) {
 		super(properties);
 	}
 }

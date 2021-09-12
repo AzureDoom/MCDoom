@@ -8,7 +8,7 @@ import mod.azure.doom.item.weapons.DarkLordCrucibleItem;
 import mod.azure.doom.item.weapons.DoomBaseItem;
 import mod.azure.doom.item.weapons.SentinelHammerItem;
 import mod.azure.doom.item.weapons.SwordCrucibleItem;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.enchanting.EnchantmentLevelSetEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

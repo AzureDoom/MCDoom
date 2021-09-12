@@ -6,44 +6,47 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
+import com.mojang.math.Vector3d;
+
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.config.EntityConfig;
 import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
-import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.IPacket;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -51,30 +54,31 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.shadowed.eliotlash.mclib.utils.MathHelper;
 
 public class ArchvileEntity extends DemonEntity implements IAnimatable {
 
 	private int targetChangeTime;
 	public int flameTimer;
 
-	public ArchvileEntity(EntityType<ArchvileEntity> entityType, World worldIn) {
+	public ArchvileEntity(EntityType<ArchvileEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 	}
 
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static boolean spawning(EntityType<? extends DemonEntity> p_223337_0_, IWorld p_223337_1_,
-			SpawnReason reason, BlockPos p_223337_3_, Random p_223337_4_) {
+	public static boolean spawning(EntityType<? extends DemonEntity> p_223337_0_, LevelAccessor p_223337_1_,
+			MobSpawnType reason, BlockPos p_223337_3_, Random p_223337_4_) {
 		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223337_3_, p_223337_4_);
 	}
 
 	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.ARCHVILE);
 
-	public static AttributeModifierMap.MutableAttribute createAttributes() {
-		return config.pushAttributes(MobEntity.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D));
+	public static AttributeSupplier.Builder createAttributes() {
+		return config.pushAttributes(Mob.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D));
 	}
 
 	@Override
@@ -82,18 +86,18 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable {
 		++this.deathTime;
 		if (!level.isClientSide) {
 			float f2 = 200.0F;
-			int k1 = MathHelper.floor(this.getX() - (double) f2 - 1.0D);
-			int l1 = MathHelper.floor(this.getX() + (double) f2 + 1.0D);
-			int i2 = MathHelper.floor(this.getY() - (double) f2 - 1.0D);
-			int i1 = MathHelper.floor(this.getY() + (double) f2 + 1.0D);
-			int j2 = MathHelper.floor(this.getZ() - (double) f2 - 1.0D);
-			int j1 = MathHelper.floor(this.getZ() + (double) f2 + 1.0D);
+			int k1 = Mth.floor(this.getX() - (double) f2 - 1.0D);
+			int l1 = Mth.floor(this.getX() + (double) f2 + 1.0D);
+			int i2 = Mth.floor(this.getY() - (double) f2 - 1.0D);
+			int i1 = Mth.floor(this.getY() + (double) f2 + 1.0D);
+			int j2 = Mth.floor(this.getZ() - (double) f2 - 1.0D);
+			int j1 = Mth.floor(this.getZ() + (double) f2 + 1.0D);
 			List<Entity> list = this.level.getEntities(this,
-					new AxisAlignedBB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
+					new AABB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
 			for (int k2 = 0; k2 < list.size(); ++k2) {
 				Entity entity = list.get(k2);
 				if (entity.isAlive()) {
-					entity.setGlowing(false);
+					entity.setGlowingTag(false);
 				}
 			}
 		}
@@ -161,14 +165,14 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable {
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
-		this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
+		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
 		this.targetSelector.addGoal(2, new HurtByTargetGoal(this).setAlertOthers());
 		this.goalSelector.addGoal(4, new ArchvileEntity.AttackGoal(this));
 		this.targetSelector.addGoal(1, new ArchvileEntity.FindPlayerGoal(this, this::isAngryAt));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
 
@@ -211,52 +215,52 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable {
 				if (this.attackTimer == 20) {
 					if (!this.parentEntity.level.isClientSide) {
 						float f2 = 24.0F;
-						int k1 = MathHelper.floor(this.parentEntity.getX() - (double) f2 - 1.0D);
-						int l1 = MathHelper.floor(this.parentEntity.getX() + (double) f2 + 1.0D);
-						int i2 = MathHelper.floor(this.parentEntity.getY() - (double) f2 - 1.0D);
-						int i1 = MathHelper.floor(this.parentEntity.getY() + (double) f2 + 1.0D);
-						int j2 = MathHelper.floor(this.parentEntity.getZ() - (double) f2 - 1.0D);
-						int j1 = MathHelper.floor(this.parentEntity.getZ() + (double) f2 + 1.0D);
-						List<Entity> list = this.parentEntity.level.getEntities(this.parentEntity, new AxisAlignedBB(
+						int k1 = Mth.floor(this.parentEntity.getX() - (double) f2 - 1.0D);
+						int l1 = Mth.floor(this.parentEntity.getX() + (double) f2 + 1.0D);
+						int i2 = Mth.floor(this.parentEntity.getY() - (double) f2 - 1.0D);
+						int i1 = Mth.floor(this.parentEntity.getY() + (double) f2 + 1.0D);
+						int j2 = Mth.floor(this.parentEntity.getZ() - (double) f2 - 1.0D);
+						int j1 = Mth.floor(this.parentEntity.getZ() + (double) f2 + 1.0D);
+						List<Entity> list = this.parentEntity.level.getEntities(this.parentEntity, new AABB(
 								(double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
-						Vector3d vector3d1 = new Vector3d(this.parentEntity.getX(), this.parentEntity.getY(),
+						Vec3 vector3d1 = new Vec3(this.parentEntity.getX(), this.parentEntity.getY(),
 								this.parentEntity.getZ());
 						for (int k2 = 0; k2 < list.size(); ++k2) {
 							Entity entity = list.get(k2);
 
 							if ((entity instanceof DemonEntity)) {
-								double d12 = (double) (MathHelper.sqrt(entity.distanceToSqr(vector3d1)) / f2);
+								double d12 = (double) (Mth.sqrt(entity.distanceToSqr(vector3d1)) / f2);
 								if (d12 <= 1.0D) {
 									if (entity.isAlive()) {
 										((DemonEntity) entity)
-												.addEffect(new EffectInstance(Effects.DAMAGE_BOOST, 1000, 1));
-										entity.setGlowing(true);
+												.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000, 1));
+										entity.setGlowingTag(true);
 									}
 								}
 							}
 						}
 						double d0 = Math.min(livingentity.getY(), livingentity.getY());
 						double d1 = Math.max(livingentity.getY(), livingentity.getY()) + 1.0D;
-						float f = (float) MathHelper.atan2(livingentity.getZ() - parentEntity.getZ(),
+						float f = (float) Mth.atan2(livingentity.getZ() - parentEntity.getZ(),
 								livingentity.getX() - parentEntity.getX());
 						if (parentEntity.distanceToSqr(livingentity) < 9.0D
 								&& parentEntity.getTarget().canSee(livingentity)) {
 							for (int i = 0; i < 15; ++i) {
 								float f1 = f + (float) i * (float) Math.PI * 0.4F;
-								parentEntity.spawnFangs(parentEntity.getX() + (double) MathHelper.cos(f1) * 1.5D,
-										parentEntity.getZ() + (double) MathHelper.sin(f1) * 1.5D, d0, d1, f1, 0);
+								parentEntity.spawnFangs(parentEntity.getX() + (double) Mth.cos(f1) * 1.5D,
+										parentEntity.getZ() + (double) Mth.sin(f1) * 1.5D, d0, d1, f1, 0);
 							}
 
 							for (int k = 0; k < 18; ++k) {
 								float f21 = f + (float) k * (float) Math.PI * 2.0F / 8.0F + 1.2566371F;
-								parentEntity.spawnFangs(parentEntity.getX() + (double) MathHelper.cos(f21) * 2.5D,
-										parentEntity.getZ() + (double) MathHelper.sin(f21) * 2.5D, d0, d1, f21, 3);
+								parentEntity.spawnFangs(parentEntity.getX() + (double) Mth.cos(f21) * 2.5D,
+										parentEntity.getZ() + (double) Mth.sin(f21) * 2.5D, d0, d1, f21, 3);
 							}
 						} else {
 							for (int l = 0; l < 26; ++l) {
 								double d2 = 1.25D * (double) (l + 1);
-								parentEntity.spawnFangs(parentEntity.getX() + (double) MathHelper.cos(f) * d2,
-										parentEntity.getZ() + (double) MathHelper.sin(f) * d2, d0, d1, f, 32);
+								parentEntity.spawnFangs(parentEntity.getX() + (double) Mth.cos(f) * d2,
+										parentEntity.getZ() + (double) Mth.sin(f) * d2, d0, d1, f, 32);
 							}
 						}
 					}
@@ -278,14 +282,14 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable {
 
 	}
 
-	static class FindPlayerGoal extends NearestAttackableTargetGoal<PlayerEntity> {
+	static class FindPlayerGoal extends NearestAttackableTargetGoal<Player> {
 		private final ArchvileEntity enderman;
 		/** The player */
-		private PlayerEntity player;
+		private Player player;
 		private int aggroTime;
 		private int teleportTime;
-		private final EntityPredicate startAggroTargetConditions;
-		private final EntityPredicate continueAggroTargetConditions = (new EntityPredicate()).allowUnseeable();
+		private final TargetingConditions startAggroTargetConditions;
+		private final TargetingConditions continueAggroTargetConditions = (new TargetingConditions()).allowUnseeable();
 
 		public FindPlayerGoal(ArchvileEntity p_i241912_1_, @Nullable Predicate<LivingEntity> p_i241912_2_) {
 			super(p_i241912_1_, PlayerEntity.class, 10, false, false, p_i241912_2_);

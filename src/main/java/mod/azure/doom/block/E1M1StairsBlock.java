@@ -1,11 +1,11 @@
 package mod.azure.doom.block;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.StairsBlock;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class E1M1StairsBlock extends StairsBlock {
+public class E1M1StairsBlock extends StairBlock {
 
 	@SuppressWarnings("deprecation")
 	public E1M1StairsBlock(BlockState state, Properties properties) {
@@ -13,7 +13,7 @@ public class E1M1StairsBlock extends StairsBlock {
 	}
 
 	@Override
-	public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
+	public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
 		return 15;
 	}
 

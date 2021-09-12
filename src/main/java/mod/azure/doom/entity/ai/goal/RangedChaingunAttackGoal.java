@@ -3,14 +3,13 @@ package mod.azure.doom.entity.ai.goal;
 import java.util.EnumSet;
 
 import mod.azure.doom.item.weapons.Chaingun;
-import mod.azure.doom.util.registry.DoomItems;
-import net.minecraft.entity.IRangedAttackMob;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.projectile.ProjectileHelper;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.RangedAttackMob;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
 
-public class RangedChaingunAttackGoal<T extends MonsterEntity & IRangedAttackMob> extends Goal {
+public class RangedChaingunAttackGoal<T extends Monster & RangedAttackMob> extends Goal {
 	private final T entity;
 	private final double moveSpeedAmp;
 	private int attackCooldown;
@@ -62,9 +61,8 @@ public class RangedChaingunAttackGoal<T extends MonsterEntity & IRangedAttackMob
 	public void tick() {
 		LivingEntity livingentity = this.entity.getTarget();
 		if (livingentity != null) {
-			double d0 = this.entity.distanceToSqr(livingentity.getX(), livingentity.getY(),
-					livingentity.getZ());
-			boolean flag = this.entity.getSensing().canSee(livingentity);
+			double d0 = this.entity.distanceToSqr(livingentity.getX(), livingentity.getY(), livingentity.getZ());
+			boolean flag = this.entity.getSensing().hasLineOfSight(livingentity);
 			boolean flag1 = this.seeTime > 0;
 			if (flag != flag1) {
 				this.seeTime = 0;
@@ -115,12 +113,12 @@ public class RangedChaingunAttackGoal<T extends MonsterEntity & IRangedAttackMob
 					this.entity.stopUsingItem();
 				} else if (flag) {
 					this.entity.stopUsingItem();
-					((IRangedAttackMob) this.entity).performRangedAttack(livingentity,
-							Chaingun.getArrowVelocity(1));
+					((RangedAttackMob) this.entity).performRangedAttack(livingentity, Chaingun.getArrowVelocity(1));
 					this.attackTime = this.attackCooldown;
 				}
 			} else if (--this.attackTime <= 0 && this.seeTime >= -60) {
-				this.entity.startUsingItem(ProjectileHelper.getWeaponHoldingHand(this.entity, DoomItems.CHAINGUN.get()));
+				this.entity.startUsingItem(
+						ProjectileUtil.getWeaponHoldingHand(this.entity, item -> item instanceof Chaingun));
 			}
 
 		}

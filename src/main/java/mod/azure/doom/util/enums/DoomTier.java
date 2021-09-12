@@ -4,11 +4,11 @@ import java.util.function.Supplier;
 
 import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.registry.DoomItems;
-import net.minecraft.item.IItemTier;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.LazyValue;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.util.LazyLoadedValue;
 
-public enum DoomTier implements IItemTier {
+public enum DoomTier implements Tier {
 	DOOM(18, 1561, 16.0F, 3.0F, 30, () -> {
 		return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
 	}), DOOM_HIGHTEIR(6, Config.SERVER.CRUCIBLE_MARAUDER_MAX_DAMAGE, 16.0F, 3.0F, 30, () -> {
@@ -38,7 +38,7 @@ public enum DoomTier implements IItemTier {
 	private final float efficiency;
 	private final float attackDamage;
 	private final int enchantability;
-	private final LazyValue<Ingredient> repairMaterial;
+	private final LazyLoadedValue<Ingredient> repairMaterial;
 
 	private DoomTier(int harvestLevelIn, int maxUsesIn, float efficiencyIn, float attackDamageIn, int enchantabilityIn,
 			Supplier<Ingredient> repairMaterialIn) {
@@ -47,7 +47,7 @@ public enum DoomTier implements IItemTier {
 		this.efficiency = efficiencyIn;
 		this.attackDamage = attackDamageIn;
 		this.enchantability = enchantabilityIn;
-		this.repairMaterial = new LazyValue<>(repairMaterialIn);
+		this.repairMaterial = new LazyLoadedValue<>(repairMaterialIn);
 	}
 
 	public int getUses() {

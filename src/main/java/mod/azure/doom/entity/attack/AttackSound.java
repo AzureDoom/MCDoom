@@ -1,8 +1,8 @@
 package mod.azure.doom.entity.attack;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 
 public class AttackSound {
 

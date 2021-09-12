@@ -1,9 +1,9 @@
 package mod.azure.doom.util.registry;
 
 import mod.azure.doom.DoomMod;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -55,7 +55,7 @@ public class ModSoundEvents {
 
 	public static final RegistryObject<SoundEvent> SUPER_SHOTGUN_SHOOT = MOD_SOUNDS.register("doom.super_shotgun_fire",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.super_shotgun_fire")));
-	
+
 	public static final RegistryObject<SoundEvent> UNMAKYR_FIRE = MOD_SOUNDS.register("doom.unmakyr_fire",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.unmakyr_fire")));
 
@@ -67,7 +67,7 @@ public class ModSoundEvents {
 
 	public static final RegistryObject<SoundEvent> E1M1 = MOD_SOUNDS.register("doom.e1m1",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.e1m1")));
-	
+
 	public static final RegistryObject<SoundEvent> IMP_AMBIENT = MOD_SOUNDS.register("doom.imp_ambient",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.imp_ambient")));
 	public static final RegistryObject<SoundEvent> IMP_DEATH = MOD_SOUNDS.register("doom.imp_death",
@@ -197,7 +197,7 @@ public class ModSoundEvents {
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.arachnotron_death")));
 	public static final RegistryObject<SoundEvent> ARACHNOTRON_HURT = MOD_SOUNDS.register("doom.arachnotron_hurt",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.arachnotron_hurt")));
-	
+
 	public static final RegistryObject<SoundEvent> BALLISTA_FIRING = MOD_SOUNDS.register("doom.ballista_firing",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.ballista_firing")));
 
@@ -221,28 +221,28 @@ public class ModSoundEvents {
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.mecha_death")));
 	public static final RegistryObject<SoundEvent> MECHA_HURT = MOD_SOUNDS.register("doom.mecha_hit",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.mecha_hit")));
-	
+
 	public static final RegistryObject<SoundEvent> WHIPLASH_AMBIENT = MOD_SOUNDS.register("doom.whiplash_ambient",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.whiplash_ambient")));
 	public static final RegistryObject<SoundEvent> WHIPLASH_DEATH = MOD_SOUNDS.register("doom.whiplash_death",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.whiplash_death")));
 	public static final RegistryObject<SoundEvent> WHIPLASH_HURT = MOD_SOUNDS.register("doom.whiplash_hurt",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.whiplash_hurt")));
-	
+
 	public static final RegistryObject<SoundEvent> DOOMHUNTER_AMBIENT = MOD_SOUNDS.register("doom.doomhunter_ambient",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.doomhunter_ambient")));
 	public static final RegistryObject<SoundEvent> DOOMHUNTER_DEATH = MOD_SOUNDS.register("doom.doomhunter_death",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.doomhunter_death")));
 	public static final RegistryObject<SoundEvent> DOOMHUNTER_HURT = MOD_SOUNDS.register("doom.doomhunter_hurt",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.doomhunter_hurt")));
-	
+
 	public static final RegistryObject<SoundEvent> MAKYR_AMBIENT = MOD_SOUNDS.register("doom.maykr_ambient",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.maykr_ambient")));
 	public static final RegistryObject<SoundEvent> MAKYR_DEATH = MOD_SOUNDS.register("doom.maykr_death",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.maykr_death")));
 	public static final RegistryObject<SoundEvent> MAKYR_HURT = MOD_SOUNDS.register("doom.maykr_hurt",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.maykr_hurt")));
-	
+
 	public static final RegistryObject<SoundEvent> MOTHER_AMBIENT = MOD_SOUNDS.register("doom.mother_ambient",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.mother_ambient")));
 	public static final RegistryObject<SoundEvent> MOTHER_DEATH = MOD_SOUNDS.register("doom.mother_death",

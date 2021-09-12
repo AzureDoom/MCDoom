@@ -10,46 +10,46 @@ import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.config.EntityConfig;
 import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.MoveTowardsTargetGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
-import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
-import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.BossInfo;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.MoveTowardsTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerBossInfo;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerBossEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -63,10 +63,10 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 
 	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.MOTHERDEMON);
 
-	private final ServerBossInfo bossInfo = (ServerBossInfo) (new ServerBossInfo(this.getDisplayName(),
-			BossInfo.Color.PURPLE, BossInfo.Overlay.PROGRESS)).setDarkenScreen(true).setCreateWorldFog(true);
+	private final ServerBossEvent bossInfo = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(),
+			BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true).setCreateWorldFog(true);
 
-	public MotherDemonEntity(EntityType<MotherDemonEntity> entityType, World worldIn) {
+	public MotherDemonEntity(EntityType<MotherDemonEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 	}
 
@@ -137,34 +137,34 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static boolean spawning(EntityType<MotherDemonEntity> p_223337_0_, IWorld p_223337_1_, SpawnReason reason,
+	public static boolean spawning(EntityType<MotherDemonEntity> p_223337_0_, LevelAccessor p_223337_1_, MobSpawnType reason,
 			BlockPos p_223337_3_, Random p_223337_4_) {
 		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223337_3_, p_223337_4_);
 	}
 
-	public ServerBossInfo getBossInfo() {
+	public ServerBossEvent getBossInfo() {
 		return bossInfo;
 	}
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.addGoal(8, new LookAtGoal(this, AbstractVillagerEntity.class, 8.0F));
-		this.goalSelector.addGoal(8, new LookAtGoal(this, IronGolemEntity.class, 8.0F));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, IronGolem.class, 8.0F));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.goalSelector.addGoal(2, new MoveTowardsTargetGoal(this, 0.9D, 32.0F));
 		this.applyEntityAI();
 	}
 
 	protected void applyEntityAI() {
 		this.goalSelector.addGoal(1, new MotherDemonEntity.AttackGoal(this));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, false));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolemEntity.class, true));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
 		this.targetSelector.addGoal(3, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
 
@@ -176,7 +176,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
 		return 9.05F;
 	}
 
@@ -208,16 +208,16 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 		public void tick() {
 			LivingEntity livingentity = this.parentEntity.getTarget();
 			if (this.parentEntity.canSee(livingentity)) {
-				World world = this.parentEntity.level;
+				Level world = this.parentEntity.level;
 				++this.attackTimer;
 				Random rand = new Random();
-				Vector3d vector3d = this.parentEntity.getViewVector(1.0F);
+				Vec3 vector3d = this.parentEntity.getViewVector(1.0F);
 				double d0 = Math.min(livingentity.getY(), livingentity.getY());
 				double d1 = Math.max(livingentity.getY(), livingentity.getY()) + 1.0D;
 				double d2 = livingentity.getX() - (this.parentEntity.getX() + vector3d.x * 2.0D);
 				double d3 = livingentity.getY(0.5D) - (0.5D + this.parentEntity.getY(0.5D));
 				double d4 = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * 2.0D);
-				float f = (float) MathHelper.atan2(livingentity.getZ() - parentEntity.getZ(),
+				float f = (float) Mth.atan2(livingentity.getZ() - parentEntity.getZ(),
 						livingentity.getX() - parentEntity.getX());
 				CustomFireballEntity fireballentity = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4, 6);
 				CustomFireballEntity fireballentity1 = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4,
@@ -230,12 +230,12 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 							float f1 = f + (float) l * (float) Math.PI * 0.4F;
 							for (int y = 0; y < 5; ++y) {
 								parentEntity.spawnFlames(
-										parentEntity.getX() + (double) MathHelper.cos(f1) * rand.nextDouble() * 11.5D,
-										parentEntity.getZ() + (double) MathHelper.sin(f1) * rand.nextDouble() * 11.5D,
+										parentEntity.getX() + (double) Mth.cos(f1) * rand.nextDouble() * 11.5D,
+										parentEntity.getZ() + (double) Mth.sin(f1) * rand.nextDouble() * 11.5D,
 										d0, d1, f1, 0);
 							}
 							parentEntity.level.playLocalSound(this.parentEntity.getX(), this.parentEntity.getY(),
-									this.parentEntity.getZ(), ModSoundEvents.MOTHER_ATTACK.get(), SoundCategory.HOSTILE,
+									this.parentEntity.getZ(), ModSoundEvents.MOTHER_ATTACK.get(), SoundSource.HOSTILE,
 									1.0F, 1.0F, true);
 							this.parentEntity.setAttackingState(2);
 						}
@@ -250,7 +250,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 								this.parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z * 1.0D);
 						world.addFreshEntity(fireballentity2);
 						parentEntity.level.playLocalSound(this.parentEntity.getX(), this.parentEntity.getY(),
-								this.parentEntity.getZ(), ModSoundEvents.MOTHER_ATTACK.get(), SoundCategory.HOSTILE,
+								this.parentEntity.getZ(), ModSoundEvents.MOTHER_ATTACK.get(), SoundSource.HOSTILE,
 								1.0F, 1.0F, true);
 						this.parentEntity.setAttackingState(1);
 					}
@@ -286,7 +286,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 				break;
 			}
 			blockpos = blockpos.below();
-		} while (blockpos.getY() >= MathHelper.floor(maxY) - 1);
+		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
 			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this);
@@ -296,8 +296,8 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 		}
 	}
 
-	public static AttributeModifierMap.MutableAttribute createAttributes() {
-		return config.pushAttributes(MobEntity.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+	public static AttributeSupplier.Builder createAttributes() {
+		return config.pushAttributes(Mob.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
 				.add(Attributes.KNOCKBACK_RESISTANCE, 1000.0D));
 	}
 
@@ -317,8 +317,8 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public CreatureAttribute getMobType() {
-		return CreatureAttribute.UNDEAD;
+	public MobType getMobType() {
+		return MobType.UNDEAD;
 	}
 
 	@Override
@@ -327,13 +327,13 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public void startSeenByPlayer(ServerPlayerEntity player) {
+	public void startSeenByPlayer(ServerPlayer player) {
 		super.startSeenByPlayer(player);
 		this.bossInfo.addPlayer(player);
 	}
 
 	@Override
-	public void stopSeenByPlayer(ServerPlayerEntity player) {
+	public void stopSeenByPlayer(ServerPlayer player) {
 		super.stopSeenByPlayer(player);
 		this.bossInfo.removePlayer(player);
 	}
@@ -349,8 +349,8 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public ILivingEntityData finalizeSpawn(IServerWorld p_213386_1_, DifficultyInstance p_213386_2_,
-			SpawnReason p_213386_3_, ILivingEntityData p_213386_4_, CompoundNBT p_213386_5_) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_213386_1_, DifficultyInstance p_213386_2_,
+			MobSpawnType p_213386_3_, SpawnGroupData p_213386_4_, CompoundTag p_213386_5_) {
 		return super.finalizeSpawn(p_213386_1_, p_213386_2_, p_213386_3_, p_213386_4_, p_213386_5_);
 	}
 
@@ -358,14 +358,14 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 	public void baseTick() {
 		super.baseTick();
 		float f2 = 50.0F;
-		int k1 = MathHelper.floor(this.getX() - (double) f2 - 1.0D);
-		int l1 = MathHelper.floor(this.getX() + (double) f2 + 1.0D);
-		int i2 = MathHelper.floor(this.getY() - (double) f2 - 1.0D);
-		int i1 = MathHelper.floor(this.getY() + (double) f2 + 1.0D);
-		int j2 = MathHelper.floor(this.getZ() - (double) f2 - 1.0D);
-		int j1 = MathHelper.floor(this.getZ() + (double) f2 + 1.0D);
+		int k1 = Mth.floor(this.getX() - (double) f2 - 1.0D);
+		int l1 = Mth.floor(this.getX() + (double) f2 + 1.0D);
+		int i2 = Mth.floor(this.getY() - (double) f2 - 1.0D);
+		int i1 = Mth.floor(this.getY() + (double) f2 + 1.0D);
+		int j2 = Mth.floor(this.getZ() - (double) f2 - 1.0D);
+		int j1 = Mth.floor(this.getZ() + (double) f2 + 1.0D);
 		List<Entity> list = this.level.getEntities(this,
-				new AxisAlignedBB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
+				new AABB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
 		for (int k2 = 0; k2 < list.size(); ++k2) {
 			Entity entity = list.get(k2);
 			if (entity.isAddedToWorld() && entity instanceof MotherDemonEntity && entity.tickCount < 1) {
@@ -375,7 +375,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		if (this.hasCustomName()) {
 			this.bossInfo.setName(this.getDisplayName());
@@ -383,7 +383,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public void setCustomName(ITextComponent name) {
+	public void setCustomName(Component name) {
 		super.setCustomName(name);
 		this.bossInfo.setName(this.getDisplayName());
 	}

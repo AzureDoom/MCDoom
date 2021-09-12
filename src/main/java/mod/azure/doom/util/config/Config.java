@@ -13,7 +13,6 @@ import com.electronwill.nightconfig.core.io.WritingMode;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
 public class Config {
 
@@ -121,7 +120,7 @@ public class Config {
 
 		public HashMap<EntityConfigType, EntityConfig> entityConfig = new HashMap<EntityConfigType, EntityConfig>();
 
-		public void pushDefaults(Builder builder, EntityConfigType type) {
+		public void pushDefaults(net.minecraftforge.common.ForgeConfigSpec.Builder builder, EntityConfigType type) {
 			entityConfig.put(type,
 					new EntityConfig(type.toString(),
 							type.getDefaultAttributes().isHeavy() ? 5 : type == EntityConfigType.ICON_OF_SIN ? 0 : 15,

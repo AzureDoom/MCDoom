@@ -9,19 +9,20 @@ import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.AxeMarauderLoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.Item;
+import net.minecraft.core.NonNullList;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -46,7 +47,7 @@ public class AxeMarauderItem extends AxeItem {
 
 	@Override
 	public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-		PlayerEntity playerentity = (PlayerEntity) entityIn;
+		Player playerentity = (Player) entityIn;
 		if (worldIn.isClientSide) {
 			if (playerentity.getMainHandItem().getItem() instanceof AxeMarauderItem) {
 				while (Keybindings.RELOAD.consumeClick() && isSelected) {
@@ -56,10 +57,10 @@ public class AxeMarauderItem extends AxeItem {
 		}
 	}
 
-	public static void reload(PlayerEntity user, Hand hand) {
+	public static void reload(Player user, InteractionHand hand) {
 		if (user.getItemInHand(hand).getItem() instanceof AxeMarauderItem) {
 			while (user.getItemInHand(hand).getDamageValue() != 0
-					&& user.inventory.countItem(DoomItems.ARGENT_BLOCK.get()) > 0) {
+					&& user.getInventory().countItem(DoomItems.ARGENT_BLOCK.get()) > 0) {
 				removeAmmo(DoomItems.ARGENT_BLOCK.get(), user);
 				user.getItemInHand(hand).hurtAndBreak(-5, user, s -> user.broadcastBreakEvent(hand));
 				user.getItemInHand(hand).setPopTime(3);
@@ -67,14 +68,14 @@ public class AxeMarauderItem extends AxeItem {
 		}
 	}
 
-	public static void removeAmmo(Item ammo, PlayerEntity playerEntity) {
+	public static void removeAmmo(Item ammo, Player playerEntity) {
 		if (!playerEntity.isCreative()) {
-			for (ItemStack item : playerEntity.inventory.offhand) {
+			for (ItemStack item : playerEntity.getInventory().offhand) {
 				if (item.getItem() == ammo) {
 					item.shrink(1);
 					break;
 				}
-				for (ItemStack item1 : playerEntity.inventory.items) {
+				for (ItemStack item1 : playerEntity.getInventory().items) {
 					if (item1.getItem() == ammo) {
 						item1.shrink(1);
 						break;
@@ -103,7 +104,7 @@ public class AxeMarauderItem extends AxeItem {
 	}
 
 	@Override
-	public void onCraftedBy(ItemStack stack, World worldIn, PlayerEntity playerIn) {
+	public void onCraftedBy(ItemStack stack, Level worldIn, Player playerIn) {
 		stack.hasTag();
 		stack.enchant(Enchantments.SMITE, 10);
 		stack.enchant(Enchantments.MOB_LOOTING, 10);

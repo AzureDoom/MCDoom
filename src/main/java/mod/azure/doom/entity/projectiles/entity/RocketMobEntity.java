@@ -3,20 +3,20 @@ package mod.azure.doom.entity.projectiles.entity;
 import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.DamagingProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileHelper;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -26,7 +26,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class RocketMobEntity extends DamagingProjectileEntity implements IAnimatable {
+public class RocketMobEntity extends AbstractHurtingProjectile implements IAnimatable {
 
 	public int explosionPower = 1;
 	protected int timeInAir;
@@ -35,11 +35,11 @@ public class RocketMobEntity extends DamagingProjectileEntity implements IAnimat
 	private float directHitDamage = 5F;
 	private LivingEntity shooter;
 
-	public RocketMobEntity(EntityType<? extends RocketMobEntity> p_i50160_1_, World p_i50160_2_) {
+	public RocketMobEntity(EntityType<? extends RocketMobEntity> p_i50160_1_, Level p_i50160_2_) {
 		super(p_i50160_1_, p_i50160_2_);
 	}
 
-	public RocketMobEntity(World worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
+	public RocketMobEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
 			float directHitDamage) {
 		super(ModEntityTypes.ROCKET_MOB.get(), shooter, accelX, accelY, accelZ, worldIn);
 		this.shooter = shooter;
@@ -74,13 +74,13 @@ public class RocketMobEntity extends DamagingProjectileEntity implements IAnimat
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT compound) {
+	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putShort("life", (short) this.ticksInAir);
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.ticksInAir = compound.getShort("life");
 	}
@@ -92,17 +92,17 @@ public class RocketMobEntity extends DamagingProjectileEntity implements IAnimat
 		if (this.level.isClientSide
 				|| (entity == null || entity.isAlive()) && this.level.hasChunkAt(this.blockPosition())) {
 			super.tick();
-			RayTraceResult raytraceresult = ProjectileHelper.getHitResult(this, this::canHitEntity);
-			if (raytraceresult.getType() != RayTraceResult.Type.MISS
+			HitResult raytraceresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
+			if (raytraceresult.getType() != HitResult.Type.MISS
 					&& !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
 				this.onHit(raytraceresult);
 			}
 			this.checkInsideBlocks();
-			Vector3d vector3d = this.getDeltaMovement();
+			Vec3 vector3d = this.getDeltaMovement();
 			double d0 = this.getX() + vector3d.x;
 			double d1 = this.getY() + vector3d.y;
 			double d2 = this.getZ() + vector3d.z;
-			ProjectileHelper.rotateTowardsMovement(this, 0.2F);
+			ProjectileUtil.rotateTowardsMovement(this, 0.2F);
 			float f = this.getInertia();
 			if (this.isInWater()) {
 				for (int i = 0; i < 4; ++i) {
@@ -124,7 +124,7 @@ public class RocketMobEntity extends DamagingProjectileEntity implements IAnimat
 	}
 
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
@@ -148,7 +148,7 @@ public class RocketMobEntity extends DamagingProjectileEntity implements IAnimat
 	}
 
 	@Override
-	protected void onHitEntity(EntityRayTraceResult p_213868_1_) {
+	protected void onHitEntity(EntityHitResult p_213868_1_) {
 		super.onHitEntity(p_213868_1_);
 		if (!this.level.isClientSide) {
 			Entity entity = p_213868_1_.getEntity();
@@ -161,7 +161,7 @@ public class RocketMobEntity extends DamagingProjectileEntity implements IAnimat
 		this.playSound(ModSoundEvents.ROCKET_HIT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 	}
 
-	protected void onHit(RayTraceResult result) {
+	protected void onHit(HitResult result) {
 		super.onHit(result);
 		if (!this.level.isClientSide) {
 			this.explode();
@@ -172,7 +172,7 @@ public class RocketMobEntity extends DamagingProjectileEntity implements IAnimat
 
 	protected void explode() {
 		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
-				Config.SERVER.ENABLE_BLOCK_BREAKING ? Explosion.Mode.BREAK : Explosion.Mode.NONE);
+				Config.SERVER.ENABLE_BLOCK_BREAKING ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE);
 	}
 
 	public LivingEntity getShooter() {

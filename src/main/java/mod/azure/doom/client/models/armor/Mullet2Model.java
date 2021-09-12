@@ -2,7 +2,7 @@ package mod.azure.doom.client.models.armor;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.armor.Mullet2DoomArmor;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class Mullet2Model extends AnimatedGeoModel<Mullet2DoomArmor> {

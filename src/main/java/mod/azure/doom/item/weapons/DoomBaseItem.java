@@ -2,17 +2,17 @@ package mod.azure.doom.item.weapons;
 
 import java.util.List;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ShootableItem;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -31,7 +31,7 @@ public class DoomBaseItem extends Item implements IAnimatable, ISyncable {
 	public String controllerName = "controller";
 	public static final int ANIM_OPEN = 0;
 
-	public <P extends ShootableItem & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
+	public <P extends ProjectileWeaponItem & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
 		return PlayState.CONTINUE;
 	}
 
@@ -67,14 +67,14 @@ public class DoomBaseItem extends Item implements IAnimatable, ISyncable {
 		return false;
 	}
 
-	public static void removeAmmo(Item ammo, PlayerEntity playerEntity) {
+	public static void removeAmmo(Item ammo, Player playerEntity) {
 		if (!playerEntity.isCreative()) {
-			for (ItemStack item : playerEntity.inventory.offhand) {
+			for (ItemStack item : playerEntity.getInventory().offhand) {
 				if (item.getItem() == ammo) {
 					item.shrink(1);
 					break;
 				}
-				for (ItemStack item1 : playerEntity.inventory.items) {
+				for (ItemStack item1 : playerEntity.getInventory().items) {
 					if (item1.getItem() == ammo) {
 						item1.shrink(1);
 						break;
@@ -85,27 +85,27 @@ public class DoomBaseItem extends Item implements IAnimatable, ISyncable {
 	}
 
 	@Override
-	public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		ItemStack itemstack = player.getItemInHand(hand);
 		player.startUsingItem(hand);
-		return ActionResult.consume(itemstack);
+		return InteractionResultHolder.consume(itemstack);
 	}
 
 	@Override
 	public boolean isFoil(ItemStack stack) {
 		return false;
 	}
-	
+
 	@Override
 	public int getUseDuration(ItemStack stack) {
 		return 7200;
 	}
-	
+
 	@Override
-	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		tooltip.add(new TranslationTextComponent(
+	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+		tooltip.add(new TranslatableComponent(
 				"Ammo: " + (stack.getMaxDamage() - stack.getDamageValue() - 1) + " / " + (stack.getMaxDamage() - 1))
-						.withStyle(TextFormatting.ITALIC));
+						.withStyle(ChatFormatting.ITALIC));
 	}
 
 }

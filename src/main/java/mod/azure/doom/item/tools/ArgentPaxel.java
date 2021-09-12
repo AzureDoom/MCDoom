@@ -12,8 +12,8 @@ import com.google.common.collect.Maps;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.util.enums.DoomTier;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CampfireBlock;
 import net.minecraft.block.RotatedPillarBlock;
@@ -23,7 +23,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.ToolItem;
+import net.minecraft.world.item.DiggerItem;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
@@ -39,7 +39,7 @@ import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.common.util.Constants.WorldEvents;
 
-public class ArgentPaxel extends ToolItem {
+public class ArgentPaxel extends DiggerItem {
 
 	protected static final Map<Block, BlockState> SHOVEL_LOOKUP = Maps
 			.newHashMap(ImmutableMap.of(Blocks.GRASS_BLOCK, Blocks.GRASS_PATH.defaultBlockState()));

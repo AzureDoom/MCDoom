@@ -2,18 +2,14 @@ package mod.azure.doom.item.ammo;
 
 import java.util.List;
 
-import mod.azure.doom.entity.projectiles.ArgentBoltEntity;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ArrowItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
-public class ArgentBolt extends ArrowItem {
+public class ArgentBolt extends Item {
 
 	public final float damage;
 
@@ -23,24 +19,9 @@ public class ArgentBolt extends ArrowItem {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		tooltip.add(new StringTextComponent("\u00A7o" + "Powered by Argent. Used for Ballista."));
+	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+		tooltip.add(new TranslatableComponent("\u00A7o" + "Powered by Argent. Used for Ballista."));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
-	}
-
-	@Override
-	public boolean isInfinite(ItemStack stack, ItemStack bow, net.minecraft.entity.player.PlayerEntity player) {
-		int enchant = net.minecraft.enchantment.EnchantmentHelper
-				.getItemEnchantmentLevel(net.minecraft.enchantment.Enchantments.INFINITY_ARROWS, bow);
-		return enchant <= 0 ? false : this instanceof ArgentBolt;
-	}
-
-	@Override
-	public ArgentBoltEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
-		ArgentBoltEntity arrowentity = new ArgentBoltEntity(worldIn, shooter);
-		arrowentity.setBaseDamage(this.damage);
-		return arrowentity;
 	}
 
 }

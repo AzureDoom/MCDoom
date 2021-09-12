@@ -14,17 +14,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class GunRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>>
-		implements IRecipeSerializer<GunTableRecipe> {
+public class GunRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>>
+		implements RecipeSerializer<GunTableRecipe> {
 
 	private static List<Pair<Ingredient, Integer>> getIngredients(String pattern,
 			Map<String, Pair<Ingredient, Integer>> keys, int width) {
@@ -70,7 +70,7 @@ public class GunRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>
 			}
 
 			map.put(key, Pair.of(Ingredient.fromJson(jsonElement),
-					JSONUtils.getAsInt(jsonElement.getAsJsonObject(), "count", 1)));
+					GsonHelper.getAsInt(jsonElement.getAsJsonObject(), "count", 1)));
 		}
 
 		map.put(" ", Pair.of(Ingredient.EMPTY, 0));
@@ -81,8 +81,8 @@ public class GunRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>
 	@Override
 	public GunTableRecipe fromJson(ResourceLocation ResourceLocation, JsonObject jsonObject) {
 
-		String pattern = JSONUtils.getAsString(jsonObject, "pattern");
-		Map<String, Pair<Ingredient, Integer>> map = getComponents(JSONUtils.getAsJsonObject(jsonObject, "key"));
+		String pattern = GsonHelper.getAsString(jsonObject, "pattern");
+		Map<String, Pair<Ingredient, Integer>> map = getComponents(GsonHelper.getAsJsonObject(jsonObject, "key"));
 
 		List<Pair<Ingredient, Integer>> pairList = getIngredients(pattern, map, pattern.length());
 		if (pairList.isEmpty()) {
@@ -90,34 +90,35 @@ public class GunRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>
 		} else if (pairList.size() > 5) {
 			throw new JsonParseException("Too many ingredients for gun table recipe");
 		} else {
-			ItemStack itemStack = ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(jsonObject, "result"));
+			ItemStack itemStack = ShapedRecipe.itemFromJson(GsonHelper.getAsJsonObject(jsonObject, "result"))
+					.getDefaultInstance();
 			return new GunTableRecipe(ResourceLocation, pairList.toArray(new Pair[0]), itemStack);
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public GunTableRecipe fromNetwork(ResourceLocation ResourceLocation, PacketBuffer PacketBuffer) {
-		Pair<Ingredient, Integer>[] pairs = new Pair[5];
-		for (int j = 0; j < 5; ++j) {
-			Ingredient ingredient = Ingredient.fromNetwork(PacketBuffer);
-			int count = PacketBuffer.readInt();
-			pairs[j] = Pair.of(ingredient, count);
-		}
-
-		ItemStack output = PacketBuffer.readItem();
-		return new GunTableRecipe(ResourceLocation, pairs, output);
-	}
-
-	@Override
-	public void toNetwork(PacketBuffer PacketBuffer, GunTableRecipe gunTableRecipe) {
+	public void toNetwork(FriendlyByteBuf packetbuffer, GunTableRecipe gunTableRecipe) {
 		for (int i = 0; i < 5; i++) {
 			Pair<Ingredient, Integer> pair = gunTableRecipe.ingredients[i];
 			Ingredient ingredient = pair.getLeft();
 			int count = pair.getRight();
-			ingredient.toNetwork(PacketBuffer);
-			PacketBuffer.writeInt(count);
+			ingredient.toNetwork(packetbuffer);
+			packetbuffer.writeInt(count);
 		}
-		PacketBuffer.writeItem(gunTableRecipe.output);
+		packetbuffer.writeItem(gunTableRecipe.output);
+	}
+
+	@Override
+	public GunTableRecipe fromNetwork(ResourceLocation resourceLocation, FriendlyByteBuf packetbuffer) {
+		@SuppressWarnings("unchecked")
+		Pair<Ingredient, Integer>[] pairs = new Pair[5];
+		for (int j = 0; j < 5; ++j) {
+			Ingredient ingredient = Ingredient.fromNetwork(packetbuffer);
+			int count = packetbuffer.readInt();
+			pairs[j] = Pair.of(ingredient, count);
+		}
+
+		ItemStack output = packetbuffer.readItem();
+		return new GunTableRecipe(resourceLocation, pairs, output);
 	}
 }

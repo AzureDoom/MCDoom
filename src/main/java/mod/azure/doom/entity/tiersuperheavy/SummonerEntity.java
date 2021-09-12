@@ -7,6 +7,8 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
+import com.mojang.math.Vector3d;
+
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
@@ -14,40 +16,42 @@ import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.config.EntityConfig;
 import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
 import mod.azure.doom.util.registry.ModEntityTypes;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
-import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -55,16 +59,17 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.shadowed.eliotlash.mclib.utils.MathHelper;
 
 public class SummonerEntity extends DemonEntity implements IAnimatable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
 	private int targetChangeTime;
-	public static final DataParameter<Integer> VARIANT = EntityDataManager.defineId(SummonerEntity.class,
-			DataSerializers.INT);
+	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(SummonerEntity.class,
+			EntityDataSerializers.INT);
 	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.SUMMONER);
 
-	public SummonerEntity(EntityType<SummonerEntity> entityType, World worldIn) {
+	public SummonerEntity(EntityType<SummonerEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 	}
 
@@ -106,15 +111,15 @@ public class SummonerEntity extends DemonEntity implements IAnimatable {
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
-		this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
+		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
 		this.targetSelector.addGoal(2, new HurtByTargetGoal(this).setAlertOthers());
 		this.goalSelector.addGoal(4, new SummonerEntity.AttackGoal(this));
 		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.addGoal(1, new SummonerEntity.FindPlayerGoal(this, this::isAngryAt));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
 
@@ -152,14 +157,14 @@ public class SummonerEntity extends DemonEntity implements IAnimatable {
 					if (!this.ghast.level.isClientSide) {
 						double d = Math.min(livingEntity.getY(), ghast.getY());
 						double e = Math.max(livingEntity.getY(), ghast.getY()) + 1.0D;
-						float f = (float) MathHelper.atan2(livingEntity.getZ() - ghast.getZ(),
+						float f = (float) Mth.atan2(livingEntity.getZ() - ghast.getZ(),
 								livingEntity.getX() - ghast.getX());
 						int j;
 						if (ghast.distanceToSqr(livingEntity) > 13.0D) {
 							for (j = 0; j < 16; ++j) {
 								double l1 = 1.25D * (double) (j + 1);
-								ghast.spawnFangs(ghast.getX() + (double) MathHelper.cos(f) * l1,
-										ghast.getZ() + (double) MathHelper.sin(f) * l1, d, e, f, 32);
+								ghast.spawnFangs(ghast.getX() + (double) Mth.cos(f) * l1,
+										ghast.getZ() + (double) Mth.sin(f) * l1, d, e, f, 32);
 							}
 						} else {
 							ghast.spawnWave();
@@ -213,14 +218,14 @@ public class SummonerEntity extends DemonEntity implements IAnimatable {
 		}
 	}
 
-	static class FindPlayerGoal extends NearestAttackableTargetGoal<PlayerEntity> {
+	static class FindPlayerGoal extends NearestAttackableTargetGoal<Player> {
 		private final SummonerEntity enderman;
 		/** The player */
-		private PlayerEntity player;
+		private Player player;
 		private int aggroTime;
 		private int teleportTime;
-		private final EntityPredicate startAggroTargetConditions;
-		private final EntityPredicate continueAggroTargetConditions = (new EntityPredicate()).allowUnseeable();
+		private final TargetingConditions startAggroTargetConditions;
+		private final TargetingConditions continueAggroTargetConditions = (new TargetingConditions()).allowUnseeable();
 
 		public FindPlayerGoal(SummonerEntity p_i241912_1_, @Nullable Predicate<LivingEntity> p_i241912_2_) {
 			super(p_i241912_1_, PlayerEntity.class, 10, false, false, p_i241912_2_);
@@ -402,7 +407,7 @@ public class SummonerEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
@@ -413,19 +418,19 @@ public class SummonerEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.setVariant(compound.getInt("Variant"));
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT tag) {
+	public void addAdditionalSaveData(CompoundTag tag) {
 		super.addAdditionalSaveData(tag);
 		tag.putInt("Variant", this.getVariant());
 	}
 
 	public int getVariant() {
-		return MathHelper.clamp((Integer) this.entityData.get(VARIANT), 1, 2);
+		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 2);
 	}
 
 	public void setVariant(int variant) {
@@ -436,22 +441,29 @@ public class SummonerEntity extends DemonEntity implements IAnimatable {
 		return 2;
 	}
 
-	@Nullable
 	@Override
-	public ILivingEntityData finalizeSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason,
-			@Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
+			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 		this.setVariant(this.random.nextInt());
 		return spawnDataIn;
 	}
 
-	public static boolean spawning(EntityType<? extends DemonEntity> p_223337_0_, IWorld p_223337_1_,
-			SpawnReason reason, BlockPos p_223337_3_, Random p_223337_4_) {
-		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223337_3_, p_223337_4_);
+	public static boolean spawning(EntityType<? extends DemonEntity> p_223368_0_, LevelAccessor p_223337_1_,
+			MobSpawnType reason, BlockPos p_223368_3_, Random p_223368_4_) {
+		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223368_3_, p_223368_4_)
+				&& p_223368_4_.nextInt(20) == 0
+				&& checkMobSpawnRules(p_223368_0_, p_223337_1_, reason, p_223368_3_, p_223368_4_);
 	}
 
-	public static AttributeModifierMap.MutableAttribute createAttributes() {
-		return config.pushAttributes(MobEntity.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D));
+	@Override
+	public MobType getMobType() {
+		return MobType.UNDEAD;
+	}
+
+	public static AttributeSupplier.Builder createAttributes() {
+		return config.pushAttributes(Mob.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 50D));
 	}
 
 	protected boolean shouldDrown() {

@@ -3,19 +3,17 @@ package mod.azure.doom.client.gui.weapons;
 import java.util.Optional;
 
 import mod.azure.doom.recipes.GunTableRecipe;
-import mod.azure.doom.util.PMMOCompat;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.ModList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class GunTableOutputSlot extends Slot {
 	private final DoomGunInventory gunTableInventory;
-	private final PlayerEntity player;
+	private final Player player;
 	private int removeCount;
 
-	public GunTableOutputSlot(PlayerEntity player, DoomGunInventory gunTableInventory, int index, int x, int y) {
+	public GunTableOutputSlot(Player player, DoomGunInventory gunTableInventory, int index, int x, int y) {
 		super(gunTableInventory, index, x, y);
 		this.player = player;
 		this.gunTableInventory = gunTableInventory;
@@ -43,7 +41,7 @@ public class GunTableOutputSlot extends Slot {
 		this.removeCount = 0;
 	}
 
-	public ItemStack onTake(PlayerEntity player, ItemStack stack) {
+	public void onTake(Player player, ItemStack stack) {
 		this.checkTakeAchievements(stack);
 		Optional<GunTableRecipe> optionalGunTableRecipe = player.level.getRecipeManager()
 				.getRecipeFor(GunTableRecipe.GUN_TABLE, gunTableInventory, player.level);
@@ -66,15 +64,15 @@ public class GunTableOutputSlot extends Slot {
 							&& ItemStack.isSame(itemStack, itemStack2)) {
 						itemStack2.shrink(itemStack.getCount());
 						this.gunTableInventory.setItem(i, itemStack2);
-					} else if (!this.player.inventory.add(itemStack2)) {
+					} else if (!this.player.getInventory().add(itemStack2)) {
 						this.player.drop(itemStack2, false);
 					}
 				}
 			}
 		}
-		if (ModList.get().isLoaded("pmmo")) {
-			PMMOCompat.awardCrafting(stack);
-		}
-		return stack;
+//		if (ModList.get().isLoaded("pmmo")) {
+//			PMMOCompat.awardCrafting(stack);
+//		}
+		this.setChanged();
 	}
 }

@@ -3,10 +3,9 @@ package mod.azure.doom.util.config;
 import java.util.List;
 
 import mod.azure.doom.DoomMod;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap.MutableAttribute;
-import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
 public class EntityConfig {
@@ -75,7 +74,7 @@ public class EntityConfig {
 		return this;
 	}
 
-	public MutableAttribute pushAttributes(MutableAttribute attributes) {
+	public Builder pushAttributes(Builder attributes) {
 		if (MELEE_ATTACK_DAMAGE > 0) {
 			attributes.add(Attributes.ATTACK_DAMAGE, MELEE_ATTACK_DAMAGE);
 		}
@@ -88,7 +87,7 @@ public class EntityConfig {
 		return attributes.add(Attributes.MAX_HEALTH, MAX_HEALTH);
 	}
 
-	public EntityConfig buildVia(Builder builder) {
+	public EntityConfig buildVia(ForgeConfigSpec.Builder builder) {
 
 		builder.push("individual_spawning");
 		builder.push(name);

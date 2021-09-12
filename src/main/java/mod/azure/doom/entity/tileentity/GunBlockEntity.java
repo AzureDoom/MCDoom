@@ -2,19 +2,19 @@ package mod.azure.doom.entity.tileentity;
 
 import mod.azure.doom.client.gui.weapons.GunTableScreenHandler;
 import mod.azure.doom.util.registry.ModEntityTypes;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -23,11 +23,11 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class GunBlockEntity extends TileEntity implements ImplementedInventory, INamedContainerProvider, IAnimatable {
+public class GunBlockEntity extends BlockEntity implements ImplementedInventory, MenuProvider, IAnimatable {
 
 	private final AnimationFactory factory = new AnimationFactory(this);
 
-	private <E extends TileEntity & IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+	private <E extends BlockEntity & IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
 	}
@@ -49,13 +49,13 @@ public class GunBlockEntity extends TileEntity implements ImplementedInventory, 
 	}
 
 	@Override
-	public Container createMenu(int syncId, PlayerInventory inventory, PlayerEntity player) {
-		return new GunTableScreenHandler(syncId, inventory, IWorldPosCallable.create(level, worldPosition));
+	public AbstractContainerMenu createMenu(int syncId, Inventory inventory, Player player) {
+		return new GunTableScreenHandler(syncId, inventory, ContainerLevelAccess.create(level, worldPosition));
 	}
 
 	@Override
-	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent("block.doom.gun_table");
+	public Component getDisplayName() {
+		return new TranslatableComponent("block.doom.gun_table");
 	}
 
 	@Override
@@ -64,14 +64,14 @@ public class GunBlockEntity extends TileEntity implements ImplementedInventory, 
 	}
 
 	@Override
-	public void load(BlockState state, CompoundNBT tag) {
+	public void load(BlockState state, CompoundTag tag) {
 		super.load(state, tag);
-		ItemStackHelper.loadAllItems(tag, items);
+		ContainerHelper.loadAllItems(tag, items);
 	}
 
 	@Override
-	public CompoundNBT save(CompoundNBT tag) {
-		ItemStackHelper.saveAllItems(tag, items);
+	public CompoundTag save(CompoundTag tag) {
+		ContainerHelper.saveAllItems(tag, items);
 		return super.save(tag);
 	}
 

@@ -3,9 +3,9 @@ package mod.azure.doom.entity.attack;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.CustomFireballEntity;
 import mod.azure.doom.entity.projectiles.CustomSmallFireballEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.Level;
 
 public class FireballAttack extends AbstractRangedAttack {
 
@@ -28,7 +28,7 @@ public class FireballAttack extends AbstractRangedAttack {
 	}
 
 	@Override
-	public ProjectileEntity getProjectile(World world, double d2, double d3, double d4) {
+	public Projectile getProjectile(Level world, double d2, double d3, double d4) {
 		return largeFireball ? new CustomFireballEntity(world, this.parentEntity, d2, d3, d4, damage)
 				: new CustomSmallFireballEntity(world, this.parentEntity, d2, d3, d4, damage);
 

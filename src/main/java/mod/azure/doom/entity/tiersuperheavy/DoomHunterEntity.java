@@ -11,41 +11,41 @@ import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.config.EntityConfig;
 import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
-import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -60,7 +60,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.DOOMHUNTER);
 	public int flameTimer;
 
-	public DoomHunterEntity(EntityType<DoomHunterEntity> entityType, World worldIn) {
+	public DoomHunterEntity(EntityType<DoomHunterEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 	}
 
@@ -124,17 +124,17 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static boolean spawning(EntityType<DoomHunterEntity> p_223337_0_, IWorld p_223337_1_, SpawnReason reason,
+	public static boolean spawning(EntityType<DoomHunterEntity> p_223337_0_, LevelAccessor p_223337_1_, MobSpawnType reason,
 			BlockPos p_223337_3_, Random p_223337_4_) {
 		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223337_3_, p_223337_4_);
 	}
 
-	public static boolean checkGhastSpawnRules(EntityType<DoomHunterEntity> p_223368_0_, IWorld p_223368_1_,
-			SpawnReason reason, BlockPos p_223368_3_, Random p_223368_4_) {
+	public static boolean checkGhastSpawnRules(EntityType<DoomHunterEntity> p_223368_0_, LevelAccessor p_223368_1_,
+			MobSpawnType reason, BlockPos p_223368_3_, Random p_223368_4_) {
 		return passPeacefulAndYCheck(config, p_223368_1_, reason, p_223368_3_, p_223368_4_)
 				&& p_223368_4_.nextInt(20) == 0
 				&& checkMobSpawnRules(p_223368_0_, p_223368_1_, reason, p_223368_3_, p_223368_4_);
@@ -142,14 +142,14 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
+		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.goalSelector.addGoal(4, new DoomHunterEntity.AttackGoal(this));
 		this.goalSelector.addGoal(4, new DoomHunterEntity.DemonAttackGoal(this, 1.0D, false));
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, true));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
 	}
 
 	@Override
@@ -211,7 +211,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 					if (this.canPenalize) {
 						this.ticksUntilNextPathRecalculation += failedPathFindingPenalty;
 						if (this.mob.getNavigation().getPath() != null) {
-							net.minecraft.pathfinding.PathPoint finalPathPoint = this.mob.getNavigation().getPath()
+							net.minecraft.world.level.pathfinder.Node finalPathPoint = this.mob.getNavigation().getPath()
 									.getEndNode();
 							if (finalPathPoint != null && livingentity.distanceToSqr(finalPathPoint.x, finalPathPoint.y,
 									finalPathPoint.z) < 1)
@@ -287,15 +287,15 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 		public void tick() {
 			LivingEntity livingentity = this.parentEntity.getTarget();
 			if (this.parentEntity.canSee(livingentity)) {
-				World world = this.parentEntity.level;
+				Level world = this.parentEntity.level;
 				++this.attackTimer;
-				Vector3d vector3d = this.parentEntity.getViewVector(1.0F);
+				Vec3 vector3d = this.parentEntity.getViewVector(1.0F);
 				double d0 = Math.min(livingentity.getY(), livingentity.getY());
 				double d1 = Math.max(livingentity.getY(), livingentity.getY()) + 1.0D;
 				double d2 = livingentity.getX() - (this.parentEntity.getX() + vector3d.x * 2.0D);
 				double d3 = livingentity.getY(0.5D) - (0.5D + this.parentEntity.getY(0.5D));
 				double d4 = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * 2.0D);
-				float f = (float) MathHelper.atan2(livingentity.getZ() - parentEntity.getZ(),
+				float f = (float) Mth.atan2(livingentity.getZ() - parentEntity.getZ(),
 						livingentity.getX() - parentEntity.getX());
 				RocketMobEntity fireballentity = new RocketMobEntity(world, this.parentEntity, d2, d3, d4, 6);
 				if (this.attackTimer == 15) {
@@ -303,8 +303,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 						for (int l = 0; l < 16; ++l) {
 							double d5 = 1.25D * (double) (l + 1);
 							int j = 1 * l;
-							parentEntity.spawnFlames(parentEntity.getX() + (double) MathHelper.cos(f) * d5,
-									parentEntity.getZ() + (double) MathHelper.sin(f) * d5, d0, d1, f, j);
+							parentEntity.spawnFlames(parentEntity.getX() + (double) Mth.cos(f) * d5,
+									parentEntity.getZ() + (double) Mth.sin(f) * d5, d0, d1, f, j);
 							if (parentEntity.getHealth() < (parentEntity.getMaxHealth() * 0.50)) {
 								this.parentEntity.setAttackingState(4);
 							} else {
@@ -350,7 +350,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 				break;
 			}
 			blockpos = blockpos.below();
-		} while (blockpos.getY() >= MathHelper.floor(maxY) - 1);
+		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
 			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this);
@@ -360,18 +360,18 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 		}
 	}
 
-	public static AttributeModifierMap.MutableAttribute createAttributes() {
-		return config.pushAttributes(MobEntity.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+	public static AttributeSupplier.Builder createAttributes() {
+		return config.pushAttributes(Mob.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
 				.add(Attributes.KNOCKBACK_RESISTANCE, 50D));
 	}
 
 	@Override
-	protected int getExperienceReward(PlayerEntity player) {
+	protected int getExperienceReward(Player player) {
 		return super.getExperienceReward(player);
 	}
 
 	@Override
-	protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
 		return 6.05F;
 	}
 

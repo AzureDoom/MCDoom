@@ -1,24 +1,24 @@
 package mod.azure.doom.entity.projectiles;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.FireballEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.LargeFireball;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.level.Level;
 
-public class CustomFireballEntity extends FireballEntity {
+public class CustomFireballEntity extends LargeFireball {
 
 	private float directHitDamage = 6.0F;
 
-	public CustomFireballEntity(World worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
+	public CustomFireballEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
 			float directHitDamage) {
 		super(worldIn, shooter, accelX, accelY, accelZ);
 		this.directHitDamage = directHitDamage;
 	}
 
 	@Override
-	protected void onHitEntity(EntityRayTraceResult p_213868_1_) {
+	protected void onHitEntity(EntityHitResult p_213868_1_) {
 		if (!this.level.isClientSide) {
 			Entity entity = p_213868_1_.getEntity();
 			Entity entity1 = this.getOwner();

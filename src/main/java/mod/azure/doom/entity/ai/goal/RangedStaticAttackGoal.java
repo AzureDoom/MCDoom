@@ -2,8 +2,8 @@ package mod.azure.doom.entity.ai.goal;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 public class RangedStaticAttackGoal extends Goal {
 
@@ -41,7 +41,7 @@ public class RangedStaticAttackGoal extends Goal {
 	public void tick() {
 		if (this.parentEntity.getTarget() != null) {
 			LivingEntity livingentity = this.parentEntity.getTarget();
-			boolean inLineOfSight = this.parentEntity.getSensing().canSee(livingentity);
+			boolean inLineOfSight = this.parentEntity.getSensing().hasLineOfSight(livingentity);
 			if (inLineOfSight != this.seeTime > 0) {
 				this.seeTime = 0;
 			}

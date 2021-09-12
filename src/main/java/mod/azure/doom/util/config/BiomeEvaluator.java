@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -88,7 +88,7 @@ public class BiomeEvaluator {
                 .collect(Collectors.toList());
 
         // Biome Dictionary
-        RegistryKey<Biome> biomeKey = RegistryKey.create(Registry.BIOME_REGISTRY, biome.getRegistryName());
+        ResourceKey<Biome> biomeKey = ResourceKey.create(Registry.BIOME_REGISTRY, biome.getRegistryName());
         List<? extends String> biomeTypes = BiomeDictionary.getTypes(biomeKey).stream()
                 .map(t -> t.toString().toLowerCase(Locale.ROOT))
                 .collect(Collectors.toList());

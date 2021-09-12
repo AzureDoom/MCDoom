@@ -14,41 +14,41 @@ import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.config.EntityConfig;
 import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.EntityType;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.controller.MovementController;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
-import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
-import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.pathfinding.FlyingPathNavigator;
-import net.minecraft.pathfinding.PathNavigator;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -58,11 +58,11 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class GargoyleEntity extends DemonEntity implements IAnimatable, IMob {
+public class GargoyleEntity extends DemonEntity implements IAnimatable, Enemy {
 
 	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.GARGOYLE);
 
-	public GargoyleEntity(EntityType<GargoyleEntity> entityType, World worldIn) {
+	public GargoyleEntity(EntityType<GargoyleEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 		this.moveControl = new GargoyleEntity.MoveHelperController(this);
 	}
@@ -111,20 +111,20 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IMob {
 	}
 
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static boolean spawning(EntityType<GargoyleEntity> p_223337_0_, IWorld p_223337_1_, SpawnReason reason,
+	public static boolean spawning(EntityType<GargoyleEntity> p_223337_0_, LevelAccessor p_223337_1_, MobSpawnType reason,
 			BlockPos p_223337_3_, Random p_223337_4_) {
 		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223337_3_, p_223337_4_);
 	}
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.applyEntityAI();
 	}
 
@@ -137,13 +137,13 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IMob {
 		this.goalSelector.addGoal(7, new GargoyleEntity.LookAroundGoal(this));
 		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, false));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
 
-	protected PathNavigator createNavigation(World worldIn) {
-		FlyingPathNavigator flyingpathnavigator = new FlyingPathNavigator(this, worldIn);
+	protected PathNavigation createNavigation(Level worldIn) {
+		FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
 		flyingpathnavigator.setCanOpenDoors(false);
 		flyingpathnavigator.setCanFloat(true);
 		flyingpathnavigator.setCanPassDoors(true);
@@ -157,7 +157,7 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IMob {
 	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
 	}
 
-	public void travel(Vector3d travelVector) {
+	public void travel(Vec3 travelVector) {
 		if (this.isInWater()) {
 			this.moveRelative(0.02F, travelVector);
 			this.move(MoverType.SELF, this.getDeltaMovement());
@@ -209,15 +209,15 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IMob {
 
 		public void tick() {
 			if (this.parentEntity.getTarget() == null) {
-				Vector3d vec3d = this.parentEntity.getDeltaMovement();
-				this.parentEntity.yRot = -((float) MathHelper.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
+				Vec3 vec3d = this.parentEntity.getDeltaMovement();
+				this.parentEntity.yRot = -((float) Mth.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
 				this.parentEntity.yBodyRot = this.parentEntity.yRot;
 			} else {
 				LivingEntity livingentity = this.parentEntity.getTarget();
 				if (livingentity.distanceToSqr(this.parentEntity) < 4096.0D) {
 					double d1 = livingentity.getX() - this.parentEntity.getX();
 					double d2 = livingentity.getZ() - this.parentEntity.getZ();
-					this.parentEntity.yRot = -((float) MathHelper.atan2(d1, d2)) * (180F / (float) Math.PI);
+					this.parentEntity.yRot = -((float) Mth.atan2(d1, d2)) * (180F / (float) Math.PI);
 					this.parentEntity.yBodyRot = this.parentEntity.yRot;
 				}
 			}
@@ -225,7 +225,7 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IMob {
 		}
 	}
 
-	static class MoveHelperController extends MovementController {
+	static class MoveHelperController extends MoveControl {
 		private final GargoyleEntity parentEntity;
 		private int courseChangeCooldown;
 
@@ -235,14 +235,14 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IMob {
 		}
 
 		public void tick() {
-			if (this.operation == MovementController.Action.MOVE_TO) {
+			if (this.operation == MoveControl.Operation.MOVE_TO) {
 				if (this.courseChangeCooldown-- <= 0) {
 					this.courseChangeCooldown += this.parentEntity.getRandom().nextInt(5) + 2;
-					Vector3d vector3d = new Vector3d(this.wantedX - this.parentEntity.getX(),
+					Vec3 vector3d = new Vec3(this.wantedX - this.parentEntity.getX(),
 							this.wantedY - this.parentEntity.getY(), this.wantedZ - this.parentEntity.getZ());
 					double d0 = vector3d.length();
 					vector3d = vector3d.normalize();
-					if (this.canReach(vector3d, MathHelper.ceil(d0))) {
+					if (this.canReach(vector3d, Mth.ceil(d0))) {
 						this.parentEntity
 								.setDeltaMovement(this.parentEntity.getDeltaMovement().add(vector3d.scale(0.1D))); // TODO
 						// test
@@ -250,15 +250,15 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IMob {
 						// speed
 						// here
 					} else {
-						this.operation = MovementController.Action.WAIT;
+						this.operation = MoveControl.Operation.WAIT;
 					}
 				}
 
 			}
 		}
 
-		private boolean canReach(Vector3d p_220673_1_, int p_220673_2_) {
-			AxisAlignedBB axisalignedbb = this.parentEntity.getBoundingBox();
+		private boolean canReach(Vec3 p_220673_1_, int p_220673_2_) {
+			AABB axisalignedbb = this.parentEntity.getBoundingBox();
 
 			for (int i = 1; i < p_220673_2_; ++i) {
 				axisalignedbb = axisalignedbb.move(p_220673_1_);
@@ -271,8 +271,8 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IMob {
 		}
 	}
 
-	public static AttributeModifierMap.MutableAttribute createAttributes() {
-		return config.pushAttributes(MobEntity.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D));
+	public static AttributeSupplier.Builder createAttributes() {
+		return config.pushAttributes(Mob.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D));
 	}
 
 	@Nullable

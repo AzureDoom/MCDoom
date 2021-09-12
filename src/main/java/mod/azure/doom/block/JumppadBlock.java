@@ -1,17 +1,17 @@
 package mod.azure.doom.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class JumppadBlock extends Block {
 
@@ -20,33 +20,28 @@ public class JumppadBlock extends Block {
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-		return VoxelShapes.box(0.00f, 0.0f, 0.00f, 1.0f, 0.2f, 1.0f);
+	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+		return Shapes.box(0.00f, 0.0f, 0.00f, 1.0f, 0.2f, 1.0f);
 	}
 
 	@Override
-	public void fallOn(World worldIn, BlockPos pos, Entity entityIn, float fallDistance) {
-		entityIn.causeFallDamage(5.0F, 0.0F);
-	}
-
-	@Override
-	public void updateEntityAfterFallOn(IBlockReader worldIn, Entity entityIn) {
+	public void updateEntityAfterFallOn(BlockGetter worldIn, Entity entityIn) {
 		this.jumpEntity(entityIn);
 	}
 
 	private void jumpEntity(Entity entity) {
-		Vector3d vector3d = entity.getDeltaMovement();
+		Vec3 vector3d = entity.getDeltaMovement();
 		if (vector3d.y < 0.0D) {
 			entity.setDeltaMovement(vector3d.x, 1D, vector3d.z);
 		}
 	}
 
 	@Override
-	public void stepOn(World worldIn, BlockPos pos, Entity entityIn) {
+	public void stepOn(Level worldIn, BlockPos pos, BlockState state, Entity entityIn) {
 		double d0 = Math.abs(entityIn.getDeltaMovement().y);
 		double d1 = 1.4D + d0 * 0.2D;
 		entityIn.setDeltaMovement(entityIn.getDeltaMovement().multiply(d1, 1.0D, 0.5D));
-		super.stepOn(worldIn, pos, entityIn);
+		super.stepOn(worldIn, pos, state, entityIn);
 	}
 
 }

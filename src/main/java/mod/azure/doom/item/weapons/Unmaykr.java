@@ -9,15 +9,15 @@ import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.UnmaykrLoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fml.network.PacketDistributor;
 import software.bernie.geckolib3.network.GeckoLibNetwork;
 import software.bernie.geckolib3.util.GeckoLibUtil;
@@ -40,9 +40,9 @@ public class Unmaykr extends DoomBaseItem {
 	}
 
 	@Override
-	public void onUseTick(World worldIn, LivingEntity entityLiving, ItemStack stack, int count) {
-		if (entityLiving instanceof PlayerEntity) {
-			PlayerEntity playerentity = (PlayerEntity) entityLiving;
+	public void onUseTick(Level worldIn, LivingEntity entityLiving, ItemStack stack, int count) {
+		if (entityLiving instanceof Player) {
+			Player playerentity = (Player) entityLiving;
 			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)
 					&& !playerentity.getCooldowns().isOnCooldown(this)) {
 				playerentity.getCooldowns().addCooldown(this, 5);
@@ -68,11 +68,11 @@ public class Unmaykr extends DoomBaseItem {
 					worldIn.addFreshEntity(abstractarrowentity);
 					worldIn.addFreshEntity(abstractarrowentity1);
 					worldIn.addFreshEntity(abstractarrowentity2);
-					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
-							playerentity.getZ(), ModSoundEvents.UNMAKYR_FIRE.get(), SoundCategory.PLAYERS, 1.0F,
+					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(),
+							playerentity.getZ(), ModSoundEvents.UNMAKYR_FIRE.get(), SoundSource.PLAYERS, 1.0F,
 							1.0F / (random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 					if (!worldIn.isClientSide) {
-						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);
+						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
 						final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
 								.with(() -> playerentity);
 						GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
@@ -82,15 +82,15 @@ public class Unmaykr extends DoomBaseItem {
 		}
 	}
 
-	public UnmaykrBoltEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
+	public UnmaykrBoltEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
 		UnmaykrBoltEntity arrowentity = new UnmaykrBoltEntity(worldIn, shooter);
 		return arrowentity;
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
 		if (worldIn.isClientSide) {
-			if (((PlayerEntity) entityIn).getMainHandItem().getItem() instanceof Unmaykr) {
+			if (((Player) entityIn).getMainHandItem().getItem() instanceof Unmaykr) {
 				while (Keybindings.RELOAD.consumeClick() && isSelected) {
 					DoomPacketHandler.UNMAYKR.sendToServer(new UnmaykrLoadingPacket(itemSlot));
 				}
@@ -98,7 +98,7 @@ public class Unmaykr extends DoomBaseItem {
 		}
 	}
 
-	public static void reload(PlayerEntity user, Hand hand) {
+	public static void reload(Player user, InteractionHand hand) {
 		if (user.getItemInHand(hand).getItem() instanceof Unmaykr) {
 			while (user.getItemInHand(hand).getDamageValue() != 0
 					&& user.inventory.countItem(DoomItems.UNMAKRY_BOLT.get()) > 0) {

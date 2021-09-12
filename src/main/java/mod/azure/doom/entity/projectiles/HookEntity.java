@@ -2,37 +2,37 @@ package mod.azure.doom.entity.projectiles;
 
 import mod.azure.doom.item.weapons.SuperShotgun;
 import mod.azure.doom.util.registry.ModEntityTypes;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonPartEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class HookEntity extends AbstractArrowEntity {
-	private static final DataParameter<Integer> DATA_HOOKED_ENTITY = EntityDataManager.defineId(HookEntity.class,
-			DataSerializers.INT);
+public class HookEntity extends AbstractArrow {
+	private static final EntityDataAccessor<Integer> DATA_HOOKED_ENTITY = SynchedEntityData.defineId(HookEntity.class,
+			EntityDataSerializers.INT);
 	public double maxRange = 0D;
 	public double maxSpeed = 0D;
 	private boolean isPulling = false;
-	private PlayerEntity owner;
+	private Player owner;
 	private Entity hookedEntity;
 	private ItemStack stack;
 
-	public HookEntity(EntityType<? extends AbstractArrowEntity> type, World world) {
+	public HookEntity(EntityType<? extends AbstractArrow> type, Level world) {
 		super(type, world);
 		this.setNoGravity(true);
 	}

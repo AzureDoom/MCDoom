@@ -3,18 +3,18 @@ package mod.azure.doom.util.packets;
 import java.util.function.Supplier;
 
 import mod.azure.doom.client.gui.weapons.GunTableScreenHandler;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.network.INetHandler;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.ServerPlayNetHandler;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketListener;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class DoomCraftingPacket {
 
 	private int index;
 
-	public DoomCraftingPacket(final PacketBuffer packetBuffer) {
+	public DoomCraftingPacket(final FriendlyByteBuf packetBuffer) {
 		this.index = packetBuffer.readInt();
 	}
 
@@ -22,7 +22,7 @@ public class DoomCraftingPacket {
 		this.index = index;
 	}
 
-	public void encode(PacketBuffer buf) {
+	public void encode(FriendlyByteBuf buf) {
 		buf.writeInt(index);
 	}
 
@@ -30,10 +30,10 @@ public class DoomCraftingPacket {
 		final NetworkEvent.Context ctx = sup.get();
 		ctx.enqueueWork(() -> {
 			NetworkEvent.Context context = sup.get();
-			INetHandler handler = context.getNetworkManager().getPacketListener();
-			if (handler instanceof ServerPlayNetHandler) {
-				ServerPlayerEntity playerEntity = ((ServerPlayNetHandler) handler).player;
-				Container container = playerEntity.containerMenu;
+			PacketListener handler = context.getNetworkManager().getPacketListener();
+			if (handler instanceof ServerGamePacketListenerImpl) {
+				ServerPlayer playerEntity = ((ServerGamePacketListenerImpl) handler).player;
+				AbstractContainerMenu container = playerEntity.containerMenu;
 				if (container instanceof GunTableScreenHandler) {
 					GunTableScreenHandler gunTableScreenHandler = (GunTableScreenHandler) container;
 					gunTableScreenHandler.setRecipeIndex(index);

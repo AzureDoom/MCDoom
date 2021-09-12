@@ -10,21 +10,21 @@ import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.ChainsawEternalLoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -70,24 +70,24 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		tooltip.add(new TranslationTextComponent(
+	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+		tooltip.add(new TranslatableComponent(
 				"Fuel: " + (stack.getMaxDamage() - stack.getDamageValue() - 1) + " / " + (stack.getMaxDamage() - 1))
-						.withStyle(TextFormatting.ITALIC));
+						.withStyle(ChatFormatting.ITALIC));
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
 		LivingEntity user = (LivingEntity) entityIn;
-		PlayerEntity player = (PlayerEntity) entityIn;
+		Player player = (Player) entityIn;
 		if (player.getMainHandItem().sameItemStackIgnoreDurability(stack)
 				&& stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
-			final AxisAlignedBB aabb = new AxisAlignedBB(entityIn.blockPosition().above()).inflate(1D, 1D, 1D);
+			final AABB aabb = new AABB(entityIn.blockPosition().above()).inflate(1D, 1D, 1D);
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDamage(user, e));
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> damageItem(user, stack));
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> addParticle(e));
-			worldIn.playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
-					ModSoundEvents.CHAINSAW_IDLE.get(), SoundCategory.PLAYERS, 0.05F,
+			worldIn.playSound((Player) null, user.getX(), user.getY(), user.getZ(),
+					ModSoundEvents.CHAINSAW_IDLE.get(), SoundSource.PLAYERS, 0.05F,
 					1.0F / (random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 		if (worldIn.isClientSide) {
@@ -99,7 +99,7 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 		}
 	}
 
-	public static void reload(PlayerEntity user, Hand hand) {
+	public static void reload(Player user, InteractionHand hand) {
 		if (user.getItemInHand(hand).getItem() instanceof ChainsawAnimated) {
 			while (user.getItemInHand(hand).getDamageValue() != 0
 					&& user.inventory.countItem(DoomItems.GAS_BARREL.get()) > 0) {
@@ -110,7 +110,7 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 		}
 	}
 
-	public static void removeAmmo(Item ammo, PlayerEntity playerEntity) {
+	public static void removeAmmo(Item ammo, Player playerEntity) {
 		if (!playerEntity.isCreative()) {
 			for (ItemStack item : playerEntity.inventory.offhand) {
 				if (item.getItem() == ammo) {
@@ -131,15 +131,15 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 		if (target instanceof LivingEntity) {
 			target.setDeltaMovement(0, 0, 0);
 			target.invulnerableTime = 0;
-			target.hurt(DamageSource.playerAttack((PlayerEntity) user), 2F);
-			user.level.playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
-					ModSoundEvents.CHAINSAW_ATTACKING.get(), SoundCategory.PLAYERS, 0.3F,
+			target.hurt(DamageSource.playerAttack((Player) user), 2F);
+			user.level.playSound((Player) null, user.getX(), user.getY(), user.getZ(),
+					ModSoundEvents.CHAINSAW_ATTACKING.get(), SoundSource.PLAYERS, 0.3F,
 					1.0F / (random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 	}
 
 	private void damageItem(LivingEntity user, ItemStack stack) {
-		PlayerEntity player = (PlayerEntity) user;
+		Player player = (Player) user;
 		if (!player.abilities.instabuild) {
 			stack.setDamageValue(stack.getDamageValue() + 1);
 		}
@@ -147,7 +147,7 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 
 	private void addParticle(Entity target) {
 		if (target instanceof LivingEntity) {
-			target.level.addParticle(RedstoneParticleData.REDSTONE, target.getRandomX(0.5D), target.getRandomY(),
+			target.level.addParticle(DustParticleOptions.REDSTONE, target.getRandomX(0.5D), target.getRandomY(),
 					target.getRandomZ(0.5D), 0.0D, 0D, 0D);
 		}
 	}

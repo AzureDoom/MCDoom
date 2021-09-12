@@ -14,50 +14,50 @@ import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.config.EntityConfig;
 import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
 import mod.azure.doom.util.registry.ModSoundEvents;
+import net.minecraft.core.BlockPos;
 import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.controller.MovementController;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.MoveTowardsTargetGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
-import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
-import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.FlyingPathNavigator;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.BossInfo;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerBossInfo;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.MoveTowardsTargetGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -65,17 +65,19 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.shadowed.eliotlash.mclib.utils.MathHelper;
 
 public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 
 	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.ARCHMAKYR);
 	private AnimationFactory factory = new AnimationFactory(this);
-	public static final DataParameter<Integer> VARIANT = EntityDataManager.defineId(ArchMakyrEntity.class,
-			DataSerializers.INT);
-	private final ServerBossInfo bossInfo = (ServerBossInfo) (new ServerBossInfo(this.getDisplayName(),
-			BossInfo.Color.PURPLE, BossInfo.Overlay.PROGRESS)).setDarkenScreen(true).setCreateWorldFog(true);
+	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(ArchMakyrEntity.class,
+			EntityDataSerializers.INT);
+	private final ServerBossEvent bossInfo = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(),
+			BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true)
+					.setCreateWorldFog(true);
 
-	public ArchMakyrEntity(EntityType<ArchMakyrEntity> type, World worldIn) {
+	public ArchMakyrEntity(EntityType<ArchMakyrEntity> type, Level worldIn) {
 		super(type, worldIn);
 		this.moveControl = new ArchMakyrEntity.MoveHelperController(this);
 	}
@@ -158,15 +160,15 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 		return 15;
 	}
 
-	protected PathNavigator createNavigation(World worldIn) {
-		FlyingPathNavigator flyingpathnavigator = new FlyingPathNavigator(this, worldIn);
+	protected PathNavigation createNavigation(Level worldIn) {
+		FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
 		flyingpathnavigator.setCanOpenDoors(false);
 		flyingpathnavigator.setCanFloat(true);
 		flyingpathnavigator.setCanPassDoors(true);
 		return flyingpathnavigator;
 	}
 
-	public void travel(Vector3d travelVector) {
+	public void travel(Vec3 travelVector) {
 		if (this.isInWater()) {
 			this.moveRelative(0.02F, travelVector);
 			this.move(MoverType.SELF, this.getDeltaMovement());
@@ -196,7 +198,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 		this.calculateEntityAnimation(this, false);
 	}
 
-	static class MoveHelperController extends MovementController {
+	static class MoveHelperController extends MoveControl {
 		private final ArchMakyrEntity parentEntity;
 		private int courseChangeCooldown;
 
@@ -206,26 +208,26 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 		}
 
 		public void tick() {
-			if (this.operation == MovementController.Action.MOVE_TO) {
+			if (this.operation == MoveControl.Operation.MOVE_TO) {
 				if (this.courseChangeCooldown-- <= 0) {
 					this.courseChangeCooldown += this.parentEntity.getRandom().nextInt(5) + 2;
-					Vector3d vector3d = new Vector3d(this.wantedX - this.parentEntity.getX(),
+					Vec3 vector3d = new Vec3(this.wantedX - this.parentEntity.getX(),
 							this.wantedY - this.parentEntity.getY(), this.wantedZ - this.parentEntity.getZ());
 					double d0 = vector3d.length();
 					vector3d = vector3d.normalize();
-					if (this.canReach(vector3d, MathHelper.ceil(d0))) {
+					if (this.canReach(vector3d, Mth.ceil(d0))) {
 						this.parentEntity
 								.setDeltaMovement(this.parentEntity.getDeltaMovement().add(vector3d.scale(0.1D)));
 					} else {
-						this.operation = MovementController.Action.WAIT;
+						this.operation = MoveControl.Operation.WAIT;
 					}
 				}
 
 			}
 		}
 
-		private boolean canReach(Vector3d p_220673_1_, int p_220673_2_) {
-			AxisAlignedBB axisalignedbb = this.parentEntity.getBoundingBox();
+		private boolean canReach(Vec3 p_220673_1_, int p_220673_2_) {
+			AABB axisalignedbb = this.parentEntity.getBoundingBox();
 
 			for (int i = 1; i < p_220673_2_; ++i) {
 				axisalignedbb = axisalignedbb.move(p_220673_1_);
@@ -240,10 +242,10 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.addGoal(8, new LookAtGoal(this, AbstractVillagerEntity.class, 8.0F));
-		this.goalSelector.addGoal(8, new LookAtGoal(this, IronGolemEntity.class, 8.0F));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, IronGolem.class, 8.0F));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.goalSelector.addGoal(7, new ArchMakyrEntity.LookAroundGoal(this));
 		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.addGoal(2, new MoveTowardsTargetGoal(this, 0.9D, 32.0F));
@@ -252,9 +254,9 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 
 	protected void applyEntityAI() {
 		this.goalSelector.addGoal(1, new AttackGoal(this));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, false));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolemEntity.class, true));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
 		this.targetSelector.addGoal(3, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
 
@@ -272,15 +274,15 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 
 		public void tick() {
 			if (this.parentEntity.getTarget() == null) {
-				Vector3d vec3d = this.parentEntity.getDeltaMovement();
-				this.parentEntity.yRot = -((float) MathHelper.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
+				Vec3 vec3d = this.parentEntity.getDeltaMovement();
+				this.parentEntity.yRot = -((float) Mth.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
 				this.parentEntity.yBodyRot = this.parentEntity.yRot;
 			} else {
 				LivingEntity livingentity = this.parentEntity.getTarget();
 				if (livingentity.distanceToSqr(this.parentEntity) < 4096.0D) {
 					double d1 = livingentity.getX() - this.parentEntity.getX();
 					double d2 = livingentity.getZ() - this.parentEntity.getZ();
-					this.parentEntity.yRot = -((float) MathHelper.atan2(d1, d2)) * (180F / (float) Math.PI);
+					this.parentEntity.yRot = -((float) Mth.atan2(d1, d2)) * (180F / (float) Math.PI);
 					this.parentEntity.yBodyRot = this.parentEntity.yRot;
 				}
 			}
@@ -319,13 +321,14 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 				if (this.parentEntity.isAggressive()) {
 					parentEntity.setNoGravity(true);
 				}
-				World world = this.parentEntity.level;
+				Level world = this.parentEntity.level;
 				++this.attackTimer;
-				Vector3d vector3d = this.parentEntity.getViewVector(1.0F);
+				Vec3 vector3d = this.parentEntity.getViewVector(1.0F);
 				double d2 = livingentity.getX() - (this.parentEntity.getX() + vector3d.x * 2.0D);
 				double d3 = livingentity.getY(0.5D) - (0.5D + this.parentEntity.getY(0.5D));
 				double d4 = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * 2.0D);
-				CustomFireballEntity fireballentity = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4, 14);
+				CustomFireballEntity fireballentity = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4,
+						14);
 				if (this.attackTimer == 15) {
 					SplittableRandom random = new SplittableRandom();
 					int r = random.nextInt(0, 3);
@@ -337,14 +340,14 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 					} else {
 						if (!parentEntity.level.isClientSide) {
 							float f2 = 50.0F;
-							int k1 = MathHelper.floor(parentEntity.getX() - (double) f2 - 1.0D);
-							int l1 = MathHelper.floor(parentEntity.getX() + (double) f2 + 1.0D);
-							int i2 = MathHelper.floor(parentEntity.getY() - (double) f2 - 1.0D);
-							int i1 = MathHelper.floor(parentEntity.getY() + (double) f2 + 1.0D);
-							int j2 = MathHelper.floor(parentEntity.getZ() - (double) f2 - 1.0D);
-							int j1 = MathHelper.floor(parentEntity.getZ() + (double) f2 + 1.0D);
-							List<Entity> list = parentEntity.level.getEntities(parentEntity, new AxisAlignedBB(
-									(double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
+							int k1 = Mth.floor(parentEntity.getX() - (double) f2 - 1.0D);
+							int l1 = Mth.floor(parentEntity.getX() + (double) f2 + 1.0D);
+							int i2 = Mth.floor(parentEntity.getY() - (double) f2 - 1.0D);
+							int i1 = Mth.floor(parentEntity.getY() + (double) f2 + 1.0D);
+							int j2 = Mth.floor(parentEntity.getZ() - (double) f2 - 1.0D);
+							int j1 = Mth.floor(parentEntity.getZ() + (double) f2 + 1.0D);
+							List<Entity> list = parentEntity.level.getEntities(parentEntity, new AABB((double) k1,
+									(double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
 							for (int k2 = 0; k2 < list.size(); ++k2) {
 								Entity entity = list.get(k2);
 								if (entity.isAlive()) {
@@ -373,7 +376,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 		}
 	}
 
-	public ServerBossInfo getBossInfo() {
+	public ServerBossEvent getBossInfo() {
 		return bossInfo;
 	}
 
@@ -391,7 +394,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.setVariant(compound.getInt("Variant"));
 		if (this.hasCustomName()) {
@@ -400,13 +403,13 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT tag) {
+	public void addAdditionalSaveData(CompoundTag tag) {
 		super.addAdditionalSaveData(tag);
 		tag.putInt("Variant", this.getVariant());
 	}
 
 	public int getVariant() {
-		return MathHelper.clamp((Integer) this.entityData.get(VARIANT), 1, 2);
+		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 2);
 	}
 
 	public void setVariant(int variant) {
@@ -418,22 +421,22 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static boolean spawning(EntityType<ArchMakyrEntity> p_223337_0_, IWorld p_223337_1_, SpawnReason reason,
-			BlockPos p_223337_3_, Random p_223337_4_) {
+	public static boolean spawning(EntityType<ArchMakyrEntity> p_223337_0_, LevelAccessor p_223337_1_,
+			MobSpawnType reason, BlockPos p_223337_3_, Random p_223337_4_) {
 		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223337_3_, p_223337_4_);
 	}
 
-	public static AttributeModifierMap.MutableAttribute createAttributes() {
-		return config.pushAttributes(MobEntity.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+	public static AttributeSupplier.Builder createAttributes() {
+		return config.pushAttributes(Mob.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
 				.add(Attributes.KNOCKBACK_RESISTANCE, 1000.0D));
 	}
 
 	@Override
-	protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
 		return 1.5F;
 	}
 
@@ -500,7 +503,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 		int j2 = MathHelper.floor(this.getZ() - (double) f2 - 1.0D);
 		int j1 = MathHelper.floor(this.getZ() + (double) f2 + 1.0D);
 		List<Entity> list = this.level.getEntities(this,
-				new AxisAlignedBB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
+				new AABB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
 		for (int k2 = 0; k2 < list.size(); ++k2) {
 			Entity entity = list.get(k2);
 			if (entity.isAddedToWorld() && entity instanceof ArchMakyrEntity && entity.tickCount < 1) {

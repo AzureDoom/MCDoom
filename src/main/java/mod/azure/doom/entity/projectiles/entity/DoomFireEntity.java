@@ -11,25 +11,25 @@ import mod.azure.doom.entity.tierheavy.MancubusEntity;
 import mod.azure.doom.entity.tiersuperheavy.ArchvileEntity;
 import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
 import mod.azure.doom.util.registry.ModEntityTypes;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.shadowed.eliotlash.mclib.utils.MathHelper;
 
 public class DoomFireEntity extends Entity implements IAnimatable {
 
@@ -52,11 +52,11 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 	private UUID casterUuid;
 	private float damage = 2.0F;
 
-	public DoomFireEntity(EntityType<DoomFireEntity> p_i50170_1_, World p_i50170_2_) {
+	public DoomFireEntity(EntityType<DoomFireEntity> p_i50170_1_, Level p_i50170_2_) {
 		super(p_i50170_1_, p_i50170_2_);
 	}
 
-	public DoomFireEntity(World worldIn, double x, double y, double z, float p_i47276_8_, int p_i47276_9_,
+	public DoomFireEntity(Level worldIn, double x, double y, double z, float p_i47276_8_, int p_i47276_9_,
 			LivingEntity casterIn) {
 		this(ModEntityTypes.FIRING.get(), worldIn);
 		this.warmupDelayTicks = p_i47276_9_;
@@ -118,7 +118,7 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 			}
 		}
 		List<Entity> list = this.level.getEntities(this,
-				new AxisAlignedBB(this.blockPosition().above()).inflate(1D, 1D, 1D));
+				new AABB(this.blockPosition().above()).inflate(1D, 1D, 1D));
 		for (int k2 = 0; k2 < list.size(); ++k2) {
 			Entity entity = list.get(k2);
 			if (!(entity instanceof MancubusEntity) && !(entity instanceof ArchvileEntity)

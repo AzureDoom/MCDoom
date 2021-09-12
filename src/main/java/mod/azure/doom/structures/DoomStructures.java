@@ -15,57 +15,57 @@ import mod.azure.doom.structures.templates.NetherPortalStructure;
 import mod.azure.doom.structures.templates.PortalStructure;
 import mod.azure.doom.structures.templates.TitanSkullStructure;
 import net.minecraft.util.registry.WorldGenRegistries;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
-import net.minecraft.world.gen.settings.StructureSeparationSettings;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class DoomStructures {
-	public static final DeferredRegister<Structure<?>> DEFERRED_REGISTRY_STRUCTURE = DeferredRegister
+	public static final DeferredRegister<StructureFeature<?>> DEFERRED_REGISTRY_STRUCTURE = DeferredRegister
 			.create(ForgeRegistries.STRUCTURE_FEATURES, DoomMod.MODID);
 
-	public static final RegistryObject<Structure<NoFeatureConfig>> MAYKR = registerStructure("maykr",
-			() -> (new MaykrStructure(NoFeatureConfig.CODEC)));
+	public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> MAYKR = registerStructure("maykr",
+			() -> (new MaykrStructure(NoneFeatureConfiguration.CODEC)));
 
-	public static final RegistryObject<Structure<NoFeatureConfig>> ARCHMAYKR = registerStructure("archmaykr",
-			() -> (new ArchMaykrStructure(NoFeatureConfig.CODEC)));
+	public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> ARCHMAYKR = registerStructure("archmaykr",
+			() -> (new ArchMaykrStructure(NoneFeatureConfiguration.CODEC)));
 
-	public static final RegistryObject<Structure<NoFeatureConfig>> TITAN_SKULL = registerStructure("titan_skull",
-			() -> (new TitanSkullStructure(NoFeatureConfig.CODEC)));
+	public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> TITAN_SKULL = registerStructure("titan_skull",
+			() -> (new TitanSkullStructure(NoneFeatureConfiguration.CODEC)));
 
-	public static final RegistryObject<Structure<NoFeatureConfig>> PORTAL = registerStructure("portal",
-			() -> (new PortalStructure(NoFeatureConfig.CODEC)));
+	public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> PORTAL = registerStructure("portal",
+			() -> (new PortalStructure(NoneFeatureConfiguration.CODEC)));
 
-	public static final RegistryObject<Structure<NoFeatureConfig>> NETHERPORTAL = registerStructure("netherportal",
-			() -> (new NetherPortalStructure(NoFeatureConfig.CODEC)));
+	public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> NETHERPORTAL = registerStructure("netherportal",
+			() -> (new NetherPortalStructure(NoneFeatureConfiguration.CODEC)));
 
-	public static final RegistryObject<Structure<NoFeatureConfig>> MOTHERDEMON = registerStructure("motherdemon",
-			() -> (new MotherDemonStructure(NoFeatureConfig.CODEC)));
+	public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> MOTHERDEMON = registerStructure("motherdemon",
+			() -> (new MotherDemonStructure(NoneFeatureConfiguration.CODEC)));
 
-	private static <T extends Structure<?>> RegistryObject<T> registerStructure(String name, Supplier<T> structure) {
+	private static <T extends StructureFeature<?>> RegistryObject<T> registerStructure(String name, Supplier<T> structure) {
 		return DEFERRED_REGISTRY_STRUCTURE.register(name, structure);
 	}
 
 	public static void setupStructures() {
-		setupMapSpacingAndLand(MAYKR.get(), new StructureSeparationSettings(80, 20, 1234567890), true);
-		setupMapSpacingAndLand(ARCHMAYKR.get(), new StructureSeparationSettings(80, 20, 1234567898), true);
-		setupMapSpacingAndLand(TITAN_SKULL.get(), new StructureSeparationSettings(80, 20, 1234567890), true);
-		setupMapSpacingAndLand(MOTHERDEMON.get(), new StructureSeparationSettings(80, 20, 1234567899), true);
-		setupMapSpacingAndLand(PORTAL.get(), new StructureSeparationSettings(80, 20, 1234567890), true);
-		setupMapSpacingAndLand(NETHERPORTAL.get(), new StructureSeparationSettings(80, 20, 1234567895), true);
+		setupMapSpacingAndLand(MAYKR.get(), new StructureFeatureConfiguration(80, 20, 1234567890), true);
+		setupMapSpacingAndLand(ARCHMAYKR.get(), new StructureFeatureConfiguration(80, 20, 1234567898), true);
+		setupMapSpacingAndLand(TITAN_SKULL.get(), new StructureFeatureConfiguration(80, 20, 1234567890), true);
+		setupMapSpacingAndLand(MOTHERDEMON.get(), new StructureFeatureConfiguration(80, 20, 1234567899), true);
+		setupMapSpacingAndLand(PORTAL.get(), new StructureFeatureConfiguration(80, 20, 1234567890), true);
+		setupMapSpacingAndLand(NETHERPORTAL.get(), new StructureFeatureConfiguration(80, 20, 1234567895), true);
 	}
 
-	public static <F extends Structure<?>> void setupMapSpacingAndLand(F structure,
-			StructureSeparationSettings structureSeparationSettings, boolean transformSurroundingLand) {
-		Structure.STRUCTURES_REGISTRY.put(structure.getRegistryName().toString(), structure);
+	public static <F extends StructureFeature<?>> void setupMapSpacingAndLand(F structure,
+			StructureFeatureConfiguration structureSeparationSettings, boolean transformSurroundingLand) {
+		StructureFeature.STRUCTURES_REGISTRY.put(structure.getRegistryName().toString(), structure);
 		if (transformSurroundingLand) {
-			Structure.NOISE_AFFECTING_FEATURES = ImmutableList.<Structure<?>>builder()
+			StructureFeature.NOISE_AFFECTING_FEATURES = ImmutableList.<StructureFeature<?>>builder()
 					.addAll(Structure.NOISE_AFFECTING_FEATURES).add(structure).build();
 		}
-		DimensionStructuresSettings.DEFAULTS = ImmutableMap.<Structure<?>, StructureSeparationSettings>builder()
+		DimensionStructuresSettings.DEFAULTS = ImmutableMap.<StructureFeature<?>, StructureSeparationSettings>builder()
 				.putAll(DimensionStructuresSettings.DEFAULTS).put(structure, structureSeparationSettings).build();
 
 		WorldGenRegistries.NOISE_GENERATOR_SETTINGS.entrySet().forEach(settings -> {

@@ -1,6 +1,7 @@
 package mod.azure.doom.item.weapons;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
@@ -8,24 +9,24 @@ import mod.azure.doom.client.render.weapons.SwordCrucibleRender;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.CrucibleLoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -45,25 +46,37 @@ public class SwordCrucibleItem extends Item implements IAnimatable, ISyncable {
 	public static final int ANIM_OPEN = 0;
 
 	public SwordCrucibleItem() {
-		super(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(5)
-				.setISTER(() -> SwordCrucibleRender::new));
+		super(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(5));
 		GeckoLibNetwork.registerSyncable(this);
 	}
 
 	@Override
-	public void releaseUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
-		if (entityLiving instanceof PlayerEntity) {
-			PlayerEntity playerentity = (PlayerEntity) entityLiving;
+	public void initializeClient(Consumer<IItemRenderProperties> consumer) {
+		super.initializeClient(consumer);
+		consumer.accept(new IItemRenderProperties() {
+			private final BlockEntityWithoutLevelRenderer renderer = new SwordCrucibleRender();
+
+			@Override
+			public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
+				return renderer;
+			}
+		});
+	}
+
+	@Override
+	public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
+		if (entityLiving instanceof Player) {
+			Player Player = (Player) entityLiving;
 			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
-				playerentity.getCooldowns().addCooldown(this, 200);
-				final AxisAlignedBB aabb = new AxisAlignedBB(entityLiving.blockPosition().above()).inflate(4D, 1D, 4D);
+				Player.getCooldowns().addCooldown(this, 200);
+				final AABB aabb = new AABB(entityLiving.blockPosition().above()).inflate(4D, 1D, 4D);
 				entityLiving.getCommandSenderWorld().getEntities(entityLiving, aabb)
 						.forEach(e -> doDamage(entityLiving, e));
 				stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
 				if (!worldIn.isClientSide) {
-					final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);
+					final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
 					final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
-							.with(() -> playerentity);
+							.with(() -> Player);
 					GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
 				}
 			}
@@ -73,7 +86,7 @@ public class SwordCrucibleItem extends Item implements IAnimatable, ISyncable {
 	private void doDamage(LivingEntity user, final Entity target) {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
-			target.hurt(DamageSource.playerAttack((PlayerEntity) user), 200F);
+			target.hurt(DamageSource.playerAttack((Player) user), 200F);
 		}
 	}
 
@@ -104,21 +117,20 @@ public class SwordCrucibleItem extends Item implements IAnimatable, ISyncable {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		tooltip.add(new TranslationTextComponent("doom.crucible_sword.text").withStyle(TextFormatting.RED)
-				.withStyle(TextFormatting.ITALIC));
-		tooltip.add(new TranslationTextComponent(
+	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+		tooltip.add(new TranslatableComponent("doom.crucible_sword.text").withStyle(ChatFormatting.RED)
+				.withStyle(ChatFormatting.ITALIC));
+		tooltip.add(new TranslatableComponent(
 				"Ammo: " + (stack.getMaxDamage() - stack.getDamageValue() - 1) + " / " + (stack.getMaxDamage() - 1))
-						.withStyle(TextFormatting.ITALIC));
+						.withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-		PlayerEntity playerentity = (PlayerEntity) entityIn;
+	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+		Player Player = (Player) entityIn;
 		if (worldIn.isClientSide) {
-			if (playerentity.getMainHandItem().getItem() instanceof SwordCrucibleItem) {
+			if (Player.getMainHandItem().getItem() instanceof SwordCrucibleItem) {
 				while (Keybindings.RELOAD.consumeClick() && isSelected) {
 					DoomPacketHandler.CRUCIBLE.sendToServer(new CrucibleLoadingPacket(itemSlot));
 				}
@@ -126,10 +138,10 @@ public class SwordCrucibleItem extends Item implements IAnimatable, ISyncable {
 		}
 	}
 
-	public static void reload(PlayerEntity user, Hand hand) {
+	public static void reload(Player user, InteractionHand hand) {
 		if (user.getItemInHand(hand).getItem() instanceof SwordCrucibleItem) {
 			while (user.getItemInHand(hand).getDamageValue() != 0
-					&& user.inventory.countItem(DoomItems.ARGENT_BLOCK.get()) > 0) {
+					&& user.getInventory().countItem(DoomItems.ARGENT_BLOCK.get()) > 0) {
 				removeAmmo(DoomItems.ARGENT_BLOCK.get(), user);
 				user.getItemInHand(hand).hurtAndBreak(-5, user, s -> user.broadcastBreakEvent(hand));
 				user.getItemInHand(hand).setPopTime(3);
@@ -137,14 +149,14 @@ public class SwordCrucibleItem extends Item implements IAnimatable, ISyncable {
 		}
 	}
 
-	public static void removeAmmo(Item ammo, PlayerEntity playerEntity) {
-		if (!playerEntity.isCreative()) {
-			for (ItemStack item : playerEntity.inventory.offhand) {
+	public static void removeAmmo(Item ammo, Player Player) {
+		if (!Player.isCreative()) {
+			for (ItemStack item : Player.getInventory().offhand) {
 				if (item.getItem() == ammo) {
 					item.shrink(1);
 					break;
 				}
-				for (ItemStack item1 : playerEntity.inventory.items) {
+				for (ItemStack item1 : Player.getInventory().items) {
 					if (item1.getItem() == ammo) {
 						item1.shrink(1);
 						break;
@@ -160,10 +172,10 @@ public class SwordCrucibleItem extends Item implements IAnimatable, ISyncable {
 	}
 
 	@Override
-	public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		ItemStack itemstack = player.getItemInHand(hand);
 		player.startUsingItem(hand);
-		return ActionResult.consume(itemstack);
+		return InteractionResultHolder.consume(itemstack);
 	}
 
 	@Override

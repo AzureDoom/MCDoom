@@ -1,11 +1,11 @@
 package mod.azure.doom.entity.attack;
 
 import mod.azure.doom.entity.DemonEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 
 public abstract class AbstractRangedAttack implements IRangedAttack {
 
@@ -64,12 +64,12 @@ public abstract class AbstractRangedAttack implements IRangedAttack {
 
 	public void shoot() {
 		LivingEntity livingentity = this.parentEntity.getTarget();
-		World world = this.parentEntity.getCommandSenderWorld();
-		Vector3d vector3d = this.parentEntity.getViewVector(1.0F);
+		Level world = this.parentEntity.getCommandSenderWorld();
+		Vec3 vector3d = this.parentEntity.getViewVector(1.0F);
 		double d2 = livingentity.getX() - (this.parentEntity.getX() + vector3d.x * xOffSetModifier);
 		double d3 = livingentity.getY(0.5D) - (this.parentEntity.getY(entityHeightFraction));
 		double d4 = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * zOffSetModifier);
-		ProjectileEntity projectile = getProjectile(world, rollAccuracy(d2), rollAccuracy(d3), rollAccuracy(d4));
+		Projectile projectile = getProjectile(world, rollAccuracy(d2), rollAccuracy(d3), rollAccuracy(d4));
 		projectile.setPos(this.parentEntity.getX() + vector3d.x * xOffSetModifier,
 				this.parentEntity.getY(entityHeightFraction), this.parentEntity.getZ() + vector3d.z * zOffSetModifier);
 		world.addFreshEntity(projectile);

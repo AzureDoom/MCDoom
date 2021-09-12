@@ -5,26 +5,26 @@ import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.play.server.SChangeGameStatePacket;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -34,17 +34,17 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class EnergyCellEntity extends AbstractArrowEntity implements IAnimatable {
+public class EnergyCellEntity extends AbstractArrow implements IAnimatable {
 
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
 
-	public EnergyCellEntity(EntityType<? extends AbstractArrowEntity> type, World world) {
+	public EnergyCellEntity(EntityType<? extends AbstractArrow> type, Level world) {
 		super(type, world);
 	}
 
-	public EnergyCellEntity(World world, LivingEntity owner) {
+	public EnergyCellEntity(Level world, LivingEntity owner) {
 		super(ModEntityTypes.ENERGY_CELL.get(), owner, world);
 	}
 
@@ -82,20 +82,20 @@ public class EnergyCellEntity extends AbstractArrowEntity implements IAnimatable
 	@Override
 	protected void doPostHurtEffects(LivingEntity living) {
 		super.doPostHurtEffects(living);
-		if (!(living instanceof PlayerEntity) && !(living instanceof IconofsinEntity)) {
+		if (!(living instanceof Player) && !(living instanceof IconofsinEntity)) {
 			living.setDeltaMovement(0, 0, 0);
 			living.invulnerableTime = 0;
 		}
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT compound) {
+	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putShort("life", (short) this.ticksInAir);
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.ticksInAir = compound.getShort("life");
 	}
@@ -104,11 +104,11 @@ public class EnergyCellEntity extends AbstractArrowEntity implements IAnimatable
 	public void tick() {
 		super.tick();
 		boolean flag = this.isNoPhysics();
-		Vector3d vector3d = this.getDeltaMovement();
+		Vec3 vector3d = this.getDeltaMovement();
 		if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
-			float f = MathHelper.sqrt(getHorizontalDistanceSqr(vector3d));
-			this.yRot = (float) (MathHelper.atan2(vector3d.x, vector3d.z) * (double) (180F / (float) Math.PI));
-			this.xRot = (float) (MathHelper.atan2(vector3d.y, (double) f) * (double) (180F / (float) Math.PI));
+			float f = Mth.sqrt(getHorizontalDistanceSqr(vector3d));
+			this.yRot = (float) (Mth.atan2(vector3d.x, vector3d.z) * (double) (180F / (float) Math.PI));
+			this.xRot = (float) (Mth.atan2(vector3d.y, (double) f) * (double) (180F / (float) Math.PI));
 			this.yRotO = this.yRot;
 			this.xRotO = this.xRot;
 		}
@@ -123,28 +123,28 @@ public class EnergyCellEntity extends AbstractArrowEntity implements IAnimatable
 			++this.timeInAir;
 		} else {
 			this.timeInAir = 0;
-			Vector3d vector3d2 = this.position();
-			Vector3d vector3d3 = vector3d2.add(vector3d);
-			RayTraceResult raytraceresult = this.level.clip(new RayTraceContext(vector3d2, vector3d3,
-					RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
-			if (raytraceresult.getType() != RayTraceResult.Type.MISS) {
+			Vec3 vector3d2 = this.position();
+			Vec3 vector3d3 = vector3d2.add(vector3d);
+			HitResult raytraceresult = this.level.clip(new ClipContext(vector3d2, vector3d3,
+					ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+			if (raytraceresult.getType() != HitResult.Type.MISS) {
 				vector3d3 = raytraceresult.getLocation();
 			}
 			while (this.isAlive()) {
-				EntityRayTraceResult entityraytraceresult = this.findHitEntity(vector3d2, vector3d3);
+				EntityHitResult entityraytraceresult = this.findHitEntity(vector3d2, vector3d3);
 				if (entityraytraceresult != null) {
 					raytraceresult = entityraytraceresult;
 				}
-				if (raytraceresult != null && raytraceresult.getType() == RayTraceResult.Type.ENTITY) {
-					Entity entity = ((EntityRayTraceResult) raytraceresult).getEntity();
+				if (raytraceresult != null && raytraceresult.getType() == HitResult.Type.ENTITY) {
+					Entity entity = ((EntityHitResult) raytraceresult).getEntity();
 					Entity entity1 = this.getOwner();
-					if (entity instanceof PlayerEntity && entity1 instanceof PlayerEntity
-							&& !((PlayerEntity) entity1).canHarmPlayer((PlayerEntity) entity)) {
+					if (entity instanceof Player && entity1 instanceof Player
+							&& !((Player) entity1).canHarmPlayer((Player) entity)) {
 						raytraceresult = null;
 						entityraytraceresult = null;
 					}
 				}
-				if (raytraceresult != null && raytraceresult.getType() != RayTraceResult.Type.MISS && !flag
+				if (raytraceresult != null && raytraceresult.getType() != HitResult.Type.MISS && !flag
 						&& !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
 					this.onHit(raytraceresult);
 					this.hasImpulse = true;
@@ -161,19 +161,19 @@ public class EnergyCellEntity extends AbstractArrowEntity implements IAnimatable
 			double d5 = this.getX() + d3;
 			double d1 = this.getY() + d4;
 			double d2 = this.getZ() + d0;
-			float f1 = MathHelper.sqrt(getHorizontalDistanceSqr(vector3d));
+			float f1 = Mth.sqrt(getHorizontalDistanceSqr(vector3d));
 			if (flag) {
-				this.yRot = (float) (MathHelper.atan2(-d3, -d0) * (double) (180F / (float) Math.PI));
+				this.yRot = (float) (Mth.atan2(-d3, -d0) * (double) (180F / (float) Math.PI));
 			} else {
-				this.yRot = (float) (MathHelper.atan2(d3, d0) * (double) (180F / (float) Math.PI));
+				this.yRot = (float) (Mth.atan2(d3, d0) * (double) (180F / (float) Math.PI));
 			}
-			this.xRot = (float) (MathHelper.atan2(d4, (double) f1) * (double) (180F / (float) Math.PI));
+			this.xRot = (float) (Mth.atan2(d4, (double) f1) * (double) (180F / (float) Math.PI));
 			this.xRot = lerpRotation(this.xRotO, this.xRot);
 			this.yRot = lerpRotation(this.yRotO, this.yRot);
 			float f2 = 0.99F;
 			this.setDeltaMovement(vector3d.scale((double) f2));
 			if (!this.isNoGravity() && !flag) {
-				Vector3d vector3d4 = this.getDeltaMovement();
+				Vec3 vector3d4 = this.getDeltaMovement();
 				this.setDeltaMovement(vector3d4.x, vector3d4.y - (double) 0.05F, vector3d4.z);
 			}
 			this.setPos(d5, d1, d2);
@@ -187,7 +187,7 @@ public class EnergyCellEntity extends AbstractArrowEntity implements IAnimatable
 	}
 
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
@@ -203,7 +203,7 @@ public class EnergyCellEntity extends AbstractArrowEntity implements IAnimatable
 	public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();
 
 	@Override
-	protected void onHitBlock(BlockRayTraceResult p_230299_1_) {
+	protected void onHitBlock(BlockHitResult p_230299_1_) {
 		super.onHitBlock(p_230299_1_);
 		this.setSoundEvent(ModSoundEvents.PLASMA_HIT.get());
 	}
@@ -224,10 +224,10 @@ public class EnergyCellEntity extends AbstractArrowEntity implements IAnimatable
 	}
 
 	@Override
-	protected void onHitEntity(EntityRayTraceResult entityHitResult) {
+	protected void onHitEntity(EntityHitResult entityHitResult) {
 		Entity entity = entityHitResult.getEntity();
-		if (entityHitResult.getType() != RayTraceResult.Type.ENTITY
-				|| !((EntityRayTraceResult) entityHitResult).getEntity().is(entity)) {
+		if (entityHitResult.getType() != HitResult.Type.ENTITY
+				|| !((EntityHitResult) entityHitResult).getEntity().is(entity)) {
 			if (!this.level.isClientSide) {
 				this.remove();
 			}
@@ -250,10 +250,10 @@ public class EnergyCellEntity extends AbstractArrowEntity implements IAnimatable
 					EnchantmentHelper.doPostDamageEffects((LivingEntity) entity1, livingentity);
 				}
 				this.doPostHurtEffects(livingentity);
-				if (entity1 != null && livingentity != entity1 && livingentity instanceof PlayerEntity
-						&& entity1 instanceof ServerPlayerEntity && !this.isSilent()) {
-					((ServerPlayerEntity) entity1).connection
-							.send(new SChangeGameStatePacket(SChangeGameStatePacket.ARROW_HIT_PLAYER, 0.0F));
+				if (entity1 != null && livingentity != entity1 && livingentity instanceof Player
+						&& entity1 instanceof ServerPlayer && !this.isSilent()) {
+					((ServerPlayer) entity1).connection
+							.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
 				}
 			}
 		} else {
@@ -264,10 +264,10 @@ public class EnergyCellEntity extends AbstractArrowEntity implements IAnimatable
 	}
 
 	@Override
-	protected void onHit(RayTraceResult result) {
+	protected void onHit(HitResult result) {
 		super.onHit(result);
 		Entity entity = this.getOwner();
-		if (result.getType() != RayTraceResult.Type.ENTITY || !((EntityRayTraceResult) result).getEntity().is(entity)) {
+		if (result.getType() != HitResult.Type.ENTITY || !((EntityHitResult) result).getEntity().is(entity)) {
 			if (!this.level.isClientSide) {
 				this.remove();
 			}

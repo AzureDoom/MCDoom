@@ -4,9 +4,9 @@ import java.util.EnumSet;
 import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.controller.MovementController;
-import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 public class RandomFlyConvergeOnTargetGoal extends Goal {
 	private final DemonEntity parentEntity;
@@ -30,7 +30,7 @@ public class RandomFlyConvergeOnTargetGoal extends Goal {
 	}
 
 	public boolean canUse() {
-		MovementController movementcontroller = this.parentEntity.getMoveControl();
+		MoveControl movementcontroller = this.parentEntity.getMoveControl();
 		if (!movementcontroller.hasWanted()) {
 			return true;
 		} else {

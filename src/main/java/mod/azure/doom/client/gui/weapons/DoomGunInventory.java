@@ -1,12 +1,12 @@
 package mod.azure.doom.client.gui.weapons;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.NonNullList;
 
-public class DoomGunInventory implements IInventory {
+public class DoomGunInventory implements Container {
 	private final GunTableScreenHandler container;
 
 	private final NonNullList<ItemStack> stacks;
@@ -38,7 +38,7 @@ public class DoomGunInventory implements IInventory {
 
 	@Override
 	public ItemStack removeItem(int slot, int amount) {
-		ItemStack itemStack = ItemStackHelper.removeItem(this.stacks, slot, amount);
+		ItemStack itemStack = ContainerHelper.removeItem(this.stacks, slot, amount);
 		if (!itemStack.isEmpty() && slot != 5) {
 			this.container.onContentChanged(this);
 		}
@@ -47,7 +47,7 @@ public class DoomGunInventory implements IInventory {
 
 	@Override
 	public ItemStack removeItemNoUpdate(int slot) {
-		return ItemStackHelper.takeItem(this.stacks, slot);
+		return ContainerHelper.takeItem(this.stacks, slot);
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class DoomGunInventory implements IInventory {
 	}
 
 	@Override
-	public boolean stillValid(PlayerEntity p_70300_1_) {
+	public boolean stillValid(Player p_70300_1_) {
 		return true;
 	}
 
