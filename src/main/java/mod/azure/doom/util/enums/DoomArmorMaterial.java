@@ -3,58 +3,59 @@ package mod.azure.doom.util.enums;
 import java.util.function.Supplier;
 
 import mod.azure.doom.util.registry.DoomItems;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.util.LazyLoadedValue;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+@SuppressWarnings("deprecation")
 public enum DoomArmorMaterial implements ArmorMaterial {
 	DOOM_ARMOR("doomweapon:doom_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F,
 			() -> {
 				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
 			}),
-	PRAETOR_DOOM_ARMOR("doomweapon:praetor_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
-			SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F, () -> {
-				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
-			}),
-	CLASSIC_DOOM_ARMOR("doomweapon:classic_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
-			SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F, () -> {
-				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
-			}),
-	MIDNIGHT_DOOM_ARMOR("doomweapon:midnight_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
-			SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F, () -> {
-				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
-			}),
-	ASTRO_DOOM_ARMOR("doomweapon:astro_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC,
+	PRAETOR_DOOM_ARMOR("doomweapon:praetor_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC,
 			8.0F, () -> {
+				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
+			}),
+	CLASSIC_DOOM_ARMOR("doomweapon:classic_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC,
+			8.0F, () -> {
+				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
+			}),
+	MIDNIGHT_DOOM_ARMOR("doomweapon:midnight_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC,
+			8.0F, () -> {
+				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
+			}),
+	ASTRO_DOOM_ARMOR("doomweapon:astro_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F,
+			() -> {
 				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
 			}),
 	DEMONCIDE_DOOM_ARMOR("doomweapon:demoncide_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
 			SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F, () -> {
 				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
 			}),
-	DEMONIC_DOOM_ARMOR("doomweapon:demonic_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
-			SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F, () -> {
-				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
-			}),
-	HOTROD_DOOM_ARMOR("doomweapon:hotrod_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
-			SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F, () -> {
-				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
-			}),
-	SENTINEL_DOOM_ARMOR("doomweapon:sentinel_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
-			SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F, () -> {
-				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
-			}),
-	EMBER_DOOM_ARMOR("doomweapon:ember_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC,
+	DEMONIC_DOOM_ARMOR("doomweapon:demonic_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC,
 			8.0F, () -> {
 				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
 			}),
-	ZOMBIE_DOOM_ARMOR("doomweapon:zombie_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
-			SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F, () -> {
+	HOTROD_DOOM_ARMOR("doomweapon:hotrod_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC,
+			8.0F, () -> {
+				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
+			}),
+	SENTINEL_DOOM_ARMOR("doomweapon:sentinel_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC,
+			8.0F, () -> {
+				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
+			}),
+	EMBER_DOOM_ARMOR("doomweapon:ember_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F,
+			() -> {
+				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
+			}),
+	ZOMBIE_DOOM_ARMOR("doomweapon:zombie_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC,
+			8.0F, () -> {
 				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
 			}),
 	DOOMICORN_DOOM_ARMOR("doomweapon:doomicorn_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
@@ -69,8 +70,8 @@ public enum DoomArmorMaterial implements ArmorMaterial {
 			SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F, () -> {
 				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
 			}),
-	PHOBOS_DOOM_ARMOR("doomweapon:phobos_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
-			SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F, () -> {
+	PHOBOS_DOOM_ARMOR("doomweapon:phobos_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC,
+			8.0F, () -> {
 				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
 			}),
 	CLASSIC_RED_ARMOR("doomweapon:classic_red_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
@@ -105,24 +106,24 @@ public enum DoomArmorMaterial implements ArmorMaterial {
 			8.0F, () -> {
 				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
 			}),
-	BRONZE_DOOM_ARMOR("doomweapon:bronze_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
-			SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F, () -> {
-				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
-			}),
-	PAINTER_DOOM_ARMOR("doomweapon:painter_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
-			SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F, () -> {
-				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
-			}),
-	CULTIST_DOOM_ARMOR("doomweapon:cultist_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
-			SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F, () -> {
-				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
-			}),
-	MAYKR_DOOM_ARMOR("doomweapon:maykr_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC,
+	BRONZE_DOOM_ARMOR("doomweapon:bronze_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC,
 			8.0F, () -> {
 				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
 			}),
-	CRIMSON_DOOM_ARMOR("doomweapon:crimson_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
-			SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F, () -> {
+	PAINTER_DOOM_ARMOR("doomweapon:painter_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC,
+			8.0F, () -> {
+				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
+			}),
+	CULTIST_DOOM_ARMOR("doomweapon:cultist_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC,
+			8.0F, () -> {
+				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
+			}),
+	MAYKR_DOOM_ARMOR("doomweapon:maykr_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F,
+			() -> {
+				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
+			}),
+	CRIMSON_DOOM_ARMOR("doomweapon:crimson_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC,
+			8.0F, () -> {
 				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
 			});
 

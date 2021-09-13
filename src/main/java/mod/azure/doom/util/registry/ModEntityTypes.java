@@ -7,7 +7,6 @@ import mod.azure.doom.entity.projectiles.BarrelEntity;
 import mod.azure.doom.entity.projectiles.BulletEntity;
 import mod.azure.doom.entity.projectiles.ChaingunBulletEntity;
 import mod.azure.doom.entity.projectiles.EnergyCellEntity;
-import mod.azure.doom.entity.projectiles.HookEntity;
 import mod.azure.doom.entity.projectiles.RocketEntity;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import mod.azure.doom.entity.projectiles.UnmaykrBoltEntity;
@@ -79,25 +78,21 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ModEntityTypes {
 
 	public static final DeferredRegister<BlockEntityType<?>> TILE_TYPES = DeferredRegister
-			.create(ForgeRegistries.TILE_ENTITIES, DoomMod.MODID);
+			.create(ForgeRegistries.BLOCK_ENTITIES, DoomMod.MODID);
 
 	public static final RegistryObject<BlockEntityType<IconBlockEntity>> ICON = TILE_TYPES.register("icon",
 			() -> BlockEntityType.Builder.<IconBlockEntity>of(IconBlockEntity::new, DoomBlocks.DOOM_WALL1.get())
 					.build(null));
 
 	public static final RegistryObject<BlockEntityType<TotemEntity>> TOTEM = TILE_TYPES.register("totem",
-			() -> BlockEntityType.Builder.<TotemEntity>of(TotemEntity::new, DoomBlocks.TOTEM.get()).build(null));
+			() -> BlockEntityType.Builder.of(TotemEntity::new, DoomBlocks.TOTEM.get()).build(null));
 
 	public static final RegistryObject<BlockEntityType<GunBlockEntity>> GUN_TABLE_ENTITY = TILE_TYPES
 			.register("guntable", () -> BlockEntityType.Builder
-					.<GunBlockEntity>of(GunBlockEntity::new, DoomBlocks.GUN_TABLE.get()).build(null));
+					.of(GunBlockEntity::new, DoomBlocks.GUN_TABLE.get()).build(null));
 
 	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES,
 			DoomMod.MODID);
-
-	public static final RegistryObject<EntityType<HookEntity>> HOOK = ENTITY_TYPES.register("hook",
-			() -> EntityType.Builder.<HookEntity>of(HookEntity::new, MobCategory.MISC).sized(0.5F, 0.8F)
-					.clientTrackingRange(10).build(new ResourceLocation(DoomMod.MODID, "hook").toString()));
 
 	public static final RegistryObject<EntityType<DoomFireEntity>> FIRING = ENTITY_TYPES.register("archvile_firing",
 			() -> EntityType.Builder.<DoomFireEntity>of(DoomFireEntity::new, MobCategory.MISC).sized(0.5F, 0.8F)

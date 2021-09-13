@@ -2,8 +2,6 @@ package mod.azure.doom.entity.tiersuperheavy;
 
 import java.util.Random;
 
-import javax.annotation.Nullable;
-
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
@@ -11,42 +9,38 @@ import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.config.EntityConfig;
 import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.entity.CreatureAttribute;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.DamageSource;
-import net.minecraft.core.Direction;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -128,8 +122,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static boolean spawning(EntityType<DoomHunterEntity> p_223337_0_, LevelAccessor p_223337_1_, MobSpawnType reason,
-			BlockPos p_223337_3_, Random p_223337_4_) {
+	public static boolean spawning(EntityType<DoomHunterEntity> p_223337_0_, LevelAccessor p_223337_1_,
+			MobSpawnType reason, BlockPos p_223337_3_, Random p_223337_4_) {
 		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223337_3_, p_223337_4_);
 	}
 
@@ -154,7 +148,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 
 	@Override
 	protected void updateControlFlags() {
-		boolean flag = this.getTarget() != null && this.canSee(this.getTarget());
+		boolean flag = this.getTarget() != null && this.hasLineOfSight(this.getTarget());
 		this.goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
 		super.updateControlFlags();
 	}
@@ -198,7 +192,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 				this.mob.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
 				double d0 = this.mob.distanceToSqr(livingentity.getX(), livingentity.getY(), livingentity.getZ());
 				this.ticksUntilNextPathRecalculation = Math.max(this.ticksUntilNextPathRecalculation - 1, 0);
-				if ((this.followingTargetEvenIfNotSeen || this.mob.getSensing().canSee(livingentity))
+				if ((this.followingTargetEvenIfNotSeen || this.mob.getSensing().hasLineOfSight(livingentity))
 						&& this.ticksUntilNextPathRecalculation <= 0
 						&& (this.pathedTargetX == 0.0D && this.pathedTargetY == 0.0D && this.pathedTargetZ == 0.0D
 								|| livingentity.distanceToSqr(this.pathedTargetX, this.pathedTargetY,
@@ -211,8 +205,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 					if (this.canPenalize) {
 						this.ticksUntilNextPathRecalculation += failedPathFindingPenalty;
 						if (this.mob.getNavigation().getPath() != null) {
-							net.minecraft.world.level.pathfinder.Node finalPathPoint = this.mob.getNavigation().getPath()
-									.getEndNode();
+							net.minecraft.world.level.pathfinder.Node finalPathPoint = this.mob.getNavigation()
+									.getPath().getEndNode();
 							if (finalPathPoint != null && livingentity.distanceToSqr(finalPathPoint.x, finalPathPoint.y,
 									finalPathPoint.z) < 1)
 								failedPathFindingPenalty = 0;
@@ -286,7 +280,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 
 		public void tick() {
 			LivingEntity livingentity = this.parentEntity.getTarget();
-			if (this.parentEntity.canSee(livingentity)) {
+			if (this.parentEntity.hasLineOfSight(livingentity)) {
 				Level world = this.parentEntity.level;
 				++this.attackTimer;
 				Vec3 vector3d = this.parentEntity.getViewVector(1.0F);
@@ -375,14 +369,6 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 		return 6.05F;
 	}
 
-	@Nullable
-	@Override
-	public ILivingEntityData finalizeSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason,
-			@Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
-		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-		return spawnDataIn;
-	}
-
 	@Override
 	protected SoundEvent getAmbientSound() {
 		return ModSoundEvents.DOOMHUNTER_AMBIENT.get();
@@ -399,8 +385,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public CreatureAttribute getMobType() {
-		return CreatureAttribute.UNDEAD;
+	public MobType getMobType() {
+		return MobType.UNDEAD;
 	}
 
 	@Override
@@ -426,8 +412,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 		flameTimer = (flameTimer + 1) % 8;
 		if (this.getHealth() < 75.0D) {
 			if (!this.level.isClientSide) {
-				this.addEffect(new EffectInstance(Effects.MOVEMENT_SPEED, 10000000, 2));
-				this.addEffect(new EffectInstance(Effects.WEAKNESS, 10000000, 1));
+				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 10000000, 2));
+				this.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 10000000, 1));
 			}
 		}
 	}

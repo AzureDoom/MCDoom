@@ -9,6 +9,13 @@ import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.config.EntityConfig;
 import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
 import mod.azure.doom.util.registry.ModEntityTypes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -16,16 +23,9 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -64,7 +64,7 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public void knockback(float strength, double ratioX, double ratioZ) {
+	public void knockback(double strength, double x, double z) {
 		super.knockback(0, 0, 0);
 	}
 
@@ -87,8 +87,8 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static boolean spawning(EntityType<GoreNestEntity> p_223337_0_, LevelAccessor p_223337_1_, MobSpawnType reason,
-			BlockPos p_223337_3_, Random p_223337_4_) {
+	public static boolean spawning(EntityType<GoreNestEntity> p_223337_0_, LevelAccessor p_223337_1_,
+			MobSpawnType reason, BlockPos p_223337_3_, Random p_223337_4_) {
 		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223337_3_, p_223337_4_);
 	}
 
@@ -96,7 +96,7 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable {
 	protected void tickDeath() {
 		++this.deathTime;
 		if (this.deathTime == 60) {
-			this.remove();
+			this.remove(RemovalReason.KILLED);
 		}
 	}
 
@@ -114,7 +114,7 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable {
 		if (!(damageSrc.getEntity() instanceof Player)) {
 			this.setHealth(5.0F);
 		} else {
-			this.remove();
+			this.remove(RemovalReason.KILLED);
 		}
 	}
 

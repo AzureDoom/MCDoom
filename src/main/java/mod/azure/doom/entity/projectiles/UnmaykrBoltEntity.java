@@ -4,28 +4,28 @@ import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModEntityTypes;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.util.Mth;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 public class UnmaykrBoltEntity extends AbstractArrow {
 
@@ -54,7 +54,7 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 	protected void tickDespawn() {
 		++this.ticksInAir;
 		if (this.tickCount >= 40) {
-			this.remove();
+			this.remove(RemovalReason.KILLED);
 		}
 	}
 
@@ -75,7 +75,7 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 		super.readAdditionalSaveData(compound);
 		this.ticksInAir = compound.getShort("life");
 	}
-	
+
 	@Override
 	public double getBaseDamage() {
 		return 0D;
@@ -96,15 +96,15 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 		boolean flag = this.isNoPhysics();
 		Vec3 vector3d = this.getDeltaMovement();
 		if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
-			float f = Mth.sqrt(getHorizontalDistanceSqr(vector3d));
+			double f = vector3d.horizontalDistance();
 			this.yRot = (float) (Mth.atan2(vector3d.x, vector3d.z) * (double) (180F / (float) Math.PI));
 			this.xRot = (float) (Mth.atan2(vector3d.y, (double) f) * (double) (180F / (float) Math.PI));
-			this.yRotO = this.yRot;
-			this.xRotO = this.xRot;
+			this.yRotO = this.getYRot();
+			this.xRotO = this.getXRot();
 		}
 
 		if (this.tickCount >= 600) {
-			this.remove();
+			this.remove(RemovalReason.KILLED);
 		}
 
 		if (this.inAir && !flag) {
@@ -115,8 +115,8 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 			this.timeInAir = 0;
 			Vec3 vector3d2 = this.position();
 			Vec3 vector3d3 = vector3d2.add(vector3d);
-			HitResult raytraceresult = this.level.clip(new ClipContext(vector3d2, vector3d3,
-					ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+			HitResult raytraceresult = this.level.clip(
+					new ClipContext(vector3d2, vector3d3, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
 			if (raytraceresult.getType() != HitResult.Type.MISS) {
 				vector3d3 = raytraceresult.getLocation();
 			}
@@ -151,15 +151,15 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 			double d5 = this.getX() + d3;
 			double d1 = this.getY() + d4;
 			double d2 = this.getZ() + d0;
-			float f1 = Mth.sqrt(getHorizontalDistanceSqr(vector3d));
+			double f1 = vector3d.horizontalDistance();
 			if (flag) {
 				this.yRot = (float) (Mth.atan2(-d3, -d0) * (double) (180F / (float) Math.PI));
 			} else {
 				this.yRot = (float) (Mth.atan2(d3, d0) * (double) (180F / (float) Math.PI));
 			}
 			this.xRot = (float) (Mth.atan2(d4, (double) f1) * (double) (180F / (float) Math.PI));
-			this.xRot = lerpRotation(this.xRotO, this.xRot);
-			this.yRot = lerpRotation(this.yRotO, this.yRot);
+			this.xRot = lerpRotation(this.xRotO, this.getXRot());
+			this.yRot = lerpRotation(this.yRotO, this.getYRot());
 			float f2 = 0.99F;
 			this.setDeltaMovement(vector3d.scale((double) f2));
 			if (!this.isNoGravity() && !flag) {
@@ -214,7 +214,7 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 		if (entityHitResult.getType() != HitResult.Type.ENTITY
 				|| !((EntityHitResult) entityHitResult).getEntity().is(entity)) {
 			if (!this.level.isClientSide) {
-				this.remove();
+				this.remove(RemovalReason.KILLED);
 			}
 		}
 		Entity entity1 = this.getOwner();
@@ -243,7 +243,7 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 			}
 		} else {
 			if (!this.level.isClientSide) {
-				this.remove();
+				this.remove(RemovalReason.KILLED);
 			}
 		}
 	}
@@ -252,10 +252,9 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 	protected void onHit(HitResult result) {
 		super.onHit(result);
 		Entity entity = this.getOwner();
-		if (result.getType() != HitResult.Type.ENTITY
-				|| !((EntityHitResult) result).getEntity().is(entity)) {
+		if (result.getType() != HitResult.Type.ENTITY || !((EntityHitResult) result).getEntity().is(entity)) {
 			if (!this.level.isClientSide) {
-				this.remove();
+				this.remove(RemovalReason.KILLED);
 			}
 		}
 	}

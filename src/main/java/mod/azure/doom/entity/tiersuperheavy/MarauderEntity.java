@@ -5,8 +5,6 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
-import com.mojang.math.Vector3d;
-
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.RangedStaticAttackGoal;
@@ -18,29 +16,25 @@ import mod.azure.doom.util.config.EntityConfig;
 import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -56,7 +50,9 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -120,8 +116,8 @@ public class MarauderEntity extends DemonEntity implements IAnimatable {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static boolean spawning(EntityType<MarauderEntity> p_223337_0_, LevelAccessor p_223337_1_, MobSpawnType reason,
-			BlockPos p_223337_3_, Random p_223337_4_) {
+	public static boolean spawning(EntityType<MarauderEntity> p_223337_0_, LevelAccessor p_223337_1_,
+			MobSpawnType reason, BlockPos p_223337_3_, Random p_223337_4_) {
 		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223337_3_, p_223337_4_);
 	}
 
@@ -144,6 +140,11 @@ public class MarauderEntity extends DemonEntity implements IAnimatable {
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
+	}
+
+	public static AttributeSupplier.Builder createAttributes() {
+		return config.pushAttributes(Mob.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 50D));
 	}
 
 	public class FireballAttack extends AbstractRangedAttack {
@@ -178,14 +179,15 @@ public class MarauderEntity extends DemonEntity implements IAnimatable {
 		private int aggroTime;
 		private int teleportTime;
 		private final TargetingConditions startAggroTargetConditions;
-		private final TargetingConditions continueAggroTargetConditions = (new TargetingConditions()).allowUnseeable();
+		private final TargetingConditions continueAggroTargetConditions = TargetingConditions.forCombat()
+				.ignoreLineOfSight();
 
 		public FindPlayerGoal(MarauderEntity p_i241912_1_, @Nullable Predicate<LivingEntity> p_i241912_2_) {
-			super(p_i241912_1_, PlayerEntity.class, 10, false, false, p_i241912_2_);
+			super(p_i241912_1_, Player.class, 10, false, false, p_i241912_2_);
 			this.enderman = p_i241912_1_;
-			this.startAggroTargetConditions = (new EntityPredicate()).range(this.getFollowDistance())
-					.selector((p_220790_1_) -> {
-						return p_i241912_1_.isLookingAtMe((PlayerEntity) p_220790_1_);
+			this.startAggroTargetConditions = TargetingConditions.forCombat().range(this.getFollowDistance())
+					.selector((p_32578_) -> {
+						return p_i241912_1_.isLookingAtMe((Player) p_32578_);
 					});
 		}
 
@@ -239,14 +241,14 @@ public class MarauderEntity extends DemonEntity implements IAnimatable {
 		}
 	}
 
-	private boolean isLookingAtMe(PlayerEntity p_70821_1_) {
-		Vector3d vector3d = p_70821_1_.getViewVector(1.0F).normalize();
-		Vector3d vector3d1 = new Vector3d(this.getX() - p_70821_1_.getX(), this.getEyeY() - p_70821_1_.getEyeY(),
-				this.getZ() - p_70821_1_.getZ());
+	private boolean isLookingAtMe(Player player) {
+		Vec3 vector3d = player.getViewVector(1.0F).normalize();
+		Vec3 vector3d1 = new Vec3(this.getX() - player.getX(), this.getEyeY() - player.getEyeY(),
+				this.getZ() - player.getZ());
 		double d0 = vector3d1.length();
 		vector3d1 = vector3d1.normalize();
 		double d1 = vector3d.dot(vector3d1);
-		return d1 > 1.0D - 0.025D / d0 ? p_70821_1_.canSee(this) : false;
+		return d1 > 1.0D - 0.025D / d0 ? player.hasLineOfSight(this) : false;
 	}
 
 	@Override
@@ -293,54 +295,54 @@ public class MarauderEntity extends DemonEntity implements IAnimatable {
 	}
 
 	private boolean teleportTowards(Entity p_70816_1_) {
-		Vector3d vector3d = new Vector3d(this.getX() - p_70816_1_.getX(), this.getY(0.5D) - p_70816_1_.getEyeY(),
+		Vec3 vec3 = new Vec3(this.getX() - p_70816_1_.getX(), this.getY(0.5D) - p_70816_1_.getEyeY(),
 				this.getZ() - p_70816_1_.getZ());
-		vector3d = vector3d.normalize();
-		double d1 = this.getX() + (this.random.nextDouble() - 0.5D) * 8.0D - vector3d.x * 16.0D;
-		double d2 = this.getY() + (double) (this.random.nextInt(16) - 8) - vector3d.y * 16.0D;
-		double d3 = this.getZ() + (this.random.nextDouble() - 0.5D) * 8.0D - vector3d.z * 16.0D;
+		vec3 = vec3.normalize();
+		double d1 = this.getX() + (this.random.nextDouble() - 0.5D) * 8.0D - vec3.x * 10.0D;
+		double d2 = this.getY() + (double) (this.random.nextInt(16) - 8) - vec3.y * 10.0D;
+		double d3 = this.getZ() + (this.random.nextDouble() - 0.5D) * 8.0D - vec3.z * 10.0D;
 		return this.teleport(d1, d2, d3);
 	}
 
-	@SuppressWarnings("deprecation")
-	private boolean teleport(double p_70825_1_, double p_70825_3_, double p_70825_5_) {
-		BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable(p_70825_1_, p_70825_3_, p_70825_5_);
-		while (blockpos$mutable.getY() > 0
-				&& !this.level.getBlockState(blockpos$mutable).getMaterial().blocksMotion()) {
-			blockpos$mutable.move(Direction.DOWN);
+	private boolean teleport(double p_32544_, double p_32545_, double p_32546_) {
+		BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos(p_32544_, p_32545_, p_32546_);
+
+		while (blockpos$mutableblockpos.getY() > this.level.getMinBuildHeight()
+				&& !this.level.getBlockState(blockpos$mutableblockpos).getMaterial().blocksMotion()) {
+			blockpos$mutableblockpos.move(Direction.DOWN);
 		}
 
-		BlockState blockstate = this.level.getBlockState(blockpos$mutable);
+		BlockState blockstate = this.level.getBlockState(blockpos$mutableblockpos);
 		boolean flag = blockstate.getMaterial().blocksMotion();
 		boolean flag1 = blockstate.getFluidState().is(FluidTags.WATER);
 		if (flag && !flag1) {
-			net.minecraftforge.event.entity.living.EnderTeleportEvent event = new net.minecraftforge.event.entity.living.EnderTeleportEvent(
-					this, p_70825_1_, p_70825_3_, p_70825_5_, 0);
-			if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event))
+			net.minecraftforge.event.entity.EntityTeleportEvent.EnderEntity event = net.minecraftforge.event.ForgeEventFactory
+					.onEnderTeleport(this, p_32544_, p_32545_, p_32546_);
+			if (event.isCanceled())
 				return false;
 			boolean flag2 = this.randomTeleport(event.getTargetX(), event.getTargetY(), event.getTargetZ(), true);
+			if (flag2 && !this.isSilent()) {
+				this.level.playSound((Player) null, this.xo, this.yo, this.zo, SoundEvents.ENDERMAN_TELEPORT,
+						this.getSoundSource(), 1.0F, 1.0F);
+				this.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0F, 1.0F);
+			}
+
 			return flag2;
 		} else {
 			return false;
 		}
 	}
 
-	public static AttributeSupplier.Builder createAttributes() {
-		return config.pushAttributes(Mob.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 50D));
-	}
-
 	@Override
 	protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
 		super.populateDefaultEquipmentSlots(difficulty);
-		this.setItemSlot(EquipmentSlotType.MAINHAND, new ItemStack(DoomItems.ARGENT_AXE.get()));
-		this.setItemSlot(EquipmentSlotType.OFFHAND, new ItemStack(DoomItems.SG.get()));
+		this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(DoomItems.ARGENT_AXE.get()));
+		this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(DoomItems.SG.get()));
 	}
 
-	@Nullable
 	@Override
-	public ILivingEntityData finalizeSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason,
-			@Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
+			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 		this.populateDefaultEquipmentSlots(difficultyIn);
 		this.populateDefaultEquipmentEnchantments(difficultyIn);
@@ -372,8 +374,8 @@ public class MarauderEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public CreatureAttribute getMobType() {
-		return CreatureAttribute.UNDEAD;
+	public MobType getMobType() {
+		return MobType.UNDEAD;
 	}
 
 	@Override

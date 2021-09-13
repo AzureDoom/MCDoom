@@ -12,9 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
-import net.minecraft.world.gen.feature.structure.AbstractVillagePiece;
-import net.minecraft.world.gen.feature.structure.VillageConfig;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
@@ -27,8 +24,11 @@ import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.structures.JigsawPlacement;
+import net.minecraft.world.level.levelgen.structure.PoolElementStructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 
@@ -37,6 +37,7 @@ public class ArchMaykrStructure extends StructureFeature<NoneFeatureConfiguratio
 		super(codec);
 	}
 
+	@Override
 	public StructureFeature.StructureStartFactory<NoneFeatureConfiguration> getStartFactory() {
 		return ArchMaykrStructure.FeatureStart::new;
 	}
@@ -99,13 +100,15 @@ public class ArchMaykrStructure extends StructureFeature<NoneFeatureConfiguratio
 			int x = (pos.x << 4) + 7;
 			int z = (pos.z << 4) + 7;
 			BlockPos blockpos = new BlockPos(x, 0, z);
-			JigsawManager.addPieces(dynamicRegistryManager,
-					new VillageConfig(() -> dynamicRegistryManager.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY)
-							.get(new ResourceLocation(DoomMod.MODID, "archmaykr/start_pool")), 10),
-					AbstractVillagePiece::new, chunkGenerator, templateManagerIn, blockpos, this.pieces, this.random,
-					false, true);
+			JigsawConfiguration structureSettingsAndStartPool = new JigsawConfiguration(
+					() -> dynamicRegistryManager.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY)
+							.get(new ResourceLocation(DoomMod.MODID, "archmaykr/start_pool")),
+					10);
+			JigsawPlacement.addPieces(dynamicRegistryManager, structureSettingsAndStartPool,
+					PoolElementStructurePiece::new, chunkGenerator, templateManagerIn, blockpos, this, this.random,
+					false, false, p_163621_);
 			this.pieces.forEach(piece -> piece.move(0, 0, 0));
-			this.pieces.forEach(piece -> piece.getBoundingBox().yo -= 1);
+			this.pieces.forEach(piece -> piece.getBoundingBox().minY -= 1);
 			this.createBoundingBox();
 		}
 	}

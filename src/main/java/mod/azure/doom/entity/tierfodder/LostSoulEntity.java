@@ -3,8 +3,6 @@ package mod.azure.doom.entity.tierfodder;
 import java.util.EnumSet;
 import java.util.Random;
 
-import com.mojang.math.Vector3d;
-
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.util.config.Config;
@@ -13,9 +11,6 @@ import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
-import net.minecraft.entity.ai.controller.MovementController;
-import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
-import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -30,15 +25,17 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -46,6 +43,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
@@ -56,7 +54,6 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.shadowed.eliotlash.mclib.utils.MathHelper;
 
 public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable {
 	protected static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(LostSoulEntity.class,
@@ -159,8 +156,8 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable {
 		this.goalSelector.addGoal(4, new LostSoulEntity.ChargeAttackGoal(this));
 		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 4, 15, 0.5));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, false));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolemEntity.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
 
@@ -168,7 +165,7 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable {
 	protected void tickDeath() {
 		++this.deathTime;
 		if (this.deathTime == 5) {
-			this.remove();
+			this.remove(RemovalReason.KILLED);
 			if (!this.level.isClientSide) {
 				this.explode();
 			}
@@ -176,7 +173,7 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable {
 	}
 
 	protected void explode() {
-		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, Explosion.Mode.NONE);
+		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, Explosion.BlockInteraction.NONE);
 	}
 
 	public static boolean spawning(EntityType<LostSoulEntity> p_223368_0_, LevelAccessor p_223337_1_,
@@ -217,35 +214,6 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable {
 	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
 	}
 
-	public void travel(Vector3d travelVector) {
-		if (this.isInWater()) {
-			this.moveRelative(0.02F, travelVector);
-			this.move(MoverType.SELF, this.getDeltaMovement());
-			this.setDeltaMovement(this.getDeltaMovement().scale((double) 0.8F));
-		} else if (this.isInLava()) {
-			this.moveRelative(0.02F, travelVector);
-			this.move(MoverType.SELF, this.getDeltaMovement());
-			this.setDeltaMovement(this.getDeltaMovement().scale(0.5D));
-		} else {
-			BlockPos ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
-			float f = 0.91F;
-			if (this.onGround) {
-				f = this.level.getBlockState(ground).getSlipperiness(this.level, ground, this) * 0.91F;
-			}
-
-			f = 0.91F;
-			if (this.onGround) {
-				f = this.level.getBlockState(ground).getSlipperiness(this.level, ground, this) * 0.91F;
-			}
-
-			this.moveRelative(0.02F, travelVector);
-			this.move(MoverType.SELF, this.getDeltaMovement());
-			this.setDeltaMovement(this.getDeltaMovement().scale((double) f));
-		}
-
-		this.calculateEntityAnimation(this, false);
-	}
-
 	public boolean onClimbable() {
 		return true;
 	}
@@ -269,7 +237,7 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable {
 
 		public void start() {
 			LivingEntity livingentity = parentEntity.getTarget();
-			Vector3d vec3d = livingentity.getEyePosition(1.0F);
+			Vec3 vec3d = livingentity.getEyePosition(1.0F);
 			parentEntity.moveControl.setWantedPosition(vec3d.x, vec3d.y, vec3d.z, 4.0D);
 			parentEntity.setCharging(true);
 			parentEntity.playSound(ModSoundEvents.LOST_SOUL_AMBIENT.get(), 1.0F, 1.0F);
@@ -284,7 +252,7 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable {
 			LivingEntity livingentity = parentEntity.getTarget();
 			++this.attackTimer;
 			parentEntity.setCharging(false);
-			Vector3d vec3d = livingentity.getEyePosition(1.0F);
+			Vec3 vec3d = livingentity.getEyePosition(1.0F);
 			parentEntity.moveControl.setWantedPosition(vec3d.x, vec3d.y, vec3d.z, 5.0D);
 			if (this.parentEntity.getBoundingBox().inflate((double) 0.2F).intersects(livingentity.getBoundingBox())) {
 				this.parentEntity.doHurtTarget(livingentity);
@@ -304,39 +272,46 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable {
 		return true;
 	}
 
-	static class MoveHelperController extends MovementController {
+	static class MoveHelperController extends MoveControl {
 		private final LostSoulEntity parentEntity;
 		private int courseChangeCooldown;
 
-		public MoveHelperController(LostSoulEntity ghast) {
-			super(ghast);
-			this.parentEntity = ghast;
+		public MoveHelperController(LostSoulEntity lostSoulEntity) {
+			super(lostSoulEntity);
+			this.parentEntity = lostSoulEntity;
 		}
 
 		public void tick() {
-			if (this.operation == MovementController.Action.MOVE_TO) {
+			if (this.operation == MoveControl.Operation.MOVE_TO) {
 				if (this.courseChangeCooldown-- <= 0) {
 					this.courseChangeCooldown += this.parentEntity.getRandom().nextInt(5) + 2;
-					Vector3d vector3d = new Vector3d(this.wantedX - this.parentEntity.getX(),
+					Vec3 vector3d = new Vec3(this.wantedX - this.parentEntity.getX(),
 							this.wantedY - this.parentEntity.getY(), this.wantedZ - this.parentEntity.getZ());
 					double d0 = vector3d.length();
 					vector3d = vector3d.normalize();
-					if (this.canReach(vector3d, MathHelper.ceil(d0))) {
+					if (this.canReach(vector3d, Mth.ceil(d0))) {
 						this.parentEntity
-								.setDeltaMovement(this.parentEntity.getDeltaMovement().add(vector3d.scale(0.1D)));
+								.setDeltaMovement(this.parentEntity.getDeltaMovement().add(vector3d.scale(0.1D))); // TODO
+						// test
+						// fly
+						// speed
+						// here
 					} else {
-						this.operation = MovementController.Action.WAIT;
+						this.operation = MoveControl.Operation.WAIT;
 					}
 				}
 
 			}
 		}
 
-		private boolean canReach(Vector3d p_220673_1_, int p_220673_2_) {
+		private boolean canReach(Vec3 p_220673_1_, int p_220673_2_) {
 			AABB axisalignedbb = this.parentEntity.getBoundingBox();
 
 			for (int i = 1; i < p_220673_2_; ++i) {
 				axisalignedbb = axisalignedbb.move(p_220673_1_);
+				if (!this.parentEntity.level.noCollision(this.parentEntity, axisalignedbb)) {
+					return false;
+				}
 			}
 
 			return true;
@@ -357,15 +332,15 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable {
 
 		public void tick() {
 			if (this.parentEntity.getTarget() == null) {
-				Vector3d vec3d = this.parentEntity.getDeltaMovement();
-				this.parentEntity.yRot = -((float) MathHelper.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
+				Vec3 vec3d = this.parentEntity.getDeltaMovement();
+				this.parentEntity.yRot = -((float) Mth.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
 				this.parentEntity.yBodyRot = this.parentEntity.yRot;
 			} else {
 				LivingEntity livingentity = this.parentEntity.getTarget();
 				if (livingentity.distanceToSqr(this.parentEntity) < 4096.0D) {
 					double d1 = livingentity.getX() - this.parentEntity.getX();
 					double d2 = livingentity.getZ() - this.parentEntity.getZ();
-					this.parentEntity.yRot = -((float) MathHelper.atan2(d1, d2)) * (180F / (float) Math.PI);
+					this.parentEntity.yRot = -((float) Mth.atan2(d1, d2)) * (180F / (float) Math.PI);
 					this.parentEntity.yBodyRot = this.parentEntity.yRot;
 				}
 			}

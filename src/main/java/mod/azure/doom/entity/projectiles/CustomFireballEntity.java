@@ -13,7 +13,7 @@ public class CustomFireballEntity extends LargeFireball {
 
 	public CustomFireballEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
 			float directHitDamage) {
-		super(worldIn, shooter, accelX, accelY, accelZ);
+		super(worldIn, shooter, accelX, accelY, accelZ, 1);
 		this.directHitDamage = directHitDamage;
 	}
 

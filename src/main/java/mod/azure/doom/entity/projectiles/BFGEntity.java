@@ -10,38 +10,38 @@ import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
-import net.minecraft.world.entity.monster.hoglin.Hoglin;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.monster.Phantom;
-import net.minecraft.world.entity.monster.Shulker;
-import net.minecraft.world.entity.monster.Slime;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.Phantom;
+import net.minecraft.world.entity.monster.Shulker;
+import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.monster.hoglin.Hoglin;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.util.Mth;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -90,7 +90,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 	protected void tickDespawn() {
 		++this.ticksInAir;
 		if (this.tickCount >= 40) {
-			this.remove();
+			this.remove(RemovalReason.KILLED);
 		}
 	}
 
@@ -131,15 +131,15 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 		boolean flag = this.isNoPhysics();
 		Vec3 vector3d = this.getDeltaMovement();
 		if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
-			float f = Mth.sqrt(getHorizontalDistanceSqr(vector3d));
+			double f = vector3d.horizontalDistance();
 			this.yRot = (float) (Mth.atan2(vector3d.x, vector3d.z) * (double) (180F / (float) Math.PI));
 			this.xRot = (float) (Mth.atan2(vector3d.y, (double) f) * (double) (180F / (float) Math.PI));
-			this.yRotO = this.yRot;
-			this.xRotO = this.xRot;
+			this.yRotO = this.getYRot();
+			this.xRotO = this.getXRot();
 		}
 
 		if (this.tickCount >= 100) {
-			this.remove();
+			this.remove(RemovalReason.KILLED);
 		}
 
 		if (this.inAir && !flag) {
@@ -150,8 +150,8 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 			this.timeInAir = 0;
 			Vec3 vector3d2 = this.position();
 			Vec3 vector3d3 = vector3d2.add(vector3d);
-			HitResult raytraceresult = this.level.clip(new ClipContext(vector3d2, vector3d3,
-					ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+			HitResult raytraceresult = this.level.clip(
+					new ClipContext(vector3d2, vector3d3, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
 			if (raytraceresult.getType() != HitResult.Type.MISS) {
 				vector3d3 = raytraceresult.getLocation();
 			}
@@ -186,15 +186,15 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 			double d5 = this.getX() + d3;
 			double d1 = this.getY() + d4;
 			double d2 = this.getZ() + d0;
-			float f1 = Mth.sqrt(getHorizontalDistanceSqr(vector3d));
+			double f1 = vector3d.horizontalDistance();
 			if (flag) {
 				this.yRot = (float) (Mth.atan2(-d3, -d0) * (double) (180F / (float) Math.PI));
 			} else {
 				this.yRot = (float) (Mth.atan2(d3, d0) * (double) (180F / (float) Math.PI));
 			}
 			this.xRot = (float) (Mth.atan2(d4, (double) f1) * (double) (180F / (float) Math.PI));
-			this.xRot = lerpRotation(this.xRotO, this.xRot);
-			this.yRot = lerpRotation(this.yRotO, this.yRot);
+			this.xRot = lerpRotation(this.xRotO, this.getXRot());
+			this.yRot = lerpRotation(this.yRotO, this.getYRot());
 			float f2 = 0.99F;
 			this.setDeltaMovement(vector3d.scale((double) f2));
 			if (!this.isNoGravity() && !flag) {
@@ -217,12 +217,10 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 		Vec3 vector3d1 = new Vec3(this.getX(), this.getY(), this.getZ());
 		for (int k2 = 0; k2 < list.size(); ++k2) {
 			Entity entity = list.get(k2);
-			if (!(entity instanceof Player || entity instanceof EnderDragon
-					|| entity instanceof GoreNestEntity)
-					&& (entity instanceof Monster || entity instanceof Slime
-							|| entity instanceof Phantom || entity instanceof Shulker
-							|| entity instanceof Hoglin)) {
-				double d12 = (double) (Mth.sqrt(entity.distanceToSqr(vector3d1)) / f2);
+			if (!(entity instanceof Player || entity instanceof EnderDragon || entity instanceof GoreNestEntity)
+					&& (entity instanceof Monster || entity instanceof Slime || entity instanceof Phantom
+							|| entity instanceof Shulker || entity instanceof Hoglin)) {
+				double d12 = (double) (Mth.sqrt((float) entity.distanceToSqr(vector3d1)) / f2);
 				if (d12 <= 1.0D) {
 					if (entity.isAlive()) {
 						entity.hurt(DamageSource.playerAttack((Player) this.shooter),
@@ -286,8 +284,9 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 			if (!this.level.isClientSide) {
 				this.doDamage();
 				this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
-						Config.SERVER.ENABLE_BLOCK_BREAKING ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE);
-				this.remove();
+						Config.SERVER.ENABLE_BLOCK_BREAKING ? Explosion.BlockInteraction.BREAK
+								: Explosion.BlockInteraction.NONE);
+				this.remove(RemovalReason.KILLED);
 			}
 			this.playSound(ModSoundEvents.BFG_HIT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 		}
@@ -300,8 +299,9 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 			if (!this.level.isClientSide) {
 				this.doDamage();
 				this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
-						Config.SERVER.ENABLE_BLOCK_BREAKING ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE);
-				this.remove();
+						Config.SERVER.ENABLE_BLOCK_BREAKING ? Explosion.BlockInteraction.BREAK
+								: Explosion.BlockInteraction.NONE);
+				this.remove(RemovalReason.KILLED);
 			}
 			this.playSound(ModSoundEvents.BFG_HIT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 		}
@@ -320,20 +320,19 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 		Vec3 vector3d = new Vec3(this.getX(), this.getY(), this.getZ());
 		for (int k2 = 0; k2 < list.size(); ++k2) {
 			Entity entity = list.get(k2);
-			if (!(entity instanceof Player || entity instanceof EnderDragon
-					|| entity instanceof GoreNestEntity)
-					&& (entity instanceof Monster || entity instanceof Slime
-							|| entity instanceof Phantom || entity instanceof Shulker
-							|| entity instanceof Hoglin)) {
-				double d12 = (double) (Mth.sqrt(entity.distanceToSqr(vector3d)) / f2);
+			if (!(entity instanceof Player || entity instanceof EnderDragon || entity instanceof GoreNestEntity)
+					&& (entity instanceof Monster || entity instanceof Slime || entity instanceof Phantom
+							|| entity instanceof Shulker || entity instanceof Hoglin)) {
+				double d12 = (double) (Mth.sqrt((float) entity.distanceToSqr(vector3d)) / f2);
 				if (d12 <= 1.0D) {
-					entity.hurt(DamageSource.playerAttack((Player) this.shooter), Config.SERVER.bfgball_damage.floatValue());
+					entity.hurt(DamageSource.playerAttack((Player) this.shooter),
+							Config.SERVER.bfgball_damage.floatValue());
 					this.setTargetedEntity(entity.getId());
 					if (!this.level.isClientSide) {
 						List<LivingEntity> list1 = this.level.getEntitiesOfClass(LivingEntity.class,
 								this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D));
-						AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(entity.level,
-								entity.getX(), entity.getY(), entity.getZ());
+						AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(entity.level, entity.getX(),
+								entity.getY(), entity.getZ());
 						areaeffectcloudentity.setParticle(ParticleTypes.TOTEM_OF_UNDYING);
 						areaeffectcloudentity.setRadius(3.0F);
 						areaeffectcloudentity.setDuration(10);
@@ -387,7 +386,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 				return this.targetedEntity;
 			} else {
 				Entity entity = this.level.getEntity(this.entityData.get(TARGET_ENTITY));
-				if (!(entity instanceof ServerPlayerEntity) && entity instanceof LivingEntity) {
+				if (!(entity instanceof ServerPlayer) && entity instanceof LivingEntity) {
 					this.targetedEntity = (LivingEntity) entity;
 					return this.targetedEntity;
 				} else {
@@ -400,7 +399,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 	}
 
 	@Override
-	public void onSyncedDataUpdated(DataParameter<?> key) {
+	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
 		super.onSyncedDataUpdated(key);
 		if (TARGET_ENTITY.equals(key)) {
 			this.targetedEntity = null;

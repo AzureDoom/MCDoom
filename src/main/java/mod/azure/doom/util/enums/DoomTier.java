@@ -8,6 +8,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.util.LazyLoadedValue;
 
+@SuppressWarnings("deprecation")
 public enum DoomTier implements Tier {
 	DOOM(18, 1561, 16.0F, 3.0F, 30, () -> {
 		return Ingredient.of(DoomItems.ARGENT_ENERGY.get());

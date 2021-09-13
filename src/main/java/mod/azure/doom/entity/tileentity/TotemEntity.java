@@ -5,14 +5,14 @@ import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.registry.ModEntityTypes;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -21,18 +21,18 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class TotemEntity extends BlockEntity implements IAnimatable, TickableBlockEntity {
+public class TotemEntity extends BlockEntity implements IAnimatable {
 
 	protected final Random random = new Random();
 	private final AnimationFactory factory = new AnimationFactory(this);
 
+	public TotemEntity(BlockPos pos, BlockState state) {
+		super(ModEntityTypes.TOTEM.get(), pos, state);
+	}
+
 	private <E extends BlockEntity & IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
-	}
-
-	public TotemEntity() {
-		super(ModEntityTypes.TOTEM.get());
 	}
 
 	@Override
@@ -45,22 +45,19 @@ public class TotemEntity extends BlockEntity implements IAnimatable, TickableBlo
 		return factory;
 	}
 
-	@Override
-	public void tick() {
-		if (this.level.getGameTime() % 80L == 0L) {
-			this.applyEffects();
+	public static void tick(Level world, BlockPos pos, BlockState state, TotemEntity blockEntity) {
+		if (blockEntity.level.getGameTime() % 80L == 0L) {
+			blockEntity.applyEffects();
 		}
-		Level world = this.getLevel();
 		if (world != null) {
-			BlockPos blockpos = this.getBlockPos();
-			if (this.level.isClientSide) {
-				double d0 = (double) blockpos.getX() + 1.0D * (this.random.nextDouble() - 0.25D) * 2.0D;
-				double d1 = (double) blockpos.getY() + 1.0D * (this.random.nextDouble() - 0.5D) * 2.0D;
-				double d2 = (double) blockpos.getZ() + 1.0D * (this.random.nextDouble() - 0.25D) * 2.0D;
+			if (world.isClientSide()) {
+				double d0 = (double) pos.getX() + 1.0D * (blockEntity.random.nextDouble() - 0.25D) * 2.0D;
+				double d1 = (double) pos.getY() + 1.0D * (blockEntity.random.nextDouble() - 0.5D) * 2.0D;
+				double d2 = (double) pos.getZ() + 1.0D * (blockEntity.random.nextDouble() - 0.25D) * 2.0D;
 				for (int k = 0; k < 4; ++k) {
 					world.addParticle(DustParticleOptions.REDSTONE, d0, d1, d2,
-							(this.random.nextDouble() - 0.5D) * 2.0D, -this.random.nextDouble(),
-							(this.random.nextDouble() - 0.5D) * 2.0D);
+							(blockEntity.random.nextDouble() - 0.5D) * 2.0D, -blockEntity.random.nextDouble(),
+							(blockEntity.random.nextDouble() - 0.5D) * 2.0D);
 				}
 			}
 		}
@@ -80,7 +77,7 @@ public class TotemEntity extends BlockEntity implements IAnimatable, TickableBlo
 			for (DemonEntity entity : list) {
 				entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000, 1));
 				entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1000, 1));
-				entity.setGlowing(true);
+				entity.setGlowingTag(true);
 			}
 		}
 	}
@@ -91,7 +88,7 @@ public class TotemEntity extends BlockEntity implements IAnimatable, TickableBlo
 					(double) this.level.getMaxBuildHeight(), 0.0D);
 			List<DemonEntity> list = this.level.getEntitiesOfClass(DemonEntity.class, axisalignedbb);
 			for (DemonEntity entity : list) {
-				entity.setGlowing(false);
+				entity.setGlowingTag(false);
 				entity.removeAllEffects();
 			}
 		}

@@ -2,12 +2,12 @@
 	"required": true,
 	"package": "mod.azure.doom.mixin",
 	"refmap": "doom.refmap.json",
-	"compatibilityLevel": "JAVA_8",
+	"compatibilityLevel": "JAVA_16",
 	"client": [
 		"WeaponRenderingMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
 	},
-	"minVersion": "0.8"
+	"minVersion": "0.8.4"
 }

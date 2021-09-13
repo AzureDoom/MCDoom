@@ -7,26 +7,26 @@ import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.util.Mth;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -72,7 +72,7 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 	protected void tickDespawn() {
 		++this.ticksInAir;
 		if (this.tickCount >= 40) {
-			this.remove();
+			this.remove(RemovalReason.KILLED);
 		}
 	}
 
@@ -109,15 +109,15 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 		boolean flag = this.isNoPhysics();
 		Vec3 vector3d = this.getDeltaMovement();
 		if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
-			float f = Mth.sqrt(getHorizontalDistanceSqr(vector3d));
+			double f = vector3d.horizontalDistance();
 			this.yRot = (float) (Mth.atan2(vector3d.x, vector3d.z) * (double) (180F / (float) Math.PI));
 			this.xRot = (float) (Mth.atan2(vector3d.y, (double) f) * (double) (180F / (float) Math.PI));
-			this.yRotO = this.yRot;
-			this.xRotO = this.xRot;
+			this.yRotO = this.getYRot();
+			this.xRotO = this.getXRot();
 		}
 
 		if (this.tickCount >= 100) {
-			this.remove();
+			this.remove(RemovalReason.KILLED);
 		}
 
 		if (this.inAir && !flag) {
@@ -128,8 +128,8 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 			this.timeInAir = 0;
 			Vec3 vector3d2 = this.position();
 			Vec3 vector3d3 = vector3d2.add(vector3d);
-			HitResult raytraceresult = this.level.clip(new ClipContext(vector3d2, vector3d3,
-					ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+			HitResult raytraceresult = this.level.clip(
+					new ClipContext(vector3d2, vector3d3, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
 			if (raytraceresult.getType() != HitResult.Type.MISS) {
 				vector3d3 = raytraceresult.getLocation();
 			}
@@ -164,15 +164,15 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 			double d5 = this.getX() + d3;
 			double d1 = this.getY() + d4;
 			double d2 = this.getZ() + d0;
-			float f1 = Mth.sqrt(getHorizontalDistanceSqr(vector3d));
+			double f1 = vector3d.horizontalDistance();
 			if (flag) {
 				this.yRot = (float) (Mth.atan2(-d3, -d0) * (double) (180F / (float) Math.PI));
 			} else {
 				this.yRot = (float) (Mth.atan2(d3, d0) * (double) (180F / (float) Math.PI));
 			}
 			this.xRot = (float) (Mth.atan2(d4, (double) f1) * (double) (180F / (float) Math.PI));
-			this.xRot = lerpRotation(this.xRotO, this.xRot);
-			this.yRot = lerpRotation(this.yRotO, this.yRot);
+			this.xRot = lerpRotation(this.xRotO, this.getXRot());
+			this.yRot = lerpRotation(this.yRotO, this.getYRot());
 			float f2 = 0.99F;
 			this.setDeltaMovement(vector3d.scale((double) f2));
 			if (!this.isNoGravity() && !flag) {
@@ -229,13 +229,13 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 	@Override
 	protected void onHitEntity(EntityHitResult p_213868_1_) {
 		Entity entity = this.getOwner();
-		if (p_213868_1_.getType() != HitResult.Type.ENTITY
-				|| !((EntityHitResult) p_213868_1_).getEntity().is(entity)) {
+		if (p_213868_1_.getType() != HitResult.Type.ENTITY || !((EntityHitResult) p_213868_1_).getEntity().is(entity)) {
 			if (!this.level.isClientSide) {
 				this.doDamage();
 				this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
-						Config.SERVER.ENABLE_BLOCK_BREAKING ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE);
-				this.remove();
+						Config.SERVER.ENABLE_BLOCK_BREAKING ? Explosion.BlockInteraction.BREAK
+								: Explosion.BlockInteraction.NONE);
+				this.remove(RemovalReason.KILLED);
 			}
 		}
 	}
@@ -248,8 +248,9 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 			if (!this.level.isClientSide) {
 				this.doDamage();
 				this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
-						Config.SERVER.ENABLE_BLOCK_BREAKING ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE);
-				this.remove();
+						Config.SERVER.ENABLE_BLOCK_BREAKING ? Explosion.BlockInteraction.BREAK
+								: Explosion.BlockInteraction.NONE);
+				this.remove(RemovalReason.KILLED);
 			}
 		}
 	}
@@ -267,10 +268,11 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 		Vec3 vector3d = new Vec3(this.getX(), this.getY(), this.getZ());
 		for (int k2 = 0; k2 < list.size(); ++k2) {
 			Entity entity = list.get(k2);
-			double d12 = (double) (Mth.sqrt(entity.distanceToSqr(vector3d)) / f2);
+			double d12 = (double) (Mth.sqrt((float) entity.distanceToSqr(vector3d)) / f2);
 			if (d12 <= 1.0D) {
 				if (entity instanceof LivingEntity) {
-					entity.hurt(DamageSource.playerAttack((Player) this.shooter), Config.SERVER.rocket_damage.floatValue());
+					entity.hurt(DamageSource.playerAttack((Player) this.shooter),
+							Config.SERVER.rocket_damage.floatValue());
 				}
 			}
 		}

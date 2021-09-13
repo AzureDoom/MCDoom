@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.SplittableRandom;
 
-import javax.annotation.Nullable;
-
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.projectiles.CustomFireballEntity;
@@ -15,21 +13,18 @@ import mod.azure.doom.util.config.EntityConfig;
 import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -37,8 +32,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
@@ -55,6 +51,7 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
@@ -65,7 +62,6 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.shadowed.eliotlash.mclib.utils.MathHelper;
 
 public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 
@@ -122,7 +118,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 	protected void tickDeath() {
 		++this.deathTime;
 		if (this.deathTime == 30) {
-			this.remove();
+			this.remove(RemovalReason.KILLED);
 		}
 	}
 
@@ -137,7 +133,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public boolean causeFallDamage(float distance, float damageMultiplier) {
+	public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
 		return false;
 	}
 
@@ -166,36 +162,6 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 		flyingpathnavigator.setCanFloat(true);
 		flyingpathnavigator.setCanPassDoors(true);
 		return flyingpathnavigator;
-	}
-
-	public void travel(Vec3 travelVector) {
-		if (this.isInWater()) {
-			this.moveRelative(0.02F, travelVector);
-			this.move(MoverType.SELF, this.getDeltaMovement());
-			this.setDeltaMovement(this.getDeltaMovement().scale((double) 0.8F));
-		} else if (this.isInLava()) {
-			this.moveRelative(0.02F, travelVector);
-			this.move(MoverType.SELF, this.getDeltaMovement());
-			this.setDeltaMovement(this.getDeltaMovement().scale(0.5D));
-		} else {
-			BlockPos ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
-			float f = 0.91F;
-			if (this.onGround) {
-				f = this.level.getBlockState(ground).getSlipperiness(this.level, ground, this) * 0.91F;
-			}
-
-			float f1 = 0.16277137F / (f * f * f);
-			f = 0.91F;
-			if (this.onGround) {
-				f = this.level.getBlockState(ground).getSlipperiness(this.level, ground, this) * 0.91F;
-			}
-
-			this.moveRelative(this.onGround ? 0.1F * f1 : 0.02F, travelVector);
-			this.move(MoverType.SELF, this.getDeltaMovement());
-			this.setDeltaMovement(this.getDeltaMovement().scale((double) f));
-		}
-
-		this.calculateEntityAnimation(this, false);
 	}
 
 	static class MoveHelperController extends MoveControl {
@@ -317,7 +283,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 
 		public void tick() {
 			LivingEntity livingentity = this.parentEntity.getTarget();
-			if (this.parentEntity.canSee(livingentity)) {
+			if (this.parentEntity.hasLineOfSight(livingentity)) {
 				if (this.parentEntity.isAggressive()) {
 					parentEntity.setNoGravity(true);
 				}
@@ -382,7 +348,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 
 	@Override
 	protected void updateControlFlags() {
-		boolean flag = this.getTarget() != null && this.canSee(this.getTarget());
+		boolean flag = this.getTarget() != null && this.hasLineOfSight(this.getTarget());
 		this.goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
 		super.updateControlFlags();
 	}
@@ -440,10 +406,9 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 		return 1.5F;
 	}
 
-	@Nullable
 	@Override
-	public ILivingEntityData finalizeSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason,
-			@Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
+			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 		this.setVariant(this.random.nextInt());
 		return spawnDataIn;
@@ -478,8 +443,8 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public CreatureAttribute getMobType() {
-		return CreatureAttribute.UNDEAD;
+	public MobType getMobType() {
+		return MobType.UNDEAD;
 	}
 
 	@Override
@@ -496,36 +461,36 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 	public void baseTick() {
 		super.baseTick();
 		float f2 = 50.0F;
-		int k1 = MathHelper.floor(this.getX() - (double) f2 - 1.0D);
-		int l1 = MathHelper.floor(this.getX() + (double) f2 + 1.0D);
-		int i2 = MathHelper.floor(this.getY() - (double) f2 - 1.0D);
-		int i1 = MathHelper.floor(this.getY() + (double) f2 + 1.0D);
-		int j2 = MathHelper.floor(this.getZ() - (double) f2 - 1.0D);
-		int j1 = MathHelper.floor(this.getZ() + (double) f2 + 1.0D);
+		int k1 = Mth.floor(this.getX() - (double) f2 - 1.0D);
+		int l1 = Mth.floor(this.getX() + (double) f2 + 1.0D);
+		int i2 = Mth.floor(this.getY() - (double) f2 - 1.0D);
+		int i1 = Mth.floor(this.getY() + (double) f2 + 1.0D);
+		int j2 = Mth.floor(this.getZ() - (double) f2 - 1.0D);
+		int j1 = Mth.floor(this.getZ() + (double) f2 + 1.0D);
 		List<Entity> list = this.level.getEntities(this,
 				new AABB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
 		for (int k2 = 0; k2 < list.size(); ++k2) {
 			Entity entity = list.get(k2);
 			if (entity.isAddedToWorld() && entity instanceof ArchMakyrEntity && entity.tickCount < 1) {
-				entity.remove();
+				this.remove(RemovalReason.KILLED);
 			}
 		}
 	}
 
 	@Override
-	public void startSeenByPlayer(ServerPlayerEntity player) {
+	public void startSeenByPlayer(ServerPlayer player) {
 		super.startSeenByPlayer(player);
 		this.bossInfo.addPlayer(player);
 	}
 
 	@Override
-	public void stopSeenByPlayer(ServerPlayerEntity player) {
+	public void stopSeenByPlayer(ServerPlayer player) {
 		super.stopSeenByPlayer(player);
 		this.bossInfo.removePlayer(player);
 	}
 
 	@Override
-	public void setCustomName(ITextComponent name) {
+	public void setCustomName(Component name) {
 		super.setCustomName(name);
 		this.bossInfo.setName(this.getDisplayName());
 	}
@@ -533,7 +498,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 	@Override
 	protected void customServerAiStep() {
 		super.customServerAiStep();
-		this.bossInfo.setPercent(this.getHealth() / this.getMaxHealth());
+		this.bossInfo.setProgress(this.getHealth() / this.getMaxHealth());
 	}
 
 }

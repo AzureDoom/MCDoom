@@ -14,8 +14,8 @@ import mod.azure.doom.structures.templates.MotherDemonStructure;
 import mod.azure.doom.structures.templates.NetherPortalStructure;
 import mod.azure.doom.structures.templates.PortalStructure;
 import mod.azure.doom.structures.templates.TitanSkullStructure;
-import net.minecraft.util.registry.WorldGenRegistries;
-import net.minecraft.world.gen.settings.DimensionStructuresSettings;
+import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.world.level.levelgen.StructureSettings;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
@@ -30,22 +30,23 @@ public class DoomStructures {
 	public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> MAYKR = registerStructure("maykr",
 			() -> (new MaykrStructure(NoneFeatureConfiguration.CODEC)));
 
-	public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> ARCHMAYKR = registerStructure("archmaykr",
-			() -> (new ArchMaykrStructure(NoneFeatureConfiguration.CODEC)));
+	public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> ARCHMAYKR = registerStructure(
+			"archmaykr", () -> (new ArchMaykrStructure(NoneFeatureConfiguration.CODEC)));
 
-	public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> TITAN_SKULL = registerStructure("titan_skull",
-			() -> (new TitanSkullStructure(NoneFeatureConfiguration.CODEC)));
+	public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> TITAN_SKULL = registerStructure(
+			"titan_skull", () -> (new TitanSkullStructure(NoneFeatureConfiguration.CODEC)));
 
 	public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> PORTAL = registerStructure("portal",
 			() -> (new PortalStructure(NoneFeatureConfiguration.CODEC)));
 
-	public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> NETHERPORTAL = registerStructure("netherportal",
-			() -> (new NetherPortalStructure(NoneFeatureConfiguration.CODEC)));
+	public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> NETHERPORTAL = registerStructure(
+			"netherportal", () -> (new NetherPortalStructure(NoneFeatureConfiguration.CODEC)));
 
-	public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> MOTHERDEMON = registerStructure("motherdemon",
-			() -> (new MotherDemonStructure(NoneFeatureConfiguration.CODEC)));
+	public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> MOTHERDEMON = registerStructure(
+			"motherdemon", () -> (new MotherDemonStructure(NoneFeatureConfiguration.CODEC)));
 
-	private static <T extends StructureFeature<?>> RegistryObject<T> registerStructure(String name, Supplier<T> structure) {
+	private static <T extends StructureFeature<?>> RegistryObject<T> registerStructure(String name,
+			Supplier<T> structure) {
 		return DEFERRED_REGISTRY_STRUCTURE.register(name, structure);
 	}
 
@@ -63,17 +64,17 @@ public class DoomStructures {
 		StructureFeature.STRUCTURES_REGISTRY.put(structure.getRegistryName().toString(), structure);
 		if (transformSurroundingLand) {
 			StructureFeature.NOISE_AFFECTING_FEATURES = ImmutableList.<StructureFeature<?>>builder()
-					.addAll(Structure.NOISE_AFFECTING_FEATURES).add(structure).build();
+					.addAll(StructureFeature.NOISE_AFFECTING_FEATURES).add(structure).build();
 		}
-		DimensionStructuresSettings.DEFAULTS = ImmutableMap.<StructureFeature<?>, StructureSeparationSettings>builder()
-				.putAll(DimensionStructuresSettings.DEFAULTS).put(structure, structureSeparationSettings).build();
+		StructureSettings.DEFAULTS = ImmutableMap.<StructureFeature<?>, StructureFeatureConfiguration>builder()
+				.putAll(StructureSettings.DEFAULTS).put(structure, structureSeparationSettings).build();
 
-		WorldGenRegistries.NOISE_GENERATOR_SETTINGS.entrySet().forEach(settings -> {
-			Map<Structure<?>, StructureSeparationSettings> structureMap = settings.getValue().structureSettings()
-					.structureConfig();
+		BuiltinRegistries.NOISE_GENERATOR_SETTINGS.entrySet().forEach(settings -> {
+			Map<StructureFeature<?>, StructureFeatureConfiguration> structureMap = settings.getValue()
+					.structureSettings().structureConfig();
 
 			if (structureMap instanceof ImmutableMap) {
-				Map<Structure<?>, StructureSeparationSettings> tempMap = new HashMap<>(structureMap);
+				Map<StructureFeature<?>, StructureFeatureConfiguration> tempMap = new HashMap<>(structureMap);
 				tempMap.put(structure, structureSeparationSettings);
 				settings.getValue().structureSettings().structureConfig = tempMap;
 			} else {

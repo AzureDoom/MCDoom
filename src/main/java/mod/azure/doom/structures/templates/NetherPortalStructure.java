@@ -8,108 +8,109 @@ import com.mojang.serialization.Codec;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.structures.DoomStructures;
 import mod.azure.doom.util.registry.ModEntityTypes;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SharedSeedRandom;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.registry.DynamicRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.MobSpawnInfo;
-import net.minecraft.world.biome.provider.BiomeProvider;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
-import net.minecraft.world.gen.feature.structure.AbstractVillagePiece;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.NoiseColumn;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
-import net.minecraft.world.gen.feature.structure.StructureStart;
-import net.minecraft.world.gen.feature.structure.VillageConfig;
-import net.minecraft.world.gen.feature.template.TemplateManager;
-import net.minecraft.world.gen.settings.StructureSeparationSettings;
+import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.structures.JigsawPlacement;
+import net.minecraft.world.level.levelgen.structure.PoolElementStructurePiece;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 
 public class NetherPortalStructure extends StructureFeature<NoneFeatureConfiguration> {
-	public NetherPortalStructure(Codec<NoFeatureConfig> codec) {
+	public NetherPortalStructure(Codec<NoneFeatureConfiguration> codec) {
 		super(codec);
 	}
 
 	@Override
-	public IStartFactory<NoFeatureConfig> getStartFactory() {
-		return NetherPortalStructure.Start::new;
+	public StructureFeature.StructureStartFactory<NoneFeatureConfiguration> getStartFactory() {
+		return NetherPortalStructure.FeatureStart::new;
 	}
 
 	@Override
-	public GenerationStage.Decoration step() {
-		return GenerationStage.Decoration.SURFACE_STRUCTURES;
+	public Decoration step() {
+		return Decoration.SURFACE_STRUCTURES;
 	}
 
-	private static final List<MobSpawnInfo.Spawners> STRUCTURE_MONSTERS = ImmutableList.of(
-			new MobSpawnInfo.Spawners(ModEntityTypes.LOST_SOUL.get(), 100, 4, 9),
-			new MobSpawnInfo.Spawners(ModEntityTypes.TURRET.get(), 20, 1, 2));
+	private static final List<MobSpawnSettings.SpawnerData> STRUCTURE_MONSTERS = ImmutableList.of(
+			new MobSpawnSettings.SpawnerData(ModEntityTypes.LOST_SOUL.get(), 100, 4, 9),
+			new MobSpawnSettings.SpawnerData(ModEntityTypes.TURRET.get(), 20, 1, 2));
 
 	@Override
-	public List<MobSpawnInfo.Spawners> getDefaultSpawnList() {
+	public List<MobSpawnSettings.SpawnerData> getDefaultSpawnList() {
 		return STRUCTURE_MONSTERS;
 	}
 
 	@Override
-	protected boolean isFeatureChunk(ChunkGenerator chunkGenerator, BiomeProvider biomeSource, long seed,
-			SharedSeedRandom chunkRandom, int chunkX, int chunkZ, Biome biome, ChunkPos chunkPos,
-			NoFeatureConfig featureConfig) {
-		BlockPos centerOfChunk = new BlockPos((chunkX << 4) + 7, 0, (chunkZ << 4) + 7);
-		int landHeight = chunkGenerator.getFirstOccupiedHeight(centerOfChunk.getX(), centerOfChunk.getZ(),
-				Heightmap.Type.WORLD_SURFACE_WG);
-		IBlockReader columnOfBlocks = chunkGenerator.getBaseColumn(centerOfChunk.getX(), centerOfChunk.getZ());
+	protected boolean isFeatureChunk(ChunkGenerator chunkGenerator, BiomeSource biomeSource, long seed,
+			WorldgenRandom chunkRandom, ChunkPos pos, Biome biome, ChunkPos chunkPos,
+			NoneFeatureConfiguration featureConfig, LevelHeightAccessor world) {
+		BlockPos centerOfChunk = new BlockPos(pos.x, 0, pos.z);
+		int landHeight = chunkGenerator.getBaseHeight(centerOfChunk.getX(), centerOfChunk.getZ(),
+				Heightmap.Types.WORLD_SURFACE_WG, world);
+		NoiseColumn columnOfBlocks = chunkGenerator.getBaseColumn(centerOfChunk.getX(), centerOfChunk.getZ(), world);
 		BlockState topBlock = columnOfBlocks.getBlockState(centerOfChunk.above(landHeight));
-		return !this.isNear(chunkGenerator, seed, chunkRandom, chunkX, chunkZ) ? topBlock.getFluidState().isEmpty()
-				: false;
+		return !this.isNearby(chunkGenerator, seed, chunkRandom, chunkPos) ? topBlock.getFluidState().isEmpty() : false;
 	}
 
-	private boolean isNear(ChunkGenerator p_242782_1_, long p_242782_2_, SharedSeedRandom p_242782_4_, int p_242782_5_,
-			int p_242782_6_) {
-		StructureSeparationSettings structureseparationsettings = p_242782_1_.getSettings()
+	private boolean isNearby(ChunkGenerator generator, long worldSeed, WorldgenRandom random, ChunkPos pos) {
+		StructureFeatureConfiguration structureConfig = generator.getSettings()
 				.getConfig(DoomStructures.MOTHERDEMON.get());
-		if (structureseparationsettings == null) {
+		if (structureConfig == null) {
 			return false;
 		} else {
-			for (int i = p_242782_5_ - 10; i <= p_242782_5_ + 10; ++i) {
-				for (int j = p_242782_6_ - 10; j <= p_242782_6_ + 10; ++j) {
-					ChunkPos chunkpos = DoomStructures.MOTHERDEMON.get()
-							.getPotentialFeatureChunk(structureseparationsettings, p_242782_2_, p_242782_4_, i, j);
-					if (i == chunkpos.x && j == chunkpos.z) {
+			int i = pos.x;
+			int j = pos.z;
+			for (int k = i - 10; k <= i + 10; ++k) {
+				for (int l = j - 10; l <= j + 10; ++l) {
+					ChunkPos chunkPos = DoomStructures.MOTHERDEMON.get().getPotentialFeatureChunk(structureConfig,
+							worldSeed, random, k, l);
+					if (k == chunkPos.x && l == chunkPos.z) {
 						return true;
 					}
 				}
 			}
-
 			return false;
 		}
 	}
 
-	public static class Start extends StructureStart<NoFeatureConfig> {
-		public Start(Structure<NoFeatureConfig> structureIn, int chunkX, int chunkZ,
-				MutableBoundingBox mutableBoundingBox, int referenceIn, long seedIn) {
-			super(structureIn, chunkX, chunkZ, mutableBoundingBox, referenceIn, seedIn);
+	public static class FeatureStart extends StructureStart<NoneFeatureConfiguration> {
+		public FeatureStart(StructureFeature<NoneFeatureConfiguration> structureIn, ChunkPos pos, int referenceIn,
+				long seedIn) {
+			super(structureIn, pos, referenceIn, seedIn);
 		}
 
 		@Override
-		public void generatePieces(DynamicRegistries dynamicRegistryManager, ChunkGenerator chunkGenerator,
-				TemplateManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn, NoFeatureConfig config) {
-			ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
-			BlockPos.Mutable blockpos = new BlockPos.Mutable(chunkPos.getMinBlockX() + this.random.nextInt(16), 33,
-					chunkPos.getMinBlockZ() + this.random.nextInt(16));
-			JigsawManager.addPieces(dynamicRegistryManager,
-					new VillageConfig(() -> dynamicRegistryManager.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY)
-							.get(new ResourceLocation(DoomMod.MODID, "portal/start_pool")), 10),
-					AbstractVillagePiece::new, chunkGenerator, templateManagerIn, blockpos, this.pieces, this.random,
-					false, false);
+		public void generatePieces(RegistryAccess dynamicRegistryManager, ChunkGenerator chunkGenerator,
+				StructureManager templateManagerIn, ChunkPos pos, Biome biomeIn, NoneFeatureConfiguration config,
+				LevelHeightAccessor p_163621_) {
+			BlockPos.MutableBlockPos blockpos = new BlockPos.MutableBlockPos(
+					pos.getMinBlockX() + this.random.nextInt(16), 33, pos.getMinBlockZ() + this.random.nextInt(16));
+			JigsawConfiguration structureSettingsAndStartPool = new JigsawConfiguration(
+					() -> dynamicRegistryManager.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY)
+							.get(new ResourceLocation(DoomMod.MODID, "portal/start_pool")),
+					10);
+			JigsawPlacement.addPieces(dynamicRegistryManager, structureSettingsAndStartPool,
+					PoolElementStructurePiece::new, chunkGenerator, templateManagerIn, blockpos, this, this.random,
+					false, false, p_163621_);
 			this.pieces.forEach(piece -> piece.move(0, 1, 0));
-			this.pieces.forEach(piece -> piece.getBoundingBox().y0 -= 1);
-			this.calculateBoundingBox();
+			this.pieces.forEach(piece -> piece.getBoundingBox().minY -= 1);
+			this.createBoundingBox();
 		}
 	}
 }

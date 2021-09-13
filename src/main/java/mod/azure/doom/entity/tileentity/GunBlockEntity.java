@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -34,10 +35,10 @@ public class GunBlockEntity extends BlockEntity implements ImplementedInventory,
 
 	private final NonNullList<ItemStack> items = NonNullList.withSize(6, ItemStack.EMPTY);
 
-	public GunBlockEntity() {
-		super(ModEntityTypes.GUN_TABLE_ENTITY.get());
+	public GunBlockEntity(BlockPos pos, BlockState state) {
+		super(ModEntityTypes.GUN_TABLE_ENTITY.get(), pos, state);
 	}
-
+	
 	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController<GunBlockEntity>(this, "controller", 0, this::predicate));
@@ -62,10 +63,10 @@ public class GunBlockEntity extends BlockEntity implements ImplementedInventory,
 	public NonNullList<ItemStack> getItems() {
 		return items;
 	}
-
+	
 	@Override
-	public void load(BlockState state, CompoundTag tag) {
-		super.load(state, tag);
+	public void load(CompoundTag tag) {
+		super.load(tag);
 		ContainerHelper.loadAllItems(tag, items);
 	}
 

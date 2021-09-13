@@ -140,8 +140,8 @@ public class DoomWallBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
-		return new IconBlockEntity();
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return ModEntityTypes.ICON.get().create(pos, state);
 	}
 
 	@Override

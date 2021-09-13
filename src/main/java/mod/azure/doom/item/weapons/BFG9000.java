@@ -1,5 +1,7 @@
 package mod.azure.doom.item.weapons;
 
+import java.util.function.Consumer;
+
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.BFG9000Render;
@@ -9,24 +11,38 @@ import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.BFG9000LoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import software.bernie.geckolib3.network.GeckoLibNetwork;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class BFG9000 extends DoomBaseItem {
 
 	public BFG9000() {
-		super(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(401)
-				.setISTER(() -> BFG9000Render::new));
+		super(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(401));
+	}
+
+	@Override
+	public void initializeClient(Consumer<IItemRenderProperties> consumer) {
+		super.initializeClient(consumer);
+		consumer.accept(new IItemRenderProperties() {
+			private final BlockEntityWithoutLevelRenderer renderer = new BFG9000Render();
+
+			@Override
+			public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
+				return renderer;
+			}
+		});
 	}
 
 	@Override
@@ -42,16 +58,15 @@ public class BFG9000 extends DoomBaseItem {
 				playerentity.getCooldowns().addCooldown(this, 20);
 				if (!worldIn.isClientSide) {
 					BFGEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity = customeArrow(abstractarrowentity);
-					abstractarrowentity.shootFromRotation(playerentity, playerentity.xRot, playerentity.yRot, 0.0F,
-							0.25F * 3.0F, 1.0F);
+					abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(),
+							0.0F, 0.25F * 3.0F, 1.0F);
 					abstractarrowentity.isNoGravity();
 
 					stack.hurtAndBreak(20, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
 					worldIn.addFreshEntity(abstractarrowentity);
-					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(),
-							playerentity.getZ(), ModSoundEvents.BFG_FIRING.get(), SoundSource.PLAYERS, 1.0F,
-							1.0F / (random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
+							ModSoundEvents.BFG_FIRING.get(), SoundSource.PLAYERS, 1.0F,
+							1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 					if (!worldIn.isClientSide) {
 						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
 						final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
@@ -82,25 +97,11 @@ public class BFG9000 extends DoomBaseItem {
 	public static void reload(Player user, InteractionHand hand) {
 		if (user.getItemInHand(hand).getItem() instanceof BFG9000) {
 			while (user.getItemInHand(hand).getDamageValue() != 0
-					&& user.inventory.countItem(DoomItems.BFG_CELL.get()) > 0) {
+					&& user.getInventory().countItem(DoomItems.BFG_CELL.get()) > 0) {
 				removeAmmo(DoomItems.BFG_CELL.get(), user);
 				user.getItemInHand(hand).hurtAndBreak(-20, user, s -> user.broadcastBreakEvent(hand));
 				user.getItemInHand(hand).setPopTime(3);
 			}
 		}
-	}
-
-	public static float getArrowVelocity(int charge) {
-		float f = (float) charge / 20.0F;
-		f = (f * f + f * 2.0F) / 3.0F;
-		if (f > 1.0F) {
-			f = 1.0F;
-		}
-
-		return f;
-	}
-
-	public BFGEntity customeArrow(BFGEntity arrow) {
-		return arrow;
 	}
 }

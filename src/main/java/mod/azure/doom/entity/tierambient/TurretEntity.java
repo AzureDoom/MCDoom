@@ -2,36 +2,30 @@ package mod.azure.doom.entity.tierambient;
 
 import java.util.Random;
 
-import javax.annotation.Nullable;
-
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.CustomSmallFireballEntity;
 import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.config.EntityConfig;
 import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
-import net.minecraft.entity.CreatureAttribute;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -58,7 +52,7 @@ public class TurretEntity extends DemonEntity implements IAnimatable {
 	protected void tickDeath() {
 		++this.deathTime;
 		if (this.deathTime == 30) {
-			this.remove();
+			this.remove(RemovalReason.KILLED);
 		}
 	}
 
@@ -128,7 +122,7 @@ public class TurretEntity extends DemonEntity implements IAnimatable {
 
 		public void tick() {
 			LivingEntity livingentity = this.parentEntity.getTarget();
-			if (this.parentEntity.canSee(livingentity)) {
+			if (this.parentEntity.hasLineOfSight(livingentity)) {
 				Level world = this.parentEntity.level;
 				++this.attackTimer;
 				Vec3 vector3d = this.parentEntity.getViewVector(1.0F);
@@ -141,8 +135,8 @@ public class TurretEntity extends DemonEntity implements IAnimatable {
 					this.parentEntity.setAttackingState(1);
 				}
 				if (this.attackTimer == 20) {
-					fireballentity.setPos(this.parentEntity.getX() + vector3d.x,
-							this.parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z);
+					fireballentity.setPos(this.parentEntity.getX() + vector3d.x, this.parentEntity.getY(0.5D) + 0.5D,
+							fireballentity.getZ() + vector3d.z);
 					world.addFreshEntity(fireballentity);
 				}
 				if (this.attackTimer == 30) {
@@ -157,18 +151,6 @@ public class TurretEntity extends DemonEntity implements IAnimatable {
 
 	}
 
-	@Nullable
-	@Override
-	public ILivingEntityData finalizeSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason,
-			@Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
-		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-		float f = difficultyIn.getSpecialMultiplier();
-		this.setCanPickUpLoot(this.random.nextFloat() < 0.55F * f);
-		this.populateDefaultEquipmentEnchantments(difficultyIn);
-
-		return spawnDataIn;
-	}
-
 	protected boolean shouldDrown() {
 		return false;
 	}
@@ -178,8 +160,8 @@ public class TurretEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public CreatureAttribute getMobType() {
-		return CreatureAttribute.UNDEAD;
+	public MobType getMobType() {
+		return MobType.UNDEAD;
 	}
 
 	@Override

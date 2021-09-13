@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[36,)"
+loaderVersion="[37,)"
 license="CC-BY-NC-4.0"
 [[mods]]
 modId="doom"
@@ -10,21 +10,15 @@ authors="AzureDoomC"
 description='''
 Adds Doom into Minecraft
 '''
-[[dependencies.doom]]
-    modId="curios"
-    mandatory=true
-   	versionRange="[1.16.5-4.0.5.1,)"
-    ordering="NONE"
-    side="BOTH"
 [[dependencies.geckolib]]
     modId="geckolib3"
     mandatory=true
-    versionRange="[3.0.39,)"
+    versionRange="[3.0.1,)"
     ordering="BEFORE"
     side="BOTH"
 [[dependencies.forge]]
     modId="forge"
     mandatory=true 
-    versionRange="[36.1.13,)" 
+    versionRange="[37.0.59,)" 
     ordering="NONE"
     side="BOTH"

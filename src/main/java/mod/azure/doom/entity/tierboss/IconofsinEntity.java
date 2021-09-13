@@ -10,46 +10,46 @@ import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.config.EntityConfig;
 import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.MobType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
+import net.minecraft.world.BossEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.BossEvent;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerBossEvent;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -63,7 +63,8 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.ICON_OF_SIN);
 
 	private final ServerBossEvent bossInfo = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(),
-			BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true).setCreateWorldFog(true);
+			BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true)
+					.setCreateWorldFog(true);
 
 	public IconofsinEntity(EntityType<IconofsinEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
@@ -135,12 +136,12 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 	protected void tickDeath() {
 		++this.deathTime;
 		if (this.deathTime == 50) {
-			this.remove();
+			this.remove(RemovalReason.KILLED);
 		}
 	}
 
 	@Override
-	public boolean causeFallDamage(float distance, float damageMultiplier) {
+	public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
 		return false;
 	}
 
@@ -163,8 +164,8 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static boolean spawning(EntityType<IconofsinEntity> p_223337_0_, LevelAccessor p_223337_1_, MobSpawnType reason,
-			BlockPos p_223337_3_, Random p_223337_4_) {
+	public static boolean spawning(EntityType<IconofsinEntity> p_223337_0_, LevelAccessor p_223337_1_,
+			MobSpawnType reason, BlockPos p_223337_3_, Random p_223337_4_) {
 		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223337_3_, p_223337_4_);
 	}
 
@@ -233,11 +234,9 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 								float f1 = f + (float) i * (float) Math.PI * 0.4F;
 								for (int y = 0; y < 5; ++y) {
 									parentEntity.spawnFlames(
-											parentEntity.getX()
-													+ (double) Mth.cos(f1) * rand.nextDouble() * 11.5D,
-											parentEntity.getZ()
-													+ (double) Mth.sin(f1) * rand.nextDouble() * 11.5D,
-											d0, d1, f1, 0);
+											parentEntity.getX() + (double) Mth.cos(f1) * rand.nextDouble() * 11.5D,
+											parentEntity.getZ() + (double) Mth.sin(f1) * rand.nextDouble() * 11.5D, d0,
+											d1, f1, 0);
 								}
 								if (parentEntity.getHealth() < (parentEntity.getMaxHealth() * 0.50)) {
 									this.parentEntity.setAttackingState(2);
@@ -254,8 +253,8 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 								int i1 = Mth.floor(parentEntity.getY() + (double) f2 + 1.0D);
 								int j2 = Mth.floor(parentEntity.getZ() - (double) f2 - 1.0D);
 								int j1 = Mth.floor(parentEntity.getZ() + (double) f2 + 1.0D);
-								List<Entity> list = parentEntity.level.getEntities(parentEntity, new AABB(
-										(double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
+								List<Entity> list = parentEntity.level.getEntities(parentEntity, new AABB((double) k1,
+										(double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
 								for (int k2 = 0; k2 < list.size(); ++k2) {
 									Entity entity = list.get(k2);
 									if (entity.isAlive()) {
@@ -310,7 +309,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 		Vec3 vector3d = new Vec3(this.getX(), this.getY(), this.getZ());
 		for (int k2 = 0; k2 < list.size(); ++k2) {
 			Entity entity = list.get(k2);
-			double d12 = (double) (Mth.sqrt(entity.distanceToSqr(vector3d)) / f2);
+			double d12 = (double) (Mth.sqrt((float) entity.distanceToSqr(vector3d)) / f2);
 			if (d12 <= 1.0D) {
 				if (entity instanceof LivingEntity) {
 					entity.hurt(DamageSource.indirectMobAttack(this, this.getTarget()), 7);
@@ -434,7 +433,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 	@Override
 	protected void customServerAiStep() {
 		super.customServerAiStep();
-		this.bossInfo.setPercent(this.getHealth() / this.getMaxHealth());
+		this.bossInfo.setProgress(this.getHealth() / this.getMaxHealth());
 	}
 
 	@Override
@@ -455,7 +454,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 				this.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 10000000, 1));
 			}
 			if (!this.level.dimensionType().respawnAnchorWorks()) {
-				this.setGlowing(true);
+				this.setGlowingTag(true);
 				this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 10000000, 3));
 				if (this.tickCount % 2400 == 0) {
 					this.heal(40F);

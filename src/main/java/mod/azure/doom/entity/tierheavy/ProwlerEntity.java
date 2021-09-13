@@ -6,8 +6,6 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
-import com.mojang.math.Vector3d;
-
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
@@ -15,11 +13,11 @@ import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.util.config.Config;
 import mod.azure.doom.util.config.EntityConfig;
 import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
@@ -43,7 +41,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -100,7 +98,7 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable {
 	protected void tickDeath() {
 		++this.deathTime;
 		if (this.deathTime == 50) {
-			this.remove();
+			this.remove(RemovalReason.KILLED);
 			if (level.isClientSide) {
 			}
 		}
@@ -257,7 +255,7 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable {
 			if (livingentity != null) {
 				double distanceToTargetSq = this.entity.distanceToSqr(livingentity.getX(), livingentity.getY(),
 						livingentity.getZ());
-				boolean inLineOfSight = this.entity.getSensing().canSee(livingentity);
+				boolean inLineOfSight = this.entity.getSensing().hasLineOfSight(livingentity);
 				if (inLineOfSight != this.seeTime > 0) {
 					this.seeTime = 0;
 				}
@@ -331,14 +329,15 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable {
 		private int aggroTime;
 		private int teleportTime;
 		private final TargetingConditions startAggroTargetConditions;
-		private final TargetingConditions continueAggroTargetConditions = (new TargetingConditions()).allowUnseeable();
+		private final TargetingConditions continueAggroTargetConditions = TargetingConditions.forCombat()
+				.ignoreLineOfSight();
 
 		public FindPlayerGoal(ProwlerEntity p_i241912_1_, @Nullable Predicate<LivingEntity> p_i241912_2_) {
-			super(p_i241912_1_, PlayerEntity.class, 10, false, false, p_i241912_2_);
+			super(p_i241912_1_, Player.class, 10, false, false, p_i241912_2_);
 			this.enderman = p_i241912_1_;
-			this.startAggroTargetConditions = (new EntityPredicate()).range(this.getFollowDistance())
-					.selector((p_220790_1_) -> {
-						return p_i241912_1_.isLookingAtMe((PlayerEntity) p_220790_1_);
+			this.startAggroTargetConditions = TargetingConditions.forCombat().range(this.getFollowDistance())
+					.selector((p_32578_) -> {
+						return p_i241912_1_.isLookingAtMe((Player) p_32578_);
 					});
 		}
 
@@ -398,14 +397,14 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable {
 		}
 	}
 
-	private boolean isLookingAtMe(PlayerEntity p_70821_1_) {
-		Vector3d vector3d = p_70821_1_.getViewVector(1.0F).normalize();
-		Vector3d vector3d1 = new Vector3d(this.getX() - p_70821_1_.getX(), this.getEyeY() - p_70821_1_.getEyeY(),
-				this.getZ() - p_70821_1_.getZ());
+	private boolean isLookingAtMe(Player player) {
+		Vec3 vector3d = player.getViewVector(1.0F).normalize();
+		Vec3 vector3d1 = new Vec3(this.getX() - player.getX(), this.getEyeY() - player.getEyeY(),
+				this.getZ() - player.getZ());
 		double d0 = vector3d1.length();
 		vector3d1 = vector3d1.normalize();
 		double d1 = vector3d.dot(vector3d1);
-		return d1 > 1.0D - 0.025D / d0 ? p_70821_1_.canSee(this) : false;
+		return d1 > 1.0D - 0.025D / d0 ? player.hasLineOfSight(this) : false;
 	}
 
 	@Override
@@ -420,7 +419,7 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable {
 
 		this.jumping = false;
 		if (!this.level.isClientSide) {
-			this.updatePersistentAnger((ServerWorld) this.level, true);
+			this.updatePersistentAnger((ServerLevel) this.level, true);
 		}
 
 		super.aiStep();
@@ -452,32 +451,38 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable {
 	}
 
 	private boolean teleportTowards(Entity p_70816_1_) {
-		Vector3d vector3d = new Vector3d(this.getX() - p_70816_1_.getX(), this.getY(0.5D) - p_70816_1_.getEyeY(),
+		Vec3 vec3 = new Vec3(this.getX() - p_70816_1_.getX(), this.getY(0.5D) - p_70816_1_.getEyeY(),
 				this.getZ() - p_70816_1_.getZ());
-		vector3d = vector3d.normalize();
-		double d1 = this.getX() + (this.random.nextDouble() - 0.5D) * 8.0D - vector3d.x * 16.0D;
-		double d2 = this.getY() + (double) (this.random.nextInt(16) - 8) - vector3d.y * 16.0D;
-		double d3 = this.getZ() + (this.random.nextDouble() - 0.5D) * 8.0D - vector3d.z * 16.0D;
+		vec3 = vec3.normalize();
+		double d1 = this.getX() + (this.random.nextDouble() - 0.5D) * 8.0D - vec3.x * 10.0D;
+		double d2 = this.getY() + (double) (this.random.nextInt(16) - 8) - vec3.y * 10.0D;
+		double d3 = this.getZ() + (this.random.nextDouble() - 0.5D) * 8.0D - vec3.z * 10.0D;
 		return this.teleport(d1, d2, d3);
 	}
 
-	@SuppressWarnings("deprecation")
-	private boolean teleport(double p_70825_1_, double p_70825_3_, double p_70825_5_) {
-		BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable(p_70825_1_, p_70825_3_, p_70825_5_);
-		while (blockpos$mutable.getY() > 0
-				&& !this.level.getBlockState(blockpos$mutable).getMaterial().blocksMotion()) {
-			blockpos$mutable.move(Direction.DOWN);
+	private boolean teleport(double p_32544_, double p_32545_, double p_32546_) {
+		BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos(p_32544_, p_32545_, p_32546_);
+
+		while (blockpos$mutableblockpos.getY() > this.level.getMinBuildHeight()
+				&& !this.level.getBlockState(blockpos$mutableblockpos).getMaterial().blocksMotion()) {
+			blockpos$mutableblockpos.move(Direction.DOWN);
 		}
 
-		BlockState blockstate = this.level.getBlockState(blockpos$mutable);
+		BlockState blockstate = this.level.getBlockState(blockpos$mutableblockpos);
 		boolean flag = blockstate.getMaterial().blocksMotion();
 		boolean flag1 = blockstate.getFluidState().is(FluidTags.WATER);
 		if (flag && !flag1) {
-			net.minecraftforge.event.entity.living.EnderTeleportEvent event = new net.minecraftforge.event.entity.living.EnderTeleportEvent(
-					this, p_70825_1_, p_70825_3_, p_70825_5_, 0);
-			if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event))
+			net.minecraftforge.event.entity.EntityTeleportEvent.EnderEntity event = net.minecraftforge.event.ForgeEventFactory
+					.onEnderTeleport(this, p_32544_, p_32545_, p_32546_);
+			if (event.isCanceled())
 				return false;
 			boolean flag2 = this.randomTeleport(event.getTargetX(), event.getTargetY(), event.getTargetZ(), true);
+			if (flag2 && !this.isSilent()) {
+				this.level.playSound((Player) null, this.xo, this.yo, this.zo, SoundEvents.ENDERMAN_TELEPORT,
+						this.getSoundSource(), 1.0F, 1.0F);
+				this.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0F, 1.0F);
+			}
+
 			return flag2;
 		} else {
 			return false;

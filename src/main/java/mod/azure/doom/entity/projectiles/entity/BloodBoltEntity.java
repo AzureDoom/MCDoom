@@ -2,21 +2,21 @@ package mod.azure.doom.entity.projectiles.entity;
 
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -82,7 +82,7 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements IAnima
 	public void setDirectHitDamage(float directHitDamage) {
 		this.directHitDamage = directHitDamage;
 	}
-	
+
 	@Override
 	protected ParticleOptions getTrailParticle() {
 		return ParticleTypes.PORTAL;
@@ -118,7 +118,7 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements IAnima
 			this.level.addParticle(this.getTrailParticle(), d0, d1 + 0.5D, d2, 0.0D, 0.0D, 0.0D);
 			this.setPos(d0, d1, d2);
 		} else {
-			this.remove();
+			this.remove(RemovalReason.KILLED);
 		}
 	}
 

@@ -38,12 +38,12 @@ public class Chainsaw extends Item {
 
 	public static void removeAmmo(Item ammo, Player playerEntity) {
 		if (!playerEntity.isCreative()) {
-			for (ItemStack item : playerEntity.inventory.offhand) {
+			for (ItemStack item : playerEntity.getInventory().offhand) {
 				if (item.getItem() == ammo) {
 					item.shrink(1);
 					break;
 				}
-				for (ItemStack item1 : playerEntity.inventory.items) {
+				for (ItemStack item1 : playerEntity.getInventory().items) {
 					if (item1.getItem() == ammo) {
 						item1.shrink(1);
 						break;
@@ -87,7 +87,7 @@ public class Chainsaw extends Item {
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> addParticle(e));
 			worldIn.playSound((Player) null, user.getX(), user.getY(), user.getZ(),
 					ModSoundEvents.CHAINSAW_IDLE.get(), SoundSource.PLAYERS, 0.05F,
-					1.0F / (random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+					1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 		if (worldIn.isClientSide) {
 			if (player.getMainHandItem().sameItemStackIgnoreDurability(stack)) {
@@ -101,7 +101,7 @@ public class Chainsaw extends Item {
 	public static void reload(Player user, InteractionHand hand) {
 		if (user.getItemInHand(hand).getItem() instanceof Chainsaw) {
 			while (user.getItemInHand(hand).getDamageValue() != 0
-					&& user.inventory.countItem(DoomItems.GAS_BARREL.get()) > 0) {
+					&& user.getInventory().countItem(DoomItems.GAS_BARREL.get()) > 0) {
 				removeAmmo(DoomItems.GAS_BARREL.get(), user);
 				user.getItemInHand(hand).hurtAndBreak(-200, user, s -> user.broadcastBreakEvent(hand));
 				user.getItemInHand(hand).setPopTime(3);
@@ -115,13 +115,13 @@ public class Chainsaw extends Item {
 			target.hurt(DamageSource.playerAttack((Player) user), 2F);
 			user.level.playSound((Player) null, user.getX(), user.getY(), user.getZ(),
 					ModSoundEvents.CHAINSAW_ATTACKING.get(), SoundSource.PLAYERS, 0.3F,
-					1.0F / (random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+					1.0F / (user.level.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 	}
 
 	private void damageItem(LivingEntity user, ItemStack stack) {
 		Player player = (Player) user;
-		if (!player.abilities.instabuild) {
+		if (!player.getAbilities().instabuild) {
 			stack.setDamageValue(stack.getDamageValue() + 1);
 		}
 	}
