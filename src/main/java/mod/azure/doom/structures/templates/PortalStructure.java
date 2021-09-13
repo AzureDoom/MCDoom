@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.structures.DoomStructures;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -26,7 +25,6 @@ import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.structures.JigsawPlacement;
 import net.minecraft.world.level.levelgen.structure.PoolElementStructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
@@ -81,27 +79,7 @@ public class PortalStructure extends StructureFeature<NoneFeatureConfiguration> 
 				Heightmap.Types.WORLD_SURFACE_WG, world);
 		NoiseColumn columnOfBlocks = chunkGenerator.getBaseColumn(centerOfChunk.getX(), centerOfChunk.getZ(), world);
 		BlockState topBlock = columnOfBlocks.getBlockState(centerOfChunk.above(landHeight));
-		return !this.isNearby(chunkGenerator, seed, chunkRandom, chunkPos) ? topBlock.getFluidState().isEmpty() : false;
-	}
-
-	private boolean isNearby(ChunkGenerator generator, long worldSeed, WorldgenRandom random, ChunkPos pos) {
-		StructureFeatureConfiguration structureConfig = generator.getSettings().getConfig(DoomStructures.PORTAL.get());
-		if (structureConfig == null) {
-			return false;
-		} else {
-			int i = pos.x;
-			int j = pos.z;
-			for (int k = i - 10; k <= i + 10; ++k) {
-				for (int l = j - 10; l <= j + 10; ++l) {
-					ChunkPos chunkPos = DoomStructures.PORTAL.get().getPotentialFeatureChunk(structureConfig, worldSeed,
-							random, k, l);
-					if (k == chunkPos.x && l == chunkPos.z) {
-						return true;
-					}
-				}
-			}
-			return false;
-		}
+		return topBlock.getFluidState().isEmpty();
 	}
 
 	public static class FeatureStart extends StructureStart<NoneFeatureConfiguration> {
@@ -116,7 +94,7 @@ public class PortalStructure extends StructureFeature<NoneFeatureConfiguration> 
 				LevelHeightAccessor p_163621_) {
 			int x = (pos.x << 4) + 7;
 			int z = (pos.z << 4) + 7;
-			BlockPos blockpos = new BlockPos(x, chunkGenerator.getSeaLevel(), z);
+			BlockPos.MutableBlockPos blockpos = new BlockPos.MutableBlockPos(x, chunkGenerator.getSeaLevel(), z);
 			JigsawConfiguration structureSettingsAndStartPool = new JigsawConfiguration(
 					() -> dynamicRegistryManager.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY)
 							.get(new ResourceLocation(DoomMod.MODID, "portal/start_pool")),
@@ -126,7 +104,7 @@ public class PortalStructure extends StructureFeature<NoneFeatureConfiguration> 
 					false, false, p_163621_);
 			this.pieces.forEach(piece -> piece.move(0, 0, 0));
 			this.pieces.forEach(piece -> piece.getBoundingBox().minY -= 1);
-			this.createBoundingBox();
+			this.getBoundingBox();
 		}
 	}
 }

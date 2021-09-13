@@ -109,7 +109,7 @@ public class MotherDemonStructure extends StructureFeature<NoneFeatureConfigurat
 					false, false, p_163621_);
 			this.pieces.forEach(piece -> piece.move(0, 1, 0));
 			this.pieces.forEach(piece -> piece.getBoundingBox().minY -= 1);
-			this.createBoundingBox();
+			this.getBoundingBox();
 		}
 	}
 }

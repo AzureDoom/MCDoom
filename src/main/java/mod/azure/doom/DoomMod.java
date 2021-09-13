@@ -77,7 +77,7 @@ public class DoomMod {
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::enqueueIMC);
 		DoomStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
-//		forgeBus.addListener(EventPriority.NORMAL, this::addDimensionalSpacing);
+		forgeBus.addListener(EventPriority.NORMAL, this::addDimensionalSpacing);
 		forgeBus.addListener(EventPriority.HIGH, this::biomeModification);
 		MinecraftForge.EVENT_BUS.addListener(DoomVillagerTrades::onVillagerTradesEvent);
 		ModSoundEvents.MOD_SOUNDS.register(modEventBus);
@@ -129,44 +129,44 @@ public class DoomMod {
 		}
 	}
 
-//	private static Method GETCODEC_METHOD;
-//
-//	@SuppressWarnings({ "unchecked", "resource" })
-//	public void addDimensionalSpacing(final WorldEvent.Load event) {
-//		if (event.getWorld() instanceof ServerLevel) {
-//			ServerLevel serverWorld = (ServerLevel) event.getWorld();
-//			try {
-//				if (GETCODEC_METHOD == null)
-//					GETCODEC_METHOD = ObfuscationReflectionHelper.findMethod(ChunkGenerator.class, "codec");
-//				ResourceLocation cgRL = Registry.CHUNK_GENERATOR
-//						.getKey((Codec<? extends ChunkGenerator>) GETCODEC_METHOD
-//								.invoke(serverWorld.getChunkSource().generator));
-//				if (cgRL != null && cgRL.getNamespace().equals("terraforged"))
-//					return;
-//			} catch (Exception e) {
-//				DoomMod.LOGGER.error("Was unable to check if " + serverWorld.dimension().location()
-//						+ " is using Terraforged's ChunkGenerator.");
-//			}
-//			if (serverWorld.getChunkSource().getGenerator() instanceof FlatLevelSource
-//					&& serverWorld.dimension().equals(Level.OVERWORLD)) {
-//				return;
-//			}
-//			Map<StructureFeature<?>, StructureFeatureConfiguration> tempMap = new HashMap<>(
-//					serverWorld.getChunkSource().generator.getSettings().structureConfig());
-//			tempMap.putIfAbsent(DoomStructures.MAYKR.get(), StructureSettings.DEFAULTS.get(DoomStructures.MAYKR.get()));
-//			tempMap.putIfAbsent(DoomStructures.ARCHMAYKR.get(),
-//					StructureSettings.DEFAULTS.get(DoomStructures.ARCHMAYKR.get()));
-//			tempMap.putIfAbsent(DoomStructures.MOTHERDEMON.get(),
-//					StructureSettings.DEFAULTS.get(DoomStructures.MOTHERDEMON.get()));
-//			tempMap.putIfAbsent(DoomStructures.TITAN_SKULL.get(),
-//					StructureSettings.DEFAULTS.get(DoomStructures.TITAN_SKULL.get()));
-//			tempMap.putIfAbsent(DoomStructures.PORTAL.get(),
-//					StructureSettings.DEFAULTS.get(DoomStructures.PORTAL.get()));
-//			tempMap.putIfAbsent(DoomStructures.NETHERPORTAL.get(),
-//					StructureSettings.DEFAULTS.get(DoomStructures.NETHERPORTAL.get()));
-//			serverWorld.getChunkSource().generator.getSettings().structureConfig = tempMap;
-//		}
-//	}
+	private static Method GETCODEC_METHOD;
+
+	@SuppressWarnings({ "unchecked", "resource" })
+	public void addDimensionalSpacing(final WorldEvent.Load event) {
+		if (event.getWorld() instanceof ServerLevel) {
+			ServerLevel serverWorld = (ServerLevel) event.getWorld();
+			try {
+				if (GETCODEC_METHOD == null)
+					GETCODEC_METHOD = ObfuscationReflectionHelper.findMethod(ChunkGenerator.class, "codec");
+				ResourceLocation cgRL = Registry.CHUNK_GENERATOR
+						.getKey((Codec<? extends ChunkGenerator>) GETCODEC_METHOD
+								.invoke(serverWorld.getChunkSource().generator));
+				if (cgRL != null && cgRL.getNamespace().equals("terraforged"))
+					return;
+			} catch (Exception e) {
+				DoomMod.LOGGER.error("Was unable to check if " + serverWorld.dimension().location()
+						+ " is using Terraforged's ChunkGenerator.");
+			}
+			if (serverWorld.getChunkSource().getGenerator() instanceof FlatLevelSource
+					&& serverWorld.dimension().equals(Level.OVERWORLD)) {
+				return;
+			}
+			Map<StructureFeature<?>, StructureFeatureConfiguration> tempMap = new HashMap<>(
+					serverWorld.getChunkSource().generator.getSettings().structureConfig());
+			tempMap.putIfAbsent(DoomStructures.MAYKR.get(), StructureSettings.DEFAULTS.get(DoomStructures.MAYKR.get()));
+			tempMap.putIfAbsent(DoomStructures.ARCHMAYKR.get(),
+					StructureSettings.DEFAULTS.get(DoomStructures.ARCHMAYKR.get()));
+			tempMap.putIfAbsent(DoomStructures.MOTHERDEMON.get(),
+					StructureSettings.DEFAULTS.get(DoomStructures.MOTHERDEMON.get()));
+			tempMap.putIfAbsent(DoomStructures.TITAN_SKULL.get(),
+					StructureSettings.DEFAULTS.get(DoomStructures.TITAN_SKULL.get()));
+			tempMap.putIfAbsent(DoomStructures.PORTAL.get(),
+					StructureSettings.DEFAULTS.get(DoomStructures.PORTAL.get()));
+			tempMap.putIfAbsent(DoomStructures.NETHERPORTAL.get(),
+					StructureSettings.DEFAULTS.get(DoomStructures.NETHERPORTAL.get()));
+			serverWorld.getChunkSource().generator.getSettings().structureConfig = tempMap;
+		}
+	}
 
 	private void enqueueIMC(InterModEnqueueEvent event) {
 		InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,

@@ -1,6 +1,7 @@
 package mod.azure.doom.structures.templates;
 
 import java.util.List;
+import java.util.Random;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
@@ -14,11 +15,10 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
-import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -59,12 +59,9 @@ public class ArchMaykrStructure extends StructureFeature<NoneFeatureConfiguratio
 	protected boolean isFeatureChunk(ChunkGenerator chunkGenerator, BiomeSource biomeSource, long seed,
 			WorldgenRandom chunkRandom, ChunkPos pos, Biome biome, ChunkPos chunkPos,
 			NoneFeatureConfiguration featureConfig, LevelHeightAccessor world) {
-		BlockPos centerOfChunk = new BlockPos(pos.x, 0, pos.z);
-		int landHeight = chunkGenerator.getBaseHeight(centerOfChunk.getX(), centerOfChunk.getZ(),
-				Heightmap.Types.WORLD_SURFACE_WG, world);
-		NoiseColumn columnOfBlocks = chunkGenerator.getBaseColumn(centerOfChunk.getX(), centerOfChunk.getZ(), world);
-		BlockState topBlock = columnOfBlocks.getBlockState(centerOfChunk.above(landHeight));
-		return !this.isNearby(chunkGenerator, seed, chunkRandom, chunkPos) ? topBlock.getFluidState().isEmpty() : false;
+		return !this.isNearby(chunkGenerator, seed, chunkRandom, chunkPos)
+				? getYPositionForFeature(pos.x, pos.z, chunkGenerator, world) >= 60
+				: false;
 	}
 
 	private boolean isNearby(ChunkGenerator generator, long worldSeed, WorldgenRandom random, ChunkPos pos) {
@@ -87,6 +84,30 @@ public class ArchMaykrStructure extends StructureFeature<NoneFeatureConfiguratio
 		}
 	}
 
+	private static int getYPositionForFeature(int p_191070_0_, int p_191070_1_, ChunkGenerator p_191070_2_,
+			LevelHeightAccessor world) {
+		Random random = new Random((long) (p_191070_0_ + p_191070_1_ * 10387313));
+		Rotation rotation = Rotation.getRandom(random);
+		int i = 5;
+		int j = 5;
+		if (rotation == Rotation.CLOCKWISE_90) {
+			i = -5;
+		} else if (rotation == Rotation.CLOCKWISE_180) {
+			i = -5;
+			j = -5;
+		} else if (rotation == Rotation.COUNTERCLOCKWISE_90) {
+			j = -5;
+		}
+
+		int k = (p_191070_0_ << 4) + 7;
+		int l = (p_191070_1_ << 4) + 7;
+		int i1 = p_191070_2_.getFirstOccupiedHeight(k, l, Heightmap.Types.WORLD_SURFACE_WG, world);
+		int j1 = p_191070_2_.getFirstOccupiedHeight(k, l + j, Heightmap.Types.WORLD_SURFACE_WG, world);
+		int k1 = p_191070_2_.getFirstOccupiedHeight(k + i, l, Heightmap.Types.WORLD_SURFACE_WG, world);
+		int l1 = p_191070_2_.getFirstOccupiedHeight(k + i, l + j, Heightmap.Types.WORLD_SURFACE_WG, world);
+		return Math.min(Math.min(i1, j1), Math.min(k1, l1));
+	}
+
 	public static class FeatureStart extends StructureStart<NoneFeatureConfiguration> {
 		public FeatureStart(StructureFeature<NoneFeatureConfiguration> structureIn, ChunkPos pos, int referenceIn,
 				long seedIn) {
@@ -99,17 +120,17 @@ public class ArchMaykrStructure extends StructureFeature<NoneFeatureConfiguratio
 				LevelHeightAccessor p_163621_) {
 			int x = (pos.x << 4) + 7;
 			int z = (pos.z << 4) + 7;
-			BlockPos blockpos = new BlockPos(x, 0, z);
+			BlockPos.MutableBlockPos blockpos = new BlockPos.MutableBlockPos(x, 0, z);
 			JigsawConfiguration structureSettingsAndStartPool = new JigsawConfiguration(
 					() -> dynamicRegistryManager.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY)
 							.get(new ResourceLocation(DoomMod.MODID, "archmaykr/start_pool")),
 					10);
 			JigsawPlacement.addPieces(dynamicRegistryManager, structureSettingsAndStartPool,
 					PoolElementStructurePiece::new, chunkGenerator, templateManagerIn, blockpos, this, this.random,
-					false, false, p_163621_);
+					false, true, p_163621_);
 			this.pieces.forEach(piece -> piece.move(0, 0, 0));
 			this.pieces.forEach(piece -> piece.getBoundingBox().minY -= 1);
-			this.createBoundingBox();
+			this.getBoundingBox();
 		}
 	}
 }
