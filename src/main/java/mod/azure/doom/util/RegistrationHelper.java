@@ -15,16 +15,17 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 @SuppressWarnings("deprecation")
 public class RegistrationHelper {
 
-    public static Supplier<StructurePool> pool(StructurePool pool) {
-        return () -> pool;
-    }
-    
-    public static void addToBiome(Identifier id, Predicate<BiomeSelectionContext> selectorPredicate, Consumer<BiomeModificationContext> biomeAdditionConsumer) {
-        BiomeModifications.create(id).add(ModificationPhase.ADDITIONS, selectorPredicate, biomeAdditionConsumer);
-    }
+	public static Supplier<StructurePool> pool(StructurePool pool) {
+		return () -> pool;
+	}
 
-    public static void addStructure(BiomeModificationContext context, ConfiguredStructureFeature<?, ?> feature) {
-        context.getGenerationSettings().addBuiltInStructure(feature);
-    }
-    
+	public static void addToBiome(Identifier id, Predicate<BiomeSelectionContext> selectorPredicate,
+			Consumer<BiomeModificationContext> biomeAdditionConsumer) {
+		BiomeModifications.create(id).add(ModificationPhase.ADDITIONS, selectorPredicate, biomeAdditionConsumer);
+	}
+
+	public static void addStructure(BiomeModificationContext context, ConfiguredStructureFeature<?, ?> feature) {
+		context.getGenerationSettings().addBuiltInStructure(feature);
+	}
+
 }

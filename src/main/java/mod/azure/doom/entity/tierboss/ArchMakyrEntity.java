@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.SplittableRandom;
 
-import blue.endless.jankson.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
+
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.projectiles.CustomFireballEntity;
