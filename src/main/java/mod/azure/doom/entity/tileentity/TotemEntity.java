@@ -44,7 +44,7 @@ public class TotemEntity extends BlockEntity implements IAnimatable {
 	public AnimationFactory getFactory() {
 		return factory;
 	}
-
+	
 	public static void tick(World world, BlockPos pos, BlockState state, TotemEntity blockEntity) {
 		if (blockEntity.world.getTime() % 80L == 0L) {
 			blockEntity.applyEffects();
