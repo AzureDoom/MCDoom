@@ -1,3 +1,4 @@
-v.4.0.0
+v.4.0.1
 
-- Port is finished.
+- Fixes Config not saving properly.
+- Fixes lists.
