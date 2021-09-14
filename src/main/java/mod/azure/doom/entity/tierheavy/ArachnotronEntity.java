@@ -101,11 +101,6 @@ public class ArachnotronEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
-	public boolean isPreventingPlayerRest(Player p_230292_1_) {
-		return true;
-	}
-
-	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
@@ -113,7 +108,7 @@ public class ArachnotronEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.addGoal(4,
 				new RangedStrafeAttackGoal(this,
 						new ArachnotronEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(DoomConfig.SERVER.arachnotron_ranged_damage.get()),
+								.setDamage(DoomConfig.SERVER.arachnotron_ranged_damage.get().floatValue()),
 						1.5D, 25, 30, 15, 15F, 1).setMultiShot(5, 3));
 		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());

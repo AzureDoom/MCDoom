@@ -219,8 +219,8 @@ public class ModEntitySpawn {
 		}
 	}
 
-	private static boolean parseBiomes(List<String> biomes, Biome biome) {
-		return biomes.contains(biome.getRegistryName().toString())
-				|| biomes.contains("#" + biome.getBiomeCategory().getName());
+	private static boolean parseBiomes(List<? extends String> list, Biome biome) {
+		return list.contains(biome.getRegistryName().toString())
+				|| list.contains("#" + biome.getBiomeCategory().getName());
 	}
 }

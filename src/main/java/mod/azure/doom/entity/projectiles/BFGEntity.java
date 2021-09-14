@@ -224,7 +224,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 				if (d12 <= 1.0D) {
 					if (entity.isAlive()) {
 						entity.hurt(DamageSource.playerAttack((Player) this.shooter),
-								DoomConfig.SERVER.bfgball_damage_aoe.get());
+								DoomConfig.SERVER.bfgball_damage_aoe.get().floatValue());
 						this.setTargetedEntity(entity.getId());
 					}
 				}
@@ -232,7 +232,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 			if (entity instanceof EnderDragon) {
 				if (entity.isAlive()) {
 					((EnderDragon) entity).head.hurt(DamageSource.playerAttack((Player) this.shooter),
-							DoomConfig.SERVER.bfgball_damage_dragon.get());
+							DoomConfig.SERVER.bfgball_damage_dragon.get().floatValue());
 					this.setTargetedEntity(entity.getId());
 				}
 			}
@@ -325,7 +325,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 							|| entity instanceof Shulker || entity instanceof Hoglin)) {
 				double d12 = (double) (Mth.sqrt((float) entity.distanceToSqr(vector3d)) / f2);
 				if (d12 <= 1.0D) {
-					entity.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.SERVER.bfgball_damage.get());
+					entity.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.SERVER.bfgball_damage.get().floatValue());
 					this.setTargetedEntity(entity.getId());
 					if (!this.level.isClientSide) {
 						List<LivingEntity> list1 = this.level.getEntitiesOfClass(LivingEntity.class,
@@ -350,7 +350,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 			if (entity instanceof EnderDragon) {
 				if (entity.isAlive()) {
 					((EnderDragon) entity).head.hurt(DamageSource.playerAttack((Player) this.shooter),
-							DoomConfig.SERVER.bfgball_damage_dragon.get());
+							DoomConfig.SERVER.bfgball_damage_dragon.get().floatValue());
 				}
 			}
 		}

@@ -4,12 +4,12 @@ import java.util.EnumSet;
 
 import mod.azure.doom.item.weapons.Chaingun;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 
-public class RangedChaingunAttackGoal<T extends Monster & RangedAttackMob> extends Goal {
+public class RangedChaingunAttackGoal<T extends PathfinderMob & RangedAttackMob> extends Goal {
 	private final T entity;
 	private final double moveSpeedAmp;
 	private int attackCooldown;

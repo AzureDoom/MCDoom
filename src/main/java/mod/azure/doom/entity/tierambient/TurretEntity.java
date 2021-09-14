@@ -119,7 +119,7 @@ public class TurretEntity extends DemonEntity implements IAnimatable {
 				double d3 = livingentity.getY(0.5D) - (0.5D + this.parentEntity.getY(0.5D));
 				double d4 = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * 2.0D);
 				CustomSmallFireballEntity fireballentity = new CustomSmallFireballEntity(world, this.parentEntity, d2,
-						d3, d4, DoomConfig.SERVER.turret_ranged_damage.get());
+						d3, d4, DoomConfig.SERVER.turret_ranged_damage.get().floatValue());
 				if (this.attackTimer == 10) {
 					this.parentEntity.setAttackingState(1);
 				}

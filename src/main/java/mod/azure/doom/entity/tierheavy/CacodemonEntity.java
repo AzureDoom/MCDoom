@@ -163,7 +163,7 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable {
 		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.addGoal(7, new CacodemonEntity.LookAroundGoal(this));
 		this.goalSelector.addGoal(4, new RangedStaticAttackGoal(this,
-				new FireballAttack(this, true).setDamage(DoomConfig.SERVER.cacodemon_ranged_damage.get())
+				new FireballAttack(this, true).setDamage(DoomConfig.SERVER.cacodemon_ranged_damage.get().floatValue())
 						.setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(ModSoundEvents.CACODEMON_FIREBALL.get(),
 								1.0F, 1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
 				60, 20, 30F, 1));

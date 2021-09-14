@@ -96,7 +96,7 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.goalSelector.addGoal(4,
 				new RangedStrafeAttackGoal(this, new SpiderMastermindEntity.FireballAttack(this)
-						.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomConfig.SERVER.spider_mastermind_ranged_damage.get()), 1.0D, 50, 30, 15, 15F, 1)
+						.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomConfig.SERVER.spider_mastermind_ranged_damage.get().floatValue()), 1.0D, 50, 30, 15, 15F, 1)
 								.setMultiShot(5, 1));
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));

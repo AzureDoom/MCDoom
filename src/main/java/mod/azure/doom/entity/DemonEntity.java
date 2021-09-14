@@ -15,14 +15,14 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.NeutralMob;
-import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
-public class DemonEntity extends Monster implements NeutralMob {
+public class DemonEntity extends PathfinderMob implements NeutralMob {
 
 	private static final EntityDataAccessor<Integer> ANGER_TIME = SynchedEntityData.defineId(DemonEntity.class,
 			EntityDataSerializers.INT);
@@ -31,7 +31,7 @@ public class DemonEntity extends Monster implements NeutralMob {
 	private static final UniformInt ANGER_TIME_RANGE = TimeUtil.rangeOfSeconds(20, 39);
 	private UUID targetUuid;
 
-	protected DemonEntity(EntityType<? extends Monster> type, Level worldIn) {
+	protected DemonEntity(EntityType<? extends PathfinderMob> type, Level worldIn) {
 		super(type, worldIn);
 		this.noCulling = true;
 	}

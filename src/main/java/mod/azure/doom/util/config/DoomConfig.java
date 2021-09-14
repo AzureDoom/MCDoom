@@ -1,9 +1,10 @@
 package mod.azure.doom.util.config;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
+
+import com.google.common.collect.Lists;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
@@ -12,209 +13,209 @@ public class DoomConfig {
 	public static class Server {
 		public final ConfigValue<Integer> crucible_marauder_max_damage;
 		public final ConfigValue<Boolean> enable_block_breaking;
-		public final ConfigValue<Float> argent_bolt_damage;
-		public final ConfigValue<Float> bfgball_damage;
-		public final ConfigValue<Float> bfgball_damage_dragon;
-		public final ConfigValue<Float> bfgball_damage_aoe;
-		public final ConfigValue<Float> bullet_damage;
-		public final ConfigValue<Float> chaingun_bullet_damage;
-		public final ConfigValue<Float> energycell_damage;
-		public final ConfigValue<Float> rocket_damage;
-		public final ConfigValue<Float> shotgun_damage;
-		public final ConfigValue<Float> unmaykr_damage;
+		public final ConfigValue<Double> argent_bolt_damage;
+		public final ConfigValue<Double> bfgball_damage;
+		public final ConfigValue<Double> bfgball_damage_dragon;
+		public final ConfigValue<Double> bfgball_damage_aoe;
+		public final ConfigValue<Double> bullet_damage;
+		public final ConfigValue<Double> chaingun_bullet_damage;
+		public final ConfigValue<Double> energycell_damage;
+		public final ConfigValue<Double> rocket_damage;
+		public final ConfigValue<Double> shotgun_damage;
+		public final ConfigValue<Double> unmaykr_damage;
 
-		public final ConfigValue<List<String>> imp_biomes;
+		public final ConfigValue<List<? extends String>> imp_biomes;
 		public final ConfigValue<Integer> imp_spawn_weight;
 		public final ConfigValue<Integer> imp_min_group;
 		public final ConfigValue<Integer> imp_max_group;
 
-		public final ConfigValue<List<String>> pinky_biomes;
+		public final ConfigValue<List<? extends String>> pinky_biomes;
 		public final ConfigValue<Integer> pinky_spawn_weight;
 		public final ConfigValue<Integer> pinky_min_group;
 		public final ConfigValue<Integer> pinky_max_group;
 
-		public final ConfigValue<List<String>> spectre_biomes;
+		public final ConfigValue<List<? extends String>> spectre_biomes;
 		public final ConfigValue<Integer> spectre_spawn_weight;
 		public final ConfigValue<Integer> spectre_min_group;
 		public final ConfigValue<Integer> spectre_max_group;
 
-		public final ConfigValue<List<String>> lost_soul_biomes;
+		public final ConfigValue<List<? extends String>> lost_soul_biomes;
 		public final ConfigValue<Integer> lost_soul_spawn_weight;
 		public final ConfigValue<Integer> lost_soul_min_group;
 		public final ConfigValue<Integer> lost_soul_max_group;
 
-		public final ConfigValue<List<String>> cacodemon_biomes;
+		public final ConfigValue<List<? extends String>> cacodemon_biomes;
 		public final ConfigValue<Integer> cacodemon_spawn_weight;
 		public final ConfigValue<Integer> cacodemon_min_group;
 		public final ConfigValue<Integer> cacodemon_max_group;
 
-		public final ConfigValue<List<String>> archvile_biomes;
+		public final ConfigValue<List<? extends String>> archvile_biomes;
 		public final ConfigValue<Integer> archvile_spawn_weight;
 		public final ConfigValue<Integer> archvile_min_group;
 		public final ConfigValue<Integer> archvile_max_group;
 
-		public final ConfigValue<List<String>> baron_biomes;
+		public final ConfigValue<List<? extends String>> baron_biomes;
 		public final ConfigValue<Integer> baron_spawn_weight;
 		public final ConfigValue<Integer> baron_min_group;
 		public final ConfigValue<Integer> baron_max_group;
 
-		public final ConfigValue<List<String>> mancubus_biomes;
+		public final ConfigValue<List<? extends String>> mancubus_biomes;
 		public final ConfigValue<Integer> mancubus_spawn_weight;
 		public final ConfigValue<Integer> mancubus_min_group;
 		public final ConfigValue<Integer> mancubus_max_group;
 
-		public final ConfigValue<List<String>> revenant_biomes;
+		public final ConfigValue<List<? extends String>> revenant_biomes;
 		public final ConfigValue<Integer> revenant_spawn_weight;
 		public final ConfigValue<Integer> revenant_min_group;
 		public final ConfigValue<Integer> revenant_max_group;
 
-		public final ConfigValue<List<String>> zombieman_biomes;
+		public final ConfigValue<List<? extends String>> zombieman_biomes;
 		public final ConfigValue<Integer> zombieman_spawn_weight;
 		public final ConfigValue<Integer> zombieman_min_group;
 		public final ConfigValue<Integer> zombieman_max_group;
 
-		public final ConfigValue<List<String>> arachnotron_biomes;
+		public final ConfigValue<List<? extends String>> arachnotron_biomes;
 		public final ConfigValue<Integer> arachnotron_spawn_weight;
 		public final ConfigValue<Integer> arachnotron_min_group;
 		public final ConfigValue<Integer> arachnotron_max_group;
 
-		public final ConfigValue<List<String>> imp2016_biomes;
+		public final ConfigValue<List<? extends String>> imp2016_biomes;
 		public final ConfigValue<Integer> imp2016_spawn_weight;
 		public final ConfigValue<Integer> imp2016_min_group;
 		public final ConfigValue<Integer> imp2016_max_group;
 
-		public final ConfigValue<List<String>> gargoyle_biomes;
+		public final ConfigValue<List<? extends String>> gargoyle_biomes;
 		public final ConfigValue<Integer> gargoyle_spawn_weight;
 		public final ConfigValue<Integer> gargoyle_min_group;
 		public final ConfigValue<Integer> gargoyle_max_group;
 
-		public final ConfigValue<List<String>> nightmare_biomes;
+		public final ConfigValue<List<? extends String>> nightmare_biomes;
 		public final ConfigValue<Integer> nightmare_spawn_weight;
 		public final ConfigValue<Integer> nightmare_min_group;
 		public final ConfigValue<Integer> nightmare_max_group;
 
-		public final ConfigValue<List<String>> chaingunner_biomes;
+		public final ConfigValue<List<? extends String>> chaingunner_biomes;
 		public final ConfigValue<Integer> chaingunner_spawn_weight;
 		public final ConfigValue<Integer> chaingunner_min_group;
 		public final ConfigValue<Integer> chaingunner_max_group;
 
-		public final ConfigValue<List<String>> shotgunguy_biomes;
+		public final ConfigValue<List<? extends String>> shotgunguy_biomes;
 		public final ConfigValue<Integer> shotgunguy_spawn_weight;
 		public final ConfigValue<Integer> shotgunguy_min_group;
 		public final ConfigValue<Integer> shotgunguy_max_group;
 
-		public final ConfigValue<List<String>> marauder_biomes;
+		public final ConfigValue<List<? extends String>> marauder_biomes;
 		public final ConfigValue<Integer> marauder_spawn_weight;
 		public final ConfigValue<Integer> marauder_min_group;
 		public final ConfigValue<Integer> marauder_max_group;
 
-		public final ConfigValue<List<String>> pain_biomes;
+		public final ConfigValue<List<? extends String>> pain_biomes;
 		public final ConfigValue<Integer> pain_spawn_weight;
 		public final ConfigValue<Integer> pain_min_group;
 		public final ConfigValue<Integer> pain_max_group;
 
-		public final ConfigValue<List<String>> hellknight_biomes;
+		public final ConfigValue<List<? extends String>> hellknight_biomes;
 		public final ConfigValue<Integer> hellknight_spawn_weight;
 		public final ConfigValue<Integer> hellknight_min_group;
 		public final ConfigValue<Integer> hellknight_max_group;
 
-		public final ConfigValue<List<String>> hellknight2016_biomes;
+		public final ConfigValue<List<? extends String>> hellknight2016_biomes;
 		public final ConfigValue<Integer> hellknight2016_spawn_weight;
 		public final ConfigValue<Integer> hellknight2016_min_group;
 		public final ConfigValue<Integer> hellknight2016_max_group;
 
-		public final ConfigValue<List<String>> cyberdemon_biomes;
+		public final ConfigValue<List<? extends String>> cyberdemon_biomes;
 		public final ConfigValue<Integer> cyberdemon_spawn_weight;
 		public final ConfigValue<Integer> cyberdemon_min_group;
 		public final ConfigValue<Integer> cyberdemon_max_group;
 
-		public final ConfigValue<List<String>> unwilling_biomes;
+		public final ConfigValue<List<? extends String>> unwilling_biomes;
 		public final ConfigValue<Integer> unwilling_spawn_weight;
 		public final ConfigValue<Integer> unwilling_min_group;
 		public final ConfigValue<Integer> unwilling_max_group;
 
-		public final ConfigValue<List<String>> possessed_scientist_biomes;
+		public final ConfigValue<List<? extends String>> possessed_scientist_biomes;
 		public final ConfigValue<Integer> possessed_scientist_spawn_weight;
 		public final ConfigValue<Integer> possessed_scientist_min_group;
 		public final ConfigValue<Integer> possessed_scientist_max_group;
 
-		public final ConfigValue<List<String>> possessed_soldier_biomes;
+		public final ConfigValue<List<? extends String>> possessed_soldier_biomes;
 		public final ConfigValue<Integer> possessed_soldier_spawn_weight;
 		public final ConfigValue<Integer> possessed_soldier_min_group;
 		public final ConfigValue<Integer> possessed_soldier_max_group;
 
-		public final ConfigValue<List<String>> mechazombie_biomes;
+		public final ConfigValue<List<? extends String>> mechazombie_biomes;
 		public final ConfigValue<Integer> mechazombie_spawn_weight;
 		public final ConfigValue<Integer> mechazombie_min_group;
 		public final ConfigValue<Integer> mechazombie_max_group;
 
-		public final ConfigValue<List<String>> cueball_biomes;
+		public final ConfigValue<List<? extends String>> cueball_biomes;
 		public final ConfigValue<Integer> cueball_spawn_weight;
 		public final ConfigValue<Integer> cueball_min_group;
 		public final ConfigValue<Integer> cueball_max_group;
 
-		public final ConfigValue<List<String>> prowler_biomes;
+		public final ConfigValue<List<? extends String>> prowler_biomes;
 		public final ConfigValue<Integer> prowler_spawn_weight;
 		public final ConfigValue<Integer> prowler_min_group;
 		public final ConfigValue<Integer> prowler_max_group;
 
-		public final ConfigValue<List<String>> impstone_biomes;
+		public final ConfigValue<List<? extends String>> impstone_biomes;
 		public final ConfigValue<Integer> impstone_spawn_weight;
 		public final ConfigValue<Integer> impstone_min_group;
 		public final ConfigValue<Integer> impstone_max_group;
 
-		public final ConfigValue<List<String>> gorenest_biomes;
+		public final ConfigValue<List<? extends String>> gorenest_biomes;
 		public final ConfigValue<Integer> gorenest_spawn_weight;
 		public final ConfigValue<Integer> gorenest_min_group;
 		public final ConfigValue<Integer> gorenest_max_group;
 
-		public final ConfigValue<List<String>> tentacle_biomes;
+		public final ConfigValue<List<? extends String>> tentacle_biomes;
 		public final ConfigValue<Integer> tentacle_spawn_weight;
 		public final ConfigValue<Integer> tentacle_min_group;
 		public final ConfigValue<Integer> tentacle_max_group;
 
-		public final ConfigValue<List<String>> cyberdemon2016_biomes;
+		public final ConfigValue<List<? extends String>> cyberdemon2016_biomes;
 		public final ConfigValue<Integer> cyberdemon2016_spawn_weight;
 		public final ConfigValue<Integer> cyberdemon2016_min_group;
 		public final ConfigValue<Integer> cyberdemon2016_max_group;
 
-		public final ConfigValue<List<String>> tyrant_biomes;
+		public final ConfigValue<List<? extends String>> tyrant_biomes;
 		public final ConfigValue<Integer> tyrant_spawn_weight;
 		public final ConfigValue<Integer> tyrant_min_group;
 		public final ConfigValue<Integer> tyrant_max_group;
 
-		public final ConfigValue<List<String>> spider_mastermind_biomes;
+		public final ConfigValue<List<? extends String>> spider_mastermind_biomes;
 		public final ConfigValue<Integer> spider_mastermind_spawn_weight;
 		public final ConfigValue<Integer> spider_mastermind_min_group;
 		public final ConfigValue<Integer> spider_mastermind_max_group;
 
-		public final ConfigValue<List<String>> whiplash_biomes;
+		public final ConfigValue<List<? extends String>> whiplash_biomes;
 		public final ConfigValue<Integer> whiplash_spawn_weight;
 		public final ConfigValue<Integer> whiplash_min_group;
 		public final ConfigValue<Integer> whiplash_max_group;
 
-		public final ConfigValue<List<String>> doomhunter_biomes;
+		public final ConfigValue<List<? extends String>> doomhunter_biomes;
 		public final ConfigValue<Integer> doomhunter_spawn_weight;
 		public final ConfigValue<Integer> doomhunter_min_group;
 		public final ConfigValue<Integer> doomhunter_max_group;
 
-		public final ConfigValue<List<String>> possessed_worker_biomes;
+		public final ConfigValue<List<? extends String>> possessed_worker_biomes;
 		public final ConfigValue<Integer> possessed_worker_spawn_weight;
 		public final ConfigValue<Integer> possessed_worker_min_group;
 		public final ConfigValue<Integer> possessed_worker_max_group;
 
-		public final ConfigValue<List<String>> armoredbaron_biomes;
+		public final ConfigValue<List<? extends String>> armoredbaron_biomes;
 		public final ConfigValue<Integer> armoredbaron_spawn_weight;
 		public final ConfigValue<Integer> armoredbaron_min_group;
 		public final ConfigValue<Integer> armoredbaron_max_group;
 
-		public final ConfigValue<List<String>> summoner_biomes;
+		public final ConfigValue<List<? extends String>> summoner_biomes;
 		public final ConfigValue<Integer> summoner_spawn_weight;
 		public final ConfigValue<Integer> summoner_min_group;
 		public final ConfigValue<Integer> summoner_max_group;
 
 		public final ConfigValue<Double> imp_health;
-		public final ConfigValue<Float> imp_ranged_damage;
+		public final ConfigValue<Double> imp_ranged_damage;
 		public final ConfigValue<Double> imp_melee_damage;
 
 		public final ConfigValue<Double> pinky_health;
@@ -227,7 +228,7 @@ public class DoomConfig {
 		public final ConfigValue<Double> lost_soul_melee_damage;
 
 		public final ConfigValue<Double> cacodemon_health;
-		public final ConfigValue<Float> cacodemon_ranged_damage;
+		public final ConfigValue<Double> cacodemon_ranged_damage;
 
 		public final ConfigValue<Double> archvile_health;
 
@@ -236,54 +237,54 @@ public class DoomConfig {
 
 		public final ConfigValue<Double> prowler_health;
 		public final ConfigValue<Double> prowler_melee_damage;
-		public final ConfigValue<Float> prowler_ranged_damage;
+		public final ConfigValue<Double> prowler_ranged_damage;
 
 		public final ConfigValue<Double> maykrdrone_health;
-		public final ConfigValue<Float> maykrdrone_ranged_damage;
+		public final ConfigValue<Double> maykrdrone_ranged_damage;
 
 		public final ConfigValue<Double> bloodmaykr_health;
-		public final ConfigValue<Float> bloodmaykr_ranged_damage;
+		public final ConfigValue<Double> bloodmaykr_ranged_damage;
 		public final ConfigValue<Double> bloodmaykr_melee_damage;
 
 		public final ConfigValue<Double> archmaykr_health;
-		public final ConfigValue<Float> archmaykr_ranged_damage;
+		public final ConfigValue<Double> archmaykr_ranged_damage;
 		public final ConfigValue<Double> archmaykr_melee_damage;
 
 		public final ConfigValue<Double> baron_health;
-		public final ConfigValue<Float> baron_ranged_damage;
+		public final ConfigValue<Double> baron_ranged_damage;
 		public final ConfigValue<Double> baron_melee_damage;
 
 		public final ConfigValue<Double> mancubus_health;
 		public final ConfigValue<Double> mancubus_melee_damage;
-		public final ConfigValue<Float> mancubus_ranged_damage;
+		public final ConfigValue<Double> mancubus_ranged_damage;
 
 		public final ConfigValue<Double> revenant_health;
-		public final ConfigValue<Float> revenant_ranged_damage;
+		public final ConfigValue<Double> revenant_ranged_damage;
 		public final ConfigValue<Double> revenant_melee_damage;
 
 		public final ConfigValue<Double> spider_mastermind_health;
-		public final ConfigValue<Float> spider_mastermind_ranged_damage;
+		public final ConfigValue<Double> spider_mastermind_ranged_damage;
 		public final ConfigValue<Double> spider_mastermind_melee_damage;
 
 		public final ConfigValue<Double> zombieman_health;
 		public final ConfigValue<Double> zombieman_melee_damage;
 
 		public final ConfigValue<Double> arachnotron_health;
-		public final ConfigValue<Float> arachnotron_ranged_damage;
+		public final ConfigValue<Double> arachnotron_ranged_damage;
 
 		public final ConfigValue<Double> imp2016_health;
-		public final ConfigValue<Float> imp2016_ranged_damage;
+		public final ConfigValue<Double> imp2016_ranged_damage;
 		public final ConfigValue<Double> imp2016_melee_damage;
 
 		public final ConfigValue<Double> impstone_health;
 		public final ConfigValue<Double> impstone_melee_damage;
 
 		public final ConfigValue<Double> gargoyle_health;
-		public final ConfigValue<Float> gargoyle_ranged_damage;
+		public final ConfigValue<Double> gargoyle_ranged_damage;
 		public final ConfigValue<Double> gargoyle_melee_damage;
 
 		public final ConfigValue<Double> nightmare_imp_health;
-		public final ConfigValue<Float> nightmare_ranged_damage;
+		public final ConfigValue<Double> nightmare_ranged_damage;
 		public final ConfigValue<Double> nightmare_melee_damage;
 
 		public final ConfigValue<Double> chaingunner_health;
@@ -298,25 +299,25 @@ public class DoomConfig {
 		public final ConfigValue<Double> pain_health;
 
 		public final ConfigValue<Double> hellknight_health;
-		public final ConfigValue<Float> hellknight_ranged_damage;
+		public final ConfigValue<Double> hellknight_ranged_damage;
 		public final ConfigValue<Double> hellknight_melee_damage;
 
 		public final ConfigValue<Double> hellknight2016_health;
 		public final ConfigValue<Double> hellknight2016_melee_damage;
 
 		public final ConfigValue<Double> cyberdemon_health;
-		public final ConfigValue<Float> cyberdemon_ranged_damage;
+		public final ConfigValue<Double> cyberdemon_ranged_damage;
 		public final ConfigValue<Double> cyberdemon_melee_damage;
 
 		public final ConfigValue<Double> doomhunter_health;
-		public final ConfigValue<Float> doomhunter_ranged_damage;
+		public final ConfigValue<Double> doomhunter_ranged_damage;
 		public final ConfigValue<Double> doomhunter_melee_damage;
 
 		public final ConfigValue<Double> whiplash_health;
 		public final ConfigValue<Double> whiplash_melee_damage;
 
 		public final ConfigValue<Double> armoredbaron_health;
-		public final ConfigValue<Float> armoredbaron_ranged_damage;
+		public final ConfigValue<Double> armoredbaron_ranged_damage;
 		public final ConfigValue<Double> armoredbaron_melee_damage;
 
 		public final ConfigValue<Double> unwilling_health;
@@ -326,29 +327,29 @@ public class DoomConfig {
 		public final ConfigValue<Double> possessed_scientist_melee_damage;
 
 		public final ConfigValue<Double> possessed_soldier_health;
-		public final ConfigValue<Float> possessed_soldier_ranged_damage;
+		public final ConfigValue<Double> possessed_soldier_ranged_damage;
 		public final ConfigValue<Double> possessed_soldier_melee_damage;
 
 		public final ConfigValue<Double> mechazombie_health;
-		public final ConfigValue<Float> mechazombie_ranged_damage;
+		public final ConfigValue<Double> mechazombie_ranged_damage;
 		public final ConfigValue<Double> mechazombie_melee_damage;
 
 		public final ConfigValue<Double> gorenest_health;
 
 		public final ConfigValue<Double> cyberdemon2016_health;
-		public final ConfigValue<Float> cyberdemon2016_ranged_damage;
+		public final ConfigValue<Double> cyberdemon2016_ranged_damage;
 		public final ConfigValue<Double> cyberdemon2016_melee_damage;
 
 		public final ConfigValue<Double> cueball_health;
 
 		public final ConfigValue<Double> tentacle_health;
-		public final ConfigValue<Float> tentacle_melee_damage;
+		public final ConfigValue<Double> tentacle_melee_damage;
 
 		public final ConfigValue<Double> turret_health;
-		public final ConfigValue<Float> turret_ranged_damage;
+		public final ConfigValue<Double> turret_ranged_damage;
 
 		public final ConfigValue<Double> icon_health;
-		public final ConfigValue<Float> icon_melee_damage;
+		public final ConfigValue<Double> icon_melee_damage;
 
 		public Server(ForgeConfigSpec.Builder builder) {
 			builder.push("Weapons");
@@ -357,27 +358,31 @@ public class DoomConfig {
 			this.enable_block_breaking = builder.translation("text.doom.config.enable_block_breaking")
 					.define("Should Rockets/BFG Break Blocks", false);
 			this.argent_bolt_damage = builder.translation("text.doom.config.argent_bolt_damage")
-					.define("Argent Bolts Damage", 14.5F);
-			this.bfgball_damage = builder.translation("text.doom.config.bfgball_damage").define("BFGBall Damage",
-					100.5F);
+					.defineInRange("Argent Bolts Damage", 14.5, 1, Double.MAX_VALUE);
+			this.bfgball_damage = builder.translation("text.doom.config.bfgball_damage").defineInRange("BFGBall Damage",
+					100.5, 1, Double.MAX_VALUE);
 			this.bfgball_damage_dragon = builder.translation("text.doom.config.bfgball_damage_dragon")
-					.define("BFG Dragon Damage", 30.5F);
+					.defineInRange("BFG Dragon Damage", 30.5, 1, Double.MAX_VALUE);
 			this.bfgball_damage_aoe = builder.translation("text.doom.config.bfgball_damage_aoe")
-					.define("BFG AoE Damage", 10.5F);
-			this.bullet_damage = builder.translation("text.doom.config.bullet_damage").define("Bullet Damage", 5.5F);
+					.defineInRange("BFG AoE Damage", 10.5, 1, Double.MAX_VALUE);
+			this.bullet_damage = builder.translation("text.doom.config.bullet_damage").defineInRange("Bullet Damage",
+					5.5, 1, Double.MAX_VALUE);
 			this.chaingun_bullet_damage = builder.translation("text.doom.config.chaingun_bullet_damage")
-					.define("Chaingun Damage", 5.5F);
+					.defineInRange("Chaingun Damage", 5.5, 1, Double.MAX_VALUE);
 			this.energycell_damage = builder.translation("text.doom.config.energycell_damage")
-					.define("Plasma Gun Damage", 1.5F);
-			this.rocket_damage = builder.translation("text.doom.config.rocket_damage").define("Rocket Damage", 20.5F);
-			this.shotgun_damage = builder.translation("text.doom.config.shotgun_damage").define("Shotgun Damage",
-					10.5F);
-			this.unmaykr_damage = builder.translation("text.doom.config.unmaykr_damage").define("Unmaykr Damage", 2.5F);
+					.defineInRange("Plasma Gun Damage", 1.5, 1, Double.MAX_VALUE);
+			this.rocket_damage = builder.translation("text.doom.config.rocket_damage").defineInRange("Rocket Damage",
+					20.5, 1, Double.MAX_VALUE);
+			this.shotgun_damage = builder.translation("text.doom.config.shotgun_damage").defineInRange("Shotgun Damage",
+					10.5, 1, Double.MAX_VALUE);
+			this.unmaykr_damage = builder.translation("text.doom.config.unmaykr_damage").defineInRange("Unmaykr Damage",
+					2.5, 1, Double.MAX_VALUE);
 			builder.pop();
-			
+
 			builder.push("Mob Settings:Imps");
 			this.imp_biomes = builder.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
-					.translation("text.doom.config.imp_biomes").define("Imp Biomes", Arrays.asList("#nether"));
+					.translation("text.doom.config.imp_biomes")
+					.defineList("Imp Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.imp_spawn_weight = builder.translation("text.doom.config.imp_spawn_weight")
 					.defineInRange("Imp Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.imp_min_group = builder.translation("text.doom.config.imp_min_group").defineInRange("Imp Min Group", 1,
@@ -387,14 +392,15 @@ public class DoomConfig {
 			this.imp_health = builder.translation("text.doom.config.imp_health").comment("Sets Imp Max Health")
 					.defineInRange("Sets Imp Max health", 30, 1, Double.MAX_VALUE);
 			this.imp_ranged_damage = builder.translation("text.doom.config.imp_ranged_damage")
-					.define("Sets Imp Ranged Damage damage", 4F);
+					.defineInRange("Sets Imp Ranged Damage damage", 4, 1, Double.MAX_VALUE);
 			this.imp_melee_damage = builder.translation("text.doom.config.imp_melee_damage")
 					.defineInRange("Sets Imp Melee Damage", 4, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Pinky");
 			this.pinky_biomes = builder.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
-					.translation("text.doom.config.pinky_biomes").define("Pinky Biomes", Arrays.asList("#nether"));
+					.translation("text.doom.config.pinky_biomes")
+					.defineList("Pinky Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.pinky_spawn_weight = builder.translation("text.doom.config.pinky_spawn_weight")
 					.defineInRange("Pinky Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.pinky_min_group = builder.translation("text.doom.config.pinky_min_group")
@@ -410,7 +416,8 @@ public class DoomConfig {
 			builder.push("Mob Settings:Spectre");
 			this.spectre_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
-					.translation("text.doom.config.spectre_biomes").define("Spectre Biomes", Arrays.asList("#nether"));
+					.translation("text.doom.config.spectre_biomes")
+					.defineList("Spectre Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.spectre_spawn_weight = builder.translation("text.doom.config.spectre_spawn_weight")
 					.defineInRange("Spectre Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.spectre_min_group = builder.translation("text.doom.config.spectre_min_group")
@@ -427,7 +434,7 @@ public class DoomConfig {
 			this.lost_soul_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.lost_soul_biomes")
-					.define("Lost Soul Biomes", Arrays.asList("#nether"));
+					.defineList("Lost Soul Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.lost_soul_spawn_weight = builder.translation("text.doom.config.lost_soul_spawn_weight")
 					.defineInRange("Lost Soul Spawn Weight", 25, 1, Integer.MAX_VALUE);
 			this.lost_soul_min_group = builder.translation("text.doom.config.lost_soul_min_group")
@@ -444,7 +451,7 @@ public class DoomConfig {
 			this.cacodemon_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.cacodemon_biomes")
-					.define("Cacodemon Biomes", Arrays.asList("#nether"));
+					.defineList("Cacodemon Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.cacodemon_spawn_weight = builder.translation("text.doom.config.cacodemon_spawn_weight")
 					.defineInRange("Cacodemon Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.cacodemon_min_group = builder.translation("text.doom.config.cacodemon_min_group")
@@ -454,14 +461,15 @@ public class DoomConfig {
 			this.cacodemon_health = builder.translation("text.doom.config.cacodemon_health")
 					.defineInRange("Sets Cacodemon Max Health", 80, 1, Double.MAX_VALUE);
 			this.cacodemon_ranged_damage = builder.translation("text.doom.config.cacodemon_ranged_damage")
-					.comment("Sets Cacodemon Ranged Damage").define("Sets Cacodemon Ranged Damage damage", 5F);
+					.comment("Sets Cacodemon Ranged Damage")
+					.defineInRange("Sets Cacodemon Ranged Damage damage", 5, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Archvile");
 			this.archvile_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.archvile_biomes")
-					.define("Archvile Biomes", Arrays.asList("#nether"));
+					.defineList("Archvile Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.archvile_spawn_weight = builder.translation("text.doom.config.archvile_spawn_weight")
 					.defineInRange("Archvile Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.archvile_min_group = builder.translation("text.doom.config.archvile_min_group")
@@ -474,7 +482,8 @@ public class DoomConfig {
 
 			builder.push("Mob Settings:Baron of Hell");
 			this.baron_biomes = builder.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
-					.translation("text.doom.config.baron_biomes").define("Baron Biomes", Arrays.asList("#nether"));
+					.translation("text.doom.config.baron_biomes")
+					.defineList("Baron Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.baron_spawn_weight = builder.translation("text.doom.config.baron_spawn_weight")
 					.defineInRange("Baron of Hell Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.baron_min_group = builder.translation("text.doom.config.baron_min_group")
@@ -484,7 +493,7 @@ public class DoomConfig {
 			this.baron_health = builder.translation("text.doom.config.baron_health")
 					.defineInRange("Sets Baron of Hell Max Health", 180, 1, Double.MAX_VALUE);
 			this.baron_ranged_damage = builder.translation("text.doom.config.baron_ranged_damage")
-					.define("Sets Baron of Hell Ranged Damage", 6F);
+					.defineInRange("Sets Baron of Hell Ranged Damage", 6, 1, Double.MAX_VALUE);
 			this.baron_melee_damage = builder.translation("text.doom.config.baron_melee_damage")
 					.defineInRange("Sets Baron of Hell Melee Damage", 7, 1, Double.MAX_VALUE);
 			builder.pop();
@@ -493,7 +502,7 @@ public class DoomConfig {
 			this.mancubus_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.mancubus_biomes")
-					.define("Mancubus Biomes", Arrays.asList("#nether"));
+					.defineList("Mancubus Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.mancubus_spawn_weight = builder.translation("text.doom.config.mancubus_spawn_weight")
 					.defineInRange("Mancubus Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.mancubus_min_group = builder.translation("text.doom.config.mancubus_min_group")
@@ -505,14 +514,14 @@ public class DoomConfig {
 			this.mancubus_melee_damage = builder.translation("text.doom.config.mancubus_melee_damage")
 					.defineInRange("Sets Mancubus Melee Damage", 4, 1, Double.MAX_VALUE);
 			this.mancubus_ranged_damage = builder.translation("text.doom.config.mancubus_ranged_damage")
-					.define("Sets Mancubus Ranged Damage", 6F);
+					.defineInRange("Sets Mancubus Ranged Damage", 6, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Revenant");
 			this.revenant_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.revenant_biomes")
-					.define("Revenant Biomes", Arrays.asList("#nether"));
+					.defineList("Revenant Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.revenant_spawn_weight = builder.translation("text.doom.config.revenant_spawn_weight")
 					.defineInRange("Revenant Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.revenant_min_group = builder.translation("text.doom.config.revenant_min_group")
@@ -522,7 +531,7 @@ public class DoomConfig {
 			this.revenant_health = builder.translation("text.doom.config.revenant_health")
 					.defineInRange("Sets Revenant Max Health", 45, 1, Double.MAX_VALUE);
 			this.revenant_ranged_damage = builder.translation("text.doom.config.revenant_ranged_damage")
-					.define("Sets Revenant Ranged Damage", 5F);
+					.defineInRange("Sets Revenant Ranged Damage", 5, 1, Double.MAX_VALUE);
 			this.revenant_melee_damage = builder.translation("text.doom.config.revenant_melee_damage")
 					.defineInRange("Sets Revenant Melee Damage", 3, 1, Double.MAX_VALUE);
 			builder.pop();
@@ -531,7 +540,7 @@ public class DoomConfig {
 			this.zombieman_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.zombieman_biomes")
-					.define("Zombieman Biomes", Arrays.asList("#nether"));
+					.defineList("Zombieman Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.zombieman_spawn_weight = builder.translation("text.doom.config.zombieman_spawn_weight")
 					.defineInRange("Zombieman Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.zombieman_min_group = builder.translation("text.doom.config.zombieman_min_group")
@@ -548,7 +557,7 @@ public class DoomConfig {
 			this.arachnotron_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.arachnotron_biomes")
-					.define("Arachnotron Biomes", Arrays.asList("#nether"));
+					.defineList("Arachnotron Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.arachnotron_spawn_weight = builder.translation("text.doom.config.arachnotron_spawn_weight")
 					.defineInRange("Arachnotron Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.arachnotron_min_group = builder.translation("text.doom.config.arachnotron_min_group")
@@ -558,13 +567,14 @@ public class DoomConfig {
 			this.arachnotron_health = builder.translation("text.doom.config.arachnotron_health")
 					.defineInRange("Sets Arachnotron Max Health", 30, 1, Double.MAX_VALUE);
 			this.arachnotron_ranged_damage = builder.translation("text.doom.config.arachnotron_ranged_damage")
-					.define("Sets Arachnotron Ranged Damage", 5F);
+					.defineInRange("Sets Arachnotron Ranged Damage", 5, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Imps 2016");
 			this.imp2016_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
-					.translation("text.doom.config.imp2016_biomes").define("Imp 2016 Biomes", Arrays.asList("#nether"));
+					.translation("text.doom.config.imp2016_biomes")
+					.defineList("Imp 2016 Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.imp2016_spawn_weight = builder.translation("text.doom.config.imp2016_spawn_weight")
 					.defineInRange("Imp 2016 Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.imp2016_min_group = builder.translation("text.doom.config.imp2016_min_group")
@@ -574,7 +584,7 @@ public class DoomConfig {
 			this.imp2016_health = builder.translation("text.doom.config.imp2016_health")
 					.defineInRange("Sets Imp 2016 Max Health", 30, 1, Double.MAX_VALUE);
 			this.imp2016_ranged_damage = builder.translation("text.doom.config.imp2016_ranged_damage")
-					.define("Sets Imp 2016 Ranged Damage", 4F);
+					.defineInRange("Sets Imp 2016 Ranged Damage", 4, 1, Double.MAX_VALUE);
 			this.imp2016_melee_damage = builder.translation("text.doom.config.imp2016_melee_damage")
 					.defineInRange("Sets Imp 2016 Melee Damage", 2, 1, Double.MAX_VALUE);
 			builder.pop();
@@ -583,7 +593,7 @@ public class DoomConfig {
 			this.gargoyle_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.gargoyle_biomes")
-					.define("Gargoyle Biomes", Arrays.asList("#nether"));
+					.defineList("Gargoyle Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.gargoyle_spawn_weight = builder.translation("text.doom.config.gargoyle_spawn_weight")
 					.defineInRange("Gargoyle Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.gargoyle_min_group = builder.translation("text.doom.config.gargoyle_min_group")
@@ -593,7 +603,7 @@ public class DoomConfig {
 			this.gargoyle_health = builder.translation("text.doom.config.gargoyle_health")
 					.defineInRange("Sets Gargoyle Max Health", 30, 1, Double.MAX_VALUE);
 			this.gargoyle_ranged_damage = builder.translation("text.doom.config.gargoyle_ranged_damage")
-					.define("Sets Gargoyle Ranged Damage", 5F);
+					.defineInRange("Sets Gargoyle Ranged Damage", 5, 1, Double.MAX_VALUE);
 			this.gargoyle_melee_damage = builder.translation("text.doom.config.gargoyle_melee_damage")
 					.defineInRange("Sets Gargoyle Melee Damage", 2, 1, Double.MAX_VALUE);
 			builder.pop();
@@ -602,7 +612,7 @@ public class DoomConfig {
 			this.nightmare_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.nightmare_biomes")
-					.define("Nightmare Imp Biomes", Arrays.asList("#nether"));
+					.defineList("Nightmare Imp Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.nightmare_spawn_weight = builder.translation("text.doom.config.nightmare_spawn_weight")
 					.defineInRange("Nightmare Imp Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.nightmare_min_group = builder.translation("text.doom.config.nightmare_min_group")
@@ -612,7 +622,7 @@ public class DoomConfig {
 			this.nightmare_imp_health = builder.translation("text.doom.config.nightmare_imp_health")
 					.defineInRange("Sets Nightmare Imp Max Health", 30, 1, Double.MAX_VALUE);
 			this.nightmare_ranged_damage = builder.translation("text.doom.config.nightmare_ranged_damage")
-					.define("Sets Nightmare Imp Ranged Damage", 4F);
+					.defineInRange("Sets Nightmare Imp Ranged Damage", 4, 1, Double.MAX_VALUE);
 			this.nightmare_melee_damage = builder.translation("text.doom.config.nightmare_melee_damage")
 					.defineInRange("Sets Nightmare Imp Melee Damage", 2, 1, Double.MAX_VALUE);
 			builder.pop();
@@ -621,7 +631,7 @@ public class DoomConfig {
 			this.chaingunner_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.chaingunner_biomes")
-					.define("Chaingunner Biomes", Arrays.asList("#nether"));
+					.defineList("Chaingunner Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.chaingunner_spawn_weight = builder.translation("text.doom.config.chaingunner_spawn_weight")
 					.defineInRange("Chaingunner Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.chaingunner_min_group = builder.translation("text.doom.config.chaingunner_min_group")
@@ -638,7 +648,7 @@ public class DoomConfig {
 			this.shotgunguy_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.shotgunguy_biomes")
-					.define("Shotgun Guy Biomes", Arrays.asList("#nether"));
+					.defineList("Shotgun Guy Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.shotgunguy_spawn_weight = builder.translation("text.doom.config.shotgunguy_spawn_weight")
 					.defineInRange("Shotgun Guy Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.shotgunguy_min_group = builder.translation("text.doom.config.shotgunguy_min_group")
@@ -655,7 +665,7 @@ public class DoomConfig {
 			this.marauder_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.marauder_biomes")
-					.define("Marauder Biomes", Arrays.asList("#nether"));
+					.defineList("Marauder Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.marauder_spawn_weight = builder.translation("text.doom.config.marauder_spawn_weight")
 					.defineInRange("Marauder Spawn Weight", 3, 1, Integer.MAX_VALUE);
 			this.marauder_min_group = builder.translation("text.doom.config.marauder_min_group")
@@ -671,7 +681,7 @@ public class DoomConfig {
 			builder.push("Mob Settings:Pain Elemental");
 			this.pain_biomes = builder.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.pain_biomes")
-					.define("Pain Elemental Biomes", Arrays.asList("#nether"));
+					.defineList("Pain Elemental Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.pain_spawn_weight = builder.translation("text.doom.config.pain_spawn_weight")
 					.defineInRange("Pain Elemental Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.pain_min_group = builder.translation("text.doom.config.pain_min_group")
@@ -686,7 +696,7 @@ public class DoomConfig {
 			this.hellknight_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.hellknight_biomes")
-					.define("Hellknight Biomes", Arrays.asList("#nether"));
+					.defineList("Hellknight Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.hellknight_spawn_weight = builder.translation("text.doom.config.hellknight_spawn_weight")
 					.defineInRange("Hellknight Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.hellknight_min_group = builder.translation("text.doom.config.hellknight_min_group")
@@ -696,7 +706,7 @@ public class DoomConfig {
 			this.hellknight_health = builder.translation("text.doom.config.hellknight_health")
 					.defineInRange("Sets Hellknight Max Health", 90, 1, Double.MAX_VALUE);
 			this.hellknight_ranged_damage = builder.translation("text.doom.config.hellknight_ranged_damage")
-					.define("Sets the Ranged Damage", 6F);
+					.defineInRange("Sets the Ranged Damage", 6, 1, Double.MAX_VALUE);
 			this.hellknight_melee_damage = builder.translation("text.doom.config.hellknight_melee_damage")
 					.defineInRange("Sets Hellknight Melee Damage", 4, 1, Double.MAX_VALUE);
 			builder.pop();
@@ -705,7 +715,7 @@ public class DoomConfig {
 			this.hellknight2016_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.hellknight2016_biomes")
-					.define("Hellknight 2016 Biomes", Arrays.asList("#nether"));
+					.defineList("Hellknight 2016 Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.hellknight2016_spawn_weight = builder.translation("text.doom.config.hellknight2016_spawn_weight")
 					.defineInRange("Hellknight 2016 Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.hellknight2016_min_group = builder.translation("text.doom.config.hellknight2016_min_group")
@@ -722,7 +732,7 @@ public class DoomConfig {
 			this.cyberdemon_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.cyberdemon_biomes")
-					.define("Cyberdemon Biomes", Arrays.asList("#nether"));
+					.defineList("Cyberdemon Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.cyberdemon_spawn_weight = builder.translation("text.doom.config.cyberdemon_spawn_weight")
 					.defineInRange("Cyberdemon Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.cyberdemon_min_group = builder.translation("text.doom.config.cyberdemon_min_group")
@@ -732,7 +742,7 @@ public class DoomConfig {
 			this.cyberdemon_health = builder.translation("text.doom.config.cyberdemon_health")
 					.defineInRange("Sets Cyberdemon Max Health", 300, 1, Double.MAX_VALUE);
 			this.cyberdemon_ranged_damage = builder.translation("text.doom.config.cyberdemon_ranged_damage")
-					.define("Sets Cyberdemon Ranged Damage", 9F);
+					.defineInRange("Sets Cyberdemon Ranged Damage", 9, 1, Double.MAX_VALUE);
 			this.cyberdemon_melee_damage = builder.translation("text.doom.config.cyberdemon_melee_damage")
 					.defineInRange("Sets Cyberdemon Melee Damage", 7, 1, Double.MAX_VALUE);
 			builder.pop();
@@ -741,7 +751,7 @@ public class DoomConfig {
 			this.unwilling_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.unwilling_biomes")
-					.define("Unwilling Biomes", Arrays.asList("#nether"));
+					.defineList("Unwilling Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.unwilling_spawn_weight = builder.translation("text.doom.config.unwilling_spawn_weight")
 					.defineInRange("Unwilling Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.unwilling_min_group = builder.translation("text.doom.config.unwilling_min_group")
@@ -758,7 +768,7 @@ public class DoomConfig {
 			this.possessed_scientist_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.possessed_scientist_biomes")
-					.define("Possessed Scientist Biomes", Arrays.asList("#nether"));
+					.defineList("Possessed Scientist Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.possessed_scientist_spawn_weight = builder
 					.translation("text.doom.config.possessed_scientist_spawn_weight")
 					.defineInRange("Possessed Scientist Spawn Weight", 15, 1, Integer.MAX_VALUE);
@@ -777,7 +787,7 @@ public class DoomConfig {
 			this.possessed_soldier_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.possessed_soldier_biomes")
-					.define("Possessed Soldier Biomes", Arrays.asList("#nether"));
+					.defineList("Possessed Soldier Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.possessed_soldier_spawn_weight = builder.translation("text.doom.config.possessed_soldier_spawn_weight")
 					.defineInRange("Possessed Soldier Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.possessed_soldier_min_group = builder.translation("text.doom.config.possessed_soldier_min_group")
@@ -788,7 +798,7 @@ public class DoomConfig {
 					.defineInRange("Sets Possessed Solider Max Health", 15, 1, Double.MAX_VALUE);
 			this.possessed_soldier_ranged_damage = builder
 					.translation("text.doom.config.possessed_soldier_ranged_damage")
-					.define("Sets Possessed Solider Ranged Damage", 2F);
+					.defineInRange("Sets Possessed Solider Ranged Damage", 2, 1, Double.MAX_VALUE);
 			this.possessed_soldier_melee_damage = builder.translation("text.doom.config.possessed_soldier_melee_damage")
 					.defineInRange("Sets Possessed Solider Melee Damage", 2, 1, Double.MAX_VALUE);
 			builder.pop();
@@ -796,7 +806,8 @@ public class DoomConfig {
 			builder.push("Mob Settings:Mechazombie");
 			this.mechazombie_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
-					.translation("text.doom.config.imp_biomes").define("Mechazombie Biomes", Arrays.asList("#nether"));
+					.translation("text.doom.config.imp_biomes")
+					.defineList("Mechazombie Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.mechazombie_spawn_weight = builder.translation("text.doom.config.mechazombie_spawn_weight")
 					.defineInRange("Mechazombie Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.mechazombie_min_group = builder.translation("text.doom.config.mechazombie_min_group")
@@ -806,7 +817,7 @@ public class DoomConfig {
 			this.mechazombie_health = builder.translation("text.doom.config.mechazombie_health")
 					.defineInRange("Sets the Mechazombie Health", 25, 1, Double.MAX_VALUE);
 			this.mechazombie_ranged_damage = builder.translation("text.doom.config.mechazombie_ranged_damage")
-					.define("Sets Mechazombie Ranged Damage", 3F);
+					.defineInRange("Sets Mechazombie Ranged Damage", 3, 1, Double.MAX_VALUE);
 			this.mechazombie_melee_damage = builder.translation("text.doom.config.mechazombie_melee_damage")
 					.defineInRange("Sets Mechazombie Melee Damage", 5, 1, Double.MAX_VALUE);
 			builder.pop();
@@ -814,7 +825,8 @@ public class DoomConfig {
 			builder.push("Mob Settings:Cueball");
 			this.cueball_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
-					.translation("text.doom.config.cueball_biomes").define("Cueball Biomes", Arrays.asList("#nether"));
+					.translation("text.doom.config.cueball_biomes")
+					.defineList("Cueball Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.cueball_spawn_weight = builder.translation("text.doom.config.cueball_spawn_weight")
 					.defineInRange("Cueball Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.cueball_min_group = builder.translation("text.doom.config.cueball_min_group")
@@ -828,7 +840,8 @@ public class DoomConfig {
 			builder.push("Mob Settings:Prowler");
 			this.prowler_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
-					.translation("text.doom.config.prowler_biomes").define("Prowler Biomes", Arrays.asList("#nether"));
+					.translation("text.doom.config.prowler_biomes")
+					.defineList("Prowler Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.prowler_spawn_weight = builder.translation("text.doom.config.prowler_spawn_weight")
 					.defineInRange("Prowler Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.prowler_min_group = builder.translation("text.doom.config.prowler_min_group")
@@ -840,14 +853,14 @@ public class DoomConfig {
 			this.prowler_melee_damage = builder.translation("text.doom.config.prowler_melee_damage")
 					.defineInRange("Sets the Prowler Damage", 4, 1, Double.MAX_VALUE);
 			this.prowler_ranged_damage = builder.translation("text.doom.config.prowler_ranged_damage")
-					.define("Sets Prowler Ranged Damage", 4F);
+					.defineInRange("Sets Prowler Ranged Damage", 4, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Stone Imps");
 			this.impstone_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.impstone_biomes")
-					.define("Stone Imp Biomes", Arrays.asList("#nether"));
+					.defineList("Stone Imp Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.impstone_spawn_weight = builder.translation("text.doom.config.impstone_spawn_weight")
 					.defineInRange("Stone Imp Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.impstone_min_group = builder.translation("text.doom.config.impstone_min_group")
@@ -864,7 +877,7 @@ public class DoomConfig {
 			this.gorenest_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.gorenest_biomes")
-					.define("Gorenest Biomes", Arrays.asList("#nether"));
+					.defineList("Gorenest Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.gorenest_spawn_weight = builder.translation("text.doom.config.gorenest_spawn_weight")
 					.defineInRange("Gorenest Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.gorenest_min_group = builder.translation("text.doom.config.gorenest_min_group")
@@ -879,7 +892,7 @@ public class DoomConfig {
 			this.tentacle_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.tentacle_biomes")
-					.define("Tentacle Biomes", Arrays.asList("#nether"));
+					.defineList("Tentacle Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.tentacle_spawn_weight = builder.translation("text.doom.config.tentacle_spawn_weight")
 					.defineInRange("Tentacle Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.tentacle_min_group = builder.translation("text.doom.config.tentacle_min_group")
@@ -889,14 +902,14 @@ public class DoomConfig {
 			this.tentacle_health = builder.translation("text.doom.config.tentacle_health")
 					.defineInRange("Sets Tentacle Max Health", 5, 1, Double.MAX_VALUE);
 			this.tentacle_melee_damage = builder.translation("text.doom.config.tentacle_melee_damage")
-					.define("Sets Tentacle Melee Damage", 1F);
+					.defineInRange("Sets Tentacle Melee Damage", 1, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Cyberdemon 2016");
 			this.cyberdemon2016_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.cyberdemon2016_biomes")
-					.define("Cyberdemon 2016 Biomes", Arrays.asList("#nether"));
+					.defineList("Cyberdemon 2016 Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.cyberdemon2016_spawn_weight = builder.translation("text.doom.config.cyberdemon2016_spawn_weight")
 					.defineInRange("Cyberdemon 2016 Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.cyberdemon2016_min_group = builder.translation("text.doom.config.cyberdemon2016_min_group")
@@ -906,7 +919,7 @@ public class DoomConfig {
 			this.cyberdemon2016_health = builder.translation("text.doom.config.cyberdemon2016_health")
 					.defineInRange("Sets Cyberdemon 2016 Max Health", 300, 1, Double.MAX_VALUE);
 			this.cyberdemon2016_ranged_damage = builder.translation("text.doom.config.cyberdemon2016_ranged_damage")
-					.define("Sets Cyberdemon 2016 Ranged Damage", 9F);
+					.defineInRange("Sets Cyberdemon 2016 Ranged Damage", 9, 1, Double.MAX_VALUE);
 			this.cyberdemon2016_melee_damage = builder.translation("text.doom.config.cyberdemon2016_melee_damage")
 					.defineInRange("Sets Cyberdemon 2016 Melee Damage", 7, 1, Double.MAX_VALUE);
 			builder.pop();
@@ -914,7 +927,8 @@ public class DoomConfig {
 			builder.push("Mob Settings:Tyrant");
 			this.tyrant_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
-					.translation("text.doom.config.tyrant_biomes").define("Tyrant Biomes", Arrays.asList("#nether"));
+					.translation("text.doom.config.tyrant_biomes")
+					.defineList("Tyrant Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.tyrant_spawn_weight = builder.translation("text.doom.config.tyrant_spawn_weight")
 					.defineInRange("Tyrant Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.tyrant_min_group = builder.translation("text.doom.config.tyrant_min_group")
@@ -928,7 +942,7 @@ public class DoomConfig {
 			this.spider_mastermind_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.spider_mastermind_biomes")
-					.define("Spider Mastermind Biomes", Arrays.asList("#nether"));
+					.defineList("Spider Mastermind Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.spider_mastermind_spawn_weight = builder.translation("text.doom.config.spider_mastermind_spawn_weight")
 					.defineInRange("Spider Mastermind Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.spider_mastermind_min_group = builder.translation("text.doom.config.spider_mastermind_min_group")
@@ -939,7 +953,7 @@ public class DoomConfig {
 					.defineInRange("Sets Spider Mastermind Max Health", 300, 1, Double.MAX_VALUE);
 			this.spider_mastermind_ranged_damage = builder
 					.translation("text.doom.config.spider_mastermind_ranged_damage")
-					.define("Sets Spider Mastermind Ranged Damage", 7F);
+					.defineInRange("Sets Spider Mastermind Ranged Damage", 7, 1, Double.MAX_VALUE);
 			this.spider_mastermind_melee_damage = builder.translation("text.doom.config.spider_mastermind_melee_damage")
 					.defineInRange("Sets Spider Mastermind Melee Damage", 4, 1, Double.MAX_VALUE);
 			builder.pop();
@@ -948,7 +962,7 @@ public class DoomConfig {
 			this.whiplash_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.whiplash_biomes")
-					.define("Whiplash Biomes", Arrays.asList("#nether"));
+					.defineList("Whiplash Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.whiplash_spawn_weight = builder.translation("text.doom.config.whiplash_spawn_weight")
 					.defineInRange("Whiplash Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.whiplash_min_group = builder.translation("text.doom.config.whiplash_min_group")
@@ -965,7 +979,7 @@ public class DoomConfig {
 			this.doomhunter_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.doomhunter_biomes")
-					.define("Doom Hunter Biomes", Arrays.asList("#nether"));
+					.defineList("Doom Hunter Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.doomhunter_spawn_weight = builder.translation("text.doom.config.doomhunter_spawn_weight")
 					.defineInRange("Doom Hunter Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.doomhunter_min_group = builder.translation("text.doom.config.doomhunter_min_group")
@@ -975,7 +989,7 @@ public class DoomConfig {
 			this.doomhunter_health = builder.translation("text.doom.config.doomhunter_health")
 					.defineInRange("Sets Doomhunter Max Health", 150, 1, Double.MAX_VALUE);
 			this.doomhunter_ranged_damage = builder.translation("text.doom.config.doomhunter_ranged_damage")
-					.define("Sets Doomhunter Ranged Damage", 7F);
+					.defineInRange("Sets Doomhunter Ranged Damage", 7, 1, Double.MAX_VALUE);
 			this.doomhunter_melee_damage = builder.translation("text.doom.config.doomhunter_melee_damage")
 					.defineInRange("Sets Doomhunter Melee Damage", 5, 1, Double.MAX_VALUE);
 			builder.pop();
@@ -984,7 +998,7 @@ public class DoomConfig {
 			this.possessed_worker_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.possessed_worker_biomes")
-					.define("Possessed Worker Biomes", Arrays.asList("#nether"));
+					.defineList("Possessed Worker Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.possessed_worker_spawn_weight = builder.translation("text.doom.config.possessed_worker_spawn_weight")
 					.defineInRange("Possessed Worker Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.possessed_worker_min_group = builder.translation("text.doom.config.possessed_worker_min_group")
@@ -997,7 +1011,7 @@ public class DoomConfig {
 			this.armoredbaron_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.armoredbaron_biomes")
-					.define("Armored Baron Biomes", Arrays.asList("#nether"));
+					.defineList("Armored Baron Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.armoredbaron_spawn_weight = builder.translation("text.doom.config.armoredbaron_spawn_weight")
 					.defineInRange("Armored Baron Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.armoredbaron_min_group = builder.translation("text.doom.config.armoredbaron_min_group")
@@ -1007,7 +1021,7 @@ public class DoomConfig {
 			this.armoredbaron_health = builder.translation("text.doom.config.armoredbaron_health")
 					.defineInRange("Sets Armored Baron Max Health", 240, 1, Double.MAX_VALUE);
 			this.armoredbaron_ranged_damage = builder.translation("text.doom.config.armoredbaron_ranged_damage")
-					.define("Sets Armored Baron Ranged Damage", 6F);
+					.defineInRange("Sets Armored Baron Ranged Damage", 6, 1, Double.MAX_VALUE);
 			this.armoredbaron_melee_damage = builder.translation("text.doom.config.armoredbaron_melee_damage")
 					.defineInRange("Sets Armored Baron Melee Damage", 7, 1, Double.MAX_VALUE);
 			builder.pop();
@@ -1016,7 +1030,7 @@ public class DoomConfig {
 			this.summoner_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.summoner_biomes")
-					.define("Summoner Biomes", Arrays.asList("#nether"));
+					.defineList("Summoner Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.summoner_spawn_weight = builder.translation("text.doom.config.summoner_spawn_weight")
 					.defineInRange("Summoner Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.summoner_min_group = builder.translation("text.doom.config.summoner_min_group")
@@ -1033,14 +1047,14 @@ public class DoomConfig {
 			this.maykrdrone_health = builder.translation("text.doom.config.maykrdrone_health")
 					.defineInRange("Sets Maykr Drone Max Health", 20, 1, Double.MAX_VALUE);
 			this.maykrdrone_ranged_damage = builder.translation("text.doom.config.maykrdrone_ranged_damage")
-					.define("Sets Maykr Drone Ranged Damage", 2F);
+					.defineInRange("Sets Maykr Drone Ranged Damage", 2, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Blood Maykr");
 			this.bloodmaykr_health = builder.translation("text.doom.config.bloodmaykr_health")
 					.defineInRange("Sets Blood Maykr Max Health", 45, 1, Double.MAX_VALUE);
 			this.bloodmaykr_ranged_damage = builder.translation("text.doom.config.bloodmaykr_ranged_damage")
-					.define("Sets Blood Maykr Ranged Damage", 5F);
+					.defineInRange("Sets Blood Maykr Ranged Damage", 5, 1, Double.MAX_VALUE);
 			this.bloodmaykr_melee_damage = builder.translation("text.doom.config.bloodmaykr_melee_damage")
 					.defineInRange("Sets Blood Maykr Melee Damage", 4, 1, Double.MAX_VALUE);
 			builder.pop();
@@ -1049,7 +1063,7 @@ public class DoomConfig {
 			this.archmaykr_health = builder.translation("text.doom.config.archmaykr_health")
 					.defineInRange("Sets Archmaykr Max Health", 400, 1, Double.MAX_VALUE);
 			this.archmaykr_ranged_damage = builder.translation("text.doom.config.archmaykr_ranged_damage")
-					.define("Sets Archmaykr Ranged Damage", 14F);
+					.defineInRange("Sets Archmaykr Ranged Damage", 14, 1, Double.MAX_VALUE);
 			this.archmaykr_melee_damage = builder.translation("text.doom.config.archmaykr_melee_damage")
 					.defineInRange("Sets Archmaykr Melee Damage", 6, 1, Double.MAX_VALUE);
 			builder.pop();
@@ -1058,14 +1072,14 @@ public class DoomConfig {
 			this.turret_health = builder.translation("text.doom.config.turret_health")
 					.defineInRange("Sets Turret Max Health", 5, 1, Double.MAX_VALUE);
 			this.turret_ranged_damage = builder.translation("text.doom.config.turret_ranged_damage")
-					.define("Sets Turret Ranged Damage", 6F);
+					.defineInRange("Sets Turret Ranged Damage", 6, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Icon of Sin");
 			this.icon_health = builder.translation("text.doom.config.icon_health")
 					.defineInRange("Sets Icon of Sin Max Health", 1000, 1, Double.MAX_VALUE);
 			this.icon_melee_damage = builder.translation("text.doom.config.icon_melee_damage")
-					.define("Sets Icon of Sin Melee Damage", 7F);
+					.defineInRange("Sets Icon of Sin Melee Damage", 7, 1, Double.MAX_VALUE);
 			builder.pop();
 
 		}

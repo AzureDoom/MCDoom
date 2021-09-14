@@ -173,7 +173,7 @@ public class TentacleEntity extends DemonEntity implements IAnimatable {
 			double d12 = (double) (Mth.sqrt((float) entity.distanceToSqr(vector3d)) / f2);
 			if (d12 <= 2.0D) {
 				if (entity instanceof LivingEntity) {
-					entity.hurt(DamageSource.indirectMagic(this, this.getTarget()), DoomConfig.SERVER.tentacle_melee_damage.get());
+					entity.hurt(DamageSource.indirectMagic(this, this.getTarget()), DoomConfig.SERVER.tentacle_melee_damage.get().floatValue());
 				}
 			}
 		}
