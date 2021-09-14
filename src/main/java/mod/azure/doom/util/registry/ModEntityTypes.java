@@ -96,10 +96,6 @@ public class ModEntityTypes {
 	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES,
 			DoomMod.MODID);
 
-	public static final RegistryObject<EntityType<HookEntity>> HOOK = ENTITY_TYPES.register("hook",
-			() -> EntityType.Builder.<HookEntity>of(HookEntity::new, EntityClassification.MISC).sized(0.5F, 0.8F)
-					.clientTrackingRange(10).build(new ResourceLocation(DoomMod.MODID, "hook").toString()));
-
 	public static final RegistryObject<EntityType<DoomFireEntity>> FIRING = ENTITY_TYPES.register("archvile_firing",
 			() -> EntityType.Builder.<DoomFireEntity>of(DoomFireEntity::new, EntityClassification.MISC)
 					.sized(0.5F, 0.8F).clientTrackingRange(10)

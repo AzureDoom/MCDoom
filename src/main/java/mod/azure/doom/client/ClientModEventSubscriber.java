@@ -92,7 +92,6 @@ import mod.azure.doom.client.render.projectiles.BarenBlastRender;
 import mod.azure.doom.client.render.projectiles.BulletsRender;
 import mod.azure.doom.client.render.projectiles.ChaingunBulletRender;
 import mod.azure.doom.client.render.projectiles.EnergyRender;
-import mod.azure.doom.client.render.projectiles.HookRender;
 import mod.azure.doom.client.render.projectiles.RocketRender;
 import mod.azure.doom.client.render.projectiles.ShotgunShellRender;
 import mod.azure.doom.client.render.projectiles.UnmaykrBulletRender;
@@ -237,7 +236,6 @@ public class ClientModEventSubscriber {
 		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.MOTHERDEMON.get(), MotherDemonRender::new);
 		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.TURRET.get(), TurretRender::new);
 		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.SUMMONER.get(), SummonerRender::new);
-		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.HOOK.get(), HookRender::new);
 		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.REVENANT2016.get(), Revenant2016Render::new);
 
 		ClientRegistry.bindTileEntityRenderer(ModEntityTypes.TOTEM.get(), TotemRender::new);
