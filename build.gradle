@@ -9,7 +9,7 @@ buildscript {
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.4.0'
-        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 
@@ -36,6 +36,10 @@ archivesBaseName = "MCDoom-1.17.1"
 
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+
+mixin {
+    add sourceSets.main, "doom.refmap.json"
+}
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
@@ -96,7 +100,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.17.1-37.0.59'
 	implementation fg.deobf('software.bernie.geckolib:curios:1.17.1-5.0.1.0')
 	implementation fg.deobf('software.bernie.geckolib:geckolib-1.17.1:3.0.1')
-	annotationProcessor 'org.spongepowered:mixin:0.8.4-SNAPSHOT:processor'
+	annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -170,8 +174,4 @@ if (file('key.properties').exists()) {
         	}
     	}
     }
-}
-
-mixin {
-    add sourceSets.main, "doom.refmap.json"
 }
