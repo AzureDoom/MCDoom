@@ -105,7 +105,7 @@ public class PossessedSoldierEntity extends DemonEntity implements IAnimatable {
 				.addGoal(4,
 						new RangedStrafeAttackGoal(this,
 								new PossessedSoldierEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
-										.setDamage(config.possessed_soldier_ranged_damage.get()),
+										.setDamage(config.possessed_soldier_ranged_damage.get().floatValue()),
 								1.0D, 50, 30, 15, 15F, 1));
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));

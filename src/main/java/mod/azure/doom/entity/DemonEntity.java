@@ -4,10 +4,10 @@ import java.util.Random;
 import java.util.UUID;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IAngerable;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
@@ -22,7 +22,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class DemonEntity extends MonsterEntity implements IAngerable {
+public class DemonEntity extends CreatureEntity implements IAngerable {
 
 	private static final DataParameter<Integer> ANGER_TIME = EntityDataManager.defineId(DemonEntity.class,
 			DataSerializers.INT);
@@ -31,12 +31,12 @@ public class DemonEntity extends MonsterEntity implements IAngerable {
 	private static final RangedInteger ANGER_TIME_RANGE = TickRangeConverter.rangeOfSeconds(20, 39);
 	private UUID targetUuid;
 
-	protected DemonEntity(EntityType<? extends MonsterEntity> type, World worldIn) {
+	protected DemonEntity(EntityType<? extends CreatureEntity> type, World worldIn) {
 		super(type, worldIn);
 		this.noCulling = true;
 	}
 
-	public static boolean passPeacefulAndYCheck(EntityType<? extends DemonEntity> config, IWorld world,
+	public static boolean passPeacefulAndYCheck(EntityType<? extends CreatureEntity> config, IWorld world,
 			SpawnReason reason, BlockPos pos, Random random) {
 		// peaceful check
 		if (world.getDifficulty() == Difficulty.PEACEFUL)

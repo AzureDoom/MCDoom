@@ -271,7 +271,7 @@ public class RocketEntity extends AbstractArrowEntity implements IAnimatable {
 			if (d12 <= 1.0D) {
 				if (entity instanceof LivingEntity) {
 					entity.hurt(DamageSource.playerAttack((PlayerEntity) this.shooter),
-							DoomConfig.SERVER.rocket_damage.get());
+							DoomConfig.SERVER.rocket_damage.get().floatValue());
 				}
 			}
 		}

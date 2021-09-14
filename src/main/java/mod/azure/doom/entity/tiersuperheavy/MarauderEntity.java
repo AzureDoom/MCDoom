@@ -111,7 +111,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable {
 	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
-	
+
 	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
@@ -124,8 +124,8 @@ public class MarauderEntity extends DemonEntity implements IAnimatable {
 		this.targetSelector.addGoal(1, new MarauderEntity.FindPlayerGoal(this, this::isAngryAt));
 		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 1));
 		this.goalSelector.addGoal(4,
-				new RangedStaticAttackGoal(this,
-						new MarauderEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(config.shotgun_damage.get()),
+				new RangedStaticAttackGoal(this, new MarauderEntity.FireballAttack(this)
+						.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(config.shotgun_damage.get().floatValue()),
 						60, 20, 30F, 2));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, false));

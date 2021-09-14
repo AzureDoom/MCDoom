@@ -117,7 +117,7 @@ public class ImpEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.addGoal(4,
 				new RangedStrafeAttackGoal(this,
 						new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(config.imp_ranged_damage.get()).setSound(SoundEvents.BLAZE_SHOOT, 1.0F,
+								.setDamage(config.imp_ranged_damage.get().floatValue()).setSound(SoundEvents.BLAZE_SHOOT, 1.0F,
 										1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.0D, 50, 30, 15, 15F, 1).setMultiShot(2, 3));
 		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));

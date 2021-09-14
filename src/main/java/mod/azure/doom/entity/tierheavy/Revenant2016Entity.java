@@ -166,7 +166,7 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable {
 				double d3 = livingentity.getY(0.5D) - (0.5D + this.parentEntity.getY(0.5D));
 				double d4 = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * 2.0D);
 				RocketMobEntity fireballentity = new RocketMobEntity(world, this.parentEntity, d2, d3, d4,
-						config.revenant_ranged_damage.get());
+						config.revenant_ranged_damage.get().floatValue());
 				if (this.attackTimer == 5) {
 					parentEntity.setNoGravity(true);
 					parentEntity.push(0, (double) 0.2F * 2.0D, 0);

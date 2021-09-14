@@ -304,7 +304,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 			double d12 = (double) (MathHelper.sqrt(entity.distanceToSqr(vector3d)) / f2);
 			if (d12 <= 1.0D) {
 				if (entity instanceof LivingEntity) {
-					entity.hurt(DamageSource.indirectMobAttack(this, this.getTarget()), config.icon_melee_damage.get());
+					entity.hurt(DamageSource.indirectMobAttack(this, this.getTarget()), config.icon_melee_damage.get().floatValue());
 				}
 			}
 		}

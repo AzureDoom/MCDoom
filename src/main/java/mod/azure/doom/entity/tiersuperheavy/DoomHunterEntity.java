@@ -281,7 +281,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 				float f = (float) MathHelper.atan2(livingentity.getZ() - parentEntity.getZ(),
 						livingentity.getX() - parentEntity.getX());
 				RocketMobEntity fireballentity = new RocketMobEntity(world, this.parentEntity, d2, d3, d4,
-						config.doomhunter_ranged_damage.get());
+						config.doomhunter_ranged_damage.get().floatValue());
 				if (this.attackTimer == 15) {
 					if (parentEntity.getHealth() < (parentEntity.getMaxHealth() * 0.50)) {
 						for (int l = 0; l < 16; ++l) {

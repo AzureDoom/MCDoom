@@ -148,7 +148,7 @@ public class BaronEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
 		this.goalSelector.addGoal(4,
 				new RangedStaticAttackGoal(this, new BaronEntity.FireballAttack(this)
-						.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(config.baron_ranged_damage.get()), 60, 10,
+						.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(config.baron_ranged_damage.get().floatValue()), 60, 10,
 						30F, 2));
 		this.goalSelector.addGoal(2, new DemonAttackGoal(this, 1.0D, false, 1));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));

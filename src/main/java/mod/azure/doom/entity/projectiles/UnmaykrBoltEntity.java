@@ -227,7 +227,7 @@ public class UnmaykrBoltEntity extends AbstractArrowEntity {
 				((LivingEntity) entity1).setLastHurtMob(entity);
 			}
 		}
-		if (entity.hurt(damagesource, DoomConfig.SERVER.unmaykr_damage.get())) {
+		if (entity.hurt(damagesource, DoomConfig.SERVER.unmaykr_damage.get().floatValue())) {
 			if (entity instanceof LivingEntity) {
 				LivingEntity livingentity = (LivingEntity) entity;
 				if (!this.level.isClientSide && entity1 instanceof LivingEntity) {

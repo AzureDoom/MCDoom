@@ -213,7 +213,7 @@ public class ArgentBoltEntity extends AbstractArrowEntity {
 				((LivingEntity) entity1).setLastHurtMob(entity);
 			}
 		}
-		if (entity.hurt(damagesource, DoomConfig.SERVER.argent_bolt_damage.get())) {
+		if (entity.hurt(damagesource, DoomConfig.SERVER.argent_bolt_damage.get().floatValue())) {
 			if (entity instanceof LivingEntity) {
 				LivingEntity livingentity = (LivingEntity) entity;
 				if (!this.level.isClientSide && entity1 instanceof LivingEntity) {

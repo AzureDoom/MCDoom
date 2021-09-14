@@ -4,13 +4,13 @@ import java.util.EnumSet;
 
 import mod.azure.doom.item.weapons.PistolItem;
 import mod.azure.doom.util.registry.DoomItems;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 
-public class RangedPistolAttackGoal<T extends MonsterEntity & IRangedAttackMob> extends Goal {
+public class RangedPistolAttackGoal<T extends CreatureEntity & IRangedAttackMob> extends Goal {
 	private final T entity;
 	private final double moveSpeedAmp;
 	private int attackCooldown;
@@ -62,8 +62,7 @@ public class RangedPistolAttackGoal<T extends MonsterEntity & IRangedAttackMob> 
 	public void tick() {
 		LivingEntity livingentity = this.entity.getTarget();
 		if (livingentity != null) {
-			double d0 = this.entity.distanceToSqr(livingentity.getX(), livingentity.getY(),
-					livingentity.getZ());
+			double d0 = this.entity.distanceToSqr(livingentity.getX(), livingentity.getY(), livingentity.getZ());
 			boolean flag = this.entity.getSensing().canSee(livingentity);
 			boolean flag1 = this.seeTime > 0;
 			if (flag != flag1) {
