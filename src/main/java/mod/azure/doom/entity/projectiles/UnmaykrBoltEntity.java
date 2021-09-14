@@ -1,7 +1,7 @@
 package mod.azure.doom.entity.projectiles;
 
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import mod.azure.doom.util.config.Config;
+import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -75,7 +75,7 @@ public class UnmaykrBoltEntity extends AbstractArrowEntity {
 		super.readAdditionalSaveData(compound);
 		this.ticksInAir = compound.getShort("life");
 	}
-	
+
 	@Override
 	public double getBaseDamage() {
 		return 0D;
@@ -227,7 +227,7 @@ public class UnmaykrBoltEntity extends AbstractArrowEntity {
 				((LivingEntity) entity1).setLastHurtMob(entity);
 			}
 		}
-		if (entity.hurt(damagesource, Config.SERVER.unmaykr_damage.floatValue())) {
+		if (entity.hurt(damagesource, DoomConfig.SERVER.unmaykr_damage.get())) {
 			if (entity instanceof LivingEntity) {
 				LivingEntity livingentity = (LivingEntity) entity;
 				if (!this.level.isClientSide && entity1 instanceof LivingEntity) {
@@ -252,8 +252,7 @@ public class UnmaykrBoltEntity extends AbstractArrowEntity {
 	protected void onHit(RayTraceResult result) {
 		super.onHit(result);
 		Entity entity = this.getOwner();
-		if (result.getType() != RayTraceResult.Type.ENTITY
-				|| !((EntityRayTraceResult) result).getEntity().is(entity)) {
+		if (result.getType() != RayTraceResult.Type.ENTITY || !((EntityRayTraceResult) result).getEntity().is(entity)) {
 			if (!this.level.isClientSide) {
 				this.remove();
 			}

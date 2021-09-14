@@ -2,7 +2,6 @@ package mod.azure.doom.entity.tierheavy;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
-import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -12,16 +11,15 @@ import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
-import mod.azure.doom.util.config.Config;
-import mod.azure.doom.util.config.EntityConfig;
-import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
+import mod.azure.doom.util.config.DoomConfig;
+import mod.azure.doom.util.config.DoomConfig.Server;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -43,7 +41,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -56,7 +53,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class RevenantEntity extends DemonEntity implements IAnimatable {
 
-	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.REVENANT);
+	public static Server config = DoomConfig.SERVER;
 
 	private AnimationFactory factory = new AnimationFactory(this);
 
@@ -93,12 +90,9 @@ public class RevenantEntity extends DemonEntity implements IAnimatable {
 	}
 
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
-		return config.pushAttributes(MobEntity.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D));
-	}
-
-	public static boolean spawning(EntityType<RevenantEntity> p_223337_0_, IWorld p_223337_1_, SpawnReason reason,
-			BlockPos p_223337_3_, Random p_223337_4_) {
-		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223337_3_, p_223337_4_);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+				.add(Attributes.MAX_HEALTH, config.revenant_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -109,11 +103,11 @@ public class RevenantEntity extends DemonEntity implements IAnimatable {
 	}
 
 	protected void applyEntityAI() {
-		this.goalSelector
-				.addGoal(4,
-						new RangedStrafeAttackGoal(this, new RevenantEntity.FireballAttack(this)
-								.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(5), 1.0D, 50, 30, 15, 15F, 1)
-										.setMultiShot(2, 3));
+		this.goalSelector.addGoal(4,
+				new RangedStrafeAttackGoal(this,
+						new RevenantEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
+								.setDamage(config.revenant_ranged_damage.get()),
+						1.0D, 50, 30, 15, 15F, 1).setMultiShot(2, 3));
 		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));

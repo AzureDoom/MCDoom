@@ -2,7 +2,6 @@ package mod.azure.doom.entity.tierfodder;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
-import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -11,9 +10,8 @@ import mod.azure.doom.entity.ai.goal.RangedShotgunAttackGoal;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import mod.azure.doom.item.ammo.ShellAmmo;
 import mod.azure.doom.item.weapons.Shotgun;
-import mod.azure.doom.util.config.Config;
-import mod.azure.doom.util.config.EntityConfig;
-import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
+import mod.azure.doom.util.config.DoomConfig;
+import mod.azure.doom.util.config.DoomConfig.Server;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.block.BlockState;
@@ -24,7 +22,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
@@ -51,7 +48,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -84,8 +80,8 @@ public class ShotgunguyEntity extends DemonEntity implements IRangedAttackMob, I
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
-	
-	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.SHOTGUN_GUY);
+
+	public static Server config = DoomConfig.SERVER;
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (event.isMoving() && !this.isAggressive()) {
@@ -121,11 +117,6 @@ public class ShotgunguyEntity extends DemonEntity implements IRangedAttackMob, I
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static boolean spawning(EntityType<ShotgunguyEntity> p_223337_0_, IWorld p_223337_1_, SpawnReason reason,
-			BlockPos p_223337_3_, Random p_223337_4_) {
-		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223337_3_, p_223337_4_);
-	}
-
 	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
@@ -139,7 +130,9 @@ public class ShotgunguyEntity extends DemonEntity implements IRangedAttackMob, I
 	}
 
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
-		return config.pushAttributes(MobEntity.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D));
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+				.add(Attributes.MAX_HEALTH, config.shotgunguy_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -205,7 +198,7 @@ public class ShotgunguyEntity extends DemonEntity implements IRangedAttackMob, I
 				: DoomItems.SHOTGUN_SHELLS.get());
 		ShotgunShellEntity abstractarrowentity = arrowitem.createArrow(shooter.level, arrowStack, shooter);
 		abstractarrowentity.setEnchantmentEffectsFromEntity(shooter, distanceFactor);
-		abstractarrowentity.setBaseDamage(config.RANGED_ATTACK_DAMAGE);
+		abstractarrowentity.setBaseDamage(config.shotgun_damage.get());
 		return abstractarrowentity;
 	}
 

@@ -15,8 +15,7 @@ import mod.azure.doom.structures.DoomStructures;
 import mod.azure.doom.util.DoomVillagerTrades;
 import mod.azure.doom.util.LootHandler;
 import mod.azure.doom.util.SoulCubeHandler;
-import mod.azure.doom.util.config.BiomeConfig;
-import mod.azure.doom.util.config.Config;
+import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
@@ -73,11 +72,7 @@ public class DoomMod {
 		instance = this;
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
-		ModLoadingContext modLoadingContext = ModLoadingContext.get();
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onModConfigEvent);
-		modLoadingContext.registerConfig(ModConfig.Type.SERVER, Config.SERVER_SPEC, "doom-config.toml");
-		modLoadingContext.registerConfig(ModConfig.Type.SERVER, Config.BIOME_SPEC, "doom-mob-biomes.toml");
-		Config.SERVER.bakeConfig();
+		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, DoomConfig.SERVER_SPEC, "doom-newconfig.toml");
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new SoulCubeHandler());
 		modEventBus.addListener(this::setup);
@@ -86,7 +81,6 @@ public class DoomMod {
 		DoomStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
 		forgeBus.addListener(EventPriority.NORMAL, this::addDimensionalSpacing);
 		forgeBus.addListener(EventPriority.HIGH, this::biomeModification);
-		// MinecraftForge.EVENT_BUS.addListener(this::gEvent);
 		forgeBus.addGenericListener(Block.class, DoomMod::updatingBlocksID);
 		forgeBus.addGenericListener(Item.class, DoomMod::updatingItemsID);
 		MinecraftForge.EVENT_BUS.addListener(DoomVillagerTrades::onVillagerTradesEvent);
@@ -100,14 +94,6 @@ public class DoomMod {
 		MinecraftForge.EVENT_BUS.addListener(this::onBiomeLoad);
 		GeckoLib.initialize();
 		GeckoLibNetwork.initialize();
-	}
-
-	@SubscribeEvent
-	public void onModConfigEvent(final ModConfig.ModConfigEvent event) {
-		final ModConfig config = event.getConfig();
-		if (config.getSpec() == Config.BIOME_SPEC) {
-			BiomeConfig.bake(config);
-		}
 	}
 
 	@SubscribeEvent
@@ -127,16 +113,6 @@ public class DoomMod {
 			DoomConfiguredStructures.registerConfiguredStructures();
 		});
 	}
-
-//	public void gEvent(final EntityJoinWorldEvent event) {
-//		if (event.getEntity() instanceof PlayerEntity
-//				&& UUID.fromString("97aa8203-db55-4f41-b3c4-f5c52db4102d")
-//						.equals(((PlayerEntity) event.getEntity()).getUUID())
-//				|| UUID.fromString("380df991-f603-344c-a090-369bad2a924a")
-//						.equals(((PlayerEntity) event.getEntity()).getUUID())) {
-//			// will send thank you messages.
-//		}
-//	}
 
 	public void biomeModification(final BiomeLoadingEvent event) {
 		if (event.getCategory().equals(Category.THEEND)) {

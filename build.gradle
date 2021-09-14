@@ -185,7 +185,6 @@ if (file('key.properties').exists()) {
         	relations {
             	requiredDependency 'curios'  
             	requiredDependency 'geckolib' 
-            	requiredDependency 'citadel' 
             	optionalDependency 'project-mmo'   
             	optionalDependency 'patchouli'     
         	}

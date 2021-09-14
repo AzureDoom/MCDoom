@@ -2,7 +2,7 @@ package mod.azure.doom.util.enums;
 
 import java.util.function.Supplier;
 
-import mod.azure.doom.util.config.Config;
+import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.crafting.Ingredient;
@@ -11,7 +11,7 @@ import net.minecraft.util.LazyValue;
 public enum DoomTier implements IItemTier {
 	DOOM(18, 1561, 16.0F, 3.0F, 30, () -> {
 		return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
-	}), DOOM_HIGHTEIR(6, Config.SERVER.CRUCIBLE_MARAUDER_MAX_DAMAGE, 16.0F, 3.0F, 30, () -> {
+	}), DOOM_HIGHTEIR(6, DoomConfig.SERVER.crucible_marauder_max_damage.get(), 16.0F, 3.0F, 30, () -> {
 		return Ingredient.of(DoomItems.ARGENT_BLOCK.get());
 	}), CHAINSAW(6, 600, 16.0F, 0.0F, 30, () -> {
 		return Ingredient.of(DoomItems.GAS_BARREL.get());

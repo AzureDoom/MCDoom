@@ -1,15 +1,12 @@
 package mod.azure.doom.entity.tierheavy;
 
-import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
-import mod.azure.doom.util.config.Config;
-import mod.azure.doom.util.config.EntityConfig;
-import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
+import mod.azure.doom.util.config.DoomConfig;
+import mod.azure.doom.util.config.DoomConfig.Server;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.CreatureAttribute;
@@ -17,7 +14,6 @@ import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
@@ -42,7 +38,6 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -57,7 +52,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class MancubusEntity extends DemonEntity implements IAnimatable {
 
-	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.MANCUBUS);
+	public static Server config = DoomConfig.SERVER;
 	private int attackTimer;
 
 	public MancubusEntity(EntityType<MancubusEntity> entityType, World worldIn) {
@@ -119,11 +114,6 @@ public class MancubusEntity extends DemonEntity implements IAnimatable {
 	@Override
 	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-
-	public static boolean spawning(EntityType<MancubusEntity> p_223337_0_, IWorld p_223337_1_, SpawnReason reason,
-			BlockPos p_223337_3_, Random p_223337_4_) {
-		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223337_3_, p_223337_4_);
 	}
 
 	@Override
@@ -189,7 +179,8 @@ public class MancubusEntity extends DemonEntity implements IAnimatable {
 				double d4 = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * 2.0D);
 				float f = (float) MathHelper.atan2(livingentity.getZ() - parentEntity.getZ(),
 						livingentity.getX() - parentEntity.getX());
-				BarenBlastEntity fireballentity = new BarenBlastEntity(world, this.parentEntity, d2, d3, d4, 6);
+				BarenBlastEntity fireballentity = new BarenBlastEntity(world, this.parentEntity, d2, d3, d4,
+						config.mancubus_ranged_damage.get());
 				if (this.attackTimer == 15) {
 					if (parentEntity.distanceTo(livingentity) < 3.0D) {
 						for (int i = 0; i < 5; ++i) {
@@ -277,7 +268,9 @@ public class MancubusEntity extends DemonEntity implements IAnimatable {
 	}
 
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
-		return config.pushAttributes(MobEntity.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D));
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+				.add(Attributes.MAX_HEALTH, config.mancubus_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Nullable

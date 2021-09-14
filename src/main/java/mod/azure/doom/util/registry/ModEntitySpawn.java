@@ -1,19 +1,11 @@
 package mod.azure.doom.util.registry;
 
-import java.util.HashMap;
 import java.util.List;
 
-import mod.azure.doom.util.config.BiomeConfig;
-import mod.azure.doom.util.config.BiomeEvaluator;
-import mod.azure.doom.util.config.Config;
-import mod.azure.doom.util.config.EntityConfig;
-import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
+import mod.azure.doom.util.config.DoomConfig;
+import mod.azure.doom.util.config.DoomConfig.Server;
 import net.minecraft.entity.EntityClassification;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.MobSpawnInfo.Spawners;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -23,295 +15,197 @@ public class ModEntitySpawn {
 	public static void onBiomesLoad(BiomeLoadingEvent event) {
 		Biome biome = ForgeRegistries.BIOMES.getValue(event.getName());
 		List<Spawners> base = event.getSpawns().getSpawner(EntityClassification.MONSTER);
-		HashMap<EntityConfigType, EntityConfig> config = Config.SERVER.entityConfig;
-        if (event.getName() != null ) {
-            ResourceLocation name = event.getName();
-            RegistryKey<Biome> biome1 = RegistryKey.create(Registry.BIOME_REGISTRY, name);
-            if (biome1 == Biomes.SOUL_SAND_VALLEY) {
-            	
-            }
-            if (biome1 == Biomes.NETHER_WASTES) {
-            	
-            }
-            if (biome1 == Biomes.CRIMSON_FOREST) {
-            	
-            }
-            if (biome1 == Biomes.WARPED_FOREST) {
-            	
-            }
-            if (biome1 == Biomes.BASALT_DELTAS) {
-            	
-            }
-        }
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.PROWLER, biome)
-				&& config.get(EntityConfigType.PROWLER).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.PROWLER.get(), config.get(EntityConfigType.PROWLER).SPAWN_WEIGHT,
-					config.get(EntityConfigType.PROWLER).MIN_GROUP, config.get(EntityConfigType.PROWLER).MAX_GROUP));
+		Server config = DoomConfig.SERVER;
+		if (parseBiomes(config.imp_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.IMP.get(), config.imp_spawn_weight.get(),
+					config.imp_min_group.get(), config.imp_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.IMP, biome)
-				&& config.get(EntityConfigType.IMP).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.IMP.get(), config.get(EntityConfigType.IMP).SPAWN_WEIGHT,
-					config.get(EntityConfigType.IMP).MIN_GROUP, config.get(EntityConfigType.IMP).MAX_GROUP));
+		if (parseBiomes(config.imp_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.IMP_STONE.get(), config.impstone_spawn_weight.get(),
+					config.impstone_min_group.get(), config.impstone_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.IMP_STONE, biome)
-				&& config.get(EntityConfigType.IMP_STONE).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.IMP_STONE.get(), config.get(EntityConfigType.IMP_STONE).SPAWN_WEIGHT,
-					config.get(EntityConfigType.IMP_STONE).MIN_GROUP,
-					config.get(EntityConfigType.IMP_STONE).MAX_GROUP));
+		if (parseBiomes(config.pinky_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.PINKY.get(), config.pinky_spawn_weight.get(),
+					config.pinky_min_group.get(), config.pinky_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.PINKY, biome)
-				&& config.get(EntityConfigType.PINKY).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.PINKY.get(), config.get(EntityConfigType.PINKY).SPAWN_WEIGHT,
-					config.get(EntityConfigType.PINKY).MIN_GROUP, config.get(EntityConfigType.PINKY).MAX_GROUP));
+		if (parseBiomes(config.spectre_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.SPECTRE.get(), config.spectre_spawn_weight.get(),
+					config.spectre_min_group.get(), config.spectre_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.SPECTRE, biome)
-				&& config.get(EntityConfigType.SPECTRE).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.SPECTRE.get(), config.get(EntityConfigType.SPECTRE).SPAWN_WEIGHT,
-					config.get(EntityConfigType.SPECTRE).MIN_GROUP, config.get(EntityConfigType.SPECTRE).MAX_GROUP));
+		if (parseBiomes(config.lost_soul_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.LOST_SOUL.get(), config.lost_soul_spawn_weight.get(),
+					config.lost_soul_min_group.get(), config.lost_soul_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.LOST_SOUL, biome)
-				&& config.get(EntityConfigType.LOST_SOUL).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.LOST_SOUL.get(), config.get(EntityConfigType.LOST_SOUL).SPAWN_WEIGHT,
-					config.get(EntityConfigType.LOST_SOUL).MIN_GROUP,
-					config.get(EntityConfigType.LOST_SOUL).MAX_GROUP));
+		if (parseBiomes(config.cacodemon_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.CACODEMON.get(), config.cacodemon_spawn_weight.get(),
+					config.cacodemon_min_group.get(), config.cacodemon_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.CACODEMON, biome)
-				&& config.get(EntityConfigType.CACODEMON).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.CACODEMON.get(), config.get(EntityConfigType.CACODEMON).SPAWN_WEIGHT,
-					config.get(EntityConfigType.CACODEMON).MIN_GROUP,
-					config.get(EntityConfigType.CACODEMON).MAX_GROUP));
+		if (parseBiomes(config.archvile_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.ARCHVILE.get(), config.archvile_spawn_weight.get(),
+					config.archvile_min_group.get(), config.archvile_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.ARCHVILE, biome)
-				&& config.get(EntityConfigType.ARCHVILE).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.ARCHVILE.get(), config.get(EntityConfigType.ARCHVILE).SPAWN_WEIGHT,
-					config.get(EntityConfigType.ARCHVILE).MIN_GROUP, config.get(EntityConfigType.ARCHVILE).MAX_GROUP));
+		if (parseBiomes(config.baron_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.BARON.get(), config.baron_spawn_weight.get(),
+					config.baron_min_group.get(), config.baron_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.BARON, biome)
-				&& config.get(EntityConfigType.BARON).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.BARON.get(), config.get(EntityConfigType.BARON).SPAWN_WEIGHT,
-					config.get(EntityConfigType.BARON).MIN_GROUP, config.get(EntityConfigType.BARON).MAX_GROUP));
+		if (parseBiomes(config.mancubus_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.MANCUBUS.get(), config.mancubus_spawn_weight.get(),
+					config.mancubus_min_group.get(), config.mancubus_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.MANCUBUS, biome)
-				&& config.get(EntityConfigType.MANCUBUS).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.MANCUBUS.get(), config.get(EntityConfigType.MANCUBUS).SPAWN_WEIGHT,
-					config.get(EntityConfigType.MANCUBUS).MIN_GROUP, config.get(EntityConfigType.MANCUBUS).MAX_GROUP));
+		if (parseBiomes(config.revenant_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.REVENANT.get(), config.revenant_spawn_weight.get(),
+					config.revenant_min_group.get(), config.revenant_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.REVENANT, biome)
-				&& config.get(EntityConfigType.REVENANT).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.REVENANT.get(), config.get(EntityConfigType.REVENANT).SPAWN_WEIGHT,
-					config.get(EntityConfigType.REVENANT).MIN_GROUP, config.get(EntityConfigType.REVENANT).MAX_GROUP));
+		if (parseBiomes(config.revenant_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.REVENANT2016.get(), config.revenant_spawn_weight.get(),
+					config.revenant_min_group.get(), config.revenant_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.REVENANT, biome)
-				&& config.get(EntityConfigType.REVENANT).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.REVENANT2016.get(), config.get(EntityConfigType.REVENANT).SPAWN_WEIGHT,
-					config.get(EntityConfigType.REVENANT).MIN_GROUP, config.get(EntityConfigType.REVENANT).MAX_GROUP));
+		if (parseBiomes(config.spider_mastermind_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.SPIDERMASTERMIND.get(), config.spider_mastermind_spawn_weight.get(),
+					config.spider_mastermind_min_group.get(), config.spider_mastermind_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.SPIDERMASTERMIND, biome)
-				&& config.get(EntityConfigType.SPIDERMASTERMIND).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.SPIDERMASTERMIND.get(),
-					config.get(EntityConfigType.SPIDERMASTERMIND).SPAWN_WEIGHT,
-					config.get(EntityConfigType.SPIDERMASTERMIND).MIN_GROUP,
-					config.get(EntityConfigType.SPIDERMASTERMIND).MAX_GROUP));
+		if (parseBiomes(config.zombieman_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.ZOMBIEMAN.get(), config.zombieman_spawn_weight.get(),
+					config.zombieman_min_group.get(), config.zombieman_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.SPIDERMASTERMIND, biome)
-				&& config.get(EntityConfigType.SPIDERMASTERMIND).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.SPIDERMASTERMIND2016.get(),
-					config.get(EntityConfigType.SPIDERMASTERMIND).SPAWN_WEIGHT,
-					config.get(EntityConfigType.SPIDERMASTERMIND).MIN_GROUP,
-					config.get(EntityConfigType.SPIDERMASTERMIND).MAX_GROUP));
+		if (parseBiomes(config.arachnotron_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.ARACHNOTRON.get(), config.arachnotron_spawn_weight.get(),
+					config.arachnotron_min_group.get(), config.arachnotron_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.ZOMBIEMAN, biome)
-				&& config.get(EntityConfigType.ZOMBIEMAN).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.ZOMBIEMAN.get(), config.get(EntityConfigType.ZOMBIEMAN).SPAWN_WEIGHT,
-					config.get(EntityConfigType.ZOMBIEMAN).MIN_GROUP,
-					config.get(EntityConfigType.ZOMBIEMAN).MAX_GROUP));
+		if (parseBiomes(config.arachnotron_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.ARACHNOTRONETERNAL.get(), config.arachnotron_spawn_weight.get(),
+					config.arachnotron_min_group.get(), config.arachnotron_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.NIGHTMARE_IMP, biome)
-				&& config.get(EntityConfigType.NIGHTMARE_IMP).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.NIGHTMARE_IMP.get(),
-					config.get(EntityConfigType.NIGHTMARE_IMP).SPAWN_WEIGHT,
-					config.get(EntityConfigType.NIGHTMARE_IMP).MIN_GROUP,
-					config.get(EntityConfigType.NIGHTMARE_IMP).MAX_GROUP));
+		if (parseBiomes(config.imp2016_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.IMP2016.get(), config.imp2016_spawn_weight.get(),
+					config.imp2016_min_group.get(), config.imp2016_min_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.GARGOYLE, biome)
-				&& config.get(EntityConfigType.GARGOYLE).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.GARGOYLE.get(), config.get(EntityConfigType.GARGOYLE).SPAWN_WEIGHT,
-					config.get(EntityConfigType.GARGOYLE).MIN_GROUP, config.get(EntityConfigType.GARGOYLE).MAX_GROUP));
+		if (parseBiomes(config.gargoyle_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.GARGOYLE.get(), config.gargoyle_spawn_weight.get(),
+					config.gargoyle_min_group.get(), config.gargoyle_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.IMP_2016, biome)
-				&& config.get(EntityConfigType.IMP_2016).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.IMP2016.get(), config.get(EntityConfigType.IMP_2016).SPAWN_WEIGHT,
-					config.get(EntityConfigType.IMP_2016).MIN_GROUP, config.get(EntityConfigType.IMP_2016).MAX_GROUP));
+		if (parseBiomes(config.nightmare_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.NIGHTMARE_IMP.get(), config.nightmare_spawn_weight.get(),
+					config.nightmare_min_group.get(), config.nightmare_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.MECHA_ZOMBIE, biome)
-				&& config.get(EntityConfigType.MECHA_ZOMBIE).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.MECHAZOMBIE.get(),
-					config.get(EntityConfigType.MECHA_ZOMBIE).SPAWN_WEIGHT,
-					config.get(EntityConfigType.MECHA_ZOMBIE).MIN_GROUP,
-					config.get(EntityConfigType.MECHA_ZOMBIE).MAX_GROUP));
+		if (parseBiomes(config.chaingunner_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.CHAINGUNNER.get(), config.chaingunner_spawn_weight.get(),
+					config.chaingunner_min_group.get(), config.chaingunner_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.ARACHNOTRON, biome)
-				&& config.get(EntityConfigType.ARACHNOTRON).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.ARACHNOTRON.get(),
-					config.get(EntityConfigType.ARACHNOTRON).SPAWN_WEIGHT,
-					config.get(EntityConfigType.ARACHNOTRON).MIN_GROUP,
-					config.get(EntityConfigType.ARACHNOTRON).MAX_GROUP));
+		if (parseBiomes(config.shotgunguy_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.SHOTGUNGUY.get(), config.shotgunguy_spawn_weight.get(),
+					config.shotgunguy_min_group.get(), config.shotgunguy_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.ARACHNOTRON, biome)
-				&& config.get(EntityConfigType.ARACHNOTRON).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.ARACHNOTRONETERNAL.get(),
-					config.get(EntityConfigType.ARACHNOTRON).SPAWN_WEIGHT,
-					config.get(EntityConfigType.ARACHNOTRON).MIN_GROUP,
-					config.get(EntityConfigType.ARACHNOTRON).MAX_GROUP));
+		if (parseBiomes(config.marauder_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.MARAUDER.get(), config.marauder_spawn_weight.get(),
+					config.marauder_min_group.get(), config.marauder_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.CHAINGUNNER, biome)
-				&& config.get(EntityConfigType.CHAINGUNNER).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.CHAINGUNNER.get(),
-					config.get(EntityConfigType.CHAINGUNNER).SPAWN_WEIGHT,
-					config.get(EntityConfigType.CHAINGUNNER).MIN_GROUP,
-					config.get(EntityConfigType.CHAINGUNNER).MAX_GROUP));
+		if (parseBiomes(config.pain_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.PAIN.get(), config.pain_spawn_weight.get(),
+					config.pain_min_group.get(), config.pain_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.SHOTGUN_GUY, biome)
-				&& config.get(EntityConfigType.SHOTGUN_GUY).SPAWN_WEIGHT > 0) {
-			base.add(
-					new Spawners(ModEntityTypes.SHOTGUNGUY.get(), config.get(EntityConfigType.SHOTGUN_GUY).SPAWN_WEIGHT,
-							config.get(EntityConfigType.SHOTGUN_GUY).MIN_GROUP,
-							config.get(EntityConfigType.SHOTGUN_GUY).MAX_GROUP));
+		if (parseBiomes(config.hellknight_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.HELLKNIGHT.get(), config.hellknight_spawn_weight.get(),
+					config.hellknight_min_group.get(), config.hellknight_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.MARAUDER, biome)
-				&& config.get(EntityConfigType.MARAUDER).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.MARAUDER.get(), config.get(EntityConfigType.MARAUDER).SPAWN_WEIGHT,
-					config.get(EntityConfigType.MARAUDER).MIN_GROUP, config.get(EntityConfigType.MARAUDER).MAX_GROUP));
+		if (parseBiomes(config.hellknight2016_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.HELLKNIGHT2016.get(), config.hellknight2016_spawn_weight.get(),
+					config.hellknight2016_min_group.get(), config.hellknight2016_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.PAIN, biome)
-				&& config.get(EntityConfigType.PAIN).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.PAIN.get(), config.get(EntityConfigType.PAIN).SPAWN_WEIGHT,
-					config.get(EntityConfigType.PAIN).MIN_GROUP, config.get(EntityConfigType.PAIN).MAX_GROUP));
+		if (parseBiomes(config.hellknight2016_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.DREADKNIGHT.get(), config.hellknight2016_spawn_weight.get(),
+					config.hellknight2016_min_group.get(), config.hellknight2016_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.HELL_KNIGHT, biome)
-				&& config.get(EntityConfigType.HELL_KNIGHT).SPAWN_WEIGHT > 0) {
-			base.add(
-					new Spawners(ModEntityTypes.HELLKNIGHT.get(), config.get(EntityConfigType.HELL_KNIGHT).SPAWN_WEIGHT,
-							config.get(EntityConfigType.HELL_KNIGHT).MIN_GROUP,
-							config.get(EntityConfigType.HELL_KNIGHT).MAX_GROUP));
+		if (parseBiomes(config.cyberdemon_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.CYBERDEMON.get(), config.cyberdemon_spawn_weight.get(),
+					config.cyberdemon_min_group.get(), config.cyberdemon_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.HELL_KNIGHT_2016, biome)
-				&& config.get(EntityConfigType.HELL_KNIGHT_2016).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.HELLKNIGHT2016.get(),
-					config.get(EntityConfigType.HELL_KNIGHT_2016).SPAWN_WEIGHT,
-					config.get(EntityConfigType.HELL_KNIGHT_2016).MIN_GROUP,
-					config.get(EntityConfigType.HELL_KNIGHT_2016).MAX_GROUP));
+		if (parseBiomes(config.unwilling_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.UNWILLING.get(), config.unwilling_spawn_weight.get(),
+					config.unwilling_min_group.get(), config.unwilling_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.CYBER_DEMON, biome)
-				&& config.get(EntityConfigType.CYBER_DEMON).SPAWN_WEIGHT > 0) {
-			base.add(
-					new Spawners(ModEntityTypes.CYBERDEMON.get(), config.get(EntityConfigType.CYBER_DEMON).SPAWN_WEIGHT,
-							config.get(EntityConfigType.CYBER_DEMON).MIN_GROUP,
-							config.get(EntityConfigType.CYBER_DEMON).MAX_GROUP));
-		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.UNWILLING, biome)
-				&& config.get(EntityConfigType.UNWILLING).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.UNWILLING.get(), config.get(EntityConfigType.UNWILLING).SPAWN_WEIGHT,
-					config.get(EntityConfigType.UNWILLING).MIN_GROUP,
-					config.get(EntityConfigType.UNWILLING).MAX_GROUP));
-		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.CUEBALL, biome)
-				&& config.get(EntityConfigType.CUEBALL).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.CUEBALL.get(), config.get(EntityConfigType.CUEBALL).SPAWN_WEIGHT,
-					config.get(EntityConfigType.CUEBALL).MIN_GROUP, config.get(EntityConfigType.CUEBALL).MAX_GROUP));
-		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.POSSESSED_SCIENTIST, biome)
-				&& config.get(EntityConfigType.POSSESSED_SCIENTIST).SPAWN_WEIGHT > 0) {
+		if (parseBiomes(config.possessed_scientist_biomes.get(), biome)) {
 			base.add(new Spawners(ModEntityTypes.POSSESSEDSCIENTIST.get(),
-					config.get(EntityConfigType.POSSESSED_SCIENTIST).SPAWN_WEIGHT,
-					config.get(EntityConfigType.POSSESSED_SCIENTIST).MIN_GROUP,
-					config.get(EntityConfigType.POSSESSED_SCIENTIST).MAX_GROUP));
+					config.possessed_scientist_spawn_weight.get(), config.possessed_scientist_min_group.get(),
+					config.possessed_scientist_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.POSSESSED_SOLDIER, biome)
-				&& config.get(EntityConfigType.POSSESSED_SOLDIER).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.POSSESSEDSOLDIER.get(),
-					config.get(EntityConfigType.POSSESSED_SOLDIER).SPAWN_WEIGHT,
-					config.get(EntityConfigType.POSSESSED_SOLDIER).MIN_GROUP,
-					config.get(EntityConfigType.POSSESSED_SOLDIER).MAX_GROUP));
+		if (parseBiomes(config.possessed_soldier_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.POSSESSEDSOLDIER.get(), config.possessed_soldier_spawn_weight.get(),
+					config.possessed_soldier_min_group.get(), config.possessed_soldier_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.GORE_NEST, biome)
-				&& config.get(EntityConfigType.GORE_NEST).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.GORE_NEST.get(), config.get(EntityConfigType.GORE_NEST).SPAWN_WEIGHT,
-					config.get(EntityConfigType.GORE_NEST).MIN_GROUP,
-					config.get(EntityConfigType.GORE_NEST).MAX_GROUP));
+		if (parseBiomes(config.mechazombie_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.MECHAZOMBIE.get(), config.mechazombie_spawn_weight.get(),
+					config.mechazombie_min_group.get(), config.mechazombie_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.CYBER_DEMON_2016, biome)
-				&& config.get(EntityConfigType.CYBER_DEMON_2016).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.CYBERDEMON2016.get(),
-					config.get(EntityConfigType.CYBER_DEMON_2016).SPAWN_WEIGHT,
-					config.get(EntityConfigType.CYBER_DEMON_2016).MIN_GROUP,
-					config.get(EntityConfigType.CYBER_DEMON_2016).MAX_GROUP));
+		if (parseBiomes(config.cueball_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.CUEBALL.get(), config.cueball_spawn_weight.get(),
+					config.cueball_min_group.get(), config.cueball_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.TYRANT, biome)
-				&& config.get(EntityConfigType.TYRANT).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.TYRANT.get(), config.get(EntityConfigType.TYRANT).SPAWN_WEIGHT,
-					config.get(EntityConfigType.TYRANT).MIN_GROUP, config.get(EntityConfigType.TYRANT).MAX_GROUP));
+		if (parseBiomes(config.prowler_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.PROWLER.get(), config.prowler_spawn_weight.get(),
+					config.prowler_min_group.get(), config.prowler_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.POSSESSEDWORKER, biome)
-				&& config.get(EntityConfigType.POSSESSEDWORKER).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.POSSESSEDWORKER.get(),
-					config.get(EntityConfigType.POSSESSEDWORKER).SPAWN_WEIGHT,
-					config.get(EntityConfigType.POSSESSEDWORKER).MIN_GROUP,
-					config.get(EntityConfigType.POSSESSEDWORKER).MAX_GROUP));
+		if (parseBiomes(config.gorenest_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.GORE_NEST.get(), config.gorenest_spawn_weight.get(),
+					config.gorenest_min_group.get(), config.gorenest_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.SPIDERMASTERMIND, biome)
-				&& config.get(EntityConfigType.SPIDERMASTERMIND).SPAWN_WEIGHT > 0) {
+		if (parseBiomes(config.cyberdemon2016_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.CYBERDEMON2016.get(), config.cyberdemon2016_spawn_weight.get(),
+					config.cyberdemon2016_min_group.get(), config.cyberdemon2016_max_group.get()));
+		}
+		if (parseBiomes(config.possessed_worker_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.POSSESSEDWORKER.get(), config.possessed_worker_spawn_weight.get(),
+					config.possessed_worker_min_group.get(), config.possessed_worker_max_group.get()));
+		}
+		if (parseBiomes(config.doomhunter_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.DOOMHUNTER.get(), config.doomhunter_spawn_weight.get(),
+					config.doomhunter_min_group.get(), config.doomhunter_max_group.get()));
+		}
+		if (parseBiomes(config.pinky_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.PINKY2016.get(), config.pinky_spawn_weight.get(),
+					config.pinky_min_group.get(), config.pinky_max_group.get()));
+		}
+		if (parseBiomes(config.archvile_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.ARCHVILEETERNAL.get(), config.archvile_spawn_weight.get(),
+					config.archvile_min_group.get(), config.archvile_max_group.get()));
+		}
+		if (parseBiomes(config.tentacle_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.TENTACLE.get(), config.tentacle_spawn_weight.get(),
+					config.tentacle_min_group.get(), config.tentacle_max_group.get()));
+		}
+		if (parseBiomes(config.summoner_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.SUMMONER.get(), config.summoner_spawn_weight.get(),
+					config.summoner_min_group.get(), config.summoner_max_group.get()));
+		}
+		if (parseBiomes(config.whiplash_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.WHIPLASH.get(), config.whiplash_spawn_weight.get(),
+					config.whiplash_min_group.get(), config.whiplash_max_group.get()));
+		}
+		if (parseBiomes(config.baron_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.BARON2016.get(), config.baron_spawn_weight.get(),
+					config.baron_min_group.get(), config.baron_max_group.get()));
+		}
+		if (parseBiomes(config.baron_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.FIREBARON.get(), config.baron_spawn_weight.get(),
+					config.baron_min_group.get(), config.baron_max_group.get()));
+		}
+		if (parseBiomes(config.armoredbaron_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.ARMORBARON.get(), config.armoredbaron_spawn_weight.get(),
+					config.armoredbaron_min_group.get(), config.armoredbaron_max_group.get()));
+		}
+		if (parseBiomes(config.spider_mastermind_biomes.get(), biome)) {
 			base.add(new Spawners(ModEntityTypes.SPIDERMASTERMIND2016.get(),
-					config.get(EntityConfigType.SPIDERMASTERMIND).SPAWN_WEIGHT,
-					config.get(EntityConfigType.SPIDERMASTERMIND).MIN_GROUP,
-					config.get(EntityConfigType.SPIDERMASTERMIND).MAX_GROUP));
+					config.spider_mastermind_spawn_weight.get(), config.spider_mastermind_min_group.get(),
+					config.spider_mastermind_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.DOOMHUNTER, biome)
-				&& config.get(EntityConfigType.DOOMHUNTER).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.DOOMHUNTER.get(), config.get(EntityConfigType.DOOMHUNTER).SPAWN_WEIGHT,
-					config.get(EntityConfigType.DOOMHUNTER).MIN_GROUP,
-					config.get(EntityConfigType.DOOMHUNTER).MAX_GROUP));
+		if (parseBiomes(config.tyrant_biomes.get(), biome)) {
+			base.add(new Spawners(ModEntityTypes.TYRANT.get(), config.tyrant_spawn_weight.get(),
+					config.tyrant_min_group.get(), config.tyrant_max_group.get()));
 		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.ARCHVILE, biome)
-				&& config.get(EntityConfigType.ARCHVILE).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.ARCHVILEETERNAL.get(),
-					config.get(EntityConfigType.ARCHVILE).SPAWN_WEIGHT, config.get(EntityConfigType.ARCHVILE).MIN_GROUP,
-					config.get(EntityConfigType.ARCHVILE).MAX_GROUP));
-		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.PINKY, biome)
-				&& config.get(EntityConfigType.PINKY).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.PINKY2016.get(), config.get(EntityConfigType.PINKY).SPAWN_WEIGHT,
-					config.get(EntityConfigType.PINKY).MIN_GROUP, config.get(EntityConfigType.PINKY).MAX_GROUP));
-		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.TENTACLE, biome)
-				&& config.get(EntityConfigType.TENTACLE).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.TENTACLE.get(), config.get(EntityConfigType.TENTACLE).SPAWN_WEIGHT,
-					config.get(EntityConfigType.TENTACLE).MIN_GROUP, config.get(EntityConfigType.TENTACLE).MAX_GROUP));
-		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.WHIPLASH, biome)
-				&& config.get(EntityConfigType.WHIPLASH).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.WHIPLASH.get(), config.get(EntityConfigType.WHIPLASH).SPAWN_WEIGHT,
-					config.get(EntityConfigType.WHIPLASH).MIN_GROUP, config.get(EntityConfigType.WHIPLASH).MAX_GROUP));
-		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.SUMMONER, biome)
-				&& config.get(EntityConfigType.SUMMONER).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.SUMMONER.get(), config.get(EntityConfigType.SUMMONER).SPAWN_WEIGHT,
-					config.get(EntityConfigType.SUMMONER).MIN_GROUP, config.get(EntityConfigType.SUMMONER).MAX_GROUP));
-		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.BARON, biome)
-				&& config.get(EntityConfigType.BARON).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.BARON2016.get(), config.get(EntityConfigType.BARON).SPAWN_WEIGHT,
-					config.get(EntityConfigType.BARON).MIN_GROUP, config.get(EntityConfigType.BARON).MAX_GROUP));
-		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.BARON, biome)
-				&& config.get(EntityConfigType.BARON).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.FIREBARON.get(), config.get(EntityConfigType.BARON).SPAWN_WEIGHT,
-					config.get(EntityConfigType.BARON).MIN_GROUP, config.get(EntityConfigType.BARON).MAX_GROUP));
-		}
-		if (BiomeEvaluator.parseListForBiomeCheck(BiomeConfig.BARON, biome)
-				&& config.get(EntityConfigType.BARON).SPAWN_WEIGHT > 0) {
-			base.add(new Spawners(ModEntityTypes.ARMORBARON.get(), config.get(EntityConfigType.BARON).SPAWN_WEIGHT,
-					config.get(EntityConfigType.BARON).MIN_GROUP, config.get(EntityConfigType.BARON).MAX_GROUP));
-		}
+	}
+
+	private static boolean parseBiomes(List<String> biomes, Biome biome) {
+		return biomes.contains(biome.getRegistryName().toString())
+				|| biomes.contains("#" + biome.getBiomeCategory().getName());
 	}
 }

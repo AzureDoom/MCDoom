@@ -1,15 +1,12 @@
 package mod.azure.doom.entity.tiersuperheavy;
 
-import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
-import mod.azure.doom.util.config.Config;
-import mod.azure.doom.util.config.EntityConfig;
-import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
+import mod.azure.doom.util.config.DoomConfig;
+import mod.azure.doom.util.config.DoomConfig.Server;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.CreatureAttribute;
@@ -17,7 +14,6 @@ import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
@@ -44,7 +40,6 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -57,7 +52,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 
-	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.DOOMHUNTER);
+	public static Server config = DoomConfig.SERVER;
 	public int flameTimer;
 
 	public DoomHunterEntity(EntityType<DoomHunterEntity> entityType, World worldIn) {
@@ -126,18 +121,6 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 	@Override
 	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-
-	public static boolean spawning(EntityType<DoomHunterEntity> p_223337_0_, IWorld p_223337_1_, SpawnReason reason,
-			BlockPos p_223337_3_, Random p_223337_4_) {
-		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223337_3_, p_223337_4_);
-	}
-
-	public static boolean checkGhastSpawnRules(EntityType<DoomHunterEntity> p_223368_0_, IWorld p_223368_1_,
-			SpawnReason reason, BlockPos p_223368_3_, Random p_223368_4_) {
-		return passPeacefulAndYCheck(config, p_223368_1_, reason, p_223368_3_, p_223368_4_)
-				&& p_223368_4_.nextInt(20) == 0
-				&& checkMobSpawnRules(p_223368_0_, p_223368_1_, reason, p_223368_3_, p_223368_4_);
 	}
 
 	@Override
@@ -297,7 +280,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 				double d4 = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * 2.0D);
 				float f = (float) MathHelper.atan2(livingentity.getZ() - parentEntity.getZ(),
 						livingentity.getX() - parentEntity.getX());
-				RocketMobEntity fireballentity = new RocketMobEntity(world, this.parentEntity, d2, d3, d4, 6);
+				RocketMobEntity fireballentity = new RocketMobEntity(world, this.parentEntity, d2, d3, d4,
+						config.doomhunter_ranged_damage.get());
 				if (this.attackTimer == 15) {
 					if (parentEntity.getHealth() < (parentEntity.getMaxHealth() * 0.50)) {
 						for (int l = 0; l < 16; ++l) {
@@ -361,8 +345,10 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 	}
 
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
-		return config.pushAttributes(MobEntity.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 50D));
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+				.add(Attributes.MAX_HEALTH, config.doomhunter_health.get())
+				.add(Attributes.ATTACK_DAMAGE, config.doomhunter_melee_damage.get())
+				.add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override

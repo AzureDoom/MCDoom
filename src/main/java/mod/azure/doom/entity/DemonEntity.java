@@ -3,7 +3,6 @@ package mod.azure.doom.entity;
 import java.util.Random;
 import java.util.UUID;
 
-import mod.azure.doom.util.config.EntityConfig;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IAngerable;
@@ -37,7 +36,7 @@ public class DemonEntity extends MonsterEntity implements IAngerable {
 		this.noCulling = true;
 	}
 
-	public static boolean passPeacefulAndYCheck(EntityConfig config, IWorld world,
+	public static boolean passPeacefulAndYCheck(EntityType<? extends DemonEntity> config, IWorld world,
 			SpawnReason reason, BlockPos pos, Random random) {
 		// peaceful check
 		if (world.getDifficulty() == Difficulty.PEACEFUL)

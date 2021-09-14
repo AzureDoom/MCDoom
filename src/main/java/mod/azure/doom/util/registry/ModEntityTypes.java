@@ -7,7 +7,6 @@ import mod.azure.doom.entity.projectiles.BarrelEntity;
 import mod.azure.doom.entity.projectiles.BulletEntity;
 import mod.azure.doom.entity.projectiles.ChaingunBulletEntity;
 import mod.azure.doom.entity.projectiles.EnergyCellEntity;
-import mod.azure.doom.entity.projectiles.HookEntity;
 import mod.azure.doom.entity.projectiles.RocketEntity;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import mod.azure.doom.entity.projectiles.UnmaykrBoltEntity;
@@ -86,8 +85,7 @@ public class ModEntityTypes {
 					.build(null));
 
 	public static final RegistryObject<TileEntityType<TotemEntity>> TOTEM = TILE_TYPES.register("totem",
-			() -> TileEntityType.Builder.<TotemEntity>of(TotemEntity::new, DoomBlocks.TOTEM.get())
-					.build(null));
+			() -> TileEntityType.Builder.<TotemEntity>of(TotemEntity::new, DoomBlocks.TOTEM.get()).build(null));
 
 	public static final RegistryObject<TileEntityType<GunBlockEntity>> GUN_TABLE_ENTITY = TILE_TYPES
 			.register("guntable", () -> TileEntityType.Builder
@@ -443,7 +441,8 @@ public class ModEntityTypes {
 					.fireImmune().clientTrackingRange(9)
 					.build(new ResourceLocation(DoomMod.MODID, "summoner").toString()));
 
-	public static final RegistryObject<EntityType<Revenant2016Entity>> REVENANT2016 = ENTITY_TYPES.register("revenant2016",
+	public static final RegistryObject<EntityType<Revenant2016Entity>> REVENANT2016 = ENTITY_TYPES.register(
+			"revenant2016",
 			() -> EntityType.Builder.of(Revenant2016Entity::new, EntityClassification.MONSTER).sized(0.6f, 1.95F)
 					.fireImmune().clientTrackingRange(9)
 					.build(new ResourceLocation(DoomMod.MODID, "revenant2016").toString()));

@@ -1,7 +1,6 @@
 package mod.azure.doom.entity.tierheavy;
 
 import java.util.EnumSet;
-import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -10,9 +9,8 @@ import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedStaticAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
-import mod.azure.doom.util.config.Config;
-import mod.azure.doom.util.config.EntityConfig;
-import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
+import mod.azure.doom.util.config.DoomConfig;
+import mod.azure.doom.util.config.DoomConfig.Server;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.CreatureAttribute;
@@ -20,7 +18,6 @@ import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SpawnReason;
@@ -47,7 +44,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -59,7 +55,8 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class CacodemonEntity extends DemonEntity implements IMob, IAnimatable {
-	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.CACODEMON);
+
+	public static Server config = DoomConfig.SERVER;
 	public static final DataParameter<Integer> VARIANT = EntityDataManager.defineId(CacodemonEntity.class,
 			DataSerializers.INT);
 
@@ -156,12 +153,10 @@ public class CacodemonEntity extends DemonEntity implements IMob, IAnimatable {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static float fireBallDirectHitDamage = 6.0F;
-
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
-		fireBallDirectHitDamage = config.RANGED_ATTACK_DAMAGE;
-		return config.pushAttributes(MobEntity.createMobAttributes()
-				.add(Attributes.ATTACK_DAMAGE, config.MELEE_ATTACK_DAMAGE).add(Attributes.FOLLOW_RANGE, 25.0D));
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+				.add(Attributes.MAX_HEALTH, config.cacodemon_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -169,12 +164,11 @@ public class CacodemonEntity extends DemonEntity implements IMob, IAnimatable {
 		this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.addGoal(7, new CacodemonEntity.LookAroundGoal(this));
-		this.goalSelector.addGoal(4,
-				new RangedStaticAttackGoal(this,
-						new FireballAttack(this, true).setDamage(5).setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(
-								ModSoundEvents.CACODEMON_FIREBALL.get(), 1.0F,
-								1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
-						60, 20, 30F, 1));
+		this.goalSelector.addGoal(4, new RangedStaticAttackGoal(this,
+				new FireballAttack(this, true).setDamage(config.cacodemon_ranged_damage.get())
+						.setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(ModSoundEvents.CACODEMON_FIREBALL.get(),
+								1.0F, 1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
+				60, 20, 30F, 1));
 		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.addGoal(1,
 				new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 10, true, false, (p_213812_1_) -> {
@@ -185,13 +179,6 @@ public class CacodemonEntity extends DemonEntity implements IMob, IAnimatable {
 					return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
 				}));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
-	}
-
-	public static boolean spawning(EntityType<CacodemonEntity> p_223368_0_, IWorld p_223368_1_, SpawnReason reason,
-			BlockPos p_223368_3_, Random p_223368_4_) {
-		return passPeacefulAndYCheck(config, p_223368_1_, reason, p_223368_3_, p_223368_4_)
-				&& p_223368_4_.nextInt(20) == 0
-				&& checkMobSpawnRules(p_223368_0_, p_223368_1_, reason, p_223368_3_, p_223368_4_);
 	}
 
 	public int getFireballStrength() {

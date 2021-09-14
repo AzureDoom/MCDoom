@@ -2,7 +2,6 @@ package mod.azure.doom.entity.tierfodder;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
-import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -11,9 +10,8 @@ import mod.azure.doom.entity.ai.goal.RangedChaingunAttackGoal;
 import mod.azure.doom.entity.projectiles.ChaingunBulletEntity;
 import mod.azure.doom.item.ammo.ChaingunAmmo;
 import mod.azure.doom.item.weapons.Chaingun;
-import mod.azure.doom.util.config.Config;
-import mod.azure.doom.util.config.EntityConfig;
-import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
+import mod.azure.doom.util.config.DoomConfig;
+import mod.azure.doom.util.config.DoomConfig.Server;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.block.BlockState;
@@ -24,7 +22,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
@@ -51,7 +48,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -66,9 +62,9 @@ public class ChaingunnerEntity extends DemonEntity implements IRangedAttackMob, 
 
 	private final RangedChaingunAttackGoal<ChaingunnerEntity> aiArrowAttack = new RangedChaingunAttackGoal<>(this, 1.0D,
 			0, 15.0F);
-	
-	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.CHAINGUNNER);
-	
+
+	public static Server config = DoomConfig.SERVER;
+
 	private final MeleeAttackGoal aiAttackOnCollide = new MeleeAttackGoal(this, 1.2D, false) {
 		public void stop() {
 			super.stop();
@@ -118,11 +114,6 @@ public class ChaingunnerEntity extends DemonEntity implements IRangedAttackMob, 
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static boolean spawning(EntityType<ChaingunnerEntity> p_223337_0_, IWorld p_223337_1_, SpawnReason reason,
-			BlockPos p_223337_3_, Random p_223337_4_) {
-		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223337_3_, p_223337_4_);
-	}
-
 	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
@@ -159,7 +150,8 @@ public class ChaingunnerEntity extends DemonEntity implements IRangedAttackMob, 
 		if (this.level != null && !this.level.isClientSide) {
 			this.goalSelector.removeGoal(this.aiAttackOnCollide);
 			this.goalSelector.removeGoal(this.aiArrowAttack);
-			ItemStack itemstack = this.getItemInHand(ProjectileHelper.getWeaponHoldingHand(this, DoomItems.CHAINGUN.get()));
+			ItemStack itemstack = this
+					.getItemInHand(ProjectileHelper.getWeaponHoldingHand(this, DoomItems.CHAINGUN.get()));
 			if (itemstack.getItem() instanceof Chaingun) {
 				int i = 20;
 				if (this.level.getDifficulty() != Difficulty.HARD) {
@@ -175,8 +167,8 @@ public class ChaingunnerEntity extends DemonEntity implements IRangedAttackMob, 
 
 	@Override
 	public void performRangedAttack(LivingEntity target, float distanceFactor) {
-		ItemStack itemstack = this
-				.getProjectile(this.getItemInHand(ProjectileHelper.getWeaponHoldingHand(this, DoomItems.CHAINGUN.get())));
+		ItemStack itemstack = this.getProjectile(
+				this.getItemInHand(ProjectileHelper.getWeaponHoldingHand(this, DoomItems.CHAINGUN.get())));
 		ChaingunBulletEntity abstractarrowentity = this.fireArrowa(itemstack, distanceFactor);
 		if (this.getMainHandItem().getItem() instanceof Chaingun)
 			abstractarrowentity = ((Chaingun) this.getMainHandItem().getItem()).customeArrow(abstractarrowentity);
@@ -185,7 +177,7 @@ public class ChaingunnerEntity extends DemonEntity implements IRangedAttackMob, 
 		double d2 = target.getZ() - this.getZ();
 		double d3 = (double) MathHelper.sqrt(d0 * d0 + d2 * d2);
 		abstractarrowentity.shoot(d0, d1 + d3 * (double) 0.05F, d2, 1.6F, 0.0F);
-		abstractarrowentity.setBaseDamage(config.RANGED_ATTACK_DAMAGE);
+		abstractarrowentity.setBaseDamage(config.chaingun_bullet_damage.get());
 		this.playSound(ModSoundEvents.CHAINGUN_SHOOT.get(), 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
 		this.level.addFreshEntity(abstractarrowentity);
 	}
@@ -204,7 +196,9 @@ public class ChaingunnerEntity extends DemonEntity implements IRangedAttackMob, 
 	}
 
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
-		return config.pushAttributes(MobEntity.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D));
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+				.add(Attributes.MAX_HEALTH, config.chaingunner_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
