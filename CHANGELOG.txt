@@ -1,3 +1,4 @@
-v.4.0.9
+v.4.0.10
 
-- Completely rewrites the config to match Fabric version and fixes it not loading changes.
+- Fixes Config not saving properly.
+- Fixes lists.
