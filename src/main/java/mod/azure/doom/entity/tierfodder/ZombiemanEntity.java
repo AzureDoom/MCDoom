@@ -1,15 +1,11 @@
 package mod.azure.doom.entity.tierfodder;
 
-import java.util.Random;
-
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedPistolAttackGoal;
 import mod.azure.doom.entity.projectiles.BulletEntity;
 import mod.azure.doom.item.ammo.ClipAmmo;
 import mod.azure.doom.item.weapons.PistolItem;
-import mod.azure.doom.util.config.Config;
-import mod.azure.doom.util.config.EntityConfig;
-import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
+import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
@@ -25,7 +21,6 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
@@ -45,7 +40,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
@@ -79,7 +73,6 @@ public class ZombiemanEntity extends DemonEntity implements RangedAttackMob, IAn
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
-	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.ZOMBIEMAN);
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (event.isMoving()) {
@@ -115,11 +108,6 @@ public class ZombiemanEntity extends DemonEntity implements RangedAttackMob, IAn
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static boolean spawning(EntityType<ZombiemanEntity> p_223337_0_, LevelAccessor p_223337_1_,
-			MobSpawnType reason, BlockPos p_223337_3_, Random p_223337_4_) {
-		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223337_3_, p_223337_4_);
-	}
-
 	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
@@ -139,7 +127,9 @@ public class ZombiemanEntity extends DemonEntity implements RangedAttackMob, IAn
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return config.pushAttributes(Mob.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D));
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.zombieman_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -237,7 +227,7 @@ public class ZombiemanEntity extends DemonEntity implements RangedAttackMob, IAn
 		double d3 = (double) Mth.sqrt((float) (d0 * d0 + d2 * d2));
 		abstractarrowentity.shoot(d0, d1 + d3 * (double) 0.05F, d2, 1.6F, 0.0F);
 		this.playSound(ModSoundEvents.PISTOL_HIT.get(), 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-		abstractarrowentity.setBaseDamage(config.RANGED_ATTACK_DAMAGE);
+		abstractarrowentity.setBaseDamage(DoomConfig.SERVER.bullet_damage.get());
 		this.level.addFreshEntity(abstractarrowentity);
 	}
 

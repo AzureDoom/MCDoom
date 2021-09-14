@@ -1,16 +1,14 @@
 package mod.azure.doom.entity.tierheavy;
 
 import java.util.EnumSet;
-import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedStaticAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
-import mod.azure.doom.util.config.Config;
-import mod.azure.doom.util.config.EntityConfig;
-import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
+import mod.azure.doom.util.config.DoomConfig;
+
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -25,7 +23,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
@@ -41,7 +38,6 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -56,7 +52,8 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable {
-	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.CACODEMON);
+
+	
 	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(CacodemonEntity.class,
 			EntityDataSerializers.INT);
 
@@ -155,9 +152,9 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable {
 	public static float fireBallDirectHitDamage = 6.0F;
 
 	public static AttributeSupplier.Builder createAttributes() {
-		fireBallDirectHitDamage = config.RANGED_ATTACK_DAMAGE;
-		return config.pushAttributes(Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE, config.MELEE_ATTACK_DAMAGE)
-				.add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.KNOCKBACK_RESISTANCE, 50D));
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.cacodemon_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -165,12 +162,11 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable {
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.addGoal(7, new CacodemonEntity.LookAroundGoal(this));
-		this.goalSelector.addGoal(4,
-				new RangedStaticAttackGoal(this,
-						new FireballAttack(this, true).setDamage(5).setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(
-								ModSoundEvents.CACODEMON_FIREBALL.get(), 1.0F,
-								1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
-						60, 20, 30F, 1));
+		this.goalSelector.addGoal(4, new RangedStaticAttackGoal(this,
+				new FireballAttack(this, true).setDamage(DoomConfig.SERVER.cacodemon_ranged_damage.get())
+						.setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(ModSoundEvents.CACODEMON_FIREBALL.get(),
+								1.0F, 1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
+				60, 20, 30F, 1));
 		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.addGoal(1,
 				new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, (p_213812_1_) -> {
@@ -181,13 +177,6 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable {
 					return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
 				}));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
-	}
-
-	public static boolean spawning(EntityType<CacodemonEntity> p_223368_0_, LevelAccessor p_223368_1_,
-			MobSpawnType reason, BlockPos p_223368_3_, Random p_223368_4_) {
-		return passPeacefulAndYCheck(config, p_223368_1_, reason, p_223368_3_, p_223368_4_)
-				&& p_223368_4_.nextInt(20) == 0
-				&& checkMobSpawnRules(p_223368_0_, p_223368_1_, reason, p_223368_3_, p_223368_4_);
 	}
 
 	public int getFireballStrength() {

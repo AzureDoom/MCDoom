@@ -1,15 +1,12 @@
 package mod.azure.doom.entity.tiersuperheavy;
 
-import java.util.Random;
-
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedStaticAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
-import mod.azure.doom.util.config.Config;
-import mod.azure.doom.util.config.EntityConfig;
-import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
+import mod.azure.doom.util.config.DoomConfig;
+
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -19,8 +16,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -34,7 +30,6 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -46,7 +41,8 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class CyberdemonEntity extends DemonEntity implements IAnimatable {
-	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.CYBER_DEMON);
+
+	
 
 	public CyberdemonEntity(EntityType<? extends CyberdemonEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
@@ -92,22 +88,15 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static boolean checkGhastSpawnRules(EntityType<CyberdemonEntity> p_223368_0_, LevelAccessor p_223368_1_,
-			MobSpawnType reason, BlockPos p_223368_3_, Random p_223368_4_) {
-		return passPeacefulAndYCheck(config, p_223368_1_, reason, p_223368_3_, p_223368_4_)
-				&& p_223368_4_.nextInt(20) == 0
-				&& checkMobSpawnRules(p_223368_0_, p_223368_1_, reason, p_223368_3_, p_223368_4_);
-	}
-
 	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.goalSelector.addGoal(4,
-				new RangedStaticAttackGoal(this,
-						new CyberdemonEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(9),
-						60, 20, 30F, 1));
+				new RangedStaticAttackGoal(this, new CyberdemonEntity.FireballAttack(this)
+						.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomConfig.SERVER.cyberdemon_ranged_damage.get()), 60,
+						20, 30F, 1));
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
@@ -137,8 +126,9 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return config.pushAttributes(Mob.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 50D));
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.cyberdemon_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override

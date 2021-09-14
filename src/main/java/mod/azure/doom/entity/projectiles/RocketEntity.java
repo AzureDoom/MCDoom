@@ -3,7 +3,7 @@ package mod.azure.doom.entity.projectiles;
 import java.util.List;
 
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import mod.azure.doom.util.config.Config;
+import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
@@ -233,7 +233,7 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 			if (!this.level.isClientSide) {
 				this.doDamage();
 				this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
-						Config.SERVER.ENABLE_BLOCK_BREAKING ? Explosion.BlockInteraction.BREAK
+						DoomConfig.SERVER.enable_block_breaking.get() ? Explosion.BlockInteraction.BREAK
 								: Explosion.BlockInteraction.NONE);
 				this.remove(RemovalReason.KILLED);
 			}
@@ -248,7 +248,7 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 			if (!this.level.isClientSide) {
 				this.doDamage();
 				this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
-						Config.SERVER.ENABLE_BLOCK_BREAKING ? Explosion.BlockInteraction.BREAK
+						DoomConfig.SERVER.enable_block_breaking.get() ? Explosion.BlockInteraction.BREAK
 								: Explosion.BlockInteraction.NONE);
 				this.remove(RemovalReason.KILLED);
 			}
@@ -272,7 +272,7 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 			if (d12 <= 1.0D) {
 				if (entity instanceof LivingEntity) {
 					entity.hurt(DamageSource.playerAttack((Player) this.shooter),
-							Config.SERVER.rocket_damage.floatValue());
+							DoomConfig.SERVER.rocket_damage.get());
 				}
 			}
 		}

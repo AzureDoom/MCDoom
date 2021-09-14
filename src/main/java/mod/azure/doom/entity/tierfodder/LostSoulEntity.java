@@ -1,13 +1,11 @@
 package mod.azure.doom.entity.tierfodder;
 
 import java.util.EnumSet;
-import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
-import mod.azure.doom.util.config.Config;
-import mod.azure.doom.util.config.EntityConfig;
-import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
+import mod.azure.doom.util.config.DoomConfig;
+
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
@@ -22,7 +20,6 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -39,7 +36,6 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -63,7 +59,7 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable {
 	public int explosionPower = 1;
 	public int flameTimer;
 
-	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.LOST_SOUL);
+	
 
 	public LostSoulEntity(EntityType<? extends LostSoulEntity> type, Level world) {
 		super(type, world);
@@ -145,8 +141,10 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return config.pushAttributes(Mob.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 50D));
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.lost_soul_health.get())
+				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.lost_soul_melee_damage.get()).add(Attributes.MOVEMENT_SPEED, 0.0D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -174,13 +172,6 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable {
 
 	protected void explode() {
 		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, Explosion.BlockInteraction.NONE);
-	}
-
-	public static boolean spawning(EntityType<LostSoulEntity> p_223368_0_, LevelAccessor p_223337_1_,
-			MobSpawnType reason, BlockPos p_223368_3_, Random p_223368_4_) {
-		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223368_3_, p_223368_4_)
-				&& p_223368_4_.nextInt(20) == 0
-				&& checkMobSpawnRules(p_223368_0_, p_223337_1_, reason, p_223368_3_, p_223368_4_);
 	}
 
 	private boolean getVexFlag(int p_190656_1_) {

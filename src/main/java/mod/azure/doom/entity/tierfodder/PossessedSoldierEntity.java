@@ -1,15 +1,12 @@
 package mod.azure.doom.entity.tierfodder;
 
-import java.util.Random;
-
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
-import mod.azure.doom.util.config.Config;
-import mod.azure.doom.util.config.EntityConfig;
-import mod.azure.doom.util.config.EntityDefaults.EntityConfigType;
+import mod.azure.doom.util.config.DoomConfig;
+
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -20,7 +17,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
@@ -37,7 +34,6 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
@@ -55,7 +51,7 @@ public class PossessedSoldierEntity extends DemonEntity implements IAnimatable {
 		super(entityType, worldIn);
 	}
 
-	public static EntityConfig config = Config.SERVER.entityConfig.get(EntityConfigType.POSSESSED_SOLDIER);
+	
 
 	private AnimationFactory factory = new AnimationFactory(this);
 
@@ -98,19 +94,17 @@ public class PossessedSoldierEntity extends DemonEntity implements IAnimatable {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static boolean spawning(EntityType<PossessedSoldierEntity> p_223337_0_, LevelAccessor p_223337_1_,
-			MobSpawnType reason, BlockPos p_223337_3_, Random p_223337_4_) {
-		return passPeacefulAndYCheck(config, p_223337_1_, reason, p_223337_3_, p_223337_4_);
-	}
-
 	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		this.goalSelector.addGoal(4, new RangedStrafeAttackGoal(this,
-				new PossessedSoldierEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(4),
-				1.0D, 50, 30, 15, 15F, 1));
+		this.goalSelector
+				.addGoal(4,
+						new RangedStrafeAttackGoal(this,
+								new PossessedSoldierEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
+										.setDamage(DoomConfig.SERVER.possessed_soldier_ranged_damage.get()),
+								1.0D, 50, 30, 15, 15F, 1));
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
@@ -146,7 +140,9 @@ public class PossessedSoldierEntity extends DemonEntity implements IAnimatable {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return config.pushAttributes(Mob.createMobAttributes().add(Attributes.FOLLOW_RANGE, 25.0D));
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.possessed_soldier_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override

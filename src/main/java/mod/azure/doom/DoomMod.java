@@ -14,8 +14,7 @@ import mod.azure.doom.structures.DoomStructures;
 import mod.azure.doom.util.DoomVillagerTrades;
 import mod.azure.doom.util.LootHandler;
 import mod.azure.doom.util.SoulCubeHandler;
-import mod.azure.doom.util.config.BiomeConfig;
-import mod.azure.doom.util.config.Config;
+import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
@@ -46,7 +45,6 @@ import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -67,11 +65,7 @@ public class DoomMod {
 		instance = this;
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
-		ModLoadingContext modLoadingContext = ModLoadingContext.get();
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onModConfigEvent);
-		modLoadingContext.registerConfig(ModConfig.Type.SERVER, Config.SERVER_SPEC, "doom-config.toml");
-		modLoadingContext.registerConfig(ModConfig.Type.SERVER, Config.BIOME_SPEC, "doom-mob-biomes.toml");
-		Config.SERVER.bakeConfig();
+		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, DoomConfig.SERVER_SPEC, "doom-newconfig.toml");
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new SoulCubeHandler());
 		modEventBus.addListener(this::setup);
@@ -90,14 +84,6 @@ public class DoomMod {
 		MinecraftForge.EVENT_BUS.addListener(this::onBiomeLoad);
 		GeckoLib.initialize();
 		GeckoLibNetwork.initialize();
-	}
-
-	@SubscribeEvent
-	public void onModConfigEvent(final ModConfigEvent event) {
-		final ModConfig config = event.getConfig();
-		if (config.getSpec() == Config.BIOME_SPEC) {
-			BiomeConfig.bake(config);
-		}
 	}
 
 	@SubscribeEvent

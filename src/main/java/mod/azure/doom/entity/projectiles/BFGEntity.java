@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 import mod.azure.doom.entity.tierambient.GoreNestEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import mod.azure.doom.util.config.Config;
+import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
@@ -224,7 +224,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 				if (d12 <= 1.0D) {
 					if (entity.isAlive()) {
 						entity.hurt(DamageSource.playerAttack((Player) this.shooter),
-								Config.SERVER.bfgball_damage_aoe.floatValue());
+								DoomConfig.SERVER.bfgball_damage_aoe.get());
 						this.setTargetedEntity(entity.getId());
 					}
 				}
@@ -232,7 +232,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 			if (entity instanceof EnderDragon) {
 				if (entity.isAlive()) {
 					((EnderDragon) entity).head.hurt(DamageSource.playerAttack((Player) this.shooter),
-							Config.SERVER.bfgball_damage_aoe.floatValue());
+							DoomConfig.SERVER.bfgball_damage_dragon.get());
 					this.setTargetedEntity(entity.getId());
 				}
 			}
@@ -284,7 +284,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 			if (!this.level.isClientSide) {
 				this.doDamage();
 				this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
-						Config.SERVER.ENABLE_BLOCK_BREAKING ? Explosion.BlockInteraction.BREAK
+						DoomConfig.SERVER.enable_block_breaking.get() ? Explosion.BlockInteraction.BREAK
 								: Explosion.BlockInteraction.NONE);
 				this.remove(RemovalReason.KILLED);
 			}
@@ -299,7 +299,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 			if (!this.level.isClientSide) {
 				this.doDamage();
 				this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
-						Config.SERVER.ENABLE_BLOCK_BREAKING ? Explosion.BlockInteraction.BREAK
+						DoomConfig.SERVER.enable_block_breaking.get() ? Explosion.BlockInteraction.BREAK
 								: Explosion.BlockInteraction.NONE);
 				this.remove(RemovalReason.KILLED);
 			}
@@ -325,8 +325,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 							|| entity instanceof Shulker || entity instanceof Hoglin)) {
 				double d12 = (double) (Mth.sqrt((float) entity.distanceToSqr(vector3d)) / f2);
 				if (d12 <= 1.0D) {
-					entity.hurt(DamageSource.playerAttack((Player) this.shooter),
-							Config.SERVER.bfgball_damage.floatValue());
+					entity.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.SERVER.bfgball_damage.get());
 					this.setTargetedEntity(entity.getId());
 					if (!this.level.isClientSide) {
 						List<LivingEntity> list1 = this.level.getEntitiesOfClass(LivingEntity.class,
@@ -351,7 +350,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 			if (entity instanceof EnderDragon) {
 				if (entity.isAlive()) {
 					((EnderDragon) entity).head.hurt(DamageSource.playerAttack((Player) this.shooter),
-							Config.SERVER.bfgball_damage_dragon.floatValue());
+							DoomConfig.SERVER.bfgball_damage_dragon.get());
 				}
 			}
 		}

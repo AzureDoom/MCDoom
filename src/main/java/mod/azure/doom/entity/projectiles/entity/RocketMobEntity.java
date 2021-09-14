@@ -1,6 +1,6 @@
 package mod.azure.doom.entity.projectiles.entity;
 
-import mod.azure.doom.util.config.Config;
+import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.particles.ParticleTypes;
@@ -172,7 +172,7 @@ public class RocketMobEntity extends AbstractHurtingProjectile implements IAnima
 
 	protected void explode() {
 		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
-				Config.SERVER.ENABLE_BLOCK_BREAKING ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE);
+				DoomConfig.SERVER.enable_block_breaking.get() ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE);
 	}
 
 	public LivingEntity getShooter() {

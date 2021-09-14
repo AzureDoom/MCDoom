@@ -3,7 +3,6 @@ package mod.azure.doom.entity;
 import java.util.Random;
 import java.util.UUID;
 
-import mod.azure.doom.util.config.EntityConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -37,8 +36,8 @@ public class DemonEntity extends Monster implements NeutralMob {
 		this.noCulling = true;
 	}
 
-	public static boolean passPeacefulAndYCheck(EntityConfig config, LevelAccessor world, MobSpawnType reason,
-			BlockPos pos, Random random) {
+	public static boolean passPeacefulAndYCheck(EntityType<? extends DemonEntity> config, LevelAccessor world,
+			MobSpawnType reason, BlockPos pos, Random random) {
 		// peaceful check
 		if (world.getDifficulty() == Difficulty.PEACEFUL)
 			return false;
