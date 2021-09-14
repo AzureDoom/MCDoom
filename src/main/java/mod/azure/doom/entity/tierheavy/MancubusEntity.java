@@ -164,7 +164,7 @@ public class MancubusEntity extends DemonEntity implements IAnimatable {
 				double f = livingEntity.getX() - (this.parentEntity.getX() + vec3d.x * 2.0D);
 				double g = livingEntity.getBodyY(0.5D) - (0.5D + this.parentEntity.getBodyY(0.5D));
 				double h = livingEntity.getZ() - (this.parentEntity.getZ() + vec3d.z * 2.0D);
-				BarenBlastEntity fireballEntity = new BarenBlastEntity(world, this.parentEntity, f, g, h, 6);
+				BarenBlastEntity fireballEntity = new BarenBlastEntity(world, this.parentEntity, f, g, h, config.mancubus_ranged_damage);
 				double d = Math.min(livingEntity.getY(), parentEntity.getY());
 				double e1 = Math.max(livingEntity.getY(), parentEntity.getY()) + 1.0D;
 				float f2 = (float) MathHelper.atan2(livingEntity.getZ() - parentEntity.getZ(),
