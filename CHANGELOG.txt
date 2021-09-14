@@ -1,3 +1,4 @@
-v.4.0.9
+v.4.0.10
 
-- Removed Leaping Enchantment, not worth dealing with, other mods do it better.
+- Added missing config options for some mobs. 
+- Implemented configs that weren't being used.
