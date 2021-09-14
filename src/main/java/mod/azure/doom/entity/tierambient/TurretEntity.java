@@ -119,7 +119,7 @@ public class TurretEntity extends DemonEntity implements IAnimatable {
 				double g = livingentity.getBodyY(0.5D) - (0.5D + this.parentEntity.getBodyY(0.5D));
 				double h = livingentity.getZ() - (this.parentEntity.getZ() + vec3d.z * 2.0D);
 				CustomSmallFireballEntity fireballentity = new CustomSmallFireballEntity(world, this.parentEntity, f, g,
-						h, 6);
+						h, config.turret_ranged_damage);
 				if (this.attackTimer == 10) {
 					this.parentEntity.setAttackingState(1);
 				}
@@ -142,7 +142,7 @@ public class TurretEntity extends DemonEntity implements IAnimatable {
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, 7.0D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.turret_health).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 50D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D);

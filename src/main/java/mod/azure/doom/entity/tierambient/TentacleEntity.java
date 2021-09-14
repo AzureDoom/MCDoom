@@ -166,7 +166,7 @@ public class TentacleEntity extends DemonEntity implements IAnimatable {
 			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d)) / q);
 			if (y <= 2.0D) {
 				if (entity instanceof LivingEntity) {
-					entity.damage(DamageSource.magic(this, this.getTarget()), 1);
+					entity.damage(DamageSource.magic(this, this.getTarget()), config.tentacle_melee_damage);
 				}
 			}
 		}
@@ -174,7 +174,8 @@ public class TentacleEntity extends DemonEntity implements IAnimatable {
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, 5.0D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0D)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.tentacle_health)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D);
 	}

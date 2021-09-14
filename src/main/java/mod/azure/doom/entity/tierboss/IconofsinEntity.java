@@ -286,7 +286,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d)) / q);
 			if (y <= 1.0D) {
 				if (entity instanceof LivingEntity) {
-					entity.damage(DamageSource.mobProjectile(this, this.getTarget()), 7);
+					entity.damage(DamageSource.mobProjectile(this, this.getTarget()), config.icon_melee_damage);
 				}
 			}
 		}
@@ -323,7 +323,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 100.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, 1000.0D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 30.0D)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.icon_health).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 30.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1000.0D);

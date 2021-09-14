@@ -117,7 +117,7 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.add(4,
 				new ProwlerEntity.RangedStrafeAttackGoal(this,
 						new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(config.imp2016_ranged_damage).setSound(SoundEvents.ENTITY_BLAZE_SHOOT, 1.0F,
+								.setDamage(config.prowler_ranged_damage).setSound(SoundEvents.ENTITY_BLAZE_SHOOT, 1.0F,
 										1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.0D, 50, 30, 15, 15F).setMultiShot(3, 2));
 		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
