@@ -72,7 +72,7 @@ public class DoomMod {
 		instance = this;
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
-		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, DoomConfig.SERVER_SPEC, "doom-newconfig.toml");
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, DoomConfig.SERVER_SPEC, "doom-newconfig.toml");
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new SoulCubeHandler());
 		modEventBus.addListener(this::setup);
