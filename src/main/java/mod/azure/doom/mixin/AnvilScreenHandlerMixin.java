@@ -5,6 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import mod.azure.doom.item.powerup.SoulCubeItem;
 import mod.azure.doom.item.weapons.AxeMarauderItem;
 import mod.azure.doom.item.weapons.Chainsaw;
 import mod.azure.doom.item.weapons.ChainsawAnimated;
@@ -32,7 +33,8 @@ public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
 		ItemStack rightStack = this.input.getStack(1).copy();
 		if ((leftStack.getItem() instanceof DoomBaseItem || leftStack.getItem() instanceof AxeMarauderItem
 				|| leftStack.getItem() instanceof SwordCrucibleItem || leftStack.getItem() instanceof ChainsawAnimated
-				|| leftStack.getItem() instanceof Chainsaw) && rightStack.getItem() == Items.ENCHANTED_BOOK) {
+				|| leftStack.getItem() instanceof Chainsaw || leftStack.getItem() instanceof SoulCubeItem)
+				&& rightStack.getItem() == Items.ENCHANTED_BOOK) {
 			ItemStack repaired = ItemStack.EMPTY;
 			this.output.setStack(0, repaired);
 			this.sendContentUpdates();
