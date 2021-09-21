@@ -129,6 +129,7 @@ if (file('key.properties').exists()) {
             	optionalDependency 'patchouli-fabric'   
             	requiredDependency 'trinkets-fabric'   
             	requiredDependency 'cloth-config'  
+            	requiredDependency 'cardinal-components'  
         	}
         	mainArtifact(remapJar)
 
