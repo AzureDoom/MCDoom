@@ -177,7 +177,8 @@ if (file('key.properties').exists()) {
             	requiredDependency 'geckolib' 
             	optionalDependency 'patchouli-fabric'   
             	requiredDependency 'curios-fabric'     
-            	requiredDependency 'cloth-config'  
+            	requiredDependency 'cloth-config' 
+            	requiredDependency 'cardinal-components'   
         	}
         	mainArtifact(remapJar)
 

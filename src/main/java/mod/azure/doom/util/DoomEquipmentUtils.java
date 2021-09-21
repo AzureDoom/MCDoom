@@ -47,7 +47,6 @@ public class DoomEquipmentUtils {
 	}
 
 	public static ItemStack generateRepairedItemForAnvilByDamage(ItemStack leftStack, int targetDamage) {
-
 		ItemStack repaired = new ItemStack(DoomItems.getItemMap().get(leftStack.getItem()));
 		NbtCompound tag = leftStack.getOrCreateTag();
 		String encodedEnch = tag.getString(TAG);
