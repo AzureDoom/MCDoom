@@ -1,6 +1,7 @@
 package mod.azure.doom.util;
 
 import mod.azure.doom.DoomMod;
+import mod.azure.doom.item.powerup.SoulCubeItem;
 import mod.azure.doom.item.weapons.AxeMarauderItem;
 import mod.azure.doom.item.weapons.Chainsaw;
 import mod.azure.doom.item.weapons.ChainsawAnimated;
@@ -26,6 +27,7 @@ public class ServerEvents {
 				|| (event.getLeft().getItem() instanceof SentinelHammerItem)
 				|| (event.getLeft().getItem() instanceof Chainsaw)
 				|| (event.getLeft().getItem() instanceof ChainsawAnimated)
+				|| (event.getLeft().getItem() instanceof SoulCubeItem)
 						&& event.getRight().getItem() == Items.ENCHANTED_BOOK) {
 			event.setCanceled(true);
 		}
@@ -39,7 +41,8 @@ public class ServerEvents {
 				|| (event.getItem().getItem() instanceof DarkLordCrucibleItem)
 				|| (event.getItem().getItem() instanceof SentinelHammerItem)
 				|| (event.getItem().getItem() instanceof Chainsaw)
-				|| (event.getItem().getItem() instanceof ChainsawAnimated)) {
+				|| (event.getItem().getItem() instanceof ChainsawAnimated)
+				|| (event.getItem().getItem() instanceof SoulCubeItem)) {
 			event.setCanceled(true);
 		}
 	}
