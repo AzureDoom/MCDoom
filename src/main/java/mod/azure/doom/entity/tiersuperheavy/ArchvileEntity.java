@@ -16,7 +16,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.TargetPredicate;
-import net.minecraft.entity.ai.goal.FollowTargetGoal;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
@@ -155,10 +155,10 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.add(7, new ArchvileEntity.AttackGoal(this));
 		this.targetSelector.add(1, new ArchvileEntity.TeleportTowardsPlayerGoal(this, this::shouldAngerAt));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
-		this.targetSelector.add(2, new FollowTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new FollowTargetGoal<>(this, MerchantEntity.class, true));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 	}
-	
+
 	@Override
 	protected void updateGoalControls() {
 		boolean flag = this.getTarget() != null && this.canSee(this.getTarget());
@@ -263,7 +263,7 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable {
 		}
 	}
 
-	static class TeleportTowardsPlayerGoal extends FollowTargetGoal<PlayerEntity> {
+	static class TeleportTowardsPlayerGoal extends ActiveTargetGoal<PlayerEntity> {
 		private final ArchvileEntity enderman;
 		private PlayerEntity targetPlayer;
 		private int lookAtPlayerWarmup;

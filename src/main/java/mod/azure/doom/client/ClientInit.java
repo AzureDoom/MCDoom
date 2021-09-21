@@ -2,8 +2,6 @@ package mod.azure.doom.client;
 
 import org.lwjgl.glfw.GLFW;
 
-import dev.emi.trinkets.api.client.TrinketRenderer;
-import dev.emi.trinkets.api.client.TrinketRendererRegistry;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.gui.GunTableScreen;
 import mod.azure.doom.client.render.item.GunCraftingItemRender;
@@ -33,14 +31,8 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.render.model.json.ModelTransformation.Mode;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.util.math.Direction;
 import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 
 @SuppressWarnings("deprecation")
@@ -50,7 +42,6 @@ public class ClientInit implements ClientModInitializer {
 	public static KeyBinding reload = new KeyBinding("key.doom.reload", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R,
 			"category.doom.binds");
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void onInitializeClient() {
 		ModelProviderinit.init();
@@ -77,18 +68,18 @@ public class ClientInit implements ClientModInitializer {
 			EntityPacketOnClient.onPacket(ctx, buf);
 		});
 		KeyBindingHelper.registerKeyBinding(reload);
-		TrinketRendererRegistry.registerRenderer(DoomItems.SOULCUBE,
-				(stack, slotReference, contextModel, matrices, vertexConsumers, light, entity, limbAngle, limbDistance,
-						tickDelta, animationProgress, headYaw, headPitch) -> {
-					if (entity instanceof AbstractClientPlayerEntity player) {
-						TrinketRenderer.translateToChest(matrices,
-								(PlayerEntityModel<AbstractClientPlayerEntity>) contextModel, player);
-						matrices.scale(0.35F, 0.35F, 0.35F);
-						matrices.multiply(Direction.DOWN.getRotationQuaternion());
-						MinecraftClient.getInstance().getItemRenderer().renderItem(stack, Mode.NONE, light,
-								OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, 0);
-					}
-				});
+//		TrinketRendererRegistry.registerRenderer(DoomItems.SOULCUBE,
+//				(stack, slotReference, contextModel, matrices, vertexConsumers, light, entity, limbAngle, limbDistance,
+//						tickDelta, animationProgress, headYaw, headPitch) -> {
+//					if (entity instanceof AbstractClientPlayerEntity player) {
+//						TrinketRenderer.translateToChest(matrices,
+//								(PlayerEntityModel<AbstractClientPlayerEntity>) contextModel, player);
+//						matrices.scale(0.35F, 0.35F, 0.35F);
+//						matrices.multiply(Direction.DOWN.getRotationQuaternion());
+//						MinecraftClient.getInstance().getItemRenderer().renderItem(stack, Mode.NONE, light,
+//								OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, 0);
+//					}
+//				});
 	}
 
 }

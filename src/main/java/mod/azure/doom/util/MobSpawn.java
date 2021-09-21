@@ -1,8 +1,9 @@
 package mod.azure.doom.util;
 
+import java.util.Arrays;
 import java.util.List;
 
-import mod.azure.doom.DoomMod;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.config.DoomConfig.Spawning;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -13,7 +14,7 @@ import net.minecraft.entity.SpawnGroup;
 @SuppressWarnings("deprecation")
 public class MobSpawn {
 
-	private static Spawning config = DoomMod.config.spawn;
+	private static Spawning config = DoomConfig.spawn;
 
 	public static void addSpawnEntries() {
 		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.imp_biomes, context)),
@@ -167,6 +168,17 @@ public class MobSpawn {
 		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.tyrant_biomes, context)),
 				SpawnGroup.MONSTER, ModEntityTypes.TYRANT, config.tyrant_spawn_weight, config.tyrant_min_group,
 				config.tyrant_max_group);
+		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(Arrays.asList("#nether"), context)),
+				SpawnGroup.MONSTER, ModEntityTypes.MOTHERDEMON, 1, 1, 1);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(Arrays.asList("#the_end"), context)),
+				SpawnGroup.MONSTER, ModEntityTypes.MAYKRDRONE, 15, 1, 4);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(Arrays.asList("#the_end"), context)),
+				SpawnGroup.MONSTER, ModEntityTypes.BLOODMAYKR, 4, 1, 1);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(Arrays.asList("#the_end"), context)),
+				SpawnGroup.MONSTER, ModEntityTypes.ARCHMAKER, 1, 1, 1);
 	}
 
 	private static boolean parseBiomes(List<String> biomes, BiomeSelectionContext biomeContext) {

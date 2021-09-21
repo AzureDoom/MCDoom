@@ -1,6 +1,6 @@
 package mod.azure.doom.entity.projectiles.entity;
 
-import mod.azure.doom.DoomMod;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
@@ -126,7 +126,7 @@ public class RocketMobEntity extends ExplosiveProjectileEntity implements IAnima
 
 	protected void explode() {
 		this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.0F, false,
-				DoomMod.config.weapons.enable_block_breaking ? Explosion.DestructionType.BREAK
+				DoomConfig.weapons.enable_block_breaking ? Explosion.DestructionType.BREAK
 						: Explosion.DestructionType.NONE);
 	}
 

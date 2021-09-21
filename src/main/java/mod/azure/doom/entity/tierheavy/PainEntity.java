@@ -23,7 +23,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.goal.FollowTargetGoal;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
@@ -219,11 +219,11 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable {
 		this.goalSelector.add(4, new PainEntity.ShootFireballGoal(this));
 		this.goalSelector.add(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.targetSelector.add(1, new FollowTargetGoal<>(this, PlayerEntity.class, 10, true, false, (p_213812_1_) -> {
+		this.targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, 10, true, false, (p_213812_1_) -> {
 			return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
 		}));
 		this.targetSelector.add(1,
-				new FollowTargetGoal<>(this, MerchantEntity.class, 10, true, false, (p_213812_1_) -> {
+				new ActiveTargetGoal<>(this, MerchantEntity.class, 10, true, false, (p_213812_1_) -> {
 					return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
 				}));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());

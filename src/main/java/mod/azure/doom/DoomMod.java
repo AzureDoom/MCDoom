@@ -1,24 +1,14 @@
 package mod.azure.doom;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import mod.azure.doom.block.GunTableBlock;
 import mod.azure.doom.client.gui.GunTableScreenHandler;
-import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
 import mod.azure.doom.entity.tileentity.IconBlockEntity;
 import mod.azure.doom.entity.tileentity.TotemEntity;
-import mod.azure.doom.mixin.StructuresConfigAccessor;
 import mod.azure.doom.network.PacketHandler;
-import mod.azure.doom.structures.DoomConfiguredStructures;
-import mod.azure.doom.structures.DoomStructures;
 import mod.azure.doom.util.DoomVillagerTrades;
 import mod.azure.doom.util.MobAttributes;
 import mod.azure.doom.util.MobSpawn;
-import mod.azure.doom.util.RegistrationHelper;
 import mod.azure.doom.util.recipes.GunTableRecipe;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
@@ -26,10 +16,8 @@ import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -42,21 +30,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.gen.chunk.StructureConfig;
-import net.minecraft.world.gen.feature.StructureFeature;
 import software.bernie.geckolib3.GeckoLib;
 
-@SuppressWarnings("deprecation")
 public class DoomMod implements ModInitializer {
 
 	public static DoomItems ITEMS;
-	public static DoomConfig config;
+//	public static DoomConfig config;
 	public static ModSoundEvents SOUNDS;
 	public static ModEntityTypes MOBS;
 	public static final String MODID = "doom";
@@ -105,8 +88,8 @@ public class DoomMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		AutoConfig.register(DoomConfig.class, GsonConfigSerializer::new);
-		config = AutoConfig.getConfigHolder(DoomConfig.class).getConfig();
+//		AutoConfig.register(DoomConfig.class, GsonConfigSerializer::new);
+//		config = AutoConfig.getConfigHolder(DoomConfig.class).getConfig();
 		DoomBlocks.init();
 		ITEMS = new DoomItems();
 		SOUNDS = new ModSoundEvents();
@@ -127,69 +110,69 @@ public class DoomMod implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> DoomVillagerTrades.addTrades());
 		MobAttributes.init();
 		GeckoLib.initialize();
-		DoomStructures.setupAndRegisterStructureFeatures();
-		DoomConfiguredStructures.registerConfiguredStructures();
-		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "portal_addition"),
-				BiomeSelectors.foundInOverworld().and(BiomeSelectors.foundInOverworld()),
-				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_PORTAL)
-
-		);
-		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "netherportal_addition"),
-				BiomeSelectors.foundInOverworld().and(BiomeSelectors.foundInOverworld()),
-				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_NETHERPORTAL)
-
-		);
-		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "maykr_addition"),
-				BiomeSelectors.foundInTheEnd().and(BiomeSelectors.foundInTheEnd()),
-				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_MAYKR)
-
-		);
-		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "archmaykr_addition"),
-				BiomeSelectors.foundInTheEnd().and(BiomeSelectors.foundInTheEnd()),
-				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_ARCHMAYKR)
-
-		);
-		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "titan_skull_addition"),
-				BiomeSelectors.foundInTheNether().and(BiomeSelectors.foundInTheNether()),
-				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_TITAN_SKULL)
-
-		);
-		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "motherdemon_addition"),
-				BiomeSelectors.foundInTheNether().and(BiomeSelectors.foundInTheNether()),
-				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_MOTHERDEMON)
-
-		);
-		removeStructureSpawningFromSelectedDimension();
+//		DoomStructures.setupAndRegisterStructureFeatures();
+//		DoomConfiguredStructures.registerConfiguredStructures();
+//		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "portal_addition"),
+//				BiomeSelectors.foundInOverworld().and(BiomeSelectors.foundInOverworld()),
+//				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_PORTAL)
+//
+//		);
+//		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "netherportal_addition"),
+//				BiomeSelectors.foundInOverworld().and(BiomeSelectors.foundInOverworld()),
+//				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_NETHERPORTAL)
+//
+//		);
+//		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "maykr_addition"),
+//				BiomeSelectors.foundInTheEnd().and(BiomeSelectors.foundInTheEnd()),
+//				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_MAYKR)
+//
+//		);
+//		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "archmaykr_addition"),
+//				BiomeSelectors.foundInTheEnd().and(BiomeSelectors.foundInTheEnd()),
+//				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_ARCHMAYKR)
+//
+//		);
+//		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "titan_skull_addition"),
+//				BiomeSelectors.foundInTheNether().and(BiomeSelectors.foundInTheNether()),
+//				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_TITAN_SKULL)
+//
+//		);
+//		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "motherdemon_addition"),
+//				BiomeSelectors.foundInTheNether().and(BiomeSelectors.foundInTheNether()),
+//				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_MOTHERDEMON)
+//
+//		);
+//		removeStructureSpawningFromSelectedDimension();
 		PacketHandler.registerMessages();
 	}
 
-	public static void removeStructureSpawningFromSelectedDimension() {
-		ServerWorldEvents.LOAD.register((MinecraftServer minecraftServer, ServerWorld serverWorld) -> {
-			Map<StructureFeature<?>, StructureConfig> tempMap = new HashMap<>(
-					serverWorld.getChunkManager().getChunkGenerator().getStructuresConfig().getStructures());
-			if (!serverWorld.getRegistryKey().getValue().getNamespace().equals("minecraft")) {
-				tempMap.keySet().remove(DoomStructures.MAYKR);
-				tempMap.keySet().remove(DoomStructures.ARCHMAYKR);
-				tempMap.keySet().remove(DoomStructures.TITAN_SKULL);
-				tempMap.keySet().remove(DoomStructures.PORTAL);
-				tempMap.keySet().remove(DoomStructures.NETHERPORTAL);
-				tempMap.keySet().remove(DoomStructures.MOTHERDEMON);
-			}
-			if (!serverWorld.getRegistryKey().getValue().getPath().equals("the_end")) {
-				tempMap.keySet().remove(DoomStructures.MAYKR);
-				tempMap.keySet().remove(DoomStructures.ARCHMAYKR);
-			}
-			if (!serverWorld.getRegistryKey().getValue().getPath().equals("the_nether")) {
-				tempMap.keySet().remove(DoomStructures.TITAN_SKULL);
-				tempMap.keySet().remove(DoomStructures.MOTHERDEMON);
-				tempMap.keySet().remove(DoomStructures.NETHERPORTAL);
-			}
-			if ((serverWorld.getRegistryKey().getValue().getPath().equals("the_nether"))
-					|| serverWorld.getRegistryKey().getValue().getPath().equals("the_end")) {
-				tempMap.keySet().remove(DoomStructures.PORTAL);
-			}
-			((StructuresConfigAccessor) serverWorld.getChunkManager().getChunkGenerator().getStructuresConfig())
-					.setStructures(tempMap);
-		});
-	}
+//	public static void removeStructureSpawningFromSelectedDimension() {
+//		ServerWorldEvents.LOAD.register((MinecraftServer minecraftServer, ServerWorld serverWorld) -> {
+//			Map<StructureFeature<?>, StructureConfig> tempMap = new HashMap<>(
+//					serverWorld.getChunkManager().getChunkGenerator().getStructuresConfig().getStructures());
+//			if (!serverWorld.getRegistryKey().getValue().getNamespace().equals("minecraft")) {
+//				tempMap.keySet().remove(DoomStructures.MAYKR);
+//				tempMap.keySet().remove(DoomStructures.ARCHMAYKR);
+//				tempMap.keySet().remove(DoomStructures.TITAN_SKULL);
+//				tempMap.keySet().remove(DoomStructures.PORTAL);
+//				tempMap.keySet().remove(DoomStructures.NETHERPORTAL);
+//				tempMap.keySet().remove(DoomStructures.MOTHERDEMON);
+//			}
+//			if (!serverWorld.getRegistryKey().getValue().getPath().equals("the_end")) {
+//				tempMap.keySet().remove(DoomStructures.MAYKR);
+//				tempMap.keySet().remove(DoomStructures.ARCHMAYKR);
+//			}
+//			if (!serverWorld.getRegistryKey().getValue().getPath().equals("the_nether")) {
+//				tempMap.keySet().remove(DoomStructures.TITAN_SKULL);
+//				tempMap.keySet().remove(DoomStructures.MOTHERDEMON);
+//				tempMap.keySet().remove(DoomStructures.NETHERPORTAL);
+//			}
+//			if ((serverWorld.getRegistryKey().getValue().getPath().equals("the_nether"))
+//					|| serverWorld.getRegistryKey().getValue().getPath().equals("the_end")) {
+//				tempMap.keySet().remove(DoomStructures.PORTAL);
+//			}
+//			((StructuresConfigAccessor) serverWorld.getChunkManager().getChunkGenerator().getStructuresConfig())
+//					.setStructures(tempMap);
+//		});
+//	}
 }

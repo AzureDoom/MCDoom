@@ -81,6 +81,7 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 
+@SuppressWarnings("deprecation")
 public class DoomRenderRegistry {
 
 	@SuppressWarnings("unchecked")

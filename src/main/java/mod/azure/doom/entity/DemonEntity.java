@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
 
-import mod.azure.doom.DoomMod;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.config.DoomConfig.MobStats;
 import mod.azure.doom.network.EntityPacket;
 import net.minecraft.block.Blocks;
@@ -37,7 +37,7 @@ public class DemonEntity extends HostileEntity implements Angerable {
 	private static final UniformIntProvider ANGER_TIME_RANGE = TimeHelper.betweenSeconds(20, 39);
 	private UUID targetUuid;
 
-	public static MobStats config = DoomMod.config.stats;
+	public static MobStats config = DoomConfig.stats;
 
 	protected DemonEntity(EntityType<? extends HostileEntity> type, World worldIn) {
 		super(type, worldIn);

@@ -2,7 +2,7 @@ package mod.azure.doom.util.enums;
 
 import java.util.function.Supplier;
 
-import mod.azure.doom.DoomMod;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.item.ToolMaterial;
@@ -12,7 +12,7 @@ import net.minecraft.util.Lazy;
 public enum DoomTier implements ToolMaterial {
 	DOOM(18, 1561, 16.0F, 3.0F, 30, () -> {
 		return Ingredient.ofItems(DoomItems.ARGENT_ENERGY);
-	}), DOOM_HIGHTEIR(6, DoomMod.config.weapons.crucible_marauder_max_damage, 16.0F, 3.0F, 30, () -> {
+	}), DOOM_HIGHTEIR(6, DoomConfig.weapons.crucible_marauder_max_damage, 16.0F, 3.0F, 30, () -> {
 		return Ingredient.ofItems(DoomBlocks.ARGENT_BLOCK);
 	}), CHAINSAW(6, 5, 16.0F, 0.0F, 30, () -> {
 		return Ingredient.ofItems(DoomItems.GAS_BARREL);

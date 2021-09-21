@@ -57,9 +57,9 @@ public class GunBlockEntity extends BlockEntity
 	}
 
 	@Override
-	public NbtCompound writeNbt(NbtCompound nbt) {
+	public void writeNbt(NbtCompound nbt) {
+		super.writeNbt(nbt);
 		Inventories.writeNbt(nbt, items);
-		return super.writeNbt(nbt);
 	}
 
 	@Override

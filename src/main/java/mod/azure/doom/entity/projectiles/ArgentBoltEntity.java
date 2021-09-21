@@ -1,6 +1,6 @@
 package mod.azure.doom.entity.projectiles;
 
-import mod.azure.doom.DoomMod;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
@@ -229,7 +229,7 @@ public class ArgentBoltEntity extends PersistentProjectileEntity {
 				((LivingEntity) entity2).onAttacking(entity);
 			}
 		}
-		if (entity.damage(damageSource2, DoomMod.config.weapons.argent_bolt_damage)) {
+		if (entity.damage(damageSource2, DoomConfig.weapons.argent_bolt_damage)) {
 			if (entity instanceof LivingEntity) {
 				LivingEntity livingEntity = (LivingEntity) entity;
 				if (!this.world.isClient && entity2 instanceof LivingEntity) {
@@ -261,7 +261,7 @@ public class ArgentBoltEntity extends PersistentProjectileEntity {
 	public boolean shouldRender(double distance) {
 		return true;
 	}
-	
+
 	@Override
 	public boolean doesRenderOnFire() {
 		return false;
