@@ -1,18 +1,9 @@
 {
   "credit": "Made with Blockbench",
-  "parent": "builtin/entity",
   "texture_size": [
     64,
     64
   ],
-	"overrides": [
-		{
-			"predicate": {
-				"nocenter": 1
-			},
-			"model": "doom:item/ballista_nocenter"
-		}
-	],
   "display": {
     "thirdperson_righthand": {
       "translation": [
@@ -26,20 +17,6 @@
         0,
         -9.25,
         -12.5
-      ]
-    },
-    "firstperson_righthand": {
-      "translation": [
-        -9,
-        0,
-        -0.75
-      ]
-    },
-    "firstperson_lefthand": {
-      "translation": [
-        -9,
-        0,
-        -0.75
       ]
     },
     "ground": {

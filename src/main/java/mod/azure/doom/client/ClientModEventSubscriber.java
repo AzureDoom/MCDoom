@@ -133,13 +133,18 @@ import mod.azure.doom.item.armor.SantaDoomArmor;
 import mod.azure.doom.item.armor.SentinelDoomArmor;
 import mod.azure.doom.item.armor.TwentyFiveDoomArmor;
 import mod.azure.doom.item.armor.ZombieDoomArmor;
+import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomBlocks;
+import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomScreens;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -234,8 +239,67 @@ public class ClientModEventSubscriber {
 		ClientRegistry.registerKeyBinding(Keybindings.RELOAD);
 		ItemBlockRenderTypes.setRenderLayer(DoomBlocks.JUMP_PAD.get(), RenderType.translucent());
 		MenuScreens.register(DoomScreens.SCREEN_HANDLER_TYPE.get(), GunTableScreen::new);
+		// Crucible
+		ItemProperties.register(DoomItems.CRUCIBLESWORD.get(), new ResourceLocation("broken"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return isUsable(itemStack) ? 0.0F : 1.0F;
+				});
+		// Marauder Axe
+		ItemProperties.register(DoomItems.AXE_OPEN.get(), new ResourceLocation("broken"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return isUsable(itemStack) ? 0.0F : 1.0F;
+				});
+		// NonCenter
+		ItemProperties.register(DoomItems.SG.get(), new ResourceLocation("nocenter"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return nonCentered(itemStack) ? 1.0F : 0.0F;
+				});
+		ItemProperties.register(DoomItems.ROCKETLAUNCHER.get(), new ResourceLocation("nocenter"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return nonCentered(itemStack) ? 1.0F : 0.0F;
+				});
+		ItemProperties.register(DoomItems.PLASMAGUN.get(), new ResourceLocation("nocenter"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return nonCentered(itemStack) ? 1.0F : 0.0F;
+				});
+		ItemProperties.register(DoomItems.HEAVYCANNON.get(), new ResourceLocation("nocenter"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return nonCentered(itemStack) ? 1.0F : 0.0F;
+				});
+		ItemProperties.register(DoomItems.UNMAYKR.get(), new ResourceLocation("nocenter"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return nonCentered(itemStack) ? 1.0F : 0.0F;
+				});
+		ItemProperties.register(DoomItems.CHAINGUN.get(), new ResourceLocation("nocenter"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return nonCentered(itemStack) ? 1.0F : 0.0F;
+				});
+		ItemProperties.register(DoomItems.BFG_ETERNAL.get(), new ResourceLocation("nocenter"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return nonCentered(itemStack) ? 1.0F : 0.0F;
+				});
+		ItemProperties.register(DoomItems.BALLISTA.get(), new ResourceLocation("nocenter"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return nonCentered(itemStack) ? 1.0F : 0.0F;
+				});
+		ItemProperties.register(DoomItems.SSG.get(), new ResourceLocation("nocenter"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return nonCentered(itemStack) ? 1.0F : 0.0F;
+				});
+		ItemProperties.register(DoomItems.PISTOL.get(), new ResourceLocation("nocenter"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return nonCentered(itemStack) ? 1.0F : 0.0F;
+				});
 	}
-	
+
+	public static boolean isUsable(ItemStack stack) {
+		return stack.getDamageValue() < stack.getMaxDamage() - 1;
+	}
+
+	public static boolean nonCentered(ItemStack stack) {
+		return DoomConfig.SERVER.enable_noncenter.get();
+	}
+
 	@SubscribeEvent
 	public static void registerRenderers(final EntityRenderersEvent.AddLayers event) {
 
