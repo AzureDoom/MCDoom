@@ -10,54 +10,49 @@
 			"predicate": {
 				"nocenter": 1
 			},
-			"model": "doom:item/unmaykr_nocenter"
+			"model": "doom:item/shotgun_nocenter"
 		}
 	],
 	"display": {
 		"thirdperson_righthand": {
 			"translation": [
 				0,
-				-0.25,
-				-5.75
+				-1.25,
+				-1.75
 			],
 			"scale": [
-				0.25,
-				0.25,
-				0.25
+				0.3,
+				0.3,
+				0.3
 			]
 		},
 		"thirdperson_lefthand": {
 			"translation": [
 				0,
-				-0.25,
-				-5.75
+				-1.25,
+				-1.75
 			],
 			"scale": [
-				0.25,
-				0.25,
-				0.25
+				0.3,
+				0.3,
+				0.3
 			]
 		},
 		"firstperson_righthand": {
 			"translation": [
-				-9,
-				-20.5,
-				-43.5
+				1,
+				-6.5,
+				-8
 			]
 		},
 		"firstperson_lefthand": {
 			"translation": [
-				-9,
-				-20.5,
-				-43.5
+				1,
+				-6.5,
+				-8
 			]
 		},
 		"ground": {
-			"translation": [
-				0,
-				3,
-				0
-			],
 			"scale": [
 				0.5,
 				0.5,
@@ -66,19 +61,19 @@
 		},
 		"gui": {
 			"rotation": [
-				48,
-				-29,
-				6
+				38,
+				-41,
+				20
 			],
 			"translation": [
-				0.25,
-				1.25,
+				0,
+				-1.5,
 				0
 			],
 			"scale": [
-				0.2,
-				0.2,
-				0.2
+				0.3,
+				0.3,
+				0.3
 			]
 		},
 		"head": {
@@ -95,23 +90,15 @@
 				0
 			],
 			"translation": [
-				1.75,
 				0,
-				0
+				0,
+				-0.25
 			],
 			"scale": [
-				0.23,
-				0.23,
-				0.23
+				0.25,
+				0.25,
+				0.25
 			]
 		}
-	},
-	"overrides": [
-		{
-			"predicate": {
-				"pulling": 0
-			},
-			"model": "doom:item/unmaykr"
-		}
-	]
+	}
 }

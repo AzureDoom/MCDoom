@@ -5,6 +5,14 @@
 		128,
 		128
 	],
+	"overrides": [
+		{
+			"predicate": {
+				"nocenter": 1
+			},
+			"model": "doom:item/rocketlauncher_nocenter"
+		}
+	],
 	"display": {
 		"thirdperson_righthand": {
 			"translation": [

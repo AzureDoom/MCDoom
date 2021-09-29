@@ -2,83 +2,68 @@
 	"credit": "Made with Blockbench",
 	"parent": "builtin/entity",
 	"texture_size": [
-		128,
-		128
+		32,
+		16
 	],
 	"overrides": [
 		{
 			"predicate": {
 				"nocenter": 1
 			},
-			"model": "doom:item/unmaykr_nocenter"
+			"model": "doom:item/plasmagun_nocenter"
 		}
 	],
 	"display": {
 		"thirdperson_righthand": {
 			"translation": [
+				-1.25,
 				0,
-				-0.25,
-				-5.75
-			],
-			"scale": [
-				0.25,
-				0.25,
-				0.25
+				0
 			]
 		},
 		"thirdperson_lefthand": {
 			"translation": [
+				0.75,
 				0,
-				-0.25,
-				-5.75
-			],
-			"scale": [
-				0.25,
-				0.25,
-				0.25
+				0
 			]
 		},
 		"firstperson_righthand": {
 			"translation": [
-				-9,
-				-20.5,
-				-43.5
+				-3.0,
+				-1.0,
+				8.25
 			]
 		},
 		"firstperson_lefthand": {
 			"translation": [
-				-9,
-				-20.5,
-				-43.5
+				-3.0,
+				-1.0,
+				8.25
 			]
 		},
 		"ground": {
 			"translation": [
 				0,
-				3,
+				1.75,
 				0
-			],
-			"scale": [
-				0.5,
-				0.5,
-				0.5
 			]
 		},
 		"gui": {
 			"rotation": [
-				48,
-				-29,
-				6
+				35,
+				-36,
+				17
 			],
 			"translation": [
-				0.25,
-				1.25,
+				-3.75,
+				-3.75,
 				0
 			],
 			"scale": [
-				0.2,
-				0.2,
-				0.2
+				0.9,
+				0.9,
+				0.9
 			]
 		},
 		"head": {
@@ -95,23 +80,15 @@
 				0
 			],
 			"translation": [
-				1.75,
+				-5,
 				0,
-				0
+				-2.75
 			],
 			"scale": [
-				0.23,
-				0.23,
-				0.23
+				0.95,
+				0.95,
+				0.95
 			]
 		}
-	},
-	"overrides": [
-		{
-			"predicate": {
-				"pulling": 0
-			},
-			"model": "doom:item/unmaykr"
-		}
-	]
+	}
 }

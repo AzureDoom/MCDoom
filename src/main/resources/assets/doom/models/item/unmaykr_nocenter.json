@@ -40,16 +40,16 @@
 		},
 		"firstperson_righthand": {
 			"translation": [
-				-9,
-				-20.5,
-				-43.5
+				19,
+				-19.5,
+				-36.25
 			]
 		},
 		"firstperson_lefthand": {
 			"translation": [
-				-9,
-				-20.5,
-				-43.5
+				19,
+				-19.5,
+				-36.25
 			]
 		},
 		"ground": {
