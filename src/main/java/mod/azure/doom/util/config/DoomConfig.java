@@ -13,6 +13,7 @@ public class DoomConfig {
 	public static class Server {
 		public final ConfigValue<Integer> crucible_marauder_max_damage;
 		public final ConfigValue<Boolean> enable_block_breaking;
+		public final ConfigValue<Boolean> enable_noncenter;
 		public final ConfigValue<Double> argent_bolt_damage;
 		public final ConfigValue<Double> bfgball_damage;
 		public final ConfigValue<Double> bfgball_damage_dragon;
@@ -357,6 +358,8 @@ public class DoomConfig {
 					.defineInRange("Max Damage of Marauder Axe", 5, 1, Integer.MAX_VALUE);
 			this.enable_block_breaking = builder.translation("text.doom.config.enable_block_breaking")
 					.define("Should Rockets/BFG Break Blocks", false);
+			this.enable_noncenter = builder.translation("text.doom.config.enable_noncenter")
+					.define("Should Weapons Be Centered", false);
 			this.argent_bolt_damage = builder.translation("text.doom.config.argent_bolt_damage")
 					.defineInRange("Argent Bolts Damage", 14.5, 1, Double.MAX_VALUE);
 			this.bfgball_damage = builder.translation("text.doom.config.bfgball_damage").defineInRange("BFGBall Damage",
