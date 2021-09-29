@@ -2,7 +2,7 @@ package mod.azure.doom.entity.projectiles;
 
 import java.util.List;
 
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
@@ -234,7 +234,7 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 		if (!this.world.isClient) {
 			this.doDamage();
 			this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.0F, false,
-					DoomConfig.weapons.enable_block_breaking ? Explosion.DestructionType.BREAK
+					DoomMod.config.weapons.enable_block_breaking ? Explosion.DestructionType.BREAK
 							: Explosion.DestructionType.NONE);
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
@@ -246,7 +246,7 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 		if (!this.world.isClient) {
 			this.doDamage();
 			this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.0F, false,
-					DoomConfig.weapons.enable_block_breaking ? Explosion.DestructionType.BREAK
+					DoomMod.config.weapons.enable_block_breaking ? Explosion.DestructionType.BREAK
 							: Explosion.DestructionType.NONE);
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
@@ -279,7 +279,8 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d)) / q);
 			if (y <= 1.0D) {
 				if (entity instanceof LivingEntity) {
-					entity.damage(DamageSource.player((PlayerEntity) this.shooter), DoomConfig.weapons.rocket_damage);
+					entity.damage(DamageSource.player((PlayerEntity) this.shooter),
+							DoomMod.config.weapons.rocket_damage);
 				}
 				this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 0.0F,
 						Explosion.DestructionType.NONE);

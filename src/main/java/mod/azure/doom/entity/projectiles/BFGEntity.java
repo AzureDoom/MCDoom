@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierambient.GoreNestEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.network.EntityPacket;
@@ -238,7 +238,7 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 				if (y <= 1.0D) {
 					if (entity.isAlive()) {
 						entity.damage(DamageSource.player((PlayerEntity) this.shooter),
-								DoomConfig.weapons.bfgball_damage_aoe);
+								DoomMod.config.weapons.bfgball_damage_aoe);
 						setBeamTarget(entity.getId());
 					}
 				}
@@ -246,7 +246,7 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 			if (!(entity instanceof PlayerEntity) && entity instanceof EnderDragonEntity) {
 				if (entity.isAlive()) {
 					((EnderDragonEntity) entity).head.damage(DamageSource.player((PlayerEntity) this.shooter),
-							DoomConfig.weapons.bfgball_damage_aoe);
+							DoomMod.config.weapons.bfgball_damage_aoe);
 					setBeamTarget(entity.getId());
 				}
 			}
@@ -278,7 +278,7 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 		if (!this.world.isClient) {
 			this.doDamage();
 			this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.0F, false,
-					DoomConfig.weapons.enable_block_breaking ? Explosion.DestructionType.BREAK
+					DoomMod.config.weapons.enable_block_breaking ? Explosion.DestructionType.BREAK
 							: Explosion.DestructionType.NONE);
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
@@ -293,7 +293,7 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 			if (!this.world.isClient) {
 				this.doDamage();
 				this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.0F, false,
-						DoomConfig.weapons.enable_block_breaking ? Explosion.DestructionType.BREAK
+						DoomMod.config.weapons.enable_block_breaking ? Explosion.DestructionType.BREAK
 								: Explosion.DestructionType.NONE);
 				this.remove(Entity.RemovalReason.DISCARDED);
 			}
@@ -322,7 +322,8 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 							|| entity instanceof PhantomEntity || entity instanceof ShulkerEntity
 							|| entity instanceof HoglinEntity)) {
 				if (y <= 1.0D) {
-					entity.damage(DamageSource.player((PlayerEntity) this.shooter), DoomConfig.weapons.bfgball_damage);
+					entity.damage(DamageSource.player((PlayerEntity) this.shooter),
+							DoomMod.config.weapons.bfgball_damage);
 					if (!this.world.isClient) {
 						List<LivingEntity> list1 = this.world.getNonSpectatingEntities(LivingEntity.class,
 								this.getBoundingBox().expand(4.0D, 2.0D, 4.0D));
@@ -348,7 +349,7 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 			if (entity instanceof EnderDragonEntity) {
 				if (entity.isAlive()) {
 					((EnderDragonEntity) entity).head.damage(DamageSource.player((PlayerEntity) this.shooter),
-							DoomConfig.weapons.bfgball_damage_dragon);
+							DoomMod.config.weapons.bfgball_damage_dragon);
 				}
 			}
 		}

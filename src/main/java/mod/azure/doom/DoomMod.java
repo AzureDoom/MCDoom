@@ -1,7 +1,10 @@
 package mod.azure.doom;
 
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import mod.azure.doom.block.GunTableBlock;
 import mod.azure.doom.client.gui.GunTableScreenHandler;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
 import mod.azure.doom.entity.tileentity.IconBlockEntity;
 import mod.azure.doom.entity.tileentity.TotemEntity;
@@ -39,7 +42,7 @@ import software.bernie.geckolib3.GeckoLib;
 public class DoomMod implements ModInitializer {
 
 	public static DoomItems ITEMS;
-//	public static DoomConfig config;
+	public static DoomConfig config;
 	public static ModSoundEvents SOUNDS;
 	public static ModEntityTypes MOBS;
 	public static final String MODID = "doom";
@@ -88,8 +91,8 @@ public class DoomMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-//		AutoConfig.register(DoomConfig.class, GsonConfigSerializer::new);
-//		config = AutoConfig.getConfigHolder(DoomConfig.class).getConfig();
+		AutoConfig.register(DoomConfig.class, GsonConfigSerializer::new);
+		config = AutoConfig.getConfigHolder(DoomConfig.class).getConfig();
 		DoomBlocks.init();
 		ITEMS = new DoomItems();
 		SOUNDS = new ModSoundEvents();

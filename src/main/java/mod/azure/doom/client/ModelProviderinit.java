@@ -1,6 +1,6 @@
 package mod.azure.doom.client;
 
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.util.registry.DoomItems;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.item.ItemStack;
@@ -67,6 +67,6 @@ public class ModelProviderinit {
 	}
 
 	private static boolean nonCentered(ItemStack stack) {
-		return DoomConfig.weapons.enable_noncenter;
+		return DoomMod.config.weapons.enable_noncenter;
 	}
 }

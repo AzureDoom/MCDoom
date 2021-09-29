@@ -3,7 +3,7 @@ package mod.azure.doom.util;
 import java.util.Arrays;
 import java.util.List;
 
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.config.DoomConfig.Spawning;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -14,7 +14,7 @@ import net.minecraft.entity.SpawnGroup;
 @SuppressWarnings("deprecation")
 public class MobSpawn {
 
-	private static Spawning config = DoomConfig.spawn;
+	private static Spawning config = DoomMod.config.spawn;
 
 	public static void addSpawnEntries() {
 		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.imp_biomes, context)),
