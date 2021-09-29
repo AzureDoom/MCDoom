@@ -2,83 +2,70 @@
   "credit": "Made with Blockbench",
   "parent": "builtin/entity",
   "texture_size": [
-    32,
-    16
+    128,
+    64
   ],
-	"overrides": [
-		{
-			"predicate": {
-				"nocenter": 1
-			},
-			"model": "doom:item/chaingun_nocenter"
-		}
-	],
   "display": {
     "thirdperson_righthand": {
-      "rotation": [
-        -2,
-        0,
-        0
-      ],
       "translation": [
-        -1,
-        -9,
-        -16.5
+        0,
+        -1.25,
+        -0.25
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
       ]
     },
     "thirdperson_lefthand": {
-      "rotation": [
-        -2,
-        0,
-        0
-      ],
       "translation": [
-        1,
-        -9,
-        -16.5
+        0,
+        -1.25,
+        -0.25
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
       ]
     },
     "firstperson_righthand": {
       "translation": [
-        -9.75,
-        1.25,
-        -0.5
+        3,
+        -5.5,
+        -5.75
       ]
     },
     "firstperson_lefthand": {
       "translation": [
-        -9.75,
-        1.25,
-        -0.5
+        3,
+        -5.5,
+        -5.75
       ]
     },
     "ground": {
-      "translation": [
-        0,
-        0.5,
-        0
-      ],
       "scale": [
-        0.55,
-        0.55,
-        0.55
+        0.5,
+        0.5,
+        0.5
       ]
     },
     "gui": {
       "rotation": [
-        50.75,
-        -37.5,
-        4.25
+        40,
+        -38,
+        0
       ],
       "translation": [
-        0.5,
-        -0.25,
+        -1,
+        -1.25,
         0
       ],
       "scale": [
-        0.6,
-        0.6,
-        0.6
+        0.7,
+        0.7,
+        0.7
       ]
     },
     "head": {
@@ -90,19 +77,19 @@
     },
     "fixed": {
       "rotation": [
-        -90,
+        0,
         -90,
         0
       ],
       "translation": [
-        1.25,
-        -0.25,
-        -0.5
+        -1.75,
+        -2.5,
+        -0.25
       ],
       "scale": [
-        0.5,
-        0.5,
-        0.5
+        0.8,
+        0.8,
+        0.8
       ]
     }
   }
