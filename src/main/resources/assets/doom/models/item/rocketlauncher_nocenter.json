@@ -10,52 +10,14 @@
 			"predicate": {
 				"nocenter": 1
 			},
-			"model": "doom:item/unmaykr_nocenter"
+			"model": "doom:item/rocketlauncher_nocenter"
 		}
 	],
 	"display": {
 		"thirdperson_righthand": {
 			"translation": [
-				0,
-				-0.25,
-				-5.75
-			],
-			"scale": [
 				0.25,
-				0.25,
-				0.25
-			]
-		},
-		"thirdperson_lefthand": {
-			"translation": [
-				0,
-				-0.25,
-				-5.75
-			],
-			"scale": [
-				0.25,
-				0.25,
-				0.25
-			]
-		},
-		"firstperson_righthand": {
-			"translation": [
-				-9,
-				-20.5,
-				-43.5
-			]
-		},
-		"firstperson_lefthand": {
-			"translation": [
-				-9,
-				-20.5,
-				-43.5
-			]
-		},
-		"ground": {
-			"translation": [
-				0,
-				3,
+				-2.75,
 				0
 			],
 			"scale": [
@@ -64,21 +26,69 @@
 				0.5
 			]
 		},
-		"gui": {
-			"rotation": [
-				48,
-				-29,
-				6
-			],
+		"thirdperson_lefthand": {
 			"translation": [
 				0.25,
-				1.25,
+				-2.75,
 				0
 			],
 			"scale": [
-				0.2,
-				0.2,
-				0.2
+				0.5,
+				0.5,
+				0.5
+			]
+		},
+		"firstperson_righthand": {
+			"rotation": [
+				10,
+				0,
+				0
+			],
+			"translation": [
+				0.0,
+				-7.55,
+				0.5
+			]
+		},
+		"firstperson_lefthand": {
+			"rotation": [
+				10,
+				0,
+				0
+			],
+			"translation": [
+				0.0,
+				-7.55,
+				0.5
+			]
+		},
+		"ground": {
+			"translation": [
+				0,
+				0.5,
+				-4
+			],
+			"scale": [
+				0.7,
+				0.7,
+				0.7
+			]
+		},
+		"gui": {
+			"rotation": [
+				52,
+				-42,
+				22
+			],
+			"translation": [
+				2.5,
+				-1,
+				0
+			],
+			"scale": [
+				0.3,
+				0.3,
+				0.3
 			]
 		},
 		"head": {
@@ -95,14 +105,14 @@
 				0
 			],
 			"translation": [
-				1.75,
-				0,
+				2.25,
+				-1.5,
 				0
 			],
 			"scale": [
-				0.23,
-				0.23,
-				0.23
+				0.3,
+				0.3,
+				0.3
 			]
 		}
 	},
@@ -111,7 +121,7 @@
 			"predicate": {
 				"pulling": 0
 			},
-			"model": "doom:item/unmaykr"
+			"model": "doom:item/rocketlauncher"
 		}
 	]
 }

@@ -27,6 +27,7 @@ public class DoomConfig implements ConfigData {
 	public static class Weapons {
 		public int crucible_marauder_max_damage = 5;
 		public boolean enable_block_breaking = false;
+		public boolean enable_noncenter = false;
 		public float argent_bolt_damage = 14.5F;
 		public float bfgball_damage = 100F;
 		public float bfgball_damage_dragon = 30F;

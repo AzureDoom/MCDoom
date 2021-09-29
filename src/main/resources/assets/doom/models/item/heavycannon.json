@@ -5,6 +5,14 @@
 		64,
 		64
 	],
+	"overrides": [
+		{
+			"predicate": {
+				"nocenter": 1
+			},
+			"model": "doom:item/heavycannon_nocenter"
+		}
+	],
 	"display": {
 		"thirdperson_righthand": {
 			"translation": [

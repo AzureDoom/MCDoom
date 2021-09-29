@@ -2,17 +2,9 @@
   "credit": "Made with Blockbench",
   "parent": "builtin/entity",
   "texture_size": [
-    32,
+    64,
     16
   ],
-	"overrides": [
-		{
-			"predicate": {
-				"nocenter": 1
-			},
-			"model": "doom:item/chaingun_nocenter"
-		}
-	],
   "display": {
     "thirdperson_righthand": {
       "rotation": [
@@ -40,16 +32,16 @@
     },
     "firstperson_righthand": {
       "translation": [
-        -9.75,
-        1.25,
-        -0.5
+        -0.75,
+        0,
+        -3
       ]
     },
     "firstperson_lefthand": {
       "translation": [
-        -9.75,
-        1.25,
-        -0.5
+        -0.75,
+        0,
+        -3
       ]
     },
     "ground": {
