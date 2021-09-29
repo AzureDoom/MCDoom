@@ -16,12 +16,11 @@ import net.minecraft.world.item.ItemStack;
 public class WeaponRenderingMixin {
 
 	@Inject(method = "getArmPose", at = @At(value = "TAIL"), cancellable = true)
-	private static HumanoidModel.ArmPose tryItemPose(AbstractClientPlayer player, InteractionHand hand,
-			CallbackInfoReturnable<Boolean> ci) {
+	private static void tryItemPose(AbstractClientPlayer player, InteractionHand hand,
+			CallbackInfoReturnable<HumanoidModel.ArmPose> ci) {
 		ItemStack itemstack = player.getItemInHand(hand);
 		if (itemstack.getItem() instanceof DoomBaseItem) {
-			return HumanoidModel.ArmPose.BOW_AND_ARROW;
+			ci.setReturnValue(HumanoidModel.ArmPose.BOW_AND_ARROW);
 		}
-		return HumanoidModel.ArmPose.ITEM;
 	}
 }
