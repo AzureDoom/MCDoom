@@ -100,13 +100,5 @@
 				0.4
 			]
 		}
-	},
-	"overrides": [
-		{
-			"predicate": {
-				"pulling": 0
-			},
-			"model": "doom:item/heavycannon"
-		}
-	]
+	}
 }
