@@ -41,11 +41,11 @@ public class SuperShotgun extends DoomBaseItem {
 				playerentity.getItemCooldownManager().set(this, 24);
 				if (!worldIn.isClient) {
 					ShotgunShellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.setProperties(playerentity, playerentity.pitch, playerentity.yaw + 1, 0.0F,
+					abstractarrowentity.setVelocity(playerentity, playerentity.pitch, playerentity.yaw + 1, 0.0F,
 							1.0F * 3.0F, 1.0F);
 					worldIn.spawnEntity(abstractarrowentity);
 					ShotgunShellEntity abstractarrowentity1 = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity1.setProperties(playerentity, playerentity.pitch, playerentity.yaw - 1, 0.0F,
+					abstractarrowentity1.setVelocity(playerentity, playerentity.pitch, playerentity.yaw - 1, 0.0F,
 							1.0F * 3.0F, 1.0F);
 					worldIn.spawnEntity(abstractarrowentity1);
 

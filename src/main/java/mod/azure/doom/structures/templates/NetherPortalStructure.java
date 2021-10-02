@@ -60,7 +60,7 @@ public class NetherPortalStructure extends StructureFeature<DefaultFeatureConfig
 				Heightmap.Type.WORLD_SURFACE_WG, world);
 		VerticalBlockSample columnOfBlocks = chunkGenerator.getColumnSample(centerOfChunk.getX(), centerOfChunk.getZ(),
 				world);
-		BlockState topBlock = columnOfBlocks.getState(centerOfChunk.up(landHeight).getY());
+		BlockState topBlock = columnOfBlocks.getState(landHeight);
 		return !this.isNearby(chunkGenerator, worldSeed, random, chunkPos) ? topBlock.getFluidState().isEmpty() : false;
 	}
 

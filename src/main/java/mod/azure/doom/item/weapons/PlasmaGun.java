@@ -41,7 +41,7 @@ public class PlasmaGun extends DoomBaseItem {
 				playerentity.getItemCooldownManager().set(this, 15);
 				if (!worldIn.isClient) {
 					EnergyCellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.setProperties(playerentity, playerentity.pitch, playerentity.yaw, 0.0F,
+					abstractarrowentity.setVelocity(playerentity, playerentity.pitch, playerentity.yaw, 0.0F,
 							0.15F * 3.0F, 1.0F);
 					abstractarrowentity.hasNoGravity();
 

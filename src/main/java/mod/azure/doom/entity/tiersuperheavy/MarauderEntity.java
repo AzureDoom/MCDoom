@@ -143,7 +143,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable {
 		@Override
 		public ProjectileEntity getProjectile(World world, double d2, double d3, double d4) {
 			ShotgunShellEntity arrowentity = new ShotgunShellEntity(world, this.parentEntity);
-			arrowentity.setProperties(this.parentEntity, this.parentEntity.pitch, this.parentEntity.yaw, 0.0F,
+			arrowentity.setVelocity(this.parentEntity, this.parentEntity.pitch, this.parentEntity.yaw, 0.0F,
 					1.0F * 3.0F, 1.0F);
 			return arrowentity;
 

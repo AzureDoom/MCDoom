@@ -43,13 +43,13 @@ public class Unmaykr extends DoomBaseItem {
 				playerentity.getItemCooldownManager().set(this, 5);
 				if (!worldIn.isClient) {
 					UnmaykrBoltEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.setProperties(playerentity, playerentity.pitch, playerentity.yaw, 0.0F,
+					abstractarrowentity.setVelocity(playerentity, playerentity.pitch, playerentity.yaw, 0.0F,
 							1.0F * 3.0F, 1.0F);
 					UnmaykrBoltEntity abstractarrowentity2 = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity2.setProperties(playerentity, playerentity.pitch, playerentity.yaw - 10, 0.0F,
+					abstractarrowentity2.setVelocity(playerentity, playerentity.pitch, playerentity.yaw - 10, 0.0F,
 							1.0F * 3.0F, 1.0F);
 					UnmaykrBoltEntity abstractarrowentity1 = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity1.setProperties(playerentity, playerentity.pitch, playerentity.yaw + 10, 0.0F,
+					abstractarrowentity1.setVelocity(playerentity, playerentity.pitch, playerentity.yaw + 10, 0.0F,
 							1.0F * 3.0F, 1.0F);
 
 					abstractarrowentity.hasNoGravity();
