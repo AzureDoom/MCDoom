@@ -1,15 +1,17 @@
 package mod.azure.doom.structures.templates;
 
+import java.util.Random;
+
 import com.mojang.serialization.Codec;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.structures.DoomStructures;
 import mod.azure.doom.util.registry.ModEntityTypes;
-import net.minecraft.block.BlockState;
 import net.minecraft.structure.MarginedStructureStart;
 import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.pool.StructurePoolBasedGenerator;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.Pool;
 import net.minecraft.util.math.BlockPos;
@@ -25,7 +27,6 @@ import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.StructureConfig;
-import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
@@ -53,13 +54,33 @@ public class ArchMaykrStructure extends StructureFeature<DefaultFeatureConfig> {
 	protected boolean shouldStartAt(ChunkGenerator chunkGenerator, BiomeSource biomeSource, long worldSeed,
 			ChunkRandom random, ChunkPos pos, Biome biome, ChunkPos chunkPos, DefaultFeatureConfig config,
 			HeightLimitView world) {
-		BlockPos centerOfChunk = new BlockPos(pos.x, 0, pos.z);
-		int landHeight = chunkGenerator.getHeightInGround(centerOfChunk.getX(), centerOfChunk.getZ(),
-				Heightmap.Type.WORLD_SURFACE_WG, world);
-		VerticalBlockSample columnOfBlocks = chunkGenerator.getColumnSample(centerOfChunk.getX(), centerOfChunk.getZ(),
-				world);
-		BlockState topBlock = columnOfBlocks.getState(centerOfChunk.up(landHeight));
-		return !this.isNearby(chunkGenerator, worldSeed, random, chunkPos) ? topBlock.getFluidState().isEmpty() : false;
+		return !this.isNearby(chunkGenerator, worldSeed, random, chunkPos)
+				? getGenerationHeight(pos.x, pos.z, chunkGenerator, world) >= 60
+				: false;
+	}
+
+	private static int getGenerationHeight(int chunkX, int chunkZ, ChunkGenerator chunkGenerator,
+			HeightLimitView world) {
+		Random random = new Random((long) (chunkX + chunkZ * 10387313));
+		BlockRotation blockRotation = BlockRotation.random(random);
+		int i = 5;
+		int j = 5;
+		if (blockRotation == BlockRotation.CLOCKWISE_90) {
+			i = -5;
+		} else if (blockRotation == BlockRotation.CLOCKWISE_180) {
+			i = -5;
+			j = -5;
+		} else if (blockRotation == BlockRotation.COUNTERCLOCKWISE_90) {
+			j = -5;
+		}
+
+		int k = (chunkX << 4) + 7;
+		int l = (chunkZ << 4) + 7;
+		int m = chunkGenerator.getHeightInGround(k, l, Heightmap.Type.WORLD_SURFACE_WG, world);
+		int n = chunkGenerator.getHeightInGround(k, l + j, Heightmap.Type.WORLD_SURFACE_WG, world);
+		int o = chunkGenerator.getHeightInGround(k + i, l, Heightmap.Type.WORLD_SURFACE_WG, world);
+		int p = chunkGenerator.getHeightInGround(k + i, l + j, Heightmap.Type.WORLD_SURFACE_WG, world);
+		return Math.min(Math.min(m, n), Math.min(o, p));
 	}
 
 	private boolean isNearby(ChunkGenerator generator, long worldSeed, ChunkRandom random, ChunkPos pos) {

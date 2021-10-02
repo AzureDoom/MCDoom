@@ -20,7 +20,11 @@
 			"mod.azure.doom.DoomMod"
 		],
 		"client": [
-			"mod.azure.doom.client.ClientInit"
+			"mod.azure.doom.client.ClientInit",
+			"mod.azure.doom.DoomServer"
+		],
+		"server": [
+			"mod.azure.doom.DoomServer"
 		],
 		"modmenu": [
 			"mod.azure.doom.config.ModMenuDoom"
