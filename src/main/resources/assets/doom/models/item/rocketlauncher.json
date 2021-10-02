@@ -115,13 +115,5 @@
 				0.3
 			]
 		}
-	},
-	"overrides": [
-		{
-			"predicate": {
-				"pulling": 0
-			},
-			"model": "doom:item/rocketlauncher"
-		}
-	]
+	}
 }

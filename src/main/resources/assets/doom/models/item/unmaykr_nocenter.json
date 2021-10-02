@@ -40,16 +40,16 @@
 		},
 		"firstperson_righthand": {
 			"translation": [
-				19,
-				-19.5,
-				-36.25
+				14.75,
+				-15.75,
+				-27.75
 			]
 		},
 		"firstperson_lefthand": {
 			"translation": [
-				19,
-				-19.5,
-				-36.25
+				14.75,
+				-15.75,
+				-27.75
 			]
 		},
 		"ground": {
@@ -105,13 +105,5 @@
 				0.23
 			]
 		}
-	},
-	"overrides": [
-		{
-			"predicate": {
-				"pulling": 0
-			},
-			"model": "doom:item/unmaykr"
-		}
-	]
+	}
 }
