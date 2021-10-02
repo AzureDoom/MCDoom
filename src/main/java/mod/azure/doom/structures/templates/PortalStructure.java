@@ -52,17 +52,9 @@ public class PortalStructure extends StructureFeature<DefaultFeatureConfig> {
 		return STRUCTURE_MONSTERS;
 	}
 
-	private static final List<SpawnSettings.SpawnEntry> STRUCTURE_CREATURES = ImmutableList.of(
-			new SpawnSettings.SpawnEntry(ModEntityTypes.LOST_SOUL, 20, 1, 2),
-			new SpawnSettings.SpawnEntry(ModEntityTypes.TURRET, 20, 1, 2),
-			new SpawnSettings.SpawnEntry(ModEntityTypes.ZOMBIEMAN, 20, 1, 2),
-			new SpawnSettings.SpawnEntry(ModEntityTypes.CHAINGUNNER, 20, 1, 2),
-			new SpawnSettings.SpawnEntry(ModEntityTypes.POSSESSEDWORKER, 20, 1, 2),
-			new SpawnSettings.SpawnEntry(ModEntityTypes.ARACHNOTRONETERNAL, 20, 1, 2));
-
 	@Override
 	public List<SpawnSettings.SpawnEntry> getCreatureSpawns() {
-		return STRUCTURE_CREATURES;
+		return STRUCTURE_MONSTERS;
 	}
 
 	@Override

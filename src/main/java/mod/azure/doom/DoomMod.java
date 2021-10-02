@@ -1,8 +1,5 @@
 package mod.azure.doom;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import mod.azure.doom.block.GunTableBlock;
@@ -11,7 +8,6 @@ import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
 import mod.azure.doom.entity.tileentity.IconBlockEntity;
 import mod.azure.doom.entity.tileentity.TotemEntity;
-import mod.azure.doom.mixin.StructuresConfigAccessor;
 import mod.azure.doom.network.PacketHandler;
 import mod.azure.doom.recipes.GunTableRecipe;
 import mod.azure.doom.structures.DoomConfiguredStructures;
@@ -31,7 +27,6 @@ import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
@@ -46,14 +41,10 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.gen.chunk.StructureConfig;
-import net.minecraft.world.gen.feature.StructureFeature;
 import software.bernie.geckolib3.GeckoLib;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.CuriosComponent;
@@ -164,7 +155,6 @@ public class DoomMod implements ModInitializer {
 					context.getGenerationSettings()
 							.addBuiltInStructure(DoomConfiguredStructures.CONFIGURED_MOTHERDEMON);
 				});
-		removeStructureSpawningFromSelectedDimension();
 		CuriosApi.enqueueSlotType(BuildScheme.REGISTER, SlotTypePreset.BELT.getInfoBuilder().build());
 		CuriosApi.enqueueSlotType(BuildScheme.REGISTER, SlotTypePreset.CHARM.getInfoBuilder().build());
 		ItemComponentCallbackV2.event(DoomItems.SOULCUBE).register(
@@ -218,36 +208,5 @@ public class DoomMod implements ModInitializer {
 					}
 				})));
 		PacketHandler.registerMessages();
-	}
-
-	public static void removeStructureSpawningFromSelectedDimension() {
-		ServerWorldEvents.LOAD.register((MinecraftServer minecraftServer, ServerWorld serverWorld) -> {
-			Map<StructureFeature<?>, StructureConfig> tempMap = new HashMap<>(
-					serverWorld.getChunkManager().getChunkGenerator().getStructuresConfig().getStructures());
-			if (!serverWorld.getRegistryKey().getValue().getNamespace().equals("minecraft")) {
-				tempMap.keySet().remove(DoomStructures.MAYKR);
-				tempMap.keySet().remove(DoomStructures.ARCHMAYKR);
-				tempMap.keySet().remove(DoomStructures.TITAN_SKULL);
-				tempMap.keySet().remove(DoomStructures.PORTAL);
-				tempMap.keySet().remove(DoomStructures.NETHERPORTAL);
-				tempMap.keySet().remove(DoomStructures.MOTHERDEMON);
-			}
-			if (!serverWorld.getRegistryKey().getValue().getPath().equals("the_end")) {
-				tempMap.keySet().remove(DoomStructures.MAYKR);
-				tempMap.keySet().remove(DoomStructures.ARCHMAYKR);
-			}
-			if (!serverWorld.getRegistryKey().getValue().getPath().equals("the_nether")) {
-				tempMap.keySet().remove(DoomStructures.TITAN_SKULL);
-				tempMap.keySet().remove(DoomStructures.MOTHERDEMON);
-				tempMap.keySet().remove(DoomStructures.NETHERPORTAL);
-			}
-			if ((serverWorld.getRegistryKey().getValue().getPath().equals("the_nether"))
-					|| serverWorld.getRegistryKey().getValue().getPath().equals("the_end")) {
-				tempMap.keySet().remove(DoomStructures.PORTAL);
-			}
-
-			((StructuresConfigAccessor) serverWorld.getChunkManager().getChunkGenerator().getStructuresConfig())
-					.setStructures(tempMap);
-		});
 	}
 }

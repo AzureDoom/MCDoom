@@ -51,6 +51,11 @@ public class MaykrStructure extends StructureFeature<DefaultFeatureConfig> {
 	}
 
 	@Override
+	public List<SpawnSettings.SpawnEntry> getCreatureSpawns() {
+		return STRUCTURE_MONSTERS;
+	}
+
+	@Override
 	protected boolean shouldStartAt(ChunkGenerator chunkGenerator, BiomeSource biomeSource, long seed,
 			ChunkRandom chunkRandom, int chunkX, int chunkZ, Biome biome, ChunkPos chunkPos,
 			DefaultFeatureConfig featureConfig) {
