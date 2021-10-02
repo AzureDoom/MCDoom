@@ -105,13 +105,5 @@
 				0.23
 			]
 		}
-	},
-	"overrides": [
-		{
-			"predicate": {
-				"pulling": 0
-			},
-			"model": "doom:item/unmaykr"
-		}
-	]
+	}
 }
