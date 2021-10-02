@@ -9,12 +9,9 @@ import mod.azure.doom.entity.tileentity.GunBlockEntity;
 import mod.azure.doom.entity.tileentity.IconBlockEntity;
 import mod.azure.doom.entity.tileentity.TotemEntity;
 import mod.azure.doom.network.PacketHandler;
-import mod.azure.doom.structures.DoomConfiguredStructures;
-import mod.azure.doom.structures.DoomStructures;
 import mod.azure.doom.util.DoomVillagerTrades;
 import mod.azure.doom.util.MobAttributes;
 import mod.azure.doom.util.MobSpawn;
-import mod.azure.doom.util.RegistrationHelper;
 import mod.azure.doom.util.recipes.GunTableRecipe;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
@@ -22,7 +19,6 @@ import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
@@ -43,7 +39,6 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import software.bernie.geckolib3.GeckoLib;
 
-@SuppressWarnings("deprecation")
 public class DoomMod implements ModInitializer {
 
 	public static DoomItems ITEMS;
@@ -118,38 +113,6 @@ public class DoomMod implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> DoomVillagerTrades.addTrades());
 		MobAttributes.init();
 		GeckoLib.initialize();
-		DoomStructures.setupAndRegisterStructureFeatures();
-		DoomConfiguredStructures.registerConfiguredStructures();
-		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "portal_addition"),
-				BiomeSelectors.foundInOverworld().and(BiomeSelectors.foundInOverworld()),
-				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_PORTAL)
-
-		);
-		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "netherportal_addition"),
-				BiomeSelectors.foundInOverworld().and(BiomeSelectors.foundInOverworld()),
-				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_NETHERPORTAL)
-
-		);
-		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "maykr_addition"),
-				BiomeSelectors.foundInTheEnd().and(BiomeSelectors.foundInTheEnd()),
-				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_MAYKR)
-
-		);
-		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "archmaykr_addition"),
-				BiomeSelectors.foundInTheEnd().and(BiomeSelectors.foundInTheEnd()),
-				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_ARCHMAYKR)
-
-		);
-		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "titan_skull_addition"),
-				BiomeSelectors.foundInTheNether().and(BiomeSelectors.foundInTheNether()),
-				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_TITAN_SKULL)
-
-		);
-		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "motherdemon_addition"),
-				BiomeSelectors.foundInTheNether().and(BiomeSelectors.foundInTheNether()),
-				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_MOTHERDEMON)
-
-		);
 		PacketHandler.registerMessages();
 	}
 
