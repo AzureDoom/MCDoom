@@ -150,7 +150,7 @@ public class HellknightEntity extends DemonEntity implements IAnimatable {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
 				.add(Attributes.MAX_HEALTH, config.hellknight_health.get())
 				.add(Attributes.ATTACK_DAMAGE, config.hellknight_melee_damage.get())
-				.add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Nullable

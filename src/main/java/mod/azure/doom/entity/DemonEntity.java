@@ -95,5 +95,10 @@ public class DemonEntity extends CreatureEntity implements IAngerable {
 	public void startPersistentAngerTimer() {
 		this.setRemainingPersistentAngerTime(ANGER_TIME_RANGE.randomValue(this.random));
 	}
+	
+	@Override
+	protected boolean shouldDespawnInPeaceful() {
+		return true;
+	}
 
 }
