@@ -277,6 +277,6 @@ public class DoomRenderRegistry {
 //		GeoArmorRenderer.registerArmorRenderer(ZombieDoomArmor.class, new ZombieRender());
 //		GeoArmorRenderer.registerArmorRenderer(SantaDoomArmor.class, new SantaRender());
 
-		BlockRenderLayerMap.INSTANCE.putBlock(DoomBlocks.JUMP_PAD, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(DoomBlocks.JUMP_PAD, RenderLayer.getTranslucent());
 	}
 }
