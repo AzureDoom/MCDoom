@@ -95,5 +95,10 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 	public void startPersistentAngerTimer() {
 		this.setRemainingPersistentAngerTime(ANGER_TIME_RANGE.sample(this.random));
 	}
+	
+	@Override
+	protected boolean shouldDespawnInPeaceful() {
+		return true;
+	}
 
 }
