@@ -5,7 +5,7 @@ import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
-import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
+import mod.azure.doom.entity.ai.goal.GargoyleFlightMoveControl;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.util.registry.ModSoundEvents;
@@ -48,7 +48,7 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable {
 
 	public GargoyleEntity(EntityType<GargoyleEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
-		this.moveControl = new GargoyleEntity.GhastMoveControl(this);
+		this.moveControl = new GargoyleFlightMoveControl(this, 90, false);
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -103,12 +103,11 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.goalSelector.add(7, new GargoyleEntity.LookAtTargetGoal(this));
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
+		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));
 		this.initCustomGoals();
 	}
 
 	protected void initCustomGoals() {
-		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.add(4,
 				new RangedStrafeAttackGoal(this,
 						new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8)
