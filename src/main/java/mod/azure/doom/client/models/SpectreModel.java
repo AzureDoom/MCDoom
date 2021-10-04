@@ -35,7 +35,7 @@ public class SpectreModel extends AnimatedGeoModel<SpectreEntity> {
 		IBone head = this.getAnimationProcessor().getBone("neck");
 
 		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
-		head.setRotationX((extraData.headPitch + 30) * ((float) Math.PI / 360F));
+		head.setRotationX((extraData.headPitch + (entity.getVariant() == 1 ? 90 : 30)) * ((float) Math.PI / 360F));
 		head.setRotationY((extraData.netHeadYaw) * ((float) Math.PI / 500F));
 	}
 }
