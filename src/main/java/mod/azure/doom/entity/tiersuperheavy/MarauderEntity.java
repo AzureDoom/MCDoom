@@ -268,7 +268,6 @@ public class MarauderEntity extends DemonEntity implements IAnimatable {
 			if (f > 0.5F && this.level.canSeeSky(this.blockPosition())
 					&& this.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
 				this.setTarget((LivingEntity) null);
-				this.teleport();
 			}
 		}
 
