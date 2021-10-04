@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierambient.GoreNestEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.config.DoomConfig;
@@ -219,7 +220,8 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 			Entity entity = list.get(k2);
 			if (!(entity instanceof Player || entity instanceof EnderDragon || entity instanceof GoreNestEntity)
 					&& (entity instanceof Monster || entity instanceof Slime || entity instanceof Phantom
-							|| entity instanceof Shulker || entity instanceof Hoglin)) {
+							|| entity instanceof DemonEntity || entity instanceof Shulker
+							|| entity instanceof Hoglin)) {
 				double d12 = (double) (Mth.sqrt((float) entity.distanceToSqr(vector3d1)) / f2);
 				if (d12 <= 1.0D) {
 					if (entity.isAlive()) {
@@ -322,10 +324,12 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 			Entity entity = list.get(k2);
 			if (!(entity instanceof Player || entity instanceof EnderDragon || entity instanceof GoreNestEntity)
 					&& (entity instanceof Monster || entity instanceof Slime || entity instanceof Phantom
-							|| entity instanceof Shulker || entity instanceof Hoglin)) {
+							|| entity instanceof DemonEntity || entity instanceof Shulker
+							|| entity instanceof Hoglin)) {
 				double d12 = (double) (Mth.sqrt((float) entity.distanceToSqr(vector3d)) / f2);
 				if (d12 <= 1.0D) {
-					entity.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.SERVER.bfgball_damage.get().floatValue());
+					entity.hurt(DamageSource.playerAttack((Player) this.shooter),
+							DoomConfig.SERVER.bfgball_damage.get().floatValue());
 					this.setTargetedEntity(entity.getId());
 					if (!this.level.isClientSide) {
 						List<LivingEntity> list1 = this.level.getEntitiesOfClass(LivingEntity.class,

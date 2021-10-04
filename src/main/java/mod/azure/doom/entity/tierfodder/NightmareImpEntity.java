@@ -115,7 +115,7 @@ public class NightmareImpEntity extends DemonEntity implements IAnimatable {
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.nightmare_imp_health.get())
-				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.nightmare_melee_damage.get())
+				.add(Attributes.ATTACK_DAMAGE, 0.0D)
 				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
