@@ -1,9 +1,15 @@
-v.4.0.0
+v.4.0.3
 
-- Soul Cube and Daisy Foot abilities disabled until Trinkets updates.
-- Disabled structures until they can be fixed.
-	- Maykrs now spawn naturally in the End.
-	- Mother Demon now spawn naturally in the Nether.
-
-**Missing Currently**
-- Config Support, waiting on Cloth Config/Mod Menu for configs. 
+- Updated Weapon Pose Mixin to fix issues with HWG/MC Halo.
+- Weapon position config.
+- Marauder model/animation updated. (New model by Creman/Texture by RuisZ) 
+- Cloth Config support readded.
+- Updated for 21w39a
+- Fixed Gargoyle not flying.
+- Config clean up.
+- Pinky 2016 and Spectre 2016 model tweaked.
+- Lang completed for Mod Menu.
+- Plasma Gun first person tweaked.
+- Motherdemon, Maykr Drone, Blood Maykr, and Arch Maykr spawn configs added.
+- Motherdemon configs added for health and damage.
+- New Sentinel Hammer, Marauder Axe, Dark Lord Crucible, Crucible, and Argent Bolt/Unmaykr Bolt textures by Mr.Bones!
