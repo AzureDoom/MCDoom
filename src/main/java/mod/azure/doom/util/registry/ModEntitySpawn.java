@@ -216,6 +216,22 @@ public class ModEntitySpawn {
 			base.add(new SpawnerData(ModEntityTypes.TYRANT.get(), DoomConfig.SERVER.tyrant_spawn_weight.get(),
 					DoomConfig.SERVER.tyrant_min_group.get(), DoomConfig.SERVER.tyrant_max_group.get()));
 		}
+		if (parseBiomes(DoomConfig.SERVER.motherdemon_biomes.get(), event)) {
+			base.add(new SpawnerData(ModEntityTypes.MOTHERDEMON.get(), DoomConfig.SERVER.motherdemon_spawn_weight.get(),
+					DoomConfig.SERVER.motherdemon_min_group.get(), DoomConfig.SERVER.motherdemon_max_group.get()));
+		}
+		if (parseBiomes(DoomConfig.SERVER.maykrdrone_biomes.get(), event)) {
+			base.add(new SpawnerData(ModEntityTypes.MAYKRDRONE.get(), DoomConfig.SERVER.maykrdrone_spawn_weight.get(),
+					DoomConfig.SERVER.maykrdrone_min_group.get(), DoomConfig.SERVER.maykrdrone_max_group.get()));
+		}
+		if (parseBiomes(DoomConfig.SERVER.bloodmaykr_biomes.get(), event)) {
+			base.add(new SpawnerData(ModEntityTypes.BLOODMAYKR.get(), DoomConfig.SERVER.bloodmaykr_spawn_weight.get(),
+					DoomConfig.SERVER.bloodmaykr_min_group.get(), DoomConfig.SERVER.bloodmaykr_max_group.get()));
+		}
+		if (parseBiomes(DoomConfig.SERVER.archmaykr_biomes.get(), event)) {
+			base.add(new SpawnerData(ModEntityTypes.ARCHMAKER.get(), DoomConfig.SERVER.archmaykr_spawn_weight.get(),
+					DoomConfig.SERVER.archmaykr_min_group.get(), DoomConfig.SERVER.archmaykr_max_group.get()));
+		}
 	}
 
 	private static boolean parseBiomes(List<? extends String> list, BiomeLoadingEvent event) {

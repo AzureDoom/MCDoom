@@ -8,7 +8,6 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.projectiles.CustomFireballEntity;
 import mod.azure.doom.util.config.DoomConfig;
-
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -60,7 +59,6 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 
-	
 	private AnimationFactory factory = new AnimationFactory(this);
 	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(ArchMakyrEntity.class,
 			EntityDataSerializers.INT);
@@ -289,7 +287,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 				double d3 = livingentity.getY(0.5D) - (0.5D + this.parentEntity.getY(0.5D));
 				double d4 = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * 2.0D);
 				CustomFireballEntity fireballentity = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4,
-						14);
+						DoomConfig.SERVER.archmaykr_ranged_damage.get().floatValue());
 				if (this.attackTimer == 15) {
 					SplittableRandom random = new SplittableRandom();
 					int r = random.nextInt(0, 3);
@@ -389,7 +387,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.archmaykr_health.get())
-				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.archmaykr_melee_damage.get()).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
 				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 

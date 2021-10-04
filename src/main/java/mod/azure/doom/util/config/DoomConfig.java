@@ -215,6 +215,29 @@ public class DoomConfig {
 		public final ConfigValue<Integer> summoner_min_group;
 		public final ConfigValue<Integer> summoner_max_group;
 
+		public final ConfigValue<List<? extends String>> motherdemon_biomes;
+		public final ConfigValue<Integer> motherdemon_spawn_weight;
+		public final ConfigValue<Integer> motherdemon_min_group;
+		public final ConfigValue<Integer> motherdemon_max_group;
+
+		public final ConfigValue<List<? extends String>> maykrdrone_biomes;
+		public final ConfigValue<Integer> maykrdrone_spawn_weight;
+		public final ConfigValue<Integer> maykrdrone_min_group;
+		public final ConfigValue<Integer> maykrdrone_max_group;
+
+		public final ConfigValue<List<? extends String>> bloodmaykr_biomes;
+		public final ConfigValue<Integer> bloodmaykr_spawn_weight;
+		public final ConfigValue<Integer> bloodmaykr_min_group;
+		public final ConfigValue<Integer> bloodmaykr_max_group;
+
+		public final ConfigValue<List<? extends String>> archmaykr_biomes;
+		public final ConfigValue<Integer> archmaykr_spawn_weight;
+		public final ConfigValue<Integer> archmaykr_min_group;
+		public final ConfigValue<Integer> archmaykr_max_group;
+
+		public final ConfigValue<Double> motherdemon_health;
+		public final ConfigValue<Double> motherdemon_ranged_damage;
+
 		public final ConfigValue<Double> imp_health;
 		public final ConfigValue<Double> imp_ranged_damage;
 
@@ -247,7 +270,6 @@ public class DoomConfig {
 
 		public final ConfigValue<Double> archmaykr_health;
 		public final ConfigValue<Double> archmaykr_ranged_damage;
-		public final ConfigValue<Double> archmaykr_melee_damage;
 
 		public final ConfigValue<Double> baron_health;
 		public final ConfigValue<Double> baron_ranged_damage;
@@ -1022,6 +1044,16 @@ public class DoomConfig {
 			builder.pop();
 
 			builder.push("Mob Settings:Maykr Drone");
+			this.maykrdrone_biomes = builder
+					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
+					.translation("text.doom.config.maykrdrone_biomes")
+					.defineList("Maykr Drone Biomes", Lists.newArrayList(""), o -> o instanceof String);
+			this.maykrdrone_spawn_weight = builder.translation("text.doom.config.maykrdrone_spawn_weight")
+					.defineInRange("Maykr Drone Spawn Weight", 15, 1, Integer.MAX_VALUE);
+			this.maykrdrone_min_group = builder.translation("text.doom.config.maykrdrone_min_group")
+					.defineInRange("Maykr Drone Min Group", 1, 1, Integer.MAX_VALUE);
+			this.maykrdrone_max_group = builder.translation("text.doom.config.maykrdrone_max_group")
+					.defineInRange("Maykr Drone Max Group", 2, 1, Integer.MAX_VALUE);
 			this.maykrdrone_health = builder.translation("text.doom.config.maykrdrone_health")
 					.defineInRange("Sets Maykr Drone Max Health", 20, 1, Double.MAX_VALUE);
 			this.maykrdrone_ranged_damage = builder.translation("text.doom.config.maykrdrone_ranged_damage")
@@ -1029,6 +1061,16 @@ public class DoomConfig {
 			builder.pop();
 
 			builder.push("Mob Settings:Blood Maykr");
+			this.bloodmaykr_biomes = builder
+					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
+					.translation("text.doom.config.bloodmaykr_biomes")
+					.defineList("Blood Maykr Biomes", Lists.newArrayList(""), o -> o instanceof String);
+			this.bloodmaykr_spawn_weight = builder.translation("text.doom.config.bloodmaykr_spawn_weight")
+					.defineInRange("Blood Maykr Spawn Weight", 6, 1, Integer.MAX_VALUE);
+			this.bloodmaykr_min_group = builder.translation("text.doom.config.bloodmaykr_min_group")
+					.defineInRange("Blood Maykr Min Group", 1, 1, Integer.MAX_VALUE);
+			this.bloodmaykr_max_group = builder.translation("text.doom.config.bloodmaykr_max_group")
+					.defineInRange("Blood Maykr Max Group", 1, 1, Integer.MAX_VALUE);
 			this.bloodmaykr_health = builder.translation("text.doom.config.bloodmaykr_health")
 					.defineInRange("Sets Blood Maykr Max Health", 45, 1, Double.MAX_VALUE);
 			this.bloodmaykr_ranged_damage = builder.translation("text.doom.config.bloodmaykr_ranged_damage")
@@ -1036,12 +1078,37 @@ public class DoomConfig {
 			builder.pop();
 
 			builder.push("Mob Settings:Archmaykr");
+			this.archmaykr_biomes = builder
+					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
+					.translation("text.doom.config.archmaykr_biomes")
+					.defineList("Archmaykr Biomes", Lists.newArrayList(""), o -> o instanceof String);
+			this.archmaykr_spawn_weight = builder.translation("text.doom.config.archmaykr_spawn_weight")
+					.defineInRange("Archmaykr Spawn Weight", 1, 1, Integer.MAX_VALUE);
+			this.archmaykr_min_group = builder.translation("text.doom.config.archmaykr_min_group")
+					.defineInRange("Archmaykr Min Group", 1, 1, Integer.MAX_VALUE);
+			this.archmaykr_max_group = builder.translation("text.doom.config.archmaykr_max_group")
+					.defineInRange("Archmaykr Max Group", 1, 1, Integer.MAX_VALUE);
 			this.archmaykr_health = builder.translation("text.doom.config.archmaykr_health")
 					.defineInRange("Sets Archmaykr Max Health", 400, 1, Double.MAX_VALUE);
 			this.archmaykr_ranged_damage = builder.translation("text.doom.config.archmaykr_ranged_damage")
 					.defineInRange("Sets Archmaykr Ranged Damage", 14, 1, Double.MAX_VALUE);
-			this.archmaykr_melee_damage = builder.translation("text.doom.config.archmaykr_melee_damage")
-					.defineInRange("Sets Archmaykr Melee Damage", 6, 1, Double.MAX_VALUE);
+			builder.pop();
+
+			builder.push("Mob Settings:Motherdemon");
+			this.motherdemon_biomes = builder
+					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
+					.translation("text.doom.config.motherdemon_biomes")
+					.defineList("Motherdemon Biomes", Lists.newArrayList(""), o -> o instanceof String);
+			this.motherdemon_spawn_weight = builder.translation("text.doom.config.archmaykr_spawn_weight")
+					.defineInRange("Motherdemon Spawn Weight", 1, 1, Integer.MAX_VALUE);
+			this.motherdemon_min_group = builder.translation("text.doom.config.motherdemon_spawn_weight")
+					.defineInRange("Motherdemon Min Group", 1, 1, Integer.MAX_VALUE);
+			this.motherdemon_max_group = builder.translation("text.doom.config.motherdemon_max_group")
+					.defineInRange("Motherdemon Max Group", 1, 1, Integer.MAX_VALUE);
+			this.motherdemon_health = builder.translation("text.doom.config.motherdemon_health")
+					.defineInRange("Sets Motherdemon Max Health", 500, 1, Double.MAX_VALUE);
+			this.motherdemon_ranged_damage = builder.translation("text.doom.config.motherdemon_ranged_damage")
+					.defineInRange("Sets Motherdemon Ranged Damage", 14, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Turret");
