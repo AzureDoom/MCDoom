@@ -37,7 +37,7 @@ public class SpectreModel extends AnimatedGeoModel<SpectreEntity> {
 		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
 		if (head != null) {
 			head.setRotationX(
-					Vec3f.POSITIVE_X.getRadialQuaternion((extraData.headPitch + 30) * ((float) Math.PI / 360F)).getX());
+					Vec3f.POSITIVE_X.getRadialQuaternion((extraData.headPitch + (entity.getVariant() == 1 ? 270 : 30)) * ((float) Math.PI / 360F)).getX());
 			head.setRotationY(
 					Vec3f.POSITIVE_Y.getRadialQuaternion(extraData.netHeadYaw * ((float) Math.PI / 500F)).getY());
 		}
