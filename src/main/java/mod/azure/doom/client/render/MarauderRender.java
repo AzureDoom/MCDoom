@@ -18,8 +18,8 @@ import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public class MarauderRender extends GeoEntityRenderer<MarauderEntity> {
 
-	private static final ItemStack axe = new ItemStack(DoomItems.ARGENT_AXE);
-	private static final ItemStack shotgun = new ItemStack(DoomItems.SG);
+	private static final ItemStack axe = new ItemStack(DoomItems.AXE_OPEN);
+	private static final ItemStack shotgun = new ItemStack(DoomItems.SSG);
 	private VertexConsumerProvider rtb;
 	private Identifier whTexture;
 
@@ -47,24 +47,24 @@ public class MarauderRender extends GeoEntityRenderer<MarauderEntity> {
 	@Override
 	public void renderRecursively(GeoBone bone, MatrixStack stack, VertexConsumer bufferIn, int packedLightIn,
 			int packedOverlayIn, float red, float green, float blue, float alpha) {
-		if (bone.getName().equals("bipedLeftArm_1")) {
+		if (bone.getName().equals("rLowerArm")) {
 			stack.push();
-			stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-40));
+			stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-80));
 			stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(0));
 			stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-5));
-			stack.translate(0.30D, 0.90D, 0.3D);
+			stack.translate(0.45D, 0.25D, 0.95D);
 			stack.scale(1.0f, 1.0f, 1.0f);
 			MinecraftClient.getInstance().getItemRenderer().renderItem(axe, Mode.THIRD_PERSON_RIGHT_HAND, packedLightIn,
 					packedOverlayIn, stack, this.rtb, 0);
 			stack.pop();
 			bufferIn = rtb.getBuffer(RenderLayer.getEntityTranslucent(whTexture));
 		}
-		if (bone.getName().equals("bipedRightArm_1")) {
+		if (bone.getName().equals("lLowerArm")) {
 			stack.push();
-			stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-40));
+			stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-85));
 			stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(0));
 			stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(5));
-			stack.translate(-0.33D, 0.80D, 0.3D);
+			stack.translate(-0.45D, 0.249D, 0.95D);
 			stack.scale(1.0f, 1.0f, 1.0f);
 			MinecraftClient.getInstance().getItemRenderer().renderItem(shotgun, Mode.THIRD_PERSON_LEFT_HAND,
 					packedLightIn, packedOverlayIn, stack, this.rtb, 0);

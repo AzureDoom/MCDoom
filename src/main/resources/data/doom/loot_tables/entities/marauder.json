@@ -6,7 +6,13 @@
 			"entries": [
 				{
 					"type": "minecraft:item",
+					"weight": 3,
 					"name": "doom:axe_marauder_closed"
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 97,
+					"name": "doom:argent_energy"
 				}
 			],
 			"conditions": [
