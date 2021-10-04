@@ -19,8 +19,8 @@ import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public class MarauderRender extends GeoEntityRenderer<MarauderEntity> {
 
-	private static final ItemStack axe = new ItemStack(DoomItems.ARGENT_AXE.get());
-	private static final ItemStack shotgun = new ItemStack(DoomItems.SG.get());
+	private static final ItemStack axe = new ItemStack(DoomItems.AXE_OPEN.get());
+	private static final ItemStack shotgun = new ItemStack(DoomItems.SSG.get());
 	private MultiBufferSource rtb;
 	private ResourceLocation whTexture;
 
@@ -48,24 +48,24 @@ public class MarauderRender extends GeoEntityRenderer<MarauderEntity> {
 	@Override
 	public void renderRecursively(GeoBone bone, PoseStack stack, VertexConsumer bufferIn, int packedLightIn,
 			int packedOverlayIn, float red, float green, float blue, float alpha) {
-		if (bone.getName().equals("bipedLeftArm_1")) {
+		if (bone.getName().equals("rLowerArm")) {
 			stack.pushPose();
-			stack.mulPose(Vector3f.XP.rotationDegrees(-40));
+			stack.mulPose(Vector3f.XP.rotationDegrees(-80));
 			stack.mulPose(Vector3f.YP.rotationDegrees(0));
 			stack.mulPose(Vector3f.ZP.rotationDegrees(-5));
-			stack.translate(0.30D, 0.90D, 0.3D);
+			stack.translate(0.45D, 0.25D, 0.95D);
 			stack.scale(1.0f, 1.0f, 1.0f);
 			Minecraft.getInstance().getItemRenderer().renderStatic(axe, TransformType.THIRD_PERSON_RIGHT_HAND,
 					packedLightIn, packedOverlayIn, stack, this.rtb, 0);
 			stack.popPose();
 			bufferIn = rtb.getBuffer(RenderType.entityTranslucent(whTexture));
 		}
-		if (bone.getName().equals("bipedRightArm_1")) {
+		if (bone.getName().equals("lLowerArm")) {
 			stack.pushPose();
-			stack.mulPose(Vector3f.XP.rotationDegrees(-40));
+			stack.mulPose(Vector3f.XP.rotationDegrees(-85));
 			stack.mulPose(Vector3f.YP.rotationDegrees(0));
 			stack.mulPose(Vector3f.ZP.rotationDegrees(5));
-			stack.translate(-0.33D, 0.80D, 0.3D);
+			stack.translate(-0.45D, 0.249D, 0.95D);
 			stack.scale(1.0f, 1.0f, 1.0f);
 			Minecraft.getInstance().getItemRenderer().renderStatic(shotgun, TransformType.THIRD_PERSON_LEFT_HAND,
 					packedLightIn, packedOverlayIn, stack, this.rtb, 0);

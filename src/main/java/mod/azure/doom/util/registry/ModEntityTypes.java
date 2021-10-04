@@ -232,7 +232,7 @@ public class ModEntityTypes {
 					.clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "chaingunner").toString()));
 
 	public static final RegistryObject<EntityType<MarauderEntity>> MARAUDER = ENTITY_TYPES.register("marauder",
-			() -> EntityType.Builder.of(MarauderEntity::new, MobCategory.MONSTER).sized(0.75f, 2.1F).fireImmune()
+			() -> EntityType.Builder.of(MarauderEntity::new, MobCategory.MONSTER).sized(1.5f, 2.6F).fireImmune()
 					.clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "marauder").toString()));
 
 	public static final RegistryObject<EntityType<ShotgunguyEntity>> SHOTGUNGUY = ENTITY_TYPES.register("shotgunguy",
