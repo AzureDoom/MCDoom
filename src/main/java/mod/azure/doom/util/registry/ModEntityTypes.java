@@ -244,7 +244,7 @@ public class ModEntityTypes {
 					.build(new ResourceLocation(DoomMod.MODID, "chaingunner").toString()));
 
 	public static final RegistryObject<EntityType<MarauderEntity>> MARAUDER = ENTITY_TYPES.register("marauder",
-			() -> EntityType.Builder.of(MarauderEntity::new, EntityClassification.MONSTER).sized(0.75f, 2.1F)
+			() -> EntityType.Builder.of(MarauderEntity::new, EntityClassification.MONSTER).sized(1.5f, 2.6F)
 					.fireImmune().clientTrackingRange(9)
 					.build(new ResourceLocation(DoomMod.MODID, "marauder").toString()));
 
