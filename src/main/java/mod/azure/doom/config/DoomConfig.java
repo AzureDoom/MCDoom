@@ -284,7 +284,6 @@ public class DoomConfig implements ConfigData {
 
 		public double imp_health = 30;
 		public float imp_ranged_damage = 4;
-		public double imp_melee_damage = 4;
 
 		public double pinky_health = 75;
 		public double pinky_melee_damage = 3;
@@ -313,7 +312,6 @@ public class DoomConfig implements ConfigData {
 
 		public double bloodmaykr_health = 45;
 		public float bloodmaykr_ranged_damage = 5;
-		public double bloodmaykr_melee_damage = 4;
 
 		public double archmaykr_health = 400;
 		public float archmaykr_ranged_damage = 14;
@@ -343,7 +341,6 @@ public class DoomConfig implements ConfigData {
 
 		public double imp2016_health = 30;
 		public float imp2016_ranged_damage = 4;
-		public double imp2016_melee_damage = 2;
 
 		public double impstone_health = 15;
 		public double impstone_melee_damage = 2;
@@ -354,16 +351,12 @@ public class DoomConfig implements ConfigData {
 
 		public double nightmare_imp_health = 30;
 		public float nightmare_ranged_damage = 4;
-		public double nightmare_melee_damage = 2;
 
 		public double chaingunner_health = 15;
-		public double chaingunner_melee_damage = 2;
 
 		public double shotgunguy_health = 15;
-		public double shotgunguy_melee_damage = 2;
 
 		public double marauder_health = 300;
-		public double marauder_melee_damage = 6;
 
 		public double pain_health = 80;
 
@@ -398,11 +391,9 @@ public class DoomConfig implements ConfigData {
 
 		public double possessed_soldier_health = 15;
 		public float possessed_soldier_ranged_damage = 2;
-		public double possessed_soldier_melee_damage = 2;
 
 		public double mechazombie_health = 25;
 		public float mechazombie_ranged_damage = 3;
-		public double mechazombie_melee_damage = 5;
 
 		public double gorenest_health = 5;
 
