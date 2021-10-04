@@ -268,9 +268,37 @@ public class DoomConfig implements ConfigData {
 		public int summoner_spawn_weight = 4;
 		public int summoner_min_group = 1;
 		public int summoner_max_group = 2;
+
+		@ConfigEntry.Gui.Tooltip(count = 1)
+		public List<String> motherdemon_biomes = Arrays.asList("");
+		public int motherdemon_spawn_weight = 1;
+		public int motherdemon_min_group = 1;
+		public int motherdemon_max_group = 1;
+
+		@ConfigEntry.Gui.Tooltip(count = 1)
+		public List<String> maykrdrone_biomes = Arrays.asList("");
+		public int maykrdrone_spawn_weight = 15;
+		public int maykrdrone_min_group = 1;
+		public int maykrdrone_max_group = 2;
+
+		@ConfigEntry.Gui.Tooltip(count = 1)
+		public List<String> bloodmaykr_biomes = Arrays.asList("");
+		public int bloodmaykr_spawn_weight = 6;
+		public int bloodmaykr_min_group = 1;
+		public int bloodmaykr_max_group = 2;
+
+		@ConfigEntry.Gui.Tooltip(count = 1)
+		public List<String> archmaykr_biomes = Arrays.asList("");
+		public int archmaykr_spawn_weight = 1;
+		public int archmaykr_min_group = 1;
+		public int archmaykr_max_group = 1;
 	}
 
 	public static class MobStats {
+
+		public double motherdemon_health = 500;
+		public float motherdemon_ranged_damage = 14;
+		
 		public double cueball_health = 1;
 
 		public double tentacle_health = 5;
@@ -315,7 +343,6 @@ public class DoomConfig implements ConfigData {
 
 		public double archmaykr_health = 400;
 		public float archmaykr_ranged_damage = 14;
-		public double archmaykr_melee_damage = 6;
 
 		public double baron_health = 180;
 		public float baron_ranged_damage = 6;
