@@ -211,11 +211,12 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 				double d4 = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * 2.0D);
 				float f = (float) MathHelper.atan2(livingentity.getZ() - parentEntity.getZ(),
 						livingentity.getX() - parentEntity.getX());
-				CustomFireballEntity fireballentity = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4, 6);
+				CustomFireballEntity fireballentity = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4,
+						DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue());
 				CustomFireballEntity fireballentity1 = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4,
-						6);
+						DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue());
 				CustomFireballEntity fireballentity2 = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4,
-						6);
+						DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue());
 				if (this.attackTimer == 15) {
 					if (parentEntity.getHealth() <= (parentEntity.getMaxHealth() * 0.50)) {
 						for (int l = 0; l < 32; ++l) {
@@ -290,8 +291,9 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, 500.0D).add(Attributes.ATTACK_DAMAGE, 12.0D)
-				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.motherdemon_health.get())
+				.add(Attributes.ATTACK_DAMAGE, 12.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override

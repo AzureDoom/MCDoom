@@ -321,7 +321,8 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 				double d2 = livingentity.getX() - (this.parentEntity.getX() + vector3d.x * 2.0D);
 				double d3 = livingentity.getY(0.5D) - (0.5D + this.parentEntity.getY(0.5D));
 				double d4 = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * 2.0D);
-				CustomFireballEntity fireballentity = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4, 14);
+				CustomFireballEntity fireballentity = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4,
+						DoomConfig.SERVER.archmaykr_ranged_damage.get().floatValue());
 				if (this.attackTimer == 15) {
 					SplittableRandom random = new SplittableRandom();
 					int r = random.nextInt(0, 3);
@@ -420,7 +421,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, config.archmaykr_health.get()).add(Attributes.ATTACK_DAMAGE, config.archmaykr_melee_damage.get())
+				.add(Attributes.MAX_HEALTH, config.archmaykr_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
 				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
