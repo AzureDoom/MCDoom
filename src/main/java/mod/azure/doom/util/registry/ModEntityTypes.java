@@ -162,7 +162,7 @@ public class ModEntityTypes {
 	public static final EntityType<MarauderEntity> MARAUDER = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(DoomMod.MODID, "marauder"),
 			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, MarauderEntity::new)
-					.dimensions(EntityDimensions.fixed(0.75f, 2.1F)).fireImmune().trackRangeBlocks(90)
+					.dimensions(EntityDimensions.fixed(1.5f, 2.6F)).fireImmune().trackRangeBlocks(90)
 					.trackedUpdateRate(4).build());
 
 	public static final EntityType<ShotgunguyEntity> SHOTGUNGUY = Registry.register(Registry.ENTITY_TYPE,
