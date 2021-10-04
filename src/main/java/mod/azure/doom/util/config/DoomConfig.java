@@ -217,7 +217,6 @@ public class DoomConfig {
 
 		public final ConfigValue<Double> imp_health;
 		public final ConfigValue<Double> imp_ranged_damage;
-		public final ConfigValue<Double> imp_melee_damage;
 
 		public final ConfigValue<Double> pinky_health;
 		public final ConfigValue<Double> pinky_melee_damage;
@@ -245,7 +244,6 @@ public class DoomConfig {
 
 		public final ConfigValue<Double> bloodmaykr_health;
 		public final ConfigValue<Double> bloodmaykr_ranged_damage;
-		public final ConfigValue<Double> bloodmaykr_melee_damage;
 
 		public final ConfigValue<Double> archmaykr_health;
 		public final ConfigValue<Double> archmaykr_ranged_damage;
@@ -275,7 +273,6 @@ public class DoomConfig {
 
 		public final ConfigValue<Double> imp2016_health;
 		public final ConfigValue<Double> imp2016_ranged_damage;
-		public final ConfigValue<Double> imp2016_melee_damage;
 
 		public final ConfigValue<Double> impstone_health;
 		public final ConfigValue<Double> impstone_melee_damage;
@@ -286,16 +283,12 @@ public class DoomConfig {
 
 		public final ConfigValue<Double> nightmare_imp_health;
 		public final ConfigValue<Double> nightmare_ranged_damage;
-		public final ConfigValue<Double> nightmare_melee_damage;
 
 		public final ConfigValue<Double> chaingunner_health;
-		public final ConfigValue<Double> chaingunner_melee_damage;
 
 		public final ConfigValue<Double> shotgunguy_health;
-		public final ConfigValue<Double> shotgunguy_melee_damage;
 
 		public final ConfigValue<Double> marauder_health;
-		public final ConfigValue<Double> marauder_melee_damage;
 
 		public final ConfigValue<Double> pain_health;
 
@@ -329,11 +322,9 @@ public class DoomConfig {
 
 		public final ConfigValue<Double> possessed_soldier_health;
 		public final ConfigValue<Double> possessed_soldier_ranged_damage;
-		public final ConfigValue<Double> possessed_soldier_melee_damage;
 
 		public final ConfigValue<Double> mechazombie_health;
 		public final ConfigValue<Double> mechazombie_ranged_damage;
-		public final ConfigValue<Double> mechazombie_melee_damage;
 
 		public final ConfigValue<Double> gorenest_health;
 
@@ -396,8 +387,6 @@ public class DoomConfig {
 					.defineInRange("Sets Imp Max health", 30, 1, Double.MAX_VALUE);
 			this.imp_ranged_damage = builder.translation("text.doom.config.imp_ranged_damage")
 					.defineInRange("Sets Imp Ranged Damage damage", 4, 1, Double.MAX_VALUE);
-			this.imp_melee_damage = builder.translation("text.doom.config.imp_melee_damage")
-					.defineInRange("Sets Imp Melee Damage", 4, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Pinky");
@@ -588,8 +577,6 @@ public class DoomConfig {
 					.defineInRange("Sets Imp 2016 Max Health", 30, 1, Double.MAX_VALUE);
 			this.imp2016_ranged_damage = builder.translation("text.doom.config.imp2016_ranged_damage")
 					.defineInRange("Sets Imp 2016 Ranged Damage", 4, 1, Double.MAX_VALUE);
-			this.imp2016_melee_damage = builder.translation("text.doom.config.imp2016_melee_damage")
-					.defineInRange("Sets Imp 2016 Melee Damage", 2, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Gargoyle");
@@ -626,8 +613,6 @@ public class DoomConfig {
 					.defineInRange("Sets Nightmare Imp Max Health", 30, 1, Double.MAX_VALUE);
 			this.nightmare_ranged_damage = builder.translation("text.doom.config.nightmare_ranged_damage")
 					.defineInRange("Sets Nightmare Imp Ranged Damage", 4, 1, Double.MAX_VALUE);
-			this.nightmare_melee_damage = builder.translation("text.doom.config.nightmare_melee_damage")
-					.defineInRange("Sets Nightmare Imp Melee Damage", 2, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Chaingunner");
@@ -643,8 +628,6 @@ public class DoomConfig {
 					.defineInRange("Chaingunner Max Group", 4, 1, Integer.MAX_VALUE);
 			this.chaingunner_health = builder.translation("text.doom.config.chaingunner_health")
 					.defineInRange("Sets Chaingunner Max Health", 15, 1, Double.MAX_VALUE);
-			this.chaingunner_melee_damage = builder.translation("text.doom.config.chaingunner_melee_damage")
-					.defineInRange("Sets Chaingunner Melee Damage", 2, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Shotgun Guy");
@@ -660,8 +643,6 @@ public class DoomConfig {
 					.defineInRange("Shotgun Guy Max Group", 4, 1, Integer.MAX_VALUE);
 			this.shotgunguy_health = builder.translation("text.doom.config.shotgunguy_health")
 					.defineInRange("Sets Shotgun Guy Max Health", 15, 1, Double.MAX_VALUE);
-			this.shotgunguy_melee_damage = builder.translation("text.doom.config.shotgunguy_melee_damage")
-					.defineInRange("Sets Shotgun Guy Melee Damage", 2, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Marauder");
@@ -677,8 +658,6 @@ public class DoomConfig {
 					.defineInRange("Marauder Max Group", 1, 1, Integer.MAX_VALUE);
 			this.marauder_health = builder.translation("text.doom.config.marauder_health")
 					.defineInRange("Sets Marauder Max Health", 300, 1, Double.MAX_VALUE);
-			this.marauder_melee_damage = builder.translation("text.doom.config.marauder_melee_damage")
-					.defineInRange("Sets Marauder Melee Damage", 6, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Pain Elemental");
@@ -802,8 +781,6 @@ public class DoomConfig {
 			this.possessed_soldier_ranged_damage = builder
 					.translation("text.doom.config.possessed_soldier_ranged_damage")
 					.defineInRange("Sets Possessed Solider Ranged Damage", 2, 1, Double.MAX_VALUE);
-			this.possessed_soldier_melee_damage = builder.translation("text.doom.config.possessed_soldier_melee_damage")
-					.defineInRange("Sets Possessed Solider Melee Damage", 2, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Mechazombie");
@@ -821,8 +798,6 @@ public class DoomConfig {
 					.defineInRange("Sets the Mechazombie Health", 25, 1, Double.MAX_VALUE);
 			this.mechazombie_ranged_damage = builder.translation("text.doom.config.mechazombie_ranged_damage")
 					.defineInRange("Sets Mechazombie Ranged Damage", 3, 1, Double.MAX_VALUE);
-			this.mechazombie_melee_damage = builder.translation("text.doom.config.mechazombie_melee_damage")
-					.defineInRange("Sets Mechazombie Melee Damage", 5, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Cueball");
@@ -1058,8 +1033,6 @@ public class DoomConfig {
 					.defineInRange("Sets Blood Maykr Max Health", 45, 1, Double.MAX_VALUE);
 			this.bloodmaykr_ranged_damage = builder.translation("text.doom.config.bloodmaykr_ranged_damage")
 					.defineInRange("Sets Blood Maykr Ranged Damage", 5, 1, Double.MAX_VALUE);
-			this.bloodmaykr_melee_damage = builder.translation("text.doom.config.bloodmaykr_melee_damage")
-					.defineInRange("Sets Blood Maykr Melee Damage", 4, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Archmaykr");

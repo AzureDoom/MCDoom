@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierambient.GoreNestEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.config.DoomConfig;
@@ -220,8 +221,8 @@ public class BFGEntity extends AbstractArrowEntity implements IAnimatable {
 			if (!(entity instanceof PlayerEntity || entity instanceof EnderDragonEntity
 					|| entity instanceof GoreNestEntity)
 					&& (entity instanceof MonsterEntity || entity instanceof SlimeEntity
-							|| entity instanceof PhantomEntity || entity instanceof ShulkerEntity
-							|| entity instanceof HoglinEntity)) {
+							|| entity instanceof DemonEntity || entity instanceof PhantomEntity
+							|| entity instanceof ShulkerEntity || entity instanceof HoglinEntity)) {
 				double d12 = (double) (MathHelper.sqrt(entity.distanceToSqr(vector3d1)) / f2);
 				if (d12 <= 1.0D) {
 					if (entity.isAlive()) {
@@ -323,8 +324,8 @@ public class BFGEntity extends AbstractArrowEntity implements IAnimatable {
 			if (!(entity instanceof PlayerEntity || entity instanceof EnderDragonEntity
 					|| entity instanceof GoreNestEntity)
 					&& (entity instanceof MonsterEntity || entity instanceof SlimeEntity
-							|| entity instanceof PhantomEntity || entity instanceof ShulkerEntity
-							|| entity instanceof HoglinEntity)) {
+							|| entity instanceof DemonEntity || entity instanceof PhantomEntity
+							|| entity instanceof ShulkerEntity || entity instanceof HoglinEntity)) {
 				double d12 = (double) (MathHelper.sqrt(entity.distanceToSqr(vector3d)) / f2);
 				if (d12 <= 1.0D) {
 					entity.hurt(DamageSource.playerAttack((PlayerEntity) this.shooter),
