@@ -38,7 +38,7 @@ public class PinkyModel extends AnimatedGeoModel<PinkyEntity> {
 		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
 		if (head != null) {
 			head.setRotationX(Vec3f.POSITIVE_X
-					.getRadialQuaternion((extraData.headPitch + 30) * ((float) Math.PI / 360F)).getX());
+					.getRadialQuaternion((extraData.headPitch + 270) * ((float) Math.PI / 360F)).getX());
 			head.setRotationY(
 					Vec3f.POSITIVE_Y.getRadialQuaternion(extraData.netHeadYaw * ((float) Math.PI / 500F)).getY());
 		}
