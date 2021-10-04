@@ -167,7 +167,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 				double f = livingEntity.getX() - (this.parentEntity.getX() + vec3d.x * 2.0D);
 				double g = livingEntity.getBodyY(0.5D) - (0.5D + this.parentEntity.getBodyY(0.5D));
 				double h = livingEntity.getZ() - (this.parentEntity.getZ() + vec3d.z * 2.0D);
-				CustomFireballEntity fireballEntity = new CustomFireballEntity(world, this.parentEntity, f, g, h, 14);
+				CustomFireballEntity fireballEntity = new CustomFireballEntity(world, this.parentEntity, f, g, h, config.archmaykr_ranged_damage);
 				if (this.cooldown == 15) {
 					SplittableRandom random = new SplittableRandom();
 					int r = random.nextInt(0, 3);
@@ -352,7 +352,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.archmaykr_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.archmaykr_melee_damage)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 

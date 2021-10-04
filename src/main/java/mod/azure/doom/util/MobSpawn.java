@@ -1,6 +1,5 @@
 package mod.azure.doom.util;
 
-import java.util.Arrays;
 import java.util.List;
 
 import mod.azure.doom.DoomMod;
@@ -168,17 +167,19 @@ public class MobSpawn {
 		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.tyrant_biomes, context)),
 				SpawnGroup.MONSTER, ModEntityTypes.TYRANT, config.tyrant_spawn_weight, config.tyrant_min_group,
 				config.tyrant_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(Arrays.asList("#nether"), context)),
-				SpawnGroup.MONSTER, ModEntityTypes.MOTHERDEMON, 1, 1, 1);
 		BiomeModifications.addSpawn(
-				BiomeSelectors.all().and(context -> parseBiomes(Arrays.asList("#the_end"), context)),
-				SpawnGroup.MONSTER, ModEntityTypes.MAYKRDRONE, 15, 1, 4);
-		BiomeModifications.addSpawn(
-				BiomeSelectors.all().and(context -> parseBiomes(Arrays.asList("#the_end"), context)),
-				SpawnGroup.MONSTER, ModEntityTypes.BLOODMAYKR, 4, 1, 1);
-		BiomeModifications.addSpawn(
-				BiomeSelectors.all().and(context -> parseBiomes(Arrays.asList("#the_end"), context)),
-				SpawnGroup.MONSTER, ModEntityTypes.ARCHMAKER, 1, 1, 1);
+				BiomeSelectors.all().and(context -> parseBiomes(config.motherdemon_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.MOTHERDEMON, config.motherdemon_spawn_weight,
+				config.motherdemon_min_group, config.motherdemon_max_group);
+		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.maykrdrone_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.MAYKRDRONE, config.maykrdrone_spawn_weight,
+				config.maykrdrone_min_group, config.maykrdrone_max_group);
+		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.bloodmaykr_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.BLOODMAYKR, config.bloodmaykr_spawn_weight,
+				config.bloodmaykr_min_group, config.bloodmaykr_max_group);
+		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.archmaykr_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.ARCHMAKER, config.archmaykr_spawn_weight, config.archmaykr_min_group,
+				config.archmaykr_max_group);
 	}
 
 	private static boolean parseBiomes(List<String> biomes, BiomeSelectionContext biomeContext) {
