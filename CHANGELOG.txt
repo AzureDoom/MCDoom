@@ -1,15 +1,3 @@
-v.4.0.14
+v.4.0.15
 
-- Ported Pose Fix change.
-- Weapon position config.
-- Marauder model/animation updated. (New model by Creman/Texture by RuisZ) 
-- Fixed demons not despawning in peaceful.
-- Fixed entity speed, entities will move again.
-- Fixed Gargoyle not flying.
-- Config clean up.
-- Pinky 2016 and Spectre 2016 model tweaked.
-- Plasma Gun first person tweaked.
-- Motherdemon, Maykr Drone, Blood Maykr, and Arch Maykr spawn configs added.
-- Motherdemon configs added for health and damage.
-- Arch Maykr ranged damage not using config fixed.
-- New Sentinel Hammer, Marauder Axe, Dark Lord Crucible, Crucible, and Argent Bolt/Unmaykr Bolt textures by Mr.Bones!
+- Fixed Gargoyle missing flying attribute crash.
