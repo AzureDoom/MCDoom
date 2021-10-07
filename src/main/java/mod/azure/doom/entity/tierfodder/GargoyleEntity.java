@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
-import mod.azure.doom.entity.ai.goal.GargoyleFlightMoveControl;
+import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
@@ -50,7 +50,7 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, Enemy {
 
 	public GargoyleEntity(EntityType<GargoyleEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
-		this.moveControl = new GargoyleFlightMoveControl(this, 90, false);
+		this.moveControl = new DemonFlightMoveControl(this, 90, false);
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);

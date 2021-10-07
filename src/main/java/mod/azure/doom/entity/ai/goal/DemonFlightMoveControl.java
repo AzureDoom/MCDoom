@@ -1,16 +1,16 @@
 package mod.azure.doom.entity.ai.goal;
 
-import mod.azure.doom.entity.tierfodder.GargoyleEntity;
+import mod.azure.doom.entity.DemonEntity;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
 
-public class GargoyleFlightMoveControl extends MoveControl {
+public class DemonFlightMoveControl extends MoveControl {
 	private final int maxPitchChange;
 	private final boolean noGravity;
-	protected final GargoyleEntity entity;
+	protected final DemonEntity entity;
 
-	public GargoyleFlightMoveControl(GargoyleEntity entity, int maxPitchChange, boolean noGravity) {
+	public DemonFlightMoveControl(DemonEntity entity, int maxPitchChange, boolean noGravity) {
 		super(entity);
 		this.maxPitchChange = maxPitchChange;
 		this.noGravity = noGravity;

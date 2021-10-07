@@ -3,13 +3,13 @@ package mod.azure.doom.entity.tierheavy;
 import java.util.EnumSet;
 
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.BloodBoltEntity;
 import mod.azure.doom.util.config.DoomConfig;
-
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
@@ -47,12 +47,11 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class BloodMaykrEntity extends DemonEntity implements IAnimatable {
 
-	
 	private AnimationFactory factory = new AnimationFactory(this);
 
 	public BloodMaykrEntity(EntityType<BloodMaykrEntity> type, Level worldIn) {
 		super(type, worldIn);
-		this.moveControl = new BloodMaykrEntity.MoveHelperController(this);
+		this.moveControl = new DemonFlightMoveControl(this, 90, false);
 	}
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -99,8 +98,9 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable {
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.bloodmaykr_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
-				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.bloodmaykr_health.get())
+				.add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.FLYING_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
