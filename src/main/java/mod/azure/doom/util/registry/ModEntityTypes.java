@@ -133,7 +133,7 @@ public class ModEntityTypes {
 	public static final EntityType<RevenantEntity> REVENANT = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(DoomMod.MODID, "revenant"),
 			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, RevenantEntity::new)
-					.dimensions(EntityDimensions.fixed(0.6f, 1.95F)).fireImmune().trackRangeBlocks(90)
+					.dimensions(EntityDimensions.fixed(1.9f, 3.95F)).fireImmune().trackRangeBlocks(90)
 					.trackedUpdateRate(4).build());
 
 	public static final EntityType<Imp2016Entity> IMP2016 = Registry.register(Registry.ENTITY_TYPE,
@@ -373,6 +373,6 @@ public class ModEntityTypes {
 	public static final EntityType<Revenant2016Entity> REVENANT2016 = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(DoomMod.MODID, "revenant2016"),
 			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, Revenant2016Entity::new)
-					.dimensions(EntityDimensions.fixed(0.6f, 1.95F)).fireImmune().trackRangeBlocks(90)
+					.dimensions(EntityDimensions.fixed(1.9f, 3.95F)).fireImmune().trackRangeBlocks(90)
 					.trackedUpdateRate(4).build());
 }
