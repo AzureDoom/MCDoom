@@ -216,7 +216,7 @@ public class ModEntityTypes {
 					.clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "zombieman").toString()));
 
 	public static final RegistryObject<EntityType<RevenantEntity>> REVENANT = ENTITY_TYPES.register("revenant",
-			() -> EntityType.Builder.of(RevenantEntity::new, MobCategory.MONSTER).sized(0.6f, 1.95F).fireImmune()
+			() -> EntityType.Builder.of(RevenantEntity::new, MobCategory.MONSTER).sized(1.9f, 3.95F).fireImmune()
 					.clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "revenant").toString()));
 
 	public static final RegistryObject<EntityType<Imp2016Entity>> IMP2016 = ENTITY_TYPES.register("imp2016",
@@ -413,7 +413,7 @@ public class ModEntityTypes {
 
 	public static final RegistryObject<EntityType<Revenant2016Entity>> REVENANT2016 = ENTITY_TYPES
 			.register("revenant2016",
-					() -> EntityType.Builder.of(Revenant2016Entity::new, MobCategory.MONSTER).sized(0.6f, 1.95F)
+					() -> EntityType.Builder.of(Revenant2016Entity::new, MobCategory.MONSTER).sized(1.9f, 3.95F)
 							.fireImmune().clientTrackingRange(9)
 							.build(new ResourceLocation(DoomMod.MODID, "revenant2016").toString()));
 

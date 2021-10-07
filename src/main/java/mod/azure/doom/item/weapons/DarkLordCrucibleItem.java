@@ -51,6 +51,11 @@ public class DarkLordCrucibleItem extends Item implements IAnimatable, ISyncable
 	}
 
 	@Override
+	public boolean isEnchantable(ItemStack stack) {
+		return false;
+	}
+
+	@Override
 	public void initializeClient(Consumer<IItemRenderProperties> consumer) {
 		super.initializeClient(consumer);
 		consumer.accept(new IItemRenderProperties() {
