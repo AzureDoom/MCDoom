@@ -9,6 +9,7 @@ import mod.azure.doom.item.powerup.SoulCubeItem;
 import mod.azure.doom.item.weapons.AxeMarauderItem;
 import mod.azure.doom.item.weapons.Chainsaw;
 import mod.azure.doom.item.weapons.ChainsawAnimated;
+import mod.azure.doom.item.weapons.DarkLordCrucibleItem;
 import mod.azure.doom.item.weapons.DoomBaseItem;
 import mod.azure.doom.item.weapons.SwordCrucibleItem;
 import net.minecraft.entity.player.PlayerInventory;
@@ -32,6 +33,7 @@ public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
 		ItemStack leftStack = this.input.getStack(0).copy();
 		ItemStack rightStack = this.input.getStack(1).copy();
 		if ((leftStack.getItem() instanceof DoomBaseItem || leftStack.getItem() instanceof AxeMarauderItem
+				|| leftStack.getItem() instanceof DarkLordCrucibleItem
 				|| leftStack.getItem() instanceof SwordCrucibleItem || leftStack.getItem() instanceof ChainsawAnimated
 				|| leftStack.getItem() instanceof Chainsaw || leftStack.getItem() instanceof SoulCubeItem)
 				&& rightStack.getItem() == Items.ENCHANTED_BOOK) {
