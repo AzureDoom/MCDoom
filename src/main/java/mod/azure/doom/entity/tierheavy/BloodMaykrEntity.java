@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import javax.annotation.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
@@ -60,7 +61,7 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable {
 
 	public BloodMaykrEntity(EntityType<BloodMaykrEntity> type, World worldIn) {
 		super(type, worldIn);
-		this.moveControl = new BloodMaykrEntity.MoveHelperController(this);
+		this.moveControl = new DemonFlightMoveControl(this, 90, false);
 	}
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -108,7 +109,8 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable {
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
 				.add(Attributes.MAX_HEALTH, config.bloodmaykr_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
-				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.FLYING_SPEED, 0.25D).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -116,11 +118,11 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
-		this.goalSelector
-				.addGoal(4,
-						new RangedStrafeAttackGoal(this, new BloodMaykrEntity.FireballAttack(this)
-								.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(config.bloodmaykr_ranged_damage.get().floatValue()), 1.0D, 50, 30, 15, 15F, 1)
-										.setMultiShot(2, 3));
+		this.goalSelector.addGoal(4,
+				new RangedStrafeAttackGoal(this,
+						new BloodMaykrEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(
+								config.bloodmaykr_ranged_damage.get().floatValue()),
+						1.0D, 50, 30, 15, 15F, 1).setMultiShot(2, 3));
 		this.goalSelector.addGoal(7, new BloodMaykrEntity.LookAroundGoal(this));
 		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
