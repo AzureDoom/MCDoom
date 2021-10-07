@@ -51,6 +51,11 @@ public class DarkLordCrucibleItem extends Item implements IAnimatable, ISyncable
 	}
 
 	@Override
+	public boolean isEnchantable(ItemStack stack) {
+		return false;
+	}
+	
+	@Override
 	public void releaseUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
 		if (entityLiving instanceof PlayerEntity) {
 			PlayerEntity playerentity = (PlayerEntity) entityLiving;

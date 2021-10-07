@@ -1,3 +1,4 @@
-v.4.0.15
+v.4.0.16
 
-- Fixed Gargoyle missing flying attribute crash.
+- Dark Lord is now properly unenchantable. 
+- Doubled size of Revenants.
