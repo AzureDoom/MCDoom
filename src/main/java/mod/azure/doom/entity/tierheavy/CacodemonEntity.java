@@ -5,7 +5,6 @@ import java.util.EnumSet;
 import javax.annotation.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedStaticAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
@@ -155,8 +154,9 @@ public class CacodemonEntity extends DemonEntity implements IMob, IAnimatable {
 
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, config.cacodemon_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
-				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.FLYING_SPEED, 0.25D).add(Attributes.MAX_HEALTH, config.cacodemon_health.get())
+				.add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -169,7 +169,6 @@ public class CacodemonEntity extends DemonEntity implements IMob, IAnimatable {
 						.setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(ModSoundEvents.CACODEMON_FIREBALL.get(),
 								1.0F, 1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
 				60, 20, 30F, 1));
-		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.addGoal(1,
 				new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 10, true, false, (p_213812_1_) -> {
 					return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
@@ -179,10 +178,6 @@ public class CacodemonEntity extends DemonEntity implements IMob, IAnimatable {
 					return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
 				}));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
-	}
-
-	public int getFireballStrength() {
-		return 1;
 	}
 
 	@Override
