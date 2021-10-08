@@ -4,8 +4,7 @@ import java.util.EnumSet;
 import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
-import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
+import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.ModEntityTypes;
@@ -20,7 +19,6 @@ import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.FollowTargetGoal;
@@ -28,6 +26,8 @@ import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
+import net.minecraft.entity.ai.pathing.BirdNavigation;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -64,7 +64,7 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable {
 
 	public PainEntity(EntityType<? extends PainEntity> type, World worldIn) {
 		super(type, worldIn);
-		this.moveControl = new PainEntity.GhastMoveControl(this);
+		this.moveControl = new DemonFlightMoveControl(this, 90, true);
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -127,35 +127,15 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable {
 	protected void fall(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
 	}
 
-	public void travel(Vec3d movementInput) {
-		if (this.isTouchingWater()) {
-			this.updateVelocity(0.02F, movementInput);
-			this.move(MovementType.SELF, this.getVelocity());
-			this.setVelocity(this.getVelocity().multiply(0.800000011920929D));
-		} else if (this.isInLava()) {
-			this.updateVelocity(0.02F, movementInput);
-			this.move(MovementType.SELF, this.getVelocity());
-			this.setVelocity(this.getVelocity().multiply(0.5D));
-		} else {
-			float f = 0.91F;
-			if (this.onGround) {
-				f = this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getBlock()
-						.getSlipperiness() * 0.91F;
-			}
+	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
+	}
 
-			float g = 0.16277137F / (f * f * f);
-			f = 0.91F;
-			if (this.onGround) {
-				f = this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getBlock()
-						.getSlipperiness() * 0.91F;
-			}
-
-			this.updateVelocity(this.onGround ? 0.1F * g : 0.02F, movementInput);
-			this.move(MovementType.SELF, this.getVelocity());
-			this.setVelocity(this.getVelocity().multiply((double) f));
-		}
-
-		this.updateLimbs(this, false);
+	protected EntityNavigation createNavigation(World world) {
+		BirdNavigation birdNavigation = new BirdNavigation(this, world);
+		birdNavigation.setCanPathThroughDoors(false);
+		birdNavigation.setCanSwim(true);
+		birdNavigation.setCanEnterOpenDoors(true);
+		return birdNavigation;
 	}
 
 	public boolean isClimbing() {
@@ -207,6 +187,7 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable {
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D)
+				.add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.pain_health)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
@@ -214,10 +195,8 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable {
 	@Override
 	protected void initGoals() {
 		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.add(7, new PainEntity.LookAtTargetGoal(this));
 		this.goalSelector.add(4, new PainEntity.ShootFireballGoal(this));
-		this.goalSelector.add(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
 		this.targetSelector.add(1, new FollowTargetGoal<>(this, PlayerEntity.class, 10, true, false, (p_213812_1_) -> {
 			return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
@@ -262,6 +241,8 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable {
 
 		public void stop() {
 			this.ghast.setAttackingState(0);
+			ghast.setNoGravity(false);
+			ghast.addVelocity(0, 0, 0);
 		}
 
 		public void tick() {
@@ -270,6 +251,10 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable {
 				this.ghast.getLookControl().lookAt(livingEntity, 90.0F, 30.0F);
 				World world = this.ghast.world;
 				++this.cooldown;
+				if (this.cooldown == 10) {
+					ghast.setNoGravity(true);
+					ghast.addVelocity(0, (double) 0.2F * 1.3D, 0);
+				}
 				if (this.cooldown == 20) {
 					if (this.ghast.getVariant() == 1) {
 						LostSoulEntity lost_soul = ModEntityTypes.LOST_SOUL.create(world);
@@ -294,7 +279,7 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable {
 				}
 				if (this.cooldown == 35) {
 					this.ghast.setAttackingState(0);
-					this.cooldown = -45;
+					this.cooldown = -445;
 				}
 			} else if (this.cooldown > 0) {
 				--this.cooldown;

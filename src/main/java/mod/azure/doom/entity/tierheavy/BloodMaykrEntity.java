@@ -5,7 +5,6 @@ import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
-import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
@@ -18,7 +17,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.FollowTargetGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
@@ -35,7 +33,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Difficulty;
@@ -101,7 +98,6 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable {
 
 	@Override
 	protected void initGoals() {
-		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.goalSelector.add(7, new BloodMaykrEntity.LookAtTargetGoal(this));
@@ -146,53 +142,15 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable {
 		}
 	}
 
-	static class GhastMoveControl extends MoveControl {
-		private final BloodMaykrEntity ghast;
-		private int collisionCheckCooldown;
-
-		public GhastMoveControl(BloodMaykrEntity ghast) {
-			super(ghast);
-			this.ghast = ghast;
-		}
-
-		public void tick() {
-			if (this.state == MoveControl.State.MOVE_TO) {
-				if (this.collisionCheckCooldown-- <= 0) {
-					this.collisionCheckCooldown += this.ghast.getRandom().nextInt(5) + 2;
-					Vec3d vec3d = new Vec3d(this.targetX - this.ghast.getX(), this.targetY - this.ghast.getY(),
-							this.targetZ - this.ghast.getZ());
-					double d = vec3d.length();
-					vec3d = vec3d.normalize();
-					if (this.willCollide(vec3d, MathHelper.ceil(d))) {
-						this.ghast.setVelocity(this.ghast.getVelocity().add(vec3d.multiply(0.1D)));
-					} else {
-						this.state = MoveControl.State.WAIT;
-					}
-				}
-
-			}
-		}
-
-		private boolean willCollide(Vec3d direction, int steps) {
-			Box box = this.ghast.getBoundingBox();
-
-			for (int i = 1; i < steps; ++i) {
-				box = box.offset(direction);
-				if (!this.ghast.world.isSpaceEmpty(this.ghast, box)) {
-					return false;
-				}
-			}
-
-			return true;
-		}
-	}
-
 	protected EntityNavigation createNavigation(World world) {
 		BirdNavigation birdNavigation = new BirdNavigation(this, world);
 		birdNavigation.setCanPathThroughDoors(false);
 		birdNavigation.setCanSwim(true);
 		birdNavigation.setCanEnterOpenDoors(true);
 		return birdNavigation;
+	}
+
+	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
 	}
 
 	public boolean handleFallDamage(float fallDistance, float damageMultiplier) {
