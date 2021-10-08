@@ -6,7 +6,6 @@ import java.util.Random;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
-import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.util.ModSoundEvents;
@@ -110,7 +109,6 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable {
 	}
 
 	protected void initCustomGoals() {
-		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.add(4,
 				new RangedStrafeAttackGoal(this,
 						new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8)

@@ -31,6 +31,11 @@ public class BloodBoltEntity extends ExplosiveProjectileEntity implements IAnima
 	public BloodBoltEntity(EntityType<BloodBoltEntity> p_i50160_1_, World p_i50160_2_) {
 		super(p_i50160_1_, p_i50160_2_);
 	}
+	
+	@Override
+	public boolean doesRenderOnFire() {
+		return false;
+	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
 

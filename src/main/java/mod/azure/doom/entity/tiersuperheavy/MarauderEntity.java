@@ -118,7 +118,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.add(4,
 				new RangedStaticAttackGoal(this,
 						new MarauderEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(3),
-						60, 20, 30F, 2));
+						60, 20, 30F, 2, false));
 		this.targetSelector.add(2, new FollowTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new FollowTargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());

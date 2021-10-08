@@ -8,7 +8,7 @@ import java.util.SplittableRandom;
 import org.jetbrains.annotations.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
+import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
 import mod.azure.doom.entity.projectiles.CustomFireballEntity;
 import mod.azure.doom.util.ModSoundEvents;
 import net.fabricmc.api.EnvType;
@@ -21,7 +21,6 @@ import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.FollowTargetGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
@@ -70,7 +69,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 
 	public ArchMakyrEntity(EntityType<ArchMakyrEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
-		this.moveControl = new ArchMakyrEntity.GhastMoveControl(this);
+		this.moveControl = new DemonFlightMoveControl(this, 90, true);
 	}
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -127,7 +126,6 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 	}
 
 	protected void initCustomGoals() {
-		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.add(1, new ArchMakyrEntity.ShootFireballGoal(this));
 		this.targetSelector.add(2, new FollowTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new FollowTargetGoal<>(this, MerchantEntity.class, true));
@@ -157,6 +155,8 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 			super.stop();
 			this.parentEntity.setAttacking(false);
 			this.parentEntity.setAttackingState(0);
+			parentEntity.setNoGravity(false);
+			parentEntity.addVelocity(0, 0, 0);
 		}
 
 		public void tick() {
@@ -168,7 +168,12 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 				double f = livingEntity.getX() - (this.parentEntity.getX() + vec3d.x * 2.0D);
 				double g = livingEntity.getBodyY(0.5D) - (0.5D + this.parentEntity.getBodyY(0.5D));
 				double h = livingEntity.getZ() - (this.parentEntity.getZ() + vec3d.z * 2.0D);
-				CustomFireballEntity fireballEntity = new CustomFireballEntity(world, this.parentEntity, f, g, h, config.archmaykr_ranged_damage);
+				CustomFireballEntity fireballEntity = new CustomFireballEntity(world, this.parentEntity, f, g, h,
+						config.archmaykr_ranged_damage);
+				if (this.cooldown == 5) {
+					parentEntity.setNoGravity(true);
+					parentEntity.addVelocity(0, (double) 0.2F * 1.3D, 0);
+				}
 				if (this.cooldown == 15) {
 					SplittableRandom random = new SplittableRandom();
 					int r = random.nextInt(0, 3);
@@ -249,47 +254,6 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 		}
 	}
 
-	static class GhastMoveControl extends MoveControl {
-		private final ArchMakyrEntity ghast;
-		private int collisionCheckCooldown;
-
-		public GhastMoveControl(ArchMakyrEntity ghast) {
-			super(ghast);
-			this.ghast = ghast;
-		}
-
-		public void tick() {
-			if (this.state == MoveControl.State.MOVE_TO) {
-				if (this.collisionCheckCooldown-- <= 0) {
-					this.collisionCheckCooldown += this.ghast.getRandom().nextInt(5) + 2;
-					Vec3d vec3d = new Vec3d(this.targetX - this.ghast.getX(), this.targetY - this.ghast.getY(),
-							this.targetZ - this.ghast.getZ());
-					double d = vec3d.length();
-					vec3d = vec3d.normalize();
-					if (this.willCollide(vec3d, MathHelper.ceil(d))) {
-						this.ghast.setVelocity(this.ghast.getVelocity().add(vec3d.multiply(0.1D)));
-					} else {
-						this.state = MoveControl.State.WAIT;
-					}
-				}
-
-			}
-		}
-
-		private boolean willCollide(Vec3d direction, int steps) {
-			Box box = this.ghast.getBoundingBox();
-
-			for (int i = 1; i < steps; ++i) {
-				box = box.offset(direction);
-				if (!this.ghast.world.isSpaceEmpty(this.ghast, box)) {
-					return false;
-				}
-			}
-
-			return true;
-		}
-	}
-
 	protected EntityNavigation createNavigation(World world) {
 		BirdNavigation birdNavigation = new BirdNavigation(this, world);
 		birdNavigation.setCanPathThroughDoors(false);
@@ -303,6 +267,9 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 	}
 
 	protected void fall(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
+	}
+
+	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
 	}
 
 	@Override
@@ -351,10 +318,9 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.55D)
+				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.55D).add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.archmaykr_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D)
-				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 
 	@Override

@@ -1,17 +1,13 @@
 package mod.azure.doom.entity.tierheavy;
 
 import java.util.EnumSet;
-import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
-import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
+import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
 import mod.azure.doom.entity.ai.goal.RangedStaticAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.util.ModSoundEvents;
 import mod.azure.doom.util.packets.EntityPacket;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityDimensions;
@@ -19,14 +15,13 @@ import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.FollowTargetGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
+import net.minecraft.entity.ai.pathing.BirdNavigation;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -40,14 +35,11 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -63,7 +55,7 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 
 	public CacodemonEntity(EntityType<? extends CacodemonEntity> type, World worldIn) {
 		super(type, worldIn);
-		this.moveControl = new CacodemonEntity.GhastMoveControl(this);
+		this.moveControl = new DemonFlightMoveControl(this, 90, true);
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -73,7 +65,7 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
 			return PlayState.CONTINUE;
 		}
-		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
+		if (this.dead || this.getHealth() < 0.01 || this.isDead()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
@@ -106,48 +98,6 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 		if (this.deathTime == 30) {
 			this.remove();
 		}
-	}
-
-	public boolean handleFallDamage(float fallDistance, float damageMultiplier) {
-		return false;
-	}
-
-	protected void fall(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
-	}
-
-	public void travel(Vec3d movementInput) {
-		if (this.isTouchingWater()) {
-			this.updateVelocity(0.02F, movementInput);
-			this.move(MovementType.SELF, this.getVelocity());
-			this.setVelocity(this.getVelocity().multiply(0.800000011920929D));
-		} else if (this.isInLava()) {
-			this.updateVelocity(0.02F, movementInput);
-			this.move(MovementType.SELF, this.getVelocity());
-			this.setVelocity(this.getVelocity().multiply(0.5D));
-		} else {
-			float f = 0.91F;
-			if (this.onGround) {
-				f = this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getBlock()
-						.getSlipperiness() * 0.91F;
-			}
-
-			float g = 0.16277137F / (f * f * f);
-			f = 0.91F;
-			if (this.onGround) {
-				f = this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getBlock()
-						.getSlipperiness() * 0.91F;
-			}
-
-			this.updateVelocity(this.onGround ? 0.1F * g : 0.02F, movementInput);
-			this.move(MovementType.SELF, this.getVelocity());
-			this.setVelocity(this.getVelocity().multiply((double) f));
-		}
-
-		this.method_29242(this, false);
-	}
-
-	public boolean isClimbing() {
-		return false;
 	}
 
 	protected void initDataTracker() {
@@ -195,22 +145,18 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.cacodemon_health)
-				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
+				.add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25D).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 
 	@Override
 	protected void initGoals() {
-		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
-		this.goalSelector.add(7, new CacodemonEntity.LookAtTargetGoal(this));
-		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(4,
-				new RangedStaticAttackGoal(this,
-						new FireballAttack(this, true).setDamage(config.cacodemon_ranged_damage)
-								.setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(ModSoundEvents.CACODEMON_FIREBALL,
-										1.0F, 1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
-						60, 20, 30F, 1));
-		this.goalSelector.add(4, new DemonAttackGoal(this, 1.0D, false, 2));
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
+		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
+		this.goalSelector.add(7, new CacodemonEntity.LookAroundGoal(this));
+		this.goalSelector.add(4, new RangedStaticAttackGoal(this,
+				new FireballAttack(this, true).setDamage(config.cacodemon_ranged_damage)
+						.setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(ModSoundEvents.CACODEMON_FIREBALL, 1.0F,
+								1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
+				60, 20, 30F, 1, true));
 		this.targetSelector.add(1, new FollowTargetGoal<>(this, PlayerEntity.class, 10, true, false, (p_213812_1_) -> {
 			return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
 		}));
@@ -221,26 +167,38 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
 	}
 
-	public static boolean canSpawn(EntityType<PainEntity> type, WorldAccess world, SpawnReason spawnReason,
-			BlockPos pos, Random random) {
-		return world.getDifficulty() != Difficulty.PEACEFUL && random.nextInt(20) == 0
-				&& canMobSpawn(type, world, spawnReason, pos, random);
-	}
-
-	public int getFireballStrength() {
-		return 1;
-	}
-
 	@Override
-	protected boolean isDisallowedInPeaceful() {
-		return true;
+	protected float getActiveEyeHeight(EntityPose poseIn, EntityDimensions sizeIn) {
+		return 1.0F;
 	}
 
-	static class LookAtTargetGoal extends Goal {
-		private final CacodemonEntity ghast;
+	public boolean causeFallDamage(float distance, float damageMultiplier) {
+		return false;
+	}
 
-		public LookAtTargetGoal(CacodemonEntity ghast) {
-			this.ghast = ghast;
+	protected void fall(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
+	}
+
+	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
+	}
+
+	protected EntityNavigation createNavigation(World world) {
+		BirdNavigation birdNavigation = new BirdNavigation(this, world);
+		birdNavigation.setCanPathThroughDoors(false);
+		birdNavigation.setCanSwim(true);
+		birdNavigation.setCanEnterOpenDoors(true);
+		return birdNavigation;
+	}
+
+	public boolean onClimbable() {
+		return false;
+	}
+
+	static class LookAroundGoal extends Goal {
+		private final CacodemonEntity parentEntity;
+
+		public LookAroundGoal(CacodemonEntity ghast) {
+			this.parentEntity = ghast;
 			this.setControls(EnumSet.of(Goal.Control.LOOK));
 		}
 
@@ -249,67 +207,21 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 		}
 
 		public void tick() {
-			if (this.ghast.getTarget() == null) {
-				Vec3d vec3d = this.ghast.getVelocity();
-				this.ghast.yaw = -((float) MathHelper.atan2(vec3d.x, vec3d.z)) * 57.295776F;
-				this.ghast.bodyYaw = this.ghast.yaw;
+			if (this.parentEntity.getTarget() == null) {
+				Vec3d vec3d = this.parentEntity.getVelocity();
+				this.parentEntity.yaw = -((float) MathHelper.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
+				this.parentEntity.bodyYaw = this.parentEntity.yaw;
 			} else {
-				LivingEntity livingEntity = this.ghast.getTarget();
-				if (livingEntity.squaredDistanceTo(this.ghast) < 4096.0D) {
-					double e = livingEntity.getX() - this.ghast.getX();
-					double f = livingEntity.getZ() - this.ghast.getZ();
-					this.ghast.yaw = -((float) MathHelper.atan2(e, f)) * 57.295776F;
-					this.ghast.bodyYaw = this.ghast.yaw;
+				LivingEntity livingentity = this.parentEntity.getTarget();
+				if (livingentity.squaredDistanceTo(this.parentEntity) < 4096.0D) {
+					double d1 = livingentity.getX() - this.parentEntity.getX();
+					double d2 = livingentity.getZ() - this.parentEntity.getZ();
+					this.parentEntity.yaw = -((float) MathHelper.atan2(d1, d2)) * (180F / (float) Math.PI);
+					this.parentEntity.bodyYaw = this.parentEntity.yaw;
 				}
 			}
 
 		}
-	}
-
-	static class GhastMoveControl extends MoveControl {
-		private final CacodemonEntity ghast;
-		private int collisionCheckCooldown;
-
-		public GhastMoveControl(CacodemonEntity ghast) {
-			super(ghast);
-			this.ghast = ghast;
-		}
-
-		public void tick() {
-			if (this.state == MoveControl.State.MOVE_TO) {
-				if (this.collisionCheckCooldown-- <= 0) {
-					this.collisionCheckCooldown += this.ghast.getRandom().nextInt(5) + 2;
-					Vec3d vec3d = new Vec3d(this.targetX - this.ghast.getX(), this.targetY - this.ghast.getY(),
-							this.targetZ - this.ghast.getZ());
-					double d = vec3d.length();
-					vec3d = vec3d.normalize();
-					if (this.willCollide(vec3d, MathHelper.ceil(d))) {
-						this.ghast.setVelocity(this.ghast.getVelocity().add(vec3d.multiply(0.1D)));
-					} else {
-						this.state = MoveControl.State.WAIT;
-					}
-				}
-
-			}
-		}
-
-		private boolean willCollide(Vec3d direction, int steps) {
-			Box box = this.ghast.getBoundingBox();
-
-			for (int i = 1; i < steps; ++i) {
-				box = box.offset(direction);
-				if (!this.ghast.world.isSpaceEmpty(this.ghast, box)) {
-					return false;
-				}
-			}
-
-			return true;
-		}
-	}
-
-	@Override
-	protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
-		return 1.0F;
 	}
 
 	protected boolean shouldBurnInDay() {
@@ -339,12 +251,6 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 	@Override
 	protected float getSoundVolume() {
 		return 1.0F;
-	}
-
-	@Override
-	@Environment(EnvType.CLIENT)
-	public boolean shouldRender(double distance) {
-		return true;
 	}
 
 }
