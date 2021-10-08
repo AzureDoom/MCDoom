@@ -6,7 +6,7 @@ import java.util.Random;
 import org.jetbrains.annotations.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
+import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
 import mod.azure.doom.entity.tierheavy.PainEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.ModSoundEvents;
@@ -18,14 +18,14 @@ import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
+import net.minecraft.entity.ai.pathing.BirdNavigation;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -39,7 +39,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Difficulty;
@@ -69,7 +68,7 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable 
 
 	public LostSoulEntity(EntityType<? extends LostSoulEntity> type, World worldIn) {
 		super(type, worldIn);
-		this.moveControl = new LostSoulEntity.GhastMoveControl(this);
+		this.moveControl = new DemonFlightMoveControl(this, 90, true);
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -148,34 +147,15 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable 
 	protected void fall(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
 	}
 
-	public void travel(Vec3d movementInput) {
-		if (this.isTouchingWater()) {
-			this.updateVelocity(0.02F, movementInput);
-			this.move(MovementType.SELF, this.getVelocity());
-			this.setVelocity(this.getVelocity().multiply(0.800000011920929D));
-		} else if (this.isInLava()) {
-			this.updateVelocity(0.02F, movementInput);
-			this.move(MovementType.SELF, this.getVelocity());
-			this.setVelocity(this.getVelocity().multiply(0.5D));
-		} else {
-			float f = 0.91F;
-			if (this.onGround) {
-				f = this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getBlock()
-						.getSlipperiness() * 0.91F;
-			}
+	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
+	}
 
-			f = 0.91F;
-			if (this.onGround) {
-				f = this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getBlock()
-						.getSlipperiness() * 0.91F;
-			}
-
-			this.updateVelocity(0.02F, movementInput);
-			this.move(MovementType.SELF, this.getVelocity());
-			this.setVelocity(this.getVelocity().multiply((double) f));
-		}
-
-		this.updateLimbs(this, false);
+	protected EntityNavigation createNavigation(World world) {
+		BirdNavigation birdNavigation = new BirdNavigation(this, world);
+		birdNavigation.setCanPathThroughDoors(false);
+		birdNavigation.setCanSwim(true);
+		birdNavigation.setCanEnterOpenDoors(true);
+		return birdNavigation;
 	}
 
 	public boolean isClimbing() {
@@ -189,7 +169,7 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable 
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
+				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D).add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.lost_soul_health)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D).add(EntityAttributes.HORSE_JUMP_STRENGTH, 2.0D)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.lost_soul_melee_damage);
@@ -198,7 +178,6 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable 
 	@Override
 	protected void initGoals() {
 		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 4, 15, 0.5));
 		this.goalSelector.add(7, new LostSoulEntity.LookAtTargetGoal(this));
 		this.goalSelector.add(4, new LostSoulEntity.ChargeTargetGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));
@@ -319,47 +298,6 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable 
 				}
 			}
 
-		}
-	}
-
-	static class GhastMoveControl extends MoveControl {
-		private final LostSoulEntity ghast;
-		private int collisionCheckCooldown;
-
-		public GhastMoveControl(LostSoulEntity ghast) {
-			super(ghast);
-			this.ghast = ghast;
-		}
-
-		public void tick() {
-			if (this.state == MoveControl.State.MOVE_TO) {
-				if (this.collisionCheckCooldown-- <= 0) {
-					this.collisionCheckCooldown += this.ghast.getRandom().nextInt(5) + 2;
-					Vec3d vec3d = new Vec3d(this.targetX - this.ghast.getX(), this.targetY - this.ghast.getY(),
-							this.targetZ - this.ghast.getZ());
-					double d = vec3d.length();
-					vec3d = vec3d.normalize();
-					if (this.willCollide(vec3d, MathHelper.ceil(d))) {
-						this.ghast.setVelocity(this.ghast.getVelocity().add(vec3d.multiply(0.1D)));
-					} else {
-						this.state = MoveControl.State.WAIT;
-					}
-				}
-
-			}
-		}
-
-		private boolean willCollide(Vec3d direction, int steps) {
-			Box box = this.ghast.getBoundingBox();
-
-			for (int i = 1; i < steps; ++i) {
-				box = box.offset(direction);
-				if (!this.ghast.world.isSpaceEmpty(this.ghast, box)) {
-					return false;
-				}
-			}
-
-			return true;
 		}
 	}
 
