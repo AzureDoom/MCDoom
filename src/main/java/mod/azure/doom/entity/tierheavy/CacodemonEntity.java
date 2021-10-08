@@ -3,12 +3,10 @@ package mod.azure.doom.entity.tierheavy;
 import java.util.EnumSet;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedStaticAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.util.config.DoomConfig;
-
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -25,6 +23,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -53,13 +52,12 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable {
 
-	
 	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(CacodemonEntity.class,
 			EntityDataSerializers.INT);
 
 	public CacodemonEntity(EntityType<? extends CacodemonEntity> type, Level worldIn) {
 		super(type, worldIn);
-		this.moveControl = new CacodemonEntity.MoveHelperController(this);
+		this.moveControl = new CacodemonEntity.GhastMoveControl(this);
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -153,8 +151,10 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable {
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.cacodemon_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
-				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.FLYING_SPEED, 0.25D)
+				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.cacodemon_health.get())
+				.add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -167,7 +167,6 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable {
 						.setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(ModSoundEvents.CACODEMON_FIREBALL.get(),
 								1.0F, 1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
 				60, 20, 30F, 1));
-		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.addGoal(1,
 				new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, (p_213812_1_) -> {
 					return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
@@ -177,10 +176,6 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable {
 					return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
 				}));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
-	}
-
-	public int getFireballStrength() {
-		return 1;
 	}
 
 	@Override
@@ -200,10 +195,33 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable {
 	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
 	}
 
-	/**
-	 * Returns true if this entity should move as if it were on a ladder (either
-	 * because it's actually on a ladder, or for AI reasons)
-	 */
+	public void travel(Vec3 movementInput) {
+		if (this.isInWater()) {
+			this.moveRelative(0.02F, movementInput);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale((double) 0.8F));
+		} else if (this.isInLava()) {
+			this.moveRelative(0.02F, movementInput);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale(0.5D));
+		} else {
+			BlockPos ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
+			float f = 0.91F;
+			if (this.onGround) {
+				f = this.level.getBlockState(ground).getFriction(this.level, ground, this) * 0.91F;
+			}
+			float f1 = 0.16277137F / (f * f * f);
+			f = 0.91F;
+			if (this.onGround) {
+				f = this.level.getBlockState(ground).getFriction(this.level, ground, this) * 0.91F;
+			}
+			this.moveRelative(this.onGround ? 0.1F * f1 : 0.02F, movementInput);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale((double) f));
+		}
+		this.calculateEntityAnimation(this, false);
+	}
+
 	public boolean onClimbable() {
 		return false;
 	}
@@ -238,11 +256,11 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable {
 		}
 	}
 
-	static class MoveHelperController extends MoveControl {
+	static class GhastMoveControl extends MoveControl {
 		private final CacodemonEntity parentEntity;
 		private int courseChangeCooldown;
 
-		public MoveHelperController(CacodemonEntity cacodemonEntity) {
+		public GhastMoveControl(CacodemonEntity cacodemonEntity) {
 			super(cacodemonEntity);
 			this.parentEntity = cacodemonEntity;
 		}
