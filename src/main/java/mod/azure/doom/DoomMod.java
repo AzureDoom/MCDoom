@@ -83,7 +83,9 @@ public class DoomMod {
 		forgeBus.addListener(EventPriority.HIGH, this::biomeModification);
 		forgeBus.addGenericListener(Block.class, DoomMod::updatingBlocksID);
 		forgeBus.addGenericListener(Item.class, DoomMod::updatingItemsID);
-		MinecraftForge.EVENT_BUS.addListener(DoomVillagerTrades::onVillagerTradesEvent);
+		if (DoomConfig.SERVER.enable_all_villager_trades.get()) {
+			MinecraftForge.EVENT_BUS.addListener(DoomVillagerTrades::onVillagerTradesEvent);
+		}
 		ModSoundEvents.MOD_SOUNDS.register(modEventBus);
 		ModEntityTypes.ENTITY_TYPES.register(modEventBus);
 		DoomItems.ITEMS.register(modEventBus);
