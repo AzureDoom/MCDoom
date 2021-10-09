@@ -12,6 +12,9 @@ import mod.azure.doom.DoomMod;
 public class DoomConfig implements ConfigData {
 
 	@ConfigEntry.Gui.CollapsibleObject
+	public Misc misc = new Misc();
+
+	@ConfigEntry.Gui.CollapsibleObject
 	public Weapons weapons = new Weapons();
 
 	@ConfigEntry.Gui.CollapsibleObject
@@ -20,8 +23,11 @@ public class DoomConfig implements ConfigData {
 	@ConfigEntry.Gui.CollapsibleObject
 	public MobStats stats = new MobStats();
 
-	public static class Structures {
-		public boolean enable_structures = true;
+	public static class Misc {
+		public boolean enable_all_villager_trades = true;
+		public boolean enable_weaponsmith_trades = true;
+		public boolean enable_toolsmith_trades = true;
+		public boolean enable_mason_trades = true;
 	}
 
 	public static class Weapons {
@@ -298,7 +304,7 @@ public class DoomConfig implements ConfigData {
 
 		public double motherdemon_health = 500;
 		public float motherdemon_ranged_damage = 14;
-		
+
 		public double cueball_health = 1;
 
 		public double tentacle_health = 5;
@@ -407,7 +413,6 @@ public class DoomConfig implements ConfigData {
 		public double whiplash_melee_damage = 4;
 
 		public double armoredbaron_health = 240;
-		public float armoredbaron_ranged_damage = 6;
 		public double armoredbaron_melee_damage = 7;
 
 		public double unwilling_health = 15;
