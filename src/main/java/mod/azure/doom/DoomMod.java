@@ -115,7 +115,9 @@ public class DoomMod implements ModInitializer {
 		RegistryEntryAddedCallback.event(BuiltinRegistries.BIOME).register((i, id, biome) -> {
 			MobSpawn.addSpawnEntries();
 		});
-		ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> DoomVillagerTrades.addTrades());
+		if (config.misc.enable_all_villager_trades) {
+			ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> DoomVillagerTrades.addTrades());
+		}
 		MobAttributes.init();
 		GeckoLib.initialize();
 		DoomStructures.setupAndRegisterStructureFeatures();
