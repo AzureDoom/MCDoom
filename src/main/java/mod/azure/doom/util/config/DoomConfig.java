@@ -333,7 +333,6 @@ public class DoomConfig {
 		public final ConfigValue<Double> whiplash_melee_damage;
 
 		public final ConfigValue<Double> armoredbaron_health;
-		public final ConfigValue<Double> armoredbaron_ranged_damage;
 		public final ConfigValue<Double> armoredbaron_melee_damage;
 
 		public final ConfigValue<Double> unwilling_health;
@@ -364,8 +363,22 @@ public class DoomConfig {
 
 		public final ConfigValue<Double> icon_health;
 		public final ConfigValue<Double> icon_melee_damage;
+		public final ConfigValue<Boolean> enable_all_villager_trades;
+		public final ConfigValue<Boolean> enable_weaponsmith_trades;
+		public final ConfigValue<Boolean> enable_toolsmith_trades;
+		public final ConfigValue<Boolean> enable_mason_trades;
 
 		public Server(ForgeConfigSpec.Builder builder) {
+			builder.push("Misc");
+			this.enable_all_villager_trades = builder.translation("text.doom.config.enable_all_villager_trades")
+					.define("Villager Trades Toggle", true);
+			this.enable_weaponsmith_trades = builder.translation("text.doom.config.enable_weaponsmith_trades")
+					.define("Weapon Trades Toggle", true);
+			this.enable_toolsmith_trades = builder.translation("text.doom.config.enable_toolsmith_trades")
+					.define("Toolsmith Trades Toggle", true);
+			this.enable_mason_trades = builder.translation("text.doom.config.enable_mason_trades")
+					.define("Mason Trades Toggle", true);
+			builder.pop();
 			builder.push("Weapons");
 			this.crucible_marauder_max_damage = builder.translation("text.doom.config.marauder_axe_damage")
 					.defineInRange("Max Damage of Marauder Axe", 5, 1, Integer.MAX_VALUE);
@@ -1020,8 +1033,6 @@ public class DoomConfig {
 					.defineInRange("Armored Baron Max Group", 1, 1, Integer.MAX_VALUE);
 			this.armoredbaron_health = builder.translation("text.doom.config.armoredbaron_health")
 					.defineInRange("Sets Armored Baron Max Health", 240, 1, Double.MAX_VALUE);
-			this.armoredbaron_ranged_damage = builder.translation("text.doom.config.armoredbaron_ranged_damage")
-					.defineInRange("Sets Armored Baron Ranged Damage", 6, 1, Double.MAX_VALUE);
 			this.armoredbaron_melee_damage = builder.translation("text.doom.config.armoredbaron_melee_damage")
 					.defineInRange("Sets Armored Baron Melee Damage", 7, 1, Double.MAX_VALUE);
 			builder.pop();

@@ -73,7 +73,9 @@ public class DoomMod {
 		DoomStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
 		forgeBus.addListener(EventPriority.NORMAL, this::addDimensionalSpacing);
 		forgeBus.addListener(EventPriority.HIGH, this::biomeModification);
-		MinecraftForge.EVENT_BUS.addListener(DoomVillagerTrades::onVillagerTradesEvent);
+		if (DoomConfig.SERVER.enable_all_villager_trades.get()) {
+			MinecraftForge.EVENT_BUS.addListener(DoomVillagerTrades::onVillagerTradesEvent);
+		}
 		ModSoundEvents.MOD_SOUNDS.register(modEventBus);
 		ModEntityTypes.ENTITY_TYPES.register(modEventBus);
 		DoomItems.ITEMS.register(modEventBus);

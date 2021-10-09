@@ -2,11 +2,7 @@ package mod.azure.doom.entity.tiersuperheavy;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
-import mod.azure.doom.entity.attack.AbstractRangedAttack;
-import mod.azure.doom.entity.attack.AttackSound;
-import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
 import mod.azure.doom.util.config.DoomConfig;
-
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -26,7 +22,6 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
@@ -40,7 +35,6 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class ArmoredBaronEntity extends DemonEntity implements IAnimatable {
 
-	
 	private AnimationFactory factory = new AnimationFactory(this);
 
 	public ArmoredBaronEntity(EntityType<ArmoredBaronEntity> entityType, Level worldIn) {
@@ -102,29 +96,6 @@ public class ArmoredBaronEntity extends DemonEntity implements IAnimatable {
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.armoredbaron_health.get())
 				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.armoredbaron_melee_damage.get())
 				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
-	}
-
-	public class FireballAttack extends AbstractRangedAttack {
-
-		public FireballAttack(DemonEntity parentEntity, double xOffSetModifier, double entityHeightFraction,
-				double zOffSetModifier, float damage) {
-			super(parentEntity, xOffSetModifier, entityHeightFraction, zOffSetModifier, damage);
-		}
-
-		public FireballAttack(DemonEntity parentEntity) {
-			super(parentEntity);
-		}
-
-		@Override
-		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(ModSoundEvents.PLASMA_FIRING.get(), 0.7F, 1);
-		}
-
-		@Override
-		public Projectile getProjectile(Level world, double d2, double d3, double d4) {
-			return new BarenBlastEntity(world, this.parentEntity, d2, d3, d4, damage);
-
-		}
 	}
 
 	@Override

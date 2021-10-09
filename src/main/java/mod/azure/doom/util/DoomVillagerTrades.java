@@ -1,5 +1,6 @@
 package mod.azure.doom.util;
 
+import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -9,7 +10,7 @@ import net.minecraftforge.event.village.VillagerTradesEvent;
 public class DoomVillagerTrades {
 
 	public static void onVillagerTradesEvent(VillagerTradesEvent event) {
-		if (event.getType() == VillagerProfession.WEAPONSMITH) {
+		if (event.getType() == VillagerProfession.WEAPONSMITH && DoomConfig.SERVER.enable_weaponsmith_trades.get()) {
 			event.getTrades().get(3).add(new VillagerTrades.ItemsAndEmeraldsToItems(Items.EMERALD, 1, 1, DoomItems.ARGENT_ENERGY.get(), 6, 12, 5));
 			event.getTrades().get(3).add(new VillagerTrades.ItemsAndEmeraldsToItems(Items.EMERALD, 2, DoomItems.BULLETS.get(), 6, 12, 5));
 			event.getTrades().get(3).add(new VillagerTrades.ItemsAndEmeraldsToItems(Items.EMERALD, 3, DoomItems.CHAINGUN_BULLETS.get(), 6, 12, 5));
@@ -19,13 +20,13 @@ public class DoomVillagerTrades {
 			event.getTrades().get(3).add(new VillagerTrades.ItemsAndEmeraldsToItems(Items.EMERALD, 3, DoomItems.ENERGY_CELLS.get(), 6, 12, 5));
 			event.getTrades().get(3).add(new VillagerTrades.ItemsAndEmeraldsToItems(Items.EMERALD, 3, DoomItems.UNMAKRY_BOLT.get(), 6, 12, 5));
 		}
-		if (event.getType() == VillagerProfession.TOOLSMITH) {
+		if (event.getType() == VillagerProfession.TOOLSMITH && DoomConfig.SERVER.enable_toolsmith_trades.get()) {
 			event.getTrades().get(3).add(new VillagerTrades.ItemsAndEmeraldsToItems(Items.EMERALD, 2, DoomItems.ARGENT_PICKAXE.get(), 1, 12, 5));
 			event.getTrades().get(3).add(new VillagerTrades.ItemsAndEmeraldsToItems(Items.EMERALD, 2, DoomItems.ARGENT_AXE.get(), 1, 12, 5));
 			event.getTrades().get(3).add(new VillagerTrades.ItemsAndEmeraldsToItems(Items.EMERALD, 2, DoomItems.ARGENT_HOE.get(), 1, 12, 5));
 			event.getTrades().get(3).add(new VillagerTrades.ItemsAndEmeraldsToItems(Items.EMERALD, 2, DoomItems.ARGENT_SHOVEL.get(), 1, 12, 5));
 		}
-		if (event.getType() == VillagerProfession.MASON) {
+		if (event.getType() == VillagerProfession.MASON && DoomConfig.SERVER.enable_mason_trades.get()) {
 			event.getTrades().get(3).add(new VillagerTrades.ItemsAndEmeraldsToItems(Items.EMERALD, 2, DoomItems.E1M1_1.get(), 1, 12, 5));
 			event.getTrades().get(3).add(new VillagerTrades.ItemsAndEmeraldsToItems(Items.EMERALD, 2, DoomItems.E1M1_2.get(), 1, 12, 5));
 			event.getTrades().get(3).add(new VillagerTrades.ItemsAndEmeraldsToItems(Items.EMERALD, 2, DoomItems.E1M1_3.get(), 1, 12, 5));
