@@ -360,7 +360,6 @@ public class DoomConfig implements ConfigData {
 
 		public double revenant_health = 45;
 		public float revenant_ranged_damage = 5;
-		public double revenant_melee_damage = 3;
 
 		public double spider_mastermind_health = 300;
 		public float spider_mastermind_ranged_damage = 7;
