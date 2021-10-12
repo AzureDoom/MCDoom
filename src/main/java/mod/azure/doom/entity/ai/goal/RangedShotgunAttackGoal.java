@@ -2,6 +2,7 @@ package mod.azure.doom.entity.ai.goal;
 
 import java.util.EnumSet;
 
+import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.item.weapons.Shotgun;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.entity.LivingEntity;
@@ -11,22 +12,19 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 
 public class RangedShotgunAttackGoal<T extends HostileEntity & RangedAttackMob> extends Goal {
-	private final T actor;
+	private final DemonEntity actor;
 	private final double speed;
 	private int attackInterval;
-	private final float squaredRange;
 	private int cooldown = -1;
 	private int targetSeeingTicker;
-	private boolean movingToLeft;
-	private boolean backward;
-	private int combatTicks = -1;
+	private int statecheck;
 
-	public RangedShotgunAttackGoal(T actor, double speed, int attackInterval, float range) {
+	public RangedShotgunAttackGoal(DemonEntity actor, double speed, int attackInterval, float range, int state) {
 		this.actor = actor;
 		this.speed = speed;
 		this.attackInterval = attackInterval;
-		this.squaredRange = range * range;
 		this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
+		this.statecheck = state;
 	}
 
 	public void setAttackInterval(int attackInterval) {
@@ -48,6 +46,7 @@ public class RangedShotgunAttackGoal<T extends HostileEntity & RangedAttackMob> 
 	public void start() {
 		super.start();
 		this.actor.setAttacking(true);
+		this.actor.setAttackingState(0);
 	}
 
 	public void stop() {
@@ -56,12 +55,12 @@ public class RangedShotgunAttackGoal<T extends HostileEntity & RangedAttackMob> 
 		this.targetSeeingTicker = 0;
 		this.cooldown = -1;
 		this.actor.clearActiveItem();
+		this.actor.setAttackingState(0);
 	}
 
 	public void tick() {
 		LivingEntity livingEntity = this.actor.getTarget();
 		if (livingEntity != null) {
-			double d = this.actor.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
 			boolean bl = this.actor.getVisibilityCache().canSee(livingEntity);
 			boolean bl2 = this.targetSeeingTicker > 0;
 			if (bl != bl2) {
@@ -74,44 +73,18 @@ public class RangedShotgunAttackGoal<T extends HostileEntity & RangedAttackMob> 
 				--this.targetSeeingTicker;
 			}
 
-			if (d <= (double) this.squaredRange && this.targetSeeingTicker >= 20) {
-				this.actor.getNavigation().stop();
-				++this.combatTicks;
-			} else {
-				this.actor.getNavigation().startMovingTo(livingEntity, this.speed);
-				this.combatTicks = -1;
-			}
+			this.actor.getNavigation().startMovingTo(livingEntity, this.speed);
+			this.actor.getLookControl().lookAt(livingEntity, 30.0F, 30.0F);
+			double d0 = this.actor.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
 
-			if (this.combatTicks >= 20) {
-				if ((double) this.actor.getRandom().nextFloat() < 0.3D) {
-					this.movingToLeft = !this.movingToLeft;
-				}
-
-				if ((double) this.actor.getRandom().nextFloat() < 0.3D) {
-					this.backward = !this.backward;
-				}
-
-				this.combatTicks = 0;
-			}
-
-			if (this.combatTicks > -1) {
-				if (d > (double) (this.squaredRange * 0.75F)) {
-					this.backward = false;
-				} else if (d < (double) (this.squaredRange * 0.25F)) {
-					this.backward = true;
-				}
-
-				this.actor.getMoveControl().strafeTo(this.backward ? -0.5F : 0.5F, this.movingToLeft ? 0.5F : -0.5F);
-				this.actor.lookAtEntity(livingEntity, 30.0F, 30.0F);
-			} else {
-				this.actor.getLookControl().lookAt(livingEntity, 30.0F, 30.0F);
-			}
-
-			if (this.actor.isUsingItem()) {
+			if (this.actor.isUsingItem() && this.actor.distanceTo(livingEntity) >= 6.0D) {
 				if (!bl && this.targetSeeingTicker < -60) {
 					this.actor.clearActiveItem();
 				} else if (bl) {
 					int i = this.actor.getItemUseTime();
+					if (i >= 19) {
+						this.actor.setAttackingState(statecheck);
+					}
 					if (i >= 20) {
 						this.actor.clearActiveItem();
 						((RangedAttackMob) this.actor).attack(livingEntity, Shotgun.getPullProgress(i));
@@ -119,9 +92,23 @@ public class RangedShotgunAttackGoal<T extends HostileEntity & RangedAttackMob> 
 					}
 				}
 			} else if (--this.cooldown <= 0 && this.targetSeeingTicker >= -60) {
+				this.attack(livingEntity, d0);
 				this.actor.setCurrentHand(ProjectileUtil.getHandPossiblyHolding(this.actor, DoomItems.SG));
 			}
 
 		}
+	}
+
+	protected void attack(LivingEntity livingentity, double squaredDistance) {
+		double d0 = this.getSquaredMaxAttackDistance(livingentity);
+		if (squaredDistance <= d0) {
+			this.cooldown = 20;
+			this.actor.setAttackingState(1);
+			this.actor.tryAttack(livingentity);
+		}
+	}
+
+	protected double getSquaredMaxAttackDistance(LivingEntity entity) {
+		return (double) (this.actor.getWidth() * 1.0F * this.actor.getWidth() * 1.0F + entity.getWidth());
 	}
 }

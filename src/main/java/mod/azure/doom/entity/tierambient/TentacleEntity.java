@@ -119,6 +119,7 @@ public class TentacleEntity extends DemonEntity implements IAnimatable {
 
 		public void start() {
 			this.cooldown = 0;
+			this.parentEntity.setAttackingState(0);
 		}
 
 		@Override
@@ -144,6 +145,7 @@ public class TentacleEntity extends DemonEntity implements IAnimatable {
 					}
 				} else if (this.cooldown > 0) {
 					--this.cooldown;
+					this.parentEntity.setAttackingState(0);
 				}
 			}
 		}
