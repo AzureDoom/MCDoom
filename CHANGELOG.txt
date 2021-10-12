@@ -1,3 +1,7 @@
-v.4.0.19
+v.4.0.20
 
-- Fixed Blood Maykr, Cacodemon, Pain Elemental, and Arch Maykr not moving.
+- Removed unneeded Armored Baron Ranged config.
+- Fixed Armored Baron not using Health and Melee configs.
+- Added 4 new configs: Enable All Villager Trades and Per Trade type
+- Properly fixed Arch Maykr, Cacodemon, and Pain Elemental flying.
+- Updated Maruader firing animations and fixed melee animations.

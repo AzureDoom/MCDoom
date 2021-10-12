@@ -52,7 +52,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 public class ShotgunguyEntity extends DemonEntity implements RangedAttackMob, IAnimatable {
 
 	private final RangedShotgunAttackGoal<ShotgunguyEntity> bowAttackGoal = new RangedShotgunAttackGoal<>(this, 1.0D,
-			20, 15.0F);
+			20, 15.0F, 1);
 	private final MeleeAttackGoal meleeAttackGoal = new MeleeAttackGoal(this, 1.2D, false) {
 		public void stop() {
 			super.stop();
@@ -201,7 +201,6 @@ public class ShotgunguyEntity extends DemonEntity implements RangedAttackMob, IA
 		if (!this.world.isClient) {
 			this.updateAttackType();
 		}
-
 	}
 
 	@Override

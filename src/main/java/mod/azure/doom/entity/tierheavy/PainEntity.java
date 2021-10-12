@@ -4,7 +4,7 @@ import java.util.EnumSet;
 import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
+import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.ModEntityTypes;
@@ -19,13 +19,13 @@ import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.FollowTargetGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -64,7 +64,7 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable {
 
 	public PainEntity(EntityType<? extends PainEntity> type, World worldIn) {
 		super(type, worldIn);
-		this.moveControl = new DemonFlightMoveControl(this, 90, true);
+		this.moveControl = new PainEntity.MoveController(this);
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -118,28 +118,6 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable {
 				this.world.spawnEntity(lost_soul2);
 			}
 		}
-	}
-
-	public boolean handleFallDamage(float fallDistance, float damageMultiplier) {
-		return false;
-	}
-
-	protected void fall(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
-	}
-
-	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
-	}
-
-	protected EntityNavigation createNavigation(World world) {
-		BirdNavigation birdNavigation = new BirdNavigation(this, world);
-		birdNavigation.setCanPathThroughDoors(false);
-		birdNavigation.setCanSwim(true);
-		birdNavigation.setCanEnterOpenDoors(true);
-		return birdNavigation;
-	}
-
-	public boolean isClimbing() {
-		return false;
 	}
 
 	protected void initDataTracker() {
@@ -197,7 +175,7 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable {
 		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.add(7, new PainEntity.LookAtTargetGoal(this));
 		this.goalSelector.add(4, new PainEntity.ShootFireballGoal(this));
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
+		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.targetSelector.add(1, new FollowTargetGoal<>(this, PlayerEntity.class, 10, true, false, (p_213812_1_) -> {
 			return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
 		}));
@@ -318,11 +296,11 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable {
 		}
 	}
 
-	static class GhastMoveControl extends MoveControl {
+	static class MoveController extends MoveControl {
 		private final PainEntity ghast;
 		private int collisionCheckCooldown;
 
-		public GhastMoveControl(PainEntity ghast) {
+		public MoveController(PainEntity ghast) {
 			super(ghast);
 			this.ghast = ghast;
 		}
@@ -341,20 +319,17 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable {
 						this.state = MoveControl.State.WAIT;
 					}
 				}
-
 			}
 		}
 
 		private boolean willCollide(Vec3d direction, int steps) {
 			Box box = this.ghast.getBoundingBox();
-
 			for (int i = 1; i < steps; ++i) {
 				box = box.offset(direction);
 				if (!this.ghast.world.isSpaceEmpty(this.ghast, box)) {
 					return false;
 				}
 			}
-
 			return true;
 		}
 	}
@@ -391,6 +366,67 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable {
 			double f = this.ghast.getZ() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 2.0F);
 			this.ghast.getMoveControl().moveTo(d, e, f, 1.0D);
 		}
+	}
+
+	public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
+		return false;
+	}
+
+	protected void fall(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
+	}
+
+	public void travel(Vec3d movementInput) {
+		if (this.isTouchingWater()) {
+			this.updateVelocity(0.02F, movementInput);
+			this.move(MovementType.SELF, this.getVelocity());
+			this.setVelocity(this.getVelocity().multiply(0.800000011920929D));
+		} else if (this.isInLava()) {
+			this.updateVelocity(0.02F, movementInput);
+			this.move(MovementType.SELF, this.getVelocity());
+			this.setVelocity(this.getVelocity().multiply(0.5D));
+		} else {
+			float f = 0.91F;
+			if (this.onGround) {
+				f = this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getBlock()
+						.getSlipperiness() * 0.91F;
+			}
+
+			float g = 0.16277137F / (f * f * f);
+			f = 0.91F;
+			if (this.onGround) {
+				f = this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getBlock()
+						.getSlipperiness() * 0.91F;
+			}
+
+			this.updateVelocity(this.onGround ? 0.1F * g : 0.02F, movementInput);
+			this.move(MovementType.SELF, this.getVelocity());
+			this.setVelocity(this.getVelocity().multiply((double) f));
+		}
+
+		this.updateLimbs(this, false);
+	}
+
+	public boolean isClimbing() {
+		return false;
+	}
+
+	public boolean causeFallDamage(float distance, float damageMultiplier) {
+		return false;
+	}
+
+	public boolean handleFallDamage(float fallDistance, float damageMultiplier) {
+		return false;
+	}
+
+	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
+	}
+
+	protected EntityNavigation createNavigation(World world) {
+		BirdNavigation birdNavigation = new BirdNavigation(this, world);
+		birdNavigation.setCanPathThroughDoors(false);
+		birdNavigation.setCanSwim(true);
+		birdNavigation.setCanEnterOpenDoors(true);
+		return birdNavigation;
 	}
 
 	@Override
