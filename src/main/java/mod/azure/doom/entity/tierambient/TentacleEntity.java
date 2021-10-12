@@ -133,6 +133,7 @@ public class TentacleEntity extends DemonEntity implements IAnimatable {
 
 		public void start() {
 			this.attackTimer = 0;
+			this.parentEntity.setAttackingState(0);
 		}
 
 		@Override
@@ -158,6 +159,7 @@ public class TentacleEntity extends DemonEntity implements IAnimatable {
 					}
 				} else if (this.attackTimer > 0) {
 					--this.attackTimer;
+					this.parentEntity.setAttackingState(0);
 				}
 			}
 		}

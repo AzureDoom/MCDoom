@@ -1,3 +1,5 @@
-v.4.0.17
+v.4.0.18
 
-- Buffed Maykr speed.
+- Removed unneeded Armored Baron Ranged config.
+- Added 4 new configs: Enable All Villager Trades and Per Trade type
+- Updated Maruader firing animations and fixed melee animations.
