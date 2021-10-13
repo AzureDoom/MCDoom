@@ -50,22 +50,19 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 	private boolean clientSideAttackStarted;
 	private LivingEntity caster;
 	private UUID casterUuid;
-	private float damage = 2.0F;
+	private float damage;
 
 	public DoomFireEntity(EntityType<DoomFireEntity> p_i50170_1_, Level p_i50170_2_) {
 		super(p_i50170_1_, p_i50170_2_);
 	}
 
 	public DoomFireEntity(Level worldIn, double x, double y, double z, float p_i47276_8_, int p_i47276_9_,
-			LivingEntity casterIn) {
+			LivingEntity casterIn, float damage) {
 		this(ModEntityTypes.FIRING.get(), worldIn);
 		this.warmupDelayTicks = p_i47276_9_;
 		this.setCaster(casterIn);
 		this.yRot = p_i47276_8_ * (180F / (float) Math.PI);
 		this.setPos(x, y, z);
-	}
-
-	public void setDamage(float damage) {
 		this.damage = damage;
 	}
 

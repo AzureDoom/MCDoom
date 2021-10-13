@@ -390,7 +390,7 @@ public class SummonerEntity extends DemonEntity implements IAnimatable {
 
 		if (flag) {
 			DoomFireEntity fang = new DoomFireEntity(this.level, p_190876_1_, (double) blockpos.getY() + d0,
-					p_190876_3_, p_190876_9_, 1, this);
+					p_190876_3_, p_190876_9_, 1, this, DoomConfig.SERVER.summoner_ranged_damage.get().floatValue());
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
 			this.level.addFreshEntity(fang);

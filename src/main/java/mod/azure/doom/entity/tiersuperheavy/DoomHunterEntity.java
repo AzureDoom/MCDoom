@@ -4,7 +4,6 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import mod.azure.doom.util.config.DoomConfig;
-
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,7 +44,6 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 
-	
 	public int flameTimer;
 
 	public DoomHunterEntity(EntityType<DoomHunterEntity> entityType, Level worldIn) {
@@ -330,7 +328,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
-			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this);
+			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this,
+					DoomConfig.SERVER.doomhunter_ranged_damage.get().floatValue());
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
 			this.level.addFreshEntity(fang);
@@ -339,7 +338,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.doomhunter_health.get()).add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.doomhunter_melee_damage.get())
+				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.doomhunter_health.get())
+				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.doomhunter_melee_damage.get())
 				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
