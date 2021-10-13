@@ -254,9 +254,10 @@ public class DoomConfig {
 		public final ConfigValue<Double> cacodemon_ranged_damage;
 
 		public final ConfigValue<Double> archvile_health;
+		public final ConfigValue<Double> archvile_ranged_damage;
 
 		public final ConfigValue<Double> summoner_health;
-		public final ConfigValue<Double> summoner_melee_damage;
+		public final ConfigValue<Double> summoner_ranged_damage;
 
 		public final ConfigValue<Double> prowler_health;
 		public final ConfigValue<Double> prowler_melee_damage;
@@ -505,6 +506,8 @@ public class DoomConfig {
 					.defineInRange("Archvile Max Group", 2, 1, Integer.MAX_VALUE);
 			this.archvile_health = builder.translation("text.doom.config.archvile_health")
 					.defineInRange("Sets Archvile Max Health", 100, 1, Double.MAX_VALUE);
+			this.archvile_ranged_damage = builder.translation("text.doom.config.archvile_ranged_damage")
+					.defineInRange("Sets Archvile Ranged Damage damage", 5, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Baron of Hell");
@@ -1050,8 +1053,8 @@ public class DoomConfig {
 					.defineInRange("Summoner Max Group", 2, 1, Integer.MAX_VALUE);
 			this.summoner_health = builder.translation("text.doom.config.summoner_health")
 					.defineInRange("Sets Summoner Max Health", 100, 1, Double.MAX_VALUE);
-			this.summoner_melee_damage = builder.translation("text.doom.config.summoner_melee_damage")
-					.defineInRange("Sets Summoner Melee Damage", 3, 1, Double.MAX_VALUE);
+			this.summoner_ranged_damage = builder.translation("text.doom.config.summoner_ranged_damage")
+					.defineInRange("Sets Summoner Ranged Damage", 3, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Maykr Drone");

@@ -57,12 +57,13 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 	}
 
 	public DoomFireEntity(World worldIn, double x, double y, double z, float p_i47276_8_, int p_i47276_9_,
-			LivingEntity casterIn) {
+			LivingEntity casterIn, float damage) {
 		this(ModEntityTypes.FIRING.get(), worldIn);
 		this.warmupDelayTicks = p_i47276_9_;
 		this.setCaster(casterIn);
 		this.yRot = p_i47276_8_ * (180F / (float) Math.PI);
 		this.setPos(x, y, z);
+		this.damage = damage;
 	}
 
 	public void setDamage(float damage) {

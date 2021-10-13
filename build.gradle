@@ -23,7 +23,7 @@ apply plugin: 'org.spongepowered.mixin'
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
-version = "4.0.18"
+version = "4.0.19"
 group = "mod.azure.doomweapon"
 archivesBaseName = "MCDoom-1.16.5"
 

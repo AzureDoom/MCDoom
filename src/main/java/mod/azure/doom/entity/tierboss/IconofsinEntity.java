@@ -304,7 +304,8 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 			double d12 = (double) (MathHelper.sqrt(entity.distanceToSqr(vector3d)) / f2);
 			if (d12 <= 1.0D) {
 				if (entity instanceof LivingEntity) {
-					entity.hurt(DamageSource.indirectMobAttack(this, this.getTarget()), config.icon_melee_damage.get().floatValue());
+					entity.hurt(DamageSource.indirectMobAttack(this, this.getTarget()),
+							config.icon_melee_damage.get().floatValue());
 				}
 			}
 		}
@@ -332,7 +333,8 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 		} while (blockpos.getY() >= MathHelper.floor(maxY) - 1);
 
 		if (flag) {
-			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this);
+			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this,
+					DoomConfig.SERVER.icon_melee_damage.get().floatValue());
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
 			this.level.addFreshEntity(fang);

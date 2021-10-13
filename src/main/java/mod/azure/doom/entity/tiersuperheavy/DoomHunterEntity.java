@@ -337,7 +337,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 		} while (blockpos.getY() >= MathHelper.floor(maxY) - 1);
 
 		if (flag) {
-			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this);
+			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this,
+					DoomConfig.SERVER.doomhunter_ranged_damage.get().floatValue());
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
 			this.level.addFreshEntity(fang);
