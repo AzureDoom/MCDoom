@@ -7,6 +7,7 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -23,9 +24,8 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.item.GeoArmorItem;
 
-public class AstroDoomArmor extends GeoArmorItem implements IAnimatable {
+public class AstroDoomArmor extends ArmorItem implements IAnimatable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
 

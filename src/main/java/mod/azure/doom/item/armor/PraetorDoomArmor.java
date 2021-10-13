@@ -23,9 +23,9 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.item.GeoArmorItem;
+import net.minecraft.item.ArmorItem;
 
-public class PraetorDoomArmor extends GeoArmorItem implements IAnimatable {
+public class PraetorDoomArmor extends ArmorItem implements IAnimatable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
 

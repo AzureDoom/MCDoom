@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "doom:cultist_doom_chestplate"
+  },
+  "type": "minecraft:crafting_shaped",
+   "pattern": [
+        "@",
+        "#"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:lime_dye"
+        },
+		"@": {
+			"item": "doom:doom_chestplate"
+		}
+    }
+}

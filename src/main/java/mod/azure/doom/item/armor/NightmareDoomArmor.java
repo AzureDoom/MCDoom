@@ -23,9 +23,9 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.item.GeoArmorItem;
+import net.minecraft.item.ArmorItem;
 
-public class NightmareDoomArmor extends GeoArmorItem implements IAnimatable {
+public class NightmareDoomArmor extends ArmorItem implements IAnimatable {
 
 	public NightmareDoomArmor(ArmorMaterial  materialIn, EquipmentSlot  slot) {
 		super(materialIn, slot, new Item.Settings().group(DoomMod.DoomArmorItemGroup).maxCount(1));
