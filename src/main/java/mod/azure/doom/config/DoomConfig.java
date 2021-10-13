@@ -332,10 +332,10 @@ public class DoomConfig implements ConfigData {
 		public float cacodemon_ranged_damage = 5;
 
 		public double archvile_health = 100;
-		public double archvile_melee_damage = 3;
+		public float archvile_ranged_damage = 5;
 
 		public double summoner_health = 100;
-		public double summoner_melee_damage = 3;
+		public float summoner_ranged_damage = 3;
 
 		public double prowler_health = 15;
 		public float prowler_ranged_damage = 4;

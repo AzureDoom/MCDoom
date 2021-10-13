@@ -39,19 +39,20 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 	private boolean playingAnimation;
 	private LivingEntity owner;
 	private UUID ownerUuid;
-	private float damage = 2.0F;
+	private float damage;
 
 	public DoomFireEntity(EntityType<DoomFireEntity> entityType, World world) {
 		super(entityType, world);
 		this.ticksLeft = 22;
 	}
 
-	public DoomFireEntity(World worldIn, double x, double y, double z, float yaw, int warmup, LivingEntity casterIn) {
+	public DoomFireEntity(World worldIn, double x, double y, double z, float yaw, int warmup, LivingEntity casterIn, float damage) {
 		this(ProjectilesEntityRegister.FIRING, worldIn);
 		this.warmup = warmup;
 		this.setOwner(owner);
 		this.yaw = yaw * 57.295776F;
 		this.updatePosition(x, y, z);
+		this.damage = damage;
 	}
 
 	@Override
