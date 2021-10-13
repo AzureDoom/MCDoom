@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "doom:demonic_doom_helmet"
+  },
+  "type": "minecraft:crafting_shaped",
+   "pattern": [
+        "@",
+        "#"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:nether_wart"
+        },
+		"@": {
+			"item": "doom:doom_helmet"
+		}
+    }
+}

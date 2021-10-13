@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "doom:painter_doom_helmet"
+  },
+  "type": "minecraft:crafting_shaped",
+   "pattern": [
+        "@",
+        "#"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:brown_dye"
+        },
+		"@": {
+			"item": "doom:doom_helmet"
+		}
+    }
+}

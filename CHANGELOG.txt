@@ -1,3 +1,4 @@
-v.4.0.21
+v.4.0.22
 
-- Fixed Fire attack damage of Icon of Sin, Mother Demon, Mancubus, Archviles, Doom Hunter, and Summoner. 
+- Expired Marauder axe is no longer craftable, only lootable from Marauders.
+- Reenabled all Doom Armor, Geckolib v3.0.16 is now required.

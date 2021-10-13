@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "doom:demoncide_doom_leggings"
+  },
+  "type": "minecraft:crafting_shaped",
+   "pattern": [
+        "@",
+        "#"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:emerald"
+        },
+		"@": {
+			"item": "doom:doom_leggings"
+		}
+    }
+}

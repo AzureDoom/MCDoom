@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "doom:purplepony_doom_leggings"
+  },
+  "type": "minecraft:crafting_shaped",
+   "pattern": [
+        "@",
+        "#"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:purple_dye"
+        },
+		"@": {
+			"item": "doom:doom_leggings"
+		}
+    }
+}
