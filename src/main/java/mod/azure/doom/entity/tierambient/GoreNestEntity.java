@@ -51,7 +51,7 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable {
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
 	}
-	
+
 	@Override
 	public void takeKnockback(double strength, double x, double z) {
 		super.takeKnockback(0, 0, 0);
@@ -169,6 +169,9 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable {
 			if (this.age % 2400 == 0 && this.getSpawnTimer() <= 3) {
 				this.spawnWave();
 			}
+		}
+		if (this.getSpawnTimer() == 3) {
+			this.remove(RemovalReason.KILLED);
 		}
 		super.tickMovement();
 	}

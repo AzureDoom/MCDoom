@@ -28,9 +28,9 @@ public class ShellAmmo extends ArrowItem {
 		super.appendTooltip(stack, world, tooltip, context);
 	}
 
-	public ShotgunShellEntity createArrow(World world, ItemStack stack, LivingEntity shooter, boolean damage) {
-		ShotgunShellEntity arrowentity = damage ? new ShotgunShellEntity(world, shooter, true)
-				: new ShotgunShellEntity(world, shooter, false);
+	public ShotgunShellEntity createArrow(World world, ItemStack stack, LivingEntity shooter, boolean marauder) {
+		ShotgunShellEntity arrowentity = new ShotgunShellEntity(world, shooter,
+				marauder ? DoomMod.config.stats.marauder_ssgdamage : DoomMod.config.weapons.shotgun_damage);
 		arrowentity.initFromStack(stack);
 		return arrowentity;
 	}

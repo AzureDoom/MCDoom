@@ -183,88 +183,83 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 			this.parentEntity.setAttackingState(0);
 		}
 
+		@Override
 		public void tick() {
-			LivingEntity livingEntity = this.parentEntity.getTarget();
-			if (livingEntity != null) {
-				if (this.parentEntity.canSee(livingEntity)) {
-					++this.cooldown;
+			LivingEntity livingentity = this.parentEntity.getTarget();
+			if (livingentity != null) {
+				if (parentEntity.distanceTo(livingentity) < 10000.0D) {
+					cooldown++;
 					Random rand = new Random();
-					float f2 = (float) MathHelper.atan2(livingEntity.getZ() - parentEntity.getZ(),
-							livingEntity.getX() - parentEntity.getX());
-					int j;
+					float f = (float) MathHelper.atan2(livingentity.getZ() - parentEntity.getZ(),
+							livingentity.getX() - parentEntity.getX());
 					if (this.cooldown == 35) {
-						if (parentEntity.distanceTo(livingEntity) > 11.0D) {
-							float h2;
-							SplittableRandom random = new SplittableRandom();
-							int r = random.nextInt(0, 4);
-							if (r == 1) {
-								double d = Math.min(livingEntity.getY(), parentEntity.getY());
-								double e1 = Math.max(livingEntity.getY(), parentEntity.getY()) + 1.0D;
-								for (j = 15; j < 55; ++j) {
-									h2 = f2 + (float) j * 3.1415927F * 0.4F;
-									for (int y = 0; y < 5; ++y) {
-										parentEntity.spawnFlames(
-												parentEntity.getX()
-														+ (double) MathHelper.cos(h2) * rand.nextDouble() * 11.5D,
-												parentEntity.getZ()
-														+ (double) MathHelper.sin(h2) * rand.nextDouble() * 11.5D,
-												d, e1, h2, 0);
-									}
-									if (parentEntity.getHealth() < (parentEntity.getMaxHealth() * 0.50)) {
-										this.parentEntity.setAttackingState(2);
-									} else {
-										this.parentEntity.setAttackingState(1);
-									}
-								}
-							} else if (r == 2) {
-								float q = 50.0F;
-								int k = MathHelper.floor(this.parentEntity.getX() - (double) q - 1.0D);
-								int l = MathHelper.floor(this.parentEntity.getX() + (double) q + 1.0D);
-								int t = MathHelper.floor(this.parentEntity.getY() - (double) q - 1.0D);
-								int u = MathHelper.floor(this.parentEntity.getY() + (double) q + 1.0D);
-								int v = MathHelper.floor(this.parentEntity.getZ() - (double) q - 1.0D);
-								int w = MathHelper.floor(this.parentEntity.getZ() + (double) q + 1.0D);
-								List<Entity> list = this.parentEntity.world.getOtherEntities(this.parentEntity, new Box(
-										(double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
-								Vec3d vec3d = new Vec3d(this.parentEntity.getX(), this.parentEntity.getY(),
-										this.parentEntity.getZ());
-								for (int x = 0; x < list.size(); ++x) {
-									Entity entity = (Entity) list.get(x);
-									double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d)) / q);
-									if (y <= 1.0D) {
-										if (entity instanceof LivingEntity) {
-											double d = (this.parentEntity.getBoundingBox().minX
-													+ this.parentEntity.getBoundingBox().maxX) / 2.0D;
-											double e = (this.parentEntity.getBoundingBox().minZ
-													+ this.parentEntity.getBoundingBox().maxZ) / 2.0D;
-											double f = entity.getX() - d;
-											double g = entity.getZ() - e;
-											double h = Math.max(f * f + g * g, 0.1D);
-											entity.addVelocity(f / h * 10.0D, (double) 0.2F * 10.0D, g / h * 10.0D);
-										}
-									}
+						SplittableRandom random = new SplittableRandom();
+						int r = random.nextInt(0, 4);
+						if (r == 1) {
+							for (int i = 15; i < 55; ++i) {
+								double d0 = Math.min(livingentity.getY(), livingentity.getY());
+								double d1 = Math.max(livingentity.getY(), livingentity.getY()) + 1.0D;
+								float f1 = f + (float) i * (float) Math.PI * 0.4F;
+								for (int y = 0; y < 5; ++y) {
+									parentEntity.spawnFlames(
+											parentEntity.getX()
+													+ (double) MathHelper.cos(f1) * rand.nextDouble() * 11.5D,
+											parentEntity.getZ()
+													+ (double) MathHelper.sin(f1) * rand.nextDouble() * 11.5D,
+											d0, d1, f1, 0);
 								}
 								if (parentEntity.getHealth() < (parentEntity.getMaxHealth() * 0.50)) {
-									this.parentEntity.setAttackingState(6);
+									this.parentEntity.setAttackingState(2);
 								} else {
-									this.parentEntity.setAttackingState(5);
+									this.parentEntity.setAttackingState(1);
 								}
+							}
+						} else if (r == 2) {
+							if (!parentEntity.world.isClient()) {
+								float f2 = 50.0F;
+								int k1 = MathHelper.floor(parentEntity.getX() - (double) f2 - 1.0D);
+								int l1 = MathHelper.floor(parentEntity.getX() + (double) f2 + 1.0D);
+								int i2 = MathHelper.floor(parentEntity.getY() - (double) f2 - 1.0D);
+								int i1 = MathHelper.floor(parentEntity.getY() + (double) f2 + 1.0D);
+								int j2 = MathHelper.floor(parentEntity.getZ() - (double) f2 - 1.0D);
+								int j1 = MathHelper.floor(parentEntity.getZ() + (double) f2 + 1.0D);
+								List<Entity> list = parentEntity.world.getOtherEntities(parentEntity, new Box(
+										(double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
+								for (int k2 = 0; k2 < list.size(); ++k2) {
+									Entity entity = list.get(k2);
+									if (entity.isAlive()) {
+										double d0 = (this.parentEntity.getBoundingBox().minX
+												+ this.parentEntity.getBoundingBox().maxX) / 2.0D;
+										double d1 = (this.parentEntity.getBoundingBox().minZ
+												+ this.parentEntity.getBoundingBox().maxZ) / 2.0D;
+										double d2 = entity.getX() - d0;
+										double d3 = entity.getZ() - d1;
+										double d4 = Math.max(d2 * d2 + d3 * d3, 0.1D);
+										entity.addVelocity(d2 / d4 * 10.0D, (double) 0.2F * 10.0D, d3 / d4 * 10.0D);
+									}
+								}
+							}
+							if (parentEntity.getHealth() < (parentEntity.getMaxHealth() * 0.50)) {
+								this.parentEntity.setAttackingState(6);
 							} else {
-								this.parentEntity.doDamage();
-								if (parentEntity.getHealth() < (parentEntity.getMaxHealth() * 0.50)) {
-									this.parentEntity.setAttackingState(4);
-								} else {
-									this.parentEntity.setAttackingState(3);
-								}
+								this.parentEntity.setAttackingState(5);
+							}
+						} else {
+							parentEntity.doDamage();
+							if (parentEntity.getHealth() < (parentEntity.getMaxHealth() * 0.50)) {
+								this.parentEntity.setAttackingState(4);
+							} else {
+								this.parentEntity.setAttackingState(3);
 							}
 						}
 					}
-					if (this.cooldown == 55) {
+					if (this.cooldown == 65) {
 						this.parentEntity.setAttackingState(0);
-						this.cooldown = -135;
+						this.cooldown = -75;
 					}
 				} else if (this.cooldown > 0) {
 					--this.cooldown;
+					this.parentEntity.setAttackingState(0);
 				}
 			}
 		}

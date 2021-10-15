@@ -9,7 +9,6 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.RangedShotgunAttackGoal;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
-import mod.azure.doom.entity.tierfodder.ShotgunguyEntity;
 import mod.azure.doom.item.ammo.ShellAmmo;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
@@ -181,7 +180,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 	}
 
 	protected ShotgunShellEntity createArrowProjectile(ItemStack arrow, float damageModifier) {
-		return ShotgunguyEntity.createArrowProjectile(this, arrow, damageModifier);
+		return MarauderEntity.createArrowProjectile(this, arrow, damageModifier);
 	}
 
 	public boolean canUseRangedWeapon(Item weapon) {
@@ -193,7 +192,6 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 				: DoomItems.SHOTGUN_SHELLS));
 		ShotgunShellEntity persistentProjectileEntity = arrowItem.createArrow(entity.world, stack, entity, true);
 		persistentProjectileEntity.applyEnchantmentEffects(entity, damageModifier);
-		persistentProjectileEntity.setDamage(config.marauder_ssgdamage);
 		return persistentProjectileEntity;
 	}
 
@@ -289,7 +287,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 		}
 	}
 
-	private boolean isPlayerStaring(PlayerEntity player) {
+	public boolean isPlayerStaring(PlayerEntity player) {
 		Vec3d vec3d = player.getRotationVec(1.0F).normalize();
 		Vec3d vec3d2 = new Vec3d(this.getX() - player.getX(), this.getEyeY() - player.getEyeY(),
 				this.getZ() - player.getZ());
@@ -373,13 +371,13 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.marauder_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.marauder_axe_damage).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.marauder_axe_damage)
+				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 
 	@Override
 	protected void initEquipment(LocalDifficulty difficulty) {
 		super.initEquipment(difficulty);
-		this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(DoomItems.ARGENT_AXE));
 		this.equipStack(EquipmentSlot.OFFHAND, new ItemStack(DoomItems.SG));
 	}
 
