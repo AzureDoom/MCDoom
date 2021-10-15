@@ -190,7 +190,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 		public void tick() {
 			LivingEntity livingEntity = this.parentEntity.getTarget();
 			if (livingEntity != null) {
-				if (this.parentEntity.canSee(livingEntity)) {
+				if (parentEntity.distanceTo(livingEntity) < 10000.0D) {
 					++this.cooldown;
 					Random rand = new Random();
 					float f2 = (float) MathHelper.atan2(livingEntity.getZ() - parentEntity.getZ(),

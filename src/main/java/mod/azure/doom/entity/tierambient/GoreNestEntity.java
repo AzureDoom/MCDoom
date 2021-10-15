@@ -170,6 +170,9 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable {
 				this.spawnWave();
 			}
 		}
+		if (this.getSpawnTimer() == 3) {
+			this.remove();
+		}
 		super.tickMovement();
 	}
 

@@ -8,10 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.RangedShotgunAttackGoal;
-import mod.azure.doom.entity.attack.AbstractRangedAttack;
-import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
-import mod.azure.doom.entity.tierfodder.ShotgunguyEntity;
 import mod.azure.doom.item.ammo.ShellAmmo;
 import mod.azure.doom.util.ModSoundEvents;
 import mod.azure.doom.util.registry.DoomItems;
@@ -34,7 +31,6 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -140,32 +136,6 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
 	}
 
-	public class FireballAttack extends AbstractRangedAttack {
-
-		public FireballAttack(DemonEntity parentEntity, double xOffSetModifier, double entityHeightFraction,
-				double zOffSetModifier, float damage) {
-			super(parentEntity, xOffSetModifier, entityHeightFraction, zOffSetModifier, damage);
-		}
-
-		public FireballAttack(DemonEntity parentEntity) {
-			super(parentEntity);
-		}
-
-		@Override
-		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(ModSoundEvents.SHOTGUN_SHOOT, 1, 1);
-		}
-
-		@Override
-		public ProjectileEntity getProjectile(World world, double d2, double d3, double d4) {
-			ShotgunShellEntity arrowentity = new ShotgunShellEntity(world, this.parentEntity);
-			arrowentity.setProperties(this.parentEntity, this.parentEntity.pitch, this.parentEntity.yaw, 0.0F,
-					1.0F * 3.0F, 1.0F);
-			return arrowentity;
-
-		}
-	}
-
 	static class TeleportTowardsPlayerGoal extends FollowTargetGoal<PlayerEntity> {
 		private final MarauderEntity enderman;
 		private PlayerEntity targetPlayer;
@@ -244,7 +214,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 		}
 	}
 
-	private boolean isPlayerStaring(PlayerEntity player) {
+	public boolean isPlayerStaring(PlayerEntity player) {
 		Vec3d vec3d = player.getRotationVec(1.0F).normalize();
 		Vec3d vec3d2 = new Vec3d(this.getX() - player.getX(), this.getEyeY() - player.getEyeY(),
 				this.getZ() - player.getZ());
@@ -335,7 +305,6 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 	@Override
 	protected void initEquipment(LocalDifficulty difficulty) {
 		super.initEquipment(difficulty);
-		this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(DoomItems.ARGENT_AXE));
 		this.equipStack(EquipmentSlot.OFFHAND, new ItemStack(DoomItems.SG));
 	}
 
@@ -382,7 +351,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 	}
 
 	protected ShotgunShellEntity createArrowProjectile(ItemStack arrow, float damageModifier) {
-		return ShotgunguyEntity.createArrowProjectile(this, arrow, damageModifier);
+		return MarauderEntity.createArrowProjectile(this, arrow, damageModifier);
 	}
 
 	public boolean canUseRangedWeapon(Item weapon) {
@@ -394,7 +363,6 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 				: DoomItems.SHOTGUN_SHELLS));
 		ShotgunShellEntity persistentProjectileEntity = arrowItem.createArrow(entity.world, stack, entity, true);
 		persistentProjectileEntity.applyEnchantmentEffects(entity, damageModifier);
-		persistentProjectileEntity.marauderDamage = true;
 		return persistentProjectileEntity;
 	}
 

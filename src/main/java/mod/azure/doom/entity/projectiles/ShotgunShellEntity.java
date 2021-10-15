@@ -1,6 +1,5 @@
 package mod.azure.doom.entity.projectiles;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.packets.EntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
@@ -40,20 +39,16 @@ public class ShotgunShellEntity extends PersistentProjectileEntity implements IA
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
-	public boolean marauderDamage;
+	public float shelldamage;
 
 	public ShotgunShellEntity(EntityType<? extends ShotgunShellEntity> type, World world) {
 		super(type, world);
 		this.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
 	}
 
-	public ShotgunShellEntity(World world, LivingEntity owner) {
+	public ShotgunShellEntity(World world, LivingEntity owner, float damage) {
 		this(ProjectilesEntityRegister.SHOTGUN_SHELL, owner, world);
-	}
-
-	public ShotgunShellEntity(World world, LivingEntity owner, boolean isMarauder) {
-		this(ProjectilesEntityRegister.SHOTGUN_SHELL, owner, world);
-		this.marauderDamage = isMarauder;
+		this.shelldamage = damage;
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -266,7 +261,7 @@ public class ShotgunShellEntity extends PersistentProjectileEntity implements IA
 				((LivingEntity) entity2).onAttacking(entity);
 			}
 		}
-		if (entity.damage(damageSource2, DoomMod.config.weapons.shotgun_damage)) {
+		if (entity.damage(damageSource2, shelldamage)) {
 			if (entity instanceof LivingEntity) {
 				LivingEntity livingEntity = (LivingEntity) entity;
 				if (!this.world.isClient && entity2 instanceof LivingEntity) {

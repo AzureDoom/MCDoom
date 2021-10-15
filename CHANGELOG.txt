@@ -1,5 +1,7 @@
-v.4.0.19
+v.4.0.20
 
-- Marauder axe and shotgun damage configs added.
-- Tripled Arch Maykr range.
-- Fixed Doom Hunter movement and damage.
+- Fixed Shotguns.
+- Tweaked Doom Hunters flying.
+- Fixed Icon of Sin.
+- Fixed Summoner hurting itself with flames.
+- Gore Nests now remove themselves upon spawning it's final wave.
