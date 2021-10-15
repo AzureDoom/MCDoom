@@ -95,7 +95,7 @@ public class Shotgun extends DoomBaseItem {
 	}
 
 	public ShotgunShellEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
-		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter, false);
+		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter, DoomMod.config.weapons.shotgun_damage);
 		return arrowentity;
 	}
 

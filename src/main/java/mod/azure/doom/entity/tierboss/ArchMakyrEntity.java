@@ -159,7 +159,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 
 		public void tick() {
 			LivingEntity livingEntity = this.parentEntity.getTarget();
-			if (livingEntity.squaredDistanceTo(this.parentEntity) < 4096.0D && this.parentEntity.canSee(livingEntity)) {
+			if (livingEntity.squaredDistanceTo(this.parentEntity) < 150.0D) {
 				World world = this.parentEntity.world;
 				Vec3d vec3d = this.parentEntity.getRotationVec(1.0F);
 				++this.cooldown;
