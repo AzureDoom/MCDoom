@@ -211,9 +211,9 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 				double f = livingEntity.getX() - (this.parentEntity.getX() + vec3d.x * 2.0D);
 				double g = livingEntity.getBodyY(0.5D) - (0.5D + this.parentEntity.getBodyY(0.5D));
 				double h = livingEntity.getZ() - (this.parentEntity.getZ() + vec3d.z * 2.0D);
-				CustomFireballEntity fireballEntity = new CustomFireballEntity(world, this.parentEntity, f, g, h, 6);
-				CustomFireballEntity fireballEntity1 = new CustomFireballEntity(world, this.parentEntity, f, g, h, 6);
-				CustomFireballEntity fireballEntity2 = new CustomFireballEntity(world, this.parentEntity, f, g, h, 6);
+				CustomFireballEntity fireballEntity = new CustomFireballEntity(world, this.parentEntity, f, g, h, config.motherdemon_ranged_damage);
+				CustomFireballEntity fireballEntity1 = new CustomFireballEntity(world, this.parentEntity, f, g, h, config.motherdemon_ranged_damage);
+				CustomFireballEntity fireballEntity2 = new CustomFireballEntity(world, this.parentEntity, f, g, h, config.motherdemon_ranged_damage);
 				double d = Math.min(livingEntity.getY(), parentEntity.getY());
 				double e1 = Math.max(livingEntity.getY(), parentEntity.getY()) + 1.0D;
 				float f2 = (float) MathHelper.atan2(livingEntity.getZ() - parentEntity.getZ(),
