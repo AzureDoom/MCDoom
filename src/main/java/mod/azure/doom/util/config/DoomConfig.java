@@ -312,6 +312,8 @@ public class DoomConfig {
 		public final ConfigValue<Double> shotgunguy_health;
 
 		public final ConfigValue<Double> marauder_health;
+		public final ConfigValue<Double> marauder_axe_damage;
+		public final ConfigValue<Double> marauder_ssgdamage;
 
 		public final ConfigValue<Double> pain_health;
 
@@ -696,6 +698,10 @@ public class DoomConfig {
 					.defineInRange("Marauder Max Group", 1, 1, Integer.MAX_VALUE);
 			this.marauder_health = builder.translation("text.doom.config.marauder_health")
 					.defineInRange("Sets Marauder Max Health", 300, 1, Double.MAX_VALUE);
+			this.marauder_axe_damage = builder.translation("text.doom.config.marauder_axe_damage")
+					.defineInRange("Sets Marauder Axe Damage", 6, 1, Double.MAX_VALUE);
+			this.marauder_ssgdamage = builder.translation("text.doom.config.marauder_ssgdamage")
+					.defineInRange("Sets Marauder Shotgun Damage", 10.5, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Pain Elemental");

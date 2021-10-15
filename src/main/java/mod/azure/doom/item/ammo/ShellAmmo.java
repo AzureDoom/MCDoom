@@ -36,9 +36,9 @@ public class ShellAmmo extends ArrowItem {
 		return enchant <= 0 ? false : this instanceof ShellAmmo;
 	}
 
-	@Override
-	public ShotgunShellEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
-		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter);
+	public ShotgunShellEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter, boolean damage) {
+		ShotgunShellEntity arrowentity = damage ? new ShotgunShellEntity(worldIn, shooter, true)
+				: new ShotgunShellEntity(worldIn, shooter, false);
 		arrowentity.setBaseDamage(this.damage);
 		return arrowentity;
 	}

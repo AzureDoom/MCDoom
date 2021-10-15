@@ -40,7 +40,8 @@ public class ShotgunShellEntity extends AbstractArrowEntity implements IAnimatab
 	protected boolean inAir;
 	private int ticksInAir;
 	@SuppressWarnings("unused")
-	private float directHitDamage = 3F;
+	private float directHitDamage;
+	public boolean marauderDamage;
 
 	public ShotgunShellEntity(EntityType<? extends AbstractArrowEntity> type, World world) {
 		super(type, world);
@@ -73,8 +74,9 @@ public class ShotgunShellEntity extends AbstractArrowEntity implements IAnimatab
 		return this.factory;
 	}
 
-	public ShotgunShellEntity(World world, LivingEntity owner) {
+	public ShotgunShellEntity(World world, LivingEntity owner, boolean isMarauder) {
 		super(ModEntityTypes.SHOTGUN_SHELL.get(), owner, world);
+		this.marauderDamage = isMarauder;
 	}
 
 	public ShotgunShellEntity(World worldIn, double accelX, double accelY, double accelZ, float directHitDamage) {
@@ -249,7 +251,8 @@ public class ShotgunShellEntity extends AbstractArrowEntity implements IAnimatab
 				((LivingEntity) entity1).setLastHurtMob(entity);
 			}
 		}
-		if (entity.hurt(damagesource, DoomConfig.SERVER.shotgun_damage.get().floatValue())) {
+		if (entity.hurt(damagesource, (this.marauderDamage ? DoomConfig.SERVER.marauder_ssgdamage.get().floatValue()
+				: DoomConfig.SERVER.shotgun_damage.get().floatValue()))) {
 			if (entity instanceof LivingEntity) {
 				LivingEntity livingentity = (LivingEntity) entity;
 				if (!this.level.isClientSide && entity1 instanceof LivingEntity) {

@@ -6,10 +6,11 @@ import javax.annotation.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
-import mod.azure.doom.entity.ai.goal.RangedStaticAttackGoal;
-import mod.azure.doom.entity.attack.AbstractRangedAttack;
-import mod.azure.doom.entity.attack.AttackSound;
+import mod.azure.doom.entity.ai.goal.RangedShotgunAttackGoal;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
+import mod.azure.doom.entity.tierfodder.ShotgunguyEntity;
+import mod.azure.doom.item.ammo.ShellAmmo;
+import mod.azure.doom.item.weapons.Shotgun;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.config.DoomConfig.Server;
 import mod.azure.doom.util.registry.DoomItems;
@@ -20,6 +21,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
@@ -32,7 +34,7 @@ import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -44,7 +46,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
@@ -58,8 +62,21 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class MarauderEntity extends DemonEntity implements IAnimatable {
+public class MarauderEntity extends DemonEntity implements IAnimatable, IRangedAttackMob {
 
+	private final RangedShotgunAttackGoal<MarauderEntity> aiArrowAttack = new RangedShotgunAttackGoal<>(this, 1.0D, 20,
+			15.0F, 2);
+	private final DemonAttackGoal aiAttackOnCollide = new DemonAttackGoal(this, 1.2D, false, 1) {
+		public void stop() {
+			super.stop();
+			MarauderEntity.this.setAggressive(false);
+		}
+
+		public void start() {
+			super.start();
+			MarauderEntity.this.setAggressive(true);
+		}
+	};
 	private AnimationFactory factory = new AnimationFactory(this);
 	private int targetChangeTime;
 
@@ -105,6 +122,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable {
 
 	public MarauderEntity(EntityType<MarauderEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
+		this.setCombatTask();
 	}
 
 	@Override
@@ -122,11 +140,6 @@ public class MarauderEntity extends DemonEntity implements IAnimatable {
 
 	protected void applyEntityAI() {
 		this.targetSelector.addGoal(1, new MarauderEntity.FindPlayerGoal(this, this::isAngryAt));
-		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 1));
-		this.goalSelector.addGoal(4,
-				new RangedStaticAttackGoal(this, new MarauderEntity.FireballAttack(this)
-						.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(config.shotgun_damage.get().floatValue()),
-						60, 20, 30F, 2));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, false));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolemEntity.class, true));
@@ -135,34 +148,9 @@ public class MarauderEntity extends DemonEntity implements IAnimatable {
 
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, config.marauder_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
+				.add(Attributes.MAX_HEALTH, config.marauder_health.get())
+				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.marauder_axe_damage.get())
 				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
-	}
-
-	public class FireballAttack extends AbstractRangedAttack {
-
-		public FireballAttack(DemonEntity parentEntity, double xOffSetModifier, double entityHeightFraction,
-				double zOffSetModifier, float damage) {
-			super(parentEntity, xOffSetModifier, entityHeightFraction, zOffSetModifier, damage);
-		}
-
-		public FireballAttack(DemonEntity parentEntity) {
-			super(parentEntity);
-		}
-
-		@Override
-		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(ModSoundEvents.SHOTGUN_SHOOT.get(), 1, 1);
-		}
-
-		@Override
-		public ProjectileEntity getProjectile(World world, double d2, double d3, double d4) {
-			ShotgunShellEntity arrowentity = new ShotgunShellEntity(world, this.parentEntity);
-			arrowentity.shootFromRotation(this.parentEntity, this.parentEntity.xRot, this.parentEntity.yRot, 0.0F,
-					1.0F * 3.0F, 1.0F);
-			arrowentity.isNoGravity();
-			return arrowentity;
-		}
 	}
 
 	static class FindPlayerGoal extends NearestAttackableTargetGoal<PlayerEntity> {
@@ -330,8 +318,70 @@ public class MarauderEntity extends DemonEntity implements IAnimatable {
 			@Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 		this.populateDefaultEquipmentSlots(difficultyIn);
+		this.setCombatTask();
 		this.populateDefaultEquipmentEnchantments(difficultyIn);
 		return spawnDataIn;
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundNBT compound) {
+		super.readAdditionalSaveData(compound);
+		this.setCombatTask();
+	}
+
+	@Override
+	public void setItemSlot(EquipmentSlotType slotIn, ItemStack stack) {
+		super.setItemSlot(slotIn, stack);
+		if (!this.level.isClientSide) {
+			this.setCombatTask();
+		}
+	}
+
+	public void setCombatTask() {
+		if (this.level != null && !this.level.isClientSide) {
+			this.goalSelector.removeGoal(this.aiAttackOnCollide);
+			this.goalSelector.removeGoal(this.aiArrowAttack);
+			ItemStack itemstack = this.getItemInHand(ProjectileHelper.getWeaponHoldingHand(this, DoomItems.SG.get()));
+			if (itemstack.getItem() instanceof Shotgun) {
+				int i = 20;
+				if (this.level.getDifficulty() != Difficulty.HARD) {
+					i = 20;
+				}
+				this.aiArrowAttack.setAttackCooldown(i);
+				this.goalSelector.addGoal(4, this.aiArrowAttack);
+			} else {
+				this.goalSelector.addGoal(4, this.aiAttackOnCollide);
+			}
+		}
+	}
+
+	@Override
+	public void performRangedAttack(LivingEntity target, float distanceFactor) {
+		ItemStack itemstack = this
+				.getProjectile(this.getItemInHand(ProjectileHelper.getWeaponHoldingHand(this, DoomItems.SG.get())));
+		ShotgunShellEntity abstractarrowentity = this.fireArrowa(itemstack, distanceFactor);
+		if (this.getMainHandItem().getItem() instanceof Shotgun)
+			abstractarrowentity = ((Shotgun) this.getMainHandItem().getItem()).customeArrow(abstractarrowentity);
+		double d0 = target.getX() - this.getX();
+		double d1 = target.getY(0.3333333333333333D) - abstractarrowentity.getY();
+		double d2 = target.getZ() - this.getZ();
+		double d3 = (double) MathHelper.sqrt(d0 * d0 + d2 * d2);
+		abstractarrowentity.shoot(d0, d1 + d3 * (double) 0.05F, d2, 1.6F, 0.0F);
+		this.playSound(ModSoundEvents.SHOTGUN_SHOOT.get(), 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+		this.level.addFreshEntity(abstractarrowentity);
+	}
+
+	protected ShotgunShellEntity fireArrowa(ItemStack arrowStack, float distanceFactor) {
+		return ShotgunguyEntity.fireArrow(this, arrowStack, distanceFactor);
+	}
+
+	public static ShotgunShellEntity fireArrow(LivingEntity shooter, ItemStack arrowStack, float distanceFactor) {
+		ShellAmmo arrowitem = (ShellAmmo) (arrowStack.getItem() instanceof ShellAmmo ? arrowStack.getItem()
+				: DoomItems.SHOTGUN_SHELLS.get());
+		ShotgunShellEntity abstractarrowentity = arrowitem.createArrow(shooter.level, arrowStack, shooter, true);
+		abstractarrowentity.setEnchantmentEffectsFromEntity(shooter, distanceFactor);
+		abstractarrowentity.marauderDamage = true;
+		return abstractarrowentity;
 	}
 
 	@Override
