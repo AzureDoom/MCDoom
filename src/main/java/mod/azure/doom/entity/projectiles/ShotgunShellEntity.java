@@ -40,7 +40,8 @@ public class ShotgunShellEntity extends AbstractArrow implements IAnimatable {
 	protected boolean inAir;
 	private int ticksInAir;
 	@SuppressWarnings("unused")
-	private float directHitDamage = 3F;
+	private float directHitDamage;
+	public boolean marauderDamage;
 
 	public ShotgunShellEntity(EntityType<? extends AbstractArrow> type, Level world) {
 		super(type, world);
@@ -73,8 +74,9 @@ public class ShotgunShellEntity extends AbstractArrow implements IAnimatable {
 		return this.factory;
 	}
 
-	public ShotgunShellEntity(Level world, LivingEntity owner) {
+	public ShotgunShellEntity(Level world, LivingEntity owner, boolean isMarauder) {
 		super(ModEntityTypes.SHOTGUN_SHELL.get(), owner, world);
+		this.marauderDamage = isMarauder;
 	}
 
 	public ShotgunShellEntity(Level worldIn, double accelX, double accelY, double accelZ, float directHitDamage) {

@@ -145,7 +145,8 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.marauder_health.get()).add(Attributes.ATTACK_DAMAGE, 6.0D)
+				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.marauder_health.get())
+				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.marauder_axe_damage.get())
 				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
@@ -205,9 +206,9 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 	public static ShotgunShellEntity fireArrow(LivingEntity shooter, ItemStack arrowStack, float distanceFactor) {
 		ShellAmmo arrowitem = (ShellAmmo) (arrowStack.getItem() instanceof ShellAmmo ? arrowStack.getItem()
 				: DoomItems.SHOTGUN_SHELLS.get());
-		ShotgunShellEntity abstractarrowentity = arrowitem.createArrow(shooter.level, arrowStack, shooter);
+		ShotgunShellEntity abstractarrowentity = arrowitem.createArrow(shooter.level, arrowStack, shooter, true);
 		abstractarrowentity.setEnchantmentEffectsFromEntity(shooter, distanceFactor);
-		abstractarrowentity.setBaseDamage(DoomConfig.SERVER.shotgun_damage.get());
+		abstractarrowentity.setBaseDamage(DoomConfig.SERVER.marauder_ssgdamage.get().floatValue());
 		return abstractarrowentity;
 	}
 

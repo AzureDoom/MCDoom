@@ -26,9 +26,8 @@ public class ShellAmmo extends Item {
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 
-	public ShotgunShellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter);
-		arrowentity.setBaseDamage(this.damage);
+	public ShotgunShellEntity createArrow(Level world, ItemStack stack, LivingEntity shooter, boolean damage) {
+		ShotgunShellEntity arrowentity = damage ?  new ShotgunShellEntity (world, shooter, true): new ShotgunShellEntity(world, shooter, false);
 		return arrowentity;
 	}
 }

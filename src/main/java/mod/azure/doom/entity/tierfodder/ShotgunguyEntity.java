@@ -191,7 +191,7 @@ public class ShotgunguyEntity extends DemonEntity implements RangedAttackMob, IA
 	public static ShotgunShellEntity fireArrow(LivingEntity shooter, ItemStack arrowStack, float distanceFactor) {
 		ShellAmmo arrowitem = (ShellAmmo) (arrowStack.getItem() instanceof ShellAmmo ? arrowStack.getItem()
 				: DoomItems.SHOTGUN_SHELLS.get());
-		ShotgunShellEntity abstractarrowentity = arrowitem.createArrow(shooter.level, arrowStack, shooter);
+		ShotgunShellEntity abstractarrowentity = arrowitem.createArrow(shooter.level, arrowStack, shooter, false);
 		abstractarrowentity.setEnchantmentEffectsFromEntity(shooter, distanceFactor);
 		abstractarrowentity.setBaseDamage(DoomConfig.SERVER.shotgun_damage.get());
 		return abstractarrowentity;
