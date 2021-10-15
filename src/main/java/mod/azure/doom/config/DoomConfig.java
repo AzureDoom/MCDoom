@@ -390,6 +390,8 @@ public class DoomConfig implements ConfigData {
 		public double shotgunguy_health = 15;
 
 		public double marauder_health = 300;
+		public double marauder_axe_damage = 6;
+		public float marauder_ssgdamage = 10.5F;
 
 		public double pain_health = 80;
 
