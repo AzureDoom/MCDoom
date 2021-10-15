@@ -3,8 +3,7 @@ package mod.azure.doom.entity.tiersuperheavy;
 import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.attack.AbstractRangedAttack;
-import mod.azure.doom.entity.attack.AttackSound;
+import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import mod.azure.doom.util.registry.ModSoundEvents;
@@ -29,7 +28,6 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -53,17 +51,18 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 
 	public DoomHunterEntity(EntityType<? extends DoomHunterEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
+		this.moveControl = new DemonFlightMoveControl(this, 90, false);
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
 	public int flameTimer;
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (event.isMoving() && this.getHealth() > (this.getMaxHealth() * 0.50)) {
+		if (!this.isOnGround() && this.onGround && this.getHealth() > (this.getMaxHealth() * 0.50)) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
 			return PlayState.CONTINUE;
 		}
-		if (event.isMoving() && this.getHealth() < (this.getMaxHealth() * 0.50)) {
+		if (!this.isOnGround() && this.onGround && this.getHealth() < (this.getMaxHealth() * 0.50)) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_nosled", true));
 			return PlayState.CONTINUE;
 		}
@@ -174,7 +173,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 				double f = livingEntity.getX() - (this.parentEntity.getX() + vec3d.x * 2.0D);
 				double g = livingEntity.getBodyY(0.5D) - (0.5D + this.parentEntity.getBodyY(0.5D));
 				double h = livingEntity.getZ() - (this.parentEntity.getZ() + vec3d.z * 2.0D);
-				RocketMobEntity fireballEntity = new RocketMobEntity(world, this.parentEntity, f, g, h, 6);
+				RocketMobEntity fireballEntity = new RocketMobEntity(world, this.parentEntity, f, g, h,
+						config.doomhunter_ranged_damage);
 				double d = Math.min(livingEntity.getY(), parentEntity.getY());
 				double e1 = Math.max(livingEntity.getY(), parentEntity.getY()) + 1.0D;
 				float f2 = (float) MathHelper.atan2(livingEntity.getZ() - parentEntity.getZ(),
@@ -234,7 +234,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 		} while (blockPos.getY() >= MathHelper.floor(maxY) - 1);
 
 		if (bl) {
-			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this, config.doomhunter_ranged_damage);
+			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
+					config.doomhunter_ranged_damage);
 			fang.setFireTicks(age);
 			fang.isInvisible();
 			this.world.spawnEntity(fang);
@@ -299,34 +300,12 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 
 	}
 
-	public class FireballAttack extends AbstractRangedAttack {
-
-		public FireballAttack(DemonEntity parentEntity, double xOffSetModifier, double entityHeightFraction,
-				double zOffSetModifier, float damage) {
-			super(parentEntity, xOffSetModifier, entityHeightFraction, zOffSetModifier, damage);
-		}
-
-		public FireballAttack(DemonEntity parentEntity) {
-			super(parentEntity);
-		}
-
-		@Override
-		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(ModSoundEvents.ROCKET_FIRING, 1, 1);
-		}
-
-		@Override
-		public ProjectileEntity getProjectile(World world, double d2, double d3, double d4) {
-			return new RocketMobEntity(world, this.parentEntity, d2, d3, d4, damage);
-
-		}
-	}
-
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.doomhunter_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.doomhunter_melee_damage)
+				.add(EntityAttributes.GENERIC_FLYING_SPEED, 2.25D)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 50D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
