@@ -1,7 +1,6 @@
 package mod.azure.doom.entity.projectiles;
 
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -39,9 +38,7 @@ public class ShotgunShellEntity extends AbstractArrowEntity implements IAnimatab
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
-	@SuppressWarnings("unused")
-	private float directHitDamage;
-	public boolean marauderDamage;
+	public float shelldamage;
 
 	public ShotgunShellEntity(EntityType<? extends AbstractArrowEntity> type, World world) {
 		super(type, world);
@@ -74,18 +71,9 @@ public class ShotgunShellEntity extends AbstractArrowEntity implements IAnimatab
 		return this.factory;
 	}
 
-	public ShotgunShellEntity(World world, LivingEntity owner, boolean isMarauder) {
+	public ShotgunShellEntity(World world, LivingEntity owner, float damage) {
 		super(ModEntityTypes.SHOTGUN_SHELL.get(), owner, world);
-		this.marauderDamage = isMarauder;
-	}
-
-	public ShotgunShellEntity(World worldIn, double accelX, double accelY, double accelZ, float directHitDamage) {
-		super(ModEntityTypes.SHOTGUN_SHELL.get(), accelX, accelY, accelZ, worldIn);
-		this.directHitDamage = directHitDamage;
-	}
-
-	public void setDirectHitDamage(float directHitDamage) {
-		this.directHitDamage = directHitDamage;
+		this.shelldamage = damage;
 	}
 
 	@Override
@@ -251,8 +239,7 @@ public class ShotgunShellEntity extends AbstractArrowEntity implements IAnimatab
 				((LivingEntity) entity1).setLastHurtMob(entity);
 			}
 		}
-		if (entity.hurt(damagesource, (this.marauderDamage ? DoomConfig.SERVER.marauder_ssgdamage.get().floatValue()
-				: DoomConfig.SERVER.shotgun_damage.get().floatValue()))) {
+		if (entity.hurt(damagesource, shelldamage)) {
 			if (entity instanceof LivingEntity) {
 				LivingEntity livingentity = (LivingEntity) entity;
 				if (!this.level.isClientSide && entity1 instanceof LivingEntity) {

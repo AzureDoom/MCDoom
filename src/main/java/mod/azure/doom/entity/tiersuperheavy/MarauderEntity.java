@@ -8,7 +8,6 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.RangedShotgunAttackGoal;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
-import mod.azure.doom.entity.tierfodder.ShotgunguyEntity;
 import mod.azure.doom.item.ammo.ShellAmmo;
 import mod.azure.doom.item.weapons.Shotgun;
 import mod.azure.doom.util.config.DoomConfig;
@@ -220,7 +219,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IRangedA
 		}
 	}
 
-	private boolean isLookingAtMe(PlayerEntity p_70821_1_) {
+	public boolean isLookingAtMe(PlayerEntity p_70821_1_) {
 		Vector3d vector3d = p_70821_1_.getViewVector(1.0F).normalize();
 		Vector3d vector3d1 = new Vector3d(this.getX() - p_70821_1_.getX(), this.getEyeY() - p_70821_1_.getEyeY(),
 				this.getZ() - p_70821_1_.getZ());
@@ -308,7 +307,6 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IRangedA
 	@Override
 	protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
 		super.populateDefaultEquipmentSlots(difficulty);
-		this.setItemSlot(EquipmentSlotType.MAINHAND, new ItemStack(DoomItems.ARGENT_AXE.get()));
 		this.setItemSlot(EquipmentSlotType.OFFHAND, new ItemStack(DoomItems.SG.get()));
 	}
 
@@ -372,7 +370,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IRangedA
 	}
 
 	protected ShotgunShellEntity fireArrowa(ItemStack arrowStack, float distanceFactor) {
-		return ShotgunguyEntity.fireArrow(this, arrowStack, distanceFactor);
+		return MarauderEntity.fireArrow(this, arrowStack, distanceFactor);
 	}
 
 	public static ShotgunShellEntity fireArrow(LivingEntity shooter, ItemStack arrowStack, float distanceFactor) {
@@ -380,7 +378,6 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IRangedA
 				: DoomItems.SHOTGUN_SHELLS.get());
 		ShotgunShellEntity abstractarrowentity = arrowitem.createArrow(shooter.level, arrowStack, shooter, true);
 		abstractarrowentity.setEnchantmentEffectsFromEntity(shooter, distanceFactor);
-		abstractarrowentity.marauderDamage = true;
 		return abstractarrowentity;
 	}
 

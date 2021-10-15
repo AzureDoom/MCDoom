@@ -30,6 +30,8 @@ import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
+import net.minecraft.pathfinding.FlyingPathNavigator;
+import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
@@ -352,6 +354,21 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 				.add(Attributes.MAX_HEALTH, config.doomhunter_health.get()).add(Attributes.FLYING_SPEED, 2.25D)
 				.add(Attributes.ATTACK_DAMAGE, config.doomhunter_melee_damage.get())
 				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+	}
+
+	protected PathNavigator createNavigation(World worldIn) {
+		FlyingPathNavigator flyingpathnavigator = new FlyingPathNavigator(this, worldIn);
+		flyingpathnavigator.setCanOpenDoors(false);
+		flyingpathnavigator.setCanFloat(true);
+		flyingpathnavigator.setCanPassDoors(true);
+		return flyingpathnavigator;
+	}
+
+	public boolean causeFallDamage(float distance, float damageMultiplier) {
+		return false;
+	}
+
+	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
 	}
 
 	@Override

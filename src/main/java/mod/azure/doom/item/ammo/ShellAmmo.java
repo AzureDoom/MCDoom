@@ -3,6 +3,7 @@ package mod.azure.doom.item.ammo;
 import java.util.List;
 
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
+import mod.azure.doom.util.config.DoomConfig;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ArrowItem;
@@ -36,9 +37,10 @@ public class ShellAmmo extends ArrowItem {
 		return enchant <= 0 ? false : this instanceof ShellAmmo;
 	}
 
-	public ShotgunShellEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter, boolean damage) {
-		ShotgunShellEntity arrowentity = damage ? new ShotgunShellEntity(worldIn, shooter, true)
-				: new ShotgunShellEntity(worldIn, shooter, false);
+	public ShotgunShellEntity createArrow(World world, ItemStack stack, LivingEntity shooter, boolean marauder) {
+		ShotgunShellEntity arrowentity = new ShotgunShellEntity(world, shooter,
+				marauder ? DoomConfig.SERVER.marauder_ssgdamage.get().floatValue()
+						: DoomConfig.SERVER.shotgun_damage.get().floatValue());
 		arrowentity.setBaseDamage(this.damage);
 		return arrowentity;
 	}
