@@ -184,7 +184,7 @@ public class ShotgunguyEntity extends DemonEntity implements RangedAttackMob, IA
 	public static ShotgunShellEntity createArrowProjectile(LivingEntity entity, ItemStack stack, float damageModifier) {
 		ShellAmmo arrowItem = (ShellAmmo) ((ShellAmmo) (stack.getItem() instanceof ShellAmmo ? stack.getItem()
 				: DoomItems.SHOTGUN_SHELLS));
-		ShotgunShellEntity persistentProjectileEntity = arrowItem.createArrow(entity.world, stack, entity);
+		ShotgunShellEntity persistentProjectileEntity = arrowItem.createArrow(entity.world, stack, entity, false);
 		persistentProjectileEntity.applyEnchantmentEffects(entity, damageModifier);
 
 		return persistentProjectileEntity;

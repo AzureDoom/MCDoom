@@ -40,6 +40,7 @@ public class ShotgunShellEntity extends PersistentProjectileEntity implements IA
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
+	public boolean marauderDamage;
 
 	public ShotgunShellEntity(EntityType<? extends ShotgunShellEntity> type, World world) {
 		super(type, world);
@@ -48,6 +49,11 @@ public class ShotgunShellEntity extends PersistentProjectileEntity implements IA
 
 	public ShotgunShellEntity(World world, LivingEntity owner) {
 		super(ProjectilesEntityRegister.SHOTGUN_SHELL, owner, world);
+	}
+
+	public ShotgunShellEntity(World world, LivingEntity owner, boolean isMarauder) {
+		this(ProjectilesEntityRegister.SHOTGUN_SHELL, owner, world);
+		this.marauderDamage = isMarauder;
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);

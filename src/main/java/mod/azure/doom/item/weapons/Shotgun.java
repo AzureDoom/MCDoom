@@ -43,9 +43,6 @@ public class Shotgun extends DoomBaseItem {
 					ShotgunShellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
 					abstractarrowentity.setProperties(playerentity, playerentity.pitch, playerentity.yaw, 0.0F,
 							1.0F * 3.0F, 1.0F);
-
-					abstractarrowentity.setDamage(3.7);
-
 					stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
 					worldIn.spawnEntity(abstractarrowentity);
 					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
@@ -98,7 +95,7 @@ public class Shotgun extends DoomBaseItem {
 	}
 
 	public ShotgunShellEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
-		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter);
+		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter, false);
 		return arrowentity;
 	}
 

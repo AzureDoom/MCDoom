@@ -28,10 +28,11 @@ public class ShellAmmo extends ArrowItem {
 		super.appendTooltip(stack, world, tooltip, context);
 	}
 
-	public ShotgunShellEntity createArrow(World world, ItemStack stack, LivingEntity shooter) {
-		ShotgunShellEntity arrowEntity = new ShotgunShellEntity(world, shooter);
-		arrowEntity.initFromStack(stack);
-		return arrowEntity;
+	public ShotgunShellEntity createArrow(World world, ItemStack stack, LivingEntity shooter, boolean damage) {
+		ShotgunShellEntity arrowentity = damage ? new ShotgunShellEntity(world, shooter, true)
+				: new ShotgunShellEntity(world, shooter, false);
+		arrowentity.initFromStack(stack);
+		return arrowentity;
 	}
 
 }
