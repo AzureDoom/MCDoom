@@ -191,9 +191,9 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 	public static ShotgunShellEntity createArrowProjectile(LivingEntity entity, ItemStack stack, float damageModifier) {
 		ShellAmmo arrowItem = (ShellAmmo) ((ShellAmmo) (stack.getItem() instanceof ShellAmmo ? stack.getItem()
 				: DoomItems.SHOTGUN_SHELLS));
-		ShotgunShellEntity persistentProjectileEntity = arrowItem.createArrow(entity.world, stack, entity);
+		ShotgunShellEntity persistentProjectileEntity = arrowItem.createArrow(entity.world, stack, entity, true);
 		persistentProjectileEntity.applyEnchantmentEffects(entity, damageModifier);
-
+		persistentProjectileEntity.setDamage(config.marauder_ssgdamage);
 		return persistentProjectileEntity;
 	}
 
@@ -373,7 +373,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.marauder_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6.0D).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.marauder_axe_damage).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 
 	@Override
