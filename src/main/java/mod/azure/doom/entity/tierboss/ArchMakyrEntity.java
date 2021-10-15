@@ -177,7 +177,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 						world.spawnEntity(fireballEntity);
 						this.parentEntity.setAttackingState(1);
 					} else {
-						float q = 50.0F;
+						float q = 150.0F;
 						int k = MathHelper.floor(this.parentEntity.getX() - (double) q - 1.0D);
 						int l = MathHelper.floor(this.parentEntity.getX() + (double) q + 1.0D);
 						int t = MathHelper.floor(this.parentEntity.getY() - (double) q - 1.0D);
