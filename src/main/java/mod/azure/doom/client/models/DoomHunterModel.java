@@ -32,7 +32,7 @@ public class DoomHunterModel extends AnimatedGeoModel<DoomHunterEntity> {
 
 	@Override
 	public Identifier getAnimationFileLocation(DoomHunterEntity object) {
-		return new Identifier(DoomMod.MODID, "animations/empty.animation.json");
+		return new Identifier(DoomMod.MODID, "animations/doomhunter.animation.json");
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
