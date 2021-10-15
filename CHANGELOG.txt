@@ -1,4 +1,5 @@
-v.4.0.22
+v.4.0.23
 
-- Expired Marauder axe is no longer craftable, only lootable from Marauders.
-- Reenabled all Doom Armor, Geckolib v3.0.16 is now required.
+- Marauder axe and shotgun damage configs added.
+- Tripled Arch Maykr range.
+- Fixed Doom Hunter movement, animations, and damage.
