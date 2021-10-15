@@ -333,7 +333,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 						this.parentEntity.setAttackingState(1);
 					} else {
 						if (!parentEntity.level.isClientSide) {
-							float f2 = 50.0F;
+							float f2 = 150.0F;
 							int k1 = MathHelper.floor(parentEntity.getX() - (double) f2 - 1.0D);
 							int l1 = MathHelper.floor(parentEntity.getX() + (double) f2 + 1.0D);
 							int i2 = MathHelper.floor(parentEntity.getY() - (double) f2 - 1.0D);
