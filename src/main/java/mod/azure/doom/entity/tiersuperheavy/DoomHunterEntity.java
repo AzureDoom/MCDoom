@@ -3,6 +3,7 @@ package mod.azure.doom.entity.tiersuperheavy;
 import javax.annotation.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import mod.azure.doom.util.config.DoomConfig;
@@ -57,16 +58,17 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 
 	public DoomHunterEntity(EntityType<DoomHunterEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
+		this.moveControl = new DemonFlightMoveControl(this, 90, false);
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (event.isMoving() && this.getHealth() > (this.getMaxHealth() * 0.50)) {
+		if (!this.isOnGround() && this.onGround && this.getHealth() > (this.getMaxHealth() * 0.50)) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
 			return PlayState.CONTINUE;
 		}
-		if (event.isMoving() && this.getHealth() < (this.getMaxHealth() * 0.50)) {
+		if (!this.isOnGround() && this.onGround && this.getHealth() < (this.getMaxHealth() * 0.50)) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_nosled", true));
 			return PlayState.CONTINUE;
 		}
@@ -347,7 +349,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, config.doomhunter_health.get())
+				.add(Attributes.MAX_HEALTH, config.doomhunter_health.get()).add(Attributes.FLYING_SPEED, 2.25D)
 				.add(Attributes.ATTACK_DAMAGE, config.doomhunter_melee_damage.get())
 				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
