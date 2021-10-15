@@ -10,6 +10,7 @@ import mod.azure.doom.entity.tierboss.MotherDemonEntity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
 import mod.azure.doom.entity.tiersuperheavy.ArchvileEntity;
 import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
+import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -117,6 +118,7 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 			Entity entity = list.get(k2);
 			if (!(entity instanceof MancubusEntity) && !(entity instanceof ArchvileEntity)
 					&& !(entity instanceof IconofsinEntity) && !(entity instanceof DoomHunterEntity)
+					&& !(entity instanceof SummonerEntity)
 					&& !(entity instanceof MotherDemonEntity)) {
 				double d12 = (double) (Mth.sqrt((float) entity.distanceTo(this)));
 				if (d12 <= 1.0D) {

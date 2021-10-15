@@ -3,6 +3,7 @@ package mod.azure.doom.item.ammo;
 import java.util.List;
 
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
+import mod.azure.doom.util.config.DoomConfig;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,8 +27,10 @@ public class ShellAmmo extends Item {
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 
-	public ShotgunShellEntity createArrow(Level world, ItemStack stack, LivingEntity shooter, boolean damage) {
-		ShotgunShellEntity arrowentity = damage ?  new ShotgunShellEntity (world, shooter, true): new ShotgunShellEntity(world, shooter, false);
+	public ShotgunShellEntity createArrow(Level world, ItemStack stack, LivingEntity shooter, boolean marauder) {
+		ShotgunShellEntity arrowentity = new ShotgunShellEntity(world, shooter,
+				marauder ? DoomConfig.SERVER.marauder_ssgdamage.get().floatValue()
+						: DoomConfig.SERVER.shotgun_damage.get().floatValue());
 		return arrowentity;
 	}
 }

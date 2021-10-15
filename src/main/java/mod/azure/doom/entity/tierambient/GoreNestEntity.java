@@ -128,6 +128,9 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable {
 				spawnTimer = spawnTimer + 1;
 			}
 		}
+		if (this.getSpawnTimer() == 3) {
+			this.remove(RemovalReason.KILLED);
+		}
 		super.aiStep();
 	}
 

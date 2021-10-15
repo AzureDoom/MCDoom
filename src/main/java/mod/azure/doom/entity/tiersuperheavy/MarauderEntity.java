@@ -8,7 +8,6 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.RangedShotgunAttackGoal;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
-import mod.azure.doom.entity.tierfodder.ShotgunguyEntity;
 import mod.azure.doom.item.ammo.ShellAmmo;
 import mod.azure.doom.item.weapons.Shotgun;
 import mod.azure.doom.util.config.DoomConfig;
@@ -200,7 +199,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 	}
 
 	protected ShotgunShellEntity fireArrowa(ItemStack arrowStack, float distanceFactor) {
-		return ShotgunguyEntity.fireArrow(this, arrowStack, distanceFactor);
+		return MarauderEntity.fireArrow(this, arrowStack, distanceFactor);
 	}
 
 	public static ShotgunShellEntity fireArrow(LivingEntity shooter, ItemStack arrowStack, float distanceFactor) {
@@ -208,7 +207,6 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 				: DoomItems.SHOTGUN_SHELLS.get());
 		ShotgunShellEntity abstractarrowentity = arrowitem.createArrow(shooter.level, arrowStack, shooter, true);
 		abstractarrowentity.setEnchantmentEffectsFromEntity(shooter, distanceFactor);
-		abstractarrowentity.setBaseDamage(DoomConfig.SERVER.marauder_ssgdamage.get().floatValue());
 		return abstractarrowentity;
 	}
 
@@ -290,7 +288,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 		}
 	}
 
-	private boolean isLookingAtMe(Player player) {
+	public boolean isLookingAtMe(Player player) {
 		Vec3 vector3d = player.getViewVector(1.0F).normalize();
 		Vec3 vector3d1 = new Vec3(this.getX() - player.getX(), this.getEyeY() - player.getEyeY(),
 				this.getZ() - player.getZ());
@@ -384,7 +382,6 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 	@Override
 	protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
 		super.populateDefaultEquipmentSlots(difficulty);
-		this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(DoomItems.ARGENT_AXE.get()));
 		this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(DoomItems.SG.get()));
 	}
 

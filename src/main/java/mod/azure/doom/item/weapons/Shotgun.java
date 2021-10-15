@@ -6,6 +6,7 @@ import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.SGRender;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
+import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.SGLoadingPacket;
@@ -78,7 +79,7 @@ public class Shotgun extends DoomBaseItem {
 	}
 
 	public ShotgunShellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter, false);
+		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter, DoomConfig.SERVER.shotgun_damage.get().floatValue());
 		return arrowentity;
 	}
 
