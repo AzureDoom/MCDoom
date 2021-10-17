@@ -4,7 +4,6 @@ import java.util.List;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.config.DoomConfig;
-
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -35,7 +34,6 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 public class TentacleEntity extends DemonEntity implements IAnimatable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
-	
 
 	public TentacleEntity(EntityType<TentacleEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
@@ -136,19 +134,31 @@ public class TentacleEntity extends DemonEntity implements IAnimatable {
 		}
 
 		public void tick() {
-			LivingEntity livingentity = this.parentEntity.getTarget();
-			if (livingentity != null) {
-				if (this.parentEntity.hasLineOfSight(livingentity)) {
-					if (parentEntity.distanceTo(livingentity) < 3.0D) {
-						++this.attackTimer;
-						if (this.attackTimer == 15) {
-							this.parentEntity.doDamage();
-							this.parentEntity.setAttackingState(1);
+			LivingEntity livingEntity = this.parentEntity.getTarget();
+			if (livingEntity != null) {
+				if (this.parentEntity.hasLineOfSight(livingEntity) && parentEntity.distanceTo(livingEntity) <= 3.0D) {
+					++this.attackTimer;
+					if (this.attackTimer == 15) {
+						float f2 = 3.0F;
+						int k1 = Mth.floor(parentEntity.getX() - (double) f2 - 1.0D);
+						int l1 = Mth.floor(parentEntity.getX() + (double) f2 + 1.0D);
+						int i2 = Mth.floor(parentEntity.getY() - (double) f2 - 1.0D);
+						int i1 = Mth.floor(parentEntity.getY() + (double) f2 + 1.0D);
+						int j2 = Mth.floor(parentEntity.getZ() - (double) f2 - 1.0D);
+						int j1 = Mth.floor(parentEntity.getZ() + (double) f2 + 1.0D);
+						List<Entity> list = parentEntity.level.getEntities(parentEntity,
+								new AABB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
+						for (int k2 = 0; k2 < list.size(); ++k2) {
+							Entity entity = list.get(k2);
+							if (entity.isAlive()) {
+								this.parentEntity.doDamage();
+							}
 						}
-						if (this.attackTimer == 40) {
-							this.parentEntity.setAttackingState(0);
-							this.attackTimer = -45;
-						}
+						this.parentEntity.setAttackingState(1);
+					}
+					if (this.attackTimer == 40) {
+						this.parentEntity.setAttackingState(0);
+						this.attackTimer = -45;
 					}
 				} else if (this.attackTimer > 0) {
 					--this.attackTimer;
@@ -175,7 +185,8 @@ public class TentacleEntity extends DemonEntity implements IAnimatable {
 			double d12 = (double) (Mth.sqrt((float) entity.distanceToSqr(vector3d)) / f2);
 			if (d12 <= 2.0D) {
 				if (entity instanceof LivingEntity) {
-					entity.hurt(DamageSource.indirectMagic(this, this.getTarget()), DoomConfig.SERVER.tentacle_melee_damage.get().floatValue());
+					entity.hurt(DamageSource.indirectMagic(this, this.getTarget()),
+							DoomConfig.SERVER.tentacle_melee_damage.get().floatValue());
 				}
 			}
 		}
