@@ -1,7 +1,4 @@
-v.4.0.10
+v.4.0.11
 
-- Fixed Shotguns.
-- Tweaked Doom Hunters flying.
-- Fixed Icon of Sin.
-- Fixed Summoner hurting itself with flames.
-- Gore Nests now remove themselves upon spawning it's final wave.
+- Fixed Gore Nests instantly despawning.
+- Tweaked Tentacle attack animation/range.
