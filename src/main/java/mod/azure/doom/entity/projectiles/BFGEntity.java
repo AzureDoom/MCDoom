@@ -226,7 +226,7 @@ public class BFGEntity extends AbstractArrowEntity implements IAnimatable {
 				double d12 = (double) (MathHelper.sqrt(entity.distanceToSqr(vector3d1)) / f2);
 				if (d12 <= 1.0D) {
 					if (entity.isAlive()) {
-						entity.hurt(DamageSource.playerAttack((PlayerEntity) this.shooter),
+						entity.hurt(DamageSource.explosion(shooter),
 								DoomConfig.SERVER.bfgball_damage_aoe.get().floatValue());
 						this.setTargetedEntity(entity.getId());
 					}

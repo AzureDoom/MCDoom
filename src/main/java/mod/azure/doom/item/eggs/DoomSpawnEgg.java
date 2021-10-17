@@ -20,7 +20,7 @@ public class DoomSpawnEgg extends SpawnEggItem {
 	private Supplier<? extends EntityType<?>> typeGetter;
 
 	public DoomSpawnEgg(Supplier<? extends EntityType<?>> typeIn) {
-		super(null, 11022961, 11035249, new Item.Properties().stacksTo(1).tab(DoomMod.DoomEggItemGroup));
+		super(null, 11022961, 11035249, new Item.Properties().stacksTo(64).tab(DoomMod.DoomEggItemGroup));
 		typeGetter = typeIn;
 		// Have to manually add dispenser behavior due to forge item registry event
 		// running too late.
