@@ -131,17 +131,29 @@ public class TentacleEntity extends DemonEntity implements IAnimatable {
 		public void tick() {
 			LivingEntity livingEntity = this.parentEntity.getTarget();
 			if (livingEntity != null) {
-				if (this.parentEntity.canSee(livingEntity)) {
-					if (parentEntity.distanceTo(livingEntity) < 3.0D) {
-						++this.cooldown;
-						if (this.cooldown == 15) {
-							this.parentEntity.doDamage();
-							this.parentEntity.setAttackingState(1);
+				if (this.parentEntity.canSee(livingEntity) && parentEntity.distanceTo(livingEntity) <= 3.0D) {
+					++this.cooldown;
+					if (this.cooldown == 15) {
+						float f2 = 3.0F;
+						int k1 = MathHelper.floor(parentEntity.getX() - (double) f2 - 1.0D);
+						int l1 = MathHelper.floor(parentEntity.getX() + (double) f2 + 1.0D);
+						int i2 = MathHelper.floor(parentEntity.getY() - (double) f2 - 1.0D);
+						int i1 = MathHelper.floor(parentEntity.getY() + (double) f2 + 1.0D);
+						int j2 = MathHelper.floor(parentEntity.getZ() - (double) f2 - 1.0D);
+						int j1 = MathHelper.floor(parentEntity.getZ() + (double) f2 + 1.0D);
+						List<Entity> list = parentEntity.world.getOtherEntities(parentEntity,
+								new Box((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
+						for (int k2 = 0; k2 < list.size(); ++k2) {
+							Entity entity = list.get(k2);
+							if (entity.isAlive()) {
+								this.parentEntity.doDamage();
+							}
 						}
-						if (this.cooldown == 40) {
-							this.parentEntity.setAttackingState(0);
-							this.cooldown = -45;
-						}
+						this.parentEntity.setAttackingState(1);
+					}
+					if (this.cooldown == 40) {
+						this.parentEntity.setAttackingState(0);
+						this.cooldown = -45;
 					}
 				} else if (this.cooldown > 0) {
 					--this.cooldown;
@@ -177,8 +189,7 @@ public class TentacleEntity extends DemonEntity implements IAnimatable {
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.tentacle_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0D)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 1.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D);
 	}
 
