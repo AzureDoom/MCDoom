@@ -237,7 +237,7 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 							|| entity instanceof HoglinEntity)) {
 				if (y <= 1.0D) {
 					if (entity.isAlive()) {
-						entity.damage(DamageSource.player((PlayerEntity) this.shooter),
+						entity.damage(DamageSource.explosion(this.shooter),
 								DoomMod.config.weapons.bfgball_damage_aoe);
 						setBeamTarget(entity.getId());
 					}
