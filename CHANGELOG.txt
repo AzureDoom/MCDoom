@@ -1,7 +1,4 @@
-v.4.0.22
+v.4.0.23
 
-- Fixed Shotguns.
-- Tweaked Doom Hunters flying.
-- Fixed Summoner hurting itself with flames.
-- Added Russian Transation thanks to Gabriel (Russo)
-- Gore Nests now remove themselves upon spawning it's final wave.
+- Fixed Gore Nests instantly despawning.
+- Tweaked Tentacle attack animation/range.
