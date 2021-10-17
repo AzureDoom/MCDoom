@@ -237,8 +237,7 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 							|| entity instanceof HoglinEntity)) {
 				if (y <= 1.0D) {
 					if (entity.isAlive()) {
-						entity.damage(DamageSource.player((PlayerEntity) this.shooter),
-								DoomMod.config.weapons.bfgball_damage_aoe);
+						entity.damage(DamageSource.explosion(this.shooter), DoomMod.config.weapons.bfgball_damage_aoe);
 						setBeamTarget(entity.getId());
 					}
 				}
@@ -409,7 +408,7 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 	public LivingEntity getTarget() {
 		return this.cachedBeamTarget;
 	}
-	
+
 	@Override
 	public boolean doesRenderOnFire() {
 		return false;

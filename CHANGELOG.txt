@@ -1,4 +1,4 @@
-v.4.0.25
+v.4.0.26
 
-- Fixed Gore Nests instantly despawning.
-- Tweaked Tentacle attack animation/range.
+- Tweaked BFG AOE damage source
+- Made Doom Spawn Eggs stack to 64
