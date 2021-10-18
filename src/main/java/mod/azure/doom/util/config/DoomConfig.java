@@ -289,7 +289,6 @@ public class DoomConfig {
 		public final ConfigValue<Double> spider_mastermind_melee_damage;
 
 		public final ConfigValue<Double> zombieman_health;
-		public final ConfigValue<Double> zombieman_melee_damage;
 
 		public final ConfigValue<Double> arachnotron_health;
 		public final ConfigValue<Double> arachnotron_ranged_damage;
@@ -581,8 +580,6 @@ public class DoomConfig {
 					.defineInRange("Zombieman Max Group", 4, 1, Integer.MAX_VALUE);
 			this.zombieman_health = builder.translation("text.doom.config.zombieman_health")
 					.defineInRange("Sets Zombieman Max Health", 15, 1, Double.MAX_VALUE);
-			this.zombieman_melee_damage = builder.translation("text.doom.config.zombieman_melee_damage")
-					.defineInRange("Sets Zombieman Melee Damage", 2, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Arachnotron");

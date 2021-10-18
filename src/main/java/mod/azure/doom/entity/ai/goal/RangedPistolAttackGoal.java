@@ -2,6 +2,7 @@ package mod.azure.doom.entity.ai.goal;
 
 import java.util.EnumSet;
 
+import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.item.weapons.PistolItem;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.entity.CreatureEntity;
@@ -11,7 +12,7 @@ import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.projectile.ProjectileHelper;
 
 public class RangedPistolAttackGoal<T extends CreatureEntity & IRangedAttackMob> extends Goal {
-	private final T entity;
+	private final DemonEntity entity;
 	private final double moveSpeedAmp;
 	private int attackCooldown;
 	private final float maxAttackDistance;
@@ -20,13 +21,16 @@ public class RangedPistolAttackGoal<T extends CreatureEntity & IRangedAttackMob>
 	private boolean strafingClockwise;
 	private boolean strafingBackwards;
 	private int strafingTime = -1;
+	private int statecheck;
 
-	public RangedPistolAttackGoal(T mob, double moveSpeedAmpIn, int attackCooldownIn, float maxAttackDistanceIn) {
+	public RangedPistolAttackGoal(DemonEntity mob, double moveSpeedAmpIn, int attackCooldownIn,
+			float maxAttackDistanceIn, int state) {
 		this.entity = mob;
 		this.moveSpeedAmp = moveSpeedAmpIn;
 		this.attackCooldown = attackCooldownIn;
 		this.maxAttackDistance = maxAttackDistanceIn * maxAttackDistanceIn;
 		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+		this.statecheck = state;
 	}
 
 	public void setAttackCooldown(int attackCooldownIn) {
@@ -49,6 +53,7 @@ public class RangedPistolAttackGoal<T extends CreatureEntity & IRangedAttackMob>
 	public void start() {
 		super.start();
 		this.entity.setAggressive(true);
+		this.entity.setAttackingState(0);
 	}
 
 	public void stop() {
@@ -57,6 +62,7 @@ public class RangedPistolAttackGoal<T extends CreatureEntity & IRangedAttackMob>
 		this.seeTime = 0;
 		this.attackTime = -1;
 		this.entity.stopUsingItem();
+		this.entity.setAttackingState(0);
 	}
 
 	public void tick() {
@@ -114,6 +120,9 @@ public class RangedPistolAttackGoal<T extends CreatureEntity & IRangedAttackMob>
 					this.entity.stopUsingItem();
 				} else if (flag) {
 					int i = this.entity.getTicksUsingItem();
+					if (i >= 19) {
+						this.entity.setAttackingState(statecheck);
+					}
 					if (i >= 20) {
 						this.entity.stopUsingItem();
 						((IRangedAttackMob) this.entity).performRangedAttack(livingentity,

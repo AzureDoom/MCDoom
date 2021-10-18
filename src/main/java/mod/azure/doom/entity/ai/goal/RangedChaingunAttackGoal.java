@@ -2,6 +2,7 @@ package mod.azure.doom.entity.ai.goal;
 
 import java.util.EnumSet;
 
+import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.item.weapons.Chaingun;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.entity.CreatureEntity;
@@ -11,7 +12,7 @@ import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.projectile.ProjectileHelper;
 
 public class RangedChaingunAttackGoal<T extends CreatureEntity & IRangedAttackMob> extends Goal {
-	private final T entity;
+	private final DemonEntity entity;
 	private final double moveSpeedAmp;
 	private int attackCooldown;
 	private final float maxAttackDistance;
@@ -20,13 +21,15 @@ public class RangedChaingunAttackGoal<T extends CreatureEntity & IRangedAttackMo
 	private boolean strafingClockwise;
 	private boolean strafingBackwards;
 	private int strafingTime = -1;
+	private int statecheck;
 
-	public RangedChaingunAttackGoal(T mob, double moveSpeedAmpIn, int attackCooldownIn, float maxAttackDistanceIn) {
+	public RangedChaingunAttackGoal(DemonEntity mob, double moveSpeedAmpIn, int attackCooldownIn, float maxAttackDistanceIn, int state) {
 		this.entity = mob;
 		this.moveSpeedAmp = moveSpeedAmpIn;
 		this.attackCooldown = attackCooldownIn;
 		this.maxAttackDistance = maxAttackDistanceIn * maxAttackDistanceIn;
 		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+		this.statecheck = state;
 	}
 
 	public void setAttackCooldown(int attackCooldownIn) {
@@ -49,6 +52,7 @@ public class RangedChaingunAttackGoal<T extends CreatureEntity & IRangedAttackMo
 	public void start() {
 		super.start();
 		this.entity.setAggressive(true);
+		this.entity.setAttackingState(0);
 	}
 
 	public void stop() {
@@ -57,6 +61,7 @@ public class RangedChaingunAttackGoal<T extends CreatureEntity & IRangedAttackMo
 		this.seeTime = 0;
 		this.attackTime = -1;
 		this.entity.stopUsingItem();
+		this.entity.setAttackingState(0);
 	}
 
 	public void tick() {
@@ -114,10 +119,16 @@ public class RangedChaingunAttackGoal<T extends CreatureEntity & IRangedAttackMo
 				if (!flag && this.seeTime < -60) {
 					this.entity.stopUsingItem();
 				} else if (flag) {
-					this.entity.stopUsingItem();
-					((IRangedAttackMob) this.entity).performRangedAttack(livingentity,
-							Chaingun.getArrowVelocity(1));
-					this.attackTime = this.attackCooldown;
+					int i = this.entity.getTicksUsingItem();
+					if (i >= 19) {
+						this.entity.setAttackingState(statecheck);
+					}
+					if (i >= 20) {
+						this.entity.stopUsingItem();
+						((IRangedAttackMob) this.entity).performRangedAttack(livingentity,
+								Chaingun.getArrowVelocity(i));
+						this.attackTime = this.attackCooldown;
+					}
 				}
 			} else if (--this.attackTime <= 0 && this.seeTime >= -60) {
 				this.entity.startUsingItem(ProjectileHelper.getWeaponHoldingHand(this.entity, DoomItems.CHAINGUN.get()));

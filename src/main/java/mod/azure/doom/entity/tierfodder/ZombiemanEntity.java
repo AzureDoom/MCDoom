@@ -6,6 +6,7 @@ import java.time.temporal.ChronoField;
 import javax.annotation.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.RangedPistolAttackGoal;
 import mod.azure.doom.entity.projectiles.BulletEntity;
 import mod.azure.doom.item.ammo.ClipAmmo;
@@ -29,7 +30,6 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.HurtByTargetGoal;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
@@ -61,8 +61,8 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 public class ZombiemanEntity extends DemonEntity implements IRangedAttackMob, IAnimatable {
 
 	private final RangedPistolAttackGoal<ZombiemanEntity> aiArrowAttack = new RangedPistolAttackGoal<>(this, 1.0D, 20,
-			15.0F);
-	private final MeleeAttackGoal aiAttackOnCollide = new MeleeAttackGoal(this, 1.2D, false) {
+			15.0F, 2);
+	private final DemonAttackGoal aiAttackOnCollide = new DemonAttackGoal(this, 1.2D, false, 1) {
 		public void stop() {
 			super.stop();
 			ZombiemanEntity.this.setAggressive(false);
@@ -88,23 +88,35 @@ public class ZombiemanEntity extends DemonEntity implements IRangedAttackMob, IA
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
 			return PlayState.CONTINUE;
 		}
-		if (this.isAggressive() && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("attack", true));
-			return PlayState.CONTINUE;
-		}
 		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			if (level.isClientSide) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
-				return PlayState.CONTINUE;
-			}
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
+			return PlayState.CONTINUE;
 		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
 	}
 
+	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
+		if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking", true));
+			return PlayState.CONTINUE;
+		}
+		return PlayState.STOP;
+	}
+
+	private <E extends IAnimatable> PlayState predicate2(AnimationEvent<E> event) {
+		if (this.entityData.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("ranged", true));
+			return PlayState.CONTINUE;
+		}
+		return PlayState.STOP;
+	}
+
 	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController<ZombiemanEntity>(this, "controller", 0, this::predicate));
+		data.addAnimationController(new AnimationController<ZombiemanEntity>(this, "controller1", 0, this::predicate1));
+		data.addAnimationController(new AnimationController<ZombiemanEntity>(this, "controller2", 0, this::predicate2));
 	}
 
 	@Override
@@ -137,7 +149,7 @@ public class ZombiemanEntity extends DemonEntity implements IRangedAttackMob, IA
 
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, config.zombieman_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
+				.add(Attributes.MAX_HEALTH, config.zombieman_health.get()).add(Attributes.ATTACK_DAMAGE, 2.5D)
 				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 

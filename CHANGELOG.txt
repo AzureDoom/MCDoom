@@ -1,4 +1,4 @@
-v.4.0.24
+v.4.0.25
 
-- Tweaked BFG AOE damage source
-- Made Doom Spawn Eggs stack to 64
+- Marauder Axe Max Durability config working again.
+- Chaingunner, Shotgun Guy, Chaingunner now melee and play animations for those.
