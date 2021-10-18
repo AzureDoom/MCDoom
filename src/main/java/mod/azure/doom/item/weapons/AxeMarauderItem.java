@@ -27,8 +27,8 @@ import net.minecraft.world.World;
 public class AxeMarauderItem extends AxeItem {
 
 	public AxeMarauderItem() {
-		super(DoomTier.DOOM_HIGHTEIR, 36, -2.4F,
-				new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(5));
+		super(DoomTier.DOOM_HIGHTEIR, 36, -2.4F, new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1)
+				.maxDamage(DoomMod.config.weapons.crucible_marauder_max_damage));
 	}
 
 	@Override
