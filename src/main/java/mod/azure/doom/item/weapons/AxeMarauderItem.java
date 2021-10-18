@@ -4,6 +4,7 @@ import java.util.List;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
+import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.AxeMarauderLoadingPacket;
@@ -26,8 +27,8 @@ import net.minecraft.world.level.Level;
 public class AxeMarauderItem extends AxeItem {
 
 	public AxeMarauderItem() {
-		super(DoomTier.DOOM_HIGHTEIR, 36, -2.4F,
-				new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(5));
+		super(DoomTier.DOOM_HIGHTEIR, 36, -2.4F, new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1)
+				.durability(DoomConfig.SERVER.marauder_axe_damage.get().intValue()));
 	}
 
 	@Override
