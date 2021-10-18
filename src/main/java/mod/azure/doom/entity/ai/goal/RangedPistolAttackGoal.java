@@ -2,6 +2,7 @@ package mod.azure.doom.entity.ai.goal;
 
 import java.util.EnumSet;
 
+import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.item.weapons.PistolItem;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.entity.LivingEntity;
@@ -11,7 +12,7 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 
 public class RangedPistolAttackGoal<T extends HostileEntity & RangedAttackMob> extends Goal {
-	private final T actor;
+	private final DemonEntity actor;
 	private final double speed;
 	private int attackInterval;
 	private final float squaredRange;
@@ -20,13 +21,15 @@ public class RangedPistolAttackGoal<T extends HostileEntity & RangedAttackMob> e
 	private boolean movingToLeft;
 	private boolean backward;
 	private int combatTicks = -1;
+	private int statecheck;
 
-	public RangedPistolAttackGoal(T actor, double speed, int attackInterval, float range) {
+	public RangedPistolAttackGoal(DemonEntity actor, double speed, int attackInterval, float range, int state) {
 		this.actor = actor;
 		this.speed = speed;
 		this.attackInterval = attackInterval;
 		this.squaredRange = range * range;
 		this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
+		this.statecheck = state;
 	}
 
 	public void setAttackInterval(int attackInterval) {
@@ -48,6 +51,7 @@ public class RangedPistolAttackGoal<T extends HostileEntity & RangedAttackMob> e
 	public void start() {
 		super.start();
 		this.actor.setAttacking(true);
+		this.actor.setAttackingState(0);
 	}
 
 	public void stop() {
@@ -56,6 +60,7 @@ public class RangedPistolAttackGoal<T extends HostileEntity & RangedAttackMob> e
 		this.targetSeeingTicker = 0;
 		this.cooldown = -1;
 		this.actor.clearActiveItem();
+		this.actor.setAttackingState(0);
 	}
 
 	public void tick() {
@@ -112,6 +117,9 @@ public class RangedPistolAttackGoal<T extends HostileEntity & RangedAttackMob> e
 					this.actor.clearActiveItem();
 				} else if (bl) {
 					int i = this.actor.getItemUseTime();
+					if (i >= 19) {
+						this.actor.setAttackingState(statecheck);
+					}
 					if (i >= 20) {
 						this.actor.clearActiveItem();
 						((RangedAttackMob) this.actor).attack(livingEntity, PistolItem.getPullProgress(i));

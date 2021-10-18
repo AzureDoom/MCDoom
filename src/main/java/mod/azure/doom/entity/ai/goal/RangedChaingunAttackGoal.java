@@ -2,7 +2,8 @@ package mod.azure.doom.entity.ai.goal;
 
 import java.util.EnumSet;
 
-import mod.azure.doom.item.weapons.Chaingun;
+import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.item.weapons.PistolItem;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.RangedAttackMob;
@@ -11,7 +12,7 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 
 public class RangedChaingunAttackGoal<T extends HostileEntity & RangedAttackMob> extends Goal {
-	private final T actor;
+	private final DemonEntity actor;
 	private final double speed;
 	private int attackInterval;
 	private final float squaredRange;
@@ -20,13 +21,15 @@ public class RangedChaingunAttackGoal<T extends HostileEntity & RangedAttackMob>
 	private boolean movingToLeft;
 	private boolean backward;
 	private int combatTicks = -1;
+	private int statecheck;
 
-	public RangedChaingunAttackGoal(T actor, double speed, int attackInterval, float range) {
+	public RangedChaingunAttackGoal(DemonEntity actor, double speed, int attackInterval, float range, int state) {
 		this.actor = actor;
 		this.speed = speed;
 		this.attackInterval = attackInterval;
 		this.squaredRange = range * range;
 		this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
+		this.statecheck = state;
 	}
 
 	public void setAttackInterval(int attackInterval) {
@@ -48,6 +51,7 @@ public class RangedChaingunAttackGoal<T extends HostileEntity & RangedAttackMob>
 	public void start() {
 		super.start();
 		this.actor.setAttacking(true);
+		this.actor.setAttackingState(0);
 	}
 
 	public void stop() {
@@ -56,6 +60,7 @@ public class RangedChaingunAttackGoal<T extends HostileEntity & RangedAttackMob>
 		this.targetSeeingTicker = 0;
 		this.cooldown = -1;
 		this.actor.clearActiveItem();
+		this.actor.setAttackingState(0);
 	}
 
 	public void tick() {
@@ -111,9 +116,15 @@ public class RangedChaingunAttackGoal<T extends HostileEntity & RangedAttackMob>
 				if (!bl && this.targetSeeingTicker < -60) {
 					this.actor.clearActiveItem();
 				} else if (bl) {
-					this.actor.clearActiveItem();
-					((RangedAttackMob) this.actor).attack(livingEntity, Chaingun.getPullProgress(1));
-					this.cooldown = this.attackInterval;
+					int i = this.actor.getItemUseTime();
+					if (i >= 19) {
+						this.actor.setAttackingState(statecheck);
+					}
+					if (i >= 20) {
+						this.actor.clearActiveItem();
+						((RangedAttackMob) this.actor).attack(livingEntity, PistolItem.getPullProgress(i));
+						this.cooldown = this.attackInterval;
+					}
 				}
 			} else if (--this.cooldown <= 0 && this.targetSeeingTicker >= -60) {
 				this.actor.setCurrentHand(ProjectileUtil.getHandPossiblyHolding(this.actor, DoomItems.CHAINGUN));

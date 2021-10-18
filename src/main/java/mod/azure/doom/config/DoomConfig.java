@@ -367,8 +367,7 @@ public class DoomConfig implements ConfigData {
 		public double spider_mastermind_melee_damage = 4;
 
 		public double zombieman_health = 15;
-		public double zombieman_melee_damage = 2;
-
+		
 		public double arachnotron_health = 30;
 		public float arachnotron_ranged_damage = 5;
 
