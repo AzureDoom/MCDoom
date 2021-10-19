@@ -8,7 +8,6 @@ import mod.azure.doom.entity.ai.goal.RangedStaticAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
-import mod.azure.doom.entity.tierfodder.LostSoulEntity;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.config.DoomConfig.Server;
 import mod.azure.doom.util.registry.ModSoundEvents;
@@ -58,7 +57,7 @@ public class BaronEntity extends DemonEntity implements IAnimatable {
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
-	public static final DataParameter<Integer> VARIANT = EntityDataManager.defineId(LostSoulEntity.class,
+	public static final DataParameter<Integer> VARIANT = EntityDataManager.defineId(BaronEntity.class,
 			DataSerializers.INT);
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -147,9 +146,10 @@ public class BaronEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
 		this.goalSelector.addGoal(4,
-				new RangedStaticAttackGoal(this, new BaronEntity.FireballAttack(this)
-						.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(config.baron_ranged_damage.get().floatValue()), 60, 10,
-						30F, 2));
+				new RangedStaticAttackGoal(this,
+						new BaronEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
+								.setDamage(config.baron_ranged_damage.get().floatValue()),
+						60, 10, 30F, 2));
 		this.goalSelector.addGoal(2, new DemonAttackGoal(this, 1.0D, false, 1));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, true));

@@ -1,4 +1,4 @@
-v.4.0.25
+v.4.0.26
 
-- Marauder Axe Max Durability config working again.
-- Chaingunner, Shotgun Guy, Chaingunner now melee and play animations for those.
+- Fixed Cacodemon scream when attacking
+- Fixed all model issues in log. 

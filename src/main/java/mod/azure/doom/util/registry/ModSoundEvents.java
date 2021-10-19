@@ -122,12 +122,6 @@ public class ModSoundEvents {
 	public static final RegistryObject<SoundEvent> CACODEMON_AFFECTIONATE_SCREAM = MOD_SOUNDS.register(
 			"doom.cacodemon_affectionate_scream",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.cacodemon_affectionate_scream")));
-	public static final RegistryObject<SoundEvent> CACODEMON_CHARGE = MOD_SOUNDS.register("doom.cacodemon-charge",
-			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.cacodemon_charge")));
-	public static final RegistryObject<SoundEvent> CACODEMON_FIREBALL = MOD_SOUNDS.register("doom.cacodemon-fireball",
-			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.cacodemon_fireball")));
-	public static final RegistryObject<SoundEvent> CACODEMON_SCREAM = MOD_SOUNDS.register("doom.cacodemon-scream",
-			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.cacodemon_scream")));
 
 	public static final RegistryObject<SoundEvent> SPIDERDEMON_AMBIENT = MOD_SOUNDS.register("doom.spiderdemon_step",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.spiderdemon_step")));
