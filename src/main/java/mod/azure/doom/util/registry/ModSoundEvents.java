@@ -71,10 +71,7 @@ public class ModSoundEvents {
 	public static SoundEvent CACODEMON_DEATH = of("doom.cacodemon_death");
 	public static SoundEvent CACODEMON_HURT = of("doom.cacodemon_hit");
 	public static SoundEvent CACODEMON_AFFECTIONATE_SCREAM = of("doom.cacodemon_affectionate_scream");
-	public static SoundEvent CACODEMON_CHARGE = of("doom.cacodemon-charge");
-	public static SoundEvent CACODEMON_FIREBALL = of("doom.cacodemon-fireball");
-	public static SoundEvent CACODEMON_SCREAM = of("doom.cacodemon-scream");
-
+	
 	public static SoundEvent SPIDERDEMON_AMBIENT = of("doom.spiderdemon_step");
 	public static SoundEvent SPIDERDEMON_DEATH = of("doom.spiderdemon_death");
 	public static SoundEvent SPIDERDEMON_HURT = of("doom.spiderdemon_say");
