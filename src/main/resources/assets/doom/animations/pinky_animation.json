@@ -122,7 +122,7 @@
 			"bones": {
 				"thighs": {
 					"rotation": {
-						"vector": ["1math.sin(query.anim_time * 360 ) * 0.4", 0, 0]
+						"vector": ["1+math.sin(query.anim_time * 360 ) * 0.4", 0, 0]
 					},
 					"position": {
 						"vector": [0, "1.7+math.sin(query.anim_time * 360 ) * 0.4", 0]

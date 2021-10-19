@@ -1,6 +1,5 @@
 {
 	"credit": "Made with Blockbench",
-	"parent": "item/box_of_shells",
 	"texture_size": [32, 32],
 	"textures": {
 		"0": "doom:items/chainsaw64",
@@ -60,7 +59,7 @@
 				"south": {"uv": [1, 12, 4.5, 12.5], "texture": "#0"},
 				"west": {"uv": [1.5, 12.5, 3.5, 13], "texture": "#0"},
 				"up": {"uv": [1, 10.5, 4.5, 12.5], "texture": "#0"},
-				"down": {"uv": [14.5, 0, 12.5, 1.5], "texture": "#missing"}
+				"down": {"uv": [14.5, 0, 12.5, 1.5], "texture": "#particle"}
 			}
 		},
 		{
@@ -100,7 +99,7 @@
 				"north": {"uv": [0.5, 8.5, 0, 10.5], "texture": "#0"},
 				"east": {"uv": [2.5, 8.5, 0, 10.5], "texture": "#0"},
 				"south": {"uv": [2.5, 8.5, 2, 10.5], "texture": "#0"},
-				"west": {"uv": [1.5, 7, 0, 8.5], "texture": "#missing"},
+				"west": {"uv": [1.5, 7, 0, 8.5], "texture": "#particle"},
 				"up": {"uv": [1, 10.5, 0.5, 13], "texture": "#0"},
 				"down": {"uv": [0.5, 10.5, 0, 13], "texture": "#0"}
 			}
