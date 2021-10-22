@@ -1,4 +1,5 @@
-v.4.0.24
+v.4.0.25
 
-- Fixed Cacodemon scream when attacking
-- Fixed all model issues in log. 
+- Fixed Arch Maykr attacks
+- Fixed Icon of Sin attacks
+- New Classic Armor icons thanks to Pixel

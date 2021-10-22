@@ -162,7 +162,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 
 		public void tick() {
 			LivingEntity livingEntity = this.parentEntity.getTarget();
-			if (livingEntity.squaredDistanceTo(this.parentEntity) < 150.0D) {
+			if (parentEntity.distanceTo(livingEntity) < 10000.0D) {
 				World world = this.parentEntity.world;
 				Vec3d vec3d = this.parentEntity.getRotationVec(1.0F);
 				++this.cooldown;
@@ -193,12 +193,9 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 						int w = MathHelper.floor(this.parentEntity.getZ() + (double) q + 1.0D);
 						List<Entity> list = this.parentEntity.world.getOtherEntities(this.parentEntity,
 								new Box((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
-						Vec3d vec3d1 = new Vec3d(this.parentEntity.getX(), this.parentEntity.getY(),
-								this.parentEntity.getZ());
-						for (int x = 0; x < list.size(); ++x) {
-							Entity entity = (Entity) list.get(x);
-							double y = (double) (MathHelper.sqrt(entity.squaredDistanceTo(vec3d1)) / q);
-							if (y <= 1.0D) {
+						for (int k2 = 0; k2 < list.size(); ++k2) {
+							Entity entity = list.get(k2);
+							if (entity.isAlive()) {
 								if (entity instanceof LivingEntity) {
 									double d = (this.parentEntity.getBoundingBox().minX
 											+ this.parentEntity.getBoundingBox().maxX) / 2.0D;
@@ -399,7 +396,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 	}
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
+		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 150.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.55D).add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.archmaykr_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
