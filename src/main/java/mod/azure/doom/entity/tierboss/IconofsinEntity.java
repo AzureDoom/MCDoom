@@ -237,7 +237,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 							}
 						} else if (r == 2) {
 							if (!parentEntity.level.isClientSide) {
-								float f2 = 50.0F;
+								float f2 = 150.0F;
 								int k1 = Mth.floor(parentEntity.getX() - (double) f2 - 1.0D);
 								int l1 = Mth.floor(parentEntity.getX() + (double) f2 + 1.0D);
 								int i2 = Mth.floor(parentEntity.getY() - (double) f2 - 1.0D);
@@ -288,7 +288,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 	}
 
 	public void doDamage() {
-		float f2 = 4.0F;
+		float f2 = 150.0F;
 		int k1 = Mth.floor(this.getX() - (double) f2 - 1.0D);
 		int l1 = Mth.floor(this.getX() + (double) f2 + 1.0D);
 		int i2 = Mth.floor(this.getY() - (double) f2 - 1.0D);

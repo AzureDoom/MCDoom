@@ -276,7 +276,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 
 		public void tick() {
 			LivingEntity livingentity = this.parentEntity.getTarget();
-			if (livingentity.distanceTo(this.parentEntity) < 150.0D) {
+			if (parentEntity.distanceTo(livingentity) < 10000.0D) {
 				Level world = this.parentEntity.level;
 				++this.attackTimer;
 				Vec3 vector3d = this.parentEntity.getViewVector(1.0F);
@@ -382,7 +382,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 150.0D)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.archmaykr_health.get())
 				.add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.55D)
 				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
