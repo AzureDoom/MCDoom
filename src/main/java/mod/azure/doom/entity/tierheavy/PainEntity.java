@@ -275,13 +275,8 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable {
 		this.goalSelector.add(7, new PainEntity.LookAtTargetGoal(this));
 		this.goalSelector.add(4, new PainEntity.ShootFireballGoal(this));
 		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
-		this.targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, 10, true, false, (p_213812_1_) -> {
-			return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
-		}));
-		this.targetSelector.add(1,
-				new ActiveTargetGoal<>(this, MerchantEntity.class, 10, true, false, (p_213812_1_) -> {
-					return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
-				}));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
 	}
 

@@ -2,8 +2,8 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierheavy.PinkyEntity;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
@@ -21,7 +21,8 @@ public class PinkyModel extends AnimatedGeoModel<PinkyEntity> {
 
 	@Override
 	public Identifier getTextureLocation(PinkyEntity object) {
-		return new Identifier(DoomMod.MODID, "textures/entity/pinky-texturemap.png");
+		return new Identifier(DoomMod.MODID,
+				"textures/entity/" + (object.getVariant() == 1 ? "pinky-texturemap" : "pinky_green") + ".png");
 	}
 
 	@Override
