@@ -29,6 +29,7 @@ import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
 import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -164,19 +165,16 @@ public class CacodemonEntity extends DemonEntity implements IMob, IAnimatable {
 		this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.addGoal(7, new CacodemonEntity.LookAroundGoal(this));
-		this.goalSelector.addGoal(4, new RangedStaticAttackGoal(this,
-				new FireballAttack(this, true).setDamage(config.cacodemon_ranged_damage.get().floatValue())
-						.setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(ModSoundEvents.CACODEMON_AFFECTIONATE_SCREAM.get(),
-								1.0F, 1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
-				60, 20, 30F, 1));
-		this.targetSelector.addGoal(1,
-				new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 10, true, false, (p_213812_1_) -> {
-					return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
-				}));
-		this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, 10, true,
-				false, (p_213812_1_) -> {
-					return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
-				}));
+		this.goalSelector.addGoal(4,
+				new RangedStaticAttackGoal(this,
+						new FireballAttack(this, true).setDamage(config.cacodemon_ranged_damage.get().floatValue())
+								.setProjectileOriginOffset(1.5, 0.3, 1.5)
+								.setSound(ModSoundEvents.CACODEMON_AFFECTIONATE_SCREAM.get(), 1.0F,
+										1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
+						60, 20, 30F, 1));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, false));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolemEntity.class, true));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
 

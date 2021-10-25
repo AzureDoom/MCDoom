@@ -25,9 +25,13 @@ import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
@@ -42,6 +46,9 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class PinkyEntity extends DemonEntity implements IAnimatable {
 
+	public static final DataParameter<Integer> VARIANT = EntityDataManager.defineId(PinkyEntity.class,
+			DataSerializers.INT);
+	
 	public PinkyEntity(EntityType<PinkyEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
 	}
@@ -89,6 +96,36 @@ public class PinkyEntity extends DemonEntity implements IAnimatable {
 	@Override
 	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
+	}
+
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(VARIANT, 0);
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundNBT tag) {
+		super.readAdditionalSaveData(tag);
+		this.setVariant(tag.getInt("Variant"));
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundNBT tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putInt("Variant", this.getVariant());
+	}
+
+	public int getVariant() {
+		return MathHelper.clamp((Integer) this.entityData.get(VARIANT), 1, 2);
+	}
+
+	public void setVariant(int variant) {
+		this.entityData.set(VARIANT, variant);
+	}
+
+	public int getVariants() {
+		return 2;
 	}
 	
 	@Override
