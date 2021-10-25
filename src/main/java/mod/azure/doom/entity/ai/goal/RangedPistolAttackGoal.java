@@ -15,19 +15,14 @@ public class RangedPistolAttackGoal<T extends HostileEntity & RangedAttackMob> e
 	private final DemonEntity actor;
 	private final double speed;
 	private int attackInterval;
-	private final float squaredRange;
 	private int cooldown = -1;
 	private int targetSeeingTicker;
-	private boolean movingToLeft;
-	private boolean backward;
-	private int combatTicks = -1;
 	private int statecheck;
 
 	public RangedPistolAttackGoal(DemonEntity actor, double speed, int attackInterval, float range, int state) {
 		this.actor = actor;
 		this.speed = speed;
 		this.attackInterval = attackInterval;
-		this.squaredRange = range * range;
 		this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
 		this.statecheck = state;
 	}
@@ -66,7 +61,6 @@ public class RangedPistolAttackGoal<T extends HostileEntity & RangedAttackMob> e
 	public void tick() {
 		LivingEntity livingEntity = this.actor.getTarget();
 		if (livingEntity != null) {
-			double d = this.actor.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
 			boolean bl = this.actor.getVisibilityCache().canSee(livingEntity);
 			boolean bl2 = this.targetSeeingTicker > 0;
 			if (bl != bl2) {
@@ -79,38 +73,9 @@ public class RangedPistolAttackGoal<T extends HostileEntity & RangedAttackMob> e
 				--this.targetSeeingTicker;
 			}
 
-			if (d <= (double) this.squaredRange && this.targetSeeingTicker >= 20) {
-				this.actor.getNavigation().stop();
-				++this.combatTicks;
-			} else {
-				this.actor.getNavigation().startMovingTo(livingEntity, this.speed);
-				this.combatTicks = -1;
-			}
-
-			if (this.combatTicks >= 20) {
-				if ((double) this.actor.getRandom().nextFloat() < 0.3D) {
-					this.movingToLeft = !this.movingToLeft;
-				}
-
-				if ((double) this.actor.getRandom().nextFloat() < 0.3D) {
-					this.backward = !this.backward;
-				}
-
-				this.combatTicks = 0;
-			}
-
-			if (this.combatTicks > -1) {
-				if (d > (double) (this.squaredRange * 0.75F)) {
-					this.backward = false;
-				} else if (d < (double) (this.squaredRange * 0.25F)) {
-					this.backward = true;
-				}
-
-				this.actor.getMoveControl().strafeTo(this.backward ? -0.5F : 0.5F, this.movingToLeft ? 0.5F : -0.5F);
-				this.actor.lookAtEntity(livingEntity, 30.0F, 30.0F);
-			} else {
-				this.actor.getLookControl().lookAt(livingEntity, 30.0F, 30.0F);
-			}
+			this.actor.getNavigation().startMovingTo(livingEntity, this.speed);
+			this.actor.getLookControl().lookAt(livingEntity, 30.0F, 30.0F);
+			double d0 = this.actor.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
 
 			if (this.actor.isUsingItem()) {
 				if (!bl && this.targetSeeingTicker < -60) {
@@ -127,9 +92,23 @@ public class RangedPistolAttackGoal<T extends HostileEntity & RangedAttackMob> e
 					}
 				}
 			} else if (--this.cooldown <= 0 && this.targetSeeingTicker >= -60) {
+				this.attack(livingEntity, d0);
 				this.actor.setCurrentHand(ProjectileUtil.getHandPossiblyHolding(this.actor, DoomItems.PISTOL));
 			}
 
 		}
+	}
+
+	protected void attack(LivingEntity livingentity, double squaredDistance) {
+		double d0 = this.getSquaredMaxAttackDistance(livingentity);
+		if (squaredDistance <= d0) {
+			this.cooldown = 20;
+			this.actor.setAttackingState(1);
+			this.actor.tryAttack(livingentity);
+		}
+	}
+
+	protected double getSquaredMaxAttackDistance(LivingEntity entity) {
+		return (double) (this.actor.getWidth() * 1.0F * this.actor.getWidth() * 1.0F + entity.getWidth());
 	}
 }

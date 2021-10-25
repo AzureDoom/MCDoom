@@ -160,16 +160,11 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.goalSelector.add(4, new RangedStaticAttackGoal(this,
 				new FireballAttack(this, true).setDamage(config.cacodemon_ranged_damage)
-						.setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(ModSoundEvents.CACODEMON_AFFECTIONATE_SCREAM, 1.0F,
-								1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
+						.setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(ModSoundEvents.CACODEMON_AFFECTIONATE_SCREAM,
+								1.0F, 1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
 				60, 20, 30F, 1));
-		this.targetSelector.add(1, new FollowTargetGoal<>(this, PlayerEntity.class, 10, true, false, (livingEntity) -> {
-			return Math.abs(livingEntity.getY() - this.getY()) <= 4.0D;
-		}));
-		this.targetSelector.add(1,
-				new FollowTargetGoal<>(this, MerchantEntity.class, 10, true, false, (livingEntity) -> {
-					return Math.abs(livingEntity.getY() - this.getY()) <= 4.0D;
-				}));
+		this.targetSelector.add(2, new FollowTargetGoal<>(this, PlayerEntity.class, true));
+		this.targetSelector.add(2, new FollowTargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
 	}
 
