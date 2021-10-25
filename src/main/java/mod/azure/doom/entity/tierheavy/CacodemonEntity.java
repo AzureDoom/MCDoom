@@ -161,13 +161,8 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 						.setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(ModSoundEvents.CACODEMON_AFFECTIONATE_SCREAM,
 								1.0F, 1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
 				60, 20, 30F, 1));
-		this.targetSelector.add(1, new FollowTargetGoal<>(this, PlayerEntity.class, 10, true, false, (p_213812_1_) -> {
-			return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
-		}));
-		this.targetSelector.add(1,
-				new FollowTargetGoal<>(this, MerchantEntity.class, 10, true, false, (p_213812_1_) -> {
-					return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
-				}));
+		this.targetSelector.add(2, new FollowTargetGoal<>(this, PlayerEntity.class, true));
+		this.targetSelector.add(2, new FollowTargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
 	}
 

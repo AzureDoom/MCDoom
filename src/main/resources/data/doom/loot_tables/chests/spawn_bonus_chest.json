@@ -35,16 +35,6 @@
 					"name": "doom:daisy"
 				},
 				{
-					"type": "minecraft:item",
-					"functions": [
-						{
-							"function": "minecraft:set_nbt",
-							"tag": "{StoredEnchantments:[{id:\"doom:leaping_doom\",lvl:1s}]}"
-						}
-					],
-					"name": "minecraft:enchanted_book"
-				},
-				{
 					"name": "minecraft:map",
 					"type": "minecraft:item",
 					"weight": 1,
