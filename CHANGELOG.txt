@@ -1,5 +1,5 @@
-v.4.0.18
+v.4.0.19
 
-- Fixed Arch Maykr attacks
-- Fixed Icon of Sin attacks
-- New Classic Armor icons thanks to Pixel
+- Fixed the Chaingunner and Zombieman not meleeing.
+- Fixed Pinky Variants.
+- Tweaked Cacodemons and Pain Elemental targetting goals.

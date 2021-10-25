@@ -20,7 +20,8 @@ public class PinkyModel extends AnimatedGeoModel<PinkyEntity> {
 
 	@Override
 	public ResourceLocation getTextureLocation(PinkyEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/entity/pinky-texturemap.png");
+		return new ResourceLocation(DoomMod.MODID,
+				"textures/entity/" + (object.getVariant() == 1 ? "pinky-texturemap" : "pinky_green") + ".png");
 	}
 
 	@Override

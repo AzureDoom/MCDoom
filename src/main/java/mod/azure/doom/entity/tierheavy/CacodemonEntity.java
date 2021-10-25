@@ -33,6 +33,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
@@ -164,17 +165,13 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable {
 		this.goalSelector.addGoal(7, new CacodemonEntity.LookAroundGoal(this));
 		this.goalSelector.addGoal(4, new RangedStaticAttackGoal(this,
 				new FireballAttack(this, true).setDamage(DoomConfig.SERVER.cacodemon_ranged_damage.get().floatValue())
-						.setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(ModSoundEvents.CACODEMON_AFFECTIONATE_SCREAM.get(),
-								1.0F, 1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
+						.setProjectileOriginOffset(1.5, 0.3, 1.5)
+						.setSound(ModSoundEvents.CACODEMON_AFFECTIONATE_SCREAM.get(), 1.0F,
+								1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
 				60, 20, 30F, 1));
-		this.targetSelector.addGoal(1,
-				new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, (p_213812_1_) -> {
-					return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
-				}));
-		this.targetSelector.addGoal(1,
-				new NearestAttackableTargetGoal<>(this, AbstractVillager.class, 10, true, false, (p_213812_1_) -> {
-					return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
-				}));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
 

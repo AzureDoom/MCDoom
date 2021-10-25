@@ -8,7 +8,6 @@ import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
 import mod.azure.doom.util.config.DoomConfig;
-
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
@@ -35,6 +34,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
@@ -54,7 +54,6 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class PainEntity extends DemonEntity implements Enemy, IAnimatable {
 
-	
 	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(PainEntity.class,
 			EntityDataSerializers.INT);
 
@@ -153,14 +152,9 @@ public class PainEntity extends DemonEntity implements Enemy, IAnimatable {
 		this.goalSelector.addGoal(7, new PainEntity.LookAroundGoal(this));
 		this.goalSelector.addGoal(7, new PainEntity.FireballAttackGoal(this, 1));
 		this.goalSelector.addGoal(7, new DemonAttackGoal(this, 1.0D, false, 2));
-		this.targetSelector.addGoal(1,
-				new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, (p_213812_1_) -> {
-					return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
-				}));
-		this.targetSelector.addGoal(1,
-				new NearestAttackableTargetGoal<>(this, AbstractVillager.class, 10, true, false, (p_213812_1_) -> {
-					return Math.abs(p_213812_1_.getY() - this.getY()) <= 4.0D;
-				}));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
 
