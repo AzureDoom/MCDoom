@@ -30,7 +30,7 @@ configurations.all {
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
-version = "4.0.19"
+version = "4.0.20"
 group = "mod.azure.doomweapon"
 archivesBaseName = "MCDoom-1.17.1"
 
