@@ -79,7 +79,7 @@ public class Chaingun extends DoomBaseItem {
 					&& user.getInventory().count(DoomItems.CHAINGUN_BULLETS) > 0) {
 				removeAmmo(DoomItems.CHAINGUN_BULLETS, user);
 				user.getStackInHand(hand).damage(-50, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setCooldown(3);
+				user.getStackInHand(hand).setBobbingAnimationTime(3);
 				user.getEntityWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
 						ModSoundEvents.CLIPRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
 			}

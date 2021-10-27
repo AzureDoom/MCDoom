@@ -71,7 +71,7 @@ public class AxeMarauderItem extends AxeItem {
 					&& user.getInventory().count(DoomBlocks.ARGENT_BLOCK.asItem()) > 0) {
 				removeAmmo(DoomBlocks.ARGENT_BLOCK.asItem(), user);
 				user.getStackInHand(hand).damage(-5, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setCooldown(3);
+				user.getStackInHand(hand).setBobbingAnimationTime(3);
 			}
 		}
 	}

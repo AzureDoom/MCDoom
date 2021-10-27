@@ -84,7 +84,7 @@ public class RocketLauncher extends DoomBaseItem {
 			while (user.getStackInHand(hand).getDamage() != 0 && user.getInventory().count(DoomItems.ROCKET) > 0) {
 				removeAmmo(DoomItems.ROCKET, user);
 				user.getStackInHand(hand).damage(-2, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setCooldown(3);
+				user.getStackInHand(hand).setBobbingAnimationTime(3);
 			}
 		}
 	}

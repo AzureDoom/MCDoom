@@ -80,7 +80,7 @@ public class SuperShotgun extends DoomBaseItem {
 					&& user.getInventory().count(DoomItems.SHOTGUN_SHELLS) > 0) {
 				removeAmmo(DoomItems.SHOTGUN_SHELLS, user);
 				user.getStackInHand(hand).damage(-4, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setCooldown(3);
+				user.getStackInHand(hand).setBobbingAnimationTime(3);
 			}
 		}
 	}

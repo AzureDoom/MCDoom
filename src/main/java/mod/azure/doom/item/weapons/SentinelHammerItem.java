@@ -142,7 +142,7 @@ public class SentinelHammerItem extends Item implements IAnimatable, ISyncable {
 					&& user.getInventory().count(DoomItems.ARGENT_ENERGY.asItem()) > 0) {
 				removeAmmo(DoomItems.ARGENT_ENERGY.asItem(), user);
 				user.getStackInHand(hand).damage(-5, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setCooldown(3);
+				user.getStackInHand(hand).setBobbingAnimationTime(3);
 			}
 		}
 	}

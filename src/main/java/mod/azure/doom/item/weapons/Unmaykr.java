@@ -86,7 +86,7 @@ public class Unmaykr extends DoomBaseItem {
 					&& user.getInventory().count(DoomItems.UNMAKRY_BOLT) > 0) {
 				removeAmmo(DoomItems.UNMAKRY_BOLT, user);
 				user.getStackInHand(hand).damage(-20, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setCooldown(3);
+				user.getStackInHand(hand).setBobbingAnimationTime(3);
 			}
 		}
 	}

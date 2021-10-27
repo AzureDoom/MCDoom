@@ -67,7 +67,7 @@ public class HeavyCannon extends DoomBaseItem {
 			while (user.getStackInHand(hand).getDamage() != 0 && user.getInventory().count(DoomItems.BULLETS) > 0) {
 				removeAmmo(DoomItems.BULLETS, user);
 				user.getStackInHand(hand).damage(-10, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setCooldown(3);
+				user.getStackInHand(hand).setBobbingAnimationTime(3);
 				user.getEntityWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
 						ModSoundEvents.CLIPRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
 			}

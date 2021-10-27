@@ -94,8 +94,8 @@ public class BFGCellRender extends GeoProjectilesRenderer<BFGEntity> {
 		float l = 0.75F;
 		float m = 0.0F;
 		MatrixStack.Entry entry = matrices.peek();
-		Matrix4f matrix4f = entry.getModel();
-		Matrix3f matrix3f = entry.getNormal();
+		Matrix4f matrix4f = entry.getPositionMatrix();
+		Matrix3f matrix3f = entry.getNormalMatrix();
 
 		for (int n = 1; n <= 8; ++n) {
 			float o = MathHelper.sin((float) n * 6.2831855F / 8.0F) * 0.75F;

@@ -75,7 +75,7 @@ public class Shotgun extends DoomBaseItem {
 					&& user.getInventory().count(DoomItems.SHOTGUN_SHELLS) > 0) {
 				removeAmmo(DoomItems.SHOTGUN_SHELLS, user);
 				user.getStackInHand(hand).damage(-4, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setCooldown(3);
+				user.getStackInHand(hand).setBobbingAnimationTime(3);
 				user.getEntityWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
 						ModSoundEvents.SHOTGUNRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
 			}
