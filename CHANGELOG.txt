@@ -1,6 +1,4 @@
-v.4.0.30
+v.4.0.31
 
-- Fixed the Chaingunner and Zombieman not meleeing.
-- Fixed Pinky Variants.
-- Tweaked Cacodemons and Pain Elemental targetting goals.
-- Fixed missing Whiplash loot table.
+- Fixed Pinky variants again.
+- Updated melee range of Shotgun Guy, Chainguner, Zombieman, and Marauder.
