@@ -110,6 +110,6 @@ public class RangedShotgunAttackGoal<T extends CreatureEntity & IRangedAttackMob
 	}
 
 	protected double getAttackReachSqr(LivingEntity attackTarget) {
-		return (double) (this.entity.getBbWidth() * 1.0F * this.entity.getBbWidth() * 1.0F + attackTarget.getBbWidth());
+		return (double) (this.entity.getBbWidth() * 2.0F * this.entity.getBbWidth() * 2.0F + attackTarget.getBbWidth());
 	}
 }
