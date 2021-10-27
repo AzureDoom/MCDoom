@@ -109,6 +109,6 @@ public class RangedShotgunAttackGoal<T extends HostileEntity & RangedAttackMob> 
 	}
 
 	protected double getSquaredMaxAttackDistance(LivingEntity entity) {
-		return (double) (this.actor.getWidth() * 1.0F * this.actor.getWidth() * 1.0F + entity.getWidth());
+		return (double) (this.actor.getWidth() * 2.0F * this.actor.getWidth() * 2.0F + entity.getWidth());
 	}
 }

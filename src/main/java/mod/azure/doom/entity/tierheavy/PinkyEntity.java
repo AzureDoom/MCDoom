@@ -6,6 +6,7 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.util.ModSoundEvents;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
@@ -27,6 +28,8 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -129,6 +132,14 @@ public class PinkyEntity extends DemonEntity implements IAnimatable {
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.pinky_melee_damage)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
+	}
+
+	@Override
+	public EntityData initialize(ServerWorldAccess serverWorldAccess, LocalDifficulty difficulty,
+			SpawnReason spawnReason, EntityData entityData, NbtCompound entityTag) {
+		entityData = super.initialize(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
+		this.setVariant(this.random.nextInt());
+		return entityData;
 	}
 
 	@Override
