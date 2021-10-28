@@ -1,4 +1,4 @@
-v.4.0.20
+v.4.0.21
 
-- Fixed Pinky variants again.
-- Updated melee range of Shotgun Guy, Chainguner, Zombieman, and Marauder.
+- Tweaked Summoner attacks.
+- Tweaked Doom Hunter.

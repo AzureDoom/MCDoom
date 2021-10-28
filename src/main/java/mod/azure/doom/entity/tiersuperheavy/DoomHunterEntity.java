@@ -57,20 +57,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 	private AnimationFactory factory = new AnimationFactory(this);
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (!this.isOnGround() && this.onGround && this.getHealth() > (this.getMaxHealth() * 0.50)) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
-			return PlayState.CONTINUE;
-		}
-		if (!this.isOnGround() && this.onGround && this.getHealth() < (this.getMaxHealth() * 0.50)) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_nosled", true));
-			return PlayState.CONTINUE;
-		}
 		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
-			return PlayState.CONTINUE;
-		}
-		if (!event.isMoving() && this.getHealth() < (this.getMaxHealth() * 0.50)) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_nosled", true));
 			return PlayState.CONTINUE;
 		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
@@ -88,14 +76,6 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 		}
 		if (this.entityData.get(STATE) == 3 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("chainsaw", true));
-			return PlayState.CONTINUE;
-		}
-		if (this.entityData.get(STATE) == 4 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("flamethrower_nosled", true));
-			return PlayState.CONTINUE;
-		}
-		if (this.entityData.get(STATE) == 5 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("chainsaw_nosled", true));
 			return PlayState.CONTINUE;
 		}
 		return PlayState.STOP;
@@ -221,7 +201,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 			double d0 = this.getAttackReachSqr(livingentity);
 			if (squaredDistance <= d0 && this.getTicksUntilNextAttack() <= 0) {
 				this.resetAttackCooldown();
-				this.entity.setAttackingState(entity.getHealth() < (entity.getMaxHealth() * 0.50) ? 5 : 3);
+				this.entity.setAttackingState(3);
 				this.mob.doHurtTarget(livingentity);
 			}
 		}
@@ -233,7 +213,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 
 		@Override
 		protected double getAttackReachSqr(LivingEntity attackTarget) {
-			return (double) (this.mob.getBbWidth() * 1.0F * this.mob.getBbWidth() * 1.0F + attackTarget.getBbWidth());
+			return (double) (this.mob.getBbWidth() * 2.0F * this.mob.getBbWidth() * 2.0F + attackTarget.getBbWidth());
 		}
 	}
 
@@ -252,6 +232,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 		public void start() {
 			super.start();
 			this.parentEntity.setAggressive(true);
+			this.parentEntity.setAttackingState(0);
 		}
 
 		@Override
@@ -284,11 +265,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 							int j = 1 * l;
 							parentEntity.spawnFlames(parentEntity.getX() + (double) Mth.cos(f) * d5,
 									parentEntity.getZ() + (double) Mth.sin(f) * d5, d0, d1, f, j);
-							if (parentEntity.getHealth() < (parentEntity.getMaxHealth() * 0.50)) {
-								this.parentEntity.setAttackingState(4);
-							} else {
-								this.parentEntity.setAttackingState(2);
-							}
+							this.parentEntity.setAttackingState(2);
 						}
 					}
 					if (parentEntity.getHealth() > (parentEntity.getMaxHealth() * 0.50)) {
@@ -414,10 +391,9 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 	public void aiStep() {
 		super.aiStep();
 		flameTimer = (flameTimer + 1) % 8;
-		if (this.getHealth() < 75.0D) {
+		if (this.getHealth() < (this.getMaxHealth() * 0.50)) {
 			if (!this.level.isClientSide) {
 				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 10000000, 2));
-				this.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 10000000, 1));
 			}
 		}
 	}
