@@ -107,7 +107,6 @@ public class FireBaronEntity extends DemonEntity implements IAnimatable {
 		return p_223337_1_.getDifficulty() != Difficulty.PEACEFUL;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected void initGoals() {
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));
@@ -120,7 +119,7 @@ public class FireBaronEntity extends DemonEntity implements IAnimatable {
 						2));
 		this.goalSelector.add(4, new DemonAttackGoal(this, 1.0D, false, 1));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
-		this.targetSelector.add(2, new ActiveTargetGoal(this, PlayerEntity.class, true));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 	}
 

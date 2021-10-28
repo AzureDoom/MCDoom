@@ -1,3 +1,4 @@
-v.4.0.18
+v.4.0.19
 
-- Updated to 21w43a
+- Tweaked Summoner attacks.
+- Tweaked Doom Hunter.
