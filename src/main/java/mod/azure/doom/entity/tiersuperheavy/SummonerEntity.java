@@ -3,12 +3,12 @@ package mod.azure.doom.entity.tiersuperheavy;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.SplittableRandom;
 import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.config.DoomConfig.Server;
@@ -109,7 +109,6 @@ public class SummonerEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
 		this.targetSelector.addGoal(2, new HurtByTargetGoal(this).setAlertOthers());
 		this.goalSelector.addGoal(4, new SummonerEntity.AttackGoal(this));
-		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.addGoal(1, new SummonerEntity.FindPlayerGoal(this, this::isAngryAt));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, true));
@@ -153,11 +152,13 @@ public class SummonerEntity extends DemonEntity implements IAnimatable {
 						float f = (float) MathHelper.atan2(livingEntity.getZ() - ghast.getZ(),
 								livingEntity.getX() - ghast.getX());
 						int j;
-						if (ghast.distanceToSqr(livingEntity) > 13.0D) {
+						SplittableRandom random = new SplittableRandom();
+						int r = random.nextInt(0, 2);
+						if (r == 1) {
 							for (j = 0; j < 16; ++j) {
 								double l1 = 1.25D * (double) (j + 1);
-								ghast.spawnFangs(ghast.getX() + (double) MathHelper.cos(f) * l1,
-										ghast.getZ() + (double) MathHelper.sin(f) * l1, d, e, f, 32);
+								ghast.spawnFangs(ghast.getX() + (double) Math.cos(f) * l1,
+										ghast.getZ() + (double) Math.sin(f) * l1, d, e, f, 32);
 							}
 						} else {
 							ghast.spawnWave();
@@ -272,9 +273,6 @@ public class SummonerEntity extends DemonEntity implements IAnimatable {
 			} else {
 				if (this.target != null && !this.enderman.isPassenger()) {
 					if (this.enderman.shouldAttackPlayer((PlayerEntity) this.target)) {
-						if (this.target.distanceToSqr(this.enderman) < 16.0D) {
-							this.enderman.teleportRandomly();
-						}
 
 						this.teleportTime = 0;
 					} else if (this.target.distanceToSqr(this.enderman) > 256.0D && this.teleportTime++ >= 30
@@ -316,7 +314,6 @@ public class SummonerEntity extends DemonEntity implements IAnimatable {
 			if (f > 0.5F && this.level.canSeeSky(this.blockPosition())
 					&& this.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
 				this.setTarget((LivingEntity) null);
-				this.teleportRandomly();
 			}
 		}
 

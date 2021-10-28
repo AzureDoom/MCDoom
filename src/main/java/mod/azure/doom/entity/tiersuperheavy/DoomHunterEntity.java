@@ -66,11 +66,11 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 	private AnimationFactory factory = new AnimationFactory(this);
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (!this.isOnGround() && this.onGround && this.getHealth() > (this.getMaxHealth() * 0.50)) {
+		if (!this.isOnGround() && this.onGround && this.getHealth() >= (this.getMaxHealth() * 0.50)) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
 			return PlayState.CONTINUE;
 		}
-		if (!this.isOnGround() && this.onGround && this.getHealth() < (this.getMaxHealth() * 0.50)) {
+		if (!this.isOnGround() && this.onGround && this.getHealth() <= (this.getMaxHealth() * 0.50)) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_nosled", true));
 			return PlayState.CONTINUE;
 		}
@@ -430,10 +430,9 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 	public void aiStep() {
 		super.aiStep();
 		flameTimer = (flameTimer + 1) % 8;
-		if (this.getHealth() < 75.0D) {
+		if (this.getHealth() < (this.getMaxHealth() * 0.50)) {
 			if (!this.level.isClientSide) {
 				this.addEffect(new EffectInstance(Effects.MOVEMENT_SPEED, 10000000, 2));
-				this.addEffect(new EffectInstance(Effects.WEAKNESS, 10000000, 1));
 			}
 		}
 	}

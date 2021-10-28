@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
+import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public class DoomHunterRender extends GeoEntityRenderer<DoomHunterEntity> {
@@ -27,6 +28,22 @@ public class DoomHunterRender extends GeoEntityRenderer<DoomHunterEntity> {
 	@Override
 	protected float getDeathMaxRotation(DoomHunterEntity entityLivingBaseIn) {
 		return 0.0F;
+	}
+
+	@Override
+	public void render(GeoModel model, DoomHunterEntity animatable, float partialTicks, RenderType type,
+			MatrixStack matrixStackIn, IRenderTypeBuffer renderTypeBuffer, IVertexBuilder vertexBuilder,
+			int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+		super.render(model, animatable, partialTicks, type, matrixStackIn, renderTypeBuffer, vertexBuilder,
+				packedLightIn, packedOverlayIn, red, green, blue, alpha);
+		float health = animatable.getHealth();
+		float maxhealth = animatable.getMaxHealth();
+		if (health > (maxhealth * 0.5)) {
+			model.getBone("sled").get().setHidden(false);
+		}
+		if (health <= (maxhealth * 0.5)) {
+			model.getBone("sled").get().setHidden(true);
+		}
 	}
 
 }
