@@ -3,12 +3,12 @@ package mod.azure.doom.entity.tiersuperheavy;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.SplittableRandom;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import net.minecraft.block.BlockState;
@@ -100,7 +100,6 @@ public class SummonerEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
 		this.goalSelector.add(4, new SummonerEntity.AttackGoal(this));
-		this.goalSelector.add(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.add(1, new SummonerEntity.TeleportTowardsPlayerGoal(this, this::shouldAngerAt));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
 		this.targetSelector.add(2, new FollowTargetGoal<>(this, PlayerEntity.class, true));
@@ -144,7 +143,9 @@ public class SummonerEntity extends DemonEntity implements IAnimatable {
 						float f = (float) MathHelper.atan2(livingEntity.getZ() - ghast.getZ(),
 								livingEntity.getX() - ghast.getX());
 						int j;
-						if (ghast.squaredDistanceTo(livingEntity) > 13.0D) {
+						SplittableRandom random = new SplittableRandom();
+						int r = random.nextInt(0, 2);
+						if (r == 1) {
 							for (j = 0; j < 16; ++j) {
 								double l1 = 1.25D * (double) (j + 1);
 								ghast.conjureFangs(ghast.getX() + (double) MathHelper.cos(f) * l1,
@@ -265,9 +266,6 @@ public class SummonerEntity extends DemonEntity implements IAnimatable {
 			} else {
 				if (this.targetEntity != null && !this.enderman.hasVehicle()) {
 					if (this.enderman.isPlayerStaring((PlayerEntity) this.targetEntity)) {
-						if (this.targetEntity.squaredDistanceTo(this.enderman) < 16.0D) {
-							this.enderman.teleportRandomly();
-						}
 
 						this.ticksSinceUnseenTeleport = 0;
 					} else if (this.targetEntity.squaredDistanceTo(this.enderman) > 256.0D
@@ -304,7 +302,6 @@ public class SummonerEntity extends DemonEntity implements IAnimatable {
 			if (f > 0.5F && this.world.isSkyVisible(this.getBlockPos())
 					&& this.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
 				this.setTarget((LivingEntity) null);
-				this.teleportRandomly();
 			}
 		}
 
@@ -374,7 +371,8 @@ public class SummonerEntity extends DemonEntity implements IAnimatable {
 		} while (blockPos.getY() >= MathHelper.floor(maxY) - 1);
 
 		if (bl) {
-			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this, config.summoner_ranged_damage);
+			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
+					config.summoner_ranged_damage);
 			fang.setFireTicks(age);
 			fang.isInvisible();
 			this.world.spawnEntity(fang);
@@ -440,8 +438,7 @@ public class SummonerEntity extends DemonEntity implements IAnimatable {
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.summoner_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 
