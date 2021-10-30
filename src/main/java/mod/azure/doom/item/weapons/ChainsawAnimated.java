@@ -119,7 +119,7 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 
 	public void reload(PlayerEntity user, Hand hand) {
 		if (user.getStackInHand(hand).getItem() instanceof ChainsawAnimated) {
-			while (user.getStackInHand(hand).getDamage() != 0 && user.inventory.count(DoomItems.GAS_BARREL) > 0) {
+			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0 && user.inventory.count(DoomItems.GAS_BARREL) > 0) {
 				removeAmmo(DoomItems.BULLETS, user);
 				user.getStackInHand(hand).damage(-200, user, s -> user.sendToolBreakStatus(hand));
 				user.getStackInHand(hand).setCooldown(3);

@@ -75,7 +75,7 @@ public class Chaingun extends DoomBaseItem {
 
 	public void reload(PlayerEntity user, Hand hand) {
 		if (user.getStackInHand(hand).getItem() instanceof Chaingun) {
-			while (user.getStackInHand(hand).getDamage() != 0 && user.inventory.count(DoomItems.CHAINGUN_BULLETS) > 0) {
+			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0 && user.inventory.count(DoomItems.CHAINGUN_BULLETS) > 0) {
 				removeAmmo(DoomItems.CHAINGUN_BULLETS, user);
 				user.getStackInHand(hand).damage(-50, user, s -> user.sendToolBreakStatus(hand));
 				user.getStackInHand(hand).setCooldown(3);

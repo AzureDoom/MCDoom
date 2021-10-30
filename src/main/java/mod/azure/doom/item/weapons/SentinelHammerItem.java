@@ -138,7 +138,7 @@ public class SentinelHammerItem extends Item implements IAnimatable, ISyncable {
 
 	public void reload(PlayerEntity user, Hand hand) {
 		if (user.getStackInHand(hand).getItem() instanceof AxeMarauderItem) {
-			while (user.getStackInHand(hand).getDamage() != 0
+			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0
 					&& user.inventory.count(DoomItems.ARGENT_ENERGY.asItem()) > 0) {
 				removeAmmo(DoomItems.ARGENT_ENERGY.asItem(), user);
 				user.getStackInHand(hand).damage(-5, user, s -> user.sendToolBreakStatus(hand));
