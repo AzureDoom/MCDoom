@@ -74,7 +74,7 @@ public class BFG9000 extends DoomBaseItem {
 
 	public void reload(PlayerEntity user, Hand hand) {
 		if (user.getStackInHand(hand).getItem() instanceof BFG9000) {
-			while (user.getStackInHand(hand).getDamage() != 0 && user.getInventory().count(DoomItems.BFG_CELL) > 0) {
+			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0 && user.getInventory().count(DoomItems.BFG_CELL) > 0) {
 				removeAmmo(DoomItems.BFG_CELL, user);
 				user.getStackInHand(hand).damage(-20, user, s -> user.sendToolBreakStatus(hand));
 				user.getStackInHand(hand).setBobbingAnimationTime(3);

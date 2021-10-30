@@ -98,7 +98,7 @@ public class Chainsaw extends Item {
 
 	public void reload(PlayerEntity user, Hand hand) {
 		if (user.getStackInHand(hand).getItem() instanceof Chainsaw) {
-			while (user.getStackInHand(hand).getDamage() != 0 && user.getInventory().count(DoomItems.GAS_BARREL) > 0) {
+			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0 && user.getInventory().count(DoomItems.GAS_BARREL) > 0) {
 				removeAmmo(DoomItems.BULLETS, user);
 				user.getStackInHand(hand).damage(-200, user, s -> user.sendToolBreakStatus(hand));
 				user.getStackInHand(hand).setBobbingAnimationTime(3);

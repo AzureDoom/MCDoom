@@ -82,7 +82,7 @@ public class Unmaykr extends DoomBaseItem {
 
 	public void reload(PlayerEntity user, Hand hand) {
 		if (user.getStackInHand(hand).getItem() instanceof Unmaykr) {
-			while (user.getStackInHand(hand).getDamage() != 0
+			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0
 					&& user.getInventory().count(DoomItems.UNMAKRY_BOLT) > 0) {
 				removeAmmo(DoomItems.UNMAKRY_BOLT, user);
 				user.getStackInHand(hand).damage(-20, user, s -> user.sendToolBreakStatus(hand));

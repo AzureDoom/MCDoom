@@ -64,7 +64,7 @@ public class PlasmaGun extends DoomBaseItem {
 
 	public void reload(PlayerEntity user, Hand hand) {
 		if (user.getStackInHand(hand).getItem() instanceof PlasmaGun) {
-			while (user.getStackInHand(hand).getDamage() != 0
+			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0
 					&& user.getInventory().count(DoomItems.ENERGY_CELLS) > 0) {
 				removeAmmo(DoomItems.ENERGY_CELLS, user);
 				user.getStackInHand(hand).damage(-20, user, s -> user.sendToolBreakStatus(hand));
