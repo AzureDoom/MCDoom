@@ -118,7 +118,7 @@ public class SwordCrucibleItem extends Item implements IAnimatable, ISyncable {
 
 	public void reload(PlayerEntity user, Hand hand) {
 		if (user.getStackInHand(hand).getItem() instanceof SwordCrucibleItem) {
-			while (user.getStackInHand(hand).getDamage() != 0
+			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0
 					&& user.getInventory().count(DoomBlocks.ARGENT_BLOCK.asItem()) > 0) {
 				removeAmmo(DoomBlocks.ARGENT_BLOCK.asItem(), user);
 				user.getStackInHand(hand).damage(-5, user, s -> user.sendToolBreakStatus(hand));
