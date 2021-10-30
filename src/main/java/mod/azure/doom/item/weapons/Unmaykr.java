@@ -113,7 +113,7 @@ public class Unmaykr extends DoomBaseItem {
 
 	public static void reload(Player user, InteractionHand hand) {
 		if (user.getItemInHand(hand).getItem() instanceof Unmaykr) {
-			while (user.getItemInHand(hand).getDamageValue() != 0
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
 					&& user.getInventory().countItem(DoomItems.UNMAKRY_BOLT.get()) > 0) {
 				removeAmmo(DoomItems.UNMAKRY_BOLT.get(), user);
 				user.getItemInHand(hand).hurtAndBreak(-20, user, s -> user.broadcastBreakEvent(hand));

@@ -97,7 +97,7 @@ public class Chaingun extends DoomBaseItem {
 
 	public static void reload(Player user, InteractionHand hand) {
 		if (user.getItemInHand(hand).getItem() instanceof Chaingun) {
-			while (user.getItemInHand(hand).getDamageValue() != 0
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
 					&& user.getInventory().countItem(DoomItems.CHAINGUN_BULLETS.get()) > 0) {
 				removeAmmo(DoomItems.CHAINGUN_BULLETS.get(), user);
 				user.getItemInHand(hand).hurtAndBreak(-50, user, s -> user.broadcastBreakEvent(hand));

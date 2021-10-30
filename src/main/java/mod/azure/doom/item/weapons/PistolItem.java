@@ -96,7 +96,7 @@ public class PistolItem extends DoomBaseItem {
 
 	public static void reload(Player user, InteractionHand hand) {
 		if (user.getMainHandItem().getItem() instanceof PistolItem) {
-			while (user.getItemInHand(hand).getDamageValue() != 0
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
 					&& user.getInventory().countItem(DoomItems.BULLETS.get()) > 0) {
 				removeAmmo(DoomItems.BULLETS.get(), user);
 				user.getMainHandItem().hurtAndBreak(-10, user, s -> user.broadcastBreakEvent(hand));

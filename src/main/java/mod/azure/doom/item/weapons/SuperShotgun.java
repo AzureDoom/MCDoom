@@ -101,7 +101,7 @@ public class SuperShotgun extends DoomBaseItem {
 
 	public static void reload(Player user, InteractionHand hand) {
 		if (user.getItemInHand(hand).getItem() instanceof SuperShotgun) {
-			while (user.getItemInHand(hand).getDamageValue() != 0
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
 					&& user.getInventory().countItem(DoomItems.SHOTGUN_SHELLS.get()) > 0) {
 				removeAmmo(DoomItems.SHOTGUN_SHELLS.get(), user);
 				user.getItemInHand(hand).hurtAndBreak(-4, user, s -> user.broadcastBreakEvent(hand));

@@ -100,7 +100,7 @@ public class Chainsaw extends Item {
 
 	public static void reload(Player user, InteractionHand hand) {
 		if (user.getItemInHand(hand).getItem() instanceof Chainsaw) {
-			while (user.getItemInHand(hand).getDamageValue() != 0
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
 					&& user.getInventory().countItem(DoomItems.GAS_BARREL.get()) > 0) {
 				removeAmmo(DoomItems.GAS_BARREL.get(), user);
 				user.getItemInHand(hand).hurtAndBreak(-200, user, s -> user.broadcastBreakEvent(hand));

@@ -59,8 +59,8 @@ public class Shotgun extends DoomBaseItem {
 				playerentity.getCooldowns().addCooldown(this, 10);
 				if (!worldIn.isClientSide) {
 					ShotgunShellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F,
-							1.0F * 3.0F, 1.0F);
+					abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(),
+							0.0F, 1.0F * 3.0F, 1.0F);
 					abstractarrowentity.isNoGravity();
 
 					stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
@@ -79,7 +79,8 @@ public class Shotgun extends DoomBaseItem {
 	}
 
 	public ShotgunShellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter, DoomConfig.SERVER.shotgun_damage.get().floatValue());
+		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter,
+				DoomConfig.SERVER.shotgun_damage.get().floatValue());
 		return arrowentity;
 	}
 
@@ -95,13 +96,15 @@ public class Shotgun extends DoomBaseItem {
 	}
 
 	public static void reload(Player user, InteractionHand hand) {
-		if (user.getItemInHand(hand).getDamageValue() != 0
-				&& user.getInventory().countItem(DoomItems.SHOTGUN_SHELLS.get()) > 0) {
-			removeAmmo(DoomItems.SHOTGUN_SHELLS.get(), user);
-			user.getItemInHand(hand).hurtAndBreak(-4, user, s -> user.broadcastBreakEvent(hand));
-			user.getItemInHand(hand).setPopTime(3);
-			user.getCommandSenderWorld().playSound((Player) null, user.getX(), user.getY(), user.getZ(),
-					ModSoundEvents.SHOTGUNRELOAD.get(), SoundSource.PLAYERS, 1.00F, 1.0F);
+		if (user.getItemInHand(hand).getItem() instanceof SuperShotgun) {
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
+					&& user.getInventory().countItem(DoomItems.SHOTGUN_SHELLS.get()) > 0) {
+				removeAmmo(DoomItems.SHOTGUN_SHELLS.get(), user);
+				user.getItemInHand(hand).hurtAndBreak(-4, user, s -> user.broadcastBreakEvent(hand));
+				user.getItemInHand(hand).setPopTime(3);
+				user.getCommandSenderWorld().playSound((Player) null, user.getX(), user.getY(), user.getZ(),
+						ModSoundEvents.SHOTGUNRELOAD.get(), SoundSource.PLAYERS, 1.00F, 1.0F);
+			}
 		}
 	}
 

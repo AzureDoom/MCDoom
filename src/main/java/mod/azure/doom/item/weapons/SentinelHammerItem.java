@@ -150,7 +150,7 @@ public class SentinelHammerItem extends Item implements IAnimatable, ISyncable {
 
 	public static void reload(Player user, InteractionHand hand) {
 		if (user.getItemInHand(hand).getItem() instanceof SentinelHammerItem) {
-			while (user.getItemInHand(hand).getDamageValue() != 0
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
 					&& user.getInventory().countItem(DoomItems.ARGENT_ENERGY.get()) > 0) {
 				removeAmmo(DoomItems.ARGENT_ENERGY.get(), user);
 				user.getItemInHand(hand).hurtAndBreak(-5, user, s -> user.broadcastBreakEvent(hand));

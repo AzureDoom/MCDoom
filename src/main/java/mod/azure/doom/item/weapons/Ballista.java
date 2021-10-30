@@ -96,7 +96,7 @@ public class Ballista extends DoomBaseItem {
 
 	public static void reload(Player user, InteractionHand hand) {
 		if (user.getItemInHand(hand).getItem() instanceof Ballista) {
-			while (user.getItemInHand(hand).getDamageValue() != 0
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
 					&& user.getInventory().countItem(DoomItems.ARGENT_BOLT.get()) > 0) {
 				removeAmmo(DoomItems.ARGENT_BOLT.get(), user);
 				user.getItemInHand(hand).hurtAndBreak(-1, user, s -> user.broadcastBreakEvent(hand));
