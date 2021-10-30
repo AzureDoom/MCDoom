@@ -81,13 +81,15 @@ public class Shotgun extends DoomBaseItem {
 	}
 
 	public static void reload(PlayerEntity user, Hand hand) {
-		if (user.getItemInHand(hand).getDamageValue() != 0
-				&& user.inventory.countItem(DoomItems.SHOTGUN_SHELLS.get()) > 0) {
-			removeAmmo(DoomItems.SHOTGUN_SHELLS.get(), user);
-			user.getItemInHand(hand).hurtAndBreak(-4, user, s -> user.broadcastBreakEvent(hand));
-			user.getItemInHand(hand).setPopTime(3);
-			user.getCommandSenderWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
-					ModSoundEvents.SHOTGUNRELOAD.get(), SoundCategory.PLAYERS, 1.00F, 1.0F);
+		if (user.getItemInHand(hand).getItem() instanceof SuperShotgun) {
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
+					&& user.inventory.countItem(DoomItems.SHOTGUN_SHELLS.get()) > 0) {
+				removeAmmo(DoomItems.SHOTGUN_SHELLS.get(), user);
+				user.getItemInHand(hand).hurtAndBreak(-4, user, s -> user.broadcastBreakEvent(hand));
+				user.getItemInHand(hand).setPopTime(3);
+				user.getCommandSenderWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
+						ModSoundEvents.SHOTGUNRELOAD.get(), SoundCategory.PLAYERS, 1.00F, 1.0F);
+			}
 		}
 	}
 

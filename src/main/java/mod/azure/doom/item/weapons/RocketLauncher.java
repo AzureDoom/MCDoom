@@ -82,7 +82,7 @@ public class RocketLauncher extends DoomBaseItem {
 
 	public static void reload(PlayerEntity user, Hand hand) {
 		if (user.getItemInHand(hand).getItem() instanceof RocketLauncher) {
-			while (user.getItemInHand(hand).getDamageValue() != 0
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
 					&& user.inventory.countItem(DoomItems.ROCKET.get()) > 0) {
 				removeAmmo(DoomItems.ROCKET.get(), user);
 				user.getItemInHand(hand).hurtAndBreak(-2, user, s -> user.broadcastBreakEvent(hand));
