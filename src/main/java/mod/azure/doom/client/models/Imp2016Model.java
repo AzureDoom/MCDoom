@@ -6,10 +6,10 @@ import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class Imp2016Model extends AnimatedGeoModel<Imp2016Entity> {
+public class Imp2016Model extends AnimatedTickingGeoModel<Imp2016Entity> {
 
 	public Imp2016Model() {
 	}

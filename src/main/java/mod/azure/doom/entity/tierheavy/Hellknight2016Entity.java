@@ -27,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -34,7 +35,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class Hellknight2016Entity extends DemonEntity implements IAnimatable {
+public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public Hellknight2016Entity(EntityType<Hellknight2016Entity> entityType, World worldIn) {
 		super(entityType, worldIn);
@@ -65,6 +66,11 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable {
 			return PlayState.CONTINUE;
 		}
 		return PlayState.STOP;
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 	@Override

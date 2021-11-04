@@ -45,6 +45,7 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -52,7 +53,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class ZombiemanEntity extends DemonEntity implements RangedAttackMob, IAnimatable {
+public class ZombiemanEntity extends DemonEntity implements RangedAttackMob, IAnimatable, IAnimationTickable {
 
 	private final RangedPistolAttackGoal<ZombiemanEntity> bowAttackGoal = new RangedPistolAttackGoal<>(this, 1.0D, 20,
 			15.0F, 2);
@@ -105,6 +106,11 @@ public class ZombiemanEntity extends DemonEntity implements RangedAttackMob, IAn
 	}
 
 	@Override
+	public int tickTimer() {
+		return age;
+	}
+
+	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController<ZombiemanEntity>(this, "controller", 0, this::predicate));
 		data.addAnimationController(new AnimationController<ZombiemanEntity>(this, "controller1", 0, this::predicate1));
@@ -134,8 +140,7 @@ public class ZombiemanEntity extends DemonEntity implements RangedAttackMob, IAn
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.zombieman_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 2.5D)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 2.5D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 

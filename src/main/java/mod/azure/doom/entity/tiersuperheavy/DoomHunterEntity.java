@@ -38,6 +38,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -45,7 +46,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class DoomHunterEntity extends DemonEntity implements IAnimatable {
+public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public DoomHunterEntity(EntityType<? extends DoomHunterEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
@@ -62,6 +63,11 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {

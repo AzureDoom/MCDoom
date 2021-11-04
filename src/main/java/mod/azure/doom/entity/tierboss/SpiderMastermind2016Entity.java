@@ -33,13 +33,19 @@ public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 		this.goalSelector.add(6, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
 		this.goalSelector.add(4,
-				new RangedStrafeAttackGoal(this, new SpiderMastermind2016Entity.FireballAttack(this)
-						.setProjectileOriginOffset(0.8, 0.2, 0.8).setDamage(config.spider_mastermind_ranged_damage), 1.0D, 50, 30, 15, 15F, 1)
-								.setMultiShot(5, 1));
+				new RangedStrafeAttackGoal(this,
+						new SpiderMastermind2016Entity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.2, 0.8)
+								.setDamage(config.spider_mastermind_ranged_damage),
+						1.0D, 50, 30, 15, 15F, 1).setMultiShot(5, 1));
 		this.targetSelector.add(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 		this.targetSelector.add(2, new FollowTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new FollowTargetGoal<>(this, MerchantEntity.class, true));
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 	public class FireballAttack extends AbstractRangedAttack {

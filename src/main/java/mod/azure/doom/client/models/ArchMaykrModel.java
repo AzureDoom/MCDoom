@@ -6,10 +6,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class ArchMaykrModel extends AnimatedGeoModel<ArchMakyrEntity> {
+public class ArchMaykrModel extends AnimatedTickingGeoModel<ArchMakyrEntity> {
 
 	@Override
 	public Identifier getModelLocation(ArchMakyrEntity object) {

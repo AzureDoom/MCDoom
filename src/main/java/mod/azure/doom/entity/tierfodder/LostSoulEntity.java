@@ -47,6 +47,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.explosion.Explosion;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -54,7 +55,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable {
+public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable, IAnimationTickable {
 
 	protected static final TrackedData<Byte> VEX_FLAGS = DataTracker.registerData(LostSoulEntity.class,
 			TrackedDataHandlerRegistry.BYTE);
@@ -84,6 +85,11 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable 
 	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController<LostSoulEntity>(this, "controller", 0, this::predicate));
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 	@Override

@@ -49,6 +49,7 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -56,7 +57,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAttackMob {
+public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimationTickable, RangedAttackMob {
 
 	private final RangedShotgunAttackGoal<MarauderEntity> bowAttackGoal = new RangedShotgunAttackGoal<>(this, 1.0D, 20,
 			15.0F, 2);
@@ -98,6 +99,11 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 	@Override

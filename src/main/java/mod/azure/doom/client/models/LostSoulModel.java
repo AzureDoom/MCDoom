@@ -6,13 +6,13 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 /**
  * LostSoul - __Botmon__
  */
-public class LostSoulModel extends AnimatedGeoModel<LostSoulEntity> {
+public class LostSoulModel extends AnimatedTickingGeoModel<LostSoulEntity> {
 
 	private static final Identifier[] TEX = { new Identifier(DoomMod.MODID, "textures/entity/lost_soul_fire_1.png"),
 			new Identifier(DoomMod.MODID, "textures/entity/lost_soul_fire_2.png"),
@@ -32,9 +32,6 @@ public class LostSoulModel extends AnimatedGeoModel<LostSoulEntity> {
 			new Identifier(DoomMod.MODID, "textures/entity/lost_soul_green_fire_6.png"),
 			new Identifier(DoomMod.MODID, "textures/entity/lost_soul_green_fire_7.png"),
 			new Identifier(DoomMod.MODID, "textures/entity/lost_soul_green_fire_8.png") };
-
-	public LostSoulModel() {
-	}
 
 	@Override
 	public Identifier getModelLocation(LostSoulEntity object) {

@@ -45,6 +45,7 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -52,7 +53,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class ChaingunnerEntity extends DemonEntity implements RangedAttackMob, IAnimatable {
+public class ChaingunnerEntity extends DemonEntity implements RangedAttackMob, IAnimatable, IAnimationTickable {
 
 	private final RangedChaingunAttackGoal<ChaingunnerEntity> bowAttackGoal = new RangedChaingunAttackGoal<>(this, 1.0D,
 			20, 15.0F, 2);
@@ -105,10 +106,17 @@ public class ChaingunnerEntity extends DemonEntity implements RangedAttackMob, I
 	}
 
 	@Override
+	public int tickTimer() {
+		return age;
+	}
+
+	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController<ChaingunnerEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(new AnimationController<ChaingunnerEntity>(this, "controller1", 0, this::predicate1));
-		data.addAnimationController(new AnimationController<ChaingunnerEntity>(this, "controller2", 0, this::predicate2));
+		data.addAnimationController(
+				new AnimationController<ChaingunnerEntity>(this, "controller1", 0, this::predicate1));
+		data.addAnimationController(
+				new AnimationController<ChaingunnerEntity>(this, "controller2", 0, this::predicate2));
 	}
 
 	@Override
@@ -134,8 +142,7 @@ public class ChaingunnerEntity extends DemonEntity implements RangedAttackMob, I
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.chaingunner_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 2.5D)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 2.5D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 

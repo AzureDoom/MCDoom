@@ -33,6 +33,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -40,7 +41,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class MancubusEntity extends DemonEntity implements IAnimatable {
+public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
 
@@ -75,6 +76,11 @@ public class MancubusEntity extends DemonEntity implements IAnimatable {
 			return PlayState.CONTINUE;
 		}
 		return PlayState.STOP;
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 	@Override
@@ -164,7 +170,8 @@ public class MancubusEntity extends DemonEntity implements IAnimatable {
 				double f = livingEntity.getX() - (this.parentEntity.getX() + vec3d.x * 2.0D);
 				double g = livingEntity.getBodyY(0.5D) - (0.5D + this.parentEntity.getBodyY(0.5D));
 				double h = livingEntity.getZ() - (this.parentEntity.getZ() + vec3d.z * 2.0D);
-				BarenBlastEntity fireballEntity = new BarenBlastEntity(world, this.parentEntity, f, g, h, config.mancubus_ranged_damage);
+				BarenBlastEntity fireballEntity = new BarenBlastEntity(world, this.parentEntity, f, g, h,
+						config.mancubus_ranged_damage);
 				double d = Math.min(livingEntity.getY(), parentEntity.getY());
 				double e1 = Math.max(livingEntity.getY(), parentEntity.getY()) + 1.0D;
 				float f2 = (float) MathHelper.atan2(livingEntity.getZ() - parentEntity.getZ(),
@@ -248,7 +255,8 @@ public class MancubusEntity extends DemonEntity implements IAnimatable {
 		} while (blockPos.getY() >= MathHelper.floor(maxY) - 1);
 
 		if (bl) {
-			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this, config.mancubus_ranged_damage);
+			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
+					config.mancubus_ranged_damage);
 			fang.setFireTicks(age);
 			fang.isInvisible();
 			this.world.spawnEntity(fang);

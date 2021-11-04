@@ -25,6 +25,7 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -32,7 +33,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class GoreNestEntity extends DemonEntity implements IAnimatable {
+public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
 	public int spawnTimer = 0;
@@ -50,6 +51,11 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable {
 		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 	@Override
@@ -170,7 +176,7 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable {
 				this.spawnWave();
 			}
 		}
-		if ((this.age % 2400) *3 == 0) {
+		if ((this.age % 2400) * 3 == 0) {
 			this.remove();
 		}
 		super.tickMovement();

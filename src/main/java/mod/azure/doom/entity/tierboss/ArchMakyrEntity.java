@@ -53,6 +53,7 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -60,7 +61,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
+public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
 	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(ArchMakyrEntity.class,
@@ -71,6 +72,11 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 	public ArchMakyrEntity(EntityType<ArchMakyrEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
 		this.moveControl = new ArchMakyrEntity.MoveController(this);
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {

@@ -5,10 +5,10 @@ import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class Baron2016Model extends AnimatedGeoModel<BaronEntity> {
+public class Baron2016Model extends AnimatedTickingGeoModel<BaronEntity> {
 
 	@Override
 	public Identifier getModelLocation(BaronEntity object) {

@@ -37,7 +37,7 @@
 		"fabricloader": ">=0.7.4",
 		"fabric": "*",
 		"minecraft": "1.16.x",
-		"geckolib3": ">=3.0.39",
+		"geckolib3": ">=3.0.52",
 		"cloth-config2": "*"
 	},
 	"suggests": {
