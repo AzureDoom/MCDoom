@@ -32,6 +32,7 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -39,7 +40,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class SpectreEntity extends DemonEntity implements IAnimatable {
+public class SpectreEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
 	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(SpectreEntity.class,
@@ -163,6 +164,11 @@ public class SpectreEntity extends DemonEntity implements IAnimatable {
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState blockIn) {
 		this.playSound(this.getStepSound(), 0.15F, 1.0F);
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 }

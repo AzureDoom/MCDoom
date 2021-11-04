@@ -43,6 +43,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -50,7 +51,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class IconofsinEntity extends DemonEntity implements IAnimatable {
+public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private final ServerBossBar bossBar = (ServerBossBar) (new ServerBossBar(this.getDisplayName(),
 			BossBar.Color.PURPLE, BossBar.Style.PROGRESS)).setDarkenSky(true).setThickenFog(true);
@@ -422,5 +423,10 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 	@Override
 	public boolean damage(DamageSource source, float amount) {
 		return source == DamageSource.IN_WALL ? false : super.damage(source, amount);
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 }

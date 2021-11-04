@@ -38,6 +38,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -45,7 +46,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class DoomHunterEntity extends DemonEntity implements IAnimatable {
+public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public DoomHunterEntity(EntityType<? extends DoomHunterEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
@@ -108,7 +109,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 		this.targetSelector.add(2, new FollowTargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
 	}
-	
+
 	@Override
 	protected void updateGoalControls() {
 		boolean flag = this.getTarget() != null && this.canSee(this.getTarget());
@@ -130,7 +131,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 
 	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
 	}
-	
+
 	public boolean handleFallDamage(float fallDistance, float damageMultiplier) {
 		return false;
 	}
@@ -386,6 +387,11 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable {
 
 	public int getFlameTimer() {
 		return flameTimer;
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 }

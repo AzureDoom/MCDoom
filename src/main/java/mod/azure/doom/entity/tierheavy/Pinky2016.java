@@ -24,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -31,7 +32,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class Pinky2016 extends DemonEntity implements IAnimatable {
+public class Pinky2016 extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public Pinky2016(EntityType<Pinky2016> entityType, World worldIn) {
 		super(entityType, worldIn);
@@ -46,24 +47,29 @@ public class Pinky2016 extends DemonEntity implements IAnimatable {
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (event.isMoving() && !this.isAttacking()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking"));
 			return PlayState.CONTINUE;
 		}
 		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		return PlayState.CONTINUE;
+	}
+
+	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
 		if (this.isAttacking() && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking", true));
 			return PlayState.CONTINUE;
 		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
-		return PlayState.CONTINUE;
+		return PlayState.STOP;
 	}
 
 	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController<Pinky2016>(this, "controller", 0, this::predicate));
+		data.addAnimationController(new AnimationController<Pinky2016>(this, "controller1", 0, this::predicate1));
 	}
 
 	@Override
@@ -121,6 +127,11 @@ public class Pinky2016 extends DemonEntity implements IAnimatable {
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState blockIn) {
 		this.playSound(this.getStepSound(), 0.15F, 1.0F);
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 }

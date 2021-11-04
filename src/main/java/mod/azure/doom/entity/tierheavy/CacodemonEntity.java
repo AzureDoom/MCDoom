@@ -45,6 +45,7 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -52,7 +53,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable {
+public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable, IAnimationTickable {
 
 	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(CacodemonEntity.class,
 			TrackedDataHandlerRegistry.INTEGER);
@@ -332,6 +333,11 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 	@Override
 	protected float getSoundVolume() {
 		return 1.0F;
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 }

@@ -6,10 +6,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class Revenant2016Model extends AnimatedGeoModel<Revenant2016Entity> {
+public class Revenant2016Model extends AnimatedTickingGeoModel<Revenant2016Entity> {
 
 	private static final Identifier[] TEX = { new Identifier(DoomMod.MODID, "textures/entity/revenant.png"),
 			new Identifier(DoomMod.MODID, "textures/entity/revenant_1.png"),

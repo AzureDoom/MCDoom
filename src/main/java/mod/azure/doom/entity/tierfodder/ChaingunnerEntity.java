@@ -45,6 +45,7 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -52,7 +53,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class ChaingunnerEntity extends DemonEntity implements RangedAttackMob, IAnimatable {
+public class ChaingunnerEntity extends DemonEntity implements RangedAttackMob, IAnimatable, IAnimationTickable {
 
 	private final RangedChaingunAttackGoal<ChaingunnerEntity> bowAttackGoal = new RangedChaingunAttackGoal<>(this, 1.0D,
 			20, 15.0F, 2);
@@ -257,6 +258,11 @@ public class ChaingunnerEntity extends DemonEntity implements RangedAttackMob, I
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState blockIn) {
 		this.playSound(this.getStepSound(), 0.15F, 1.0F);
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 }

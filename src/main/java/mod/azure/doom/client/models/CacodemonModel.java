@@ -6,10 +6,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class CacodemonModel extends AnimatedGeoModel<CacodemonEntity> {
+public class CacodemonModel extends AnimatedTickingGeoModel<CacodemonEntity> {
 
 	public Identifier classic_model = new Identifier(DoomMod.MODID, "geo/cacodemon.geo.json");
 	public Identifier doom64_model = new Identifier(DoomMod.MODID, "geo/cacodemon64.geo.json");

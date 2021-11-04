@@ -22,6 +22,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -29,7 +30,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class TurretEntity extends DemonEntity implements IAnimatable {
+public class TurretEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
 
@@ -142,8 +143,8 @@ public class TurretEntity extends DemonEntity implements IAnimatable {
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.turret_health).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.turret_health)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 50D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D);
 	}
@@ -154,6 +155,11 @@ public class TurretEntity extends DemonEntity implements IAnimatable {
 
 	protected boolean shouldBurnInDay() {
 		return false;
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 }
