@@ -39,6 +39,7 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -46,7 +47,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class BaronEntity extends DemonEntity implements IAnimatable {
+public class BaronEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public BaronEntity(EntityType<BaronEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
@@ -85,6 +86,11 @@ public class BaronEntity extends DemonEntity implements IAnimatable {
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController<BaronEntity>(this, "controller", 0, this::predicate));
 		data.addAnimationController(new AnimationController<BaronEntity>(this, "controller1", 0, this::predicate1));
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 	@Override

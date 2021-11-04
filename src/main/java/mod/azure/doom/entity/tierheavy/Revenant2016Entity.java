@@ -37,6 +37,7 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -44,7 +45,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class Revenant2016Entity extends DemonEntity implements IAnimatable {
+public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
 	public int flameTimer;
@@ -77,6 +78,11 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable {
 		return this.factory;
 	}
 
+	@Override
+	public int tickTimer() {
+		return age;
+	}
+
 	public Revenant2016Entity(EntityType<Revenant2016Entity> entityType, World worldIn) {
 		super(entityType, worldIn);
 	}
@@ -85,8 +91,7 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.revenant_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D)
-				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 
 	@Override

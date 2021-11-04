@@ -28,6 +28,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -35,7 +36,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class Imp2016Entity extends DemonEntity implements IAnimatable {
+public class Imp2016Entity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public Imp2016Entity(EntityType<Imp2016Entity> entityType, World worldIn) {
 		super(entityType, worldIn);
@@ -70,6 +71,11 @@ public class Imp2016Entity extends DemonEntity implements IAnimatable {
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController<Imp2016Entity>(this, "controller", 0, this::predicate));
 		data.addAnimationController(new AnimationController<Imp2016Entity>(this, "controller1", 0, this::predicate1));
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 	@Override
@@ -116,8 +122,7 @@ public class Imp2016Entity extends DemonEntity implements IAnimatable {
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.imp2016_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 

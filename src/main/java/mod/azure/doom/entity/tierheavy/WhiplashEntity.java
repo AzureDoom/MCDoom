@@ -26,6 +26,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -33,7 +34,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class WhiplashEntity extends DemonEntity implements IAnimatable {
+public class WhiplashEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public WhiplashEntity(EntityType<WhiplashEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
@@ -77,6 +78,11 @@ public class WhiplashEntity extends DemonEntity implements IAnimatable {
 	@Override
 	public AnimationFactory getFactory() {
 		return this.factory;
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 	@Override

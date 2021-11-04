@@ -24,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -31,7 +32,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class Pinky2016 extends DemonEntity implements IAnimatable {
+public class Pinky2016 extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public Pinky2016(EntityType<Pinky2016> entityType, World worldIn) {
 		super(entityType, worldIn);
@@ -45,7 +46,7 @@ public class Pinky2016 extends DemonEntity implements IAnimatable {
 	private AnimationFactory factory = new AnimationFactory(this);
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (event.isMoving()  && !this.isAttacking()) {
+		if (event.isMoving() && !this.isAttacking()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
 			return PlayState.CONTINUE;
 		}
@@ -69,6 +70,11 @@ public class Pinky2016 extends DemonEntity implements IAnimatable {
 	@Override
 	public AnimationFactory getFactory() {
 		return this.factory;
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 	public static boolean spawning(EntityType<PinkyEntity> p_223337_0_, World p_223337_1_, SpawnReason reason,

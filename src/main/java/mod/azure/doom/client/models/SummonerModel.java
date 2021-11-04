@@ -3,9 +3,9 @@ package mod.azure.doom.client.models;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 
-public class SummonerModel extends AnimatedGeoModel<SummonerEntity> {
+public class SummonerModel extends AnimatedTickingGeoModel<SummonerEntity> {
 
 	@Override
 	public Identifier getModelLocation(SummonerEntity object) {

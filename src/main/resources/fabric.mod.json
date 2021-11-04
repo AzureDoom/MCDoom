@@ -33,7 +33,7 @@
 		"fabricloader": ">=0.11.7",
 		"fabric": "*",
 		"minecraft": "1.18.x",
-		"geckolib3": ">=3.0.10"
+		"geckolib3": ">=3.0.11"
 	},
 	"accessWidener": "doom.accesswidener"
 }

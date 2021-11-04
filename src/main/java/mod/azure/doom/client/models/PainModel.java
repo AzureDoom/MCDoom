@@ -6,10 +6,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class PainModel extends AnimatedGeoModel<PainEntity> {
+public class PainModel extends AnimatedTickingGeoModel<PainEntity> {
 
 	public Identifier classic_model = new Identifier(DoomMod.MODID, "geo/pain.geo.json");
 	public Identifier doom64_model = new Identifier(DoomMod.MODID, "geo/pain64.geo.json");

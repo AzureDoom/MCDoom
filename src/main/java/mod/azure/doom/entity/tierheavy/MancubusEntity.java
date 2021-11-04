@@ -34,6 +34,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -41,7 +42,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class MancubusEntity extends DemonEntity implements IAnimatable {
+public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
 
@@ -87,6 +88,11 @@ public class MancubusEntity extends DemonEntity implements IAnimatable {
 	@Override
 	public AnimationFactory getFactory() {
 		return this.factory;
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 	@Override
@@ -249,7 +255,8 @@ public class MancubusEntity extends DemonEntity implements IAnimatable {
 		} while (blockPos.getY() >= MathHelper.floor(maxY) - 1);
 
 		if (bl) {
-			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this, config.mancubus_ranged_damage);
+			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
+					config.mancubus_ranged_damage);
 			fang.setFireTicks(age);
 			fang.isInvisible();
 			this.world.spawnEntity(fang);

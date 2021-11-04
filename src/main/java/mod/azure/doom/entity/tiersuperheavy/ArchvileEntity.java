@@ -42,6 +42,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -49,7 +50,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class ArchvileEntity extends DemonEntity implements IAnimatable {
+public class ArchvileEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 	private int ageWhenTargetSet;
 	public int flameTimer;
 
@@ -111,6 +112,11 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable {
 	}
 
 	@Override
+	public int tickTimer() {
+		return age;
+	}
+
+	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController<ArchvileEntity>(this, "controller", 0, this::predicate));
 		data.addAnimationController(new AnimationController<ArchvileEntity>(this, "controller1", 0, this::predicate1));
@@ -134,8 +140,7 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable {
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.archvile_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 
@@ -433,7 +438,8 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable {
 		} while (blockPos.getY() >= MathHelper.floor(maxY) - 1);
 
 		if (bl) {
-			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this, config.archvile_ranged_damage);
+			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
+					config.archvile_ranged_damage);
 			fang.setFireTicks(age);
 			fang.isInvisible();
 			this.world.spawnEntity(fang);

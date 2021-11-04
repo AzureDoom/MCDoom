@@ -43,6 +43,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -50,7 +51,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class MotherDemonEntity extends DemonEntity implements IAnimatable {
+public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private final ServerBossBar bossBar = (ServerBossBar) (new ServerBossBar(this.getDisplayName(),
 			BossBar.Color.PURPLE, BossBar.Style.PROGRESS)).setDarkenSky(true).setThickenFog(true);
@@ -84,6 +85,11 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 			return PlayState.CONTINUE;
 		}
 		return PlayState.STOP;
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 	@Override
@@ -211,9 +217,12 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 				double f = livingEntity.getX() - (this.parentEntity.getX() + vec3d.x * 2.0D);
 				double g = livingEntity.getBodyY(0.5D) - (0.5D + this.parentEntity.getBodyY(0.5D));
 				double h = livingEntity.getZ() - (this.parentEntity.getZ() + vec3d.z * 2.0D);
-				CustomFireballEntity fireballEntity = new CustomFireballEntity(world, this.parentEntity, f, g, h, config.motherdemon_ranged_damage);
-				CustomFireballEntity fireballEntity1 = new CustomFireballEntity(world, this.parentEntity, f, g, h, config.motherdemon_ranged_damage);
-				CustomFireballEntity fireballEntity2 = new CustomFireballEntity(world, this.parentEntity, f, g, h, config.motherdemon_ranged_damage);
+				CustomFireballEntity fireballEntity = new CustomFireballEntity(world, this.parentEntity, f, g, h,
+						config.motherdemon_ranged_damage);
+				CustomFireballEntity fireballEntity1 = new CustomFireballEntity(world, this.parentEntity, f, g, h,
+						config.motherdemon_ranged_damage);
+				CustomFireballEntity fireballEntity2 = new CustomFireballEntity(world, this.parentEntity, f, g, h,
+						config.motherdemon_ranged_damage);
 				double d = Math.min(livingEntity.getY(), parentEntity.getY());
 				double e1 = Math.max(livingEntity.getY(), parentEntity.getY()) + 1.0D;
 				float f2 = (float) MathHelper.atan2(livingEntity.getZ() - parentEntity.getZ(),
@@ -226,10 +235,8 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 							h2 = f2 + (float) j * 3.1415927F * 0.4F;
 							for (int y = 0; y < 5; ++y) {
 								parentEntity.spawnFlames(
-										parentEntity.getX()
-												+ (double) MathHelper.cos(h2) * rand.nextDouble() * 11.5D,
-										parentEntity.getZ()
-												+ (double) MathHelper.sin(h2) * rand.nextDouble() * 11.5D,
+										parentEntity.getX() + (double) MathHelper.cos(h2) * rand.nextDouble() * 11.5D,
+										parentEntity.getZ() + (double) MathHelper.sin(h2) * rand.nextDouble() * 11.5D,
 										d, e1, h2, 0);
 							}
 							parentEntity.world.playSound(this.parentEntity.getX(), this.parentEntity.getY(),
@@ -286,7 +293,8 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 		} while (blockPos.getY() >= MathHelper.floor(maxY) - 1);
 
 		if (bl) {
-			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this, config.motherdemon_ranged_damage);
+			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
+					config.motherdemon_ranged_damage);
 			fang.setFireTicks(age);
 			fang.isInvisible();
 			this.world.spawnEntity(fang);
@@ -295,8 +303,8 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable {
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.motherdemon_health).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.motherdemon_health)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1000.0D);
 	}

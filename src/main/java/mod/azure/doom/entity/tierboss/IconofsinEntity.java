@@ -43,6 +43,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -50,7 +51,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class IconofsinEntity extends DemonEntity implements IAnimatable {
+public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private final ServerBossBar bossBar = (ServerBossBar) (new ServerBossBar(this.getDisplayName(),
 			BossBar.Color.PURPLE, BossBar.Style.PROGRESS)).setDarkenSky(true).setThickenFog(true);
@@ -107,6 +108,11 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 			return PlayState.CONTINUE;
 		}
 		return PlayState.STOP;
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 	@Override
@@ -309,7 +315,8 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 		} while (blockPos.getY() >= MathHelper.floor(maxY) - 1);
 
 		if (bl) {
-			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this, config.icon_melee_damage);
+			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
+					config.icon_melee_damage);
 			fang.setFireTicks(age);
 			fang.isInvisible();
 			this.world.spawnEntity(fang);

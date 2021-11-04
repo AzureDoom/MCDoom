@@ -51,6 +51,7 @@ import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -58,7 +59,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class PainEntity extends DemonEntity implements Monster, IAnimatable {
+public class PainEntity extends DemonEntity implements Monster, IAnimatable, IAnimationTickable {
 
 	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(PainEntity.class,
 			TrackedDataHandlerRegistry.INTEGER);
@@ -95,6 +96,11 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable {
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController<PainEntity>(this, "controller", 0, this::predicate));
 		data.addAnimationController(new AnimationController<PainEntity>(this, "controller1", 0, this::predicate1));
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 	@Override
