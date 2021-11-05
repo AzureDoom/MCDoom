@@ -9,7 +9,6 @@
 	],
 	"mixins": [
 		"LivingEntityMixin",
-		"SpawnRestrictionMixin",
 		"AnvilScreenHandlerMixin",
 		"BuilderAccessor",
 		"IngredientAccess",
