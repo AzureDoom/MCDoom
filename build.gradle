@@ -51,7 +51,7 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation "software.bernie.geckolib:geckolib-fabric-1.18:3.0.11:dev"
+    modImplementation "software.bernie.geckolib:geckolib-fabric-1.18:3.0.12:dev"
     //modCompileOnly "vazkii.patchouli:Patchouli:1.17-55-FABRIC-SNAPSHOT"
 	//modImplementation 'curse.maven:trinkets-341284:3387025'
     modApi("me.shedaniel.cloth:cloth-config-fabric:6.0.39") {
