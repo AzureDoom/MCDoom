@@ -11,6 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 
 public class ClipAmmo extends ArrowItem {
@@ -24,7 +25,7 @@ public class ClipAmmo extends ArrowItem {
 
 	@Override
 	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(new TranslatableText("\u00A7o" + "Used for the Pistol."));
+		tooltip.add(new TranslatableText("doom.bullet.text").formatted(Formatting.ITALIC));
 		super.appendTooltip(stack, world, tooltip, context);
 	}
 
