@@ -736,5 +736,13 @@
     "filled_map.doom:portal": "Invasion Portal Map",
     "filled_map.doom:maykr": "Maykr Temple Map",
     "filled_map.doom:motherdemon": "Mother Demon Arena Map",
-    "filled_map.doom:archmaykr": "Arch Maykr Arena Map"
+    "filled_map.doom:archmaykr": "Arch Maykr Arena Map",
+	"doom.argentbolt.text": "Powered by Argent. Used for Ballista.",
+	"doom.bfgcell.text": "Used for the BFG.",
+	"doom.chaingun.text": "Used for the Chaingun.",
+	"doom.bullet.text": "Used for the Pistol and Heavy Cannon.",
+	"doom.energycell.text": "Used for the Plasma Gun.",
+	"doom.rocket.text": "Used for the Rocket Launcher.",
+	"doom.shell.text": "Loads shotgun with malicious intent.",
+	"doom.unmaykr.text": "Powered by Argent. Used for Unmaykr."
 }

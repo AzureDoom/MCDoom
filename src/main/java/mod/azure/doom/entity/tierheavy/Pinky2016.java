@@ -85,7 +85,7 @@ public class Pinky2016 extends DemonEntity implements IAnimatable, IAnimationTic
 	@Override
 	protected void initGoals() {
 		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
+		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.initCustomGoals();
 	}
