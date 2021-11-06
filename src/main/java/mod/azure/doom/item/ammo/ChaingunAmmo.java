@@ -3,6 +3,7 @@ package mod.azure.doom.item.ammo;
 import java.util.List;
 
 import mod.azure.doom.entity.projectiles.ChaingunBulletEntity;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,7 +23,7 @@ public class ChaingunAmmo extends Item {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(new TranslatableComponent("\u00A7o" + "Used for the Chaingun."));
+		tooltip.add(new TranslatableComponent("doom.chaingun.text").withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 
