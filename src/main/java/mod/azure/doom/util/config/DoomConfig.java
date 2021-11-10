@@ -60,6 +60,11 @@ public class DoomConfig {
 		public final ConfigValue<Integer> baron_min_group;
 		public final ConfigValue<Integer> baron_max_group;
 
+		public final ConfigValue<List<? extends String>> gladiator_biomes;
+		public final ConfigValue<Integer> gladiator_spawn_weight;
+		public final ConfigValue<Integer> gladiator_min_group;
+		public final ConfigValue<Integer> gladiator_max_group;
+
 		public final ConfigValue<List<? extends String>> mancubus_biomes;
 		public final ConfigValue<Integer> mancubus_spawn_weight;
 		public final ConfigValue<Integer> mancubus_min_group;
@@ -275,6 +280,10 @@ public class DoomConfig {
 		public final ConfigValue<Double> baron_health;
 		public final ConfigValue<Double> baron_ranged_damage;
 		public final ConfigValue<Double> baron_melee_damage;
+
+		public final ConfigValue<Double> gladiator_health;
+		public final ConfigValue<Double> gladiator_ranged_damage;
+		public final ConfigValue<Double> gladiator_melee_damage;
 
 		public final ConfigValue<Double> mancubus_health;
 		public final ConfigValue<Double> mancubus_melee_damage;
@@ -527,6 +536,24 @@ public class DoomConfig {
 					.defineInRange("Sets Baron of Hell Ranged Damage", 6, 1, Double.MAX_VALUE);
 			this.baron_melee_damage = builder.translation("text.doom.config.baron_melee_damage")
 					.defineInRange("Sets Baron of Hell Melee Damage", 7, 1, Double.MAX_VALUE);
+			builder.pop();
+
+			builder.push("Mob Settings:Gladiator");
+			this.gladiator_biomes = builder.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
+					.translation("text.doom.config.baron_biomes")
+					.defineList("Gladiator Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
+			this.gladiator_spawn_weight = builder.translation("text.doom.config.gladiator_spawn_weight")
+					.defineInRange("Gladiator Spawn Weight", 4, 1, Integer.MAX_VALUE);
+			this.gladiator_min_group = builder.translation("text.doom.config.gladiator_min_group")
+					.defineInRange("Gladiator Min Group", 1, 1, Integer.MAX_VALUE);
+			this.gladiator_max_group = builder.translation("text.doom.config.gladiator_max_group")
+					.defineInRange("Gladiator Max Group", 1, 1, Integer.MAX_VALUE);
+			this.gladiator_health = builder.translation("text.doom.config.gladiator_health")
+					.defineInRange("Sets Gladiator Max Health", 180, 1, Double.MAX_VALUE);
+			this.gladiator_ranged_damage = builder.translation("text.doom.config.gladiator_ranged_damage")
+					.defineInRange("Sets Gladiator Ranged Damage", 6, 1, Double.MAX_VALUE);
+			this.gladiator_melee_damage = builder.translation("text.doom.config.gladiator_melee_damage")
+					.defineInRange("Sets Gladiator Melee Damage", 7, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Mancubus");

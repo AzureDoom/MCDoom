@@ -237,6 +237,7 @@ public class ClientModEventSubscriber {
 		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.TURRET.get(), TurretRender::new);
 		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.SUMMONER.get(), SummonerRender::new);
 		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.REVENANT2016.get(), Revenant2016Render::new);
+//		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.GLADIATOR.get(), GladiatorRender::new);
 
 		ClientRegistry.bindTileEntityRenderer(ModEntityTypes.TOTEM.get(), TotemRender::new);
 		ClientRegistry.bindTileEntityRenderer(ModEntityTypes.GUN_TABLE_ENTITY.get(), GunCraftingRender::new);
