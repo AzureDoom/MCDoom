@@ -375,4 +375,10 @@ public class ModEntityTypes {
 			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, Revenant2016Entity::new)
 					.dimensions(EntityDimensions.fixed(1.9f, 3.95F)).fireImmune().trackRangeBlocks(90)
 					.trackedUpdateRate(4).build());
+
+//	public static final EntityType<GladiatorEntity> GLADIATOR = Registry.register(Registry.ENTITY_TYPE,
+//			new Identifier(DoomMod.MODID, "gladiator"),
+//			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, GladiatorEntity::new)
+//					.dimensions(EntityDimensions.fixed(1.7f, 4.2F)).fireImmune().trackedUpdateRate(9)
+//					.trackRangeBlocks(90).build());
 }

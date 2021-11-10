@@ -301,6 +301,9 @@ public class DoomRenderRegistry {
 		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.REVENANT2016, (dispatcher, context) -> {
 			return new Revenant2016Render(dispatcher);
 		});
+//		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.GLADIATOR, (dispatcher, context) -> {
+//			return new GladiatorRender(dispatcher);
+//		});
 
 		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.ARGENT_BOLT, (dispatcher, context) -> {
 			return new ArgentBoltRender(dispatcher);

@@ -52,6 +52,8 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 public class MobAttributes {
 
 	public static void init() {
+		// FabricDefaultAttributeRegistry.register(ModEntityTypes.GLADIATOR,
+		// GladiatorEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(ModEntityTypes.ARCHVILE, ArchvileEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(ModEntityTypes.BARON, BaronEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(ModEntityTypes.CACODEMON, CacodemonEntity.createMobAttributes());
