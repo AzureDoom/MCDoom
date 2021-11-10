@@ -226,6 +226,7 @@ public class ClientModEventSubscriber {
 		event.registerEntityRenderer(ModEntityTypes.TURRET.get(), TurretRender::new);
 		event.registerEntityRenderer(ModEntityTypes.SUMMONER.get(), SummonerRender::new);
 		event.registerEntityRenderer(ModEntityTypes.REVENANT2016.get(), Revenant2016Render::new);
+//		event.registerEntityRenderer(ModEntityTypes.GLADIATOR.get(), GladiatorRender::new);
 
 		event.registerEntityRenderer(ModEntityTypes.BARREL.get(), BarrelRender::new);
 		event.registerBlockEntityRenderer(ModEntityTypes.TOTEM.get(), TotemRender::new);

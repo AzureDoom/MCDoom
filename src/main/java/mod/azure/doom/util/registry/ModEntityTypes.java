@@ -417,4 +417,10 @@ public class ModEntityTypes {
 							.fireImmune().clientTrackingRange(9)
 							.build(new ResourceLocation(DoomMod.MODID, "revenant2016").toString()));
 
+//	public static final RegistryObject<EntityType<GladiatorEntity>> GLADIATOR = ENTITY_TYPES
+//			.register("gladiator",
+//					() -> EntityType.Builder.of(GladiatorEntity::new, MobCategory.MONSTER).sized(1.7f, 4.2F)
+//							.fireImmune().clientTrackingRange(9)
+//							.build(new ResourceLocation(DoomMod.MODID, "gladiator").toString()));
+
 }
