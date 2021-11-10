@@ -325,24 +325,19 @@ public class DoomRenderRegistry {
 		GeoArmorRenderer.registerArmorRenderer(new ClassicRedRender(), DoomItems.CLASSIC_RED_DOOM_CHESTPLATE,
 				DoomItems.CLASSIC_RED_DOOM_LEGGINGS);
 		GeoArmorRenderer.registerArmorRenderer(new Mullet1Render(), DoomItems.MULLET_DOOM_BOOTS1,
-				DoomItems.MULLET_DOOM_CHESTPLATE1, DoomItems.MULLET_DOOM_HELMET1,
-				DoomItems.MULLET_DOOM_LEGGINGS1);
+				DoomItems.MULLET_DOOM_CHESTPLATE1, DoomItems.MULLET_DOOM_HELMET1, DoomItems.MULLET_DOOM_LEGGINGS1);
 		GeoArmorRenderer.registerArmorRenderer(new Mullet2Render(), DoomItems.MULLET_DOOM_CHESTPLATE2);
 		GeoArmorRenderer.registerArmorRenderer(new Mullet3Render(), DoomItems.MULLET_DOOM_CHESTPLATE3);
 		GeoArmorRenderer.registerArmorRenderer(new PainterRender(), DoomItems.PAINTER_DOOM_CHESTPLATE,
 				DoomItems.PAINTER_DOOM_HELMET);
 		GeoArmorRenderer.registerArmorRenderer(new CultistRender(), DoomItems.CULTIST_DOOM_BOOTS,
-				DoomItems.CULTIST_DOOM_CHESTPLATE, DoomItems.CULTIST_DOOM_HELMET,
-				DoomItems.CULTIST_DOOM_LEGGINGS);
+				DoomItems.CULTIST_DOOM_CHESTPLATE, DoomItems.CULTIST_DOOM_HELMET, DoomItems.CULTIST_DOOM_LEGGINGS);
 		GeoArmorRenderer.registerArmorRenderer(new MaykrRender(), DoomItems.MAYKR_DOOM_BOOTS,
-				DoomItems.MAYKR_DOOM_CHESTPLATE, DoomItems.MAYKR_DOOM_HELMET,
-				DoomItems.MAYKR_DOOM_LEGGINGS);
+				DoomItems.MAYKR_DOOM_CHESTPLATE, DoomItems.MAYKR_DOOM_HELMET, DoomItems.MAYKR_DOOM_LEGGINGS);
 		GeoArmorRenderer.registerArmorRenderer(new SentinelRender(), DoomItems.SENTINEL_DOOM_BOOTS,
-				DoomItems.SENTINEL_DOOM_CHESTPLATE, DoomItems.SENTINEL_DOOM_HELMET,
-				DoomItems.SENTINEL_DOOM_LEGGINGS);
+				DoomItems.SENTINEL_DOOM_CHESTPLATE, DoomItems.SENTINEL_DOOM_HELMET, DoomItems.SENTINEL_DOOM_LEGGINGS);
 		GeoArmorRenderer.registerArmorRenderer(new ZombieRender(), DoomItems.ZOMBIE_DOOM_BOOTS,
-				DoomItems.ZOMBIE_DOOM_CHESTPLATE, DoomItems.ZOMBIE_DOOM_HELMET,
-				DoomItems.ZOMBIE_DOOM_LEGGINGS);
+				DoomItems.ZOMBIE_DOOM_CHESTPLATE, DoomItems.ZOMBIE_DOOM_HELMET, DoomItems.ZOMBIE_DOOM_LEGGINGS);
 		GeoArmorRenderer.registerArmorRenderer(new SantaRender(), DoomItems.SANTA_HELMET);
 
 		BlockRenderLayerMap.INSTANCE.putBlock(DoomBlocks.JUMP_PAD, RenderLayer.getTranslucent());
