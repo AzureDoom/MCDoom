@@ -5,7 +5,7 @@ buildscript {
 }
 
 plugins {
-	id 'fabric-loom' version '0.9-SNAPSHOT'
+	id 'fabric-loom' version '0.10-SNAPSHOT'
 	id 'maven-publish'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
@@ -44,6 +44,7 @@ repositories {
     maven { url 'https://maven.blamejared.com' }
     maven { url 'https://plugins.gradle.org/m2/' }
     maven { url 'https://jitpack.io' }
+    maven { url 'https://repo.repsy.io/mvn/fadookie/particleman' }
 }
 
 dependencies {
@@ -51,7 +52,9 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation "software.bernie.geckolib:geckolib-fabric-1.18:3.0.12:dev"
+    modImplementation "software.bernie.geckolib:geckolib-fabric-1.18:3.0.13"
+    implementation 'com.eliotlash.molang:molang:SNAPSHOT.17'
+    implementation 'com.eliotlash.mclib:mclib:SNAPSHOT.17'
     //modCompileOnly "vazkii.patchouli:Patchouli:1.17-55-FABRIC-SNAPSHOT"
 	//modImplementation 'curse.maven:trinkets-341284:3387025'
     modApi("me.shedaniel.cloth:cloth-config-fabric:6.0.39") {
