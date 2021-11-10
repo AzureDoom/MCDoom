@@ -298,6 +298,12 @@ public class DoomConfig implements ConfigData {
 		public int archmaykr_spawn_weight = 1;
 		public int archmaykr_min_group = 1;
 		public int archmaykr_max_group = 1;
+
+		@ConfigEntry.Gui.Tooltip(count = 1)
+		public List<String> gladiator_biomes = Arrays.asList("#nether");
+		public int gladiator_spawn_weight = 1;
+		public int gladiator_min_group = 1;
+		public int gladiator_max_group = 1;
 	}
 
 	public static class MobStats {
@@ -353,6 +359,10 @@ public class DoomConfig implements ConfigData {
 		public double baron_health = 180;
 		public float baron_ranged_damage = 6;
 		public double baron_melee_damage = 7;
+
+		public double gladiator_health = 240;
+		public float gladiator_ranged_damage = 6;
+		public double gladiator_melee_damage = 7;
 
 		public double mancubus_health = 80;
 		public double mancubus_melee_damage = 4;

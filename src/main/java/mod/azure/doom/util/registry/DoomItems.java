@@ -240,6 +240,8 @@ public class DoomItems {
 			new DoomSpawnEgg(ModEntityTypes.SUMMONER));
 	public static DoomSpawnEgg REVENANT2016_SPAWN_EGG = item("revenant2016_spawn_egg",
 			new DoomSpawnEgg(ModEntityTypes.REVENANT2016));
+//	public static DoomSpawnEgg GLADIATOR_SPAWN_EGG = item("gladiator_spawn_egg",
+//			new DoomSpawnEgg(ModEntityTypes.GLADIATOR));
 
 	// Armor
 	public static DoomArmor DOOM_HELMET = item("doom_helmet",
