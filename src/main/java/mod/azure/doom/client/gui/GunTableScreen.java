@@ -68,8 +68,8 @@ public class GunTableScreen extends HandledScreen<GunTableScreenHandler> {
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		int i = ((this.width - this.backgroundWidth) / 2) - 5;
 		int j = (this.height - this.backgroundHeight) / 2;
-		drawTexture(matrices, i, j, this.getZOffset(), 0.0F, 0.0F, this.backgroundWidth, this.backgroundHeight, 256,
-				512);
+		drawTexture(matrices, i, j, this.getZOffset(), 0.0F, 0.0F, this.backgroundWidth, this.backgroundHeight, 512,
+				256);
 
 	}
 
@@ -83,9 +83,9 @@ public class GunTableScreen extends HandledScreen<GunTableScreenHandler> {
 				m = 113;
 			}
 
-			drawTexture(matrices, x + 113, y + 18 + m, this.getZOffset(), 0.0F, 199.0F, 6, 27, 256, 512);
+			drawTexture(matrices, x + 113, y + 18 + m, this.getZOffset(), 0.0F, 199.0F, 6, 27, 512, 256);
 		} else {
-			drawTexture(matrices, x + 113, y + 18, this.getZOffset(), 6.0F, 199.0F, 6, 27, 256, 512);
+			drawTexture(matrices, x + 113, y + 18, this.getZOffset(), 6.0F, 199.0F, 6, 27, 512, 256);
 		}
 
 	}
@@ -143,7 +143,7 @@ public class GunTableScreen extends HandledScreen<GunTableScreenHandler> {
 		RenderSystem.enableBlend();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, TEXTURE);
-		drawTexture(matrices, x + 5 + 35 + 20, y + 3, this.getZOffset(), 15.0F, 171.0F, 10, 9, 256, 512);
+		drawTexture(matrices, x + 5 + 35 + 20, y + 3, this.getZOffset(), 15.0F, 171.0F, 10, 9, 512, 256);
 
 	}
 
