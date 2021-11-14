@@ -12,7 +12,6 @@ import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 
-@SuppressWarnings("deprecation")
 public class RegistrationHelper {
 
     public static Supplier<StructurePool> pool(StructurePool pool) {

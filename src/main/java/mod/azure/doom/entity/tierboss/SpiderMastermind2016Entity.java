@@ -10,7 +10,7 @@ import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.goal.FollowTargetGoal;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
@@ -39,8 +39,8 @@ public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 						1.0D, 50, 30, 15, 15F, 1).setMultiShot(5, 1));
 		this.targetSelector.add(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
-		this.targetSelector.add(2, new FollowTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new FollowTargetGoal<>(this, MerchantEntity.class, true));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 	}
 
 	public class FireballAttack extends AbstractRangedAttack {

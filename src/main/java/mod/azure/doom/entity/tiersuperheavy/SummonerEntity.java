@@ -19,7 +19,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.TargetPredicate;
-import net.minecraft.entity.ai.goal.FollowTargetGoal;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
@@ -103,8 +103,8 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 		this.goalSelector.add(4, new SummonerEntity.AttackGoal(this));
 		this.targetSelector.add(1, new SummonerEntity.TeleportTowardsPlayerGoal(this, this::shouldAngerAt));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
-		this.targetSelector.add(2, new FollowTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new FollowTargetGoal<>(this, MerchantEntity.class, true));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 	}
 
 	static class AttackGoal extends Goal {
@@ -206,7 +206,7 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 		}
 	}
 
-	static class TeleportTowardsPlayerGoal extends FollowTargetGoal<PlayerEntity> {
+	static class TeleportTowardsPlayerGoal extends ActiveTargetGoal<PlayerEntity> {
 		private final SummonerEntity enderman;
 		private PlayerEntity targetPlayer;
 		private int lookAtPlayerWarmup;

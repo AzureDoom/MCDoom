@@ -43,7 +43,6 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import software.bernie.geckolib3.GeckoLib;
 
-@SuppressWarnings("deprecation")
 public class DoomMod implements ModInitializer {
 
 	public static DoomItems ITEMS;

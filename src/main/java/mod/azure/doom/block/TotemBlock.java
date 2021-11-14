@@ -47,6 +47,7 @@ public class TotemBlock extends BlockWithEntity implements BlockEntityProvider {
 	private static final VoxelShape Z_AXIS_AABB = VoxelShapes.union(Y_LENGTH1, Y_LENGTH2);
 	protected Random RANDOM = new Random();
 
+	@SuppressWarnings("removal")
 	public TotemBlock() {
 		super(FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL)
 				.breakByTool(FabricToolTags.PICKAXES, 3).nonOpaque().requiresTool().strength(3, 3).luminance(15));

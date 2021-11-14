@@ -19,7 +19,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.goal.FollowTargetGoal;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
@@ -164,8 +164,8 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 						.setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(ModSoundEvents.CACODEMON_AFFECTIONATE_SCREAM,
 								1.0F, 1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
 				60, 20, 30F, 1));
-		this.targetSelector.add(2, new FollowTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new FollowTargetGoal<>(this, MerchantEntity.class, true));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
 	}
 

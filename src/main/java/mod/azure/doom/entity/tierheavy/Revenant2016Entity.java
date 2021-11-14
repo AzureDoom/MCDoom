@@ -15,7 +15,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.FollowTargetGoal;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
@@ -131,8 +131,8 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 		this.goalSelector.add(6, new LookAroundGoal(this));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 		this.goalSelector.add(1, new Revenant2016Entity.FlyingAttackGoal(this));
-		this.targetSelector.add(2, new FollowTargetGoal(this, PlayerEntity.class, true));
-		this.targetSelector.add(3, new FollowTargetGoal<>(this, MerchantEntity.class, true));
+		this.targetSelector.add(2, new ActiveTargetGoal(this, PlayerEntity.class, true));
+		this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 	}
 
 	@Override
