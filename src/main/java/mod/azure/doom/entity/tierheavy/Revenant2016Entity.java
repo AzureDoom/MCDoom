@@ -43,7 +43,7 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable {
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (event.isMoving() && this.isOnGround()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_jetpack", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
 			return PlayState.CONTINUE;
 		}
 		if (this.entityData.get(STATE) == 1 || this.isNoGravity()) {
@@ -51,10 +51,10 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable {
 			return PlayState.CONTINUE;
 		}
 		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_jetpack", false));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_jetpack", true));
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
 	}
 
@@ -156,7 +156,7 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable {
 						DoomConfig.SERVER.revenant_ranged_damage.get().floatValue());
 				if (this.attackTimer == 5) {
 					parentEntity.setNoGravity(true);
-					parentEntity.push(0, (double) 0.2F * 2.0D, 0);
+					parentEntity.push(0, (double) 0.2F * 3.0D, 0);
 					this.parentEntity.setAttackingState(1);
 				}
 				if (this.attackTimer == 15) {
