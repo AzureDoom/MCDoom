@@ -52,7 +52,7 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (event.isMoving() && this.isOnGround()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_jetpack", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(STATE) == 1 || this.hasNoGravity()) {
@@ -60,10 +60,10 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 			return PlayState.CONTINUE;
 		}
 		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_jetpack", false));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_jetpack", true));
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
 	}
 
@@ -197,7 +197,7 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 				RocketMobEntity fireballEntity = new RocketMobEntity(world, this.parentEntity, f, g, h, 5);
 				if (this.attackTimer == 15) {
 					parentEntity.setNoGravity(true);
-					parentEntity.addVelocity(0, (double) 0.2F * 2.0D, 0);
+					parentEntity.addVelocity(0, (double) 0.2F * 3.0D, 0);
 					this.parentEntity.setAttackingState(1);
 					this.parentEntity.lookAtEntity(livingEntity, 30.0F, 30.0F);
 				}
