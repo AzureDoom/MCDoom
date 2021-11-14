@@ -8,6 +8,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public class RevenantRender extends GeoEntityRenderer<RevenantEntity> {
@@ -26,6 +27,15 @@ public class RevenantRender extends GeoEntityRenderer<RevenantEntity> {
 	@Override
 	protected float getDeathMaxRotation(RevenantEntity entityLivingBaseIn) {
 		return 0.0F;
+	}
+
+	@Override
+	public void render(GeoModel model, RevenantEntity animatable, float partialTicks, RenderLayer type,
+			MatrixStack matrixStackIn, VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder,
+			int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+		super.render(model, animatable, partialTicks, type, matrixStackIn, renderTypeBuffer, vertexBuilder,
+				packedLightIn, packedOverlayIn, red, green, blue, alpha);
+		model.getBone("jetpack").get().setHidden(false);
 	}
 
 }
