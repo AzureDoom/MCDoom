@@ -36,7 +36,7 @@ public class Revenant2016Model extends AnimatedTickingGeoModel<Revenant2016Entit
 
 	@Override
 	public Identifier getTextureLocation(Revenant2016Entity object) {
-		return (object.getVariant() >= 2 ? TEX[(object.getFlameTimer())] : TEX2[(object.getFlameTimer())]);
+		return (object.getVariant() == 10 ? TEX2[(object.getFlameTimer())] : TEX[(object.getFlameTimer())]);
 	}
 
 	@Override
