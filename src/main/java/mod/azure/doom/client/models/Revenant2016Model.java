@@ -36,7 +36,7 @@ public class Revenant2016Model extends AnimatedGeoModel<Revenant2016Entity> {
 
 	@Override
 	public ResourceLocation getTextureLocation(Revenant2016Entity object) {
-		return (object.getVariant() == 1 ? TEX[(object.getFlameTimer())] : TEX2[(object.getFlameTimer())]);
+		return (object.getVariant() == 10 ? TEX2[(object.getFlameTimer())] : TEX[(object.getFlameTimer())]);
 	}
 
 	@Override

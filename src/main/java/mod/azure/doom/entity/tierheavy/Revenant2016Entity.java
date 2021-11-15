@@ -108,7 +108,7 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable {
 	}
 
 	public int getVariant() {
-		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 2);
+		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 10);
 	}
 
 	public void setVariant(int variant) {
@@ -116,7 +116,7 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable {
 	}
 
 	public int getVariants() {
-		return 2;
+		return 10;
 	}
 
 	@Override
