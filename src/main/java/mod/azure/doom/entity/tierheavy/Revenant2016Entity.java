@@ -1,8 +1,5 @@
 package mod.azure.doom.entity.tierheavy;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoField;
-
 import javax.annotation.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
@@ -11,7 +8,6 @@ import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.config.DoomConfig.Server;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
@@ -27,14 +23,17 @@ import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
@@ -49,6 +48,9 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class Revenant2016Entity extends DemonEntity implements IAnimatable {
+
+	public static final DataParameter<Integer> VARIANT = EntityDataManager.defineId(Revenant2016Entity.class,
+			DataSerializers.INT);
 
 	public static Server config = DoomConfig.SERVER;
 	public int flameTimer;
@@ -89,6 +91,45 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable {
 	@Override
 	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
+	}
+
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(VARIANT, 0);
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundNBT tag) {
+		super.readAdditionalSaveData(tag);
+		this.setVariant(tag.getInt("Variant"));
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundNBT tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putInt("Variant", this.getVariant());
+	}
+
+	public int getVariant() {
+		return MathHelper.clamp((Integer) this.entityData.get(VARIANT), 1, 2);
+	}
+
+	public void setVariant(int variant) {
+		this.entityData.set(VARIANT, variant);
+	}
+
+	public int getVariants() {
+		return 2;
+	}
+
+	@Nullable
+	@Override
+	public ILivingEntityData finalizeSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason,
+			@Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
+		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+		this.setVariant(this.random.nextInt());
+		return spawnDataIn;
 	}
 
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
@@ -175,11 +216,19 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable {
 				if (this.attackTimer == 15) {
 					fireballentity.setPos(this.parentEntity.getX() + vector3d.x * 2.0D,
 							this.parentEntity.getY(0.5D) + 0.75D, fireballentity.getZ() + vector3d.z * 2.0D);
+					parentEntity.level.playSound(null, parentEntity,
+							(parentEntity.getVariant() == 1 ? ModSoundEvents.REVENANT_ATTACK.get()
+									: ModSoundEvents.REVENANT_DOOT.get()),
+							SoundCategory.HOSTILE, 0.5F, 1.0F);
 					world.addFreshEntity(fireballentity);
 				}
 				if (this.attackTimer == 20) {
 					fireballentity.setPos(this.parentEntity.getX() + vector3d.x * 2.0D,
 							this.parentEntity.getY(0.5D) + 0.75D, fireballentity.getZ() + vector3d.z * 2.0D);
+					parentEntity.level.playSound(null, parentEntity,
+							(parentEntity.getVariant() == 1 ? ModSoundEvents.REVENANT_ATTACK.get()
+									: ModSoundEvents.REVENANT_DOOT.get()),
+							SoundCategory.HOSTILE, 0.5F, 1.0F);
 					world.addFreshEntity(fireballentity);
 				}
 				if (this.attackTimer == 45) {
@@ -193,27 +242,6 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable {
 			}
 			this.parentEntity.lookAt(livingentity, 30.0F, 30.0F);
 		}
-	}
-
-	@Nullable
-	@Override
-	public ILivingEntityData finalizeSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason,
-			@Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
-		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-		float f = difficultyIn.getSpecialMultiplier();
-		this.setCanPickUpLoot(this.random.nextFloat() < 0.55F * f);
-		if (this.getItemBySlot(EquipmentSlotType.HEAD).isEmpty()) {
-			LocalDate localdate = LocalDate.now();
-			int i = localdate.get(ChronoField.DAY_OF_MONTH);
-			int j = localdate.get(ChronoField.MONTH_OF_YEAR);
-			if (j == 10 && i == 31 && this.random.nextFloat() < 0.25F) {
-				this.setItemSlot(EquipmentSlotType.HEAD,
-						new ItemStack(this.random.nextFloat() < 0.1F ? Blocks.JACK_O_LANTERN : Blocks.CARVED_PUMPKIN));
-				this.armorDropChances[EquipmentSlotType.HEAD.getIndex()] = 0.0F;
-			}
-		}
-
-		return spawnDataIn;
 	}
 
 	protected boolean shouldDrown() {

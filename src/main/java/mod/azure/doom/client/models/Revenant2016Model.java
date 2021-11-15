@@ -19,6 +19,16 @@ public class Revenant2016Model extends AnimatedGeoModel<Revenant2016Entity> {
 			new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_6.png"),
 			new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_7.png") };
 
+	private static final ResourceLocation[] TEX2 = {
+			new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_golden.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_golden_1.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_golden_2.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_golden_3.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_golden_4.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_golden_5.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_golden_6.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_golden_7.png") };
+
 	@Override
 	public ResourceLocation getModelLocation(Revenant2016Entity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/revenant.geo.json");
@@ -26,7 +36,7 @@ public class Revenant2016Model extends AnimatedGeoModel<Revenant2016Entity> {
 
 	@Override
 	public ResourceLocation getTextureLocation(Revenant2016Entity object) {
-		return TEX[(object.getFlameTimer())];
+		return (object.getVariant() == 1 ? TEX[(object.getFlameTimer())] : TEX2[(object.getFlameTimer())]);
 	}
 
 	@Override
