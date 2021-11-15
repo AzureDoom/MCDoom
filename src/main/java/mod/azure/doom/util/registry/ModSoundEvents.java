@@ -94,6 +94,7 @@ public class ModSoundEvents {
 	public static SoundEvent REVENANT_DEATH = of("doom.revenant_death");
 	public static SoundEvent REVENANT_HURT = of("doom.revenant_hurt");
 	public static SoundEvent REVENANT_ATTACK = of("doom.revenant_attack");
+	public static SoundEvent REVENANT_DOOT = of("doom.revenant_doot");
 
 	public static SoundEvent ARACHNOTRON_AMBIENT = of("doom.arachnotron_idle");
 	public static SoundEvent ARACHNOTRON_DEATH = of("doom.arachnotron_death");

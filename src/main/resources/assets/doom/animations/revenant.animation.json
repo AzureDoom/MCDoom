@@ -196,6 +196,16 @@
 					"rotation": {
 						"vector": ["-5+Math.sin(query.anim_time*360)*10 ", 0, 0]
 					}
+				},
+				"bone31": {
+					"rotation": {
+						"vector": ["Math.sin(query.anim_time * 360) * 5", 0, 0]
+					}
+				},
+				"bone27": {
+					"rotation": {
+						"vector": ["Math.sin(query.anim_time * 360) * -5", 0, 0]
+					}
 				}
 			}
 		},
