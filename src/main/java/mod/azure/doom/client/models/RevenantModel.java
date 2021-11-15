@@ -20,7 +20,7 @@ public class RevenantModel extends AnimatedGeoModel<RevenantEntity> {
 
 	@Override
 	public ResourceLocation getTextureLocation(RevenantEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/entity/revenant.png");
+		return new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_nojetpack.png");
 	}
 
 	@Override

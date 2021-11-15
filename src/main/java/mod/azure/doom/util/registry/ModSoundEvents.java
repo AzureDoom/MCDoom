@@ -163,6 +163,8 @@ public class ModSoundEvents {
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.revenant_hurt")));
 	public static final RegistryObject<SoundEvent> REVENANT_ATTACK = MOD_SOUNDS.register("doom.revenant_attack",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.revenant_attack")));
+	public static final RegistryObject<SoundEvent> REVENANT_DOOT = MOD_SOUNDS.register("doom.revenant_doot",
+			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.revenant_doot")));
 
 	public static final RegistryObject<SoundEvent> HELLKNIGHT_AMBIENT = MOD_SOUNDS.register("doom.hellknight_say",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.hellknight_say")));

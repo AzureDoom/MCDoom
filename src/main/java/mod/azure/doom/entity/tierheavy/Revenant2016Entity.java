@@ -3,16 +3,24 @@ package mod.azure.doom.entity.tierheavy;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import mod.azure.doom.util.config.DoomConfig;
-
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -24,6 +32,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
@@ -37,7 +46,9 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class Revenant2016Entity extends DemonEntity implements IAnimatable {
 
-	
+	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Revenant2016Entity.class,
+			EntityDataSerializers.INT);
+
 	public int flameTimer;
 	private AnimationFactory factory = new AnimationFactory(this);
 
@@ -76,6 +87,44 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable {
 	@Override
 	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
+	}
+
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(VARIANT, 0);
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundTag tag) {
+		super.readAdditionalSaveData(tag);
+		this.setVariant(tag.getInt("Variant"));
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putInt("Variant", this.getVariant());
+	}
+
+	public int getVariant() {
+		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 2);
+	}
+
+	public void setVariant(int variant) {
+		this.entityData.set(VARIANT, variant);
+	}
+
+	public int getVariants() {
+		return 2;
+	}
+
+	@Override
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
+			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
+		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+		this.setVariant(this.random.nextInt());
+		return spawnDataIn;
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -162,11 +211,19 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable {
 				if (this.attackTimer == 15) {
 					fireballentity.setPos(this.parentEntity.getX() + vector3d.x * 2.0D,
 							this.parentEntity.getY(0.5D) + 0.75D, fireballentity.getZ() + vector3d.z * 2.0D);
+					parentEntity.level.playSound(null, parentEntity,
+							(parentEntity.getVariant() == 1 ? ModSoundEvents.REVENANT_ATTACK.get()
+									: ModSoundEvents.REVENANT_DOOT.get()),
+							SoundSource.HOSTILE, 0.5F, 1.0F);
 					world.addFreshEntity(fireballentity);
 				}
 				if (this.attackTimer == 20) {
 					fireballentity.setPos(this.parentEntity.getX() + vector3d.x * 2.0D,
 							this.parentEntity.getY(0.5D) + 0.75D, fireballentity.getZ() + vector3d.z * 2.0D);
+					parentEntity.level.playSound(null, parentEntity,
+							(parentEntity.getVariant() == 1 ? ModSoundEvents.REVENANT_ATTACK.get()
+									: ModSoundEvents.REVENANT_DOOT.get()),
+							SoundSource.HOSTILE, 0.5F, 1.0F);
 					world.addFreshEntity(fireballentity);
 				}
 				if (this.attackTimer == 45) {

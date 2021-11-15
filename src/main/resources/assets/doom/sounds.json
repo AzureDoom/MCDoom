@@ -1,302 +1,305 @@
 {
 	"doom.loading_end": {
-		"category": "music", "sounds": [{"name": "doom:loading_end"}]
+		"sounds": [{"name": "doom:loading_end"}]
 	},
 	"doom.e1m1": {
-		"category": "music", "sounds": [{"name": "doom:e1m1", "stream": true}]
+		"sounds": [{"name": "doom:e1m1", "stream": true}]
 	},
 	"doom.chaingun_fire": {
-		"category": "music", "sounds": [{"name": "doom:chaingun_fire"}]
+		"sounds": [{"name": "doom:chaingun_fire"}]
 	},
 	"doom.heavy_cannon": {
-		"category": "music", "sounds": [{"name": "doom:heavy_cannon"}]
+		"sounds": [{"name": "doom:heavy_cannon"}]
 	},
 	"doom.unmakyr_fire": {
-		"category": "music", "sounds": [{"name": "doom:unmakyr_fire"}]
+		"sounds": [{"name": "doom:unmakyr_fire"}]
 	},
 	"doom.chainsaw_attacking": {
-		"category": "music", "sounds": [{"name": "doom:chainsaw_attacking"}]
+		"sounds": [{"name": "doom:chainsaw_attacking"}]
 	},
 	"doom.chainsaw_idle": {
-		"category": "music", "sounds": [{"name": "doom:chainsaw_idle"}]
+		"sounds": [{"name": "doom:chainsaw_idle"}]
 	},
 	"doom.icon_death": {
-		"category": "music", "sounds": [{"name": "doom:icon_death"}]
+		"sounds": [{"name": "doom:icon_death"}]
 	},
 	"doom.icon_hurt": {
-		"category": "music", "sounds": [{"name": "doom:icon_hurt"}]
+		"sounds": [{"name": "doom:icon_hurt"}]
 	},
 	"doom.icon_ambient": {
-		"category": "music", "sounds": [{"name": "doom:icon_ambient"}]
+		"sounds": [{"name": "doom:icon_ambient"}]
 	},
 	"doom.arachnotron_idle": {
-		"category": "music", "sounds": [{"name": "doom:arachnotron_idle"}]
+		"sounds": [{"name": "doom:arachnotron_idle"}]
 	},
 	"doom.arachnotron_hurt": {
-		"category": "music", "sounds": [{"name": "doom:arachnotron_hurt"}]
+		"sounds": [{"name": "doom:arachnotron_hurt"}]
 	},
 	"doom.arachnotron_death": {
-		"category": "music", "sounds": [{"name": "doom:arachnotron_death"}]
+		"sounds": [{"name": "doom:arachnotron_death"}]
 	},
 	"doom.shotgun_fire": {
-		"category": "music", "sounds": [{"name": "doom:shotgun_fire"}]
+		"sounds": [{"name": "doom:shotgun_fire"}]
 	},
 	"doom.super_shotgun_fire": {
-		"category": "music", "sounds": [{"name": "doom:super_shotgun_fire"}]
+		"sounds": [{"name": "doom:super_shotgun_fire"}]
 	},
 	"doom.pistol_fire": {
-		"category": "music", "sounds": [{"name": "doom:pistol_fire"}]
+		"sounds": [{"name": "doom:pistol_fire"}]
 	},
 	"doom.hellknight_death": {
-		"category": "music", "sounds": [{"name": "doom:hellknight_death"}]
+		"sounds": [{"name": "doom:hellknight_death"}]
 	},
 	"doom.hellknight_hurt": {
-		"category": "music", "sounds": [{"name": "doom:hellknight_hurt"}]
+		"sounds": [{"name": "doom:hellknight_hurt"}]
 	},
 	"doom.hellknight_say": {
-		"category": "music", "sounds": [{"name": "doom:hellknight_say"}]
+		"sounds": [{"name": "doom:hellknight_say"}]
 	},
 	"doom.pain_death": {
-		"category": "music", "sounds": [{"name": "doom:pain_death"}]
+		"sounds": [{"name": "doom:pain_death"}]
 	},
 	"doom.pain_hurt": {
-		"category": "music", "sounds": [{"name": "doom:pain_hurt"}]
+		"sounds": [{"name": "doom:pain_hurt"}]
 	},
 	"doom.pain_say": {
-		"category": "music", "sounds": [{"name": "doom:pain_say"}]
+		"sounds": [{"name": "doom:pain_say"}]
 	},
 	"doom.arch_vile_death": {
-		"category": "music", "sounds": [{"name": "doom:arch_vile_death"}]
+		"sounds": [{"name": "doom:arch_vile_death"}]
 	},
 	"doom.arch_vile_hit": {
-		"category": "music", "sounds": [{"name": "doom:arch_vile_hit"}]
+		"sounds": [{"name": "doom:arch_vile_hit"}]
 	},
 	"doom.arch_vile_idle": {
-		"category": "music", "sounds": [{"name": "doom:arch_vile_idle"}]
+		"sounds": [{"name": "doom:arch_vile_idle"}]
 	},
 	"doom.arch_vile_portal": {
-		"category": "music", "sounds": [{"name": "doom:arch_vile_portal"}]
+		"sounds": [{"name": "doom:arch_vile_portal"}]
 	},
 	"doom.arch_vile_scream": {
-		"category": "music", "sounds": [{"name": "doom:arch_vile_scream"}]
+		"sounds": [{"name": "doom:arch_vile_scream"}]
 	},
 	"doom.arch_vile_stare": {
-		"category": "music", "sounds": [{"name": "doom:arch_vile_stare"}]
+		"sounds": [{"name": "doom:arch_vile_stare"}]
 	},
 	"doom.baron_angry": {
-		"category": "music", "sounds": [{"name": "doom:baron_angry"}]
+		"sounds": [{"name": "doom:baron_angry"}]
 	},
 	"doom.baron_death": {
-		"category": "music", "sounds": [{"name": "doom:baron_death"}]
+		"sounds": [{"name": "doom:baron_death"}]
 	},
 	"doom.baron_hurt": {
-		"category": "music", "sounds": [{"name": "doom:baron_hurt"}]
+		"sounds": [{"name": "doom:baron_hurt"}]
 	},
 	"doom.baron_say": {
-		"category": "music", "sounds": [{"name": "doom:baron_say"}]
+		"sounds": [{"name": "doom:baron_say"}]
 	},
 	"doom.revenant_death": {
-		"category": "music", "sounds": [{"name": "doom:revenant_death"}]
+		"sounds": [{"name": "doom:revenant_death"}]
 	},
 	"doom.revenant_hurt": {
-		"category": "music", "sounds": [{"name": "doom:revenant_hurt"}]
+		"sounds": [{"name": "doom:revenant_hurt"}]
 	},
 	"doom.revenant_say": {
-		"category": "music", "sounds": [{"name": "doom:revenant_say"}]
+		"sounds": [{"name": "doom:revenant_say"}]
 	},
 	"doom.revenant_attack": {
-		"category": "music", "sounds": [{"name": "doom:revenant_attack"}]
+		"sounds": [{"name": "doom:revenant_attack"}]
+	},
+	"doom.revenant_doot": {
+		"sounds": [{"name": "doom:revenant_doot"}]
 	},
 	"doom.cacodemon_affectionate_scream": {
-		"category": "music", "sounds": [{"name": "doom:cacodemon_affectionate_scream"}]
+		"sounds": [{"name": "doom:cacodemon_affectionate_scream"}]
 	},
 	"doom.cacodemon_charge": {
-		"category": "music", "sounds": [{"name": "doom:cacodemon_charge"}]
+		"sounds": [{"name": "doom:cacodemon_charge"}]
 	},
 	"doom.cacodemon_death": {
-		"category": "music", "sounds": [{"name": "doom:cacodemon_death"}]
+		"sounds": [{"name": "doom:cacodemon_death"}]
 	},
 	"doom.cacodemon_fireball": {
-		"category": "music", "sounds": [{"name": "doom:cacodemon_fireball"}]
+		"sounds": [{"name": "doom:cacodemon_fireball"}]
 	},
 	"doom.cacodemon_moan": {
-		"category": "music", "sounds": [{"name": "doom:cacodemon_moan"}]
+		"sounds": [{"name": "doom:cacodemon_moan"}]
 	},
 	"doom.cacodemon_scream": {
-		"category": "music", "sounds": [{"name": "doom:cacodemon_scream"}]
+		"sounds": [{"name": "doom:cacodemon_scream"}]
 	},
 	"doom.cacodemon_hit": {
-		"category": "music", "sounds": [{"name": "doom:cacodemon_hit"}]
+		"sounds": [{"name": "doom:cacodemon_hit"}]
 	},
 	"doom.cyberdemon_death": {
-		"category": "music", "sounds": [{"name": "doom:cyberdemon_death"}]
+		"sounds": [{"name": "doom:cyberdemon_death"}]
 	},
 	"doom.cyberdemon_hit": {
-		"category": "music", "sounds": [{"name": "doom:cyberdemon_hit"}]
+		"sounds": [{"name": "doom:cyberdemon_hit"}]
 	},
 	"doom.cyberdemon_throw": {
-		"category": "music", "sounds": [{"name": "doom:cyberdemon_throw"}]
+		"sounds": [{"name": "doom:cyberdemon_throw"}]
 	},
 	"doom.cyberdemon_walk": {
-		"category": "music", "sounds": [{"name": "doom:cyberdemon_walk"}]
+		"sounds": [{"name": "doom:cyberdemon_walk"}]
 	},
 	"doom.lost_soul_death": {
-		"category": "music", "sounds": [{"name": "doom:lost_soul_death"}]
+		"sounds": [{"name": "doom:lost_soul_death"}]
 	},
 	"doom.lost_soul_say": {
-		"category": "music", "sounds": [{"name": "doom:lost_soul_say"}]
+		"sounds": [{"name": "doom:lost_soul_say"}]
 	},
 	"doom.pinky_death": {
-		"category": "music", "sounds": [{"name": "doom:pinky_death"}]
+		"sounds": [{"name": "doom:pinky_death"}]
 	},
 	"doom.pinky_hurt": {
-		"category": "music", "sounds": [{"name": "doom:pinky_hurt"}]
+		"sounds": [{"name": "doom:pinky_hurt"}]
 	},
 	"doom.pinky_idle": {
-		"category": "music", "sounds": [{"name": "doom:pinky_idle"}]
+		"sounds": [{"name": "doom:pinky_idle"}]
 	},
 	"doom.pinky_step": {
-		"category": "music", "sounds": [{"name": "doom:pinky_step"}]
+		"sounds": [{"name": "doom:pinky_step"}]
 	},
 	"doom.spiderdemon_death": {
-		"category": "music", "sounds": [{"name": "doom:spiderdemon_death"}]
+		"sounds": [{"name": "doom:spiderdemon_death"}]
 	},
 	"doom.spiderdemon_say": {
-		"category": "music", "sounds": [{"name": "doom:spiderdemon_say"}]
+		"sounds": [{"name": "doom:spiderdemon_say"}]
 	},
 	"doom.spiderdemon_step": {
-		"category": "music", "sounds": [{"name": "doom:spiderdemon_step"}]
+		"sounds": [{"name": "doom:spiderdemon_step"}]
 	},
 	"doom.zombieman_death": {
-		"category": "music", "sounds": [{"name": "doom:zombieman_death"}]
+		"sounds": [{"name": "doom:zombieman_death"}]
 	},
 	"doom.zombieman_hurt": {
-		"category": "music", "sounds": [{"name": "doom:zombieman_hurt"}]
+		"sounds": [{"name": "doom:zombieman_hurt"}]
 	},
 	"doom.zombieman_idle": {
-		"category": "music", "sounds": [{"name": "doom:zombieman_idle"}]
+		"sounds": [{"name": "doom:zombieman_idle"}]
 	},
 	"doom.imp_death": {
-		"category": "music", "sounds": [{"name": "doom:imp_death"}]
+		"sounds": [{"name": "doom:imp_death"}]
 	},
 	"doom.imp_hurt": {
-		"category": "music", "sounds": [{"name": "doom:imp_hurt"}]
+		"sounds": [{"name": "doom:imp_hurt"}]
 	},
 	"doom.imp_ambient": {
-		"category": "music", "sounds": [{"name": "doom:imp_ambient"}]
+		"sounds": [{"name": "doom:imp_ambient"}]
 	},
 	"doom.imp_step": {
-		"category": "music", "sounds": [{"name": "doom:imp_step"}]
+		"sounds": [{"name": "doom:imp_step"}]
 	},
 	"doom.mancubus_death": {
-		"category": "music", "sounds": [{"name": "doom:mancubus_death"}]
+		"sounds": [{"name": "doom:mancubus_death"}]
 	},
 	"doom.mancubus_hit": {
-		"category": "music", "sounds": [{"name": "doom:mancubus_hit"}]
+		"sounds": [{"name": "doom:mancubus_hit"}]
 	},
 	"doom.mancubus_say": {
-		"category": "music", "sounds": [{"name": "doom:mancubus_say"}]
+		"sounds": [{"name": "doom:mancubus_say"}]
 	},
 	"doom.mancubus_walk": {
-		"category": "music", "sounds": [{"name": "doom:mancubus_walk"}]
+		"sounds": [{"name": "doom:mancubus_walk"}]
 	},
 	"doom.shoot1": {
-		"category": "music", "sounds": [{"name": "doom:shoot1"}]
+		"sounds": [{"name": "doom:shoot1"}]
 	},
 	"doom.quick1_1": {
-		"category": "music", "sounds": [{"name": "doom:quick1_1"}]
+		"sounds": [{"name": "doom:quick1_1"}]
 	},
 	"doom.bfg_hit": {
-		"category": "music", "sounds": [{"name": "doom:bfg_hit"}]
+		"sounds": [{"name": "doom:bfg_hit"}]
 	},
 	"doom.bfg_firing": {
-		"category": "music", "sounds": [{"name": "doom:bfg_firing"}]
+		"sounds": [{"name": "doom:bfg_firing"}]
 	},
 	"doom.plasmahit": {
-		"category": "music", "sounds": [{"name": "doom:plasmahit"}]
+		"sounds": [{"name": "doom:plasmahit"}]
 	},
 	"doom.plasmafire": {
-		"category": "music", "sounds": [{"name": "doom:plasmafire"}]
+		"sounds": [{"name": "doom:plasmafire"}]
 	},
 	"doom.rockethit": {
-		"category": "music", "sounds": [{"name": "doom:rockethit"}]
+		"sounds": [{"name": "doom:rockethit"}]
 	},
 	"doom.rocketfire": {
-		"category": "music", "sounds": [{"name": "doom:rocketfire"}]
+		"sounds": [{"name": "doom:rocketfire"}]
 	},
 	"doom.gargolye_idle": {
-		"category": "music", "sounds": [{"name": "doom:gargolye_idle"}]
+		"sounds": [{"name": "doom:gargolye_idle"}]
 	},
 	"doom.gargolye_hit": {
-		"category": "music", "sounds": [{"name": "doom:gargolye_hit"}]
+		"sounds": [{"name": "doom:gargolye_hit"}]
 	},
 	"doom.gargolye_death": {
-		"category": "music", "sounds": [{"name": "doom:gargolye_death"}]
+		"sounds": [{"name": "doom:gargolye_death"}]
 	},
 	"doom.psoldier_idle": {
-		"category": "music", "sounds": [{"name": "doom:psoldier_idle"}]
+		"sounds": [{"name": "doom:psoldier_idle"}]
 	},
 	"doom.psoldier_hit": {
-		"category": "music", "sounds": [{"name": "doom:psoldier_hurt"}]
+		"sounds": [{"name": "doom:psoldier_hurt"}]
 	},
 	"doom.psoldier_death": {
-		"category": "music", "sounds": [{"name": "doom:psoldier_death"}]
+		"sounds": [{"name": "doom:psoldier_death"}]
 	},
 	"doom.mecha_idle": {
-		"category": "music", "sounds": [{"name": "doom:mecha_idle"}]
+		"sounds": [{"name": "doom:mecha_idle"}]
 	},
 	"doom.mecha_hit": {
-		"category": "music", "sounds": [{"name": "doom:mecha_hit"}]
+		"sounds": [{"name": "doom:mecha_hit"}]
 	},
 	"doom.mecha_death": {
-		"category": "music", "sounds": [{"name": "doom:mecha_death"}]
+		"sounds": [{"name": "doom:mecha_death"}]
 	},
 	"doom.ballista_firing": {
-		"category": "music", "sounds": [{"name": "doom:ballista_firing"}]
+		"sounds": [{"name": "doom:ballista_firing"}]
 	},
 	"doom.whiplash_death": {
-		"category": "music", "sounds": [{"name": "doom:whiplash_death"}]
+		"sounds": [{"name": "doom:whiplash_death"}]
 	},
 	"doom.whiplash_hurt": {
-		"category": "music", "sounds": [{"name": "doom:whiplash_hurt"}]
+		"sounds": [{"name": "doom:whiplash_hurt"}]
 	},
 	"doom.whiplash_ambient": {
-		"category": "music", "sounds": [{"name": "doom:whiplash_ambient"}]
+		"sounds": [{"name": "doom:whiplash_ambient"}]
 	},
 	"doom.doomhunter_death": {
-		"category": "music", "sounds": [{"name": "doom:doomhunter_death"}]
+		"sounds": [{"name": "doom:doomhunter_death"}]
 	},
 	"doom.doomhunter_hurt": {
-		"category": "music", "sounds": [{"name": "doom:doomhunter_hurt"}]
+		"sounds": [{"name": "doom:doomhunter_hurt"}]
 	},
 	"doom.doomhunter_ambient": {
-		"category": "music", "sounds": [{"name": "doom:doomhunter_ambient"}]
+		"sounds": [{"name": "doom:doomhunter_ambient"}]
 	},
 	"doom.maykr_death": {
-		"category": "music", "sounds": [{"name": "doom:maykr_death"}]
+		"sounds": [{"name": "doom:maykr_death"}]
 	},
 	"doom.maykr_hurt": {
-		"category": "music", "sounds": [{"name": "doom:maykr_hurt"}]
+		"sounds": [{"name": "doom:maykr_hurt"}]
 	},
 	"doom.maykr_ambient": {
-		"category": "music", "sounds": [{"name": "doom:maykr_ambient"}]
+		"sounds": [{"name": "doom:maykr_ambient"}]
 	},
 	"doom.shotgunreload": {
-		"category": "music", "sounds": [{"name": "doom:shotgunreload"}]
+		"sounds": [{"name": "doom:shotgunreload"}]
 	},
 	"doom.clipreload": {
-		"category": "music", "sounds": [{"name": "doom:clipreload"}]
+		"sounds": [{"name": "doom:clipreload"}]
 	},
 	"doom.mother_ambient": {
-		"category": "music", "sounds": [{"name": "doom:mother_ambient"}]
+		"sounds": [{"name": "doom:mother_ambient"}]
 	},
 	"doom.mother_attack": {
-		"category": "music", "sounds": [{"name": "doom:mother_attack"}]
+		"sounds": [{"name": "doom:mother_attack"}]
 	},
 	"doom.mother_death": {
-		"category": "music", "sounds": [{"name": "doom:mother_death"}]
+		"sounds": [{"name": "doom:mother_death"}]
 	},
 	"doom.mother_pain": {
-		"category": "music", "sounds": [{"name": "doom:mother_pain"}]
+		"sounds": [{"name": "doom:mother_pain"}]
 	}
 }
