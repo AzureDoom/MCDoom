@@ -47,6 +47,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -54,7 +55,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class LostSoulEntity extends DemonEntity implements IMob, IAnimatable {
+public class LostSoulEntity extends DemonEntity implements IMob, IAnimatable, IAnimationTickable {
 	protected static final DataParameter<Byte> DATA_FLAGS_ID = EntityDataManager.defineId(LostSoulEntity.class,
 			DataSerializers.BYTE);
 	public static final DataParameter<Integer> VARIANT = EntityDataManager.defineId(LostSoulEntity.class,
@@ -146,7 +147,8 @@ public class LostSoulEntity extends DemonEntity implements IMob, IAnimatable {
 
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, config.lost_soul_health.get()).add(Attributes.ATTACK_DAMAGE, config.lost_soul_melee_damage.get())
+				.add(Attributes.MAX_HEALTH, config.lost_soul_health.get())
+				.add(Attributes.ATTACK_DAMAGE, config.lost_soul_melee_damage.get())
 				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
@@ -400,6 +402,11 @@ public class LostSoulEntity extends DemonEntity implements IMob, IAnimatable {
 	@Override
 	public int getMaxSpawnClusterSize() {
 		return 7;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 
 }

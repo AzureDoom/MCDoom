@@ -38,6 +38,7 @@ import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -45,7 +46,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class FireBaronEntity extends DemonEntity implements IAnimatable {
+public class FireBaronEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public static Server config = DoomConfig.SERVER;
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -112,9 +113,10 @@ public class FireBaronEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
 		this.goalSelector.addGoal(4,
-				new RangedStaticAttackGoal(this, new FireBaronEntity.FireballAttack(this)
-						.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(config.baron_ranged_damage.get().floatValue()), 60, 20,
-						30F, 2));
+				new RangedStaticAttackGoal(this,
+						new FireBaronEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
+								.setDamage(config.baron_ranged_damage.get().floatValue()),
+						60, 20, 30F, 2));
 		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.20D, false, 1));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, true));
@@ -222,6 +224,11 @@ public class FireBaronEntity extends DemonEntity implements IAnimatable {
 	@Override
 	public int getMaxSpawnClusterSize() {
 		return 1;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 
 }

@@ -5,10 +5,10 @@ import mod.azure.doom.entity.tierfodder.PossessedScientistEntity;
 import net.minecraft.util.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class PossessedScientistModel extends AnimatedGeoModel<PossessedScientistEntity> {
+public class PossessedScientistModel extends AnimatedTickingGeoModel<PossessedScientistEntity> {
 
 	public PossessedScientistModel() {
 	}

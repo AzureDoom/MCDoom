@@ -39,6 +39,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -46,7 +47,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class ProwlerEntity extends DemonEntity implements IAnimatable {
+public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
 	private int targetChangeTime;
@@ -110,8 +111,8 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.addGoal(4,
 				new ProwlerEntity.RangedStrafeAttackGoal(this,
 						new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(config.prowler_ranged_damage.get().floatValue()).setSound(SoundEvents.BLAZE_SHOOT, 1.0F,
-										1.4F + this.getRandom().nextFloat() * 0.35F),
+								.setDamage(config.prowler_ranged_damage.get().floatValue())
+								.setSound(SoundEvents.BLAZE_SHOOT, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.0D, 50, 30, 15, 15F, 1).setMultiShot(5, 3));
 		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
@@ -488,6 +489,11 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable {
 	@Override
 	public int getMaxSpawnClusterSize() {
 		return 1;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 
 }

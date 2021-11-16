@@ -47,6 +47,7 @@ import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -54,7 +55,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class BloodMaykrEntity extends DemonEntity implements IAnimatable {
+public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public static Server config = DoomConfig.SERVER;
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -311,6 +312,11 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable {
 	@Override
 	protected SoundEvent getDeathSound() {
 		return ModSoundEvents.MAKYR_DEATH.get();
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 
 }

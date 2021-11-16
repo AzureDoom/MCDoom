@@ -27,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -34,7 +35,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class PossessedScientistEntity extends DemonEntity implements IAnimatable {
+public class PossessedScientistEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public PossessedScientistEntity(EntityType<PossessedScientistEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
@@ -105,7 +106,8 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, config.possessed_scientist_health.get()).add(Attributes.ATTACK_DAMAGE, config.possessed_scientist_melee_damage.get())
+				.add(Attributes.MAX_HEALTH, config.possessed_scientist_health.get())
+				.add(Attributes.ATTACK_DAMAGE, config.possessed_scientist_melee_damage.get())
 				.add(Attributes.MOVEMENT_SPEED, 0.15D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
@@ -154,6 +156,11 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 	@Override
 	public int getMaxSpawnClusterSize() {
 		return 7;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 
 }

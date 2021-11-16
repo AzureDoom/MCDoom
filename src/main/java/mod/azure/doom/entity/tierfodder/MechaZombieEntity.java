@@ -43,6 +43,7 @@ import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -50,7 +51,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class MechaZombieEntity extends DemonEntity implements IAnimatable {
+public class MechaZombieEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public static Server config = DoomConfig.SERVER;
 
@@ -119,8 +120,8 @@ public class MechaZombieEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.addGoal(4,
 				new RangedStrafeAttackGoal(this,
 						new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(config.mechazombie_ranged_damage.get().floatValue()).setSound(SoundEvents.BLAZE_SHOOT, 1.0F,
-										1.4F + this.getRandom().nextFloat() * 0.35F),
+								.setDamage(config.mechazombie_ranged_damage.get().floatValue())
+								.setSound(SoundEvents.BLAZE_SHOOT, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.0D, 50, 30, 15, 15F, 1).setMultiShot(4, 3));
 		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
@@ -250,4 +251,10 @@ public class MechaZombieEntity extends DemonEntity implements IAnimatable {
 	public int getMaxSpawnClusterSize() {
 		return 1;
 	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
+	}
+
 }

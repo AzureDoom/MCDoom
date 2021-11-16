@@ -49,6 +49,7 @@ import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -56,7 +57,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class PainEntity extends DemonEntity implements IMob, IAnimatable {
+public class PainEntity extends DemonEntity implements IMob, IAnimatable, IAnimationTickable {
 	public static Server config = DoomConfig.SERVER;
 	public static final DataParameter<Integer> VARIANT = EntityDataManager.defineId(PainEntity.class,
 			DataSerializers.INT);
@@ -435,6 +436,11 @@ public class PainEntity extends DemonEntity implements IMob, IAnimatable {
 	@Override
 	public int getMaxSpawnClusterSize() {
 		return 2;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 
 }

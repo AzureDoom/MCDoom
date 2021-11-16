@@ -48,6 +48,7 @@ import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -55,7 +56,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class HellknightEntity extends DemonEntity implements IAnimatable {
+public class HellknightEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
 
@@ -102,7 +103,7 @@ public class HellknightEntity extends DemonEntity implements IAnimatable {
 	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
-	
+
 	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
@@ -111,10 +112,12 @@ public class HellknightEntity extends DemonEntity implements IAnimatable {
 	}
 
 	protected void applyEntityAI() {
-		this.goalSelector.addGoal(4,
-				new RangedStaticAttackGoal(this,
-						new HellknightEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(config.hellknight_ranged_damage.get().floatValue()),
-						60, 20, 30F, 1));
+		this.goalSelector
+				.addGoal(4,
+						new RangedStaticAttackGoal(this,
+								new HellknightEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
+										.setDamage(config.hellknight_ranged_damage.get().floatValue()),
+								60, 20, 30F, 1));
 		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
@@ -242,5 +245,10 @@ public class HellknightEntity extends DemonEntity implements IAnimatable {
 	@Override
 	public CreatureAttribute getMobType() {
 		return CreatureAttribute.UNDEAD;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 }

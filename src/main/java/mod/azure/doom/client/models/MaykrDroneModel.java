@@ -3,9 +3,9 @@ package mod.azure.doom.client.models;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.MaykrDroneEntity;
 import net.minecraft.util.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 
-public class MaykrDroneModel extends AnimatedGeoModel<MaykrDroneEntity> {
+public class MaykrDroneModel extends AnimatedTickingGeoModel<MaykrDroneEntity> {
 
 	@Override
 	public ResourceLocation getModelLocation(MaykrDroneEntity object) {

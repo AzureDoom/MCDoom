@@ -37,6 +37,7 @@ import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -44,7 +45,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class MaykrDroneEntity extends DemonEntity implements IAnimatable {
+public class MaykrDroneEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
 	public static final DataParameter<Integer> VARIANT = EntityDataManager.defineId(MaykrDroneEntity.class,
@@ -130,8 +131,8 @@ public class MaykrDroneEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
 		this.goalSelector.addGoal(4,
 				new RangedStrafeAttackGoal(this,
-						new MaykrDroneEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(config.maykrdrone_ranged_damage.get().floatValue()),
+						new MaykrDroneEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(
+								config.maykrdrone_ranged_damage.get().floatValue()),
 						1.0D, 50, 30, 15, 15F, 1).setMultiShot(2, 3));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, true));
@@ -188,6 +189,11 @@ public class MaykrDroneEntity extends DemonEntity implements IAnimatable {
 	@Override
 	protected SoundEvent getDeathSound() {
 		return ModSoundEvents.MAKYR_DEATH.get();
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 
 }

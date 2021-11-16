@@ -42,6 +42,7 @@ import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -49,7 +50,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class UnwillingEntity extends DemonEntity implements IAnimatable {
+public class UnwillingEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
 
@@ -111,7 +112,8 @@ public class UnwillingEntity extends DemonEntity implements IAnimatable {
 
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, config.unwilling_health.get()).add(Attributes.ATTACK_DAMAGE, config.unwilling_melee_damage.get())
+				.add(Attributes.MAX_HEALTH, config.unwilling_health.get())
+				.add(Attributes.ATTACK_DAMAGE, config.unwilling_melee_damage.get())
 				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
@@ -209,4 +211,10 @@ public class UnwillingEntity extends DemonEntity implements IAnimatable {
 	public int getMaxSpawnClusterSize() {
 		return 1;
 	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
+	}
+
 }

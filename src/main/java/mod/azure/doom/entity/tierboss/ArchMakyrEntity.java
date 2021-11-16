@@ -55,6 +55,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerBossInfo;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -62,7 +63,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
+public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public static Server config = DoomConfig.SERVER;
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -521,6 +522,11 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable {
 	protected void customServerAiStep() {
 		super.customServerAiStep();
 		this.bossInfo.setPercent(this.getHealth() / this.getMaxHealth());
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 
 }

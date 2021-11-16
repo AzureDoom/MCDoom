@@ -47,6 +47,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerBossInfo;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -54,7 +55,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class IconofsinEntity extends DemonEntity implements IAnimatable {
+public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public static Server config = DoomConfig.SERVER;
 
@@ -462,4 +463,10 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 	public boolean hurt(DamageSource source, float amount) {
 		return source == DamageSource.IN_WALL ? false : super.hurt(source, amount);
 	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
+	}
+
 }

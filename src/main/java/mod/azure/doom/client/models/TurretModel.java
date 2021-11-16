@@ -5,10 +5,10 @@ import mod.azure.doom.entity.tierambient.TurretEntity;
 import net.minecraft.util.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class TurretModel extends AnimatedGeoModel<TurretEntity> {
+public class TurretModel extends AnimatedTickingGeoModel<TurretEntity> {
 
 	@Override
 	public ResourceLocation getModelLocation(TurretEntity object) {

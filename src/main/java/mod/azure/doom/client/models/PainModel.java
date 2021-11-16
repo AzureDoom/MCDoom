@@ -5,10 +5,10 @@ import mod.azure.doom.entity.tierheavy.PainEntity;
 import net.minecraft.util.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class PainModel extends AnimatedGeoModel<PainEntity> {
+public class PainModel extends AnimatedTickingGeoModel<PainEntity> {
 
 	public ResourceLocation classic_model = new ResourceLocation(DoomMod.MODID, "geo/pain.geo.json");
 	public ResourceLocation doom64_model = new ResourceLocation(DoomMod.MODID, "geo/pain64.geo.json");

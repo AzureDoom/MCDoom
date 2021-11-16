@@ -51,6 +51,7 @@ import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -58,7 +59,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class ZombiemanEntity extends DemonEntity implements IRangedAttackMob, IAnimatable {
+public class ZombiemanEntity extends DemonEntity implements IRangedAttackMob, IAnimatable, IAnimationTickable {
 
 	private final RangedPistolAttackGoal<ZombiemanEntity> aiArrowAttack = new RangedPistolAttackGoal<>(this, 1.0D, 20,
 			15.0F, 2);
@@ -80,7 +81,7 @@ public class ZombiemanEntity extends DemonEntity implements IRangedAttackMob, IA
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
-	
+
 	public static Server config = DoomConfig.SERVER;
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -171,7 +172,8 @@ public class ZombiemanEntity extends DemonEntity implements IRangedAttackMob, IA
 		if (this.level != null && !this.level.isClientSide) {
 			this.goalSelector.removeGoal(this.aiAttackOnCollide);
 			this.goalSelector.removeGoal(this.aiArrowAttack);
-			ItemStack itemstack = this.getItemInHand(ProjectileHelper.getWeaponHoldingHand(this, DoomItems.PISTOL.get()));
+			ItemStack itemstack = this
+					.getItemInHand(ProjectileHelper.getWeaponHoldingHand(this, DoomItems.PISTOL.get()));
 			if (itemstack.getItem() instanceof PistolItem) {
 				int i = 20;
 				if (this.level.getDifficulty() != Difficulty.HARD) {
@@ -274,5 +276,10 @@ public class ZombiemanEntity extends DemonEntity implements IRangedAttackMob, IA
 		abstractarrowentity.setEnchantmentEffectsFromEntity(shooter, distanceFactor);
 
 		return abstractarrowentity;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 }

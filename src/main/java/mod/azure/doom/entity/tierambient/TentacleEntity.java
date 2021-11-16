@@ -32,6 +32,7 @@ import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -39,7 +40,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class TentacleEntity extends DemonEntity implements IAnimatable {
+public class TentacleEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
 	public static Server config = DoomConfig.SERVER;
@@ -155,8 +156,8 @@ public class TentacleEntity extends DemonEntity implements IAnimatable {
 						int i1 = MathHelper.floor(parentEntity.getY() + (double) f2 + 1.0D);
 						int j2 = MathHelper.floor(parentEntity.getZ() - (double) f2 - 1.0D);
 						int j1 = MathHelper.floor(parentEntity.getZ() + (double) f2 + 1.0D);
-						List<Entity> list = parentEntity.level.getEntities(parentEntity,
-								new AxisAlignedBB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
+						List<Entity> list = parentEntity.level.getEntities(parentEntity, new AxisAlignedBB((double) k1,
+								(double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
 						for (int k2 = 0; k2 < list.size(); ++k2) {
 							Entity entity = list.get(k2);
 							if (entity.isAlive()) {
@@ -194,7 +195,8 @@ public class TentacleEntity extends DemonEntity implements IAnimatable {
 			double d12 = (double) (MathHelper.sqrt(entity.distanceToSqr(vector3d)) / f2);
 			if (d12 <= 2.0D) {
 				if (entity instanceof LivingEntity) {
-					entity.hurt(DamageSource.indirectMagic(this, this.getTarget()), config.tentacle_melee_damage.get().floatValue());
+					entity.hurt(DamageSource.indirectMagic(this, this.getTarget()),
+							config.tentacle_melee_damage.get().floatValue());
 				}
 			}
 		}
@@ -224,6 +226,11 @@ public class TentacleEntity extends DemonEntity implements IAnimatable {
 	@Override
 	public int getMaxSpawnClusterSize() {
 		return 1;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 
 }

@@ -5,10 +5,10 @@ import mod.azure.doom.entity.tierheavy.CacodemonEntity;
 import net.minecraft.util.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class CacodemonModel extends AnimatedGeoModel<CacodemonEntity> {
+public class CacodemonModel extends AnimatedTickingGeoModel<CacodemonEntity> {
 
 	public ResourceLocation classic_model = new ResourceLocation(DoomMod.MODID, "geo/cacodemon.geo.json");
 	public ResourceLocation doom64_model = new ResourceLocation(DoomMod.MODID, "geo/cacodemon64.geo.json");
