@@ -3,7 +3,6 @@ package mod.azure.doom.entity.tierheavy;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.util.config.DoomConfig;
-
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -24,6 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -31,9 +31,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class WhiplashEntity extends DemonEntity implements IAnimatable {
-
-	
+public class WhiplashEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
 
@@ -112,8 +110,8 @@ public class WhiplashEntity extends DemonEntity implements IAnimatable {
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.whiplash_health.get())
-				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.whiplash_melee_damage.get()).add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.whiplash_melee_damage.get())
+				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -157,6 +155,11 @@ public class WhiplashEntity extends DemonEntity implements IAnimatable {
 	@Override
 	public int getMaxSpawnClusterSize() {
 		return 7;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 
 }

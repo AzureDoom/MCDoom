@@ -5,10 +5,10 @@ import mod.azure.doom.entity.tierheavy.Hellknight2016Entity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class DreadknightModel extends AnimatedGeoModel<Hellknight2016Entity> {
+public class DreadknightModel extends AnimatedTickingGeoModel<Hellknight2016Entity> {
 
 	public DreadknightModel() {
 	}

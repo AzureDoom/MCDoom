@@ -44,6 +44,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -51,21 +52,13 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class ChaingunnerEntity extends DemonEntity implements RangedAttackMob, IAnimatable {
+public class ChaingunnerEntity extends DemonEntity implements RangedAttackMob, IAnimatable, IAnimationTickable {
 
 	private final RangedChaingunAttackGoal<ChaingunnerEntity> aiArrowAttack = new RangedChaingunAttackGoal<>(this, 1.0D,
 			0, 15.0F, 2);
-	private final DemonAttackGoal aiAttackOnCollide = new DemonAttackGoal(this, 1.2D, false, 1) {
-		public void stop() {
-			super.stop();
-			ChaingunnerEntity.this.setAggressive(false);
-		}
+	private final DemonAttackGoal aiAttackOnCollide=new DemonAttackGoal(this,1.2D,false,1){public void stop(){super.stop();ChaingunnerEntity.this.setAggressive(false);}
 
-		public void start() {
-			super.start();
-			ChaingunnerEntity.this.setAggressive(true);
-		}
-	};
+	public void start(){super.start();ChaingunnerEntity.this.setAggressive(true);}};
 
 	public ChaingunnerEntity(EntityType<ChaingunnerEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
@@ -106,8 +99,10 @@ public class ChaingunnerEntity extends DemonEntity implements RangedAttackMob, I
 	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController<ChaingunnerEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(new AnimationController<ChaingunnerEntity>(this, "controller1", 0, this::predicate1));
-		data.addAnimationController(new AnimationController<ChaingunnerEntity>(this, "controller2", 0, this::predicate2));
+		data.addAnimationController(
+				new AnimationController<ChaingunnerEntity>(this, "controller1", 0, this::predicate1));
+		data.addAnimationController(
+				new AnimationController<ChaingunnerEntity>(this, "controller2", 0, this::predicate2));
 	}
 
 	@Override
@@ -259,6 +254,11 @@ public class ChaingunnerEntity extends DemonEntity implements RangedAttackMob, I
 	@Override
 	public int getMaxSpawnClusterSize() {
 		return 7;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 
 }

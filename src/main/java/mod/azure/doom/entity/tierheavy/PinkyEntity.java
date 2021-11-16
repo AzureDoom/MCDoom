@@ -34,6 +34,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -41,7 +42,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class PinkyEntity extends DemonEntity implements IAnimatable {
+public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(PinkyEntity.class,
 			EntityDataSerializers.INT);
@@ -187,4 +188,10 @@ public class PinkyEntity extends DemonEntity implements IAnimatable {
 	public int getMaxSpawnClusterSize() {
 		return 7;
 	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
+	}
+
 }

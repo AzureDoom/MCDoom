@@ -5,10 +5,10 @@ import mod.azure.doom.entity.tierheavy.MancubusEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class MancubusModel extends AnimatedGeoModel<MancubusEntity> {
+public class MancubusModel extends AnimatedTickingGeoModel<MancubusEntity> {
 
 	public MancubusModel() {
 	}

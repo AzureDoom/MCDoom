@@ -3,7 +3,6 @@ package mod.azure.doom.entity.tierfodder;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.util.config.DoomConfig;
-
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
@@ -29,6 +28,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -36,11 +36,9 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class UnwillingEntity extends DemonEntity implements IAnimatable {
+public class UnwillingEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
-
-	
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (!(animationSpeed > -0.10F && animationSpeed < 0.10F) && !this.isAggressive()) {
@@ -99,8 +97,8 @@ public class UnwillingEntity extends DemonEntity implements IAnimatable {
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.unwilling_health.get())
-				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.unwilling_melee_damage.get()).add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.unwilling_melee_damage.get())
+				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
@@ -153,4 +151,10 @@ public class UnwillingEntity extends DemonEntity implements IAnimatable {
 	public int getMaxSpawnClusterSize() {
 		return 1;
 	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
+	}
+
 }

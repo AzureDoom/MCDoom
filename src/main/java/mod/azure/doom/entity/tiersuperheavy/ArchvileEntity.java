@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.util.config.DoomConfig;
-
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -41,6 +40,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -48,12 +48,10 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class ArchvileEntity extends DemonEntity implements IAnimatable {
+public class ArchvileEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private int targetChangeTime;
 	public int flameTimer;
-
-	
 
 	public ArchvileEntity(EntityType<ArchvileEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
@@ -473,6 +471,11 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable {
 	@Override
 	public int getMaxSpawnClusterSize() {
 		return 1;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 
 }

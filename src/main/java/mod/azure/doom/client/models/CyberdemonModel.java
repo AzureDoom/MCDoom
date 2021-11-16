@@ -5,10 +5,10 @@ import mod.azure.doom.entity.tiersuperheavy.CyberdemonEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class CyberdemonModel extends AnimatedGeoModel<CyberdemonEntity> {
+public class CyberdemonModel extends AnimatedTickingGeoModel<CyberdemonEntity> {
 
 	public CyberdemonModel() {
 	}

@@ -6,7 +6,6 @@ import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import mod.azure.doom.util.config.DoomConfig;
-
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -33,6 +32,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -40,9 +40,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class CyberdemonEntity extends DemonEntity implements IAnimatable {
-
-	
+public class CyberdemonEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public CyberdemonEntity(EntityType<? extends CyberdemonEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
@@ -94,9 +92,10 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.goalSelector.addGoal(4,
-				new RangedStaticAttackGoal(this, new CyberdemonEntity.FireballAttack(this)
-						.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomConfig.SERVER.cyberdemon_ranged_damage.get().floatValue()), 60,
-						20, 30F, 1));
+				new RangedStaticAttackGoal(
+						this, new CyberdemonEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
+								.setDamage(DoomConfig.SERVER.cyberdemon_ranged_damage.get().floatValue()),
+						60, 20, 30F, 1));
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
@@ -127,8 +126,9 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable {
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.cyberdemon_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
-				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.cyberdemon_health.get())
+				.add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -210,6 +210,11 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable {
 	@Override
 	public int getMaxSpawnClusterSize() {
 		return 1;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 
 }

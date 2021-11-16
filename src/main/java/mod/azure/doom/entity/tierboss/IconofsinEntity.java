@@ -7,7 +7,6 @@ import java.util.SplittableRandom;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.util.config.DoomConfig;
-
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -47,6 +46,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -54,9 +54,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class IconofsinEntity extends DemonEntity implements IAnimatable {
-
-	
+public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private final ServerBossEvent bossInfo = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(),
 			BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true)
@@ -303,7 +301,8 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 			double d12 = (double) (Mth.sqrt((float) entity.distanceToSqr(vector3d)) / f2);
 			if (d12 <= 1.0D) {
 				if (entity instanceof LivingEntity) {
-					entity.hurt(DamageSource.indirectMobAttack(this, this.getTarget()), DoomConfig.SERVER.icon_melee_damage.get().floatValue());
+					entity.hurt(DamageSource.indirectMobAttack(this, this.getTarget()),
+							DoomConfig.SERVER.icon_melee_damage.get().floatValue());
 				}
 			}
 		}
@@ -331,7 +330,8 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
-			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this, DoomConfig.SERVER.icon_melee_damage.get().floatValue());
+			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this,
+					DoomConfig.SERVER.icon_melee_damage.get().floatValue());
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
 			this.level.addFreshEntity(fang);
@@ -340,7 +340,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.icon_health.get()).add(Attributes.ATTACK_DAMAGE,  1.0D)
+				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.icon_health.get()).add(Attributes.ATTACK_DAMAGE, 1.0D)
 				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
@@ -459,4 +459,10 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable {
 	public boolean hurt(DamageSource source, float amount) {
 		return source == DamageSource.IN_WALL ? false : super.hurt(source, amount);
 	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
+	}
+
 }

@@ -4,7 +4,6 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.util.config.DoomConfig;
-
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,6 +35,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -43,9 +43,8 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class MancubusEntity extends DemonEntity implements IAnimatable {
+public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
-	
 	private int attackTimer;
 
 	public MancubusEntity(EntityType<MancubusEntity> entityType, Level worldIn) {
@@ -253,7 +252,8 @@ public class MancubusEntity extends DemonEntity implements IAnimatable {
 		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
-			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this, DoomConfig.SERVER.mancubus_ranged_damage.get().floatValue());
+			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this,
+					DoomConfig.SERVER.mancubus_ranged_damage.get().floatValue());
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
 			this.level.addFreshEntity(fang);
@@ -316,4 +316,10 @@ public class MancubusEntity extends DemonEntity implements IAnimatable {
 	public MobType getMobType() {
 		return MobType.UNDEAD;
 	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
+	}
+
 }

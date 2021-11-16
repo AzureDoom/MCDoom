@@ -27,6 +27,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -34,7 +35,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class NightmareImpEntity extends DemonEntity implements IAnimatable {
+public class NightmareImpEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public NightmareImpEntity(EntityType<NightmareImpEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
@@ -115,8 +116,8 @@ public class NightmareImpEntity extends DemonEntity implements IAnimatable {
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.nightmare_imp_health.get())
-				.add(Attributes.ATTACK_DAMAGE, 0.0D)
-				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -164,6 +165,11 @@ public class NightmareImpEntity extends DemonEntity implements IAnimatable {
 	@Override
 	public int getMaxSpawnClusterSize() {
 		return 7;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 
 }

@@ -7,7 +7,6 @@ import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.CustomFireballEntity;
 import mod.azure.doom.util.config.DoomConfig;
-
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
@@ -34,6 +33,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -41,11 +41,9 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class HellknightEntity extends DemonEntity implements IAnimatable {
+public class HellknightEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
-
-	
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (event.isMoving()) {
@@ -98,9 +96,10 @@ public class HellknightEntity extends DemonEntity implements IAnimatable {
 
 	protected void applyEntityAI() {
 		this.goalSelector.addGoal(4,
-				new RangedStaticAttackGoal(this, new HellknightEntity.FireballAttack(this)
-						.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomConfig.SERVER.hellknight_ranged_damage.get().floatValue()), 60,
-						20, 30F, 1));
+				new RangedStaticAttackGoal(
+						this, new HellknightEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
+								.setDamage(DoomConfig.SERVER.hellknight_ranged_damage.get().floatValue()),
+						60, 20, 30F, 1));
 		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
@@ -185,4 +184,10 @@ public class HellknightEntity extends DemonEntity implements IAnimatable {
 	public MobType getMobType() {
 		return MobType.UNDEAD;
 	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
+	}
+
 }

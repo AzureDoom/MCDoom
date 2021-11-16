@@ -5,10 +5,10 @@ import mod.azure.doom.entity.tierheavy.ProwlerEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class ProwlerModel extends AnimatedGeoModel<ProwlerEntity> {
+public class ProwlerModel extends AnimatedTickingGeoModel<ProwlerEntity> {
 
 	@Override
 	public ResourceLocation getModelLocation(ProwlerEntity object) {

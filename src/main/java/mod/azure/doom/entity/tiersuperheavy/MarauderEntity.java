@@ -53,6 +53,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -60,7 +61,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAttackMob {
+public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimationTickable, RangedAttackMob {
 
 	private final RangedShotgunAttackGoal<MarauderEntity> aiArrowAttack = new RangedShotgunAttackGoal<>(this, 1.0D, 20,
 			15.0F, 2);
@@ -417,5 +418,10 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, RangedAt
 	@Override
 	public int getMaxSpawnClusterSize() {
 		return 1;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 }

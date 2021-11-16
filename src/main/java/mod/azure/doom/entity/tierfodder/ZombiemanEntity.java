@@ -44,6 +44,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -51,7 +52,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class ZombiemanEntity extends DemonEntity implements RangedAttackMob, IAnimatable {
+public class ZombiemanEntity extends DemonEntity implements RangedAttackMob, IAnimatable, IAnimationTickable {
 
 	private final RangedPistolAttackGoal<ZombiemanEntity> aiArrowAttack = new RangedPistolAttackGoal<>(this, 1.0D, 20,
 			15.0F, 2);
@@ -140,8 +141,9 @@ public class ZombiemanEntity extends DemonEntity implements RangedAttackMob, IAn
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.zombieman_health.get()).add(Attributes.ATTACK_DAMAGE, 2.5D)
-				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.zombieman_health.get())
+				.add(Attributes.ATTACK_DAMAGE, 2.5D).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -254,5 +256,10 @@ public class ZombiemanEntity extends DemonEntity implements RangedAttackMob, IAn
 		abstractarrowentity.setEnchantmentEffectsFromEntity(shooter, distanceFactor);
 
 		return abstractarrowentity;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 }

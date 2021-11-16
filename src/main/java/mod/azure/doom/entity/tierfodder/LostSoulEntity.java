@@ -5,7 +5,6 @@ import java.util.EnumSet;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.util.config.DoomConfig;
-
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
@@ -44,6 +43,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -51,15 +51,13 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable {
+public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, IAnimationTickable {
 	protected static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(LostSoulEntity.class,
 			EntityDataSerializers.BYTE);
 	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(LostSoulEntity.class,
 			EntityDataSerializers.INT);
 	public int explosionPower = 1;
 	public int flameTimer;
-
-	
 
 	public LostSoulEntity(EntityType<? extends LostSoulEntity> type, Level world) {
 		super(type, world);
@@ -143,8 +141,8 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable {
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.lost_soul_health.get())
-				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.lost_soul_melee_damage.get()).add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.lost_soul_melee_damage.get())
+				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -375,6 +373,11 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable {
 	@Override
 	public int getMaxSpawnClusterSize() {
 		return 7;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 
 }

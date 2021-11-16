@@ -5,10 +5,10 @@ import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class ArchMaykrModel extends AnimatedGeoModel<ArchMakyrEntity> {
+public class ArchMaykrModel extends AnimatedTickingGeoModel<ArchMakyrEntity> {
 
 	@Override
 	public ResourceLocation getModelLocation(ArchMakyrEntity object) {

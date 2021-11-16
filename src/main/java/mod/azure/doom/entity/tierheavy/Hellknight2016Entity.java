@@ -2,7 +2,6 @@ package mod.azure.doom.entity.tierheavy;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.config.DoomConfig;
-
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
@@ -30,6 +29,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -37,11 +37,9 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class Hellknight2016Entity extends DemonEntity implements IAnimatable {
+public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
-
-	
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (event.isMoving() && !this.isAggressive() && this.onGround) {
@@ -264,4 +262,10 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable {
 	public MobType getMobType() {
 		return MobType.UNDEAD;
 	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
+	}
+
 }

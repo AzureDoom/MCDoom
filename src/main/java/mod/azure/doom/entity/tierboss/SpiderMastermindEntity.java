@@ -6,7 +6,6 @@ import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
 import mod.azure.doom.util.config.DoomConfig;
-
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
@@ -33,6 +32,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -40,13 +40,11 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class SpiderMastermindEntity extends DemonEntity implements IAnimatable {
+public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public SpiderMastermindEntity(EntityType<SpiderMastermindEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 	}
-
-	
 
 	private AnimationFactory factory = new AnimationFactory(this);
 
@@ -95,9 +93,10 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.goalSelector.addGoal(4,
-				new RangedStrafeAttackGoal(this, new SpiderMastermindEntity.FireballAttack(this)
-						.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomConfig.SERVER.spider_mastermind_ranged_damage.get().floatValue()), 1.0D, 50, 30, 15, 15F, 1)
-								.setMultiShot(5, 1));
+				new RangedStrafeAttackGoal(this,
+						new SpiderMastermindEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
+								.setDamage(DoomConfig.SERVER.spider_mastermind_ranged_damage.get().floatValue()),
+						1.0D, 50, 30, 15, 15F, 1).setMultiShot(5, 1));
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
@@ -185,6 +184,11 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable {
 	@Override
 	public int getMaxSpawnClusterSize() {
 		return 2;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 
 }

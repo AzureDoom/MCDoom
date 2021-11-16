@@ -10,7 +10,6 @@ import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.util.config.DoomConfig;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -39,6 +38,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -46,12 +46,10 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class ProwlerEntity extends DemonEntity implements IAnimatable {
+public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
 	private int targetChangeTime;
-
-	
 
 	public ProwlerEntity(EntityType<? extends ProwlerEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
@@ -110,8 +108,8 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable {
 		this.goalSelector.addGoal(4,
 				new ProwlerEntity.RangedStrafeAttackGoal(this,
 						new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(DoomConfig.SERVER.prowler_ranged_damage.get().floatValue()).setSound(SoundEvents.BLAZE_SHOOT, 1.0F,
-										1.4F + this.getRandom().nextFloat() * 0.35F),
+								.setDamage(DoomConfig.SERVER.prowler_ranged_damage.get().floatValue())
+								.setSound(SoundEvents.BLAZE_SHOOT, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.0D, 50, 30, 15, 15F, 1).setMultiShot(5, 3));
 		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
@@ -483,8 +481,8 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable {
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.prowler_health.get())
-				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.prowler_melee_damage.get()).add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.prowler_melee_damage.get())
+				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -495,6 +493,11 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable {
 	@Override
 	public int getMaxSpawnClusterSize() {
 		return 1;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
 	}
 
 }

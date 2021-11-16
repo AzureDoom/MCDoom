@@ -6,7 +6,6 @@ import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.config.DoomConfig;
-
 import mod.azure.doom.util.registry.ModEntityTypes;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -23,6 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -30,10 +30,10 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class GoreNestEntity extends DemonEntity implements IAnimatable {
+public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	private AnimationFactory factory = new AnimationFactory(this);
-	
+
 	public int spawnTimer = 0;
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -128,7 +128,7 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable {
 				spawnTimer = spawnTimer + 1;
 			}
 		}
-		if ((this.tickCount % 2400) *3 == 0) {
+		if ((this.tickCount % 2400) * 3 == 0) {
 			this.remove(RemovalReason.KILLED);
 		}
 		super.aiStep();
@@ -196,4 +196,10 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable {
 	protected boolean shouldBurnInDay() {
 		return false;
 	}
+
+	@Override
+	public int tickTimer() {
+		return tickCount;
+	}
+
 }
