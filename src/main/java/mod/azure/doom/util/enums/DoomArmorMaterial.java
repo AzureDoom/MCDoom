@@ -124,6 +124,10 @@ public enum DoomArmorMaterial implements ArmorMaterial {
 	CRIMSON_DOOM_ARMOR("crimson_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 8.0F,
 			0.4F, () -> {
 				return Ingredient.ofItems(DoomItems.ARGENT_ENERGY);
+			}),
+	DARKLORD_ARMOR("darklord_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 8.0F,
+			0.4F, () -> {
+				return Ingredient.ofItems(DoomItems.ARGENT_ENERGY);
 			});
 
 	private static final int[] BASE_DURABILITY = new int[] { 13, 15, 16, 11 };

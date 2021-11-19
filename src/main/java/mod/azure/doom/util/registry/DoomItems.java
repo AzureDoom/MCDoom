@@ -26,6 +26,7 @@ import mod.azure.doom.item.armor.ClassicIndigoDoomArmor;
 import mod.azure.doom.item.armor.ClassicRedDoomArmor;
 import mod.azure.doom.item.armor.CrimsonDoomArmor;
 import mod.azure.doom.item.armor.CultistDoomArmor;
+import mod.azure.doom.item.armor.DarkLordArmor;
 import mod.azure.doom.item.armor.DemoncideDoomArmor;
 import mod.azure.doom.item.armor.DemonicDoomArmor;
 import mod.azure.doom.item.armor.DoomArmor;
@@ -443,6 +444,14 @@ public class DoomItems {
 			new HotrodDoomArmor(DoomArmorMaterial.HOTROD_DOOM_ARMOR, EquipmentSlot.FEET));
 	public static SantaDoomArmor SANTA_HELMET = item("santa_helmet",
 			new SantaDoomArmor(DoomArmorMaterial.DOOM_ARMOR, EquipmentSlot.HEAD));
+	public static DarkLordArmor DARKLORD_HELMET = item("darklord_helmet",
+			new DarkLordArmor(DoomArmorMaterial.DARKLORD_ARMOR, EquipmentSlot.HEAD));
+	public static DarkLordArmor DARKLORD_CHESTPLATE = item("darklord_chestplate",
+			new DarkLordArmor(DoomArmorMaterial.DARKLORD_ARMOR, EquipmentSlot.CHEST));
+	public static DarkLordArmor DARKLORD_LEGGINGS = item("darklord_leggings",
+			new DarkLordArmor(DoomArmorMaterial.DARKLORD_ARMOR, EquipmentSlot.LEGS));
+	public static DarkLordArmor DARKLORD_BOOTS = item("darklord_boots",
+			new DarkLordArmor(DoomArmorMaterial.DARKLORD_ARMOR, EquipmentSlot.FEET));
 
 	static <T extends Item> T item(T c, String id) {
 		Registry.register(Registry.ITEM, new Identifier(DoomMod.MODID, id), c);
