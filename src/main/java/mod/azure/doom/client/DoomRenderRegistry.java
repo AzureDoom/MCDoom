@@ -62,6 +62,7 @@ import mod.azure.doom.client.render.armors.ClassicRedRender;
 import mod.azure.doom.client.render.armors.ClassicRender;
 import mod.azure.doom.client.render.armors.CrimsonRender;
 import mod.azure.doom.client.render.armors.CultistRender;
+import mod.azure.doom.client.render.armors.DarkLordArmorRender;
 import mod.azure.doom.client.render.armors.DemoncideRender;
 import mod.azure.doom.client.render.armors.DemonicRender;
 import mod.azure.doom.client.render.armors.DoomRender;
@@ -322,6 +323,8 @@ public class DoomRenderRegistry {
 		GeoArmorRenderer.registerArmorRenderer(new ZombieRender(), DoomItems.ZOMBIE_DOOM_BOOTS,
 				DoomItems.ZOMBIE_DOOM_CHESTPLATE, DoomItems.ZOMBIE_DOOM_HELMET, DoomItems.ZOMBIE_DOOM_LEGGINGS);
 		GeoArmorRenderer.registerArmorRenderer(new SantaRender(), DoomItems.SANTA_HELMET);
+		GeoArmorRenderer.registerArmorRenderer(new DarkLordArmorRender(), DoomItems.DARKLORD_BOOTS,
+				DoomItems.DARKLORD_CHESTPLATE, DoomItems.DARKLORD_HELMET, DoomItems.DARKLORD_LEGGINGS);
 
 		BlockRenderLayerMap.INSTANCE.putBlock(DoomBlocks.JUMP_PAD, RenderLayer.getTranslucent());
 	}
