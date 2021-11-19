@@ -124,6 +124,10 @@ public enum DoomArmorMaterial implements IArmorMaterial {
 	CRIMSON_DOOM_ARMOR("doomweapon:crimson_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
 			SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F, () -> {
 				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
+			}),
+	DARKLORD_ARMOR("doomweapon:darklord_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
+			SoundEvents.ARMOR_EQUIP_GENERIC, 8.0F, () -> {
+				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
 			});
 
 	private static final int[] MAX_DAMAGE_ARRAY = new int[] { 5, 8, 10, 5 };

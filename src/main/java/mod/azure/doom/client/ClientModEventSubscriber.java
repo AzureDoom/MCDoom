@@ -65,6 +65,7 @@ import mod.azure.doom.client.render.armors.ClassicRedRender;
 import mod.azure.doom.client.render.armors.ClassicRender;
 import mod.azure.doom.client.render.armors.CrimsonRender;
 import mod.azure.doom.client.render.armors.CultistRender;
+import mod.azure.doom.client.render.armors.DarkLordArmorRender;
 import mod.azure.doom.client.render.armors.DemoncideRender;
 import mod.azure.doom.client.render.armors.DemonicRender;
 import mod.azure.doom.client.render.armors.DoomRender;
@@ -112,6 +113,7 @@ import mod.azure.doom.item.armor.ClassicIndigoDoomArmor;
 import mod.azure.doom.item.armor.ClassicRedDoomArmor;
 import mod.azure.doom.item.armor.CrimsonDoomArmor;
 import mod.azure.doom.item.armor.CultistDoomArmor;
+import mod.azure.doom.item.armor.DarkLordArmor;
 import mod.azure.doom.item.armor.DemoncideDoomArmor;
 import mod.azure.doom.item.armor.DemonicDoomArmor;
 import mod.azure.doom.item.armor.DoomArmor;
@@ -271,6 +273,7 @@ public class ClientModEventSubscriber {
 		GeoArmorRenderer.registerArmorRenderer(SentinelDoomArmor.class, new SentinelRender());
 		GeoArmorRenderer.registerArmorRenderer(ZombieDoomArmor.class, new ZombieRender());
 		GeoArmorRenderer.registerArmorRenderer(SantaDoomArmor.class, new SantaRender());
+		GeoArmorRenderer.registerArmorRenderer(DarkLordArmor.class, new DarkLordArmorRender());
 
 		RenderTypeLookup.setRenderLayer(DoomBlocks.JUMP_PAD.get(), RenderType.translucent());
 		ModItemModelsProperties.init();

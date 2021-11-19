@@ -25,6 +25,7 @@ import mod.azure.doom.item.armor.ClassicIndigoDoomArmor;
 import mod.azure.doom.item.armor.ClassicRedDoomArmor;
 import mod.azure.doom.item.armor.CrimsonDoomArmor;
 import mod.azure.doom.item.armor.CultistDoomArmor;
+import mod.azure.doom.item.armor.DarkLordArmor;
 import mod.azure.doom.item.armor.DemoncideDoomArmor;
 import mod.azure.doom.item.armor.DemonicDoomArmor;
 import mod.azure.doom.item.armor.DoomArmor;
@@ -572,4 +573,12 @@ public class DoomItems {
 			() -> new HotrodDoomArmor(DoomArmorMaterial.HOTROD_DOOM_ARMOR, EquipmentSlotType.FEET));
 	public static final RegistryObject<Item> SANTA_HELMET = ITEMS.register("santa_helmet",
 			() -> new SantaDoomArmor(DoomArmorMaterial.DOOM_ARMOR, EquipmentSlotType.HEAD));
+	public static final RegistryObject<Item> DARKLORD_HELMET = ITEMS.register("darklord_helmet",
+			() -> new DarkLordArmor(DoomArmorMaterial.DARKLORD_ARMOR, EquipmentSlotType.HEAD));
+	public static final RegistryObject<Item> DARKLORD_CHESTPLATE = ITEMS.register("darklord_chestplate",
+			() -> new DarkLordArmor(DoomArmorMaterial.DARKLORD_ARMOR, EquipmentSlotType.CHEST));
+	public static final RegistryObject<Item> DARKLORD_LEGGINGS = ITEMS.register("darklord_leggings",
+			() -> new DarkLordArmor(DoomArmorMaterial.DARKLORD_ARMOR, EquipmentSlotType.LEGS));
+	public static final RegistryObject<Item> DARKLORD_BOOTS = ITEMS.register("darklord_boots",
+			() -> new DarkLordArmor(DoomArmorMaterial.DARKLORD_ARMOR, EquipmentSlotType.FEET));
 }
