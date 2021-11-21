@@ -82,33 +82,29 @@ public class RangedStrafeAttackGoal extends Goal {
 		multiShotsLeft = 0;
 	}
 
-	public void setAttackInterval(int attackCooldownIn) {
+	public void setAttackCooldown(int attackCooldownIn) {
 		this.attackCooldown = attackCooldownIn;
-	}
-	
-	public boolean canStart() {
-		return this.entity.getTarget() != null;
 	}
 
 	/**
 	 * Returns whether execution should begin. You can also read and cache any state
 	 * necessary for execution in this method as well.
 	 */
-	public boolean shouldExecute() {
+	public boolean canStart() {
 		return this.entity.getTarget() != null;
 	}
 
 	/**
 	 * Returns whether an in-progress EntityAIBase should continue executing
 	 */
-	public boolean shouldKeepRunning() {
-		return (this.shouldExecute() || !this.entity.getNavigation().isIdle());
+	public boolean shouldContinue() {
+		return (this.canStart() || !this.entity.getNavigation().isIdle());
 	}
 
 	/**
 	 * Execute a one shot task or start executing a continuous task
 	 */
-	public void run() {
+	public void start() {
 		super.start();
 		this.entity.setAttacking(true);
 	}
@@ -117,12 +113,13 @@ public class RangedStrafeAttackGoal extends Goal {
 	 * Reset the task's internal state. Called when this task is interrupted by
 	 * another one
 	 */
-	public void finishRunning() {
-		super.canStop();
+	public void stop() {
+		super.stop();
 		this.entity.setAttacking(false);
+		this.entity.setAttackingState(0);
 		this.seeTime = 0;
 		this.attackTime = -1;
-		this.entity.clearActiveItem();
+		this.entity.stopUsingItem();
 	}
 
 	/**
