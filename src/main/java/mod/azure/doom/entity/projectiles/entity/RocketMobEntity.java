@@ -67,6 +67,11 @@ public class RocketMobEntity extends ExplosiveProjectileEntity implements IAnima
 	public AnimationFactory getFactory() {
 		return this.factory;
 	}
+	
+	@Override
+	public boolean doesRenderOnFire() {
+		return false;
+	}
 
 	@Override
 	public void setVelocity(double x, double y, double z, float speed, float divergence) {
