@@ -7,9 +7,7 @@ import javax.annotation.Nullable;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
-import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
-import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
-import mod.azure.doom.entity.attack.FireballAttack;
+import mod.azure.doom.entity.ai.goal.FlyingRangeAttackGoal;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.config.DoomConfig.Server;
 import mod.azure.doom.util.registry.ModSoundEvents;
@@ -18,7 +16,6 @@ import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -122,14 +119,9 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	protected void applyEntityAI() {
-		this.goalSelector.addGoal(4,
-				new RangedStrafeAttackGoal(this,
-						new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(config.gargoyle_ranged_damage.get().floatValue())
-								.setSound(SoundEvents.BLAZE_SHOOT, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
-						1.0D, 50, 30, 15, 15F, 1).setMultiShot(3, 3));
+		this.goalSelector.addGoal(4, new FlyingRangeAttackGoal(this,
+				DoomConfig.SERVER.gargoyle_ranged_damage.get().floatValue(), SoundEvents.BLAZE_SHOOT, false));
 		this.goalSelector.addGoal(7, new GargoyleEntity.LookAroundGoal(this));
-		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, false));
@@ -149,44 +141,6 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
-	}
-
-	public void travel(Vector3d travelVector) {
-		if (this.isInWater()) {
-			this.moveRelative(0.02F, travelVector);
-			this.move(MoverType.SELF, this.getDeltaMovement());
-			this.setDeltaMovement(this.getDeltaMovement().scale((double) 0.8F));
-		} else if (this.isInLava()) {
-			this.moveRelative(0.02F, travelVector);
-			this.move(MoverType.SELF, this.getDeltaMovement());
-			this.setDeltaMovement(this.getDeltaMovement().scale(0.5D));
-		} else {
-			BlockPos ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
-			float f = 0.91F;
-			if (this.onGround) {
-				f = this.level.getBlockState(ground).getSlipperiness(this.level, ground, this) * 0.91F;
-			}
-
-			float f1 = 0.16277137F / (f * f * f);
-			f = 0.91F;
-			if (this.onGround) {
-				f = this.level.getBlockState(ground).getSlipperiness(this.level, ground, this) * 0.91F;
-			}
-
-			this.moveRelative(this.onGround ? 0.1F * f1 : 0.02F, travelVector);
-			this.move(MoverType.SELF, this.getDeltaMovement());
-			this.setDeltaMovement(this.getDeltaMovement().scale((double) f));
-		}
-
-		this.calculateEntityAnimation(this, false);
-	}
-
-	/**
-	 * Returns true if this entity should move as if it were on a ladder (either
-	 * because it's actually on a ladder, or for AI reasons)
-	 */
-	public boolean onClimbable() {
-		return false;
 	}
 
 	static class LookAroundGoal extends Goal {
