@@ -116,6 +116,16 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnima
 		this.targetSelector.add(2, new FollowTargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
 	}
+	
+	@Override
+	public void tick() {
+		super.tick();
+		if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
+			this.setGlowing(true);
+		} else {
+			this.setGlowing(false);
+		}
+	}
 
 	static class LookAtTargetGoal extends Goal {
 		private final BloodMaykrEntity ghast;
