@@ -130,6 +130,16 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnima
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, true));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
+	
+	@Override
+	public void tick() {
+		super.tick();
+		if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
+			this.setGlowing(true);
+		} else {
+			this.setGlowing(false);
+		}
+	}
 
 	protected PathNavigator createNavigation(World worldIn) {
 		FlyingPathNavigator flyingpathnavigator = new FlyingPathNavigator(this, worldIn);
