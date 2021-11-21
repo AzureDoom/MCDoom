@@ -67,6 +67,11 @@ public class RocketMobEntity extends ExplosiveProjectileEntity implements IAnima
 	public AnimationFactory getFactory() {
 		return this.factory;
 	}
+	
+	@Override
+	public boolean doesRenderOnFire() {
+		return false;
+	}
 
 	@Override
 	public void writeCustomDataToNbt(NbtCompound tag) {
