@@ -1,7 +1,9 @@
 package mod.azure.doom.entity.tierheavy;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
+import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
+import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
+import mod.azure.doom.entity.ai.goal.FlyingRangeAttackGoal;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
@@ -12,7 +14,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -29,12 +30,13 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
@@ -58,7 +60,7 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
 			return PlayState.CONTINUE;
 		}
-		if (this.entityData.get(STATE) == 1 || this.isNoGravity()) {
+		if (!this.isOnGround() && !this.onGround && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("flying", true));
 			return PlayState.CONTINUE;
 		}
@@ -83,6 +85,7 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 
 	public Revenant2016Entity(EntityType<Revenant2016Entity> entityType, Level worldIn) {
 		super(entityType, worldIn);
+		this.moveControl = new DemonFlightMoveControl(this, 90, false);
 	}
 
 	@Override
@@ -130,8 +133,9 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.revenant_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
-				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.revenant_health.get()).add(Attributes.ATTACK_DAMAGE, 3.0D)
+				.add(Attributes.FLYING_SPEED, 0.25D).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -142,21 +146,30 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 	}
 
 	protected void applyEntityAI() {
-		this.goalSelector.addGoal(1, new Revenant2016Entity.FlyingAttackGoal(this));
+		this.goalSelector.addGoal(4, new FlyingRangeAttackGoal(this,
+				DoomConfig.SERVER.revenant_ranged_damage.get().floatValue(),
+				(this.getVariant() == 10 ? ModSoundEvents.REVENANT_DOOT.get() : ModSoundEvents.REVENANT_ATTACK.get()),
+				true));
+		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
 
-	@Override
-	public int getMaxFallDistance() {
-		return 99;
+	protected PathNavigation createNavigation(Level worldIn) {
+		FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
+		flyingpathnavigator.setCanOpenDoors(false);
+		flyingpathnavigator.setCanFloat(true);
+		flyingpathnavigator.setCanPassDoors(true);
+		return flyingpathnavigator;
 	}
 
-	@Override
-	protected int calculateFallDamage(float fallDistance, float damageMultiplier) {
-		return 0;
+	public boolean causeFallDamage(float distance, float damageMultiplier) {
+		return false;
+	}
+
+	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
 	}
 
 	@Override
@@ -164,80 +177,6 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 		boolean flag = this.getTarget() != null && this.hasLineOfSight(this.getTarget());
 		this.goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
 		super.updateControlFlags();
-	}
-
-	static class FlyingAttackGoal extends Goal {
-		private final Revenant2016Entity parentEntity;
-		protected int attackTimer = 0;
-
-		public FlyingAttackGoal(Revenant2016Entity ghast) {
-			this.parentEntity = ghast;
-		}
-
-		public boolean canUse() {
-			return this.parentEntity.getTarget() != null;
-		}
-
-		public void start() {
-			super.start();
-			this.parentEntity.setAggressive(true);
-		}
-
-		@Override
-		public void stop() {
-			super.stop();
-			this.parentEntity.setAggressive(false);
-			this.parentEntity.setAttackingState(0);
-			this.attackTimer = -1;
-			parentEntity.setNoGravity(false);
-			parentEntity.push(0, 0, 0);
-		}
-
-		public void tick() {
-			LivingEntity livingentity = this.parentEntity.getTarget();
-			if (this.parentEntity.hasLineOfSight(livingentity)) {
-				Level world = this.parentEntity.level;
-				++this.attackTimer;
-				Vec3 vector3d = this.parentEntity.getViewVector(1.0F);
-				double d2 = livingentity.getX() - (this.parentEntity.getX() + vector3d.x * 2.0D);
-				double d3 = livingentity.getY(0.5D) - (0.5D + this.parentEntity.getY(0.5D));
-				double d4 = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * 2.0D);
-				RocketMobEntity fireballentity = new RocketMobEntity(world, this.parentEntity, d2, d3, d4,
-						DoomConfig.SERVER.revenant_ranged_damage.get().floatValue());
-				if (this.attackTimer == 5) {
-					parentEntity.setNoGravity(true);
-					parentEntity.push(0, (double) 0.2F * 3.0D, 0);
-					this.parentEntity.setAttackingState(1);
-				}
-				if (this.attackTimer == 15) {
-					fireballentity.setPos(this.parentEntity.getX() + vector3d.x * 2.0D,
-							this.parentEntity.getY(0.5D) + 0.75D, fireballentity.getZ() + vector3d.z * 2.0D);
-					parentEntity.level.playSound(null, parentEntity,
-							(parentEntity.getVariant() == 1 ? ModSoundEvents.REVENANT_ATTACK.get()
-									: ModSoundEvents.REVENANT_DOOT.get()),
-							SoundSource.HOSTILE, 0.5F, 1.0F);
-					world.addFreshEntity(fireballentity);
-				}
-				if (this.attackTimer == 20) {
-					fireballentity.setPos(this.parentEntity.getX() + vector3d.x * 2.0D,
-							this.parentEntity.getY(0.5D) + 0.75D, fireballentity.getZ() + vector3d.z * 2.0D);
-					parentEntity.level.playSound(null, parentEntity,
-							(parentEntity.getVariant() == 1 ? ModSoundEvents.REVENANT_ATTACK.get()
-									: ModSoundEvents.REVENANT_DOOT.get()),
-							SoundSource.HOSTILE, 0.5F, 1.0F);
-					world.addFreshEntity(fireballentity);
-				}
-				if (this.attackTimer == 45) {
-					this.parentEntity.setAttackingState(0);
-					parentEntity.setNoGravity(false);
-					parentEntity.push(0, 0, 0);
-					this.attackTimer = -50;
-				}
-			} else if (this.attackTimer > 0) {
-				--this.attackTimer;
-			}
-			this.parentEntity.lookAt(livingentity, 30.0F, 30.0F);
-		}
 	}
 
 	protected boolean shouldDrown() {

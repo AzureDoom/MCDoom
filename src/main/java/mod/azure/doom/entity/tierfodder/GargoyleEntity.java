@@ -5,9 +5,7 @@ import java.util.EnumSet;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
-import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
-import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
-import mod.azure.doom.entity.attack.FireballAttack;
+import mod.azure.doom.entity.ai.goal.FlyingRangeAttackGoal;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
@@ -21,7 +19,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
@@ -35,7 +32,6 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -111,14 +107,9 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	protected void applyEntityAI() {
-		this.goalSelector.addGoal(4,
-				new RangedStrafeAttackGoal(this,
-						new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(DoomConfig.SERVER.gargoyle_ranged_damage.get().floatValue())
-								.setSound(SoundEvents.BLAZE_SHOOT, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
-						1.0D, 50, 30, 15, 15F, 1).setMultiShot(3, 3));
+		this.goalSelector.addGoal(4, new FlyingRangeAttackGoal(this,
+				DoomConfig.SERVER.gargoyle_ranged_damage.get().floatValue(), SoundEvents.BLAZE_SHOOT, false));
 		this.goalSelector.addGoal(7, new GargoyleEntity.LookAroundGoal(this));
-		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
@@ -138,10 +129,6 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
-	}
-
-	public boolean onClimbable() {
-		return false;
 	}
 
 	static class LookAroundGoal extends Goal {
@@ -171,52 +158,6 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IAnimati
 				}
 			}
 
-		}
-	}
-
-	static class MoveHelperController extends MoveControl {
-		private final GargoyleEntity parentEntity;
-		private int courseChangeCooldown;
-
-		public MoveHelperController(GargoyleEntity ghast) {
-			super(ghast);
-			this.parentEntity = ghast;
-		}
-
-		public void tick() {
-			if (this.operation == MoveControl.Operation.MOVE_TO) {
-				if (this.courseChangeCooldown-- <= 0) {
-					this.courseChangeCooldown += this.parentEntity.getRandom().nextInt(5) + 2;
-					Vec3 vector3d = new Vec3(this.wantedX - this.parentEntity.getX(),
-							this.wantedY - this.parentEntity.getY(), this.wantedZ - this.parentEntity.getZ());
-					double d0 = vector3d.length();
-					vector3d = vector3d.normalize();
-					if (this.canReach(vector3d, Mth.ceil(d0))) {
-						this.parentEntity
-								.setDeltaMovement(this.parentEntity.getDeltaMovement().add(vector3d.scale(0.1D))); // TODO
-						// test
-						// fly
-						// speed
-						// here
-					} else {
-						this.operation = MoveControl.Operation.WAIT;
-					}
-				}
-
-			}
-		}
-
-		private boolean canReach(Vec3 p_220673_1_, int p_220673_2_) {
-			AABB axisalignedbb = this.parentEntity.getBoundingBox();
-
-			for (int i = 1; i < p_220673_2_; ++i) {
-				axisalignedbb = axisalignedbb.move(p_220673_1_);
-				if (!this.parentEntity.level.noCollision(this.parentEntity, axisalignedbb)) {
-					return false;
-				}
-			}
-
-			return true;
 		}
 	}
 
