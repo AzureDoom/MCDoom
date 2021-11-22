@@ -121,6 +121,7 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 		++this.deathTime;
 		if (this.deathTime == 30) {
 			this.remove(RemovalReason.KILLED);
+			this.dropExperience();
 		}
 	}
 

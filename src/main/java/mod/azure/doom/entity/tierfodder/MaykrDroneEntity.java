@@ -64,6 +64,7 @@ public class MaykrDroneEntity extends DemonEntity implements IAnimatable, IAnima
 		++this.deathTime;
 		if (this.deathTime == 30) {
 			this.remove(RemovalReason.KILLED);
+			this.dropExperience();
 		}
 	}
 

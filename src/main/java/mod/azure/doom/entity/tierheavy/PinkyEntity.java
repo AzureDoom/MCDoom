@@ -86,6 +86,7 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 		++this.deathTime;
 		if (this.deathTime == 80) {
 			this.remove(RemovalReason.KILLED);
+			this.dropExperience();
 		}
 	}
 

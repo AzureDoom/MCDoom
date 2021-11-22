@@ -164,6 +164,7 @@ public class PainEntity extends DemonEntity implements Enemy, IAnimatable, IAnim
 		++this.deathTime;
 		if (this.deathTime == 30) {
 			this.remove(RemovalReason.KILLED);
+			this.dropExperience();
 			if (!this.level.isClientSide()) {
 				LostSoulEntity lost_soul = ModEntityTypes.LOST_SOUL.get().create(level);
 				lost_soul.moveTo(this.getX(), this.getY(), this.getZ(), 0, 0);

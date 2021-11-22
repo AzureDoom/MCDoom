@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -94,9 +95,8 @@ public class Cyberdemon2016Entity extends DemonEntity implements IAnimatable, IA
 	protected void tickDeath() {
 		++this.deathTime;
 		if (this.deathTime == 60) {
-			this.remove(RemovalReason.KILLED);
-			if (level.isClientSide) {
-			}
+			this.remove(Entity.RemovalReason.KILLED);
+			this.dropExperience();
 		}
 	}
 

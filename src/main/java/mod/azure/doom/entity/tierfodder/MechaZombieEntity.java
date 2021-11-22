@@ -83,10 +83,7 @@ public class MechaZombieEntity extends DemonEntity implements IAnimatable, IAnim
 		++this.deathTime;
 		if (this.deathTime == 80) {
 			this.remove(RemovalReason.KILLED);
-			for (int i = 0; i < 20; ++i) {
-				if (level.isClientSide) {
-				}
-			}
+			this.dropExperience();
 		}
 	}
 

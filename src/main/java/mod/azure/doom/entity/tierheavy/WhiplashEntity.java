@@ -82,8 +82,7 @@ public class WhiplashEntity extends DemonEntity implements IAnimatable, IAnimati
 		++this.deathTime;
 		if (this.deathTime == 60) {
 			this.remove(RemovalReason.KILLED);
-			if (level.isClientSide) {
-			}
+			this.dropExperience();
 		}
 	}
 

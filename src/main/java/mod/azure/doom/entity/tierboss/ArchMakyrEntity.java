@@ -113,6 +113,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		++this.deathTime;
 		if (this.deathTime == 30) {
 			this.remove(RemovalReason.KILLED);
+			this.dropExperience();
 		}
 	}
 

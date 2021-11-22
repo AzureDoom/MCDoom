@@ -48,6 +48,7 @@ public class CueBallEntity extends DemonEntity implements IAnimatable, IAnimatio
 		++this.deathTime;
 		if (this.deathTime == 30) {
 			this.remove(RemovalReason.KILLED);
+			this.dropExperience();
 			if (!this.level.isClientSide) {
 				this.explode();
 			}

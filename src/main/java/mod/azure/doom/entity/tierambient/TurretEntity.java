@@ -46,6 +46,7 @@ public class TurretEntity extends DemonEntity implements IAnimatable, IAnimation
 		++this.deathTime;
 		if (this.deathTime == 30) {
 			this.remove(RemovalReason.KILLED);
+			this.dropExperience();
 		}
 	}
 

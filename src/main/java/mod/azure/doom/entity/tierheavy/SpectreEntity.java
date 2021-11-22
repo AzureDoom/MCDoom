@@ -86,6 +86,7 @@ public class SpectreEntity extends DemonEntity implements IAnimatable, IAnimatio
 		++this.deathTime;
 		if (this.deathTime == 80) {
 			this.remove(RemovalReason.KILLED);
+			this.dropExperience();
 		}
 	}
 

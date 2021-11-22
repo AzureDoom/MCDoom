@@ -77,6 +77,7 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 		++this.deathTime;
 		if (this.deathTime == 60) {
 			this.remove(RemovalReason.KILLED);
+			this.dropExperience();
 		}
 	}
 

@@ -131,6 +131,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 		++this.deathTime;
 		if (this.deathTime == 50) {
 			this.remove(RemovalReason.KILLED);
+			this.dropExperience();
 		}
 	}
 
