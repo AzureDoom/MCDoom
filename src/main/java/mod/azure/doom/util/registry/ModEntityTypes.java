@@ -46,6 +46,7 @@ import mod.azure.doom.entity.tiersuperheavy.Cyberdemon2016Entity;
 import mod.azure.doom.entity.tiersuperheavy.CyberdemonEntity;
 import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
 import mod.azure.doom.entity.tiersuperheavy.FireBaronEntity;
+import mod.azure.doom.entity.tiersuperheavy.GladiatorEntity;
 import mod.azure.doom.entity.tiersuperheavy.MarauderEntity;
 import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
@@ -375,9 +376,9 @@ public class ModEntityTypes {
 					.dimensions(EntityDimensions.fixed(1.9f, 3.95F)).fireImmune().trackRangeBlocks(90)
 					.trackedUpdateRate(4).build());
 
-//	public static final EntityType<GladiatorEntity> GLADIATOR = Registry.register(Registry.ENTITY_TYPE,
-//			new Identifier(DoomMod.MODID, "gladiator"),
-//			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, GladiatorEntity::new)
-//					.dimensions(EntityDimensions.fixed(1.7f, 4.2F)).fireImmune().trackedUpdateRate(9)
-//					.trackRangeBlocks(90).build());
+	public static final EntityType<GladiatorEntity> GLADIATOR = Registry.register(Registry.ENTITY_TYPE,
+			new Identifier(DoomMod.MODID, "gladiator"),
+			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, GladiatorEntity::new)
+					.dimensions(EntityDimensions.fixed(1.7f, 4.2F)).fireImmune().trackedUpdateRate(9)
+					.trackRangeBlocks(90).build());
 }

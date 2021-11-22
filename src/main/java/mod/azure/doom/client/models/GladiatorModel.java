@@ -18,7 +18,8 @@ public class GladiatorModel extends AnimatedTickingGeoModel<GladiatorEntity> {
 
 	@Override
 	public Identifier getTextureLocation(GladiatorEntity object) {
-		return new Identifier(DoomMod.MODID, "textures/entity/gladiator.png");
+		return new Identifier(DoomMod.MODID, "textures/entity/" + (object.getTextureState() == 1 ? "gladiator_1"
+				: object.getTextureState() == 2 ? "gladiator_2" : "gladiator") + ".png");
 	}
 
 	@Override
