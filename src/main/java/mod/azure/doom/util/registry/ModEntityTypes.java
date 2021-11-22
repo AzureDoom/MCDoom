@@ -62,6 +62,7 @@ import mod.azure.doom.entity.tiersuperheavy.Cyberdemon2016Entity;
 import mod.azure.doom.entity.tiersuperheavy.CyberdemonEntity;
 import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
 import mod.azure.doom.entity.tiersuperheavy.FireBaronEntity;
+import mod.azure.doom.entity.tiersuperheavy.GladiatorEntity;
 import mod.azure.doom.entity.tiersuperheavy.MarauderEntity;
 import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
@@ -87,9 +88,8 @@ public class ModEntityTypes {
 	public static final RegistryObject<BlockEntityType<TotemEntity>> TOTEM = TILE_TYPES.register("totem",
 			() -> BlockEntityType.Builder.of(TotemEntity::new, DoomBlocks.TOTEM.get()).build(null));
 
-	public static final RegistryObject<BlockEntityType<GunBlockEntity>> GUN_TABLE_ENTITY = TILE_TYPES
-			.register("guntable", () -> BlockEntityType.Builder
-					.of(GunBlockEntity::new, DoomBlocks.GUN_TABLE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<GunBlockEntity>> GUN_TABLE_ENTITY = TILE_TYPES.register(
+			"guntable", () -> BlockEntityType.Builder.of(GunBlockEntity::new, DoomBlocks.GUN_TABLE.get()).build(null));
 
 	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES,
 			DoomMod.MODID);
@@ -417,10 +417,8 @@ public class ModEntityTypes {
 							.fireImmune().clientTrackingRange(9)
 							.build(new ResourceLocation(DoomMod.MODID, "revenant2016").toString()));
 
-//	public static final RegistryObject<EntityType<GladiatorEntity>> GLADIATOR = ENTITY_TYPES
-//			.register("gladiator",
-//					() -> EntityType.Builder.of(GladiatorEntity::new, MobCategory.MONSTER).sized(1.7f, 4.2F)
-//							.fireImmune().clientTrackingRange(9)
-//							.build(new ResourceLocation(DoomMod.MODID, "gladiator").toString()));
+	public static final RegistryObject<EntityType<GladiatorEntity>> GLADIATOR = ENTITY_TYPES.register("gladiator",
+			() -> EntityType.Builder.of(GladiatorEntity::new, MobCategory.MONSTER).sized(1.7f, 4.2F).fireImmune()
+					.clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "gladiator").toString()));
 
 }
