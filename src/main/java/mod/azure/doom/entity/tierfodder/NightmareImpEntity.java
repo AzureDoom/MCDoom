@@ -92,8 +92,7 @@ public class NightmareImpEntity extends DemonEntity implements IAnimatable, IAni
 		++this.deathTime;
 		if (this.deathTime == 40) {
 			this.remove(Entity.RemovalReason.KILLED);
-			if (world.isClient) {
-			}
+			this.dropXp();
 		}
 	}
 

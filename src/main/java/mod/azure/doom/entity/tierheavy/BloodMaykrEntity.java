@@ -94,6 +94,7 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnima
 		++this.deathTime;
 		if (this.deathTime == 30) {
 			this.remove(Entity.RemovalReason.KILLED);
+			this.dropXp();
 		}
 	}
 

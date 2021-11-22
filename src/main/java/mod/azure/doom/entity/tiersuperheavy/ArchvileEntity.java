@@ -85,6 +85,7 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable, IAnimati
 		}
 		if (this.deathTime == 50) {
 			this.remove(Entity.RemovalReason.KILLED);
+			this.dropXp();
 		}
 	}
 
