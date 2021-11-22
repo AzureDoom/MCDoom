@@ -187,8 +187,8 @@ public class MobSpawn {
 //		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.gladiator_biomes, context)),
 //				SpawnGroup.MONSTER, ModEntityTypes.GLADIATOR, config.gladiator_spawn_weight, config.gladiator_min_group,
 //				config.gladiator_max_group);
-//		SpawnRestrictionAccessor.callRegister(ModEntityTypes.GLADIATOR, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-//				DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.GLADIATOR, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.ARCHVILE, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
 				DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.ZOMBIEMAN, SpawnRestriction.Location.ON_GROUND,

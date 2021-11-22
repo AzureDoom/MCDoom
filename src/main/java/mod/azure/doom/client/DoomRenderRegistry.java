@@ -20,6 +20,7 @@ import mod.azure.doom.client.render.DoomHunterRender;
 import mod.azure.doom.client.render.DreadKnightRender;
 import mod.azure.doom.client.render.FireBaronRender;
 import mod.azure.doom.client.render.GargoyleRender;
+import mod.azure.doom.client.render.GladiatorRender;
 import mod.azure.doom.client.render.GoreNestRender;
 import mod.azure.doom.client.render.Hellknight2016Render;
 import mod.azure.doom.client.render.HellknightRender;
@@ -303,9 +304,9 @@ public class DoomRenderRegistry {
 		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.REVENANT2016, (dispatcher, context) -> {
 			return new Revenant2016Render(dispatcher);
 		});
-//		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.GLADIATOR, (dispatcher, context) -> {
-//			return new GladiatorRender(dispatcher);
-//		});
+		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.GLADIATOR, (dispatcher, context) -> {
+			return new GladiatorRender(dispatcher);
+		});
 
 		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.ARGENT_BOLT, (dispatcher, context) -> {
 			return new ArgentBoltRender(dispatcher);

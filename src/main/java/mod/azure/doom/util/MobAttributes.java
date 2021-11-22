@@ -44,6 +44,7 @@ import mod.azure.doom.entity.tiersuperheavy.Cyberdemon2016Entity;
 import mod.azure.doom.entity.tiersuperheavy.CyberdemonEntity;
 import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
 import mod.azure.doom.entity.tiersuperheavy.FireBaronEntity;
+import mod.azure.doom.entity.tiersuperheavy.GladiatorEntity;
 import mod.azure.doom.entity.tiersuperheavy.MarauderEntity;
 import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
 import mod.azure.doom.util.registry.ModEntityTypes;
@@ -52,8 +53,7 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 public class MobAttributes {
 
 	public static void init() {
-		// FabricDefaultAttributeRegistry.register(ModEntityTypes.GLADIATOR,
-		// GladiatorEntity.createMobAttributes());
+		FabricDefaultAttributeRegistry.register(ModEntityTypes.GLADIATOR, GladiatorEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(ModEntityTypes.ARCHVILE, ArchvileEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(ModEntityTypes.BARON, BaronEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(ModEntityTypes.CACODEMON, CacodemonEntity.createMobAttributes());
