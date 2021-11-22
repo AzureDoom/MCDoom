@@ -113,6 +113,7 @@ public class DemonEntity extends HostileEntity implements Angerable {
 		++this.deathTime;
 		if (this.deathTime == 40) {
 			this.remove(Entity.RemovalReason.KILLED);
+			this.dropXp();
 		}
 	}
 

@@ -433,6 +433,7 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 		++this.deathTime;
 		if (this.deathTime == 30) {
 			this.remove(Entity.RemovalReason.KILLED);
+			this.dropXp();
 		}
 	}
 
