@@ -34,6 +34,7 @@ public class DemonEntity extends CreatureEntity implements IAngerable {
 	protected DemonEntity(EntityType<? extends CreatureEntity> type, World worldIn) {
 		super(type, worldIn);
 		this.noCulling = true;
+		this.xpReward = 10;
 	}
 
 	public static boolean passPeacefulAndYCheck(EntityType<? extends CreatureEntity> config, IWorld world,
