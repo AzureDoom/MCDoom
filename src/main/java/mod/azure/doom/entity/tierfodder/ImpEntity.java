@@ -96,8 +96,7 @@ public class ImpEntity extends DemonEntity implements IAnimatable, IAnimationTic
 		++this.deathTime;
 		if (this.deathTime == 60) {
 			this.remove();
-			if (level.isClientSide) {
-			}
+			this.dropExperience();
 		}
 	}
 

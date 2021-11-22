@@ -112,6 +112,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 		++this.deathTime;
 		if (this.deathTime == 40) {
 			this.remove();
+			this.dropExperience();
 		}
 	}
 

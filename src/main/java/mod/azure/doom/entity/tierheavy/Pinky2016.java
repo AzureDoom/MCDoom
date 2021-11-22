@@ -89,6 +89,7 @@ public class Pinky2016 extends DemonEntity implements IAnimatable, IAnimationTic
 		++this.deathTime;
 		if (this.deathTime == 80) {
 			this.remove();
+			this.dropExperience();
 		}
 	}
 

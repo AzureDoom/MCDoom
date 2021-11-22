@@ -107,8 +107,7 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 		++this.deathTime;
 		if (this.deathTime == 80) {
 			this.remove();
-			if (level.isClientSide) {
-			}
+			this.dropExperience();
 		}
 	}
 

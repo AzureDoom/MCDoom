@@ -107,6 +107,7 @@ public class CacodemonEntity extends DemonEntity implements IMob, IAnimatable, I
 		++this.deathTime;
 		if (this.deathTime == 30) {
 			this.remove();
+			this.dropExperience();
 		}
 	}
 

@@ -95,8 +95,7 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 		++this.deathTime;
 		if (this.deathTime == 50) {
 			this.remove();
-			if (level.isClientSide) {
-			}
+			this.dropExperience();
 		}
 	}
 

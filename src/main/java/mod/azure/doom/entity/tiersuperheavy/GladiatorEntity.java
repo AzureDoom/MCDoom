@@ -146,6 +146,7 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 		}
 		if (this.deathTime == 40 && this.entityData.get(DEATH_STATE) == 1) {
 			this.remove();
+			this.dropExperience();
 		}
 	}
 

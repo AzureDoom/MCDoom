@@ -102,6 +102,7 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IAnimati
 		++this.deathTime;
 		if (this.deathTime == 50) {
 			this.remove();
+			this.dropExperience();
 		}
 	}
 

@@ -104,8 +104,7 @@ public class Cyberdemon2016Entity extends DemonEntity implements IAnimatable, IA
 		++this.deathTime;
 		if (this.deathTime == 60) {
 			this.remove();
-			if (level.isClientSide) {
-			}
+			this.dropExperience();
 		}
 	}
 

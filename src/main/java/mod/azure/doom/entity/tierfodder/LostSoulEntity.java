@@ -169,6 +169,7 @@ public class LostSoulEntity extends DemonEntity implements IMob, IAnimatable, IA
 		++this.deathTime;
 		if (this.deathTime == 5) {
 			this.remove();
+			this.dropExperience();
 			if (!this.level.isClientSide) {
 				this.explode();
 			}
