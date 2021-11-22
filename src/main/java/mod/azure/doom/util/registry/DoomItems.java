@@ -370,8 +370,8 @@ public class DoomItems {
 			() -> new SentinelHammerItem());
 	public static final RegistryObject<Item> DARKLORDCRUCIBLE = ITEMS.register("darklordcrucible",
 			() -> new DarkLordCrucibleItem());
-//	public static final RegistryObject<Item> GLADIATOR_SPAWN_EGG = ITEMS.register("gladiator_spawn_egg",
-//	() -> new DoomSpawnEgg(ModEntityTypes.GLADIATOR));
+	public static final RegistryObject<Item> GLADIATOR_SPAWN_EGG = ITEMS.register("gladiator_spawn_egg",
+			() -> new DoomSpawnEgg(ModEntityTypes.GLADIATOR));
 
 	// ARMOR
 	public static final RegistryObject<Item> DOOM_HELMET = ITEMS.register("doom_helmet",

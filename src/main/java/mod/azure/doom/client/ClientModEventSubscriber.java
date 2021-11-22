@@ -23,6 +23,7 @@ import mod.azure.doom.client.render.DoomHunterRender;
 import mod.azure.doom.client.render.DreadKnightRender;
 import mod.azure.doom.client.render.FireBaronRender;
 import mod.azure.doom.client.render.GargoyleRender;
+import mod.azure.doom.client.render.GladiatorRender;
 import mod.azure.doom.client.render.GoreNestRender;
 import mod.azure.doom.client.render.Hellknight2016Render;
 import mod.azure.doom.client.render.HellknightRender;
@@ -239,7 +240,7 @@ public class ClientModEventSubscriber {
 		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.TURRET.get(), TurretRender::new);
 		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.SUMMONER.get(), SummonerRender::new);
 		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.REVENANT2016.get(), Revenant2016Render::new);
-//		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.GLADIATOR.get(), GladiatorRender::new);
+		RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.GLADIATOR.get(), GladiatorRender::new);
 
 		ClientRegistry.bindTileEntityRenderer(ModEntityTypes.TOTEM.get(), TotemRender::new);
 		ClientRegistry.bindTileEntityRenderer(ModEntityTypes.GUN_TABLE_ENTITY.get(), GunCraftingRender::new);

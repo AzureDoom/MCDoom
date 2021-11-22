@@ -46,6 +46,7 @@ import mod.azure.doom.entity.tiersuperheavy.Cyberdemon2016Entity;
 import mod.azure.doom.entity.tiersuperheavy.CyberdemonEntity;
 import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
 import mod.azure.doom.entity.tiersuperheavy.FireBaronEntity;
+import mod.azure.doom.entity.tiersuperheavy.GladiatorEntity;
 import mod.azure.doom.entity.tiersuperheavy.MarauderEntity;
 import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
 import mod.azure.doom.util.registry.ModEntityTypes;
@@ -62,9 +63,9 @@ public class ModEventSubscriber {
 
 	@SubscribeEvent
 	public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event) {
-//		EntitySpawnPlacementRegistry.register(ModEntityTypes.GLADIATOR.get(),
-//				EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-//				DemonEntity::passPeacefulAndYCheck);
+		EntitySpawnPlacementRegistry.register(ModEntityTypes.GLADIATOR.get(),
+				EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
+				DemonEntity::passPeacefulAndYCheck);
 		EntitySpawnPlacementRegistry.register(ModEntityTypes.ARCHVILE.get(),
 				EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
 				DemonEntity::passPeacefulAndYCheck);
@@ -225,8 +226,7 @@ public class ModEventSubscriber {
 
 	@SubscribeEvent
 	public static void entityAttributes(EntityAttributeCreationEvent event) {
-		// event.put(ModEntityTypes.GLADIATOR.get(),
-		// GladiatorEntity.createAttributes().build());
+		event.put(ModEntityTypes.GLADIATOR.get(), GladiatorEntity.createAttributes().build());
 		event.put(ModEntityTypes.CYBERDEMON.get(), CyberdemonEntity.createAttributes().build());
 		event.put(ModEntityTypes.ARCHVILE.get(), ArchvileEntity.createAttributes().build());
 		event.put(ModEntityTypes.BARON.get(), BaronEntity.createAttributes().build());

@@ -17,7 +17,8 @@ public class GladiatorModel extends AnimatedTickingGeoModel<GladiatorEntity> {
 
 	@Override
 	public ResourceLocation getTextureLocation(GladiatorEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/entity/gladiator.png");
+		return new ResourceLocation(DoomMod.MODID, "textures/entity/" + (object.getTextureState() == 1 ? "gladiator_1"
+				: object.getTextureState() == 2 ? "gladiator_2" : "gladiator") + ".png");
 	}
 
 	@Override

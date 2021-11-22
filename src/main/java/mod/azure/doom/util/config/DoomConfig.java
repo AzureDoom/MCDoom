@@ -549,7 +549,7 @@ public class DoomConfig {
 			this.gladiator_max_group = builder.translation("text.doom.config.gladiator_max_group")
 					.defineInRange("Gladiator Max Group", 1, 1, Integer.MAX_VALUE);
 			this.gladiator_health = builder.translation("text.doom.config.gladiator_health")
-					.defineInRange("Sets Gladiator Max Health", 180, 1, Double.MAX_VALUE);
+					.defineInRange("Sets Gladiator Max Health", 240, 1, Double.MAX_VALUE);
 			this.gladiator_ranged_damage = builder.translation("text.doom.config.gladiator_ranged_damage")
 					.defineInRange("Sets Gladiator Ranged Damage", 6, 1, Double.MAX_VALUE);
 			this.gladiator_melee_damage = builder.translation("text.doom.config.gladiator_melee_damage")

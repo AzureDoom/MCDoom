@@ -62,6 +62,7 @@ import mod.azure.doom.entity.tiersuperheavy.Cyberdemon2016Entity;
 import mod.azure.doom.entity.tiersuperheavy.CyberdemonEntity;
 import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
 import mod.azure.doom.entity.tiersuperheavy.FireBaronEntity;
+import mod.azure.doom.entity.tiersuperheavy.GladiatorEntity;
 import mod.azure.doom.entity.tiersuperheavy.MarauderEntity;
 import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
@@ -447,10 +448,9 @@ public class ModEntityTypes {
 					.fireImmune().clientTrackingRange(9)
 					.build(new ResourceLocation(DoomMod.MODID, "revenant2016").toString()));
 
-//	public static final RegistryObject<EntityType<GladiatorEntity>> GLADIATOR = ENTITY_TYPES
-//			.register("gladiator",
-//					() -> EntityType.Builder.of(GladiatorEntity::new, EntityClassification.MONSTER).sized(1.7f, 4.2F)
-//							.fireImmune().clientTrackingRange(9)
-//							.build(new ResourceLocation(DoomMod.MODID, "gladiator").toString()));
+	public static final RegistryObject<EntityType<GladiatorEntity>> GLADIATOR = ENTITY_TYPES.register("gladiator",
+			() -> EntityType.Builder.of(GladiatorEntity::new, EntityClassification.MONSTER).sized(1.7f, 4.2F)
+					.fireImmune().clientTrackingRange(9)
+					.build(new ResourceLocation(DoomMod.MODID, "gladiator").toString()));
 
 }
