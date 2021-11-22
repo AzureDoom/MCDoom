@@ -94,8 +94,7 @@ public class ArachnotronEntity extends DemonEntity implements IAnimatable, IAnim
 		++this.deathTime;
 		if (this.deathTime == 50) {
 			this.remove();
-			if (world.isClient) {
-			}
+			this.dropXp();
 		}
 	}
 

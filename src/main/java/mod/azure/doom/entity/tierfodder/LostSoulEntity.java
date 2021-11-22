@@ -102,6 +102,7 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 		++this.deathTime;
 		if (this.deathTime == 5) {
 			this.remove();
+			this.dropXp();
 			if (!world.isClient) {
 				this.explode();
 			}

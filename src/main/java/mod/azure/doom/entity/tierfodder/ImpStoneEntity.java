@@ -80,8 +80,7 @@ public class ImpStoneEntity extends DemonEntity implements IAnimatable, IAnimati
 		++this.deathTime;
 		if (this.deathTime == 50) {
 			this.remove();
-			if (world.isClient) {
-			}
+			this.dropXp();
 		}
 	}
 

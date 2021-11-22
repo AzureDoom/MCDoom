@@ -87,8 +87,7 @@ public class Imp2016Entity extends DemonEntity implements IAnimatable, IAnimatio
 		++this.deathTime;
 		if (this.deathTime == 50) {
 			this.remove();
-			if (world.isClient) {
-			}
+			this.dropXp();
 		}
 	}
 
