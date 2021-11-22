@@ -34,6 +34,7 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 	protected DemonEntity(EntityType<? extends PathfinderMob> type, Level worldIn) {
 		super(type, worldIn);
 		this.noCulling = true;
+		this.xpReward = 10;
 	}
 
 	public static boolean passPeacefulAndYCheck(EntityType<? extends DemonEntity> config, LevelAccessor world,
