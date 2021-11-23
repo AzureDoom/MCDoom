@@ -2,11 +2,15 @@ package mod.azure.doom.entity.tiersuperheavy;
 
 import java.util.Random;
 
+import org.jetbrains.annotations.Nullable;
+
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedStrafeGladiatorAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.util.ModSoundEvents;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.AreaEffectCloudEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
@@ -18,15 +22,23 @@ import net.minecraft.entity.ai.goal.RevengeGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.boss.BossBar;
+import net.minecraft.entity.boss.ServerBossBar;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
@@ -45,7 +57,8 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 			TrackedDataHandlerRegistry.INTEGER);
 	public static final TrackedData<Integer> TEXTURE = DataTracker.registerData(GladiatorEntity.class,
 			TrackedDataHandlerRegistry.INTEGER);
-
+	private final ServerBossBar bossBar = (ServerBossBar) (new ServerBossBar(this.getDisplayName(), BossBar.Color.RED,
+			BossBar.Style.NOTCHED_20)).setDarkenSky(false).setThickenFog(false);
 	private AnimationFactory factory = new AnimationFactory(this);
 
 	public GladiatorEntity(EntityType<? extends HostileEntity> type, World worldIn) {
@@ -53,7 +66,7 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (this.dataTracker.get(DEATH_STATE) == 0 && event.isMoving()&& this.dataTracker.get(STATE) < 1) {
+		if (this.dataTracker.get(DEATH_STATE) == 0 && event.isMoving() && this.dataTracker.get(STATE) < 1) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_phaseone", true));
 			return PlayState.CONTINUE;
 		}
@@ -135,9 +148,18 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 			if (source == DamageSource.OUT_OF_WORLD) {
 				this.setDeathState(1);
 			}
-			this.goalSelector.getRunningGoals().forEach(PrioritizedGoal::stop);
-			this.onAttacking(this.getAttacker());
-			this.world.sendEntityStatus(this, (byte) 3);
+			if (this.dataTracker.get(DEATH_STATE) == 0) {
+				AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(this.world, this.getX(),
+						this.getY(), this.getZ());
+				areaeffectcloudentity.setParticleType(ParticleTypes.EXPLOSION);
+				areaeffectcloudentity.setRadius(3.0F);
+				areaeffectcloudentity.setDuration(55);
+				areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
+				this.world.spawnEntity(areaeffectcloudentity);
+				this.goalSelector.getRunningGoals().forEach(PrioritizedGoal::stop);
+				this.onAttacking(this.getAttacker());
+				this.world.sendEntityStatus(this, (byte) 3);
+			}
 		}
 	}
 
@@ -172,10 +194,39 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	@Override
+	public void writeCustomDataToNbt(NbtCompound tag) {
+		super.writeCustomDataToNbt(tag);
+		tag.putInt("Phase", this.getDeathState());
+		tag.putInt("Texture", this.getTextureState());
+	}
+
+	@Override
+	public void readCustomDataFromNbt(NbtCompound tag) {
+		super.readCustomDataFromNbt(tag);
+		if (this.hasCustomName()) {
+			this.bossBar.setName(this.getDisplayName());
+		}
+		this.setDeathState(tag.getInt("Phase"));
+		this.setTextureState(tag.getInt("Texture"));
+	}
+
+	@Override
 	protected void initDataTracker() {
 		super.initDataTracker();
 		this.dataTracker.startTracking(DEATH_STATE, 0);
 		this.dataTracker.startTracking(TEXTURE, 0);
+	}
+
+	@Override
+	public void tickMovement() {
+		super.tickMovement();
+		if (!this.world.isClient) {
+			if (this.dataTracker.get(DEATH_STATE) == 0) {
+				this.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 1000000, 0, false, false));
+			} else {
+				this.removeStatusEffect(StatusEffects.RESISTANCE);
+			}
+		}
 	}
 
 	@Override
@@ -187,11 +238,31 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 										1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.1D));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));
-		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
+		this.goalSelector.add(6, new LookAtEntityGoal(this, LivingEntity.class, 8.0F));
 		this.goalSelector.add(6, new LookAroundGoal(this));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 		this.targetSelector.add(2, new FollowTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new FollowTargetGoal<>(this, MerchantEntity.class, true));
+	}
+
+	@Override
+	public boolean tryAttack(Entity target) {
+		this.world.sendEntityStatus(this, (byte) 4);
+		boolean bl = target.damage(DamageSource.mob(this), (float) config.gladiator_melee_damage);
+		if (bl) {
+			target.setVelocity(target.getVelocity().add(0.4f, 0.4f, 0.4f));
+			this.dealDamage(this, target);
+		}
+		return bl;
+	}
+
+	public boolean tryAttack1(Entity target) {
+		this.world.sendEntityStatus(this, (byte) 4);
+		boolean bl = target.damage(DamageSource.mob(this), (float) config.gladiator_melee_damage);
+		if (bl) {
+			this.dealDamage(this, target);
+		}
+		return bl;
 	}
 
 	public static boolean spawning(EntityType<GladiatorEntity> p_223337_0_, World p_223337_1_, SpawnReason reason,
@@ -230,6 +301,28 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState blockIn) {
 		this.playSound(this.getStepSound(), 0.15F, 1.0F);
+	}
+
+	public void onStartedTrackingBy(ServerPlayerEntity player) {
+		super.onStartedTrackingBy(player);
+		this.bossBar.addPlayer(player);
+	}
+
+	public void onStoppedTrackingBy(ServerPlayerEntity player) {
+		super.onStoppedTrackingBy(player);
+		this.bossBar.removePlayer(player);
+	}
+
+	@Override
+	public void setCustomName(@Nullable Text name) {
+		super.setCustomName(name);
+		this.bossBar.setName(this.getDisplayName());
+	}
+
+	@Override
+	protected void mobTick() {
+		super.mobTick();
+		this.bossBar.setPercent(this.getHealth() / this.getMaxHealth());
 	}
 
 }

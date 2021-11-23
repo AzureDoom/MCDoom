@@ -184,47 +184,47 @@ public class MobSpawn {
 		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.archmaykr_biomes, context)),
 				SpawnGroup.MONSTER, ModEntityTypes.ARCHMAKER, config.archmaykr_spawn_weight, config.archmaykr_min_group,
 				config.archmaykr_max_group);
-//		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.gladiator_biomes, context)),
-//				SpawnGroup.MONSTER, ModEntityTypes.GLADIATOR, config.gladiator_spawn_weight, config.gladiator_min_group,
-//				config.gladiator_max_group);
+		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.gladiator_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.GLADIATOR, config.gladiator_spawn_weight, config.gladiator_min_group,
+				config.gladiator_max_group);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.GLADIATOR, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.ARCHVILE, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.ARCHVILE, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.ZOMBIEMAN, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.SPIDERMASTERMIND, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.ARACHNOTRON, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.MANCUBUS, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.BARON, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.REVENANT, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.IMP, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.PINKY, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.SPECTRE, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.CACODEMON, SpawnRestriction.Location.IN_LAVA, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.LOST_SOUL, SpawnRestriction.Location.IN_LAVA, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.IMP2016, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.MANCUBUS, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.BARON, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.REVENANT, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.IMP, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.PINKY, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.SPECTRE, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.CACODEMON, SpawnRestriction.Location.IN_LAVA,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.LOST_SOUL, SpawnRestriction.Location.IN_LAVA,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.IMP2016, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.NIGHTMARE_IMP, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.CHAINGUNNER, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.MARAUDER, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.MARAUDER, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.SHOTGUNGUY, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.PAIN, SpawnRestriction.Location.IN_LAVA, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.PAIN, SpawnRestriction.Location.IN_LAVA,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.HELLKNIGHT, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.HELLKNIGHT2016, SpawnRestriction.Location.ON_GROUND,
@@ -245,24 +245,24 @@ public class MobSpawn {
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.GORE_NEST, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.GARGOYLE, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.CUEBALL, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.PROWLER, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.GARGOYLE, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.CUEBALL, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.PROWLER, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.DREADKNIGHT, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.IMP_STONE, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.TYRANT, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.TYRANT, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.POSSESSEDWORKER, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.DOOMHUNTER, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.WHIPLASH, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.WHIPLASH, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.PINKY2016, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.FIREBARON, SpawnRestriction.Location.ON_GROUND,
@@ -283,16 +283,16 @@ public class MobSpawn {
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.ARCHVILEETERNAL, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.TENTACLE, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.TENTACLE, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.MOTHERDEMON, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.TURRET, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.SUMMONER, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.REVENANT2016, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-				DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.TURRET, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.SUMMONER, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.REVENANT2016, SpawnRestriction.Location.ON_GROUND,
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 	}
 
 	private static boolean parseBiomes(List<String> biomes, BiomeSelectionContext biomeContext) {

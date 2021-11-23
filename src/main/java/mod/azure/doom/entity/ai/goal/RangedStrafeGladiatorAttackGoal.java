@@ -5,8 +5,10 @@ import java.util.SplittableRandom;
 
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.tiersuperheavy.GladiatorEntity;
+import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.particle.ParticleTypes;
 
 public class RangedStrafeGladiatorAttackGoal extends Goal {
 	private final GladiatorEntity entity;
@@ -69,6 +71,7 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 			double d0 = this.entity.squaredDistanceTo(livingentity.getX(), livingentity.getY(), livingentity.getZ());
 			double d1 = this.getAttackReachSqr(livingentity);
 			this.attackTime++;
+			this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
 			if (inLineOfSight) {
 				if (this.entity.distanceTo(livingentity) >= 6.0D) {
 					if (this.entity.getDeathState() == 0) {
@@ -76,10 +79,16 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 							this.entity.getNavigation().stop();
 							this.entity.setAttackingState(1);
 							this.entity.setTextureState(1);
-							this.entity.getLookControl().lookAt(livingentity, 30.0F, 30.0F);
 						}
 						if (this.attackTime == 23) {
 							this.entity.setTextureState(2);
+							AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(entity.world,
+									entity.getX(), entity.getY(), entity.getZ());
+							areaeffectcloudentity.setParticleType(ParticleTypes.SOUL_FIRE_FLAME);
+							areaeffectcloudentity.setRadius(3.0F);
+							areaeffectcloudentity.setDuration(10);
+							areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
+							entity.world.spawnEntity(areaeffectcloudentity);
 						}
 						if (this.attackTime == 40) {
 							this.attack.shoot();
@@ -114,7 +123,22 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 							}
 						}
 						if (this.attackTime == 18) {
+							this.entity.getNavigation().stop();
+							AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(entity.world,
+									entity.getX(), entity.getY(), entity.getZ());
+							areaeffectcloudentity.setParticleType(ParticleTypes.SMOKE);
+							areaeffectcloudentity.setRadius(3.0F);
+							areaeffectcloudentity.setDuration(55);
+							areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
+							entity.world.spawnEntity(areaeffectcloudentity);
 							this.entity.tryAttack(livingentity);
+							livingentity.timeUntilRegen = 0;
+						}
+						if (this.attackTime == 19) {
+							if (this.entity.getDeathState() == 1) {
+								this.entity.tryAttack1(livingentity);
+								livingentity.timeUntilRegen = 0;
+							}
 						}
 						if (this.attackTime == 25) {
 							this.attackTime = -25;
