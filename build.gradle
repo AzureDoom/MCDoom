@@ -23,7 +23,7 @@ apply plugin: 'org.spongepowered.mixin'
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
-version = "4.0.30"
+version = "4.0.31"
 group = "mod.azure.doomweapon"
 archivesBaseName = "MCDoom-1.16.5"
 
@@ -109,7 +109,7 @@ dependencies {
 	compile fg.deobf("curse.maven:wikizoomer-383277:3177817")
 	
 	//compile fg.deobf("curse.maven:epicfightmod-405076:3377306")
-	implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.16.5:3.0.51')
+	implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.16.5:3.0.54')
 	annotationProcessor 'org.spongepowered:mixin:0.8:processor'
 }
 
