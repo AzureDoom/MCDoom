@@ -66,6 +66,11 @@
 						"vector": ["Math.sin(query.anim_time*180)*0.5", 0, 0]
 					}
 				},
+				"bottom_jaw": {
+					"position": {
+						"vector": [0, -4, 0]
+					}
+				},
 				"left_arm": {
 					"rotation": {
 						"vector": [0, 0, "5+Math.cos(query.anim_time * 180) * -2.5"]
@@ -89,6 +94,12 @@
 				"bone4": {
 					"rotation": {
 						"vector": [0, 0, 0]
+					}
+				},
+				"upper_jaw": {
+					"position": {
+						"vector": [0, 5.1, 0],
+						"easing": "easeInOutSine"
 					}
 				},
 				"mace2": {
