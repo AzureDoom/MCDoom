@@ -6,6 +6,8 @@ import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.AreaEffectCloudEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
@@ -18,14 +20,22 @@ import net.minecraft.entity.ai.goal.PrioritizedGoal;
 import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.BossInfo;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerBossInfo;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
@@ -41,6 +51,8 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 			DataSerializers.INT);
 	public static final DataParameter<Integer> TEXTURE = EntityDataManager.defineId(GladiatorEntity.class,
 			DataSerializers.INT);
+	private final ServerBossInfo bossInfo = (ServerBossInfo) (new ServerBossInfo(this.getDisplayName(),
+			BossInfo.Color.RED, BossInfo.Overlay.NOTCHED_20)).setDarkenScreen(false).setCreateWorldFog(false);
 	private AnimationFactory factory = new AnimationFactory(this);
 
 	public GladiatorEntity(EntityType<? extends DemonEntity> type, World worldIn) {
@@ -48,7 +60,7 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (this.entityData.get(DEATH_STATE) == 0 && event.isMoving()&& this.entityData.get(STATE) < 1) {
+		if (this.entityData.get(DEATH_STATE) == 0 && event.isMoving() && this.entityData.get(STATE) < 1) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_phaseone", true));
 			return PlayState.CONTINUE;
 		}
@@ -130,9 +142,18 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 			if (source == DamageSource.OUT_OF_WORLD) {
 				this.setDeathState(1);
 			}
-			this.goalSelector.getRunningGoals().forEach(PrioritizedGoal::stop);
-			this.setLastHurtMob(this.getLastHurtByMob());
-			this.level.broadcastEntityEvent(this, (byte) 3);
+			if (this.entityData.get(DEATH_STATE) == 0) {
+				AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(this.level, this.getX(),
+						this.getY(), this.getZ());
+				areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
+				areaeffectcloudentity.setRadius(3.0F);
+				areaeffectcloudentity.setDuration(55);
+				areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
+				this.level.addFreshEntity(areaeffectcloudentity);
+				this.goalSelector.getRunningGoals().forEach(PrioritizedGoal::stop);
+				this.setLastHurtMob(this.getLastHurtByMob());
+				this.level.broadcastEntityEvent(this, (byte) 3);
+			}
 		}
 	}
 
@@ -167,10 +188,39 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	@Override
+	public void addAdditionalSaveData(CompoundNBT tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putInt("Phase", this.getDeathState());
+		tag.putInt("Texture", this.getDeathState());
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundNBT compound) {
+		super.readAdditionalSaveData(compound);
+		if (this.hasCustomName()) {
+			this.bossInfo.setName(this.getDisplayName());
+		}
+		this.setDeathState(compound.getInt("Phase"));
+		this.setTextureState(compound.getInt("Texture"));
+	}
+
+	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
 		this.entityData.define(DEATH_STATE, 0);
 		this.entityData.define(TEXTURE, 0);
+	}
+
+	@Override
+	public void aiStep() {
+		super.aiStep();
+		if (!this.level.isClientSide) {
+			if (this.entityData.get(DEATH_STATE) == 0) {
+				this.addEffect(new EffectInstance(Effects.DAMAGE_RESISTANCE, 1000000, 0, false, false));
+			} else {
+				this.removeEffect(Effects.DAMAGE_RESISTANCE);
+			}
+		}
 	}
 
 	@Override
@@ -181,11 +231,33 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 								SoundEvents.FIRECHARGE_USE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
 				1.1D));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
-		this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+		this.goalSelector.addGoal(6, new LookAtGoal(this, LivingEntity.class, 8.0F));
 		this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, AbstractVillagerEntity.class, true));
+	}
+
+	@Override
+	public boolean doHurtTarget(Entity target) {
+		this.level.broadcastEntityEvent(this, (byte) 4);
+		boolean bl = target.hurt(DamageSource.mobAttack(this),
+				DoomConfig.SERVER.gladiator_melee_damage.get().floatValue());
+		if (bl) {
+			target.setDeltaMovement(target.getDeltaMovement().multiply(1.4f, 1.4f, 1.4f));
+			this.doEnchantDamageEffects(this, target);
+		}
+		return bl;
+	}
+
+	public boolean doHurtTarget1(Entity target) {
+		this.level.broadcastEntityEvent(this, (byte) 4);
+		boolean bl = target.hurt(DamageSource.mobAttack(this),
+				DoomConfig.SERVER.gladiator_melee_damage.get().floatValue());
+		if (bl) {
+			this.doEnchantDamageEffects(this, target);
+		}
+		return bl;
 	}
 
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
@@ -217,6 +289,34 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState blockIn) {
 		this.playSound(this.getStepSound(), 0.15F, 1.0F);
+	}
+
+	public ServerBossInfo getBossInfo() {
+		return bossInfo;
+	}
+
+	@Override
+	public void startSeenByPlayer(ServerPlayerEntity player) {
+		super.startSeenByPlayer(player);
+		this.bossInfo.addPlayer(player);
+	}
+
+	@Override
+	public void stopSeenByPlayer(ServerPlayerEntity player) {
+		super.stopSeenByPlayer(player);
+		this.bossInfo.removePlayer(player);
+	}
+
+	@Override
+	public void setCustomName(ITextComponent name) {
+		super.setCustomName(name);
+		this.bossInfo.setName(this.getDisplayName());
+	}
+
+	@Override
+	protected void customServerAiStep() {
+		super.customServerAiStep();
+		this.bossInfo.setPercent(this.getHealth() / this.getMaxHealth());
 	}
 
 }

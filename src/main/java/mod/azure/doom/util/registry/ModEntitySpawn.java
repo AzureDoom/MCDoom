@@ -218,10 +218,10 @@ public class ModEntitySpawn {
 			base.add(new Spawners(ModEntityTypes.ARCHMAKER.get(), DoomConfig.SERVER.archmaykr_spawn_weight.get(),
 					DoomConfig.SERVER.archmaykr_min_group.get(), DoomConfig.SERVER.archmaykr_max_group.get()));
 		}
-//		if (parseBiomes(DoomConfig.SERVER.gladiator_biomes.get(), event)) {
-//			base.add(new Spawners(ModEntityTypes.GLADIATOR.get(), DoomConfig.SERVER.gladiator_spawn_weight.get(),
-//					DoomConfig.SERVER.gladiator_min_group.get(), DoomConfig.SERVER.gladiator_max_group.get()));
-//		}
+		if (parseBiomes(DoomConfig.SERVER.gladiator_biomes.get(), event)) {
+			base.add(new Spawners(ModEntityTypes.GLADIATOR.get(), DoomConfig.SERVER.gladiator_spawn_weight.get(),
+					DoomConfig.SERVER.gladiator_min_group.get(), DoomConfig.SERVER.gladiator_max_group.get()));
+		}
 	}
 
 	private static boolean parseBiomes(List<? extends String> list, BiomeLoadingEvent event) {
