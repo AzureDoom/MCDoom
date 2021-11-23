@@ -65,8 +65,7 @@ public class FlyingRangeAttackGoal extends Goal {
 			} else {
 				--this.targetSeeingTicker;
 			}
-
-			this.actor.getNavigation().moveTo(livingEntity, this.speed);
+			this.actor.lookAt(livingEntity, 30.0F, 30.0F);
 			if (bl) {
 				if (rockets == true) {
 					if (this.cooldown == 15 && this.targetSeeingTicker >= -60) {
@@ -77,6 +76,8 @@ public class FlyingRangeAttackGoal extends Goal {
 					}
 					if (this.cooldown == 45) {
 						this.cooldown = -150;
+						this.actor.setAttackingState(0);
+						this.actor.getNavigation().moveTo(livingEntity, this.speed);
 					}
 				} else {
 					if (this.cooldown == 15 && this.targetSeeingTicker >= -60) {
@@ -84,6 +85,8 @@ public class FlyingRangeAttackGoal extends Goal {
 					}
 					if (this.cooldown == 25) {
 						this.cooldown = -150;
+						this.actor.setAttackingState(0);
+						this.actor.getNavigation().moveTo(livingEntity, this.speed);
 					}
 				}
 			}

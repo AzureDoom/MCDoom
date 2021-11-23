@@ -5,6 +5,8 @@ import java.util.SplittableRandom;
 
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.tiersuperheavy.GladiatorEntity;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 
@@ -44,6 +46,7 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 		super.start();
 		this.entity.setAggressive(true);
 		this.entity.setSilent(false);
+		this.entity.setTextureState(0);
 	}
 
 	/**
@@ -54,6 +57,7 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 		super.stop();
 		this.entity.setAggressive(false);
 		this.entity.setAttackingState(0);
+		this.entity.setTextureState(0);
 		this.attackTime = -1;
 		this.entity.stopUsingItem();
 		this.entity.setSilent(false);
@@ -69,6 +73,7 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 			double d0 = this.entity.distanceToSqr(livingentity.getX(), livingentity.getY(), livingentity.getZ());
 			double d1 = this.getAttackReachSqr(livingentity);
 			this.attackTime++;
+			this.entity.lookAt(livingentity, 30.0F, 30.0F);
 			if (inLineOfSight) {
 				if (this.entity.distanceTo(livingentity) >= 6.0D) {
 					if (this.entity.getDeathState() == 0) {
@@ -76,10 +81,16 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 							this.entity.getNavigation().stop();
 							this.entity.setAttackingState(1);
 							this.entity.setTextureState(1);
-							this.entity.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
 						}
 						if (this.attackTime == 23) {
 							this.entity.setTextureState(2);
+							AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(entity.level, entity.getX(),
+									entity.getY(), entity.getZ());
+							areaeffectcloudentity.setParticle(ParticleTypes.SOUL_FIRE_FLAME);
+							areaeffectcloudentity.setRadius(3.0F);
+							areaeffectcloudentity.setDuration(10);
+							areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
+							entity.level.addFreshEntity(areaeffectcloudentity);
 						}
 						if (this.attackTime == 40) {
 							this.attack.shoot();
@@ -114,7 +125,22 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 							}
 						}
 						if (this.attackTime == 18) {
+							this.entity.getNavigation().stop();
+							AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(entity.level, entity.getX(),
+									entity.getY(), entity.getZ());
+							areaeffectcloudentity.setParticle(ParticleTypes.SMOKE);
+							areaeffectcloudentity.setRadius(3.0F);
+							areaeffectcloudentity.setDuration(2);
+							areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
+							entity.level.addFreshEntity(areaeffectcloudentity);
 							this.entity.doHurtTarget(livingentity);
+							livingentity.invulnerableTime = 0;
+						}
+						if (this.attackTime == 19) {
+							if (this.entity.getDeathState() == 1) {
+								this.entity.doHurtTarget1(livingentity);
+								livingentity.invulnerableTime = 0;
+							}
 						}
 						if (this.attackTime == 25) {
 							this.attackTime = -25;
