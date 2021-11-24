@@ -140,8 +140,9 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, config.revenant_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
-				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.FLYING_SPEED, 0.25D).add(Attributes.MAX_HEALTH, config.revenant_health.get())
+				.add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
