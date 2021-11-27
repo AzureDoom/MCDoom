@@ -215,6 +215,7 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	protected void initDataTracker() {
 		super.initDataTracker();
 		this.dataTracker.startTracking(DEATH_STATE, 0);
+		this.dataTracker.startTracking(TEXTURE, 0);
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Lazy;
 
+@SuppressWarnings("deprecation")
 public enum DoomArmorMaterial implements ArmorMaterial {
 	DOOM_ARMOR("doom_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 8.0F, 0.4F,
 			() -> {

@@ -46,6 +46,7 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 		super.start();
 		this.entity.setAttacking(true);
 		this.entity.setSilent(false);
+		this.entity.setTextureState(0);
 	}
 
 	/**
