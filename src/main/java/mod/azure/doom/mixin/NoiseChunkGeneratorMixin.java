@@ -31,24 +31,36 @@ public class NoiseChunkGeneratorMixin {
 			SpawnGroup group, BlockPos pos) {
 
 		if (group == SpawnGroup.MONSTER) {
+			if (accessor.getStructureAt(pos, true, DoomStructures.ARCHMAYKR).hasChildren()) {
+				return DoomStructures.ARCHMAYKR.getMonsterSpawns();
+			}
 			if (accessor.getStructureAt(pos, true, DoomStructures.MAYKR).hasChildren()) {
 				return DoomStructures.MAYKR.getMonsterSpawns();
 			}
 			if (accessor.getStructureAt(pos, true, DoomStructures.PORTAL).hasChildren()) {
-				return DoomStructures.MAYKR.getMonsterSpawns();
+				return DoomStructures.PORTAL.getMonsterSpawns();
+			}
+			if (accessor.getStructureAt(pos, true, DoomStructures.NETHERPORTAL).hasChildren()) {
+				return DoomStructures.NETHERPORTAL.getMonsterSpawns();
 			}
 			if (accessor.getStructureAt(pos, true, DoomStructures.TITAN_SKULL).hasChildren()) {
-				return DoomStructures.MAYKR.getMonsterSpawns();
+				return DoomStructures.TITAN_SKULL.getMonsterSpawns();
 			}
 		} else if (group == SpawnGroup.CREATURE) {
+			if (accessor.getStructureAt(pos, true, DoomStructures.ARCHMAYKR).hasChildren()) {
+				return DoomStructures.ARCHMAYKR.getCreatureSpawns();
+			}
 			if (accessor.getStructureAt(pos, true, DoomStructures.MAYKR).hasChildren()) {
 				return DoomStructures.MAYKR.getCreatureSpawns();
 			}
 			if (accessor.getStructureAt(pos, true, DoomStructures.PORTAL).hasChildren()) {
-				return DoomStructures.MAYKR.getCreatureSpawns();
+				return DoomStructures.PORTAL.getCreatureSpawns();
+			}
+			if (accessor.getStructureAt(pos, true, DoomStructures.NETHERPORTAL).hasChildren()) {
+				return DoomStructures.NETHERPORTAL.getCreatureSpawns();
 			}
 			if (accessor.getStructureAt(pos, true, DoomStructures.TITAN_SKULL).hasChildren()) {
-				return DoomStructures.MAYKR.getCreatureSpawns();
+				return DoomStructures.TITAN_SKULL.getCreatureSpawns();
 			}
 		}
 
