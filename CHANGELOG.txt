@@ -1,3 +1,3 @@
-v.4.0.32
+v.4.0.33
 
-- Fixed Missing Flying Attribute
+- Fixes Dark Lord Armor
