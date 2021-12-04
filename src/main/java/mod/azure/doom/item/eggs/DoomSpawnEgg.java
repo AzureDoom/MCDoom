@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.DispenserBlock;
 public class DoomSpawnEgg extends SpawnEggItem {
 	private Supplier<? extends EntityType<?>> typeGetter;
 
+	@SuppressWarnings("deprecation")
 	public DoomSpawnEgg(Supplier<? extends EntityType<?>> typeIn) {
 		super(null, 11022961, 11035249, new Item.Properties().stacksTo(64).tab(DoomMod.DoomEggItemGroup));
 		typeGetter = typeIn;

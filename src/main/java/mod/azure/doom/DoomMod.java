@@ -7,10 +7,18 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
 import com.mojang.serialization.Codec;
 
 import mod.azure.doom.structures.DoomConfiguredStructures;
 import mod.azure.doom.structures.DoomStructures;
+import mod.azure.doom.structures.templates.ArchMaykrStructure;
+import mod.azure.doom.structures.templates.MaykrStructure;
+import mod.azure.doom.structures.templates.MotherDemonStructure;
+import mod.azure.doom.structures.templates.NetherPortalStructure;
+import mod.azure.doom.structures.templates.PortalStructure;
+import mod.azure.doom.structures.templates.TitanSkullStructure;
 import mod.azure.doom.util.DoomVillagerTrades;
 import mod.azure.doom.util.LootHandler;
 import mod.azure.doom.util.SoulCubeHandler;
@@ -24,15 +32,17 @@ import mod.azure.doom.util.registry.ModEntitySpawn;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome.BiomeCategory;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.FlatLevelSource;
 import net.minecraft.world.level.levelgen.StructureSettings;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
 import net.minecraftforge.common.MinecraftForge;
@@ -72,7 +82,12 @@ public class DoomMod {
 		modEventBus.addListener(this::enqueueIMC);
 		DoomStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
 		forgeBus.addListener(EventPriority.NORMAL, this::addDimensionalSpacing);
-		forgeBus.addListener(EventPriority.HIGH, this::biomeModification);
+		forgeBus.addListener(EventPriority.NORMAL, ArchMaykrStructure::setupStructureSpawns);
+		forgeBus.addListener(EventPriority.NORMAL, MaykrStructure::setupStructureSpawns);
+		forgeBus.addListener(EventPriority.NORMAL, MotherDemonStructure::setupStructureSpawns);
+		forgeBus.addListener(EventPriority.NORMAL, NetherPortalStructure::setupStructureSpawns);
+		forgeBus.addListener(EventPriority.NORMAL, PortalStructure::setupStructureSpawns);
+		forgeBus.addListener(EventPriority.NORMAL, TitanSkullStructure::setupStructureSpawns);
 		if (DoomConfig.SERVER.enable_all_villager_trades.get()) {
 			MinecraftForge.EVENT_BUS.addListener(DoomVillagerTrades::onVillagerTradesEvent);
 		}
@@ -102,45 +117,67 @@ public class DoomMod {
 		});
 	}
 
-	public void biomeModification(final BiomeLoadingEvent event) {
-		if (event.getCategory().equals(BiomeCategory.THEEND)) {
-			event.getGeneration().getStructures().add(() -> DoomConfiguredStructures.CONFIGURED_MAYKR);
-			event.getGeneration().getStructures().add(() -> DoomConfiguredStructures.CONFIGURED_ARCHMAYKR);
-		}
-		if (event.getCategory().equals(BiomeCategory.NETHER)) {
-			event.getGeneration().getStructures().add(() -> DoomConfiguredStructures.CONFIGURED_TITAN_SKULL);
-			event.getGeneration().getStructures().add(() -> DoomConfiguredStructures.CONFIGURED_MOTHERDEMON);
-			event.getGeneration().getStructures().add(() -> DoomConfiguredStructures.CONFIGURED_NETHERPORTAL);
-		}
-		if (!(event.getCategory().equals(BiomeCategory.NETHER) || event.getCategory().equals(BiomeCategory.THEEND))) {
-			event.getGeneration().getStructures().add(() -> DoomConfiguredStructures.CONFIGURED_PORTAL);
-		}
-	}
-
 	private static Method GETCODEC_METHOD;
 
-	@SuppressWarnings({ "unchecked", "resource" })
+	@SuppressWarnings({ "unchecked" })
 	public void addDimensionalSpacing(final WorldEvent.Load event) {
-		if (event.getWorld() instanceof ServerLevel) {
-			ServerLevel serverWorld = (ServerLevel) event.getWorld();
+		if (event.getWorld()instanceof ServerLevel serverLevel) {
+			ChunkGenerator chunkGenerator = serverLevel.getChunkSource().getGenerator();
+			StructureSettings worldStructureConfig = chunkGenerator.getSettings();
+			ImmutableMap.Builder<StructureFeature<?>, ImmutableMultimap<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>>> tempStructureToMultiMap = ImmutableMap
+					.builder();
+			worldStructureConfig.configuredStructures.entrySet().forEach(tempStructureToMultiMap::put);
+			ImmutableMultimap.Builder<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>> tempConfiguredStructureBiomeMultiMap = ImmutableMultimap
+					.builder();
+			for (Map.Entry<ResourceKey<Biome>, Biome> biomeEntry : serverLevel.registryAccess()
+					.ownedRegistryOrThrow(Registry.BIOME_REGISTRY).entrySet()) {
+				Biome.BiomeCategory biomeCategory = biomeEntry.getValue().getBiomeCategory();
+				if (biomeCategory != Biome.BiomeCategory.OCEAN && biomeCategory != Biome.BiomeCategory.THEEND
+						&& biomeCategory != Biome.BiomeCategory.NETHER && biomeCategory != Biome.BiomeCategory.NONE) {
+					tempConfiguredStructureBiomeMultiMap.put(DoomConfiguredStructures.CONFIGURED_PORTAL,
+							biomeEntry.getKey());
+				}
+				if (biomeCategory == Biome.BiomeCategory.THEEND) {
+					tempConfiguredStructureBiomeMultiMap.put(DoomConfiguredStructures.CONFIGURED_MAYKR,
+							biomeEntry.getKey());
+					tempConfiguredStructureBiomeMultiMap.put(DoomConfiguredStructures.CONFIGURED_ARCHMAYKR,
+							biomeEntry.getKey());
+				}
+				if (biomeCategory == Biome.BiomeCategory.NETHER) {
+					tempConfiguredStructureBiomeMultiMap.put(DoomConfiguredStructures.CONFIGURED_TITAN_SKULL,
+							biomeEntry.getKey());
+					tempConfiguredStructureBiomeMultiMap.put(DoomConfiguredStructures.CONFIGURED_MOTHERDEMON,
+							biomeEntry.getKey());
+					tempConfiguredStructureBiomeMultiMap.put(DoomConfiguredStructures.CONFIGURED_NETHERPORTAL,
+							biomeEntry.getKey());
+				}
+			}
+			tempStructureToMultiMap.put(DoomStructures.MAYKR.get(), tempConfiguredStructureBiomeMultiMap.build());
+			tempStructureToMultiMap.put(DoomStructures.ARCHMAYKR.get(), tempConfiguredStructureBiomeMultiMap.build());
+			tempStructureToMultiMap.put(DoomStructures.TITAN_SKULL.get(), tempConfiguredStructureBiomeMultiMap.build());
+			tempStructureToMultiMap.put(DoomStructures.PORTAL.get(), tempConfiguredStructureBiomeMultiMap.build());
+			tempStructureToMultiMap.put(DoomStructures.NETHERPORTAL.get(),
+					tempConfiguredStructureBiomeMultiMap.build());
+			tempStructureToMultiMap.put(DoomStructures.MOTHERDEMON.get(), tempConfiguredStructureBiomeMultiMap.build());
+
+			worldStructureConfig.configuredStructures = tempStructureToMultiMap.build();
 			try {
 				if (GETCODEC_METHOD == null)
-					GETCODEC_METHOD = ObfuscationReflectionHelper.findMethod(ChunkGenerator.class, "codec");
+					GETCODEC_METHOD = ObfuscationReflectionHelper.findMethod(ChunkGenerator.class, "func_230347_a_");
 				ResourceLocation cgRL = Registry.CHUNK_GENERATOR
-						.getKey((Codec<? extends ChunkGenerator>) GETCODEC_METHOD
-								.invoke(serverWorld.getChunkSource().generator));
+						.getKey((Codec<? extends ChunkGenerator>) GETCODEC_METHOD.invoke(chunkGenerator));
 				if (cgRL != null && cgRL.getNamespace().equals("terraforged"))
 					return;
 			} catch (Exception e) {
-				DoomMod.LOGGER.error("Was unable to check if " + serverWorld.dimension().location()
+				DoomMod.LOGGER.error("Was unable to check if " + serverLevel.dimension().location()
 						+ " is using Terraforged's ChunkGenerator.");
 			}
-			if (serverWorld.getChunkSource().getGenerator() instanceof FlatLevelSource
-					&& serverWorld.dimension().equals(Level.OVERWORLD)) {
+			if (serverLevel.getChunkSource().getGenerator() instanceof FlatLevelSource
+					&& serverLevel.dimension().equals(Level.OVERWORLD)) {
 				return;
 			}
 			Map<StructureFeature<?>, StructureFeatureConfiguration> tempMap = new HashMap<>(
-					serverWorld.getChunkSource().generator.getSettings().structureConfig());
+					worldStructureConfig.structureConfig());
 			tempMap.putIfAbsent(DoomStructures.MAYKR.get(), StructureSettings.DEFAULTS.get(DoomStructures.MAYKR.get()));
 			tempMap.putIfAbsent(DoomStructures.ARCHMAYKR.get(),
 					StructureSettings.DEFAULTS.get(DoomStructures.ARCHMAYKR.get()));
@@ -152,7 +189,7 @@ public class DoomMod {
 					StructureSettings.DEFAULTS.get(DoomStructures.PORTAL.get()));
 			tempMap.putIfAbsent(DoomStructures.NETHERPORTAL.get(),
 					StructureSettings.DEFAULTS.get(DoomStructures.NETHERPORTAL.get()));
-			serverWorld.getChunkSource().generator.getSettings().structureConfig = tempMap;
+			worldStructureConfig.structureConfig = tempMap;
 		}
 	}
 

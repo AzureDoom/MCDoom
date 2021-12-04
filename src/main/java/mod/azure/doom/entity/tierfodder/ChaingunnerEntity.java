@@ -42,7 +42,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
@@ -56,9 +56,17 @@ public class ChaingunnerEntity extends DemonEntity implements RangedAttackMob, I
 
 	private final RangedChaingunAttackGoal<ChaingunnerEntity> aiArrowAttack = new RangedChaingunAttackGoal<>(this, 1.0D,
 			0, 15.0F, 2);
-	private final DemonAttackGoal aiAttackOnCollide=new DemonAttackGoal(this,1.2D,false,1){public void stop(){super.stop();ChaingunnerEntity.this.setAggressive(false);}
+	private final DemonAttackGoal aiAttackOnCollide = new DemonAttackGoal(this, 1.2D, false, 1) {
+		public void stop() {
+			super.stop();
+			ChaingunnerEntity.this.setAggressive(false);
+		}
 
-	public void start(){super.start();ChaingunnerEntity.this.setAggressive(true);}};
+		public void start() {
+			super.start();
+			ChaingunnerEntity.this.setAggressive(true);
+		}
+	};
 
 	public ChaingunnerEntity(EntityType<ChaingunnerEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);

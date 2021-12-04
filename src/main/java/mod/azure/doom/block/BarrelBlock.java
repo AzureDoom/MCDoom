@@ -60,7 +60,7 @@ public class BarrelBlock extends Block {
 	@Override
 	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos,
 			boolean isMoving) {
-		catchFire(state, worldIn, pos, null, null);
+		onCaughtFire(state, worldIn, pos, null, null);
 		worldIn.removeBlock(pos, false);
 	}
 
@@ -74,7 +74,7 @@ public class BarrelBlock extends Block {
 	}
 
 	@Override
-	public void catchFire(BlockState state, Level world, BlockPos pos, Direction face, LivingEntity igniter) {
+	public void onCaughtFire(BlockState state, Level world, BlockPos pos, Direction face, LivingEntity igniter) {
 		if (!world.isClientSide) {
 			BarrelEntity tntentity = new BarrelEntity(world, (double) pos.getX() + 0.5D, (double) pos.getY(),
 					(double) pos.getZ() + 0.5D, igniter);
@@ -86,7 +86,7 @@ public class BarrelBlock extends Block {
 	@Override
 	public void playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
 		if (!worldIn.isClientSide() && !player.isCreative()) {
-			catchFire(state, worldIn, pos, null, null);
+			onCaughtFire(state, worldIn, pos, null, null);
 		}
 
 		super.playerWillDestroy(worldIn, pos, state, player);
@@ -101,7 +101,7 @@ public class BarrelBlock extends Block {
 		if (item != Items.FLINT_AND_STEEL && item != Items.FIRE_CHARGE) {
 			return super.use(state, worldIn, pos, player, handIn, hit);
 		} else {
-			catchFire(state, worldIn, pos, hit.getDirection(), player);
+			onCaughtFire(state, worldIn, pos, hit.getDirection(), player);
 			worldIn.setBlock(pos, Blocks.AIR.defaultBlockState(), 11);
 			if (!player.isCreative()) {
 				if (item == Items.FLINT_AND_STEEL) {
@@ -122,7 +122,7 @@ public class BarrelBlock extends Block {
 		if (!worldIn.isClientSide) {
 			Entity entity = projectile.getOwner();
 			BlockPos blockpos = hit.getBlockPos();
-			catchFire(state, worldIn, blockpos, null, entity instanceof LivingEntity ? (LivingEntity) entity : null);
+			onCaughtFire(state, worldIn, blockpos, null, entity instanceof LivingEntity ? (LivingEntity) entity : null);
 			worldIn.removeBlock(blockpos, false);
 		}
 

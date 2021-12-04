@@ -24,7 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -118,8 +118,7 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 			Entity entity = list.get(k2);
 			if (!(entity instanceof MancubusEntity) && !(entity instanceof ArchvileEntity)
 					&& !(entity instanceof IconofsinEntity) && !(entity instanceof DoomHunterEntity)
-					&& !(entity instanceof SummonerEntity)
-					&& !(entity instanceof MotherDemonEntity)) {
+					&& !(entity instanceof SummonerEntity) && !(entity instanceof MotherDemonEntity)) {
 				double d12 = (double) (Mth.sqrt((float) entity.distanceTo(this)));
 				if (d12 <= 1.0D) {
 					if (entity.isAlive()) {

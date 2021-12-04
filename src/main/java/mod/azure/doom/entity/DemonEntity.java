@@ -20,7 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 
 public class DemonEntity extends PathfinderMob implements NeutralMob {
 
@@ -96,7 +96,7 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 	public void startPersistentAngerTimer() {
 		this.setRemainingPersistentAngerTime(ANGER_TIME_RANGE.sample(this.random));
 	}
-	
+
 	@Override
 	protected boolean shouldDespawnInPeaceful() {
 		return true;

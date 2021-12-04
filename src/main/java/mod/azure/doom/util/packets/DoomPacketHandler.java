@@ -19,8 +19,8 @@ import mod.azure.doom.util.packets.weapons.SSGLoadingPacket;
 import mod.azure.doom.util.packets.weapons.SentinelHammerLoadingPacket;
 import mod.azure.doom.util.packets.weapons.UnmaykrLoadingPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fmllegacy.network.NetworkRegistry;
-import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 public class DoomPacketHandler {
 	private static final String PROTOCOL_VERSION = "1";

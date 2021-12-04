@@ -35,7 +35,7 @@ public class LootHandler {
 	}
 
 	private static LootPool getInjectPool(String entryName) {
-		return LootPool.lootPool().add(getInjectEntry(entryName, 1)).bonusRolls(0, 1).name("doom_inject").build();
+		return LootPool.lootPool().add(getInjectEntry(entryName, 1)).name("doom_inject").build();
 	}
 
 	@SuppressWarnings("rawtypes")

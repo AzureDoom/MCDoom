@@ -36,7 +36,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
@@ -121,7 +121,7 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnima
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
-	
+
 	@Override
 	public void tick() {
 		super.tick();

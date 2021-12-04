@@ -68,7 +68,7 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		int i = ((this.width - this.imageWidth) / 2) - 5;
 		int j = (this.height - this.imageHeight) / 2;
-		blit(matrices, i, j, this.getBlitOffset(), 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 512);
+		blit(matrices, i, j, this.getBlitOffset(), 0.0F, 0.0F, this.imageWidth, this.imageHeight, 512, 256);
 
 	}
 
@@ -82,9 +82,9 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 				m = 113;
 			}
 
-			blit(matrices, x + 113, y + 18 + m, this.getBlitOffset(), 0.0F, 199.0F, 6, 27, 256, 512);
+			blit(matrices, x + 113, y + 18 + m, this.getBlitOffset(), 0.0F, 199.0F, 6, 27, 512, 256);
 		} else {
-			blit(matrices, x + 113, y + 18, this.getBlitOffset(), 6.0F, 199.0F, 6, 27, 256, 512);
+			blit(matrices, x + 113, y + 18, this.getBlitOffset(), 6.0F, 199.0F, 6, 27, 512, 256);
 		}
 
 	}
@@ -123,7 +123,7 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 			}
 
 			for (RecipeButton widgetButtonPage : this.offers) {
-				if (widgetButtonPage.isHovered()) {
+				if (widgetButtonPage.isHoveredOrFocused()) {
 					widgetButtonPage.renderToolTip(matrices, mouseX, mouseY);
 				}
 
@@ -141,7 +141,7 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 		RenderSystem.enableBlend();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, TEXTURE);
-		blit(matrices, x + 5 + 35 + 20, y + 3, this.getBlitOffset(), 15.0F, 171.0F, 10, 9, 256, 512);
+		blit(matrices, x + 5 + 35 + 20, y + 3, this.getBlitOffset(), 15.0F, 171.0F, 10, 9, 512, 256);
 
 	}
 
