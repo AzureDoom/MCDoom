@@ -81,7 +81,7 @@ public class Shotgun extends DoomBaseItem {
 	}
 
 	public static void reload(PlayerEntity user, Hand hand) {
-		if (user.getItemInHand(hand).getItem() instanceof SuperShotgun) {
+		if (user.getItemInHand(hand).getItem() instanceof Shotgun) {
 			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
 					&& user.inventory.countItem(DoomItems.SHOTGUN_SHELLS.get()) > 0) {
 				removeAmmo(DoomItems.SHOTGUN_SHELLS.get(), user);
