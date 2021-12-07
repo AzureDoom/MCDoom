@@ -1091,7 +1091,7 @@ public class DoomConfig {
 			this.maykrdrone_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.maykrdrone_biomes")
-					.defineList("Maykr Drone Biomes", Lists.newArrayList(""), o -> o instanceof String);
+					.defineList("Maykr Drone Biomes", Lists.newArrayList("#the_end"), o -> o instanceof String);
 			this.maykrdrone_spawn_weight = builder.translation("text.doom.config.maykrdrone_spawn_weight")
 					.defineInRange("Maykr Drone Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.maykrdrone_min_group = builder.translation("text.doom.config.maykrdrone_min_group")
@@ -1108,7 +1108,7 @@ public class DoomConfig {
 			this.bloodmaykr_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.bloodmaykr_biomes")
-					.defineList("Blood Maykr Biomes", Lists.newArrayList(""), o -> o instanceof String);
+					.defineList("Blood Maykr Biomes", Lists.newArrayList("#the_end"), o -> o instanceof String);
 			this.bloodmaykr_spawn_weight = builder.translation("text.doom.config.bloodmaykr_spawn_weight")
 					.defineInRange("Blood Maykr Spawn Weight", 6, 1, Integer.MAX_VALUE);
 			this.bloodmaykr_min_group = builder.translation("text.doom.config.bloodmaykr_min_group")
@@ -1125,7 +1125,7 @@ public class DoomConfig {
 			this.archmaykr_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.archmaykr_biomes")
-					.defineList("Archmaykr Biomes", Lists.newArrayList(""), o -> o instanceof String);
+					.defineList("Archmaykr Biomes", Lists.newArrayList("#the_end"), o -> o instanceof String);
 			this.archmaykr_spawn_weight = builder.translation("text.doom.config.archmaykr_spawn_weight")
 					.defineInRange("Archmaykr Spawn Weight", 1, 1, Integer.MAX_VALUE);
 			this.archmaykr_min_group = builder.translation("text.doom.config.archmaykr_min_group")
@@ -1142,7 +1142,7 @@ public class DoomConfig {
 			this.motherdemon_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.motherdemon_biomes")
-					.defineList("Motherdemon Biomes", Lists.newArrayList(""), o -> o instanceof String);
+					.defineList("Motherdemon Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.motherdemon_spawn_weight = builder.translation("text.doom.config.archmaykr_spawn_weight")
 					.defineInRange("Motherdemon Spawn Weight", 1, 1, Integer.MAX_VALUE);
 			this.motherdemon_min_group = builder.translation("text.doom.config.motherdemon_spawn_weight")
