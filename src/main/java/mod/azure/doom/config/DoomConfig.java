@@ -276,25 +276,25 @@ public class DoomConfig implements ConfigData {
 		public int summoner_max_group = 2;
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> motherdemon_biomes = Arrays.asList("");
+		public List<String> motherdemon_biomes = Arrays.asList("#nether");
 		public int motherdemon_spawn_weight = 1;
 		public int motherdemon_min_group = 1;
 		public int motherdemon_max_group = 1;
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> maykrdrone_biomes = Arrays.asList("");
+		public List<String> maykrdrone_biomes = Arrays.asList("#the_end");
 		public int maykrdrone_spawn_weight = 15;
 		public int maykrdrone_min_group = 1;
 		public int maykrdrone_max_group = 2;
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> bloodmaykr_biomes = Arrays.asList("");
+		public List<String> bloodmaykr_biomes = Arrays.asList("#the_end");
 		public int bloodmaykr_spawn_weight = 6;
 		public int bloodmaykr_min_group = 1;
 		public int bloodmaykr_max_group = 2;
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> archmaykr_biomes = Arrays.asList("");
+		public List<String> archmaykr_biomes = Arrays.asList("#the_end");
 		public int archmaykr_spawn_weight = 1;
 		public int archmaykr_min_group = 1;
 		public int archmaykr_max_group = 1;
