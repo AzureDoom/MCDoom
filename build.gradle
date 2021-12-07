@@ -29,10 +29,6 @@ repositories {
 		url = 'https://maven.fabricmc.net/io/github/prospector/modmenu/'
 	}
 	maven {
-        name = "Ladysnake Libs"
-        url = 'https://dl.bintray.com/ladysnake/libs'
-    }
-	maven {
         url = "https://www.cursemaven.com"
     }
      maven {
