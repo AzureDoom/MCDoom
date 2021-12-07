@@ -122,7 +122,7 @@ public class DoomMod implements ModInitializer {
 
 		);
 		RegistrationHelper.addToBiome(new Identifier(DoomMod.MODID, "netherportal_addition"),
-				BiomeSelectors.foundInOverworld().and(BiomeSelectors.foundInOverworld()),
+				BiomeSelectors.foundInOverworld().and(BiomeSelectors.foundInTheNether()),
 				(context) -> RegistrationHelper.addStructure(context, DoomConfiguredStructures.CONFIGURED_NETHERPORTAL)
 
 		);
