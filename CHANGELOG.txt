@@ -1,3 +1,4 @@
-v.4.0.23
+v.4.0.24
 
-- Fixed Dark Lord Armor rendering
+- Fixes Dark Lord Armor Chest recipe
+- Fixes Shotgun not reloading.

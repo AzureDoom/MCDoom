@@ -7,11 +7,11 @@
 			"count": 1
 		},
 		"b": {
-			"item": "doom:darklord_chestplate",
+			"item": "doom:argent_plate",
 			"count": 15
 		}
 	},
 	"result": {
-		"item": "doom:darklord_helmet"
+		"item": "doom:darklord_chestplate"
 	}
 }
