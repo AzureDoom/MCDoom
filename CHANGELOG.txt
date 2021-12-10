@@ -1,6 +1,5 @@
-v.4.0.1
+v.4.0.0
 
-- Fixes Dark Lord Armor Chest recipe
-- Fixes Shotgun not reloading.
+- Simply a 1.18.1 port.
 
 This port is unsupported and only done via a paid commission. 
