@@ -1,3 +1,4 @@
-v.4.0.0
+v.4.0.2
 
-- 1.18.1 Full Release
+- Readds Trinkets support for Soul Cube and Daisy Foots.
+- Added tool tip to Soul cube to show uses left.

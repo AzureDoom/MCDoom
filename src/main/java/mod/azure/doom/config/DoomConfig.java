@@ -282,19 +282,19 @@ public class DoomConfig implements ConfigData {
 		public int motherdemon_max_group = 1;
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> maykrdrone_biomes = Arrays.asList("#the_end");
+		public List<String> maykrdrone_biomes = Arrays.asList("minecraft:small_end_islands", "minecraft:end_midlands", "minecraft:end_barrens", "minecraft:end_highlands");
 		public int maykrdrone_spawn_weight = 15;
 		public int maykrdrone_min_group = 1;
 		public int maykrdrone_max_group = 2;
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> bloodmaykr_biomes = Arrays.asList("#the_end");
+		public List<String> bloodmaykr_biomes = Arrays.asList("minecraft:small_end_islands", "minecraft:end_midlands", "minecraft:end_barrens", "minecraft:end_highlands");
 		public int bloodmaykr_spawn_weight = 6;
 		public int bloodmaykr_min_group = 1;
 		public int bloodmaykr_max_group = 2;
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> archmaykr_biomes = Arrays.asList("#the_end");
+		public List<String> archmaykr_biomes = Arrays.asList("minecraft:small_end_islands", "minecraft:end_midlands", "minecraft:end_barrens", "minecraft:end_highlands");
 		public int archmaykr_spawn_weight = 1;
 		public int archmaykr_min_group = 1;
 		public int archmaykr_max_group = 1;

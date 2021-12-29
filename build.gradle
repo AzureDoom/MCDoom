@@ -39,6 +39,9 @@ dependencies {
     	exclude(group: "com.terraformersmc.modmenu")
     }
 	modImplementation 'curse.maven:modmenu-308702:3472549'
+	modImplementation 'curse.maven:trinkets-341284:3542826'
+	modImplementation 'curse.maven:ccb-318449:3475407'
+	modImplementation 'curse.maven:cce-318449:3475410'
 	modImplementation 'curse.maven:hookshot-396512:3541381'
 }
 
@@ -104,6 +107,8 @@ if (file('key.properties').exists()) {
             	requiredDependency 'fabric-api'  
             	requiredDependency 'geckolib'  
             	requiredDependency 'cloth-config'  
+            	requiredDependency 'cardinal-components'  
+            	requiredDependency 'trinkets-fabric'  
         	}
         	mainArtifact(remapJar)
 
