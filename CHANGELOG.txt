@@ -1,5 +1,5 @@
-v.4.0.0
+v.4.0.1
 
-- Simply a 1.18.1 port.
+- Fixes the Enderdragon island spawning Doom mobs. Reset configs.
 
 This port is unsupported and only done via a paid commission. 
