@@ -21,7 +21,7 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-	maven { url = "https://www.cursemaven.com" }
+	maven { url "https://cfa2.cursemaven.com" }
     maven { url "https://maven.shedaniel.me/" }
     maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
     maven { url 'https://maven.blamejared.com' }
@@ -34,7 +34,7 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation "software.bernie.geckolib:geckolib-fabric-1.18:3.0.22"
+    modImplementation "software.bernie.geckolib:geckolib-fabric-1.18:3.0.27"
     modApi("me.shedaniel.cloth:cloth-config-fabric:6.0.42") {
     	exclude(group: "com.terraformersmc.modmenu")
     }
