@@ -149,7 +149,7 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 	private void doDeathCheck(LivingEntity user, Entity target, ItemStack stack) {
 		Random rand = new Random();
 		List<Item> givenList = Arrays.asList(DoomItems.CHAINGUN_BULLETS, DoomItems.SHOTGUN_SHELLS,
-				DoomItems.ARGENT_BOLT, DoomItems.SHOTGUN_SHELLS);
+				DoomItems.ARGENT_BOLT, DoomItems.SHOTGUN_SHELLS, DoomItems.ENERGY_CELLS, DoomItems.ROCKET);
 		if (target instanceof DemonEntity && !(target instanceof PlayerEntity)) {
 			if (((LivingEntity) target).isDead()) {
 				if (user instanceof PlayerEntity) {
