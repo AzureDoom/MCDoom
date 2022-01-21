@@ -1,10 +1,13 @@
 package mod.azure.doom.item.weapons;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
+import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
@@ -57,6 +60,7 @@ public class Chainsaw extends Item {
 				&& stack.getDamage() < (stack.getMaxDamage() - 1)) {
 			final Box aabb = new Box(entityIn.getBlockPos().up()).expand(1D, 1D, 1D);
 			entityIn.getEntityWorld().getOtherEntities(user, aabb).forEach(e -> doDamage(user, e));
+			entityIn.getEntityWorld().getOtherEntities(user, aabb).forEach(e -> doDeathCheck(user, e, stack));
 			entityIn.getEntityWorld().getOtherEntities(user, aabb).forEach(e -> damageItem(user, stack));
 			entityIn.getEntityWorld().getOtherEntities(user, aabb).forEach(e -> addParticle(e));
 		}
@@ -98,7 +102,8 @@ public class Chainsaw extends Item {
 
 	public void reload(PlayerEntity user, Hand hand) {
 		if (user.getStackInHand(hand).getItem() instanceof Chainsaw) {
-			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0 && user.getInventory().count(DoomItems.GAS_BARREL) > 0) {
+			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0
+					&& user.getInventory().count(DoomItems.GAS_BARREL) > 0) {
 				removeAmmo(DoomItems.BULLETS, user);
 				user.getStackInHand(hand).damage(-200, user, s -> user.sendToolBreakStatus(hand));
 				user.getStackInHand(hand).setBobbingAnimationTime(3);
@@ -113,6 +118,30 @@ public class Chainsaw extends Item {
 			user.world.playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
 					ModSoundEvents.CHAINSAW_ATTACKING, SoundCategory.PLAYERS, 0.05F,
 					1.0F / (target.world.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+		}
+	}
+
+	private void doDeathCheck(LivingEntity user, Entity target, ItemStack stack) {
+		Random rand = new Random();
+		List<Item> givenList = Arrays.asList(DoomItems.CHAINGUN_BULLETS, DoomItems.SHOTGUN_SHELLS,
+				DoomItems.ARGENT_BOLT, DoomItems.SHOTGUN_SHELLS);
+		if (target instanceof DemonEntity && !(target instanceof PlayerEntity)) {
+			if (((LivingEntity) target).isDead()) {
+				if (user instanceof PlayerEntity) {
+					PlayerEntity playerentity = (PlayerEntity) user;
+					if (stack.getDamage() < (stack.getMaxDamage() - 1)
+							&& !playerentity.getItemCooldownManager().isCoolingDown(this)) {
+						playerentity.getItemCooldownManager().set(this, 18);
+						for (int i = 0; i < 5;) {
+							int randomIndex = rand.nextInt(givenList.size());
+							Item randomElement = givenList.get(randomIndex);
+							target.dropItem(randomElement);
+							target.dropItem(randomElement);
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 
