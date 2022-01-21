@@ -85,13 +85,11 @@ minecraft {
 }
 
 repositories {
-    maven { url = "https://maven.theillusivec4.top/" }
-    maven {
-        name = "CurseForge"
-        url = "https://minecraft.curseforge.com/api/maven/"
-    }
-    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
-    maven { url 'https://maven.blamejared.com' }
+    maven { url "https://maven.theillusivec4.top/" }
+    maven { url "https://minecraft.curseforge.com/api/maven/" }
+    maven { url "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" }
+    maven { url "https://maven.blamejared.com" }
+	maven { url "https://cfa2.cursemaven.com" }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
