@@ -28,11 +28,6 @@ public class PacketHandler {
 
 	public static void registerMessages() {
 		ServerPlayNetworking.registerGlobalReceiver(lock_slot, new C2SMessageSelectCraft());
-		ServerPlayNetworking.registerGlobalReceiver(DoomMod.FALL_DISTANCE_PACKET_ID,
-				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					float fallDistance = inputPacket.readFloat();
-					player.fallDistance = fallDistance;
-				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.CRUCIBLE,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
 					if (player.getMainHandStack().getItem() instanceof SwordCrucibleItem) {
