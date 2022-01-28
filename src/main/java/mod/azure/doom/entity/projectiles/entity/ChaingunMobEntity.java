@@ -79,6 +79,7 @@ public class ChaingunMobEntity extends ExplosiveProjectileEntity {
 			entity.damage(DamageSource.mob((LivingEntity) entity2), directHitDamage);
 			if (entity2 instanceof LivingEntity) {
 				this.applyDamageEffects((LivingEntity) entity2, entity);
+				this.remove(Entity.RemovalReason.DISCARDED);
 			}
 		}
 		this.playSound(ModSoundEvents.CHAINGUN_SHOOT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));

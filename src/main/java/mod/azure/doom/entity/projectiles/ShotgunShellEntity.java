@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.GameStateChangeS2CPacket;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -198,6 +199,11 @@ public class ShotgunShellEntity extends PersistentProjectileEntity implements IA
 			}
 			this.updatePosition(h, j, k);
 			this.checkBlockCollision();
+			if (this.world.isClient) {
+				double d2 = this.getX() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getWidth() * 0.5D;
+				double f2 = this.getZ() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getWidth() * 0.5D;
+				this.world.addParticle(ParticleTypes.SMOKE, true, d2, this.getY(), f2, 0, 0, 0);
+			}
 		}
 	}
 
@@ -268,6 +274,7 @@ public class ShotgunShellEntity extends PersistentProjectileEntity implements IA
 				if (!this.world.isClient && entity2 instanceof LivingEntity) {
 					EnchantmentHelper.onUserDamaged(livingEntity, entity2);
 					EnchantmentHelper.onTargetDamaged((LivingEntity) entity2, livingEntity);
+					this.remove(Entity.RemovalReason.DISCARDED);
 				}
 
 				this.onHit(livingEntity);

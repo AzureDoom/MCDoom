@@ -4,6 +4,7 @@ import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
+import mod.azure.doom.util.registry.DoomParticles;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -12,12 +13,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.GameStateChangeS2CPacket;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -40,6 +45,8 @@ public class BulletEntity extends PersistentProjectileEntity implements IAnimata
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
+	private static final TrackedData<Integer> PARTICLE = DataTracker.registerData(BulletEntity.class,
+			TrackedDataHandlerRegistry.INTEGER);
 
 	public BulletEntity(EntityType<? extends BulletEntity> entityType, World world) {
 		super(entityType, world);
@@ -77,6 +84,19 @@ public class BulletEntity extends PersistentProjectileEntity implements IAnimata
 			this.pickupType = PersistentProjectileEntity.PickupPermission.ALLOWED;
 		}
 
+	}
+
+	protected void initDataTracker() {
+		super.initDataTracker();
+		this.dataTracker.startTracking(PARTICLE, 0);
+	}
+
+	public Integer useParticle() {
+		return this.dataTracker.get(PARTICLE);
+	}
+
+	public void setParticle(Integer spin) {
+		this.dataTracker.set(PARTICLE, spin);
 	}
 
 	@Override
@@ -194,6 +214,16 @@ public class BulletEntity extends PersistentProjectileEntity implements IAnimata
 			}
 			this.updatePosition(h, j, k);
 			this.checkBlockCollision();
+			if (this.world.isClient) {
+				double d2 = this.getX() + (this.random.nextDouble()) * (double) this.getWidth() * 0.5D;
+				double f2 = this.getZ() + (this.random.nextDouble()) * (double) this.getWidth() * 0.5D;
+				if (this.useParticle() == 1) {
+					this.world.addParticle(DoomParticles.PISTOL, true, d2, this.getY(), f2, 0, 0, 0);
+				}
+				if (this.useParticle() == 2) {
+					this.world.addParticle(ParticleTypes.SMOKE, true, d2, this.getY(), f2, 0, 0, 0);
+				}
+			}
 		}
 	}
 
@@ -257,6 +287,7 @@ public class BulletEntity extends PersistentProjectileEntity implements IAnimata
 				if (!this.world.isClient && entity2 instanceof LivingEntity) {
 					EnchantmentHelper.onUserDamaged(livingEntity, entity2);
 					EnchantmentHelper.onTargetDamaged((LivingEntity) entity2, livingEntity);
+					this.remove(Entity.RemovalReason.DISCARDED);
 				}
 
 				this.onHit(livingEntity);

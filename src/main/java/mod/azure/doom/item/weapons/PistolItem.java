@@ -1,5 +1,7 @@
 package mod.azure.doom.item.weapons;
 
+import java.util.Random;
+
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
@@ -24,6 +26,8 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class PistolItem extends DoomBaseItem {
 
+	protected final Random random = new Random();
+
 	public PistolItem() {
 		super(new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(201));
 	}
@@ -42,7 +46,8 @@ public class PistolItem extends DoomBaseItem {
 				if (!worldIn.isClient) {
 					BulletEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
 					abstractarrowentity.setVelocity(playerentity, playerentity.pitch, playerentity.yaw, 0.0F,
-							1.0F * 3.0F, 1.0F);
+							1.0F, 1.0F);
+					abstractarrowentity.setParticle(1);
 					abstractarrowentity.hasNoGravity();
 
 					stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
@@ -58,13 +63,17 @@ public class PistolItem extends DoomBaseItem {
 						}
 					}
 				}
+			} else {
+				worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
+						ModSoundEvents.EMPTY, SoundCategory.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}
 
 	public void reload(PlayerEntity user, Hand hand) {
 		if (user.getStackInHand(hand).getItem() instanceof PistolItem) {
-			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0 && user.getInventory().count(DoomItems.BULLETS) > 0) {
+			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0
+					&& user.getInventory().count(DoomItems.BULLETS) > 0) {
 				removeAmmo(DoomItems.BULLETS, user);
 				user.getStackInHand(hand).damage(-10, user, s -> user.sendToolBreakStatus(hand));
 				user.getStackInHand(hand).setBobbingAnimationTime(3);

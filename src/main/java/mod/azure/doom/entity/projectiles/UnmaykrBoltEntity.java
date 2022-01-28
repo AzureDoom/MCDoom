@@ -236,6 +236,7 @@ public class UnmaykrBoltEntity extends PersistentProjectileEntity {
 				if (!this.world.isClient && entity2 instanceof LivingEntity) {
 					EnchantmentHelper.onUserDamaged(livingEntity, entity2);
 					EnchantmentHelper.onTargetDamaged((LivingEntity) entity2, livingEntity);
+					this.remove(Entity.RemovalReason.DISCARDED);
 				}
 
 				this.onHit(livingEntity);

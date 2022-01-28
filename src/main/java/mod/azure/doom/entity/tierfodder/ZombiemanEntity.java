@@ -198,6 +198,7 @@ public class ZombiemanEntity extends DemonEntity implements RangedAttackMob, IAn
 		double e = target.getBodyY(0.3333333333333333D) - BulletEntity.getY();
 		double f = target.getZ() - this.getZ();
 		float g = MathHelper.sqrt((float) (d * d + f * f));
+		BulletEntity.setParticle(1);
 		BulletEntity.setVelocity(d, e + g * 0.05F, f, 1.6F, 0.0F);
 		this.playSound(ModSoundEvents.PISTOL_HIT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
 		this.world.spawnEntity(BulletEntity);

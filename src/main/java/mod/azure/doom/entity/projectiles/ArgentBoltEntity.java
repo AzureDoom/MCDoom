@@ -1,6 +1,9 @@
 package mod.azure.doom.entity.projectiles;
 
+import java.util.List;
+
 import mod.azure.doom.DoomMod;
+import mod.azure.doom.config.DoomConfig.Weapons;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
@@ -8,32 +11,44 @@ import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.GameStateChangeS2CPacket;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
+import net.minecraft.world.explosion.Explosion;
 
 public class ArgentBoltEntity extends PersistentProjectileEntity {
 
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
+	public static Weapons config = DoomMod.config.weapons;
+	private static final TrackedData<Boolean> PARTICLE = DataTracker.registerData(ArgentBoltEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
+	private LivingEntity shooter;
 
 	public ArgentBoltEntity(EntityType<? extends ArgentBoltEntity> entityType, World world) {
 		super(entityType, world);
@@ -42,6 +57,7 @@ public class ArgentBoltEntity extends PersistentProjectileEntity {
 
 	public ArgentBoltEntity(World world, LivingEntity owner) {
 		super(ProjectilesEntityRegister.ARGENT_BOLT, owner, world);
+		this.shooter = owner;
 	}
 
 	protected ArgentBoltEntity(EntityType<? extends ArgentBoltEntity> type, double x, double y, double z, World world) {
@@ -51,10 +67,24 @@ public class ArgentBoltEntity extends PersistentProjectileEntity {
 	protected ArgentBoltEntity(EntityType<? extends ArgentBoltEntity> type, LivingEntity owner, World world) {
 		this(type, owner.getX(), owner.getEyeY() - 0.10000000149011612D, owner.getZ(), world);
 		this.setOwner(owner);
+		this.shooter = owner;
 		if (owner instanceof PlayerEntity) {
 			this.pickupType = PersistentProjectileEntity.PickupPermission.ALLOWED;
 		}
 
+	}
+
+	protected void initDataTracker() {
+		super.initDataTracker();
+		this.dataTracker.startTracking(PARTICLE, false);
+	}
+
+	public boolean useParticle() {
+		return (Boolean) this.dataTracker.get(PARTICLE);
+	}
+
+	public void setParticle(boolean spin) {
+		this.dataTracker.set(PARTICLE, spin);
 	}
 
 	@Override
@@ -172,6 +202,10 @@ public class ArgentBoltEntity extends PersistentProjectileEntity {
 			}
 			this.updatePosition(h, j, k);
 			this.checkBlockCollision();
+			if (this.world.isClient) {
+				this.world.addParticle(this.useParticle() ? ParticleTypes.ANGRY_VILLAGER : ParticleTypes.FLASH, true,
+						this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+			}
 		}
 	}
 
@@ -205,9 +239,55 @@ public class ArgentBoltEntity extends PersistentProjectileEntity {
 	protected void onBlockHit(BlockHitResult blockHitResult) {
 		super.onBlockHit(blockHitResult);
 		if (!this.world.isClient) {
-			this.remove(Entity.RemovalReason.DISCARDED);
+			if (this.useParticle()) {
+				if (this.age >= 46) {
+					this.explode();
+					this.remove(Entity.RemovalReason.DISCARDED);
+				}
+			} else {
+				this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.5F,
+						Explosion.DestructionType.NONE);
+				this.remove(Entity.RemovalReason.DISCARDED);
+			}
 		}
 		this.setSound(SoundEvents.ITEM_ARMOR_EQUIP_IRON);
+	}
+
+	@Override
+	public void remove(RemovalReason reason) {
+		if (this.useParticle()) {
+			AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(this.world, this.getX(),
+					this.getY(), this.getZ());
+			areaeffectcloudentity.setParticleType(ParticleTypes.LAVA);
+			areaeffectcloudentity.setRadius(6);
+			areaeffectcloudentity.setDuration(1);
+			areaeffectcloudentity.updatePosition(this.getX(), this.getY(), this.getZ());
+			this.world.spawnEntity(areaeffectcloudentity);
+			world.playSound((PlayerEntity) null, this.getX(), this.getY(), this.getZ(),
+					SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS, 1.0F, 1.5F);
+		}
+		super.remove(reason);
+	}
+
+	protected void explode() {
+		double xn = MathHelper.floor(this.getX() - 5.0D);
+		double xp = MathHelper.floor(this.getX() + 7.0D);
+		double yn = MathHelper.floor(this.getY() - 5.0D);
+		double yp = MathHelper.floor(this.getY() + 7.0D);
+		double zn = MathHelper.floor(this.getZ() - 5.0D);
+		double zp = MathHelper.floor(this.getZ() + 7.0D);
+		List<Entity> list = this.world.getOtherEntities(this, new Box(xn, yn, zn, xp, yp, zp));
+		Vec3d vec3d = new Vec3d(this.getX(), this.getY(), this.getZ());
+
+		for (int x = 0; x < list.size(); ++x) {
+			Entity entity = (Entity) list.get(x);
+			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d)) / 6);
+			if (entity instanceof LivingEntity) {
+				if (y <= 1.0D) {
+					entity.damage(DamageSource.player((PlayerEntity) this.shooter), config.argent_bolt_damage);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -235,7 +315,10 @@ public class ArgentBoltEntity extends PersistentProjectileEntity {
 				if (!this.world.isClient && entity2 instanceof LivingEntity) {
 					EnchantmentHelper.onUserDamaged(livingEntity, entity2);
 					EnchantmentHelper.onTargetDamaged((LivingEntity) entity2, livingEntity);
+					this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.5F,
+							Explosion.DestructionType.NONE);
 				}
+				this.remove(Entity.RemovalReason.DISCARDED);
 
 				this.onHit(livingEntity);
 				if (entity2 != null && livingEntity != entity2 && livingEntity instanceof PlayerEntity

@@ -91,6 +91,7 @@ import mod.azure.doom.client.render.projectiles.BarenBlastRender;
 import mod.azure.doom.client.render.projectiles.BulletsRender;
 import mod.azure.doom.client.render.projectiles.ChaingunBulletRender;
 import mod.azure.doom.client.render.projectiles.EnergyCellRender;
+import mod.azure.doom.client.render.projectiles.GrenadeRender;
 import mod.azure.doom.client.render.projectiles.RocketRender;
 import mod.azure.doom.client.render.projectiles.ShotgunShellRender;
 import mod.azure.doom.client.render.projectiles.UnmaykrBulletRender;
@@ -108,178 +109,162 @@ import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
-@SuppressWarnings("deprecation")
 public class DoomRenderRegistry {
 
 	@SuppressWarnings("unchecked")
 	public static void init() {
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.ARCHVILE, (ctx) -> new ArchvileRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.ARCHVILE, (ctx) -> new ArchvileRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.BARREL, (ctx) -> new BarrelRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.BARREL, (ctx) -> new BarrelRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.IMP, (ctx) -> new ImpRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.IMP, (ctx) -> new ImpRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.PINKY, (ctx) -> new PinkyRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.PINKY, (ctx) -> new PinkyRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.SPECTRE, (ctx) -> new SpectreRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.SPECTRE, (ctx) -> new SpectreRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.LOST_SOUL, (ctx) -> new LostSoulRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.LOST_SOUL, (ctx) -> new LostSoulRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.CACODEMON, (ctx) -> new CacodemonRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.CACODEMON, (ctx) -> new CacodemonRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.BARON, (ctx) -> new BaronRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.BARON, (ctx) -> new BaronRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.MANCUBUS, (ctx) -> new MancubusRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.MANCUBUS, (ctx) -> new MancubusRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.SPIDERMASTERMIND,
-				(ctx) -> new SpiderMastermindRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.SPIDERMASTERMIND, (ctx) -> new SpiderMastermindRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.ARACHNOTRON, (ctx) -> new ArachonotronRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.ARACHNOTRON, (ctx) -> new ArachonotronRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.ZOMBIEMAN, (ctx) -> new ZombiemanRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.ZOMBIEMAN, (ctx) -> new ZombiemanRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.REVENANT, (ctx) -> new RevenantRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.REVENANT, (ctx) -> new RevenantRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.IMP2016, (ctx) -> new Imp2016Render(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.IMP2016, (ctx) -> new Imp2016Render(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.GORE_NEST, (ctx) -> new GoreNestRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.GORE_NEST, (ctx) -> new GoreNestRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.NIGHTMARE_IMP, (ctx) -> new NightmareImpRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.NIGHTMARE_IMP, (ctx) -> new NightmareImpRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.CHAINGUNNER, (ctx) -> new ChaingunnerRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.CHAINGUNNER, (ctx) -> new ChaingunnerRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.SHOTGUNGUY, (ctx) -> new ShotgunguyRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.SHOTGUNGUY, (ctx) -> new ShotgunguyRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.MARAUDER, (ctx) -> new MarauderRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.MARAUDER, (ctx) -> new MarauderRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.PAIN, (ctx) -> new PainRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.PAIN, (ctx) -> new PainRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.HELLKNIGHT, (ctx) -> new HellknightRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.HELLKNIGHT, (ctx) -> new HellknightRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.HELLKNIGHT2016, (ctx) -> new Hellknight2016Render(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.HELLKNIGHT2016, (ctx) -> new Hellknight2016Render(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.CYBERDEMON, (ctx) -> new CyberdemonRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.CYBERDEMON, (ctx) -> new CyberdemonRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.UNWILLING, (ctx) -> new UnwillingRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.UNWILLING, (ctx) -> new UnwillingRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.CYBERDEMON2016, (ctx) -> new Cyberdemon2016Render(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.CYBERDEMON2016, (ctx) -> new Cyberdemon2016Render(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.ICONOFSIN, (ctx) -> new IconofsinRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.ICONOFSIN, (ctx) -> new IconofsinRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.POSSESSEDSCIENTIST,
-				(ctx) -> new PossessedScientistRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.POSSESSEDSCIENTIST, (ctx) -> new PossessedScientistRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.POSSESSEDSOLDIER,
-				(ctx) -> new PossessedSoldierRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.POSSESSEDSOLDIER, (ctx) -> new PossessedSoldierRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.GARGOYLE, (ctx) -> new GargoyleRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.GARGOYLE, (ctx) -> new GargoyleRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.MECHAZOMBIE, (ctx) -> new MechaZombieRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.MECHAZOMBIE, (ctx) -> new MechaZombieRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.CUEBALL, (ctx) -> new CueBallRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.CUEBALL, (ctx) -> new CueBallRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.PROWLER, (ctx) -> new ProwlerRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.PROWLER, (ctx) -> new ProwlerRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.DREADKNIGHT, (ctx) -> new DreadKnightRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.DREADKNIGHT, (ctx) -> new DreadKnightRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.IMP_STONE, (ctx) -> new ImpStoneRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.IMP_STONE, (ctx) -> new ImpStoneRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.TYRANT, (ctx) -> new TyrantRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.TYRANT, (ctx) -> new TyrantRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.POSSESSEDWORKER,
-				(ctx) -> new PossessedWorkerRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.POSSESSEDWORKER, (ctx) -> new PossessedWorkerRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.DOOMHUNTER, (ctx) -> new DoomHunterRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.DOOMHUNTER, (ctx) -> new DoomHunterRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.MAYKRDRONE, (ctx) -> new MaykrDroneRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.MAYKRDRONE, (ctx) -> new MaykrDroneRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.PINKY2016, (ctx) -> new Pinky2016Render(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.PINKY2016, (ctx) -> new Pinky2016Render(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.WHIPLASH, (ctx) -> new WhiplashRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.WHIPLASH, (ctx) -> new WhiplashRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.BARON2016, (ctx) -> new Baron2016Render(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.BARON2016, (ctx) -> new Baron2016Render(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.FIREBARON, (ctx) -> new FireBaronRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.FIREBARON, (ctx) -> new FireBaronRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.ARMORBARON, (ctx) -> new ArmoredBaronRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.ARMORBARON, (ctx) -> new ArmoredBaronRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.BLOODMAYKR, (ctx) -> new BloodMaykrRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.BLOODMAYKR, (ctx) -> new BloodMaykrRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.ARCHMAKER, (ctx) -> new ArchMaykrRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.ARCHMAKER, (ctx) -> new ArchMaykrRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.ARACHNOTRONETERNAL,
-				(ctx) -> new ArachonotronEternalRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.ARACHNOTRONETERNAL, (ctx) -> new ArachonotronEternalRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.SPIDERMASTERMIND2016,
+		EntityRendererRegistry.register(ModEntityTypes.SPIDERMASTERMIND2016,
 				(ctx) -> new SpiderMastermind2016Render(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.ARCHVILEETERNAL,
-				(ctx) -> new ArchvileEternalRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.ARCHVILEETERNAL, (ctx) -> new ArchvileEternalRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.TENTACLE, (ctx) -> new TentacleRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.TENTACLE, (ctx) -> new TentacleRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.TURRET, (ctx) -> new TurretRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.TURRET, (ctx) -> new TurretRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.MOTHERDEMON, (ctx) -> new MotherDemonRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.MOTHERDEMON, (ctx) -> new MotherDemonRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.SUMMONER, (ctx) -> new SummonerRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.SUMMONER, (ctx) -> new SummonerRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.REVENANT2016, (ctx) -> new Revenant2016Render(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.REVENANT2016, (ctx) -> new Revenant2016Render(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ModEntityTypes.GLADIATOR, (ctx) -> new GladiatorRender(ctx));
+		EntityRendererRegistry.register(ModEntityTypes.GLADIATOR, (ctx) -> new GladiatorRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.ARGENT_BOLT,
-				(ctx) -> new ArgentBoltRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.ARGENT_BOLT, (ctx) -> new ArgentBoltRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.SHOTGUN_SHELL,
-				(ctx) -> new ShotgunShellRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.GRENADE, (ctx) -> new GrenadeRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.ENERGY_CELL,
-				(ctx) -> new EnergyCellRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.SHOTGUN_SHELL, (ctx) -> new ShotgunShellRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.BFG_CELL, (ctx) -> new BFGCellRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.ENERGY_CELL, (ctx) -> new EnergyCellRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.ROCKET, (ctx) -> new RocketRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.BFG_CELL, (ctx) -> new BFGCellRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.BARENBLAST,
-				(ctx) -> new BarenBlastRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.ROCKET, (ctx) -> new RocketRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.BULLETS, (ctx) -> new BulletsRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.BARENBLAST, (ctx) -> new BarenBlastRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.CHAINGUN_BULLET,
+		EntityRendererRegistry.register(ProjectilesEntityRegister.BULLETS, (ctx) -> new BulletsRender(ctx));
+
+		EntityRendererRegistry.register(ProjectilesEntityRegister.CHAINGUN_BULLET,
 				(ctx) -> new ChaingunBulletRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.UNMAYKR,
-				(ctx) -> new UnmaykrBulletRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.UNMAYKR, (ctx) -> new UnmaykrBulletRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.ROCKET_MOB,
-				(ctx) -> new RocketMobRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.ROCKET_MOB, (ctx) -> new RocketMobRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.ENERGY_CELL_MOB,
+		EntityRendererRegistry.register(ProjectilesEntityRegister.ENERGY_CELL_MOB,
 				(ctx) -> new EnergyCellMobRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.CHAINGUN_MOB,
-				(ctx) -> new ChaingunMobRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.CHAINGUN_MOB, (ctx) -> new ChaingunMobRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.FIRING,
-				(ctx) -> new ArchvileFiringRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.FIRING, (ctx) -> new ArchvileFiringRender(ctx));
 
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.CHAINBLADE,
-				(ctx) -> new ChainBladeRender(ctx));
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.DRONEBOLT_MOB,
-				(ctx) -> new DroneBoltRender(ctx));
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.BLOODBOLT_MOB,
-				(ctx) -> new BloodBoltRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.CHAINBLADE, (ctx) -> new ChainBladeRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.DRONEBOLT_MOB, (ctx) -> new DroneBoltRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.BLOODBOLT_MOB, (ctx) -> new BloodBoltRender(ctx));
 
-		BlockEntityRendererRegistry.INSTANCE.register(DoomMod.TOTEM,
+		BlockEntityRendererRegistry.register(DoomMod.TOTEM,
 				(BlockEntityRendererFactory.Context rendererDispatcherIn) -> new TotemRender());
-		BlockEntityRendererRegistry.INSTANCE.register(DoomMod.GUN_TABLE_ENTITY,
+		BlockEntityRendererRegistry.register(DoomMod.GUN_TABLE_ENTITY,
 				(BlockEntityRendererFactory.Context rendererDispatcherIn) -> new GunCraftingRender());
 
 		GeoArmorRenderer.registerArmorRenderer(new DoomicornRender(), DoomItems.DOOMICORN_DOOM_BOOTS,

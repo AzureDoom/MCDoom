@@ -25,13 +25,17 @@ import mod.azure.doom.client.render.weapons.SwordCrucibleRender;
 import mod.azure.doom.client.render.weapons.UnmaykrRender;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.network.EntityPacketOnClient;
+import mod.azure.doom.particles.PlasmaParticle;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
+import mod.azure.doom.util.registry.DoomParticles;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
+import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -39,7 +43,9 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.render.model.json.ModelTransformation.Mode;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 
@@ -89,6 +95,14 @@ public class ClientInit implements ClientModInitializer {
 								OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, 0);
 					}
 				});
+		requestParticleTexture(new Identifier("doom:particles/plasma"));
+		ParticleFactoryRegistry.getInstance().register(DoomParticles.PLASMA, PlasmaParticle.Factory::new);
+		ParticleFactoryRegistry.getInstance().register(DoomParticles.PISTOL, PlasmaParticle.Factory::new);
+	}
+
+	public static void requestParticleTexture(Identifier id) {
+		ClientSpriteRegistryCallback.event(SpriteAtlasTexture.PARTICLE_ATLAS_TEXTURE)
+				.register(((texture, registry) -> registry.register(id)));
 	}
 
 }

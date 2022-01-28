@@ -55,6 +55,9 @@ public class Shotgun extends DoomBaseItem {
 						}
 					}
 				}
+			} else {
+				worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
+						ModSoundEvents.EMPTY, SoundCategory.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}
@@ -95,7 +98,8 @@ public class Shotgun extends DoomBaseItem {
 	}
 
 	public ShotgunShellEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
-		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter, DoomMod.config.weapons.shotgun_damage);
+		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter,
+				DoomMod.config.weapons.shotgun_damage);
 		return arrowentity;
 	}
 

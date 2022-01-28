@@ -77,7 +77,7 @@ public class RangedPistolAttackGoal<T extends HostileEntity & RangedAttackMob> e
 			this.actor.getLookControl().lookAt(livingEntity, 30.0F, 30.0F);
 			double d0 = this.actor.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
 
-			if (this.actor.isUsingItem()) {
+			if (this.actor.isUsingItem() && this.actor.distanceTo(livingEntity) >= 6.0D) {
 				if (!bl && this.targetSeeingTicker < -60) {
 					this.actor.clearActiveItem();
 				} else if (bl) {
@@ -103,7 +103,7 @@ public class RangedPistolAttackGoal<T extends HostileEntity & RangedAttackMob> e
 		double d0 = this.getSquaredMaxAttackDistance(livingentity);
 		if (squaredDistance <= d0) {
 			this.cooldown = 20;
-			this.actor.setAttackingState(1);
+			this.actor.setAttackingState(0);
 			this.actor.tryAttack(livingentity);
 		}
 	}

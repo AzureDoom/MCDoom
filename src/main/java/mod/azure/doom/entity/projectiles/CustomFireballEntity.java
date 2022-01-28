@@ -26,6 +26,7 @@ public class CustomFireballEntity extends FireballEntity {
 			entity.damage(DamageSource.fireball(this, entity2), directHitDamage);
 			if (entity2 instanceof LivingEntity) {
 				this.applyDamageEffects((LivingEntity) entity2, entity);
+				this.remove(Entity.RemovalReason.DISCARDED);
 			}
 		}
 	}

@@ -40,11 +40,12 @@ public class Ballista extends DoomBaseItem {
 			PlayerEntity playerentity = (PlayerEntity) entityLiving;
 
 			if (stack.getDamage() < (stack.getMaxDamage() - 1)) {
-				playerentity.getItemCooldownManager().set(this, 25);
+				playerentity.getItemCooldownManager().set(this, 17);
 				if (!worldIn.isClient) {
 					ArgentBoltEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
 					abstractarrowentity.setVelocity(playerentity, playerentity.pitch, playerentity.yaw, 0.0F,
 							1.0F * 3.0F, 1.0F);
+					abstractarrowentity.setParticle(true);
 					stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
 					worldIn.spawnEntity(abstractarrowentity);
 					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
@@ -58,6 +59,9 @@ public class Ballista extends DoomBaseItem {
 						}
 					}
 				}
+			} else {
+				worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
+						ModSoundEvents.EMPTY, SoundCategory.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}
@@ -81,7 +85,8 @@ public class Ballista extends DoomBaseItem {
 
 	public void reload(PlayerEntity user, Hand hand) {
 		if (user.getStackInHand(hand).getItem() instanceof Ballista) {
-			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0 && user.getInventory().count(DoomItems.ARGENT_BOLT) > 0) {
+			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0
+					&& user.getInventory().count(DoomItems.ARGENT_BOLT) > 0) {
 				removeAmmo(DoomItems.ARGENT_BOLT, user);
 				user.getStackInHand(hand).damage(-1, user, s -> user.sendToolBreakStatus(hand));
 				user.getStackInHand(hand).setBobbingAnimationTime(3);

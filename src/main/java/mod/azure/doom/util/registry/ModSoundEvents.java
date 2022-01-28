@@ -7,6 +7,7 @@ import net.minecraft.util.registry.Registry;
 
 public class ModSoundEvents {
 
+	public static SoundEvent EMPTY = of("doom.emptyclip");
 	public static SoundEvent BFG_FIRING = of("doom.bfg_firing");
 
 	public static SoundEvent BFG_HIT = of("doom.bfg_hit");

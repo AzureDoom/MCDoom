@@ -259,6 +259,7 @@ public class ChaingunBulletEntity extends PersistentProjectileEntity implements 
 				if (!this.world.isClient && entity2 instanceof LivingEntity) {
 					EnchantmentHelper.onUserDamaged(livingEntity, entity2);
 					EnchantmentHelper.onTargetDamaged((LivingEntity) entity2, livingEntity);
+					this.remove(Entity.RemovalReason.DISCARDED);
 				}
 
 				this.onHit(livingEntity);
