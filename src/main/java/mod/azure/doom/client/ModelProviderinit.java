@@ -60,6 +60,18 @@ public class ModelProviderinit {
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
+		FabricModelPredicateProviderRegistry.register(DoomItems.DPLASMARIFLE, new Identifier("nocenter"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return nonCentered(itemStack) ? 1.0F : 0.0F;
+				});
+		FabricModelPredicateProviderRegistry.register(DoomItems.DGAUSS, new Identifier("nocenter"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return nonCentered(itemStack) ? 1.0F : 0.0F;
+				});
+		FabricModelPredicateProviderRegistry.register(DoomItems.DSG, new Identifier("nocenter"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return nonCentered(itemStack) ? 1.0F : 0.0F;
+				});
 	}
 
 	private static boolean isUsable(ItemStack stack) {

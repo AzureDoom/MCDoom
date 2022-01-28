@@ -73,6 +73,9 @@ public class DoomMod implements ModInitializer {
 	public static final Identifier SENTINELHAMMER = new Identifier(MODID, "sentinelhammer");
 	public static final Identifier CHAINSAW_ETERNAL = new Identifier(MODID, "chainsaweternal");
 	public static final Identifier DARKLORDCRUCIBLE = new Identifier(MODID, "darklordcrucible");
+	public static final Identifier DSG = new Identifier(MODID, "doomed_shotgun");
+	public static final Identifier DGAUSS = new Identifier(MODID, "doomed_gauss");
+	public static final Identifier DPLASMARIFLE = new Identifier(MODID, "doomed_plasma_rifle");
 	public static final GunTableBlock GUN_TABLE = new GunTableBlock(
 			FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL).strength(4.0f).nonOpaque());
 	public static final ItemGroup DoomEggItemGroup = FabricItemGroupBuilder.create(new Identifier(MODID, "eggs"))

@@ -305,5 +305,7 @@
 	"doom.emptyclip": {
 		"sounds": [{"name": "doom:emptyclip"}]
 	},
+	"doom.grenadeabouttoexplode": {
+		"sounds": [{"name": "doom:grenadeabouttoexplode"}]
 	}
 }

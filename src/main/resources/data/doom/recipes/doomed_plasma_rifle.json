@@ -1,0 +1,25 @@
+{
+	"type": "doom:gun_table",
+	"pattern": "abcd",
+	"key": {
+		"a": {
+			"item": "doom:argent_energy",
+			"count": 10
+		},
+		"b": {
+			"item": "doom:argent_plate",
+			"count": 4
+		},
+		"c": {
+			"tag": "doom:glass",
+			"count": 6
+		},
+		"d": {
+			"item": "minecraft:book",
+			"count": 1
+		}
+	},
+	"result": {
+		"item": "doom:doomed_plasma_rifle"
+	}
+}

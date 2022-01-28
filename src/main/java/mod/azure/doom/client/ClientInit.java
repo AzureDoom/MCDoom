@@ -8,11 +8,15 @@ import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.gui.GunTableScreen;
 import mod.azure.doom.client.render.item.GunCraftingItemRender;
 import mod.azure.doom.client.render.item.TotemItemRender;
+import mod.azure.doom.client.render.projectiles.GrenadeItemRender;
 import mod.azure.doom.client.render.weapons.BFG9000Render;
 import mod.azure.doom.client.render.weapons.BFGRender;
 import mod.azure.doom.client.render.weapons.BallistaRender;
 import mod.azure.doom.client.render.weapons.ChaingunRender;
 import mod.azure.doom.client.render.weapons.ChainsawRender;
+import mod.azure.doom.client.render.weapons.DGaussRender;
+import mod.azure.doom.client.render.weapons.DPlamsaRifleRender;
+import mod.azure.doom.client.render.weapons.DSGRender;
 import mod.azure.doom.client.render.weapons.DarkLordCrucibleRender;
 import mod.azure.doom.client.render.weapons.HeavyCannonRender;
 import mod.azure.doom.client.render.weapons.PistolRender;
@@ -79,6 +83,10 @@ public class ClientInit implements ClientModInitializer {
 		GeoItemRenderer.registerItemRenderer(DoomItems.SENTINELHAMMER, new SentinelHammerRender());
 		GeoItemRenderer.registerItemRenderer(DoomItems.CRUCIBLESWORD, new SwordCrucibleRender());
 		GeoItemRenderer.registerItemRenderer(DoomItems.DARKLORDCRUCIBLE, new DarkLordCrucibleRender());
+		GeoItemRenderer.registerItemRenderer(DoomItems.DSG, new DSGRender());
+		GeoItemRenderer.registerItemRenderer(DoomItems.DPLASMARIFLE, new DPlamsaRifleRender());
+		GeoItemRenderer.registerItemRenderer(DoomItems.DGAUSS, new DGaussRender());
+		GeoItemRenderer.registerItemRenderer(DoomItems.GRENADE, new GrenadeItemRender());
 		ClientSidePacketRegistry.INSTANCE.register(EntityPacket.ID, (ctx, buf) -> {
 			EntityPacketOnClient.onPacket(ctx, buf);
 		});

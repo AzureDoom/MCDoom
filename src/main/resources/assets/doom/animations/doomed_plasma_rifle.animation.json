@@ -1,13 +1,10 @@
 {
 	"format_version": "1.8.0",
 	"animations": {
-		"idle": {
-			"loop": true
-		},
 		"firing": {
 			"animation_length": 0.4,
 			"bones": {
-				"plasmagun_pulling_0": {
+				"plasma_rifle_alt2": {
 					"rotation": {
 						"vector": [0, 0, 0]
 					},
@@ -27,6 +24,28 @@
 							"vector": [0, 0, 0],
 							"easing": "easeInOutSine"
 						}
+					}
+				},
+				"group": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.4": {
+							"vector": [360, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					}
+				}
+			}
+		},
+		"firing_hold": {
+			"animation_length": 0.04,
+			"bones": {
+				"group": {
+					"rotation": {
+						"vector": [360, 0, 0],
+						"easing": "easeInOutSine"
 					}
 				}
 			}

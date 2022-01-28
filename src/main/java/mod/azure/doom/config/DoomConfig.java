@@ -44,6 +44,7 @@ public class DoomConfig implements ConfigData {
 		public float rocket_damage = 20F;
 		public float shotgun_damage = 10F;
 		public float unmaykr_damage = 2.5F;
+		public float grenade_damage = 30F;
 	}
 
 	public static class Spawning {

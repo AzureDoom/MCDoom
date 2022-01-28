@@ -8,6 +8,9 @@ import mod.azure.doom.item.weapons.Ballista;
 import mod.azure.doom.item.weapons.Chaingun;
 import mod.azure.doom.item.weapons.Chainsaw;
 import mod.azure.doom.item.weapons.ChainsawAnimated;
+import mod.azure.doom.item.weapons.DGauss;
+import mod.azure.doom.item.weapons.DPlasmaRifle;
+import mod.azure.doom.item.weapons.DShotgun;
 import mod.azure.doom.item.weapons.DarkLordCrucibleItem;
 import mod.azure.doom.item.weapons.HeavyCannon;
 import mod.azure.doom.item.weapons.PistolItem;
@@ -144,6 +147,27 @@ public class PacketHandler {
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
 					if (player.getMainHandStack().getItem() instanceof DarkLordCrucibleItem) {
 						((DarkLordCrucibleItem) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
+					}
+					;
+				});
+		ServerPlayNetworking.registerGlobalReceiver(DoomMod.DSG,
+				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
+					if (player.getMainHandStack().getItem() instanceof DShotgun) {
+						((DShotgun) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
+					}
+					;
+				});
+		ServerPlayNetworking.registerGlobalReceiver(DoomMod.DGAUSS,
+				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
+					if (player.getMainHandStack().getItem() instanceof DGauss) {
+						((DGauss) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
+					}
+					;
+				});
+		ServerPlayNetworking.registerGlobalReceiver(DoomMod.DPLASMARIFLE,
+				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
+					if (player.getMainHandStack().getItem() instanceof DPlasmaRifle) {
+						((DPlasmaRifle) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
 					}
 					;
 				});

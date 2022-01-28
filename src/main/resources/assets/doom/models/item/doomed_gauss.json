@@ -1,0 +1,114 @@
+{
+  "credit": "Made with Blockbench",
+  "parent": "builtin/entity",
+  "texture_size": [
+    128,
+    96
+  ],
+	"overrides": [
+		{
+			"predicate": {
+				"nocenter": 1
+			},
+			"model": "doom:item/doomed_gauss_nocenter"
+		}
+	],
+  "display": {
+    "thirdperson_righthand": {
+      "translation": [
+        0,
+        0.75,
+        -6.75
+      ],
+      "scale": [
+        1.2,
+        1,
+        1
+      ]
+    },
+    "thirdperson_lefthand": {
+      "translation": [
+        0,
+        0.75,
+        -6.75
+      ],
+      "scale": [
+        1.2,
+        1,
+        1
+      ]
+    },
+    "firstperson_righthand": {
+      "translation": [
+        -9.5,
+        1.5,
+        -1.5
+      ],
+      "scale": [
+        1.66,
+        1.36,
+        1
+      ]
+    },
+    "firstperson_lefthand": {
+      "translation": [
+        -9,
+        1.5,
+        -1.5
+      ],
+      "scale": [
+        1.66,
+        1.36,
+        1
+      ]
+    },
+    "ground": {
+      "scale": [
+        0.75,
+        0.75,
+        0.75
+      ]
+    },
+    "gui": {
+      "rotation": [
+        -90,
+        -131,
+        -129
+      ],
+      "translation": [
+        1.6,
+        0.8500000000000001,
+        0
+      ],
+      "scale": [
+        0.75,
+        0.75,
+        0.75
+      ]
+    },
+    "head": {
+      "scale": [
+        0,
+        0,
+        0
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        -90,
+        -90,
+        0
+      ],
+      "translation": [
+        1.5,
+        0,
+        -0.5
+      ],
+      "scale": [
+        0.75,
+        0.75,
+        0.75
+      ]
+    }
+  }
+}

@@ -9,6 +9,7 @@ import mod.azure.doom.entity.projectiles.BFGEntity;
 import mod.azure.doom.entity.projectiles.BulletEntity;
 import mod.azure.doom.entity.projectiles.ChaingunBulletEntity;
 import mod.azure.doom.entity.projectiles.EnergyCellEntity;
+import mod.azure.doom.entity.projectiles.GrenadeEntity;
 import mod.azure.doom.entity.projectiles.RocketEntity;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import mod.azure.doom.entity.projectiles.UnmaykrBoltEntity;
@@ -52,6 +53,7 @@ public class ProjectilesEntityRegister {
 	public static EntityType<RocketMobEntity> ROCKET_MOB = projectile(RocketMobEntity::new, "rocket_mob");
 	public static EntityType<EnergyCellMobEntity> ENERGY_CELL_MOB = projectile(EnergyCellMobEntity::new,
 			"energy_cell_mob");
+	public static EntityType<GrenadeEntity> GRENADE = projectile(GrenadeEntity::new, "doomed_grenade");
 
 	public static EntityType<ChaingunMobEntity> CHAINGUN_MOB = projectile(ChaingunMobEntity::new, "chaingun_mob");
 
