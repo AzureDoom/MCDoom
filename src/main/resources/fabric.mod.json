@@ -34,7 +34,7 @@
 		"fabric": "*",
 		"minecraft": "1.18.x",
 		"java": ">=17",
-		"geckolib3": ">=3.0.19"
+		"geckolib3": ">=3.0.30"
 	},
 	"accessWidener": "doom.accesswidener"
 }
