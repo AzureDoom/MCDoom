@@ -1,3 +1,8 @@
 v.4.1.0
 
-- Adds ammo drops to Chainsaw kills on demons. Gives more reason to use the Chainsaws and makes it similar to the newer Doom 2016/Eternal.
+- Bumps required Geckolib to latest.
+- Removed dead code.
+- Added a click sound to weapons that are out of ammo.
+- Redid projects for Pistol, Heavy Cannon, Shotgun, Super Shotgun, Plasma Gun, and Ballista.
+- Ballista projectile now sticks to the ground and then explodes.
+- Adds 4 guns from Doomed : Demons of The Nether. Doomed Shotgun, Doomed Gauss, Doomed Plasma Rifle, and Doomed Grenade. 
