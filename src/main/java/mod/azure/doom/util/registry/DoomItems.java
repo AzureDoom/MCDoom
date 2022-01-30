@@ -65,7 +65,11 @@ import mod.azure.doom.item.weapons.Ballista;
 import mod.azure.doom.item.weapons.Chaingun;
 import mod.azure.doom.item.weapons.Chainsaw;
 import mod.azure.doom.item.weapons.ChainsawAnimated;
+import mod.azure.doom.item.weapons.DGauss;
+import mod.azure.doom.item.weapons.DPlasmaRifle;
+import mod.azure.doom.item.weapons.DShotgun;
 import mod.azure.doom.item.weapons.DarkLordCrucibleItem;
+import mod.azure.doom.item.weapons.GrenadeItem;
 import mod.azure.doom.item.weapons.HeavyCannon;
 import mod.azure.doom.item.weapons.PistolItem;
 import mod.azure.doom.item.weapons.PlasmaGun;
@@ -370,6 +374,10 @@ public class DoomItems {
 			() -> new SentinelHammerItem());
 	public static final RegistryObject<Item> DARKLORDCRUCIBLE = ITEMS.register("darklordcrucible",
 			() -> new DarkLordCrucibleItem());
+	public static final RegistryObject<Item> DSG = ITEMS.register("doomed_shotgun", () -> new DShotgun());
+	public static final RegistryObject<Item> DGAUSS = ITEMS.register("doomed_gauss", () -> new DGauss());
+	public static final RegistryObject<Item> GRENADE = ITEMS.register("doomed_grenade", () -> new GrenadeItem());
+	public static final RegistryObject<Item> DPLASMARIFLE = ITEMS.register("doomed_plasma_rifle", () -> new DPlasmaRifle());
 
 	// ARMOR
 	public static final RegistryObject<Item> DOOM_HELMET = ITEMS.register("doom_helmet",

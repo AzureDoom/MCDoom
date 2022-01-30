@@ -1,9 +1,12 @@
 package mod.azure.doom.util.config;
 
+import java.io.File;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import com.electronwill.nightconfig.core.io.WritingMode;
 import com.google.common.collect.Lists;
 
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -24,6 +27,7 @@ public class DoomConfig {
 		public final ConfigValue<Double> rocket_damage;
 		public final ConfigValue<Double> shotgun_damage;
 		public final ConfigValue<Double> unmaykr_damage;
+		public final ConfigValue<Double> grenade_damage;
 
 		public final ConfigValue<List<? extends String>> imp_biomes;
 		public final ConfigValue<Integer> imp_spawn_weight;
@@ -417,6 +421,8 @@ public class DoomConfig {
 					10.5, 1, Double.MAX_VALUE);
 			this.unmaykr_damage = builder.translation("text.doom.config.unmaykr_damage").defineInRange("Unmaykr Damage",
 					2.5, 1, Double.MAX_VALUE);
+			this.grenade_damage = builder.translation("text.doom.config.grenade_damage").defineInRange("Grenade Damage",
+					30, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Imps");
@@ -539,7 +545,8 @@ public class DoomConfig {
 			builder.pop();
 
 			builder.push("Mob Settings:Gladiator");
-			this.gladiator_biomes = builder.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
+			this.gladiator_biomes = builder
+					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.baron_biomes")
 					.defineList("Gladiator Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
 			this.gladiator_spawn_weight = builder.translation("text.doom.config.gladiator_spawn_weight")
@@ -1090,8 +1097,10 @@ public class DoomConfig {
 			builder.push("Mob Settings:Maykr Drone");
 			this.maykrdrone_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
-					.translation("text.doom.config.maykrdrone_biomes")
-					.defineList("Maykr Drone Biomes", Lists.newArrayList("minecraft:small_end_islands", "minecraft:end_midlands", "minecraft:end_barrens", "minecraft:end_highlands"), o -> o instanceof String);
+					.translation("text.doom.config.maykrdrone_biomes").defineList(
+							"Maykr Drone Biomes", Lists.newArrayList("minecraft:small_end_islands",
+									"minecraft:end_midlands", "minecraft:end_barrens", "minecraft:end_highlands"),
+							o -> o instanceof String);
 			this.maykrdrone_spawn_weight = builder.translation("text.doom.config.maykrdrone_spawn_weight")
 					.defineInRange("Maykr Drone Spawn Weight", 15, 1, Integer.MAX_VALUE);
 			this.maykrdrone_min_group = builder.translation("text.doom.config.maykrdrone_min_group")
@@ -1107,8 +1116,10 @@ public class DoomConfig {
 			builder.push("Mob Settings:Blood Maykr");
 			this.bloodmaykr_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
-					.translation("text.doom.config.bloodmaykr_biomes")
-					.defineList("Blood Maykr Biomes", Lists.newArrayList("minecraft:small_end_islands", "minecraft:end_midlands", "minecraft:end_barrens", "minecraft:end_highlands"), o -> o instanceof String);
+					.translation("text.doom.config.bloodmaykr_biomes").defineList(
+							"Blood Maykr Biomes", Lists.newArrayList("minecraft:small_end_islands",
+									"minecraft:end_midlands", "minecraft:end_barrens", "minecraft:end_highlands"),
+							o -> o instanceof String);
 			this.bloodmaykr_spawn_weight = builder.translation("text.doom.config.bloodmaykr_spawn_weight")
 					.defineInRange("Blood Maykr Spawn Weight", 6, 1, Integer.MAX_VALUE);
 			this.bloodmaykr_min_group = builder.translation("text.doom.config.bloodmaykr_min_group")
@@ -1124,8 +1135,10 @@ public class DoomConfig {
 			builder.push("Mob Settings:Archmaykr");
 			this.archmaykr_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
-					.translation("text.doom.config.archmaykr_biomes")
-					.defineList("Archmaykr Biomes", Lists.newArrayList("minecraft:small_end_islands", "minecraft:end_midlands", "minecraft:end_barrens", "minecraft:end_highlands"), o -> o instanceof String);
+					.translation("text.doom.config.archmaykr_biomes").defineList(
+							"Archmaykr Biomes", Lists.newArrayList("minecraft:small_end_islands",
+									"minecraft:end_midlands", "minecraft:end_barrens", "minecraft:end_highlands"),
+							o -> o instanceof String);
 			this.archmaykr_spawn_weight = builder.translation("text.doom.config.archmaykr_spawn_weight")
 					.defineInRange("Archmaykr Spawn Weight", 1, 1, Integer.MAX_VALUE);
 			this.archmaykr_min_group = builder.translation("text.doom.config.archmaykr_min_group")
@@ -1180,4 +1193,12 @@ public class DoomConfig {
 		SERVER = commonSpecPair.getLeft();
 		SERVER_SPEC = commonSpecPair.getRight();
 	}
+
+	public static void loadConfig(ForgeConfigSpec config, String path) {
+		final CommentedFileConfig file = CommentedFileConfig.builder(new File(path)).sync().autosave()
+				.writingMode(WritingMode.REPLACE).build();
+		file.load();
+		config.setConfig(file);
+	}
+
 }

@@ -1,11 +1,11 @@
 package mod.azure.doom.entity.projectiles;
 
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.LargeFireball;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
 
 public class CustomFireballEntity extends LargeFireball {
 
@@ -25,6 +25,7 @@ public class CustomFireballEntity extends LargeFireball {
 			entity.hurt(DamageSource.fireball(this, entity1), directHitDamage);
 			if (entity1 instanceof LivingEntity) {
 				this.doEnchantDamageEffects((LivingEntity) entity1, entity);
+				this.remove(RemovalReason.KILLED);
 			}
 
 		}

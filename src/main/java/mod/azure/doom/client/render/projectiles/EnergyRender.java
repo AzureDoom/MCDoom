@@ -35,8 +35,7 @@ public class EnergyRender extends GeoProjectilesRenderer<EnergyCellEntity> {
 			float red, float green, float blue, float partialTicks) {
 		super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn, red,
 				green, blue, partialTicks);
-		stackIn.scale(animatable.tickCount > 2 ? 1.0F : 0.0F, animatable.tickCount > 2 ? 1.0F : 0.0F,
-				animatable.tickCount > 2 ? 1.0F : 0.0F);
+		stackIn.scale(0, 0, 0);
 	}
 
 }

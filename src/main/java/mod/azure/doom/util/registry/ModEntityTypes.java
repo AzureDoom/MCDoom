@@ -7,6 +7,7 @@ import mod.azure.doom.entity.projectiles.BarrelEntity;
 import mod.azure.doom.entity.projectiles.BulletEntity;
 import mod.azure.doom.entity.projectiles.ChaingunBulletEntity;
 import mod.azure.doom.entity.projectiles.EnergyCellEntity;
+import mod.azure.doom.entity.projectiles.GrenadeEntity;
 import mod.azure.doom.entity.projectiles.RocketEntity;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import mod.azure.doom.entity.projectiles.UnmaykrBoltEntity;
@@ -128,6 +129,11 @@ public class ModEntityTypes {
 			() -> EntityType.Builder.<ArgentBoltEntity>of(ArgentBoltEntity::new, MobCategory.MISC)
 					.clientTrackingRange(9).sized(0.5F, 0.5F)
 					.build(new ResourceLocation(DoomMod.MODID, "argent_bolt").toString()));
+
+	public static final RegistryObject<EntityType<GrenadeEntity>> GRENADE = ENTITY_TYPES.register("doomed_grenade",
+			() -> EntityType.Builder.<GrenadeEntity>of(GrenadeEntity::new, MobCategory.MISC)
+					.clientTrackingRange(9).sized(0.5F, 0.5F)
+					.build(new ResourceLocation(DoomMod.MODID, "doomed_grenade").toString()));
 
 	public static final RegistryObject<EntityType<UnmaykrBoltEntity>> UNMAYKR = ENTITY_TYPES.register("unmaykr_bolt",
 			() -> EntityType.Builder.<UnmaykrBoltEntity>of(UnmaykrBoltEntity::new, MobCategory.MISC)

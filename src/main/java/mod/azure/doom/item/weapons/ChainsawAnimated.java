@@ -1,11 +1,14 @@
 package mod.azure.doom.item.weapons;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Consumer;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.ChainsawRender;
+import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.ChainsawEternalLoadingPacket;
@@ -99,6 +102,7 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 				&& stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
 			final AABB aabb = new AABB(entityIn.blockPosition().above()).inflate(1D, 1D, 1D);
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDamage(user, e));
+			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDeathCheck(user, e, stack));
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> damageItem(user, stack));
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> addParticle(e));
 			worldIn.playSound((Player) null, user.getX(), user.getY(), user.getZ(), ModSoundEvents.CHAINSAW_IDLE.get(),
@@ -149,6 +153,30 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 			user.level.playSound((Player) null, user.getX(), user.getY(), user.getZ(),
 					ModSoundEvents.CHAINSAW_ATTACKING.get(), SoundSource.PLAYERS, 0.3F,
 					1.0F / (user.level.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+		}
+	}
+
+	private void doDeathCheck(LivingEntity user, Entity target, ItemStack stack) {
+		Random rand = new Random();
+		List<Item> givenList = Arrays.asList(DoomItems.CHAINGUN_BULLETS.get(), DoomItems.SHOTGUN_SHELLS.get(),
+				DoomItems.ARGENT_BOLT.get(), DoomItems.SHOTGUN_SHELLS.get(), DoomItems.ENERGY_CELLS.get(), DoomItems.ROCKET.get());
+		if (target instanceof DemonEntity && !(target instanceof Player)) {
+			if (((LivingEntity) target).isDeadOrDying()) {
+				if (user instanceof Player) {
+					Player playerentity = (Player) user;
+					if (stack.getDamageValue() < (stack.getMaxDamage() - 1)
+							&& !playerentity.getCooldowns().isOnCooldown(this)) {
+						playerentity.getCooldowns().addCooldown(this, 18);
+						for (int i = 0; i < 5;) {
+							int randomIndex = rand.nextInt(givenList.size());
+							Item randomElement = givenList.get(randomIndex);
+							target.spawnAtLocation(randomElement);
+							target.spawnAtLocation(randomElement);
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 

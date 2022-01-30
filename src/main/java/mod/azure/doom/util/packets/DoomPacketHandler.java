@@ -93,6 +93,18 @@ public class DoomPacketHandler {
 			new ResourceLocation(DoomMod.MODID, "darklordcrucible"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals,
 			PROTOCOL_VERSION::equals);
 
+	public static final SimpleChannel DSG = NetworkRegistry.newSimpleChannel(
+			new ResourceLocation(DoomMod.MODID, "doomed_shotgun"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals,
+			PROTOCOL_VERSION::equals);
+
+	public static final SimpleChannel DGAUSS = NetworkRegistry.newSimpleChannel(
+			new ResourceLocation(DoomMod.MODID, "doomed_gauss"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals,
+			PROTOCOL_VERSION::equals);
+
+	public static final SimpleChannel DPLASMARIFLE = NetworkRegistry.newSimpleChannel(
+			new ResourceLocation(DoomMod.MODID, "doomed_plasma_rifle"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals,
+			PROTOCOL_VERSION::equals);
+
 	public static final SimpleChannel CRAFTING = NetworkRegistry.newSimpleChannel(
 			new ResourceLocation(DoomMod.MODID, "crafting"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals,
 			PROTOCOL_VERSION::equals);
@@ -100,6 +112,12 @@ public class DoomPacketHandler {
 	public static void register() {
 		CRAFTING.registerMessage(++channel_id, DoomCraftingPacket.class, DoomCraftingPacket::encode,
 				DoomCraftingPacket::new, DoomCraftingPacket::handle);
+		DSG.registerMessage(channel_id++, BallistaLoadingPacket.class, BallistaLoadingPacket::encode,
+				BallistaLoadingPacket::new, BallistaLoadingPacket::handle);
+		DGAUSS.registerMessage(channel_id++, BallistaLoadingPacket.class, BallistaLoadingPacket::encode,
+				BallistaLoadingPacket::new, BallistaLoadingPacket::handle);
+		DPLASMARIFLE.registerMessage(channel_id++, BallistaLoadingPacket.class, BallistaLoadingPacket::encode,
+				BallistaLoadingPacket::new, BallistaLoadingPacket::handle);
 		BALLISTA.registerMessage(channel_id++, BallistaLoadingPacket.class, BallistaLoadingPacket::encode,
 				BallistaLoadingPacket::new, BallistaLoadingPacket::handle);
 		BALLISTA.registerMessage(channel_id++, BallistaLoadingPacket.class, BallistaLoadingPacket::encode,

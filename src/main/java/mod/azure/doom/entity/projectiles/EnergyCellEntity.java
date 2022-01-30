@@ -3,6 +3,7 @@ package mod.azure.doom.entity.projectiles;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
+import mod.azure.doom.util.registry.DoomParticles;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.nbt.CompoundTag;
@@ -178,6 +179,11 @@ public class EnergyCellEntity extends AbstractArrow implements IAnimatable {
 			}
 			this.setPos(d5, d1, d2);
 			this.checkInsideBlocks();
+			if (this.level.isClientSide()) {
+				double x = this.getX() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getBbWidth() * 0.5D;
+				double z = this.getZ() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getBbWidth() * 0.5D;
+				this.level.addParticle(DoomParticles.PLASMA.get(), true, x, this.getY(), z, 0, 0, 0);
+			}
 		}
 	}
 
@@ -248,6 +254,7 @@ public class EnergyCellEntity extends AbstractArrow implements IAnimatable {
 				if (!this.level.isClientSide && entity1 instanceof LivingEntity) {
 					EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
 					EnchantmentHelper.doPostDamageEffects((LivingEntity) entity1, livingentity);
+					this.remove(RemovalReason.KILLED);
 				}
 				this.doPostHurtEffects(livingentity);
 				if (entity1 != null && livingentity != entity1 && livingentity instanceof Player

@@ -8,8 +8,8 @@ import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.renderers.geo.GeoProjectilesRenderer;
 
 public class ShotgunShellRender extends GeoProjectilesRenderer<ShotgunShellEntity> {
@@ -35,7 +35,6 @@ public class ShotgunShellRender extends GeoProjectilesRenderer<ShotgunShellEntit
 			float red, float green, float blue, float partialTicks) {
 		super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn,
 				red, green, blue, partialTicks);
-		stackIn.scale(animatable.tickCount > 2 ? 1F : 0.0F, animatable.tickCount > 2 ? 1F : 0.0F,
-				animatable.tickCount > 2 ? 1F : 0.0F);
+		stackIn.scale(0, 0, 0);
 	}
 }

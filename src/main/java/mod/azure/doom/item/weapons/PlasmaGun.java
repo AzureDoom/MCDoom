@@ -55,25 +55,30 @@ public class PlasmaGun extends DoomBaseItem {
 		if (entityLiving instanceof Player) {
 			Player playerentity = (Player) entityLiving;
 			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
-				playerentity.getCooldowns().addCooldown(this, 15);
-				if (!worldIn.isClientSide) {
-					EnergyCellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(),
-							0.0F, 0.15F * 3.0F, 1.0F);
-					abstractarrowentity.isNoGravity();
-
-					stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
-					worldIn.addFreshEntity(abstractarrowentity);
-					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-							ModSoundEvents.PLASMA_FIRING.get(), SoundSource.PLAYERS, 1.0F,
-							1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+				if (!playerentity.getCooldowns().isOnCooldown(this)) {
+					playerentity.getCooldowns().addCooldown(this, 5);
 					if (!worldIn.isClientSide) {
-						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
-						final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
-								.with(() -> playerentity);
-						GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
+						EnergyCellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
+						abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(),
+								playerentity.getYRot(), 0.0F, 0.15F * 3.0F, 1.0F);
+						abstractarrowentity.isNoGravity();
+
+						stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
+						worldIn.addFreshEntity(abstractarrowentity);
+						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
+								ModSoundEvents.PLASMA_FIRING.get(), SoundSource.PLAYERS, 1.0F,
+								1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+						if (!worldIn.isClientSide) {
+							final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
+							final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
+									.with(() -> playerentity);
+							GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
+						}
 					}
 				}
+			} else {
+				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
+						ModSoundEvents.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}

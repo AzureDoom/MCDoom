@@ -242,6 +242,7 @@ public class ChaingunBulletEntity extends AbstractArrow implements IAnimatable {
 				if (!this.level.isClientSide && entity1 instanceof LivingEntity) {
 					EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
 					EnchantmentHelper.doPostDamageEffects((LivingEntity) entity1, livingentity);
+					this.remove(RemovalReason.KILLED);
 				}
 				this.doPostHurtEffects(livingentity);
 				if (entity1 != null && livingentity != entity1 && livingentity instanceof Player

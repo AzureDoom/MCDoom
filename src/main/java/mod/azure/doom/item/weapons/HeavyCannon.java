@@ -61,6 +61,7 @@ public class HeavyCannon extends DoomBaseItem {
 					BulletEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
 					abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(),
 							0.0F, 1.0F * 3.0F, 1.0F);
+					abstractarrowentity.setParticle(2);
 					abstractarrowentity.isNoGravity();
 
 					stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
@@ -74,6 +75,9 @@ public class HeavyCannon extends DoomBaseItem {
 						GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
 					}
 				}
+			} else {
+				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
+						ModSoundEvents.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}

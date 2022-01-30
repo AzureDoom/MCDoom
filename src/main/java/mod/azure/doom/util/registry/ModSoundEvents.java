@@ -11,6 +11,11 @@ public class ModSoundEvents {
 
 	public static final DeferredRegister<SoundEvent> MOD_SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS,
 			DoomMod.MODID);
+	
+	public static final RegistryObject<SoundEvent>  EMPTY = MOD_SOUNDS.register("doom.emptyclip",
+			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.emptyclip")));
+	public static final RegistryObject<SoundEvent>  BEEP = MOD_SOUNDS.register("doom.grenadeabouttoexplode",
+			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.grenadeabouttoexplode")));;
 
 	public static final RegistryObject<SoundEvent> BFG_FIRING = MOD_SOUNDS.register("doom.bfg_firing",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.bfg_firing")));

@@ -1,11 +1,11 @@
 package mod.azure.doom.entity.projectiles;
 
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.SmallFireball;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
 
 public class CustomSmallFireballEntity extends SmallFireball {
 
@@ -30,6 +30,7 @@ public class CustomSmallFireballEntity extends SmallFireball {
 					entity.setRemainingFireTicks(i);
 				} else if (entity1 instanceof LivingEntity) {
 					this.doEnchantDamageEffects((LivingEntity) entity1, entity);
+					this.remove(RemovalReason.KILLED);
 				}
 			}
 

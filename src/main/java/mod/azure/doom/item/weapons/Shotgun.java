@@ -74,6 +74,9 @@ public class Shotgun extends DoomBaseItem {
 						GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
 					}
 				}
+			} else {
+				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
+						ModSoundEvents.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}

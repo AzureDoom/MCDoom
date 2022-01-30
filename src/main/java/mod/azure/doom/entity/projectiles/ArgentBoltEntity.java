@@ -1,17 +1,25 @@
 package mod.azure.doom.entity.projectiles;
 
+import java.util.List;
+
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModEntityTypes;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,7 +28,9 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -32,6 +42,9 @@ public class ArgentBoltEntity extends AbstractArrow {
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
+	public static final EntityDataAccessor<Boolean> PARTICLE = SynchedEntityData.defineId(ArgentBoltEntity.class,
+			EntityDataSerializers.BOOLEAN);
+	private LivingEntity shooter;
 
 	public ArgentBoltEntity(EntityType<? extends AbstractArrow> type, Level world) {
 		super(type, world);
@@ -39,6 +52,7 @@ public class ArgentBoltEntity extends AbstractArrow {
 
 	public ArgentBoltEntity(Level world, LivingEntity shooter) {
 		super(ModEntityTypes.ARGENT_BOLT.get(), shooter, world);
+		this.shooter = shooter;
 	}
 
 	@Override
@@ -74,6 +88,20 @@ public class ArgentBoltEntity extends AbstractArrow {
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.ticksInAir = compound.getShort("life");
+	}
+
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(PARTICLE, false);
+	}
+
+	public boolean useParticle() {
+		return (Boolean) this.entityData.get(PARTICLE);
+	}
+
+	public void setParticle(boolean spin) {
+		this.entityData.set(PARTICLE, spin);
 	}
 
 	@Override
@@ -154,6 +182,10 @@ public class ArgentBoltEntity extends AbstractArrow {
 			}
 			this.setPos(d5, d1, d2);
 			this.checkInsideBlocks();
+			if (this.level.isClientSide()) {
+				this.level.addParticle(this.useParticle() ? ParticleTypes.ANGRY_VILLAGER : ParticleTypes.FLASH, true,
+						this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+			}
 		}
 	}
 
@@ -181,7 +213,57 @@ public class ArgentBoltEntity extends AbstractArrow {
 	@Override
 	protected void onHitBlock(BlockHitResult p_230299_1_) {
 		super.onHitBlock(p_230299_1_);
+		if (!this.level.isClientSide()) {
+			if (this.useParticle()) {
+				if (this.tickCount >= 46) {
+					this.explode();
+					this.remove(Entity.RemovalReason.DISCARDED);
+				}
+			} else {
+				this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.5F,
+						Explosion.BlockInteraction.NONE);
+				this.remove(Entity.RemovalReason.DISCARDED);
+			}
+		}
 		this.setSoundEvent(SoundEvents.ARMOR_EQUIP_IRON);
+	}
+
+	@Override
+	public void remove(RemovalReason reason) {
+		if (this.useParticle()) {
+			AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(),
+					this.getZ());
+			areaeffectcloudentity.setParticle(ParticleTypes.LAVA);
+			areaeffectcloudentity.setRadius(6);
+			areaeffectcloudentity.setDuration(1);
+			areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
+			this.level.addFreshEntity(areaeffectcloudentity);
+			level.playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE,
+					SoundSource.PLAYERS, 1.0F, 1.5F);
+		}
+		super.remove(reason);
+	}
+
+	protected void explode() {
+		double xn = Mth.floor(this.getX() - 5.0D);
+		double xp = Mth.floor(this.getX() + 7.0D);
+		double yn = Mth.floor(this.getY() - 5.0D);
+		double yp = Mth.floor(this.getY() + 7.0D);
+		double zn = Mth.floor(this.getZ() - 5.0D);
+		double zp = Mth.floor(this.getZ() + 7.0D);
+		List<Entity> list = this.level.getEntities(this, new AABB(xn, yn, zn, xp, yp, zp));
+		Vec3 vec3d = new Vec3(this.getX(), this.getY(), this.getZ());
+
+		for (int x = 0; x < list.size(); ++x) {
+			Entity entity = (Entity) list.get(x);
+			double y = (double) (Mth.sqrt((float) entity.distanceToSqr(vec3d)) / 6);
+			if (entity instanceof LivingEntity) {
+				if (y <= 1.0D) {
+					entity.hurt(DamageSource.playerAttack((Player) this.shooter),
+							DoomConfig.SERVER.argent_bolt_damage.get().floatValue());
+				}
+			}
+		}
 	}
 
 	@Override
@@ -219,6 +301,9 @@ public class ArgentBoltEntity extends AbstractArrow {
 				if (!this.level.isClientSide && entity1 instanceof LivingEntity) {
 					EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
 					EnchantmentHelper.doPostDamageEffects((LivingEntity) entity1, livingentity);
+					this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.5F,
+							Explosion.BlockInteraction.NONE);
+					this.remove(RemovalReason.KILLED);
 				}
 				this.doPostHurtEffects(livingentity);
 				if (entity1 != null && livingentity != entity1 && livingentity instanceof Player

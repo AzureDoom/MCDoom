@@ -301,5 +301,11 @@
 	},
 	"doom.mother_pain": {
 		"sounds": [{"name": "doom:mother_pain"}]
+	},
+	"doom.emptyclip": {
+		"sounds": [{"name": "doom:emptyclip"}]
+	},
+	"doom.grenadeabouttoexplode": {
+		"sounds": [{"name": "doom:grenadeabouttoexplode"}]
 	}
 }

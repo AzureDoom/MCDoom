@@ -1,29 +1,32 @@
 package mod.azure.doom.item.weapons;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
+import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.ChainsawLoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.network.chat.Component;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 
 public class Chainsaw extends Item {
 
@@ -83,11 +86,11 @@ public class Chainsaw extends Item {
 				&& stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
 			final AABB aabb = new AABB(entityIn.blockPosition().above()).inflate(1D, 1D, 1D);
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDamage(user, e));
+			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDeathCheck(user, e, stack));
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> damageItem(user, stack));
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> addParticle(e));
-			worldIn.playSound((Player) null, user.getX(), user.getY(), user.getZ(),
-					ModSoundEvents.CHAINSAW_IDLE.get(), SoundSource.PLAYERS, 0.05F,
-					1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+			worldIn.playSound((Player) null, user.getX(), user.getY(), user.getZ(), ModSoundEvents.CHAINSAW_IDLE.get(),
+					SoundSource.PLAYERS, 0.05F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 		if (worldIn.isClientSide) {
 			if (player.getMainHandItem().sameItemStackIgnoreDurability(stack)) {
@@ -116,6 +119,31 @@ public class Chainsaw extends Item {
 			user.level.playSound((Player) null, user.getX(), user.getY(), user.getZ(),
 					ModSoundEvents.CHAINSAW_ATTACKING.get(), SoundSource.PLAYERS, 0.3F,
 					1.0F / (user.level.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+		}
+	}
+
+	private void doDeathCheck(LivingEntity user, Entity target, ItemStack stack) {
+		Random rand = new Random();
+		List<Item> givenList = Arrays.asList(DoomItems.CHAINGUN_BULLETS.get(), DoomItems.SHOTGUN_SHELLS.get(),
+				DoomItems.ARGENT_BOLT.get(), DoomItems.SHOTGUN_SHELLS.get(), DoomItems.ENERGY_CELLS.get(),
+				DoomItems.ROCKET.get());
+		if (target instanceof DemonEntity && !(target instanceof Player)) {
+			if (((LivingEntity) target).isDeadOrDying()) {
+				if (user instanceof Player) {
+					Player playerentity = (Player) user;
+					if (stack.getDamageValue() < (stack.getMaxDamage() - 1)
+							&& !playerentity.getCooldowns().isOnCooldown(this)) {
+						playerentity.getCooldowns().addCooldown(this, 18);
+						for (int i = 0; i < 5;) {
+							int randomIndex = rand.nextInt(givenList.size());
+							Item randomElement = givenList.get(randomIndex);
+							target.spawnAtLocation(randomElement);
+							target.spawnAtLocation(randomElement);
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 

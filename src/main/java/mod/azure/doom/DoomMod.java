@@ -1,8 +1,5 @@
 package mod.azure.doom;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import mod.azure.doom.util.DoomVillagerTrades;
 import mod.azure.doom.util.LootHandler;
 import mod.azure.doom.util.SoulCubeHandler;
@@ -10,6 +7,7 @@ import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
+import mod.azure.doom.util.registry.DoomParticles;
 import mod.azure.doom.util.registry.DoomRecipes;
 import mod.azure.doom.util.registry.DoomScreens;
 import mod.azure.doom.util.registry.ModEntitySpawn;
@@ -28,6 +26,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 import software.bernie.geckolib3.GeckoLib;
 import software.bernie.geckolib3.network.GeckoLibNetwork;
 import top.theillusivec4.curios.api.SlotTypeMessage;
@@ -38,12 +37,13 @@ public class DoomMod {
 
 	public static DoomMod instance;
 	public static final String MODID = "doom";
-	public static final Logger LOGGER = LogManager.getLogger();
 
 	public DoomMod() {
 		instance = this;
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, DoomConfig.SERVER_SPEC, "doom-newconfig.toml");
+		DoomConfig.loadConfig(DoomConfig.SERVER_SPEC,
+				FMLPaths.CONFIGDIR.get().resolve("doom-newconfig.toml").toString());
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new SoulCubeHandler());
 		modEventBus.addListener(this::setup);
@@ -58,6 +58,7 @@ public class DoomMod {
 		ModEntityTypes.TILE_TYPES.register(modEventBus);
 		DoomScreens.CONTAIN.register(modEventBus);
 		DoomRecipes.SERIAL.register(modEventBus);
+		DoomParticles.PARTICLES.register(modEventBus);
 		MinecraftForge.EVENT_BUS.addListener(this::onBiomeLoad);
 		GeckoLib.initialize();
 		GeckoLibNetwork.initialize();

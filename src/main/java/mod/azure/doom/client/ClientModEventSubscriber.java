@@ -94,6 +94,7 @@ import mod.azure.doom.client.render.projectiles.BarenBlastRender;
 import mod.azure.doom.client.render.projectiles.BulletsRender;
 import mod.azure.doom.client.render.projectiles.ChaingunBulletRender;
 import mod.azure.doom.client.render.projectiles.EnergyRender;
+import mod.azure.doom.client.render.projectiles.GrenadeRender;
 import mod.azure.doom.client.render.projectiles.RocketRender;
 import mod.azure.doom.client.render.projectiles.ShotgunShellRender;
 import mod.azure.doom.client.render.projectiles.UnmaykrBulletRender;
@@ -163,6 +164,7 @@ public class ClientModEventSubscriber {
 	public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
 		event.registerEntityRenderer(ModEntityTypes.SHOTGUN_SHELL.get(), ShotgunShellRender::new);
 		event.registerEntityRenderer(ModEntityTypes.ARGENT_BOLT.get(), ArgentBoltRender::new);
+		event.registerEntityRenderer(ModEntityTypes.GRENADE.get(), GrenadeRender::new);
 		event.registerEntityRenderer(ModEntityTypes.DRONEBOLT_MOB.get(), DroneBoltRender::new);
 		event.registerEntityRenderer(ModEntityTypes.UNMAYKR.get(), UnmaykrBulletRender::new);
 		event.registerEntityRenderer(ModEntityTypes.BULLETS.get(), BulletsRender::new);
@@ -291,6 +293,18 @@ public class ClientModEventSubscriber {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
 		ItemProperties.register(DoomItems.PISTOL.get(), new ResourceLocation("nocenter"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return nonCentered(itemStack) ? 1.0F : 0.0F;
+				});
+		ItemProperties.register(DoomItems.DPLASMARIFLE.get(), new ResourceLocation("nocenter"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return nonCentered(itemStack) ? 1.0F : 0.0F;
+				});
+		ItemProperties.register(DoomItems.DGAUSS.get(), new ResourceLocation("nocenter"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return nonCentered(itemStack) ? 1.0F : 0.0F;
+				});
+		ItemProperties.register(DoomItems.DSG.get(), new ResourceLocation("nocenter"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});

@@ -70,10 +70,4 @@ public class GunBlockEntity extends BlockEntity implements ImplementedInventory,
 		ContainerHelper.loadAllItems(tag, items);
 	}
 
-	@Override
-	public CompoundTag save(CompoundTag tag) {
-		ContainerHelper.saveAllItems(tag, items);
-		return super.save(tag);
-	}
-
 }

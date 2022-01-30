@@ -1,5 +1,6 @@
-v.4.0.1
+v.4.0.2
 
-- Fixes the Enderdragon island spawning Doom mobs. Reset configs.
+- Forces the config to load early, bypassing the shit system Forge calls their loader. Health/Melee configs work again.
+- Ports Chainsaw tweak and latest Fabric patch. There, now get the hell of my DM's asking for updates.
 
 This port is unsupported and only done via a paid commission. 

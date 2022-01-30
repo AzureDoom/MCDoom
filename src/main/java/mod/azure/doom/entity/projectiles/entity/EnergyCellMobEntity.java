@@ -151,6 +151,7 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements IA
 			Entity entity = p_213868_1_.getEntity();
 			Entity entity1 = this.getOwner();
 			entity.hurt(DamageSource.mobAttack((LivingEntity) entity1), directHitDamage);
+			this.remove(RemovalReason.KILLED);
 			if (entity1 instanceof LivingEntity) {
 				this.doEnchantDamageEffects((LivingEntity) entity1, entity);
 			}

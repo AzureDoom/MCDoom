@@ -5,7 +5,7 @@
 			"loop": true
 		},
 		"firing": {
-			"animation_length": 0.24,
+			"animation_length": 0.4,
 			"bones": {
 				"plasmagun_pulling_0": {
 					"rotation": {
@@ -15,15 +15,15 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.08": {
+						"0.12": {
 							"vector": [0, 0, 0],
 							"easing": "easeInOutSine"
 						},
-						"0.16": {
+						"0.28": {
 							"vector": [0, 0, 2],
 							"easing": "easeInOutSine"
 						},
-						"0.24": {
+						"0.4": {
 							"vector": [0, 0, 0],
 							"easing": "easeInOutSine"
 						}

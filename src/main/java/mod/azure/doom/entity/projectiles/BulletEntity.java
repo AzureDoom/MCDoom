@@ -3,10 +3,15 @@ package mod.azure.doom.entity.projectiles;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
+import mod.azure.doom.util.registry.DoomParticles;
 import mod.azure.doom.util.registry.ModEntityTypes;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -39,6 +44,8 @@ public class BulletEntity extends AbstractArrow implements IAnimatable {
 	protected boolean inAir;
 	private int ticksInAir;
 	private AnimationFactory factory = new AnimationFactory(this);
+	public static final EntityDataAccessor<Integer> PARTICLE = SynchedEntityData.defineId(BulletEntity.class,
+			EntityDataSerializers.INT);
 
 	public BulletEntity(EntityType<? extends AbstractArrow> type, Level world) {
 		super(type, world);
@@ -95,6 +102,20 @@ public class BulletEntity extends AbstractArrow implements IAnimatable {
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.ticksInAir = compound.getShort("life");
+	}
+
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(PARTICLE, 0);
+	}
+
+	public Integer useParticle() {
+		return this.entityData.get(PARTICLE);
+	}
+
+	public void setParticle(Integer spin) {
+		this.entityData.set(PARTICLE, spin);
 	}
 
 	@Override
@@ -175,6 +196,16 @@ public class BulletEntity extends AbstractArrow implements IAnimatable {
 			}
 			this.setPos(d5, d1, d2);
 			this.checkInsideBlocks();
+			if (this.level.isClientSide()) {
+				double x = this.getX() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
+				double z = this.getZ() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
+				if (this.useParticle() == 1) {
+					this.level.addParticle(DoomParticles.PISTOL.get(), true, x, this.getY(), z, 0, 0, 0);
+				}
+				if (this.useParticle() == 2) {
+					this.level.addParticle(ParticleTypes.SMOKE, true, x, this.getY(), z, 0, 0, 0);
+				}
+			}
 		}
 	}
 
@@ -240,6 +271,7 @@ public class BulletEntity extends AbstractArrow implements IAnimatable {
 				if (!this.level.isClientSide && entity1 instanceof LivingEntity) {
 					EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
 					EnchantmentHelper.doPostDamageEffects((LivingEntity) entity1, livingentity);
+					this.remove(RemovalReason.KILLED);
 				}
 				this.doPostHurtEffects(livingentity);
 				if (entity1 != null && livingentity != entity1 && livingentity instanceof Player

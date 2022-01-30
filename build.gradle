@@ -30,7 +30,7 @@ configurations.all {
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
-version = "4.0.1"
+version = project.mod_version
 group = "mod.azure.doomweapon"
 archivesBaseName = "MCDoom-1.18.1"
 
@@ -95,10 +95,11 @@ repositories {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.1-39.0.0'
+    minecraft 'net.minecraftforge:forge:1.18.1-39.0.59'
 	implementation fg.deobf('software.bernie.geckolib:curios:5.0.2.3')
-	implementation fg.deobf('software.bernie.geckolib:geckolib-1.18-forge:3.0.3')
+	implementation fg.deobf('software.bernie.geckolib:geckolib-1.18-forge:3.0.10')
 	annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+	implementation fg.deobf("curse.maven:TDI-245733:3556931")
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
