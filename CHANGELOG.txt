@@ -1,8 +1,3 @@
-v.4.1.0
+v.4.1.1
 
-- Bumps required Geckolib to latest.
-- Removed dead code.
-- Added a click sound to weapons that are out of ammo.
-- Redid projects for Pistol, Heavy Cannon, Shotgun, Super Shotgun, Plasma Gun, and Ballista.
-- Ballista projectile now sticks to the ground and then explodes.
-- Adds 4 guns from Doomed : Demons of The Nether. Doomed Shotgun, Doomed Gauss, Doomed Plasma Rifle, and Doomed Grenade. 
+- Fixes Grenade sound
