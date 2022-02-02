@@ -2,7 +2,6 @@ package mod.azure.doom.item.powerup;
 
 import java.util.List;
 
-import dev.emi.trinkets.api.TrinketItem;
 import mod.azure.doom.DoomMod;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
@@ -12,7 +11,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 
-public class SoulCubeItem extends TrinketItem {
+public class SoulCubeItem extends Item {
 
 	public SoulCubeItem() {
 		super(new Item.Settings().group(DoomMod.DoomPowerUPItemGroup).maxCount(1).maxDamage(5));

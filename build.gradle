@@ -107,8 +107,8 @@ if (file('key.properties').exists()) {
             	requiredDependency 'fabric-api'  
             	requiredDependency 'geckolib'  
             	requiredDependency 'cloth-config'  
-            	requiredDependency 'cardinal-components'  
-            	requiredDependency 'trinkets-fabric'  
+            	//requiredDependency 'cardinal-components'  
+            	//requiredDependency 'trinkets-fabric'  
         	}
         	mainArtifact(remapJar)
 
