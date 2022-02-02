@@ -308,6 +308,14 @@ public class ClientModEventSubscriber {
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
+		ItemProperties.register(DoomItems.CHAINSAW.get(), new ResourceLocation("stalled"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return isUsable(itemStack) ? 0.0F : 1.0F;
+				});
+		ItemProperties.register(DoomItems.CHAINSAW64.get(), new ResourceLocation("stalled"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return isUsable(itemStack) ? 0.0F : 1.0F;
+				});
 	}
 
 	public static boolean isUsable(ItemStack stack) {
