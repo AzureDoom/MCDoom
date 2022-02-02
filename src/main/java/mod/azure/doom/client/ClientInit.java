@@ -106,6 +106,7 @@ public class ClientInit implements ClientModInitializer {
 		requestParticleTexture(new Identifier("doom:particles/plasma"));
 		ParticleFactoryRegistry.getInstance().register(DoomParticles.PLASMA, PlasmaParticle.Factory::new);
 		ParticleFactoryRegistry.getInstance().register(DoomParticles.PISTOL, PlasmaParticle.Factory::new);
+		ParticleFactoryRegistry.getInstance().register(DoomParticles.UNMAYKR, PlasmaParticle.Factory::new);
 	}
 
 	public static void requestParticleTexture(Identifier id) {

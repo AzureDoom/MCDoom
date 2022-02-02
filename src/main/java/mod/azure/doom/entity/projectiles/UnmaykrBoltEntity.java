@@ -4,6 +4,7 @@ import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
+import mod.azure.doom.util.registry.DoomParticles;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -173,6 +174,11 @@ public class UnmaykrBoltEntity extends PersistentProjectileEntity {
 			}
 			this.updatePosition(h, j, k);
 			this.checkBlockCollision();
+			if (this.world.isClient) {
+				double d2 = this.getX() + (this.random.nextDouble()) * (double) this.getWidth() * 0.5D;
+				double f2 = this.getZ() + (this.random.nextDouble()) * (double) this.getWidth() * 0.5D;
+				this.world.addParticle(DoomParticles.UNMAYKR, true, d2, this.getY(), f2, 0, 0, 0);
+			}
 		}
 	}
 

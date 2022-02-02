@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.GameStateChangeS2CPacket;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -196,6 +197,11 @@ public class ChaingunBulletEntity extends PersistentProjectileEntity implements 
 			}
 			this.updatePosition(h, j, k);
 			this.checkBlockCollision();
+			if (this.world.isClient) {
+				double d2 = this.getX() + (this.random.nextDouble()) * (double) this.getWidth() * 0.5D;
+				double f2 = this.getZ() + (this.random.nextDouble()) * (double) this.getWidth() * 0.5D;
+				this.world.addParticle(ParticleTypes.SMOKE, true, d2, this.getY(), f2, 0, 0, 0);
+			}
 		}
 	}
 

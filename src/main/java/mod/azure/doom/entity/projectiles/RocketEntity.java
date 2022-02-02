@@ -19,6 +19,7 @@ import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
@@ -199,6 +200,11 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 			}
 			this.updatePosition(h, j, k);
 			this.checkBlockCollision();
+			if (this.world.isClient) {
+				double d2 = this.getX() + (this.random.nextDouble()) * (double) this.getWidth() * 0.5D;
+				double f2 = this.getZ() + (this.random.nextDouble()) * (double) this.getWidth() * 0.5D;
+				this.world.addParticle(ParticleTypes.SMOKE, true, d2, this.getY(), f2, 0, 0, 0);
+			}
 		}
 	}
 
