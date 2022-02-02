@@ -2,17 +2,9 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "doom:items/chainsaw",
-		"particle": "doom:items/chainsaw"
+		"0": "doom:items/chainsaw_stalled",
+		"particle": "doom:items/chainsaw_stalled"
 	},
-	"overrides": [
-		{
-			"predicate": {
-				"stalled": 1
-			},
-			"model": "doom:item/chainsaw_stalled"
-		}
-	],
 	"elements": [
 		{
 			"name": "basebottom",
