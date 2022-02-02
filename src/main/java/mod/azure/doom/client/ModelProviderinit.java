@@ -72,6 +72,14 @@ public class ModelProviderinit {
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
+		FabricModelPredicateProviderRegistry.register(DoomItems.CHAINSAW, new Identifier("stalled"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return isUsable(itemStack) ? 0.0F : 1.0F;
+				});
+		FabricModelPredicateProviderRegistry.register(DoomItems.CHAINSAW64, new Identifier("stalled"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return isUsable(itemStack) ? 0.0F : 1.0F;
+				});
 	}
 
 	private static boolean isUsable(ItemStack stack) {
