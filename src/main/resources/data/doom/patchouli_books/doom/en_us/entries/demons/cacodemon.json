@@ -13,6 +13,7 @@
 		{
 			"type": "entity",
 			"entity": "doom:cacodemon",
+			"offset": 0.4,
 			"scale": 0.7
 		}
 	]

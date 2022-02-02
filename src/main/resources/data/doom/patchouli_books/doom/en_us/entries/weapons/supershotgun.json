@@ -6,11 +6,8 @@
 		{
 			"type": "spotlight",
 			"item": "doom:supershotgun",
-			"link_recipe": true
-		},
-		{
-			"type": "crafting",
-			"recipe": "doom:supershotgun"
+			"link_recipe": true,
+			"text": "One barrel is not enough, you use two. If Batman was a gun, he'd be this."
 		},
 		{
 			"type": "crafting",

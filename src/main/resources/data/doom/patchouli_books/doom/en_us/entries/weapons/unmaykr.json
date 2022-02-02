@@ -6,11 +6,8 @@
 		{
 			"type": "spotlight",
 			"item": "doom:unmaykr",
-			"link_recipe": true
-		},
-		{
-			"type": "crafting",
-			"recipe": "doom:unmaykr"
+			"link_recipe": true,
+			"text": "The Unmaykr - Pure Maykr technology. Its destructive potential... is staggering."
 		},
 		{
 			"type": "crafting",

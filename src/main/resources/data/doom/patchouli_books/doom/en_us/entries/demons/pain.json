@@ -13,6 +13,7 @@
 		{
 			"type": "entity",
 			"entity": "doom:painelemental",
+			"scale": 0.85,
 			"offset": 0.2
 		}
 	]

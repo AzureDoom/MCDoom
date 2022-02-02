@@ -6,11 +6,14 @@
 		{
 			"type": "spotlight",
 			"item": "doom:shotgun",
-			"link_recipe": true
+			"link_recipe": true,
+			"text": "This trusty workhorse remains a firm favorite among operatives. Based off Classic Model."
 		},
 		{
-			"type": "crafting",
-			"recipe": "doom:shotgun"
+			"type": "spotlight",
+			"item": "doom:doomed_shotgun",
+			"link_recipe": true,
+			"text": "This trusty workhorse remains a firm favorite among operatives. Based off Doom 2016 Model."
 		},
 		{
 			"type": "crafting",

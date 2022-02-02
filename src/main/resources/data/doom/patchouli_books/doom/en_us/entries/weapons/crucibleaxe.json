@@ -6,12 +6,14 @@
 		{
 			"type": "spotlight",
 			"item": "doom:axe_marauder_closed",
-			"link_recipe": true
+			"link_recipe": true,
+			"text": "A Marauder Argent Axe who's power source is empty. Must be recharged."
 		},
 		{
 			"type": "spotlight",
 			"item": "doom:axe_marauder_open",
-			"link_recipe": true
+			"link_recipe": true,
+			"text": "A Marauder Argent Axe is a weapon powered by raw Argent Engery, capable of dealing massive damage when right clicked."
 		}
 	]
 }

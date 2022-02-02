@@ -6,11 +6,8 @@
 		{
 			"type": "spotlight",
 			"item": "doom:rocketlauncher",
-			"link_recipe": true
-		},
-		{
-			"type": "crafting",
-			"recipe": "doom:rocketlauncher"
+			"link_recipe": true,
+			"text": "With a large blast radius and high damage, the Rocket Launcher is useful against all but the fastest enemies."
 		},
 		{
 			"type": "crafting",

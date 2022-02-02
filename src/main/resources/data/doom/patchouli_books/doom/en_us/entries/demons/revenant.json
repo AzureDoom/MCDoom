@@ -12,11 +12,13 @@
 		},
 		{
 			"type": "entity",
-			"entity": "doom:revenant"
+			"entity": "doom:revenant",
+			"offset": 0.2
 		},
 		{
 			"type": "entity",
-			"entity": "doom:revenant2016"
+			"entity": "doom:revenant2016",
+			"offset": 0.4
 		}
 	]
 }

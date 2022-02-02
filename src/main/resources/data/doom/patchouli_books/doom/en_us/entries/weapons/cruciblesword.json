@@ -4,14 +4,16 @@
 	"category": "doom:weapons_category",	
 	"pages": [
 		{
-			"type": "crafting",
-			"title": "Crucible Sword  (Closed)",
-			"recipe": "doom:cruciblesword_closed"
+			"type": "spotlight",
+			"item": "doom:cruciblesword_closed",
+			"link_recipe": true,
+			"text": "A Crucible who's power source is empty. Must be recharged."
 		},
 		{
-			"type": "crafting",
-			"title": "Crucible Sword",
-			"recipe": "doom:cruciblesword"
+			"type": "spotlight",
+			"item": "doom:cruciblesword",
+			"link_recipe": true,
+			"text": "A Crucible is a weapon powered by raw Argent Engery, capable of dealing massive damage when right clicked."
 		}
 	]
 }

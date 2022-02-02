@@ -21,6 +21,10 @@
 		{
 			"type": "entity",
 			"entity": "doom:nightmare_imp"
+		},
+		{
+			"type": "entity",
+			"entity": "doom:stone_imp"
 		}
 	]
 }

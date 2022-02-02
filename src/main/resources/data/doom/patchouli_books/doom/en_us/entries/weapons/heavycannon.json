@@ -6,11 +6,8 @@
 		{
 			"type": "spotlight",
 			"item": "doom:heavycannon",
-			"link_recipe": true
-		},
-		{
-			"type": "crafting",
-			"recipe": "doom:heavycannon"
+			"link_recipe": true,
+			"text": "A precise weapon, the Heavy Cannon is a punch-packing rifle capable of dealing high fast damage."
 		},
 		{
 			"type": "crafting",

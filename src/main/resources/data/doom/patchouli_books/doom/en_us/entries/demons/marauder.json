@@ -12,7 +12,8 @@
 		},
 		{
 			"type": "entity",
-			"entity": "doom:marauder"
+			"entity": "doom:marauder",
+			"scale": 0.9
 		}
 	]
 }

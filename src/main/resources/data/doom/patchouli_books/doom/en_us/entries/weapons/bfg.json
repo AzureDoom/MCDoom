@@ -4,12 +4,16 @@
 	"category": "doom:weapons_category",
 	"pages": [
 		{
-			"type": "crafting",
-			"recipe": "doom:bfg"
+			"type": "spotlight",
+			"item": "doom:bfg9000",
+			"link_recipe": true,
+			"text": "Fires a Plasma ball that damages monsters in a Area of Effect field around the ball. Based off the Classic model."
 		},
 		{
-			"type": "crafting",
-			"recipe": "doom:bfg_eternal"
+			"type": "spotlight",
+			"item": "doom:bfg_eternal",
+			"link_recipe": true,
+			"text": "Fires a Plasma ball that damages monsters in a Area of Effect field around the ball. Based off the Eternal model."
 		},
 		{
 			"type": "crafting",

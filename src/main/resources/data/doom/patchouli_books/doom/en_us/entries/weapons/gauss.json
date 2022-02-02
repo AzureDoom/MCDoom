@@ -1,0 +1,17 @@
+{
+	"name": "Gauss Cannon",
+	"icon": "doom:doomed_gauss",
+	"category": "doom:weapons_category",
+	"pages": [
+		{
+			"type": "spotlight",
+			"item": "doom:doomed_gauss",
+			"link_recipe": true,
+			"text": "While it has high damage potential, the concentrated beam of the Gauss Cannon demands accuracy from the user."
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:argent_bolt"
+		}
+	]
+}

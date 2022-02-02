@@ -6,11 +6,14 @@
 		{
 			"type": "spotlight",
 			"item": "doom:plasmagun",
-			"link_recipe": true
+			"link_recipe": true,
+			"text": "Plasma Gun shoot multiple rounds of plasma energy - frying some demon butt!"
 		},
 		{
-			"type": "crafting",
-			"recipe": "doom:plasmagun"
+			"type": "spotlight",
+			"item": "doom:doomed_plasma_rifle",
+			"link_recipe": true,
+			"text": "Plasma Rifle is the standard in energy-based weaponry, firing a superheated plasma in rapid-short burst intervals."
 		},
 		{
 			"type": "crafting",
