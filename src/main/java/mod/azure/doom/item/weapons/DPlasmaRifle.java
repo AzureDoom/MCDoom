@@ -61,7 +61,7 @@ public class DPlasmaRifle extends DoomBaseItem {
 			Player playerentity = (Player) entityLiving;
 			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
 				if (!playerentity.getCooldowns().isOnCooldown(this)) {
-					playerentity.getCooldowns().addCooldown(this, 6);
+					playerentity.getCooldowns().addCooldown(this, 5);
 					if (!worldIn.isClientSide) {
 						EnergyCellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
 						abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(),

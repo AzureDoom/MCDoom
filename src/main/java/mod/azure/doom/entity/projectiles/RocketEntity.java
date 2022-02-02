@@ -7,6 +7,7 @@ import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvent;
@@ -181,6 +182,11 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 			}
 			this.setPos(d5, d1, d2);
 			this.checkInsideBlocks();
+			if (this.level.isClientSide()) {
+				double x = this.getX() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
+				double z = this.getZ() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
+				this.level.addParticle(ParticleTypes.FLAME, true, x, this.getY(), z, 0, 0, 0);
+			}
 		}
 	}
 

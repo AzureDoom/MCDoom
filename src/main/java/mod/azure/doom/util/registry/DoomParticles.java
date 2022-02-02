@@ -2,6 +2,7 @@ package mod.azure.doom.util.registry;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.particles.PlasmaParticle;
+import mod.azure.doom.particles.UnmaykrBoltParticle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -25,11 +26,15 @@ public class DoomParticles {
 	public static final RegistryObject<SimpleParticleType> PISTOL = PARTICLES.register("pistol",
 			() -> new SimpleParticleType(true));
 
+	public static final RegistryObject<SimpleParticleType> UNMAYKR = PARTICLES.register("unmaykr",
+			() -> new SimpleParticleType(true));
+
 	@SuppressWarnings("resource")
 	@SubscribeEvent
 	public static void registry(ParticleFactoryRegisterEvent event) {
 		Minecraft.getInstance().particleEngine.register(PISTOL.get(), PlasmaParticle.Factory::new);
 		Minecraft.getInstance().particleEngine.register(PLASMA.get(), PlasmaParticle.Factory::new);
+		Minecraft.getInstance().particleEngine.register(UNMAYKR.get(), UnmaykrBoltParticle.Factory::new);
 	}
 
 }

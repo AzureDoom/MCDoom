@@ -3,6 +3,7 @@ package mod.azure.doom.entity.projectiles;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
+import mod.azure.doom.util.registry.DoomParticles;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -168,6 +169,11 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 			}
 			this.setPos(d5, d1, d2);
 			this.checkInsideBlocks();
+			if (this.level.isClientSide()) {
+				double x = this.getX() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
+				double z = this.getZ() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
+				this.level.addParticle(DoomParticles.UNMAYKR.get(), true, x, this.getY(), z, 0, 0, 0);
+			}
 		}
 	}
 
