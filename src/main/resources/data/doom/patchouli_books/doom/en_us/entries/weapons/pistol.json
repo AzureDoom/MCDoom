@@ -1,0 +1,17 @@
+{
+	"name": "Pistol",
+	"icon": "doom:pistol",
+	"category": "doom:weapons_category",
+	"pages": [
+		{
+			"type": "spotlight",
+			"item": "doom:pistol",
+			"link_recipe": true,
+			"text": "Most effective against weaker targets."
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:bullets"
+		}
+	]
+}

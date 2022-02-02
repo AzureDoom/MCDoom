@@ -1,0 +1,17 @@
+{
+	"name": "Heavy Cannon",
+	"icon": "doom:heavycannon",
+	"category": "doom:weapons_category",
+	"pages": [
+		{
+			"type": "spotlight",
+			"item": "doom:heavycannon",
+			"link_recipe": true,
+			"text": "A precise weapon, the Heavy Cannon is a punch-packing rifle capable of dealing high fast damage."
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:bullets"
+		}
+	]
+}

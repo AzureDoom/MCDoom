@@ -7,11 +7,11 @@
 	
 	"pages": [
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "The Mancubus, hulking behemoth of the Nether world."
 		},
 		{
-			"type": "patchouli:entity",
+			"type": "entity",
 			"entity": "doom:mancubus"
 		}
 	]

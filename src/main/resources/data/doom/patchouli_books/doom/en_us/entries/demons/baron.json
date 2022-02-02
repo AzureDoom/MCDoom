@@ -7,35 +7,35 @@
 	
 	"pages": [
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "Tough as a dump truck and nearly as big, these Goliaths are the worst things on two legs since Tyrannosaurus Rex."
 		},
 		{
-			"type": "patchouli:entity",
+			"type": "entity",
 			"entity": "doom:baron"
 		},
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "The Baron of Hell is the highest demon among the order of the Hell Knights."
 		},
 		{
-			"type": "patchouli:entity",
+			"type": "entity",
 			"entity": "doom:baron2016"
 		},
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "The Fireborne Barons have evolved, the descendant clan of the Baron hell breed."
 		},
 		{
-			"type": "patchouli:entity",
+			"type": "entity",
 			"entity": "doom:firebronebaron"
 		},
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "The Armored Barons are grafted with the technology of The Nether with morning star gauntlets, one devastating strike obliterates both body and soul."
 		},
 		{
-			"type": "patchouli:entity",
+			"type": "entity",
 			"entity": "doom:armoredbaron"
 		}
 	]

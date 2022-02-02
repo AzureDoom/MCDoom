@@ -7,16 +7,16 @@
 	
 	"pages": [
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "They are the small offspring of the Spider Demon. They are nastier offensively, but they can't stand the same level of damage as their mothers before going legs up."
 		},
 		{
-			"type": "patchouli:entity",
+			"type": "entity",
 			"entity": "doom:arachnotron",
 			"scale": 0.9
 		},
 		{
-			"type": "patchouli:entity",
+			"type": "entity",
 			"entity": "doom:arachnotroneternal",
 			"scale": 0.9
 		}

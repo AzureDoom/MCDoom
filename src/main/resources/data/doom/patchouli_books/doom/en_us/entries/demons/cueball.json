@@ -7,11 +7,11 @@
 	
 	"pages": [
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "Former Illager, these malformed zombies were rendered inept during the war for the Overworld. Their bodies are now a disturbing fusion of body, bone, and barrel."
 		},
 		{
-			"type": "patchouli:entity",
+			"type": "entity",
 			"entity": "doom:cueball",
 			"scale": 0.9
 		}

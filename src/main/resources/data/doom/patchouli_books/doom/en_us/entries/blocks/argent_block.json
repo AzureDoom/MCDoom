@@ -4,13 +4,13 @@
 	"category": "doom:blocks_category",
 	"pages": [
 		{
-			"type": "patchouli:spotlight",
+			"type": "spotlight",
 			"item": "doom:argent_block",
 			"link_recipe": true,
 			"text": "A solid block of Argent Energy!"
 		},
 		{
-			"type": "patchouli:crafting",
+			"type": "crafting",
 			"recipe": "doom:argent_block"
 		}
 	]

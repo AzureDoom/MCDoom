@@ -1,0 +1,17 @@
+{
+	"name": "Ballista",
+	"icon": "doom:ballista",
+	"category": "doom:weapons_category",
+	"pages": [
+		{
+			"type": "spotlight",
+			"item": "doom:ballista",
+			"link_recipe": true,
+			"text": "A precise weapon, the Ballista fires a twin beam of superheated Argent, vaporizing its target on impact."
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:argent_bolt"
+		}
+	]
+}

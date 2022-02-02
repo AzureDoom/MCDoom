@@ -1,0 +1,29 @@
+{
+	"name": "Chainsaw",
+	"icon": "doom:chainsaw",
+	"category": "doom:weapons_category",
+	"pages": [
+		{
+			"type": "spotlight",
+			"item": "doom:chainsaw",
+			"link_recipe": true,
+			"text": "The Chainsaw deals AOE damage in front of the Player when held and fueled. Based off Classic model."
+		},
+		{
+			"type": "spotlight",
+			"item": "doom:chainsaw64",
+			"link_recipe": true,
+			"text": "The Chainsaw deals AOE damage in front of the Player when held and fueled. Based off Doom 64 model."
+		},
+		{
+			"type": "spotlight",
+			"item": "doom:chainsaweternal",
+			"link_recipe": true,
+			"text": "The Chainsaw deals AOE damage in front of the Player when held and fueled. Based off Eternal model."
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:gas_barrel"
+		}
+	]
+}

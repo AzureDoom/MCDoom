@@ -1,0 +1,26 @@
+{
+	"name": "Sentinel Doom Armor",
+	"icon": "doom:sentinel_doom_helmet",
+	"category": "doom:armor_category",
+	"secret": false,
+	"read_by_default": true,
+	"pages": [
+		{
+			"type": "entity",
+			"name": "Sentinel Doom Armor",
+			"entity": "minecraft:armor_stand{Invisible:1, ArmorItems:[{id:'doom:sentinel_doom_boots',Count:1},{id:'doom:sentinel_doom_leggings',Count:1},{id:'doom:sentinel_doom_chestplate',Count:1},{id:'doom:sentinel_doom_helmet',Count:1}]}",
+			"rotate": true,
+			"text": "This Armor was forged by the Night Sentinels for the Doom Slayer."
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:sentinel_doom_helmet",
+			"recipe2": "doom:sentinel_doom_chestplate"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:sentinel_doom_leggings",
+			"recipe2": "doom:sentinel_doom_boots"
+		}
+	]
+}

@@ -1,0 +1,17 @@
+{
+	"name": "Rocket Launcher",
+	"icon": "doom:rocketlauncher",
+	"category": "doom:weapons_category",
+	"pages": [
+		{
+			"type": "spotlight",
+			"item": "doom:rocketlauncher",
+			"link_recipe": true,
+			"text": "With a large blast radius and high damage, the Rocket Launcher is useful against all but the fastest enemies."
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:rocket"
+		}
+	]
+}

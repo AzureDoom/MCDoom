@@ -4,12 +4,12 @@
 	"category": "doom:powerups_category",
 	"pages": [
 		{
-			"type": "patchouli:spotlight",
+			"type": "spotlight",
 			"item": "doom:daisy",
 			"link_recipe": true
 		},
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "Daisy's head that you found on a fence when you returned from the Nether. Grants you Speed 3 as long as you wear it."
 		}
 	]

@@ -7,11 +7,11 @@
 	
 	"pages": [
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "Like their Imp brethren, the Gargoyle is an agile, relentless pack hunter. The Nether skies will never be safe again, that is unless you are carrying a steel-barreled sword of vengeance."
 		},
 		{
-			"type": "patchouli:entity",
+			"type": "entity",
 			"entity": "doom:gargoyle",
 			"scale": 0.7,
 			"offset": 0.6

@@ -7,19 +7,19 @@
 	
 	"pages": [
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "As it is written in the prophecies of ancient Sentinel scripture, the Titans - towering elder demons of the infernal age - would return, unearthed from their immortal slumber. The Titans are believed to be harbingers of the end-times, primordial forces of chaos and destruction."
 		},
 		{
-			"type": "patchouli:entity",
+			"type": "entity",
 			"entity": "doom:iconofsin"
 		},
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "In order to summon the Icon of Sin, one must first craft the 16 blocks of the Icon Wall then place them in a 4x4 wall as shown."
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"symmetrical": true,
 			"multiblock": {
 				"pattern": [

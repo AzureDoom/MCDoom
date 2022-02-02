@@ -1,0 +1,17 @@
+{
+	"name": "Chaingun",
+	"icon": "doom:chaingun",
+	"category": "doom:weapons_category",
+	"pages": [
+		{
+			"type": "spotlight",
+			"item": "doom:chaingun",
+			"link_recipe": true,
+			"text": "The Chaingun, a six-barreled autocannon built for clearing out waves of Demons."
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:chaingun_bullets"
+		}
+	]
+}

@@ -4,11 +4,11 @@
 	"category": "doom:blocks_category",
 	"pages": [
 		{
-			"type": "patchouli:crafting",
+			"type": "crafting",
 			"recipe": "doom:icon_wall1"
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -23,11 +23,11 @@
 			}
 		},
 		{
-			"type": "patchouli:crafting",
+			"type": "crafting",
 			"recipe": "doom:icon_wall2"
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -42,11 +42,11 @@
 			}
 		},
 		{
-			"type": "patchouli:crafting",
+			"type": "crafting",
 			"recipe": "doom:icon_wall3"
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -61,11 +61,11 @@
 			}
 		},
 		{
-			"type": "patchouli:crafting",
+			"type": "crafting",
 			"recipe": "doom:icon_wall4"
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -80,11 +80,11 @@
 			}
 		},
 		{
-			"type": "patchouli:crafting",
+			"type": "crafting",
 			"recipe": "doom:icon_wall5"
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -99,11 +99,11 @@
 			}
 		},
 		{
-			"type": "patchouli:crafting",
+			"type": "crafting",
 			"recipe": "doom:icon_wall6"
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -118,11 +118,11 @@
 			}
 		},
 		{
-			"type": "patchouli:crafting",
+			"type": "crafting",
 			"recipe": "doom:icon_wall7"
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -137,11 +137,11 @@
 			}
 		},
 		{
-			"type": "patchouli:crafting",
+			"type": "crafting",
 			"recipe": "doom:icon_wall8"
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -156,11 +156,11 @@
 			}
 		},
 		{
-			"type": "patchouli:crafting",
+			"type": "crafting",
 			"recipe": "doom:icon_wall9"
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -175,11 +175,11 @@
 			}
 		},
 		{
-			"type": "patchouli:crafting",
+			"type": "crafting",
 			"recipe": "doom:icon_wall10"
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -194,11 +194,11 @@
 			}
 		},
 		{
-			"type": "patchouli:crafting",
+			"type": "crafting",
 			"recipe": "doom:icon_wall11"
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -213,11 +213,11 @@
 			}
 		},
 		{
-			"type": "patchouli:crafting",
+			"type": "crafting",
 			"recipe": "doom:icon_wall12"
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -232,11 +232,11 @@
 			}
 		},
 		{
-			"type": "patchouli:crafting",
+			"type": "crafting",
 			"recipe": "doom:icon_wall13"
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -251,11 +251,11 @@
 			}
 		},
 		{
-			"type": "patchouli:crafting",
+			"type": "crafting",
 			"recipe": "doom:icon_wall14"
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -270,11 +270,11 @@
 			}
 		},
 		{
-			"type": "patchouli:crafting",
+			"type": "crafting",
 			"recipe": "doom:icon_wall15"
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -289,11 +289,11 @@
 			}
 		},
 		{
-			"type": "patchouli:crafting",
+			"type": "crafting",
 			"recipe": "doom:icon_wall16"
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {

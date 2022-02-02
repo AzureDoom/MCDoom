@@ -7,21 +7,21 @@
 	
 	"pages": [
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "Half unfeeling machine, half raging horned devil. This walking nightmare has a rocket launcher for an arm and will definitely reach out and touch you. Make sure you're loaded for bear before you take on this guy."
 		},
 		{
-			"type": "patchouli:entity",
+			"type": "entity",
 			"entity": "doom:cyberdemon"
 		},
 		{
-			"type": "patchouli:entity",
+			"type": "entity",
 			"entity": "doom:cyberdemon2016",
 			"scale": 0.9,
 			"offset": 0.2
 		},
 		{
-			"type": "patchouli:entity",
+			"type": "entity",
 			"entity": "doom:tyrant",
 			"scale": 0.9,
 			"offset": 0.2

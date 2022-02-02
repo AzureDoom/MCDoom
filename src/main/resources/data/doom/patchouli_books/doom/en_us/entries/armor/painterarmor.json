@@ -1,0 +1,26 @@
+{
+	"name": "TV Painter Doom Armor",
+	"icon": "doom:painter_doom_helmet",
+	"category": "doom:armor_category",
+	"secret": false,
+	"read_by_default": true,
+	"pages": [
+		{
+			"type": "entity",
+			"name": "TV Painter Doom Armor",
+			"entity": "minecraft:armor_stand{Invisible:1, ArmorItems:[{id:'doom:painter_doom_boots',Count:1},{id:'doom:painter_doom_leggings',Count:1},{id:'doom:painter_doom_chestplate',Count:1},{id:'doom:painter_doom_helmet',Count:1}]}",
+			"rotate": true,
+			"text": "Doom Ross, enough said? Go paint a little tree with some Nether blood!"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:painter_doom_helmet",
+			"recipe2": "doom:painter_doom_chestplate"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:painter_doom_leggings",
+			"recipe2": "doom:painter_doom_boots"
+		}
+	]
+}

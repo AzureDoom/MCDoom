@@ -7,16 +7,18 @@
 	
 	"pages": [
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "Apparently when a demon dies, they pick him up, dust him off, wire him some combat gear, and send him back into battle. No rest for the wicked, eh? You wish your missiles did what his can do."
 		},
 		{
-			"type": "patchouli:entity",
-			"entity": "doom:revenant"
+			"type": "entity",
+			"entity": "doom:revenant",
+			"offset": 0.2
 		},
 		{
-			"type": "patchouli:entity",
-			"entity": "doom:revenant2016"
+			"type": "entity",
+			"entity": "doom:revenant2016",
+			"offset": 0.4
 		}
 	]
 }

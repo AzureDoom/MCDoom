@@ -4,12 +4,12 @@
 	"category": "doom:powerups_category",
 	"pages": [
 		{
-			"type": "patchouli:spotlight",
+			"type": "spotlight",
 			"item": "doom:megasphere",
 			"link_recipe": true
 		},
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "YOU ARE HUGE! YOU MUST HAVE HUGE GUTS! RIP AND TEAR!. Grants you 200% Health and 100% Resistance for 30 seconds."
 		}
 	]

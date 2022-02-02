@@ -7,15 +7,15 @@
 	
 	"pages": [
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "One of the worst of a bad lot. You can't think of enough rotten things to say about him. He's fast, hard to kill, casts fire, and buffs other demons! At least these suckers are rare."
 		},
 		{
-			"type": "patchouli:entity",
+			"type": "entity",
 			"entity": "doom:archvile"
 		},
 		{
-			"type": "patchouli:entity",
+			"type": "entity",
 			"entity": "doom:archvileeternal"
 		}
 	]

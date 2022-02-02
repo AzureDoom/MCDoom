@@ -4,12 +4,12 @@
 	"category": "doom:powerups_category",
 	"pages": [
 		{
-			"type": "patchouli:spotlight",
+			"type": "spotlight",
 			"item": "doom:soulcube",
 			"link_recipe": true
 		},
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "An ancient and powerful item. Will save it's owner from death 5 times, granting full health and resistance for 30 seconds after use."
 		}
 	]

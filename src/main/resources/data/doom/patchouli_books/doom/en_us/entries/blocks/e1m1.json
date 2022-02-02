@@ -4,12 +4,12 @@
 	"category": "doom:blocks_category",
 	"pages": [
 		{
-			"type": "patchouli:spotlight",
+			"type": "spotlight",
 			"item": "doom:e1m1_block1",
 			"text": "E1M1 but in Minecraft! Found by Trading Level 3 Mason Villagers! There are 26 blocks in total."
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -24,7 +24,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -39,7 +39,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -54,7 +54,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -69,7 +69,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -84,7 +84,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -99,7 +99,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -114,7 +114,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -129,7 +129,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -144,7 +144,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -159,7 +159,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -174,7 +174,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -189,7 +189,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -204,7 +204,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -219,7 +219,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -234,7 +234,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -249,7 +249,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -264,7 +264,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -279,7 +279,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -294,7 +294,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -309,7 +309,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -324,7 +324,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -339,7 +339,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -354,7 +354,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -369,7 +369,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {
@@ -384,7 +384,7 @@
 			}
 		},
 		{
-			"type": "patchouli:multiblock",
+			"type": "multiblock",
 			"enable_visualize": false,
 			"offset": [0, 4, 0],
 			"multiblock": {

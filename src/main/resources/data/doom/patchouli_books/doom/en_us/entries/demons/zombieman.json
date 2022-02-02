@@ -7,11 +7,11 @@
 	
 	"pages": [
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "Just a few days ago, you were probably swapping war stories with one of these guys. Now it's time to swap some lead upside their head."
 		},
 		{
-			"type": "patchouli:entity",
+			"type": "entity",
 			"entity": "doom:zombieman"
 		}
 	]

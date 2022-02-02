@@ -7,11 +7,11 @@
 	
 	"pages": [
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "The Unwilling are fully transformed Possessed that have been transported to the Nether to serve as shrine worshipers, slave labor for higher level demons, or cannon fodder for battle within the Nether."
 		},
 		{
-			"type": "patchouli:entity",
+			"type": "entity",
 			"entity": "doom:unwilling"
 		}
 	]

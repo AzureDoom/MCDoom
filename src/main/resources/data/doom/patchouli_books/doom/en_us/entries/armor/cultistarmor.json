@@ -1,0 +1,26 @@
+{
+	"name": "Cultist Doom Armor",
+	"icon": "doom:cultist_doom_helmet",
+	"category": "doom:armor_category",
+	"secret": false,
+	"read_by_default": true,
+	"pages": [
+		{
+			"type": "entity",
+			"name": "Cultist Doom Armor",
+			"entity": "minecraft:armor_stand{Invisible:1, ArmorItems:[{id:'doom:cultist_doom_boots',Count:1},{id:'doom:cultist_doom_leggings',Count:1},{id:'doom:cultist_doom_chestplate',Count:1},{id:'doom:cultist_doom_helmet',Count:1}]}",
+			"rotate": true,
+			"text": "Created from salvaged Cultist tech."
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:cultist_doom_helmet",
+			"recipe2": "doom:cultist_doom_chestplate"
+		},
+		{
+			"type": "crafting",
+			"recipe": "doom:cultist_doom_leggings",
+			"recipe2": "doom:cultist_doom_boots"
+		}
+	]
+}

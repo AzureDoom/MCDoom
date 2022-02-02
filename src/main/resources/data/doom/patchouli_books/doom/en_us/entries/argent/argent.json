@@ -4,7 +4,7 @@
 	"category": "doom:argent_category",
 	"pages": [
 		{
-			"type": "patchouli:spotlight",
+			"type": "spotlight",
 			"item": "doom:argent_energy",
 			"link_recipe": true,
 			"text": "Argent Energy is one of the main crafting ingredient in crafting your Doom items. It's found by slaying the demons of the Nether. It is also a very powerful fuel source being 100x burn time as coal."

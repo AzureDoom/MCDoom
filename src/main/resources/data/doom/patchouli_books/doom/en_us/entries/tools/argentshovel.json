@@ -4,12 +4,12 @@
 	"category": "doom:tools_category",
 	"pages": [
 		{
-			"type": "patchouli:spotlight",
+			"type": "spotlight",
 			"item": "doom:argent_shovel",
 			"link_recipe": true
 		},
 		{
-			"type": "patchouli:crafting",
+			"type": "crafting",
 			"recipe": "doom:argent_shovel"
 		}
 	]

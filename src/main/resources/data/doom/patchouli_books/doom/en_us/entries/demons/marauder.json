@@ -7,12 +7,13 @@
 	
 	"pages": [
 		{
-			"type": "patchouli:text",
+			"type": "text",
 			"text": "You were never one of us. You were nothing but a usurper, a false idol. My eyes have been opened. Let me help you to see."
 		},
 		{
-			"type": "patchouli:entity",
-			"entity": "doom:marauder"
+			"type": "entity",
+			"entity": "doom:marauder",
+			"scale": 0.9
 		}
 	]
 }
