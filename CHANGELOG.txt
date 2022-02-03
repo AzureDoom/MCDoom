@@ -1,10 +1,4 @@
-v.4.1.3
+v.4.1.4
 
-- Clean up of dead files, size reducing only a few KB.
-- Chainsaw Classic and 64 now stop moving when empty. Eternal not ETA on getting this as it's animated differently.
-- Added particles to more projectiles such as Chaingun bullets, Rockets, and Unmaykr.
-- Fixed Chaingun sound bug when rapid firing.
-- Added Blaze rods, Mamga Cream, and Wither Skull drops to some mobs. Same rarity as vanilla. 
-- Updated Patchouli for Gladiator and new Weapons.
-  - Redid Weapon pages. Included note in Weapon category that all weapons are crafted in the Gun Crafter. 
-  - Few mobs were tweaked for placement.
+- Readds Trinket Support.
+- Removes Cardinal Components as a requirement. Don't install.
