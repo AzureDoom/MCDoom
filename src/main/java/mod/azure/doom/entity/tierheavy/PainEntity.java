@@ -1,7 +1,6 @@
 package mod.azure.doom.entity.tierheavy;
 
 import java.util.EnumSet;
-import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
@@ -25,6 +24,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -60,7 +60,7 @@ public class PainEntity extends DemonEntity implements Enemy, IAnimatable, IAnim
 
 	public PainEntity(EntityType<? extends PainEntity> type, Level worldIn) {
 		super(type, worldIn);
-		this.moveControl = new PainEntity.MoveHelperController(this);
+		this.moveControl = new PainEntity.GhastMoveControl(this);
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -195,6 +195,33 @@ public class PainEntity extends DemonEntity implements Enemy, IAnimatable, IAnim
 	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
 	}
 
+	public void travel(Vec3 movementInput) {
+		if (this.isInWater()) {
+			this.moveRelative(0.02F, movementInput);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale((double) 0.8F));
+		} else if (this.isInLava()) {
+			this.moveRelative(0.02F, movementInput);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale(0.5D));
+		} else {
+			BlockPos ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
+			float f = 0.91F;
+			if (this.onGround) {
+				f = this.level.getBlockState(ground).getFriction(this.level, ground, this) * 0.91F;
+			}
+			float f1 = 0.16277137F / (f * f * f);
+			f = 0.91F;
+			if (this.onGround) {
+				f = this.level.getBlockState(ground).getFriction(this.level, ground, this) * 0.91F;
+			}
+			this.moveRelative(this.onGround ? 0.1F * f1 : 0.02F, movementInput);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale((double) f));
+		}
+		this.calculateEntityAnimation(this, false);
+	}
+
 	public boolean onClimbable() {
 		return false;
 	}
@@ -290,11 +317,11 @@ public class PainEntity extends DemonEntity implements Enemy, IAnimatable, IAnim
 		}
 	}
 
-	static class MoveHelperController extends MoveControl {
+	static class GhastMoveControl extends MoveControl {
 		private final PainEntity parentEntity;
 		private int courseChangeCooldown;
 
-		public MoveHelperController(PainEntity painEntity) {
+		public GhastMoveControl(PainEntity painEntity) {
 			super(painEntity);
 			this.parentEntity = painEntity;
 		}
@@ -333,40 +360,6 @@ public class PainEntity extends DemonEntity implements Enemy, IAnimatable, IAnim
 			}
 
 			return true;
-		}
-	}
-
-	static class RandomFlyGoal extends Goal {
-		private final PainEntity parentEntity;
-
-		public RandomFlyGoal(PainEntity ghast) {
-			this.parentEntity = ghast;
-			this.setFlags(EnumSet.of(Goal.Flag.MOVE));
-		}
-
-		public boolean canUse() {
-			MoveControl movementcontroller = this.parentEntity.getMoveControl();
-			if (!movementcontroller.hasWanted()) {
-				return true;
-			} else {
-				double d0 = movementcontroller.getWantedX() - this.parentEntity.getX();
-				double d1 = movementcontroller.getWantedY() - this.parentEntity.getY();
-				double d2 = movementcontroller.getWantedZ() - this.parentEntity.getZ();
-				double d3 = d0 * d0 + d1 * d1 + d2 * d2;
-				return d3 < 1.0D || d3 > 10.0D;
-			}
-		}
-
-		public boolean canContinueToUse() {
-			return false;
-		}
-
-		public void start() {
-			Random random = this.parentEntity.getRandom();
-			double d0 = this.parentEntity.getX() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 2.0F);
-			double d1 = this.parentEntity.getY() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 2.0F);
-			double d2 = this.parentEntity.getZ() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 2.0F);
-			this.parentEntity.getMoveControl().setWantedPosition(d0, d1, d2, 1.0D);
 		}
 	}
 
