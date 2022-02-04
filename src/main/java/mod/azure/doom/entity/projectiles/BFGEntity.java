@@ -280,18 +280,14 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
-		Entity entity = entityHitResult.getEntity();
-		if (entityHitResult.getType() != HitResult.Type.ENTITY
-				|| !((EntityHitResult) entityHitResult).getEntity().is(entity)) {
-			if (!this.level.isClientSide) {
-				this.doDamage();
-				this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
-						DoomConfig.SERVER.enable_block_breaking.get() ? Explosion.BlockInteraction.BREAK
-								: Explosion.BlockInteraction.NONE);
-				this.remove(RemovalReason.KILLED);
-			}
-			this.playSound(ModSoundEvents.BFG_HIT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+		if (!this.level.isClientSide) {
+			this.doDamage();
+			this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
+					DoomConfig.SERVER.enable_block_breaking.get() ? Explosion.BlockInteraction.BREAK
+							: Explosion.BlockInteraction.NONE);
+			this.remove(RemovalReason.KILLED);
 		}
+		this.playSound(ModSoundEvents.BFG_HIT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 	}
 
 	protected void onHit(HitResult result) {

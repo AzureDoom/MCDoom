@@ -2,6 +2,7 @@ package mod.azure.doom.entity.projectiles;
 
 import java.util.List;
 
+import mod.azure.doom.entity.tierheavy.CacodemonEntity;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModEntityTypes;
@@ -147,10 +148,15 @@ public class GrenadeEntity extends AbstractArrow implements IAnimatable {
 
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
-		super.onHitEntity(entityHitResult);
+		Entity entity = entityHitResult.getEntity();
 		if (!this.level.isClientSide()) {
-			this.explode();
-			this.remove(RemovalReason.DISCARDED);
+			if (entity instanceof CacodemonEntity) {
+				entity.hurt(DamageSource.playerAttack((Player) this.shooter), ((LivingEntity) entity).getMaxHealth());
+				this.remove(RemovalReason.DISCARDED);
+			} else {
+				this.explode();
+				this.remove(RemovalReason.DISCARDED);
+			}
 		}
 	}
 
