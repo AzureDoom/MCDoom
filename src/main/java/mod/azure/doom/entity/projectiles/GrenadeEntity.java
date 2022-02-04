@@ -4,6 +4,7 @@ import java.util.List;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.config.DoomConfig.Weapons;
+import mod.azure.doom.entity.tierheavy.CacodemonEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
@@ -194,10 +195,16 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 
 	@Override
 	protected void onEntityHit(EntityHitResult entityHitResult) {
-		super.onEntityHit(entityHitResult);
+		Entity entity = entityHitResult.getEntity();
 		if (!this.world.isClient) {
-			this.explode();
-			this.remove(Entity.RemovalReason.DISCARDED);
+			if (entity instanceof CacodemonEntity) {
+				entity.damage(DamageSource.player((PlayerEntity) this.shooter), ((LivingEntity) entity).getMaxHealth());
+				this.remove(Entity.RemovalReason.DISCARDED);
+			} else {
+				super.onEntityHit(entityHitResult);
+				this.explode();
+				this.remove(Entity.RemovalReason.DISCARDED);
+			}
 		}
 	}
 

@@ -237,8 +237,7 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 							|| entity instanceof HoglinEntity)) {
 				if (y <= 1.0D) {
 					if (entity.isAlive()) {
-						entity.damage(DamageSource.explosion(this.shooter),
-								DoomMod.config.weapons.bfgball_damage_aoe);
+						entity.damage(DamageSource.explosion(this.shooter), DoomMod.config.weapons.bfgball_damage_aoe);
 						setBeamTarget(entity.getId());
 					}
 				}
@@ -287,18 +286,14 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 
 	@Override
 	protected void onEntityHit(EntityHitResult entityHitResult) {
-		Entity entity = entityHitResult.getEntity();
-		if (entityHitResult.getType() != HitResult.Type.ENTITY
-				|| !((EntityHitResult) entityHitResult).getEntity().isPartOf(entity)) {
-			if (!this.world.isClient) {
-				this.doDamage();
-				this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.0F, false,
-						DoomMod.config.weapons.enable_block_breaking ? Explosion.DestructionType.BREAK
-								: Explosion.DestructionType.NONE);
-				this.remove(Entity.RemovalReason.DISCARDED);
-			}
-			this.playSound(ModSoundEvents.BFG_HIT, 1.0F, 1.0F);
+		if (!this.world.isClient) {
+			this.doDamage();
+			this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.0F, false,
+					DoomMod.config.weapons.enable_block_breaking ? Explosion.DestructionType.BREAK
+							: Explosion.DestructionType.NONE);
+			this.remove(Entity.RemovalReason.DISCARDED);
 		}
+		this.playSound(ModSoundEvents.BFG_HIT, 1.0F, 1.0F);
 	}
 
 	public void doDamage() {
