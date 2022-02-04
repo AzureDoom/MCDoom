@@ -3,10 +3,7 @@ package mod.azure.doom.util.registry;
 import java.util.List;
 
 import mod.azure.doom.util.config.DoomConfig;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 
@@ -238,9 +235,7 @@ public class ModEntitySpawn {
 		}
 	}
 
-	private static boolean parseBiomes(List<? extends String> list, BiomeLoadingEvent event) {
-		ResourceKey<Biome> biomeKey = ResourceKey.create(Registry.BIOME_REGISTRY, event.getName());
-		return list.contains(biomeKey.getRegistryName().toString())
-				|| list.contains("#" + event.getCategory().getName());
+	private static boolean parseBiomes(List<? extends String> biomes, BiomeLoadingEvent event) {
+		return biomes.contains(event.getName().toString()) || biomes.contains("#" + event.getCategory().getName());
 	}
 }
