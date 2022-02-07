@@ -94,7 +94,7 @@ public class DoomItems {
 	public static BFG9000 BFG = item(new BFG9000(), "bfg9000");
 	public static BFG BFG_ETERNAL = item(new BFG(), "bfg_eternal");
 	public static DaisyItem DAISY = item(new DaisyItem(), "daisy");
-	public static Rocket ROCKET = item(new Rocket(2.2F), "rocket");
+	public static Rocket ROCKET = item(new Rocket(), "rocket");
 	public static Unmaykr UNMAYKR = item(new Unmaykr(), "unmaykr");
 	public static DGauss DGAUSS = item(new DGauss(), "doomed_gauss");
 	public static Ballista BALLISTA = item(new Ballista(), "ballista");
@@ -102,8 +102,8 @@ public class DoomItems {
 	public static Chainsaw CHAINSAW = item(new Chainsaw(), "chainsaw");
 	public static PistolItem PISTOL = item(new PistolItem(), "pistol");
 	public static DShotgun DSG = item(new DShotgun(), "doomed_shotgun");
-	public static ClipAmmo BULLETS = item(new ClipAmmo(1.2F), "bullets");
-	public static BFGCell BFG_CELL = item(new BFGCell(10.2F), "bfg_cell");
+	public static ClipAmmo BULLETS = item(new ClipAmmo(), "bullets");
+	public static BFGCell BFG_CELL = item(new BFGCell(), "bfg_cell");
 	public static Chainsaw CHAINSAW64 = item(new Chainsaw(), "chainsaw64");
 	public static PlasmaGun PLASMAGUN = item(new PlasmaGun(), "plasmagun");
 	public static ArgentAxe ARGENT_AXE = item(new ArgentAxe(), "argent_axe");
@@ -114,14 +114,14 @@ public class DoomItems {
 	public static GrenadeItem GRENADE = item(new GrenadeItem(), "doomed_grenade");
 	public static HeavyCannon HEAVYCANNON = item(new HeavyCannon(), "heavycannon");
 	public static Item ICON_ICON = item(new Item(new Item.Settings()), "icon_icon");
-	public static ArgentBolt ARGENT_BOLT = item(new ArgentBolt(1.7F), "argent_bolt");
+	public static ArgentBolt ARGENT_BOLT = item(new ArgentBolt(), "argent_bolt");
 	public static ArgentPaxel ARGENT_PAXEL = item(new ArgentPaxel(), "argent_paxel");
 	public static ArgentSword ARGENT_SWORD = item(new ArgentSword(), "argent_sword");
 	public static PowerSphereItem POWER = item(new PowerSphereItem(), "powersphere");
-	public static EnergyCell ENERGY_CELLS = item(new EnergyCell(2.2F), "energy_cells");
+	public static EnergyCell ENERGY_CELLS = item(new EnergyCell(), "energy_cells");
 	public static ArgentShovel ARGENT_SHOVEL = item(new ArgentShovel(), "argent_shovel");
-	public static ShellAmmo SHOTGUN_SHELLS = item(new ShellAmmo(2.0F), "shotgun_shells");
-	public static UnmaykrBolt UNMAKRY_BOLT = item(new UnmaykrBolt(10.2F), "unmaykr_bolt");
+	public static ShellAmmo SHOTGUN_SHELLS = item(new ShellAmmo(), "shotgun_shells");
+	public static UnmaykrBolt UNMAKRY_BOLT = item(new UnmaykrBolt(), "unmaykr_bolt");
 	public static UnopenedItem AXE_CLOSED = item(new UnopenedItem(), "axe_marauder_closed");
 	public static ArgentPickaxe ARGENT_PICKAXE = item(new ArgentPickaxe(), "argent_pickaxe");
 	public static ArgentPlateItem ARGENT_PLATE = item(new ArgentPlateItem(), "argent_plate");
@@ -131,7 +131,7 @@ public class DoomItems {
 	public static RocketLauncher ROCKETLAUNCHER = item(new RocketLauncher(), "rocketlauncher");
 	public static ArgentEnergyItem ARGENT_ENERGY = item(new ArgentEnergyItem(), "argent_energy");
 	public static InmortalSphereItem INMORTAL = item(new InmortalSphereItem(), "inmortalsphere");
-	public static ChaingunAmmo CHAINGUN_BULLETS = item(new ChaingunAmmo(10.0F), "chaingunbullets");
+	public static ChaingunAmmo CHAINGUN_BULLETS = item(new ChaingunAmmo(), "chaingunbullets");
 	public static SwordCrucibleItem CRUCIBLESWORD = item(new SwordCrucibleItem(), "cruciblesword");
 	public static InvisibleSphereItem INVISIBLE = item(new InvisibleSphereItem(), "invisiblesphere");
 	public static ChainsawAnimated CHAINSAW_ETERNAL = item(new ChainsawAnimated(), "chainsaweternal");

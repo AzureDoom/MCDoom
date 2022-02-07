@@ -188,7 +188,7 @@
 			"loop": "hold_on_last_frame",
 			"animation_length": 0.32,
 			"bones": {
-				"bipedLeftArm_flat": {
+				"bipedRightArm_flat": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 0]
@@ -228,6 +228,21 @@
 						"1.04": {
 							"vector": [0, 0, 0]
 						}
+					}
+				}
+			}
+		},
+		"ranged": {
+			"animation_length": 0.04,
+			"bones": {
+				"bipedRightArm_flat": {
+					"rotation": {
+						"vector": [-40.12074, 32.79775, 32.73241]
+					}
+				},
+				"bipedLeftArm_flat": {
+					"rotation": {
+						"vector": [-10, 0, 0]
 					}
 				}
 			}

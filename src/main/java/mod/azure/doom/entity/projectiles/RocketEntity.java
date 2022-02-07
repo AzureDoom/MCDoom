@@ -2,7 +2,6 @@ package mod.azure.doom.entity.projectiles;
 
 import java.util.List;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
@@ -10,6 +9,7 @@ import mod.azure.doom.util.registry.ModSoundEvents;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -20,7 +20,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -44,6 +46,7 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 	protected boolean inAir;
 	private int ticksInAir;
 	private LivingEntity shooter;
+	private float projectiledamage;
 
 	public RocketEntity(EntityType<? extends RocketEntity> entityType, World world) {
 		super(entityType, world);
@@ -53,6 +56,12 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 	public RocketEntity(World world, LivingEntity owner) {
 		super(ProjectilesEntityRegister.ROCKET, owner, world);
 		this.shooter = owner;
+	}
+
+	public RocketEntity(World world, LivingEntity owner, float damage) {
+		super(ProjectilesEntityRegister.ROCKET, owner, world);
+		this.shooter = owner;
+		this.projectiledamage = damage;
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -235,13 +244,24 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 	}
 
 	@Override
+	public void remove(RemovalReason reason) {
+		AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(this.world, this.getX(), this.getY(),
+				this.getZ());
+		areaeffectcloudentity.setParticleType(ParticleTypes.LAVA);
+		areaeffectcloudentity.setRadius(6);
+		areaeffectcloudentity.setDuration(1);
+		areaeffectcloudentity.updatePosition(this.getX(), this.getY(), this.getZ());
+		this.world.spawnEntity(areaeffectcloudentity);
+		world.playSound((PlayerEntity) null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_GENERIC_EXPLODE,
+				SoundCategory.PLAYERS, 1.0F, 1.5F);
+		super.remove(reason);
+	}
+
+	@Override
 	protected void onBlockHit(BlockHitResult blockHitResult) {
 		super.onBlockHit(blockHitResult);
 		if (!this.world.isClient) {
 			this.doDamage();
-			this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.0F, false,
-					DoomMod.config.weapons.enable_block_breaking ? Explosion.DestructionType.BREAK
-							: Explosion.DestructionType.NONE);
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
 		this.setSound(ModSoundEvents.ROCKET_HIT);
@@ -251,9 +271,6 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 	protected void onEntityHit(EntityHitResult entityHitResult) {
 		if (!this.world.isClient) {
 			this.doDamage();
-			this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.0F, false,
-					DoomMod.config.weapons.enable_block_breaking ? Explosion.DestructionType.BREAK
-							: Explosion.DestructionType.NONE);
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
 	}
@@ -285,8 +302,7 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d)) / q);
 			if (y <= 1.0D) {
 				if (entity instanceof LivingEntity) {
-					entity.damage(DamageSource.player((PlayerEntity) this.shooter),
-							DoomMod.config.weapons.rocket_damage);
+					entity.damage(DamageSource.player((PlayerEntity) this.shooter), projectiledamage);
 				}
 				this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 0.0F,
 						Explosion.DestructionType.NONE);

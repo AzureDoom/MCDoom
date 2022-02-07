@@ -42,6 +42,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
+import net.minecraft.world.explosion.Explosion;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
@@ -247,12 +248,20 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	@Override
+	public boolean isImmuneToExplosion() {
+		return true;
+	}
+
+	@Override
 	public boolean tryAttack(Entity target) {
 		this.world.sendEntityStatus(this, (byte) 4);
 		boolean bl = target.damage(DamageSource.mob(this), (float) config.gladiator_melee_damage);
 		if (bl) {
 			target.setVelocity(target.getVelocity().add(0.4f, 0.4f, 0.4f));
 			this.applyDamageEffects(this, target);
+			this.world.createExplosion(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false,
+					Explosion.DestructionType.BREAK);
+			target.timeUntilRegen = 0;
 		}
 		return bl;
 	}
@@ -262,6 +271,9 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 		boolean bl = target.damage(DamageSource.mob(this), (float) config.gladiator_melee_damage);
 		if (bl) {
 			this.applyDamageEffects(this, target);
+			this.world.createExplosion(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false,
+					Explosion.DestructionType.BREAK);
+			target.timeUntilRegen = 0;
 		}
 		return bl;
 	}

@@ -12,6 +12,8 @@ import mod.azure.doom.util.registry.ModSoundEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -99,7 +101,9 @@ public class DPlasmaRifle extends DoomBaseItem {
 	}
 
 	public EnergyCellEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
-		EnergyCellEntity arrowentity = new EnergyCellEntity(worldIn, shooter);
+		float j = EnchantmentHelper.getLevel(Enchantments.POWER, stack);
+		EnergyCellEntity arrowentity = new EnergyCellEntity(worldIn, shooter,
+				(DoomMod.config.weapons.energycell_damage + (j * 2.0F)));
 		return arrowentity;
 	}
 

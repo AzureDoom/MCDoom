@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.config.DoomConfig.MobStats;
+import mod.azure.doom.config.DoomConfig.Weapons;
 import mod.azure.doom.network.EntityPacket;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -36,13 +37,13 @@ public class DemonEntity extends HostileEntity implements Angerable {
 			TrackedDataHandlerRegistry.INTEGER);
 	private static final UniformIntProvider ANGER_TIME_RANGE = TimeHelper.betweenSeconds(20, 39);
 	private UUID targetUuid;
-
 	public static MobStats config = DoomMod.config.stats;
+	public static Weapons rangedconfig = DoomMod.config.weapons;
 
 	protected DemonEntity(EntityType<? extends HostileEntity> type, World worldIn) {
 		super(type, worldIn);
 		this.ignoreCameraFrustum = true;
-		this.experiencePoints = 10;
+		this.experiencePoints = (int) (this.getMaxHealth());
 	}
 
 	@Override

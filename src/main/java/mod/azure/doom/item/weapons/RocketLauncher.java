@@ -9,6 +9,8 @@ import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -104,7 +106,9 @@ public class RocketLauncher extends DoomBaseItem {
 	}
 
 	public RocketEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
-		RocketEntity arrowentity = new RocketEntity(worldIn, shooter);
+		float j = EnchantmentHelper.getLevel(Enchantments.POWER, stack);
+		RocketEntity arrowentity = new RocketEntity(worldIn, shooter,
+				(DoomMod.config.weapons.rocket_damage + (j * 2.0F)));
 		return arrowentity;
 	}
 }

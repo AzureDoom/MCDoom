@@ -1,6 +1,5 @@
 package mod.azure.doom.entity.projectiles;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
@@ -47,10 +46,16 @@ public class BulletEntity extends PersistentProjectileEntity implements IAnimata
 	private int ticksInAir;
 	private static final TrackedData<Integer> PARTICLE = DataTracker.registerData(BulletEntity.class,
 			TrackedDataHandlerRegistry.INTEGER);
+	private float projectiledamage;
 
 	public BulletEntity(EntityType<? extends BulletEntity> entityType, World world) {
 		super(entityType, world);
 		this.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
+	}
+
+	public BulletEntity(World world, LivingEntity owner, float damage) {
+		super(ProjectilesEntityRegister.BULLETS, owner, world);
+		this.projectiledamage = damage;
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -281,7 +286,7 @@ public class BulletEntity extends PersistentProjectileEntity implements IAnimata
 				((LivingEntity) entity2).onAttacking(entity);
 			}
 		}
-		if (entity.damage(damageSource2, DoomMod.config.weapons.bullet_damage)) {
+		if (entity.damage(damageSource2, projectiledamage)) {
 			if (entity instanceof LivingEntity) {
 				LivingEntity livingEntity = (LivingEntity) entity;
 				if (!this.world.isClient && entity2 instanceof LivingEntity) {

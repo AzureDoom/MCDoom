@@ -10,6 +10,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
 
@@ -33,6 +34,16 @@ public class ChaingunMobEntity extends ExplosiveProjectileEntity {
 
 	public ChaingunMobEntity(World worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
 		super(ProjectilesEntityRegister.CHAINGUN_MOB, x, y, z, accelX, accelY, accelZ, worldIn);
+	}
+
+	@Override
+	public void tick() {
+		super.tick();
+		if (this.world.isClient) {
+			double d2 = this.getX() + (this.random.nextDouble()) * (double) this.getWidth() * 0.5D;
+			double f2 = this.getZ() + (this.random.nextDouble()) * (double) this.getWidth() * 0.5D;
+			this.world.addParticle(ParticleTypes.SMOKE, true, d2, this.getY(), f2, 0, 0, 0);
+		}
 	}
 
 	@Override

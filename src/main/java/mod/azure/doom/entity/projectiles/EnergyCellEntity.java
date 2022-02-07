@@ -1,6 +1,5 @@
 package mod.azure.doom.entity.projectiles;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
@@ -42,6 +41,7 @@ public class EnergyCellEntity extends PersistentProjectileEntity implements IAni
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
+	private float projectiledamage;
 
 	public EnergyCellEntity(EntityType<? extends EnergyCellEntity> entityType, World world) {
 		super(entityType, world);
@@ -50,6 +50,11 @@ public class EnergyCellEntity extends PersistentProjectileEntity implements IAni
 
 	public EnergyCellEntity(World world, LivingEntity owner) {
 		super(ProjectilesEntityRegister.ENERGY_CELL, owner, world);
+	}
+
+	public EnergyCellEntity(World world, LivingEntity owner, float damage) {
+		super(ProjectilesEntityRegister.ENERGY_CELL, owner, world);
+		this.projectiledamage = damage;
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -259,7 +264,7 @@ public class EnergyCellEntity extends PersistentProjectileEntity implements IAni
 				((LivingEntity) entity2).onAttacking(entity);
 			}
 		}
-		if (entity.damage(damageSource2, DoomMod.config.weapons.energycell_damage)) {
+		if (entity.damage(damageSource2, projectiledamage)) {
 			if (entity instanceof LivingEntity) {
 				LivingEntity livingEntity = (LivingEntity) entity;
 				if (!this.world.isClient && entity2 instanceof LivingEntity) {

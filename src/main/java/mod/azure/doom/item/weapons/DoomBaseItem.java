@@ -102,9 +102,4 @@ public class DoomBaseItem extends Item implements IAnimatable, ISyncable {
 						.formatted(Formatting.ITALIC));
 	}
 
-	@Override
-	public boolean isEnchantable(ItemStack stack) {
-		return false;
-	}
-
 }

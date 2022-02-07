@@ -9,6 +9,8 @@ import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -98,8 +100,9 @@ public class Shotgun extends DoomBaseItem {
 	}
 
 	public ShotgunShellEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
+		float j = EnchantmentHelper.getLevel(Enchantments.POWER, stack);
 		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter,
-				DoomMod.config.weapons.shotgun_damage);
+				(DoomMod.config.weapons.shotgun_damage + (j * 2.0F)));
 		return arrowentity;
 	}
 

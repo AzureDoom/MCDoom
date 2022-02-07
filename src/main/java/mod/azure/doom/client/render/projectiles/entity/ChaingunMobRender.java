@@ -19,7 +19,7 @@ import net.minecraft.util.math.Vec3f;
 public class ChaingunMobRender extends EntityRenderer<ChaingunMobEntity> {
 
 	private static final Identifier SHELL_TEXTURE = new Identifier(DoomMod.MODID,
-			"textures/entity/projectiles/shotgun_shell.png");
+			"textures/entity/projectiles/argent_bolt.png");
 
 	public ChaingunMobRender(EntityRendererFactory.Context renderManagerIn) {
 		super(renderManagerIn);

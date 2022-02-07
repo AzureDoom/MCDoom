@@ -1,6 +1,5 @@
 package mod.azure.doom.entity.projectiles;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
@@ -35,6 +34,7 @@ public class UnmaykrBoltEntity extends PersistentProjectileEntity {
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
+	private float projectiledamage;
 
 	public UnmaykrBoltEntity(EntityType<? extends UnmaykrBoltEntity> entityType, World world) {
 		super(entityType, world);
@@ -43,6 +43,11 @@ public class UnmaykrBoltEntity extends PersistentProjectileEntity {
 
 	public UnmaykrBoltEntity(World world, LivingEntity owner) {
 		super(ProjectilesEntityRegister.UNMAYKR, owner, world);
+	}
+
+	public UnmaykrBoltEntity(World world, LivingEntity owner, float damage) {
+		super(ProjectilesEntityRegister.UNMAYKR, owner, world);
+		this.projectiledamage = damage;
 	}
 
 	protected UnmaykrBoltEntity(EntityType<? extends UnmaykrBoltEntity> type, double x, double y, double z,
@@ -236,7 +241,7 @@ public class UnmaykrBoltEntity extends PersistentProjectileEntity {
 				((LivingEntity) entity2).onAttacking(entity);
 			}
 		}
-		if (entity.damage(damageSource2, DoomMod.config.weapons.unmaykr_damage)) {
+		if (entity.damage(damageSource2, projectiledamage)) {
 			if (entity instanceof LivingEntity) {
 				LivingEntity livingEntity = (LivingEntity) entity;
 				if (!this.world.isClient && entity2 instanceof LivingEntity) {

@@ -1,6 +1,5 @@
 package mod.azure.doom.entity.projectiles;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
@@ -41,10 +40,16 @@ public class ChaingunBulletEntity extends PersistentProjectileEntity implements 
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
+	private float projectiledamage;
 
 	public ChaingunBulletEntity(EntityType<? extends ChaingunBulletEntity> entityType, World world) {
 		super(entityType, world);
 		this.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
+	}
+
+	public ChaingunBulletEntity(World world, LivingEntity owner, float damage) {
+		super(ProjectilesEntityRegister.CHAINGUN_BULLET, owner, world);
+		this.projectiledamage = damage;
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -259,7 +264,7 @@ public class ChaingunBulletEntity extends PersistentProjectileEntity implements 
 				((LivingEntity) entity2).onAttacking(entity);
 			}
 		}
-		if (entity.damage(damageSource2, DoomMod.config.weapons.chaingun_bullet_damage)) {
+		if (entity.damage(damageSource2, projectiledamage)) {
 			if (entity instanceof LivingEntity) {
 				LivingEntity livingEntity = (LivingEntity) entity;
 				if (!this.world.isClient && entity2 instanceof LivingEntity) {

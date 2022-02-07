@@ -63,13 +63,15 @@ public class RangedStaticAttackGoal extends Goal {
 				++this.attackTimer;
 
 				if (this.attackTimer == this.attackCooldown) {
+					this.parentEntity.setAttackingState(statecheck);
 					attack.shoot();
 					this.attackTimer = 0;
 				}
 			} else if (this.attackTimer > 0) {
 				--this.attackTimer;
+				this.parentEntity.setAttackingState(0);
 			}
-			this.parentEntity.setAttackingState(attackTimer >= attackCooldown * 0.25 ? statecheck : 0);
+			this.parentEntity.getNavigation().startMovingTo(livingentity, 1.4);
 		}
 	}
 

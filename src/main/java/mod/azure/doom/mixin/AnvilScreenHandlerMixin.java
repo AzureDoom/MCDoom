@@ -11,9 +11,10 @@ import mod.azure.doom.item.weapons.ChainsawAnimated;
 import mod.azure.doom.item.weapons.DarkLordCrucibleItem;
 import mod.azure.doom.item.weapons.DoomBaseItem;
 import mod.azure.doom.item.weapons.SwordCrucibleItem;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.screen.AnvilScreenHandler;
 import net.minecraft.screen.ForgingScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
@@ -34,7 +35,12 @@ public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
 		if ((leftStack.getItem() instanceof DoomBaseItem || leftStack.getItem() instanceof AxeMarauderItem
 				|| leftStack.getItem() instanceof DarkLordCrucibleItem
 				|| leftStack.getItem() instanceof SwordCrucibleItem || leftStack.getItem() instanceof ChainsawAnimated
-				|| leftStack.getItem() instanceof Chainsaw) && rightStack.getItem() == Items.ENCHANTED_BOOK) {
+				|| leftStack.getItem() instanceof Chainsaw)
+				&& (EnchantmentHelper.get(rightStack).containsKey(Enchantments.MENDING)
+						|| EnchantmentHelper.get(rightStack).containsKey(Enchantments.UNBREAKING)
+						|| EnchantmentHelper.get(rightStack).containsKey(Enchantments.INFINITY)
+						|| EnchantmentHelper.get(rightStack).containsKey(Enchantments.FLAME)
+						|| EnchantmentHelper.get(rightStack).containsKey(Enchantments.PUNCH))) {
 			ItemStack repaired = ItemStack.EMPTY;
 			this.output.setStack(0, repaired);
 			this.sendContentUpdates();

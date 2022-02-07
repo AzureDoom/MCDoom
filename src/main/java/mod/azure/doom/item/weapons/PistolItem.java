@@ -11,6 +11,8 @@ import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -96,7 +98,9 @@ public class PistolItem extends DoomBaseItem {
 	}
 
 	public BulletEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
-		BulletEntity arrowentity = new BulletEntity(worldIn, shooter);
+		float j = EnchantmentHelper.getLevel(Enchantments.POWER, stack);
+		BulletEntity arrowentity = new BulletEntity(worldIn, shooter,
+				(DoomMod.config.weapons.bullet_damage + (j * 2.0F)));
 		return arrowentity;
 	}
 
