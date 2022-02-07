@@ -6,6 +6,7 @@ import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.ChaingunRender;
 import mod.azure.doom.entity.projectiles.ChaingunBulletEntity;
+import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.ChaingunLoadingPacket;
@@ -20,6 +21,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.network.PacketDistributor;
@@ -55,23 +58,25 @@ public class Chaingun extends DoomBaseItem {
 		if (entityLiving instanceof Player) {
 			Player playerentity = (Player) entityLiving;
 			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
-				playerentity.getCooldowns().addCooldown(this, 3);
-				if (!worldIn.isClientSide) {
-					ChaingunBulletEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(),
-							0.0F, 1.0F * 3.0F, 1.0F);
-					abstractarrowentity.isNoGravity();
-
-					stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
-					worldIn.addFreshEntity(abstractarrowentity);
-					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-							ModSoundEvents.CHAINGUN_SHOOT.get(), SoundSource.PLAYERS, 1.0F,
-							1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+				if (!playerentity.getCooldowns().isOnCooldown(this)) {
+					playerentity.getCooldowns().addCooldown(this, 3);
 					if (!worldIn.isClientSide) {
-						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
-						final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
-								.with(() -> playerentity);
-						GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
+						ChaingunBulletEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
+						abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(),
+								playerentity.getYRot(), 0.0F, 1.0F * 3.0F, 1.0F);
+						abstractarrowentity.isNoGravity();
+
+						stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
+						worldIn.addFreshEntity(abstractarrowentity);
+						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
+								ModSoundEvents.CHAINGUN_SHOOT.get(), SoundSource.PLAYERS, 1.0F,
+								1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+						if (!worldIn.isClientSide) {
+							final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
+							final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
+									.with(() -> playerentity);
+							GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
+						}
 					}
 				}
 			} else {
@@ -82,7 +87,9 @@ public class Chaingun extends DoomBaseItem {
 	}
 
 	public ChaingunBulletEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		ChaingunBulletEntity arrowentity = new ChaingunBulletEntity(worldIn, shooter);
+		float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		ChaingunBulletEntity arrowentity = new ChaingunBulletEntity(worldIn, shooter,
+				(DoomConfig.SERVER.chaingun_bullet_damage.get().floatValue() + (j * 2.0F)));
 		return arrowentity;
 	}
 

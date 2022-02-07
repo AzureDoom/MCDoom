@@ -1,7 +1,6 @@
 package mod.azure.doom.entity.projectiles;
 
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomParticles;
 import mod.azure.doom.util.registry.ModEntityTypes;
@@ -46,6 +45,7 @@ public class BulletEntity extends AbstractArrow implements IAnimatable {
 	private AnimationFactory factory = new AnimationFactory(this);
 	public static final EntityDataAccessor<Integer> PARTICLE = SynchedEntityData.defineId(BulletEntity.class,
 			EntityDataSerializers.INT);
+	private float projectiledamage;
 
 	public BulletEntity(EntityType<? extends AbstractArrow> type, Level world) {
 		super(type, world);
@@ -67,6 +67,11 @@ public class BulletEntity extends AbstractArrow implements IAnimatable {
 
 	public BulletEntity(Level world, LivingEntity owner) {
 		super(ModEntityTypes.BULLETS.get(), owner, world);
+	}
+
+	public BulletEntity(Level world, LivingEntity owner, float damage) {
+		super(ModEntityTypes.BULLETS.get(), owner, world);
+		this.projectiledamage = damage;
 	}
 
 	@Override
@@ -265,7 +270,7 @@ public class BulletEntity extends AbstractArrow implements IAnimatable {
 				((LivingEntity) entity1).setLastHurtMob(entity);
 			}
 		}
-		if (entity.hurt(damagesource, DoomConfig.SERVER.bullet_damage.get().floatValue())) {
+		if (entity.hurt(damagesource, projectiledamage)) {
 			if (entity instanceof LivingEntity) {
 				LivingEntity livingentity = (LivingEntity) entity;
 				if (!this.level.isClientSide && entity1 instanceof LivingEntity) {

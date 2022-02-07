@@ -34,6 +34,7 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -76,6 +77,7 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 		}
 		if (this.entityData.get(DEATH_STATE) == 1 && event.isMoving()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_phasetwo", true));
+			event.getController().setAnimationSpeed(1);
 			return PlayState.CONTINUE;
 		}
 		if (this.entityData.get(DEATH_STATE) == 1 && (this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
@@ -238,6 +240,11 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
 	}
+	
+	@Override
+	public boolean ignoreExplosion() {
+		return true;
+	}
 
 	@Override
 	public boolean doHurtTarget(Entity target) {
@@ -247,6 +254,9 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 		if (bl) {
 			target.setDeltaMovement(target.getDeltaMovement().multiply(1.4f, 1.4f, 1.4f));
 			this.doEnchantDamageEffects(this, target);
+			this.level.explode(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false,
+					Explosion.BlockInteraction.BREAK);
+			target.invulnerableTime = 0;
 		}
 		return bl;
 	}
@@ -257,6 +267,9 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 				DoomConfig.SERVER.gladiator_melee_damage.get().floatValue());
 		if (bl) {
 			this.doEnchantDamageEffects(this, target);
+			this.level.explode(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false,
+					Explosion.BlockInteraction.BREAK);
+			target.invulnerableTime = 0;
 		}
 		return bl;
 	}

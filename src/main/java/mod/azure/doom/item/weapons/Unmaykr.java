@@ -6,6 +6,7 @@ import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.UnmaykrRender;
 import mod.azure.doom.entity.projectiles.UnmaykrBoltEntity;
+import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.UnmaykrLoadingPacket;
@@ -20,6 +21,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.network.PacketDistributor;
@@ -96,7 +99,9 @@ public class Unmaykr extends DoomBaseItem {
 	}
 
 	public UnmaykrBoltEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		UnmaykrBoltEntity arrowentity = new UnmaykrBoltEntity(worldIn, shooter);
+		float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		UnmaykrBoltEntity arrowentity = new UnmaykrBoltEntity(worldIn, shooter,
+				(DoomConfig.SERVER.unmaykr_damage.get().floatValue() + (j * 2.0F)));
 		return arrowentity;
 	}
 

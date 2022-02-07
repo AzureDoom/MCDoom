@@ -6,6 +6,7 @@ import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.RocketLauncherRender;
 import mod.azure.doom.entity.projectiles.RocketEntity;
+import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.RocketLauncherLoadingPacket;
@@ -20,6 +21,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.network.PacketDistributor;
@@ -82,7 +85,9 @@ public class RocketLauncher extends DoomBaseItem {
 	}
 
 	public RocketEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		RocketEntity arrowentity = new RocketEntity(worldIn, shooter);
+		float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		RocketEntity arrowentity = new RocketEntity(worldIn, shooter,
+				(DoomConfig.SERVER.rocket_damage.get().floatValue() + (j * 2.0F)));
 		return arrowentity;
 	}
 

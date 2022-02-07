@@ -1,7 +1,6 @@
 package mod.azure.doom.entity.projectiles;
 
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomParticles;
 import mod.azure.doom.util.registry.ModEntityTypes;
@@ -33,6 +32,7 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
+	private float projectiledamage;
 
 	public UnmaykrBoltEntity(EntityType<? extends AbstractArrow> type, Level world) {
 		super(type, world);
@@ -40,6 +40,11 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 
 	public UnmaykrBoltEntity(Level world, LivingEntity owner) {
 		super(ModEntityTypes.UNMAYKR.get(), owner, world);
+	}
+
+	public UnmaykrBoltEntity(Level world, LivingEntity owner, float damage) {
+		super(ModEntityTypes.UNMAYKR.get(), owner, world);
+		this.projectiledamage = damage;
 	}
 
 	public UnmaykrBoltEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
@@ -233,7 +238,7 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 				((LivingEntity) entity1).setLastHurtMob(entity);
 			}
 		}
-		if (entity.hurt(damagesource, DoomConfig.SERVER.unmaykr_damage.get().floatValue())) {
+		if (entity.hurt(damagesource, projectiledamage)) {
 			if (entity instanceof LivingEntity) {
 				LivingEntity livingentity = (LivingEntity) entity;
 				if (!this.level.isClientSide && entity1 instanceof LivingEntity) {

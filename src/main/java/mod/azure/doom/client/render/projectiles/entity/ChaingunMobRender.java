@@ -21,7 +21,7 @@ import com.mojang.math.Vector3f;
 public class ChaingunMobRender extends EntityRenderer<ChaingunMobEntity> {
 
 	private static final ResourceLocation SHELL_TEXTURE = new ResourceLocation(DoomMod.MODID,
-			"textures/entity/projectiles/shotgun_shell.png");
+			"textures/entity/projectiles/argent_bolt.png");
 
 	public ChaingunMobRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn);

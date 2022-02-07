@@ -1,7 +1,6 @@
 package mod.azure.doom.entity.projectiles;
 
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import net.minecraft.core.particles.ParticleTypes;
@@ -39,6 +38,7 @@ public class ChaingunBulletEntity extends AbstractArrow implements IAnimatable {
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
+	private float projectiledamage;
 
 	public ChaingunBulletEntity(EntityType<? extends AbstractArrow> type, Level world) {
 		super(type, world);
@@ -63,6 +63,11 @@ public class ChaingunBulletEntity extends AbstractArrow implements IAnimatable {
 
 	public ChaingunBulletEntity(Level world, LivingEntity owner) {
 		super(ModEntityTypes.CHAINGUN_BULLET.get(), owner, world);
+	}
+
+	public ChaingunBulletEntity(Level world, LivingEntity owner, float damage) {
+		super(ModEntityTypes.CHAINGUN_BULLET.get(), owner, world);
+		this.projectiledamage = damage;
 	}
 
 	@Override
@@ -242,7 +247,7 @@ public class ChaingunBulletEntity extends AbstractArrow implements IAnimatable {
 				((LivingEntity) entity1).setLastHurtMob(entity);
 			}
 		}
-		if (entity.hurt(damagesource, DoomConfig.SERVER.chaingun_bullet_damage.get().floatValue())) {
+		if (entity.hurt(damagesource, projectiledamage)) {
 			if (entity instanceof LivingEntity) {
 				LivingEntity livingentity = (LivingEntity) entity;
 				if (!this.level.isClientSide && entity1 instanceof LivingEntity) {

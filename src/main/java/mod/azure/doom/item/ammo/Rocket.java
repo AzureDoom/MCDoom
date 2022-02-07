@@ -2,6 +2,7 @@ package mod.azure.doom.item.ammo;
 
 import java.util.List;
 
+import mod.azure.doom.DoomMod;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -12,11 +13,8 @@ import net.minecraft.world.level.Level;
 
 public class Rocket extends Item {
 
-	public final float damage;
-
-	public Rocket(Properties properties, float damageIn) {
-		super(properties);
-		this.damage = damageIn;
+	public Rocket() {
+		super(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup));
 	}
 
 	@Override

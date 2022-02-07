@@ -196,22 +196,15 @@ public class DoomItems {
 			() -> new BlockItem(DoomBlocks.JUMP_PAD.get(), new Item.Properties().tab(DoomMod.DoomBlockItemGroup)));
 
 	// AMMO
-	public static final RegistryObject<Item> SHOTGUN_SHELLS = ITEMS.register("shotgun_shells",
-			() -> new ShellAmmo(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup), 2.0F));
-	public static final RegistryObject<Item> ARGENT_BOLT = ITEMS.register("argent_bolt",
-			() -> new ArgentBolt(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup), 2.7F));
-	public static final RegistryObject<Item> UNMAKRY_BOLT = ITEMS.register("unmaykr_bolt",
-			() -> new UnmaykrBolt(10.7F));
-	public static final RegistryObject<Item> ENERGY_CELLS = ITEMS.register("energy_cells",
-			() -> new EnergyCell(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup), 10.0F));
+	public static final RegistryObject<Item> SHOTGUN_SHELLS = ITEMS.register("shotgun_shells", () -> new ShellAmmo());
+	public static final RegistryObject<Item> ARGENT_BOLT = ITEMS.register("argent_bolt", () -> new ArgentBolt());
+	public static final RegistryObject<Item> UNMAKRY_BOLT = ITEMS.register("unmaykr_bolt", () -> new UnmaykrBolt());
+	public static final RegistryObject<Item> ENERGY_CELLS = ITEMS.register("energy_cells", () -> new EnergyCell());
 	public static final RegistryObject<Item> CHAINGUN_BULLETS = ITEMS.register("chaingunbullets",
-			() -> new ChaingunAmmo(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup), 10.0F));
-	public static final RegistryObject<ClipAmmo> BULLETS = ITEMS.register("bullets",
-			() -> new ClipAmmo(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup), 1.2F));
-	public static final RegistryObject<Item> BFG_CELL = ITEMS.register("bfg_cell",
-			() -> new BFGCell(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup), 1.2F));
-	public static final RegistryObject<Item> ROCKET = ITEMS.register("rocket",
-			() -> new Rocket(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup), 1.2F));
+			() -> new ChaingunAmmo());
+	public static final RegistryObject<ClipAmmo> BULLETS = ITEMS.register("bullets", () -> new ClipAmmo());
+	public static final RegistryObject<Item> BFG_CELL = ITEMS.register("bfg_cell", () -> new BFGCell());
+	public static final RegistryObject<Item> ROCKET = ITEMS.register("rocket", () -> new Rocket());
 	public static final RegistryObject<Item> GAS_BARREL = ITEMS.register("gas_barrel",
 			() -> new Item(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup)));
 
@@ -377,7 +370,8 @@ public class DoomItems {
 	public static final RegistryObject<Item> DSG = ITEMS.register("doomed_shotgun", () -> new DShotgun());
 	public static final RegistryObject<Item> DGAUSS = ITEMS.register("doomed_gauss", () -> new DGauss());
 	public static final RegistryObject<Item> GRENADE = ITEMS.register("doomed_grenade", () -> new GrenadeItem());
-	public static final RegistryObject<Item> DPLASMARIFLE = ITEMS.register("doomed_plasma_rifle", () -> new DPlasmaRifle());
+	public static final RegistryObject<Item> DPLASMARIFLE = ITEMS.register("doomed_plasma_rifle",
+			() -> new DPlasmaRifle());
 
 	// ARMOR
 	public static final RegistryObject<Item> DOOM_HELMET = ITEMS.register("doom_helmet",

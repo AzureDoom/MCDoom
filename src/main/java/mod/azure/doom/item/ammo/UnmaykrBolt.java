@@ -13,11 +13,8 @@ import net.minecraft.world.level.Level;
 
 public class UnmaykrBolt extends Item {
 
-	public final float damage;
-
-	public UnmaykrBolt(float damageIn) {
+	public UnmaykrBolt() {
 		super(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup));
-		this.damage = damageIn;
 	}
 
 	@Override

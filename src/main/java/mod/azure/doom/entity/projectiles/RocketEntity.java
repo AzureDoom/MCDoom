@@ -3,7 +3,6 @@ package mod.azure.doom.entity.projectiles;
 import java.util.List;
 
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
@@ -11,8 +10,11 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,7 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -42,6 +43,7 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 	protected boolean inAir;
 	private int ticksInAir;
 	private LivingEntity shooter;
+	private float projectiledamage;
 
 	public RocketEntity(EntityType<? extends AbstractArrow> type, Level world) {
 		super(type, world);
@@ -50,6 +52,12 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 	public RocketEntity(Level world, LivingEntity owner) {
 		super(ModEntityTypes.ROCKET.get(), owner, world);
 		this.shooter = owner;
+	}
+
+	public RocketEntity(Level world, LivingEntity owner, float damage) {
+		super(ModEntityTypes.ROCKET.get(), owner, world);
+		this.shooter = owner;
+		this.projectiledamage = damage;
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -238,9 +246,6 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 		if (p_213868_1_.getType() != HitResult.Type.ENTITY || !((EntityHitResult) p_213868_1_).getEntity().is(entity)) {
 			if (!this.level.isClientSide) {
 				this.doDamage();
-				this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
-						DoomConfig.SERVER.enable_block_breaking.get() ? Explosion.BlockInteraction.BREAK
-								: Explosion.BlockInteraction.NONE);
 				this.remove(RemovalReason.KILLED);
 			}
 		}
@@ -253,12 +258,22 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 		if (result.getType() != HitResult.Type.ENTITY || !((EntityHitResult) result).getEntity().is(entity)) {
 			if (!this.level.isClientSide) {
 				this.doDamage();
-				this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
-						DoomConfig.SERVER.enable_block_breaking.get() ? Explosion.BlockInteraction.BREAK
-								: Explosion.BlockInteraction.NONE);
 				this.remove(RemovalReason.KILLED);
 			}
 		}
+	}
+
+	@Override
+	public void remove(RemovalReason reason) {
+		AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
+		areaeffectcloudentity.setParticle(ParticleTypes.LAVA);
+		areaeffectcloudentity.setRadius(6);
+		areaeffectcloudentity.setDuration(1);
+		areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
+		this.level.addFreshEntity(areaeffectcloudentity);
+		level.playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE,
+				SoundSource.PLAYERS, 1.0F, 1.5F);
+		super.remove(reason);
 	}
 
 	public void doDamage() {
@@ -277,8 +292,7 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 			double d12 = (double) (Mth.sqrt((float) entity.distanceToSqr(vector3d)) / f2);
 			if (d12 <= 1.0D) {
 				if (entity instanceof LivingEntity) {
-					entity.hurt(DamageSource.playerAttack((Player) this.shooter),
-							DoomConfig.SERVER.rocket_damage.get().floatValue());
+					entity.hurt(DamageSource.playerAttack((Player) this.shooter), projectiledamage);
 				}
 			}
 		}

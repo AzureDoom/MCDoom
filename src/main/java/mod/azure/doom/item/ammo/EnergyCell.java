@@ -2,6 +2,7 @@ package mod.azure.doom.item.ammo;
 
 import java.util.List;
 
+import mod.azure.doom.DoomMod;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -12,11 +13,8 @@ import net.minecraft.world.level.Level;
 
 public class EnergyCell extends Item {
 
-	public final float damage;
-
-	public EnergyCell(Properties properties, float damageIn) {
-		super(properties);
-		this.damage = damageIn;
+	public EnergyCell() {
+		super(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup));
 	}
 
 	@Override

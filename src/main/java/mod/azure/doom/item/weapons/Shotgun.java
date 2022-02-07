@@ -21,6 +21,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.network.PacketDistributor;
@@ -82,8 +84,9 @@ public class Shotgun extends DoomBaseItem {
 	}
 
 	public ShotgunShellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
+		float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
 		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter,
-				DoomConfig.SERVER.shotgun_damage.get().floatValue());
+				(DoomConfig.SERVER.shotgun_damage.get().floatValue() + (j * 2.0F)));
 		return arrowentity;
 	}
 
