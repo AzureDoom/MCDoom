@@ -180,6 +180,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 				double h = livingEntity.getZ() - (this.parentEntity.getZ() + vec3d.z * 2.0D);
 				CustomFireballEntity fireballEntity = new CustomFireballEntity(world, this.parentEntity, f, g, h,
 						config.archmaykr_ranged_damage);
+				this.parentEntity.getNavigation().startMovingTo(livingEntity, 1.4D);
 				if (this.cooldown == 5) {
 					parentEntity.setNoGravity(true);
 					parentEntity.addVelocity(0, (double) 0.2F * 1.3D, 0);
@@ -187,7 +188,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 				if (this.cooldown == 15) {
 					SplittableRandom random = new SplittableRandom();
 					int r = random.nextInt(0, 3);
-					if (r == 1) {
+					if (r <= 2) {
 						fireballEntity.updatePosition(this.parentEntity.getX() + vec3d.x * 2.0D,
 								this.parentEntity.getBodyY(0.5D) + 0.5D, parentEntity.getZ() + vec3d.z * 2.0D);
 						world.spawnEntity(fireballEntity);

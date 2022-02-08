@@ -8,6 +8,8 @@ import org.jetbrains.annotations.Nullable;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.CustomFireballEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
+import mod.azure.doom.entity.tierambient.TentacleEntity;
+import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -71,7 +73,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("moving", true));
 		return PlayState.CONTINUE;
 	}
 
@@ -229,6 +231,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 				float f2 = (float) MathHelper.atan2(livingEntity.getZ() - parentEntity.getZ(),
 						livingEntity.getX() - parentEntity.getX());
 				int j;
+				this.parentEntity.getNavigation().startMovingTo(livingEntity, 1.5D);
 				if (this.cooldown == 15) {
 					float h2;
 					if (parentEntity.getHealth() <= (parentEntity.getMaxHealth() * 0.50)) {
@@ -245,6 +248,10 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 									1.0F, true);
 							this.parentEntity.setAttackingState(2);
 						}
+						TentacleEntity lost_soul = ModEntityTypes.TENTACLE.create(world);
+						lost_soul.refreshPositionAndAngles(livingEntity.getX(), livingEntity.getY(),
+								livingEntity.getZ(), 0, 0);
+						parentEntity.world.spawnEntity(lost_soul);
 					} else {
 						this.parentEntity.setAttackingState(1);
 						fireballEntity.updatePosition(this.parentEntity.getX() + vec3d.x * 1.0D,
@@ -259,11 +266,15 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 						parentEntity.world.playSound(this.parentEntity.getX(), this.parentEntity.getY(),
 								this.parentEntity.getZ(), ModSoundEvents.MOTHER_ATTACK, SoundCategory.HOSTILE, 1.0F,
 								1.0F, true);
+						TentacleEntity lost_soul = ModEntityTypes.TENTACLE.create(world);
+						lost_soul.refreshPositionAndAngles(livingEntity.getX(), livingEntity.getY(),
+								livingEntity.getZ(), 0, 0);
+						parentEntity.world.spawnEntity(lost_soul);
 					}
 				}
 				if (this.cooldown == 30) {
 					this.parentEntity.setAttackingState(0);
-					this.cooldown = -50;
+					this.cooldown = -5;
 				}
 			} else if (this.cooldown > 0) {
 				--this.cooldown;

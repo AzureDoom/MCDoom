@@ -1,10 +1,9 @@
-v.4.1.7
+v.4.1.8
 
-- Fixed missing Chaingunner ranged animation.
-- Gladiator now causes explosions when meleeing, breaking blocks around it.
-- Spider Masterminds attack faster and better track target. 
-- Chaingunner, Shotgun Guy, Zombieman, and Marauder got AI reworked with better animation support based off Gladiators ranged/melee AI.
-- Fixed Classic Spider Mastermind Projectile firing height. 
-- Chaingun, Plamsa guns, Shotguns, Pistol, Heavy Cannon, Rocket Launcher, and Unmaykr can take the Power enchantment via Anvil to increase damage. 
-- Tweaked Chaingun DPS, added a few extra frames between shots.
-- Made ammo no longer Arrow items, unneeded for a long time.
+- Arch Maykr moves towards target and uses Fireball attack more.
+- Icon of Sin starts moving towards target.
+- Mother Demon moves towards target and summons a Tentacle on the target, attacks faster.
+- Hell Knight classic, Baron of Hell, Cyberdemon, Cyberdemon 2016, and Fireborne Baron AI tweaks similar to Shotgun Guy and Chaingunner.
+- Mancubus, Pain Elemental, and Archvile cooldowns are massively reduced, attacking more often. 
+- Whiplash Damage animation tweaked. 
+- Fixed Gladiator not dropping loot on death.

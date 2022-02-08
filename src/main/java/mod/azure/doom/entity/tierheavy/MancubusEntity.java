@@ -221,7 +221,7 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 				}
 				if (this.cooldown == 25) {
 					this.parentEntity.setAttackingState(0);
-					this.cooldown = -150;
+					this.cooldown = -15;
 				}
 			} else if (this.cooldown > 0) {
 				--this.cooldown;

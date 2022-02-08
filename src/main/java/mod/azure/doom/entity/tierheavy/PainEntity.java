@@ -319,7 +319,7 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable, IAn
 				}
 				if (this.cooldown == 35) {
 					this.ghast.setAttackingState(0);
-					this.cooldown = -445;
+					this.cooldown = -45;
 				}
 			} else if (this.cooldown > 0) {
 				--this.cooldown;

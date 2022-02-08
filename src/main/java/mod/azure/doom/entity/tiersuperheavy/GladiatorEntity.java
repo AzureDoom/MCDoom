@@ -162,6 +162,9 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 				this.onAttacking(this.getAttacker());
 				this.world.sendEntityStatus(this, (byte) 3);
 			}
+			if (this.dataTracker.get(DEATH_STATE) == 1) {
+				super.onDeath(source);
+			}
 		}
 	}
 
@@ -174,9 +177,15 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 			this.deathTime = 0;
 		}
 		if (this.deathTime == 40 && this.dataTracker.get(DEATH_STATE) == 1) {
+            this.world.sendEntityStatus(this, (byte)60);
 			this.remove(Entity.RemovalReason.KILLED);
 			this.dropXp();
 		}
+	}
+	
+	@Override
+	protected boolean shouldDropLoot() {
+		return true;
 	}
 
 	public int getDeathState() {
