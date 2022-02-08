@@ -1,11 +1,11 @@
 {
-  "name": "doom:doom/start_pool",
+  "name": "doom:doom/side_pool",
   "fallback": "minecraft:empty",
   "elements": [
     {
       "weight": 1,
       "element": {
-        "location": "doom:maykr",
+        "location": "doom:hell_church",
         "processors": "minecraft:empty",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"

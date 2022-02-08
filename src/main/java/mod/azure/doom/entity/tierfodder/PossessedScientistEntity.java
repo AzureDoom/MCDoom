@@ -1,7 +1,7 @@
 package mod.azure.doom.entity.tierfodder;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
+import mod.azure.doom.entity.ai.goal.ThrowItemGoal;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
@@ -22,8 +22,15 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrownPotion;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
@@ -43,7 +50,7 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 	private AnimationFactory factory = new AnimationFactory(this);
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (!(animationSpeed > -0.10F && animationSpeed < 0.10F) && !this.isAggressive()) {
+		if (!(animationSpeed > -0.10F && animationSpeed < 0.10F)) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true));
 			return PlayState.CONTINUE;
 		}
@@ -53,18 +60,24 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 				return PlayState.CONTINUE;
 			}
 		}
-		if (this.isAggressive() && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		return PlayState.CONTINUE;
+	}
+
+	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
+		if ((this.entityData.get(STATE) == 1) && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("attack", true));
 			return PlayState.CONTINUE;
 		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
-		return PlayState.CONTINUE;
+		return PlayState.STOP;
 	}
 
 	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(
 				new AnimationController<PossessedScientistEntity>(this, "controller", 0, this::predicate));
+		data.addAnimationController(
+				new AnimationController<PossessedScientistEntity>(this, "controller1", 0, this::predicate1));
 	}
 
 	@Override
@@ -91,11 +104,7 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		this.applyEntityAI();
-	}
-
-	protected void applyEntityAI() {
-		this.goalSelector.addGoal(2, new DemonAttackGoal(this, 1.0D, false, 1));
+		this.goalSelector.addGoal(2, new ThrowItemGoal(this, 1.0D));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
@@ -159,6 +168,35 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 	@Override
 	public int tickTimer() {
 		return tickCount;
+	}
+
+	@Override
+	public void performRangedAttack(LivingEntity target, float pullProgress) {
+		Vec3 vec3 = target.getDeltaMovement();
+		double d0 = target.getX() + vec3.x - this.getX();
+		double d1 = target.getEyeY() - (double) 1.1F - this.getY();
+		double d2 = target.getZ() + vec3.z - this.getZ();
+		double d3 = Math.sqrt(d0 * d0 + d2 * d2);
+		Potion potion;
+		if (target instanceof DemonEntity) {
+			if (target.getHealth() <= 4.0F) {
+				potion = Potions.HEALING;
+			} else {
+				potion = Potions.REGENERATION;
+			}
+
+			this.setTarget((LivingEntity) null);
+		} else {
+			potion = Potions.POISON;
+		}
+
+		ThrownPotion thrownpotion = new ThrownPotion(this.level, this);
+		thrownpotion.setItem(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), potion));
+		thrownpotion.setXRot(thrownpotion.getXRot() - -20.0F);
+		thrownpotion.shoot(d0, d1 + d3 * 0.2D, d2, 0.75F, 8.0F);
+		this.level.playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_THROW,
+				this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
+		this.level.addFreshEntity(thrownpotion);
 	}
 
 }

@@ -1,9 +1,10 @@
-v.4.1.7
+v.4.1.8
 
-- Arch Maykr moves towards target and uses Fireball attack more.
-- Icon of Sin starts moving towards target.
-- Mother Demon moves towards target and summons a Tentacle on the target, attacks faster.
-- Hell Knight classic, Baron of Hell, Cyberdemon, Cyberdemon 2016, and Fireborne Baron AI tweaks similar to Shotgun Guy and Chaingunner.
-- Mancubus and Archvile cooldowns are massively reduced, attacking more often. 
-- Whiplash Damage animation tweaked. 
-- Fixed Gladiator not dropping loot on death.
+- Arch Maykr and Icon of Sin now use a check of 64 blocks instead of 1000 in attack goal.
+- Possessed Scientist and Worker now throw potions at a range and melee when close.
+- Fixed Lost Soul AI. Now properly attacks and flies around. 
+- Added new Overworld Structure that is subject to change in the future: The Nether Church. Credit to Luke_Sky_Walker_ for the base structure: https://www.planetminecraft.com/project/hellish-church/
+- Added Advancement for the Nether Church.
+- Removed old NBT files for dead structures. 
+- Removed dead maps from loot tables.
+- Reworked Baron of Hell 2016 (plus two variants), Cyberdemon 2016, Gladiator, Icon of Sin, Marauder and Tyrant walk animations.

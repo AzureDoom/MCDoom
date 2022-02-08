@@ -118,16 +118,6 @@
 			"loop": true,
 			"animation_length": 2,
 			"bones": {
-				"Head": {
-					"rotation": {
-						"vector": ["Math.cos(query.anim_time * 180) * 5", 0, 0]
-					}
-				},
-				"lower_jaw": {
-					"rotation": {
-						"vector": ["Math.cos(query.anim_time * 180 ) * 5 ", 0, 0]
-					}
-				},
 				"Right_arm": {
 					"rotation": {
 						"vector": [-75, 0, "Math.cos(query.anim_time * 180) * -2.5"]
@@ -141,34 +131,6 @@
 				"Left_arm": {
 					"rotation": {
 						"vector": [-75, 0, "Math.cos(query.anim_time * 180) * 2.5"]
-					}
-				},
-				"main": {
-					"rotation": {
-						"vector": ["Math.cos(query.anim_time * 180) * -1.5", "Math.sin(query.anim_time * 180) * -1.5", 0]
-					},
-					"position": {
-						"vector": [0, "Math.cos(query.anim_time * 180) * 0.1", "Math.cos(query.anim_time * 180) * 1"]
-					}
-				},
-				"Right_Leg": {
-					"rotation": {
-						"vector": ["Math.cos(query.anim_time * 180) * 15", 0, 0]
-					}
-				},
-				"Left_leg": {
-					"rotation": {
-						"vector": ["Math.cos(query.anim_time * 180) * -15", 0, 0]
-					}
-				},
-				"Right_tibia": {
-					"rotation": {
-						"vector": [0, 0, 0]
-					}
-				},
-				"Left_tibia": {
-					"rotation": {
-						"vector": ["Math.cos(query.anim_time * 180) * 2.5", 0, 0]
 					}
 				}
 			}

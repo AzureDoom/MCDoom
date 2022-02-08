@@ -278,7 +278,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 
 		public void tick() {
 			LivingEntity livingentity = this.parentEntity.getTarget();
-			if (parentEntity.distanceTo(livingentity) < 10000.0D) {
+			if (parentEntity.distanceTo(livingentity) < 64.0D) {
 				Level world = this.parentEntity.level;
 				++this.attackTimer;
 				Vec3 vector3d = this.parentEntity.getViewVector(1.0F);

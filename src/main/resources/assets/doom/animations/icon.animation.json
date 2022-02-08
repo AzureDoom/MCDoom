@@ -293,6 +293,9 @@
 					}
 				},
 				"thighs": {
+					"rotation": {
+						"vector": [0, "Math.cos(query.anim_time*180)* 2.5", 0]
+					},
 					"position": {
 						"vector": [0, "3+Math.sin(query.anim_time * 360) * 0.5", 0]
 					}
@@ -569,6 +572,9 @@
 					}
 				},
 				"thighs": {
+					"rotation": {
+						"vector": [0, "Math.cos(query.anim_time*180)* 5.0 ", 0]
+					},
 					"position": {
 						"vector": [0, "4.5+Math.sin(query.anim_time * 360) * 1", 0]
 					}
@@ -1382,6 +1388,11 @@
 							"easing": "easeInOutSine"
 						}
 					}
+				},
+				"thighs": {
+					"rotation": {
+						"vector": [0, "Math.cos(query.anim_time*360)* 2.5", 0]
+					}
 				}
 			}
 		},
@@ -1641,6 +1652,11 @@
 				"rLegArmor1": {
 					"scale": {
 						"vector": [0, 0, 0]
+					}
+				},
+				"thighs": {
+					"rotation": {
+						"vector": [0, "Math.cos(query.anim_time*360)* 5.0 ", 0]
 					}
 				}
 			}

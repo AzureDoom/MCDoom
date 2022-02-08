@@ -3,7 +3,7 @@ package mod.azure.doom.entity.tierfodder;
 import java.util.EnumSet;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
+import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
@@ -21,6 +21,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -29,6 +30,8 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.npc.AbstractVillager;
@@ -141,6 +144,7 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.lost_soul_health.get())
+				.add(Attributes.FLYING_SPEED, 0.25D)
 				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.lost_soul_melee_damage.get())
 				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
@@ -149,8 +153,7 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 	protected void registerGoals() {
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		this.goalSelector.addGoal(8, new LostSoulEntity.LookAroundGoal(this));
-		this.goalSelector.addGoal(4, new LostSoulEntity.ChargeAttackGoal(this));
-		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 4, 15, 0.5));
+		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.5D, false, 2));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
@@ -206,6 +209,48 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 
 	public boolean onClimbable() {
 		return true;
+	}
+
+	protected PathNavigation createNavigation(Level worldIn) {
+		FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
+		flyingpathnavigator.setCanOpenDoors(false);
+		flyingpathnavigator.setCanFloat(true);
+		flyingpathnavigator.setCanPassDoors(true);
+		return flyingpathnavigator;
+	}
+
+	public void travel(Vec3 movementInput) {
+		if (this.isInWater()) {
+			this.moveRelative(0.02F, movementInput);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale((double) 0.8F));
+		} else if (this.isInLava()) {
+			this.moveRelative(0.02F, movementInput);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale(0.5D));
+		} else {
+			BlockPos ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
+			float f = 0.91F;
+			if (this.onGround) {
+				f = this.level.getBlockState(ground).getFriction(this.level, ground, this) * 0.91F;
+			}
+			float f1 = 0.16277137F / (f * f * f);
+			f = 0.91F;
+			if (this.onGround) {
+				f = this.level.getBlockState(ground).getFriction(this.level, ground, this) * 0.91F;
+			}
+			this.moveRelative(this.onGround ? 0.1F * f1 : 0.02F, movementInput);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale((double) f));
+		}
+		this.calculateEntityAnimation(this, false);
+	}
+
+	@Override
+	protected void updateControlFlags() {
+		boolean flag = this.getTarget() != null && this.hasLineOfSight(this.getTarget());
+		this.goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
+		super.updateControlFlags();
 	}
 
 	class ChargeAttackGoal extends Goal {
