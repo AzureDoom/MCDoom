@@ -62,7 +62,6 @@ public class RangedAttackGoal extends Goal {
 					}
 				} else {
 					this.entity.getNavigation().startMovingTo(livingentity, this.moveSpeedAmp);
-					this.entity.setSilent(true);
 					if (this.attackTime == 4) {
 						this.entity.setAttackingState(1);
 						this.entity.getNavigation().stop();

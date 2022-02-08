@@ -4,6 +4,7 @@ import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
+import mod.azure.doom.entity.ai.goal.ThrowItemGoal;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -20,9 +21,16 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.thrown.PotionEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionUtil;
+import net.minecraft.potion.Potions;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -43,12 +51,8 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 	private AnimationFactory factory = new AnimationFactory(this);
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (!(lastLimbDistance > -0.10F && lastLimbDistance < 0.10F) && !this.isAttacking()) {
+		if (!(lastLimbDistance > -0.10F && lastLimbDistance < 0.10F)) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", true));
-			return PlayState.CONTINUE;
-		}
-		if (this.isAttacking() && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("attack", true));
 			return PlayState.CONTINUE;
 		}
 		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
@@ -59,10 +63,20 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 		return PlayState.CONTINUE;
 	}
 
+	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
+		if ((this.dataTracker.get(STATE) == 1) && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("attack", true));
+			return PlayState.CONTINUE;
+		}
+		return PlayState.STOP;
+	}
+
 	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(
 				new AnimationController<PossessedScientistEntity>(this, "controller", 0, this::predicate));
+		data.addAnimationController(
+				new AnimationController<PossessedScientistEntity>(this, "controller1", 0, this::predicate1));
 	}
 
 	@Override
@@ -94,11 +108,8 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.initCustomGoals();
-	}
-
-	protected void initCustomGoals() {
 		this.goalSelector.add(2, new DemonAttackGoal(this, 1.0D, false, 1));
+		this.goalSelector.add(2, new ThrowItemGoal(this, 1.0D));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
@@ -142,6 +153,31 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState blockIn) {
 		this.playSound(this.getStepSound(), 0.15F, 1.0F);
+	}
+
+	@Override
+	public void attack(LivingEntity target, float pullProgress) {
+		Vec3d vec3d = target.getVelocity();
+		double d = target.getX() + vec3d.x - this.getX();
+		double e = target.getEyeY() - (double) 1.1f - this.getY();
+		double f = target.getZ() + vec3d.z - this.getZ();
+		double g = Math.sqrt(d * d + f * f);
+		Potion potion;
+		if (target instanceof DemonEntity) {
+			potion = target.getHealth() <= 4.0f ? Potions.HEALING : Potions.REGENERATION;
+			this.setTarget(null);
+		} else {
+			potion = Potions.POISON;
+		}
+		PotionEntity potionEntity = new PotionEntity(this.world, this);
+		potionEntity.setItem(PotionUtil.setPotion(new ItemStack(Items.SPLASH_POTION), potion));
+		potionEntity.setPitch(potionEntity.getPitch() - -20.0f);
+		potionEntity.setVelocity(d, e + g * 0.2, f, 0.75f, 8.0f);
+		if (!this.isSilent()) {
+			this.world.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_WITCH_THROW,
+					this.getSoundCategory(), 1.0f, 0.8f + this.random.nextFloat() * 0.4f);
+		}
+		this.world.spawnEntity(potionEntity);
 	}
 
 }

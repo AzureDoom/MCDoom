@@ -43,12 +43,12 @@
 				},
 				"lshoulder": {
 					"rotation": {
-						"vector": ["Math.cos(query.anim_time * 360) * -15", 0, -5]
+						"vector": ["Math.cos(query.anim_time * 180) * -15", 0, -5]
 					}
 				},
 				"rshoulder": {
 					"rotation": {
-						"vector": ["Math.cos(query.anim_time * 360) * 15", 0, 5]
+						"vector": ["Math.cos(query.anim_time * 180) * 15", 0, 5]
 					}
 				},
 				"lowJaw": {
@@ -57,33 +57,26 @@
 					}
 				},
 				"thighs": {
+					"rotation": {
+						"vector": [0, "Math.cos(query.anim_time*180)* 2.0 ", 0]
+					},
 					"position": {
-						"vector": [0, "Math.cos(query.anim_time * 360) * 0.5", 0]
+						"vector": [0, "Math.cos(query.anim_time * 180) * 0.5", 0]
 					}
 				},
 				"lLeg": {
 					"rotation": {
-						"vector": ["Math.sin(query.anim_time * 360) * 15", 0, 0]
-					}
-				},
-				"lLeg2": {
-					"rotation": {
-						"vector": ["Math.cos(query.anim_time * 360) * -15", 0, 0]
+						"vector": ["Math.cos(query.anim_time * 180) * 15", 0, 0]
 					}
 				},
 				"rLeg": {
 					"rotation": {
-						"vector": ["Math.sin(query.anim_time * 360) * -15", 0, 0]
-					}
-				},
-				"rLeg2": {
-					"rotation": {
-						"vector": ["Math.cos(query.anim_time * 360) * 15", 0, 0]
+						"vector": ["Math.cos(query.anim_time * 180) * -15", 0, 0]
 					}
 				},
 				"thigh": {
 					"position": {
-						"vector": [0, "Math.sin(query.anim_time * 360) * 2", 0]
+						"vector": [0, "Math.sin(query.anim_time * 180) * 1.25", 0]
 					}
 				}
 			}
