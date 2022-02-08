@@ -6,7 +6,9 @@ import java.util.Random;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.CustomFireballEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
+import mod.azure.doom.entity.tierambient.TentacleEntity;
 import mod.azure.doom.util.config.DoomConfig;
+import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -77,7 +79,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("moving", true));
 		return PlayState.CONTINUE;
 	}
 
@@ -217,6 +219,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 						DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue());
 				CustomFireballEntity fireballentity2 = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4,
 						DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue());
+				this.parentEntity.getNavigation().moveTo(livingentity, 1.5D);
 				if (this.attackTimer == 15) {
 					if (parentEntity.getHealth() <= (parentEntity.getMaxHealth() * 0.50)) {
 						for (int l = 0; l < 32; ++l) {
@@ -232,6 +235,9 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 									1.0F, 1.0F, true);
 							this.parentEntity.setAttackingState(2);
 						}
+						TentacleEntity lost_soul = ModEntityTypes.TENTACLE.get().create(world);
+						lost_soul.moveTo(livingentity.getX(), livingentity.getY(), livingentity.getZ(), 0, 0);
+						world.addFreshEntity(lost_soul);
 					} else {
 						fireballentity.setPos(this.parentEntity.getX() + vector3d.x * 1.0D,
 								this.parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z * 1.0D);
@@ -245,12 +251,15 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 						parentEntity.level.playLocalSound(this.parentEntity.getX(), this.parentEntity.getY(),
 								this.parentEntity.getZ(), ModSoundEvents.MOTHER_ATTACK.get(), SoundSource.HOSTILE, 1.0F,
 								1.0F, true);
+						TentacleEntity lost_soul = ModEntityTypes.TENTACLE.get().create(world);
+						lost_soul.moveTo(livingentity.getX(), livingentity.getY(), livingentity.getZ(), 0, 0);
+						world.addFreshEntity(lost_soul);
 						this.parentEntity.setAttackingState(1);
 					}
 				}
 				if (this.attackTimer == 30) {
 					this.parentEntity.setAttackingState(0);
-					this.attackTimer = -50;
+					this.attackTimer = -5;
 				}
 			} else if (this.attackTimer > 0) {
 				--this.attackTimer;

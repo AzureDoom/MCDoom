@@ -157,6 +157,9 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 				this.setLastHurtMob(this.getLastHurtByMob());
 				this.level.broadcastEntityEvent(this, (byte) 3);
 			}
+			if (this.entityData.get(DEATH_STATE) == 0) {
+				super.die(source);
+			}
 		}
 	}
 

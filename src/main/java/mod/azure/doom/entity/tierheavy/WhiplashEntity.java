@@ -36,7 +36,7 @@ public class WhiplashEntity extends DemonEntity implements IAnimatable, IAnimati
 	private AnimationFactory factory = new AnimationFactory(this);
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (event.isMoving()) {
+		if (event.isMoving() && this.hurtDuration == 0) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
 			return PlayState.CONTINUE;
 		}

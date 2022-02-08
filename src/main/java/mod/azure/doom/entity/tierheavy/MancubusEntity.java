@@ -219,7 +219,7 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 				}
 				if (this.attackTimer == 25) {
 					this.parentEntity.setAttackingState(0);
-					this.attackTimer = -150;
+					this.attackTimer = -15;
 				}
 			} else if (this.attackTimer > 0) {
 				--this.attackTimer;

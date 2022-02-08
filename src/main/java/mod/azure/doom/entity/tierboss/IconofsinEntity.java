@@ -210,6 +210,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 			LivingEntity livingentity = this.parentEntity.getTarget();
 			if (livingentity != null) {
 				if (parentEntity.distanceTo(livingentity) < 10000.0D) {
+					this.parentEntity.getNavigation().moveTo(livingentity, 1.5D);
 					attackTimer++;
 					Random rand = new Random();
 					float f = (float) Mth.atan2(livingentity.getZ() - parentEntity.getZ(),

@@ -260,7 +260,7 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable, IAnimati
 				}
 				if (this.attackTimer == 40) {
 					this.parentEntity.setAttackingState(0);
-					this.attackTimer = -50;
+					this.attackTimer = -5;
 				}
 			} else if (this.attackTimer > 0) {
 				--this.attackTimer;

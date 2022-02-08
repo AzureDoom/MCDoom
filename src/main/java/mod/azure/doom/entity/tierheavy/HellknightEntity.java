@@ -2,7 +2,7 @@ package mod.azure.doom.entity.tierheavy;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
-import mod.azure.doom.entity.ai.goal.RangedStaticAttackGoal;
+import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.CustomFireballEntity;
@@ -95,11 +95,12 @@ public class HellknightEntity extends DemonEntity implements IAnimatable, IAnima
 	}
 
 	protected void applyEntityAI() {
-		this.goalSelector.addGoal(4,
-				new RangedStaticAttackGoal(
-						this, new HellknightEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(DoomConfig.SERVER.hellknight_ranged_damage.get().floatValue()),
-						60, 20, 30F, 1));
+		this.goalSelector
+				.addGoal(4,
+						new RangedAttackGoal(this,
+								new HellknightEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.4, 0.8)
+										.setDamage(DoomConfig.SERVER.hellknight_ranged_damage.get().floatValue()),
+								1.1));
 		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));

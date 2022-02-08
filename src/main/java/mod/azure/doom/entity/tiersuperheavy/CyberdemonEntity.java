@@ -1,7 +1,7 @@
 package mod.azure.doom.entity.tiersuperheavy;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.RangedStaticAttackGoal;
+import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
@@ -62,7 +62,7 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable, IAnima
 	}
 
 	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
-		if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
+		if (this.entityData.get(STATE) >= 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking", true));
 			return PlayState.CONTINUE;
 		}
@@ -91,11 +91,12 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable, IAnima
 		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		this.goalSelector.addGoal(4,
-				new RangedStaticAttackGoal(
-						this, new CyberdemonEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(DoomConfig.SERVER.cyberdemon_ranged_damage.get().floatValue()),
-						60, 20, 30F, 1));
+		this.goalSelector
+				.addGoal(4,
+						new RangedAttackGoal(this,
+								new CyberdemonEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.4, 0.8)
+										.setDamage(DoomConfig.SERVER.cyberdemon_ranged_damage.get().floatValue()),
+								1.1));
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
