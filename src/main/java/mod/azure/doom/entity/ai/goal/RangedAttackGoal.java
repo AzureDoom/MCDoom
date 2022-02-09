@@ -12,12 +12,22 @@ public class RangedAttackGoal extends Goal {
 	private double moveSpeedAmp = 1;
 	private int attackTime = -1;
 	private AbstractRangedAttack attack;
+	private boolean multiShot;
 
 	public RangedAttackGoal(DemonEntity mob, AbstractRangedAttack attack, double moveSpeedAmpIn) {
 		this.entity = mob;
 		this.moveSpeedAmp = moveSpeedAmpIn;
 		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 		this.attack = attack;
+		this.multiShot = false;
+	}
+
+	public RangedAttackGoal(DemonEntity mob, AbstractRangedAttack attack, double moveSpeedAmpIn, boolean multishot) {
+		this.entity = mob;
+		this.moveSpeedAmp = moveSpeedAmpIn;
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+		this.attack = attack;
+		this.multiShot = multishot;
 	}
 
 	public boolean canUse() {
@@ -53,6 +63,9 @@ public class RangedAttackGoal extends Goal {
 						this.entity.setAttackingState(2);
 					}
 					if (this.attackTime == 4) {
+						this.attack.shoot();
+					}
+					if (this.attackTime == 6 && this.multiShot) {
 						this.attack.shoot();
 					}
 					if (this.attackTime == 8) {

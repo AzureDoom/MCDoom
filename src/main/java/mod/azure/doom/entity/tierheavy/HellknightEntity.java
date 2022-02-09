@@ -1,7 +1,6 @@
 package mod.azure.doom.entity.tierheavy;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
@@ -54,6 +53,10 @@ public class HellknightEntity extends DemonEntity implements IAnimatable, IAnima
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
+		if (!event.isMoving() && this.hurtMarked) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+			return PlayState.CONTINUE;
+		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
 	}
@@ -101,7 +104,6 @@ public class HellknightEntity extends DemonEntity implements IAnimatable, IAnima
 								new HellknightEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.4, 0.8)
 										.setDamage(DoomConfig.SERVER.hellknight_ranged_damage.get().floatValue()),
 								1.1));
-		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));

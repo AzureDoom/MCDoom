@@ -50,6 +50,10 @@ public class MechaZombieEntity extends DemonEntity implements IAnimatable, IAnim
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
+		if (!event.isMoving() && this.hurtMarked) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+			return PlayState.CONTINUE;
+		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
 	}
@@ -104,7 +108,7 @@ public class MechaZombieEntity extends DemonEntity implements IAnimatable, IAnim
 								.setDamage(DoomConfig.SERVER.mechazombie_ranged_damage.get().floatValue())
 								.setSound(SoundEvents.BLAZE_SHOOT, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.0D, 50, 30, 15, 15F, 1).setMultiShot(4, 3));
-		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
+		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.25D, 2));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));

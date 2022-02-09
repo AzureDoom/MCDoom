@@ -122,7 +122,7 @@ public class ModEntityTypes {
 	public static final RegistryObject<EntityType<BloodBoltEntity>> BLOODBOLT_MOB = ENTITY_TYPES
 			.register("bloodbolt_mob",
 					() -> EntityType.Builder.<BloodBoltEntity>of(BloodBoltEntity::new, MobCategory.MISC)
-							.sized(0.25F, 2.0F).clientTrackingRange(9)
+							.sized(0.5F, 0.5F).clientTrackingRange(9)
 							.build(new ResourceLocation(DoomMod.MODID, "bloodbolt_mob").toString()));
 
 	public static final RegistryObject<EntityType<ArgentBoltEntity>> ARGENT_BOLT = ENTITY_TYPES.register("argent_bolt",

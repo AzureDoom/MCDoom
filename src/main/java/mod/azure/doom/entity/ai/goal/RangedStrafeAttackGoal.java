@@ -10,8 +10,8 @@ import net.minecraft.world.entity.ai.goal.Goal;
 public class RangedStrafeAttackGoal extends Goal {
 	private final DemonEntity entity;
 	private double moveSpeedAmp = 1;
-	private int attackCooldown;
-	private int visibleTicksDelay = 20;
+	public int attackCooldown;
+	public int visibleTicksDelay;
 	private float maxAttackDistance = 20;
 	private int strafeTicks = 20;
 	private int attackTime = -1;
@@ -27,11 +27,11 @@ public class RangedStrafeAttackGoal extends Goal {
 			int attackCooldownIn, int visibleTicksDelay, int strafeTicks, float maxAttackDistanceIn, int state) {
 		this.entity = mob;
 		this.moveSpeedAmp = moveSpeedAmpIn;
-		this.attackCooldown = attackCooldownIn;
+		this.attackCooldown = -15;
 		this.maxAttackDistance = maxAttackDistanceIn * maxAttackDistanceIn;
 		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 		this.attack = attack;
-		this.visibleTicksDelay = visibleTicksDelay;
+		this.visibleTicksDelay = 0;
 		this.strafeTicks = strafeTicks;
 		this.statecheck = state;
 	}
@@ -178,20 +178,26 @@ public class RangedStrafeAttackGoal extends Goal {
 			}
 
 			// attack
+			this.attackTime++;
 			if (multiShooting) {
 				if (tickMultiShot())
 					this.attack.shoot();
 				return;
 			}
-
-			if (this.seeTime >= this.visibleTicksDelay) {
-				if (this.attackTime >= this.attackCooldown) {
-					this.attack.shoot();
-					this.attackTime = 0;
-				} else
-					this.attackTime++;
+			if (this.attackTime == 1) {
+				this.entity.setAttackingState(statecheck);
 			}
-			this.entity.setAttackingState(attackTime >= attackCooldown * 0.75 ? this.statecheck : 0);
+			if (this.attackTime == 4) {
+				if (tickMultiShot()) {
+					this.attack.shoot();
+				} else {
+					this.attack.shoot();
+				}
+			}
+			if (this.attackTime == 8) {
+				this.entity.setAttackingState(0);
+				this.attackTime = -15;
+			}
 		}
 	}
 }

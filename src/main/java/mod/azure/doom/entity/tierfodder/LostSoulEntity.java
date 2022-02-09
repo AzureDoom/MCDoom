@@ -153,7 +153,7 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 	protected void registerGoals() {
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		this.goalSelector.addGoal(8, new LostSoulEntity.LookAroundGoal(this));
-		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.5D, false, 2));
+		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.25D, 2));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));

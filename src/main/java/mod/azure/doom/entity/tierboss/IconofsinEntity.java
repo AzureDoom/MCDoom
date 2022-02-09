@@ -83,6 +83,14 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_nohelmet", true));
 			return PlayState.CONTINUE;
 		}
+		if (!event.isMoving() && this.hurtMarked && this.getHealth() < (this.getMaxHealth() * 0.50)) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_nohelmet", true));
+			return PlayState.CONTINUE;
+		}
+		if (!event.isMoving() && this.hurtMarked) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+			return PlayState.CONTINUE;
+		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
 	}

@@ -3,7 +3,6 @@ package mod.azure.doom.entity.tierheavy;
 import java.util.EnumSet;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
 import mod.azure.doom.util.config.DoomConfig;
@@ -152,7 +151,6 @@ public class PainEntity extends DemonEntity implements Enemy, IAnimatable, IAnim
 		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.addGoal(7, new PainEntity.LookAroundGoal(this));
 		this.goalSelector.addGoal(7, new PainEntity.FireballAttackGoal(this, 1));
-		this.goalSelector.addGoal(7, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));

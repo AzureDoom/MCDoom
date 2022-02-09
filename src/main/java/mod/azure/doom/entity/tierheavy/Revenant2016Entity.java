@@ -68,6 +68,14 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
+		if (!this.isOnGround() && !this.onGround && this.hurtMarked) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("flying", true));
+			return PlayState.CONTINUE;
+		}
+		if (!event.isMoving() && this.hurtMarked) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+			return PlayState.CONTINUE;
+		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
 	}
@@ -142,15 +150,11 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 	protected void registerGoals() {
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-		this.applyEntityAI();
-	}
-
-	protected void applyEntityAI() {
 		this.goalSelector.addGoal(4, new FlyingRangeAttackGoal(this,
 				DoomConfig.SERVER.revenant_ranged_damage.get().floatValue(),
 				(this.getVariant() == 10 ? ModSoundEvents.REVENANT_DOOT.get() : ModSoundEvents.REVENANT_ATTACK.get()),
 				true));
-		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
+		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.25D, 2));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));

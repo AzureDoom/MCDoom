@@ -56,6 +56,10 @@ public class FireBaronEntity extends DemonEntity implements IAnimatable, IAnimat
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_fireborne", false));
 			return PlayState.CONTINUE;
 		}
+		if (!event.isMoving() && this.hurtMarked) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_fireborne", true));
+			return PlayState.CONTINUE;
+		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_fireborne", true));
 		return PlayState.CONTINUE;
 	}

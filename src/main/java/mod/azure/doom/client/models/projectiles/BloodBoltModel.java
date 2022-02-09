@@ -18,6 +18,6 @@ public class BloodBoltModel extends AnimatedGeoModel<BloodBoltEntity> {
 
 	@Override
 	public ResourceLocation getAnimationFileLocation(BloodBoltEntity animatable) {
-		return new ResourceLocation(DoomMod.MODID, "animations/smallprojectile.animation.json");
+		return new ResourceLocation(DoomMod.MODID, "animations/bloodbolt.animation.json");
 	}
 }

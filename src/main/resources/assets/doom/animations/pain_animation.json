@@ -42,11 +42,6 @@
 					"position": {
 						"vector": [0.7, 0, 0]
 					}
-				},
-				"tail": {
-					"rotation": {
-						"vector": ["Math.sin(query.anim_time * 180) * 5", 0, 0]
-					}
 				}
 			}
 		},
@@ -82,11 +77,6 @@
 				"lowJawMiddle2": {
 					"rotation": {
 						"vector": ["Math.sin(query.anim_time * 360) * 5", 0, 0]
-					}
-				},
-				"tail": {
-					"rotation": {
-						"vector": ["Math.sin(query.anim_time * 360) * 10", 0, 0]
 					}
 				}
 			}

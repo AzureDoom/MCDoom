@@ -11,14 +11,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
@@ -38,6 +36,7 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements IAnima
 	private AnimationFactory factory = new AnimationFactory(this);
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
 	}
 
@@ -88,38 +87,10 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements IAnima
 		return ParticleTypes.PORTAL;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void tick() {
-		Entity entity = this.getOwner();
-		if (this.level.isClientSide
-				|| (entity == null || entity.isAlive()) && this.level.hasChunkAt(this.blockPosition())) {
-			super.tick();
-			HitResult raytraceresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
-			if (raytraceresult.getType() != HitResult.Type.MISS
-					&& !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
-				this.onHit(raytraceresult);
-			}
-			this.checkInsideBlocks();
-			Vec3 vector3d = this.getDeltaMovement();
-			double d0 = this.getX() + vector3d.x;
-			double d1 = this.getY() + vector3d.y;
-			double d2 = this.getZ() + vector3d.z;
-			ProjectileUtil.rotateTowardsMovement(this, 0.2F);
-			float f = this.getInertia();
-			if (this.isInWater()) {
-				for (int i = 0; i < 4; ++i) {
-					this.level.addParticle(ParticleTypes.BUBBLE, d0 - vector3d.x * 0.25D, d1 - vector3d.y * 0.25D,
-							d2 - vector3d.z * 0.25D, vector3d.x, vector3d.y, vector3d.z);
-				}
-				f = 0.8F;
-			}
-			this.setDeltaMovement(vector3d.add(this.xPower, this.yPower, this.zPower).scale((double) f));
-			this.level.addParticle(this.getTrailParticle(), d0, d1 + 0.5D, d2, 0.0D, 0.0D, 0.0D);
-			this.setPos(d0, d1, d2);
-		} else {
-			this.remove(RemovalReason.KILLED);
-		}
+		super.tick();
+		this.level.addParticle(this.getTrailParticle(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D);
 	}
 
 	@Override

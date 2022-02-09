@@ -63,11 +63,6 @@
 						}
 					}
 				}
-			},
-			"sound_effects": {},
-			"particle_effects": {},
-			"timeline": {
-				"0.0": "test"
 			}
 		}
 	},

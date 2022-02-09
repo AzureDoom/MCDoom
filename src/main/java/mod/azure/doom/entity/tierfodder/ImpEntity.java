@@ -49,6 +49,10 @@ public class ImpEntity extends DemonEntity implements IAnimatable, IAnimationTic
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
+		if (!event.isMoving() && this.hurtMarked) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+			return PlayState.CONTINUE;
+		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
 	}
@@ -95,17 +99,13 @@ public class ImpEntity extends DemonEntity implements IAnimatable, IAnimationTic
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		this.applyEntityAI();
-	}
-
-	protected void applyEntityAI() {
 		this.goalSelector.addGoal(4,
 				new RangedStrafeAttackGoal(this,
 						new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8)
 								.setDamage(DoomConfig.SERVER.imp_ranged_damage.get().floatValue())
 								.setSound(SoundEvents.BLAZE_SHOOT, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
-						1.0D, 50, 30, 15, 15F, 1).setMultiShot(2, 3));
-		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
+						1.0D, 5, 30, 15, 15F, 1).setMultiShot(2, 3));
+		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.25D, 2));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));

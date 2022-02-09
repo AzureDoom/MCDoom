@@ -23,4 +23,14 @@ public class BloodBoltRender extends GeoProjectilesRenderer<BloodBoltEntity> {
 			ResourceLocation textureLocation) {
 		return RenderType.entityTranslucent(getTextureLocation(animatable));
 	}
+
+	@Override
+	public void renderEarly(BloodBoltEntity animatable, PoseStack stackIn, float ticks,
+			MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, int packedOverlayIn,
+			float red, float green, float blue, float partialTicks) {
+		super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn,
+				red, green, blue, partialTicks);
+		stackIn.scale(animatable.tickCount > 2 ? 0.5F : 0.0F, animatable.tickCount > 2 ? 0.5F : 0.0F,
+				animatable.tickCount > 2 ? 0.5F : 0.0F);
+	}
 }

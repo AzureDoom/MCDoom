@@ -1,10 +1,9 @@
-v.4.1.8
+v.4.1.9
 
-- Arch Maykr and Icon of Sin now use a check of 64 blocks instead of 1000 in attack goal.
-- Possessed Scientist and Worker now throw potions at a range and melee when close.
-- Fixed Lost Soul AI. Now properly attacks and flies around. 
-- Added new Overworld Structure that is subject to change in the future: The Nether Church. Credit to Luke_Sky_Walker_ for the base structure: https://www.planetminecraft.com/project/hellish-church/
-- Added Advancement for the Nether Church.
-- Removed old NBT files for dead structures. 
-- Removed dead maps from loot tables.
-- Reworked Baron of Hell 2016 (plus two variants), Cyberdemon 2016, Gladiator, Icon of Sin, Marauder and Tyrant walk animations.
+- Rewrote Demon Melee goal, much cleaner and works far better.
+- Unwilling attacking animation fixed.
+- Hurt animation for all mobs that walk tweaked.
+- Baron of Hell (All), Hell Knight Classic, Cyberdemon Classic, Icon of Sin, Imp, Nightmare Imp, Imp 2016, Stone Imp, and Prowler walk animations redone. 
+- Revenant Classic (no jetpack) now melees if close range.
+- Imp, Nightmare Imp, Imp 2016, Maykr Drone, Blood Maykr, Possessed Soldier, Mecha Zombie, and Arachnotron fire much more often now. 
+- Fixed Blood Maykr projectile rendering.

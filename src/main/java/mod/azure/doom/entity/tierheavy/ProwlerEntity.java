@@ -70,6 +70,10 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
+		if (!event.isMoving() && this.hurtMarked) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+			return PlayState.CONTINUE;
+		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
 	}
@@ -110,7 +114,7 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 								.setDamage(DoomConfig.SERVER.prowler_ranged_damage.get().floatValue())
 								.setSound(SoundEvents.BLAZE_SHOOT, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.0D, 50, 30, 15, 15F, 1).setMultiShot(5, 3));
-		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
+		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.25D, 2));
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
 		this.targetSelector.addGoal(1, new ProwlerEntity.FindPlayerGoal(this, this::isAngryAt));

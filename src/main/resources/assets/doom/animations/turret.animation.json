@@ -21,7 +21,8 @@
 							"vector": [0, -13, 0]
 						},
 						"0.04": {
-							"vector": [0, "-13+math.sin(query.anim_time * 360) * 13", 0]
+							"vector": [0, "-13+math.sin(query.anim_time * 360) * 13", 0],
+							"easing": "easeInOutCirc"
 						},
 						"0.24": {
 							"vector": [0, -0.03, 0]

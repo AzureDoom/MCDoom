@@ -1,8 +1,7 @@
 package mod.azure.doom.entity.tierheavy;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
-import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
+import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
@@ -51,13 +50,26 @@ public class RevenantEntity extends DemonEntity implements IAnimatable, IAnimati
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
+		if (!event.isMoving() && this.hurtMarked) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+			return PlayState.CONTINUE;
+		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
+	}
+
+	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
+		if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee", true));
+			return PlayState.CONTINUE;
+		}
+		return PlayState.STOP;
 	}
 
 	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController<RevenantEntity>(this, "controller", 0, this::predicate));
+		data.addAnimationController(new AnimationController<RevenantEntity>(this, "controller1", 0, this::predicate1));
 	}
 
 	@Override
@@ -84,16 +96,12 @@ public class RevenantEntity extends DemonEntity implements IAnimatable, IAnimati
 	protected void registerGoals() {
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-		this.applyEntityAI();
-	}
-
-	protected void applyEntityAI() {
-		this.goalSelector.addGoal(4,
-				new RangedStrafeAttackGoal(this,
-						new RevenantEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(
-								DoomConfig.SERVER.revenant_ranged_damage.get().floatValue()),
-						1.0D, 50, 30, 15, 15F, 1).setMultiShot(2, 3));
-		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.0D, false, 2));
+		this.goalSelector
+				.addGoal(4,
+						new RangedAttackGoal(this,
+								new RevenantEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
+										.setDamage(DoomConfig.SERVER.revenant_ranged_damage.get().floatValue()),
+								1.25D, true));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
