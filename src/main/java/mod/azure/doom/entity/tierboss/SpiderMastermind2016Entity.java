@@ -1,7 +1,6 @@
 package mod.azure.doom.entity.tierboss;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.RangedAttackStoppedGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
@@ -34,7 +33,6 @@ public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
 		this.goalSelector.add(4, new RangedAttackStoppedGoal(this, new SpiderMastermind2016Entity.FireballAttack(this)
 				.setProjectileOriginOffset(0.8, 0.2, 0.8).setDamage(config.spider_mastermind_ranged_damage)));
-		this.targetSelector.add(4, new DemonAttackGoal(this, 1.0D, false, 2));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));

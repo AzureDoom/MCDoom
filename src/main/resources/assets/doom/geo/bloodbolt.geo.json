@@ -14,7 +14,7 @@
 				{
 					"name": "unknown_bone",
 					"pivot": [0, 0, 0],
-					"rotation": [-180, 0, 180],
+					"rotation": [0, 89, 0],
 					"cubes": [
 						{
 							"origin": [-1.5, -39.75, 0.45],

@@ -89,6 +89,10 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_phasetwo", false));
 			return PlayState.CONTINUE;
 		}
+		if (!event.isMoving() && this.velocityModified) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation((this.dataTracker.get(DEATH_STATE) == 0 ? "idle_phaseone" : "idle_phasetwo"), true));
+			return PlayState.CONTINUE;
+		}
 		event.getController().setAnimation(new AnimationBuilder()
 				.addAnimation((this.dataTracker.get(DEATH_STATE) == 0 ? "idle_phaseone" : "idle_phasetwo"), true));
 		return PlayState.CONTINUE;

@@ -109,7 +109,7 @@ public class ProjectilesEntityRegister {
 			boolean itemRender) {
 
 		EntityType<T> type = FabricEntityTypeBuilder.<T>create(SpawnGroup.MISC, factory)
-				.dimensions(new EntityDimensions(0.25F, 2.0F, true)).disableSummon().spawnableFarFromPlayer()
+				.dimensions(new EntityDimensions(0.5F, 0.5F, true)).disableSummon().spawnableFarFromPlayer()
 				.trackRangeBlocks(90).trackedUpdateRate(4).build();
 
 		Registry.register(Registry.ENTITY_TYPE, new Identifier(DoomMod.MODID, id), type);

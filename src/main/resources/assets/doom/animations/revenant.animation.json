@@ -302,6 +302,43 @@
 					}
 				}
 			}
+		},
+		"melee": {
+			"animation_length": 0.72,
+			"bones": {
+				"bone": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.44": {
+							"vector": [0, -32.5, 0]
+						},
+						"0.72": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"Left_arm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 20]
+						},
+						"0.2": {
+							"vector": [-47.5, 57.5, 20],
+							"easing": "easeInOutSine"
+						},
+						"0.44": {
+							"vector": [-42.61872, -38.09671, 9.29409],
+							"easing": "easeInOutSine"
+						},
+						"0.72": {
+							"vector": [0, 0, 20],
+							"easing": "easeInOutSine"
+						}
+					}
+				}
+			}
 		}
 	},
 	"geckolib_format_version": 2

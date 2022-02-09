@@ -52,10 +52,12 @@ public class NightmareImpEntity extends DemonEntity implements IAnimatable, IAni
 			return PlayState.CONTINUE;
 		}
 		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			if (world.isClient) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
-				return PlayState.CONTINUE;
-			}
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
+			return PlayState.CONTINUE;
+		}
+		if (!event.isMoving() && this.velocityModified) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+			return PlayState.CONTINUE;
 		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
@@ -116,7 +118,7 @@ public class NightmareImpEntity extends DemonEntity implements IAnimatable, IAni
 								.setDamage(config.nightmare_ranged_damage).setSound(SoundEvents.ENTITY_BLAZE_SHOOT,
 										1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.0D, 50, 30, 15, 15F, 1).setMultiShot(2, 3));
-		this.goalSelector.add(4, new DemonAttackGoal(this, 1.0D, false, 2));
+		this.goalSelector.add(4, new DemonAttackGoal(this, 1.25D, 2));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());

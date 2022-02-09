@@ -60,6 +60,10 @@ public class ArmoredBaronEntity extends DemonEntity implements IAnimatable, IAni
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_armor", false));
 			return PlayState.CONTINUE;
 		}
+		if (!event.isMoving() && this.velocityModified) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_armor", true));
+			return PlayState.CONTINUE;
+		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_armor", true));
 		return PlayState.CONTINUE;
 	}
@@ -102,7 +106,7 @@ public class ArmoredBaronEntity extends DemonEntity implements IAnimatable, IAni
 		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.add(6, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.goalSelector.add(4, new DemonAttackGoal(this, 1.25D, false, 1));
+		this.goalSelector.add(4, new DemonAttackGoal(this, 1.25D, 1));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 		this.targetSelector.add(2, new ActiveTargetGoal(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));

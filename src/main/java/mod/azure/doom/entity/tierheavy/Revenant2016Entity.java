@@ -69,6 +69,14 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
+		if (!this.isOnGround() && !this.onGround && this.velocityModified) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("flying", true));
+			return PlayState.CONTINUE;
+		}
+		if (!event.isMoving() && this.velocityModified) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+			return PlayState.CONTINUE;
+		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
 	}
@@ -162,7 +170,7 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 		this.goalSelector.add(4, new FlyingRangeAttackGoal(this, config.revenant_ranged_damage,
 				(this.getVariant() == 10 ? ModSoundEvents.REVENANT_DOOT : ModSoundEvents.REVENANT_ATTACK), true));
-		this.goalSelector.add(4, new DemonAttackGoal(this, 1.0D, false, 2));
+		this.goalSelector.add(4, new DemonAttackGoal(this, 1.25D, 2));
 		this.targetSelector.add(2, new ActiveTargetGoal(this, PlayerEntity.class, true));
 		this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 	}
