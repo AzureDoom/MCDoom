@@ -45,15 +45,20 @@ public class DemonAttackGoal extends Goal {
 			boolean inLineOfSight = this.entity.getVisibilityCache().canSee(livingentity);
 			this.attackTime++;
 			this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
+			double d0 = this.entity.squaredDistanceTo(livingentity.getX(), livingentity.getY(),
+					livingentity.getZ());
+			double d1 = this.getAttackReachSqr(livingentity);
 			if (inLineOfSight) {
 				if (this.entity.distanceTo(livingentity) >= 3.0D) {
 					this.entity.getNavigation().startMovingTo(livingentity, this.moveSpeedAmp);
 					this.attackTime = -5;
 				} else {
 					if (this.attackTime == 4) {
-						this.entity.setAttackingState(statecheck);
 						this.entity.getNavigation().startMovingTo(livingentity, this.moveSpeedAmp);
-						this.entity.tryAttack(livingentity);
+						if (d0 <= d1) {
+							this.entity.tryAttack(livingentity);
+							this.entity.setAttackingState(statecheck);
+						}
 						livingentity.timeUntilRegen = 0;
 					}
 					if (this.attackTime == 8) {
@@ -66,7 +71,7 @@ public class DemonAttackGoal extends Goal {
 	}
 
 	protected double getAttackReachSqr(LivingEntity attackTarget) {
-		return (double) (this.entity.getWidth() * 1.0F * this.entity.getWidth() * 1.0F + attackTarget.getWidth());
+		return (double) (this.entity.getWidth() * 2.5F * this.entity.getWidth() * 2.5F + entity.getWidth());
 	}
 
 }

@@ -11,7 +11,7 @@ public class RangedStrafeAttackGoal extends Goal {
 	private final DemonEntity entity;
 	private double moveSpeedAmp = 1;
 	public int attackCooldown;
-	public int visibleTicksDelay = 20;
+	public int visibleTicksDelay;
 	private float maxAttackDistance = 20;
 	private int strafeTicks = 20;
 	private int attackTime = -1;
@@ -31,7 +31,7 @@ public class RangedStrafeAttackGoal extends Goal {
 		this.maxAttackDistance = maxAttackDistanceIn * maxAttackDistanceIn;
 		this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
 		this.attack = attack;
-		this.visibleTicksDelay = visibleTicksDelay;
+		this.visibleTicksDelay = 0;
 		this.strafeTicks = strafeTicks;
 		this.statecheck = state;
 	}
@@ -178,6 +178,7 @@ public class RangedStrafeAttackGoal extends Goal {
 			}
 
 			// attack
+			this.attackTime++;
 			if (multiShooting) {
 				if (tickMultiShot())
 					this.attack.shoot();

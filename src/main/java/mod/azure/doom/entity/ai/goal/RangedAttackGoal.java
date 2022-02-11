@@ -56,6 +56,9 @@ public class RangedAttackGoal extends Goal {
 			boolean inLineOfSight = this.entity.getVisibilityCache().canSee(livingentity);
 			this.attackTime++;
 			this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
+			double d0 = this.entity.squaredDistanceTo(livingentity.getX(), livingentity.getY(),
+					livingentity.getZ());
+			double d1 = this.getAttackReachSqr(livingentity);
 			if (inLineOfSight) {
 				if (this.entity.distanceTo(livingentity) >= 6.0D) {
 					if (this.attackTime == 1) {
@@ -76,9 +79,11 @@ public class RangedAttackGoal extends Goal {
 				} else {
 					this.entity.getNavigation().startMovingTo(livingentity, this.moveSpeedAmp);
 					if (this.attackTime == 4) {
-						this.entity.setAttackingState(1);
 						this.entity.getNavigation().stop();
-						this.entity.tryAttack(livingentity);
+						if (d0 <= d1) {
+							this.entity.setAttackingState(1);
+							this.entity.tryAttack(livingentity);
+						}
 						livingentity.timeUntilRegen = 0;
 					}
 					if (this.attackTime == 8) {

@@ -5,6 +5,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import mod.azure.doom.structures.IconStructure;
+import mod.azure.doom.util.registry.DoomStructures;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.util.collection.Pool;
 import net.minecraft.util.math.BlockPos;
@@ -27,11 +29,11 @@ public class NoiseChunkGeneratorMixin {
 	private static Pool<SpawnSettings.SpawnEntry> getStructureSpawns(Biome biome, StructureAccessor accessor,
 			SpawnGroup group, BlockPos pos) {
 
-//		if (group == SpawnGroup.MONSTER) {
-//			if (accessor.getStructureAt(pos, DoomStructures.HELL_CHURCH).hasChildren()) {
-//				return HellChurchStructure.STRUCTURE_MONSTERS;
-//			}
-//		}
+		if (group == SpawnGroup.MONSTER) {
+			if (accessor.getStructureAt(pos, DoomStructures.ICON_FIGHT).hasChildren()) {
+				return IconStructure.STRUCTURE_MONSTERS;
+			}
+		}
 
 		return null;
 	}

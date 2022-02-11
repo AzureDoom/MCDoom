@@ -1,7 +1,6 @@
 package mod.azure.doom.entity.ai.goal;
 
 import java.util.EnumSet;
-import java.util.SplittableRandom;
 
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.tiersuperheavy.GladiatorEntity;
@@ -72,6 +71,8 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 			boolean inLineOfSight = this.entity.getVisibilityCache().canSee(livingentity);
 			this.attackTime++;
 			this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
+			double d0 = this.entity.squaredDistanceTo(livingentity.getX(), livingentity.getY(), livingentity.getZ());
+			double d1 = this.getAttackReachSqr(livingentity);
 			if (inLineOfSight) {
 				if (this.entity.distanceTo(livingentity) >= 6.0D) {
 					if (this.entity.getDeathState() == 0) {
@@ -115,13 +116,7 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 					this.entity.getNavigation().startMovingTo(livingentity, 1.4);
 					this.entity.setSilent(true);
 					if (this.attackTime == 1) {
-						SplittableRandom random = new SplittableRandom();
-						int var = random.nextInt(0, 3);
-						if (var == 1) {
-							this.entity.setAttackingState(3);
-						} else {
-							this.entity.setAttackingState(3);
-						}
+						this.entity.setAttackingState(3);
 					}
 					if (this.attackTime == 18) {
 						this.entity.getNavigation().stop();
@@ -132,12 +127,16 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 						areaeffectcloudentity.setDuration(55);
 						areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
 						entity.world.spawnEntity(areaeffectcloudentity);
-						this.entity.tryAttack(livingentity);
+						if (d0 <= d1) {
+							this.entity.tryAttack(livingentity);
+						}
 						livingentity.timeUntilRegen = 0;
 					}
 					if (this.attackTime == 19) {
 						if (this.entity.getDeathState() == 1) {
-							this.entity.tryAttack1(livingentity);
+							if (d0 <= d1) {
+								this.entity.tryAttack1(livingentity);
+							}
 							livingentity.timeUntilRegen = 0;
 						}
 						this.entity.setAttackingState(0);

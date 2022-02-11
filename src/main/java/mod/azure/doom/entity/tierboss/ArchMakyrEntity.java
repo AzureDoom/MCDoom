@@ -3,15 +3,13 @@ package mod.azure.doom.entity.tierboss;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
-import java.util.SplittableRandom;
 
 import org.jetbrains.annotations.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
-import mod.azure.doom.entity.projectiles.CustomFireballEntity;
-import mod.azure.doom.entity.tierheavy.CacodemonEntity;
+import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
+import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -73,7 +71,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	public ArchMakyrEntity(EntityType<ArchMakyrEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
-		this.moveControl = new DemonFlightMoveControl(this, 90, true);
+		this.moveControl = new GhastMoveControl(this);
 	}
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -132,104 +130,12 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.goalSelector.add(7, new ArchMakyrEntity.LookAtTargetGoal(this));
 		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
-		this.initCustomGoals();
-	}
-
-	protected void initCustomGoals() {
-		this.goalSelector.add(1, new ArchMakyrEntity.ShootFireballGoal(this));
+		this.goalSelector.add(4,
+				new RangedStrafeAttackGoal(this, new FireballAttack(this, true).setProjectileOriginOffset(0.8, 0.4, 0.8)
+						.setDamage(config.archmaykr_ranged_damage), 1.0D, 20, 30, 15, 15F, 1));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
-	}
-
-	static class ShootFireballGoal extends Goal {
-		private final ArchMakyrEntity parentEntity;
-		protected int cooldown = 0;
-
-		public ShootFireballGoal(ArchMakyrEntity parentEntity) {
-			this.parentEntity = parentEntity;
-		}
-
-		public boolean canStart() {
-			return this.parentEntity.getTarget() != null;
-		}
-
-		public void start() {
-			super.start();
-			this.parentEntity.setAttacking(true);
-			this.cooldown = 0;
-		}
-
-		@Override
-		public void stop() {
-			super.stop();
-			this.parentEntity.setAttacking(false);
-			this.parentEntity.setAttackingState(0);
-			parentEntity.setNoGravity(false);
-			parentEntity.addVelocity(0, 0, 0);
-		}
-
-		public void tick() {
-			LivingEntity livingEntity = this.parentEntity.getTarget();
-			if (parentEntity.distanceTo(livingEntity) < 64.0D) {
-				World world = this.parentEntity.world;
-				Vec3d vec3d = this.parentEntity.getRotationVec(1.0F);
-				++this.cooldown;
-				double f = livingEntity.getX() - (this.parentEntity.getX() + vec3d.x * 2.0D);
-				double g = livingEntity.getBodyY(0.5D) - (0.5D + this.parentEntity.getBodyY(0.5D));
-				double h = livingEntity.getZ() - (this.parentEntity.getZ() + vec3d.z * 2.0D);
-				CustomFireballEntity fireballEntity = new CustomFireballEntity(world, this.parentEntity, f, g, h,
-						config.archmaykr_ranged_damage);
-				this.parentEntity.getNavigation().startMovingTo(livingEntity, 1.4D);
-				if (this.cooldown == 5) {
-					parentEntity.setNoGravity(true);
-					parentEntity.addVelocity(0, (double) 0.2F * 1.3D, 0);
-				}
-				if (this.cooldown == 15) {
-					SplittableRandom random = new SplittableRandom();
-					int r = random.nextInt(0, 3);
-					if (r <= 2) {
-						fireballEntity.updatePosition(this.parentEntity.getX() + vec3d.x * 2.0D,
-								this.parentEntity.getBodyY(0.5D) + 0.5D, parentEntity.getZ() + vec3d.z * 2.0D);
-						world.spawnEntity(fireballEntity);
-						this.parentEntity.setAttackingState(1);
-					} else {
-						float q = 150.0F;
-						int k = MathHelper.floor(this.parentEntity.getX() - (double) q - 1.0D);
-						int l = MathHelper.floor(this.parentEntity.getX() + (double) q + 1.0D);
-						int t = MathHelper.floor(this.parentEntity.getY() - (double) q - 1.0D);
-						int u = MathHelper.floor(this.parentEntity.getY() + (double) q + 1.0D);
-						int v = MathHelper.floor(this.parentEntity.getZ() - (double) q - 1.0D);
-						int w = MathHelper.floor(this.parentEntity.getZ() + (double) q + 1.0D);
-						List<Entity> list = this.parentEntity.world.getOtherEntities(this.parentEntity,
-								new Box((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
-						for (int k2 = 0; k2 < list.size(); ++k2) {
-							Entity entity = list.get(k2);
-							if (entity.isAlive()) {
-								if (entity instanceof LivingEntity) {
-									double d = (this.parentEntity.getBoundingBox().minX
-											+ this.parentEntity.getBoundingBox().maxX) / 2.0D;
-									double e = (this.parentEntity.getBoundingBox().minZ
-											+ this.parentEntity.getBoundingBox().maxZ) / 2.0D;
-									double f1 = entity.getX() - d;
-									double g1 = entity.getZ() - e;
-									double h1 = Math.max(f1 * f1 + g1 * g1, 0.1D);
-									entity.addVelocity(f1 / h1 * 10.0D, (double) 0.2F * 10.0D, g1 / h1 * 10.0D);
-								}
-							}
-						}
-						this.parentEntity.setAttackingState(2);
-					}
-				}
-				if (this.cooldown == 25) {
-					this.parentEntity.setAttackingState(0);
-					this.cooldown = -50;
-				}
-			} else if (this.cooldown > 0) {
-				--this.cooldown;
-			}
-			this.parentEntity.lookAtEntity(livingEntity, 30.0F, 30.0F);
-		}
 	}
 
 	static class LookAtTargetGoal extends Goal {
@@ -262,11 +168,11 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		}
 	}
 
-	static class MoveController extends MoveControl {
-		private final CacodemonEntity ghast;
+	static class GhastMoveControl extends MoveControl {
+		private final ArchMakyrEntity ghast;
 		private int collisionCheckCooldown;
 
-		public MoveController(CacodemonEntity ghast) {
+		public GhastMoveControl(ArchMakyrEntity ghast) {
 			super(ghast);
 			this.ghast = ghast;
 		}
@@ -285,17 +191,20 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 						this.state = MoveControl.State.WAIT;
 					}
 				}
+
 			}
 		}
 
 		private boolean willCollide(Vec3d direction, int steps) {
 			Box box = this.ghast.getBoundingBox();
+
 			for (int i = 1; i < steps; ++i) {
 				box = box.offset(direction);
 				if (!this.ghast.world.isSpaceEmpty(this.ghast, box)) {
 					return false;
 				}
 			}
+
 			return true;
 		}
 	}
@@ -334,7 +243,6 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 			this.move(MovementType.SELF, this.getVelocity());
 			this.setVelocity(this.getVelocity().multiply((double) f));
 		}
-
 		this.updateLimbs(this, false);
 	}
 
@@ -466,7 +374,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		for (int x = 0; x < list.size(); ++x) {
 			Entity entity = (Entity) list.get(x);
 			if (entity instanceof ArchMakyrEntity && entity.age < 1) {
-				this.remove(Entity.RemovalReason.DISCARDED);
+				entity.remove(Entity.RemovalReason.DISCARDED);
 			}
 		}
 	}

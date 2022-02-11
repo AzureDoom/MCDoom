@@ -381,6 +381,8 @@
 	"doom.achievement.argent.desc" : "Created by combining the tortured souls of the Nether and the power of the Aether",
 	"doom.achievement.argent_plate" : "Argent Plate",
 	"doom.achievement.argent_plate.desc" : "Created by combining the power of Argent Energy and the metal of the Overworld",
+	"doom.achievement.icon_fight": "The Final Sin",
+	"doom.achievement.icon_fight.desc": "As it is written in the prophecies of ancient Villager scripture, the Titans - towering elder demons of the infernal age - would return, unearthed from their immortal slumber.",
 	"text.autoconfig.doom.title": "MC Doom Config",
 	"text.autoconfig.doom.option.misc": "Misc Settings",
 	"text.autoconfig.doom.option.misc.enable_all_villager_trades": "Enable All Villager Trades",

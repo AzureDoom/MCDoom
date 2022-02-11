@@ -143,7 +143,6 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 			this.move(MovementType.SELF, this.getVelocity());
 			this.setVelocity(this.getVelocity().multiply((double) f));
 		}
-
 		this.updateLimbs(this, false);
 	}
 

@@ -84,7 +84,7 @@
 		},
 		"attacking_weapon": {
 			"loop": true,
-			"animation_length": 2,
+			"animation_length": 0.52,
 			"bones": {
 				"body": {
 					"position": {
@@ -161,15 +161,15 @@
 						"0.0": {
 							"vector": [0, 0, "2+Math.cos(query.anim_time*180)*-2.5"]
 						},
-						"0.52": {
+						"0.2": {
 							"vector": [0, 0, "57+Math.cos(query.anim_time*180)*-2.5"],
 							"easing": "easeInOutSine"
 						},
-						"1.56": {
+						"0.36": {
 							"vector": [-72.5, 0, "129.5+Math.cos(query.anim_time*180)*-2.5"],
 							"easing": "easeInOutSine"
 						},
-						"2.0": {
+						"0.52": {
 							"vector": [0, 0, "2+Math.cos(query.anim_time*180)*-2.5"],
 							"easing": "easeInOutSine"
 						}
@@ -180,20 +180,20 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.52": {
+						"0.2": {
 							"vector": [0, 0, 0],
 							"easing": "easeInOutSine"
 						},
-						"1.56": {
+						"0.36": {
 							"vector": [0, 75, 0],
 							"easing": "easeInOutSine"
 						}
 					},
 					"scale": {
-						"1.56": {
+						"0.36": {
 							"vector": [1, 1, 1]
 						},
-						"2.0": {
+						"0.52": {
 							"vector": [0, 0, 0],
 							"easing": "easeInOutSine"
 						}

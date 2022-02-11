@@ -113,7 +113,7 @@ public class Imp2016Entity extends DemonEntity implements IAnimatable, IAnimatio
 						new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8)
 								.setDamage(config.imp2016_ranged_damage).setSound(SoundEvents.ENTITY_BLAZE_SHOOT, 1.0F,
 										1.4F + this.getRandom().nextFloat() * 0.35F),
-						1.0D, 50, 30, 15, 15F, 1).setMultiShot(5, 3));
+						1.0D, 5, 30, 15, 15F, 1).setMultiShot(5, 3));
 		this.goalSelector.add(4, new DemonAttackGoal(this, 1.25D, 2));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));

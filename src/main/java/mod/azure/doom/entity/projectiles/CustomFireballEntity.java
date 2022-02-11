@@ -1,11 +1,14 @@
 package mod.azure.doom.entity.projectiles;
 
+import mod.azure.doom.DoomMod;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
+import net.minecraft.world.explosion.Explosion;
 
 public class CustomFireballEntity extends FireballEntity {
 
@@ -28,6 +31,17 @@ public class CustomFireballEntity extends FireballEntity {
 				this.applyDamageEffects((LivingEntity) entity2, entity);
 				this.remove(Entity.RemovalReason.DISCARDED);
 			}
+		}
+	}
+
+	@Override
+	protected void onCollision(HitResult hitResult) {
+		super.onCollision(hitResult);
+		if (!this.world.isClient) {
+			boolean bl = DoomMod.config.weapons.enable_block_breaking;
+			this.world.createExplosion(null, this.getX(), this.getY(), this.getZ(), 1, true,
+					bl ? Explosion.DestructionType.DESTROY : Explosion.DestructionType.NONE);
+			this.discard();
 		}
 	}
 }

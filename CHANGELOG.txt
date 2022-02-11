@@ -1,9 +1,15 @@
-v.4.1.10
+v.4.1.11
 
-- Rewrote Demon Melee goal, much cleaner and works far better.
-- Unwilling attacking animation fixed.
-- Hurt animation for all mobs that walk tweaked.
-- Baron of Hell (All), Hell Knight Classic, Cyberdemon Classic, Icon of Sin, Imp, Nightmare Imp, Imp 2016, Stone Imp, and Prowler walk animations redone. 
-- Revenant Classic (no jetpack) now melees if close range.
-- Imp, Nightmare Imp, Imp 2016, Maykr Drone, Blood Maykr, Possessed Soldier, Mecha Zombie, and Arachnotron fire much more often now. 
-- Fixed Blood Maykr projectile rendering.
+- BFG Damage is reduced on Icon of Sin.
+- Fire effects summoned by Doom mobs last longer and burn blocks.
+- Gore Nests spawn faster and still only once.
+- Fixed Gore Nest Particle animation.
+- Icon of Sin combat AI redone. Now summons fire on the target when they aren't moving, shoots a Fireball at target if they are moving, or if close enough do a melee damaging attack. Attack cycle now much faster. 
+- Icon of Sin will now summon mobs, you can configure what mobs in the config as well!
+- Fixed range of melee based attacks. Should work properly now.
+- Hell Knight 2016 combat AI updated along with jumping animations plus new particle effect when slamming. 
+- Gargoyles now walk when not in combat and will fly when attacking and perform both a melee and ranged attack. 
+- Revenants 2016/Doot now fire much faster.
+- Blood Maykr, Arch Maykr, and Spider Masterminds fire much faster.
+- Fixed broken strafing attack. 
+- Added the Icon Structure, a naturally spawning boss room found in the depths of the Overworld. Do you have what it takes to defeat the Icon of Sin? - Credit to the amazing work of Tyrius, who built, tested and gave feedback on the Icon of Sin impovements!

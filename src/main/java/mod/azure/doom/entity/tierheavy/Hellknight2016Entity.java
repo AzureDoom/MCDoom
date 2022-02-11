@@ -1,19 +1,21 @@
 package mod.azure.doom.entity.tierheavy;
 
+import java.util.EnumSet;
 import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -21,6 +23,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -56,7 +59,7 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
-		if (!event.isMoving() && this.velocityModified) {
+		if (lastLimbDistance > 0.01F && this.velocityModified) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 			return PlayState.CONTINUE;
 		}
@@ -65,7 +68,8 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 	}
 
 	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
-		if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
+		if (!event.isMoving() && this.dataTracker.get(STATE) == 1
+				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("jumpattack", true));
 			return PlayState.CONTINUE;
 		}
@@ -100,11 +104,7 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.initCustomGoals();
-	}
-
-	protected void initCustomGoals() {
-		this.goalSelector.add(5, new Hellknight2016Entity.AttackGoal(this, 1.5D, false));
+		this.goalSelector.add(3, new Hellknight2016Entity.AttackGoal(this, 1.5D));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
@@ -120,87 +120,81 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 		return 0;
 	}
 
-	public class AttackGoal extends MeleeAttackGoal {
+	public class AttackGoal extends Goal {
 		private final DemonEntity entity;
 		private final double speedModifier;
-		private int ticksUntilNextAttack;
-		private int ticksUntilNextPathRecalculation;
-		private final boolean followingTargetEvenIfNotSeen;
-		private double targetX;
-		private double targetY;
-		private double targetZ;
+		private int attackTime;
 
-		public AttackGoal(DemonEntity zombieIn, double speedIn, boolean longMemoryIn) {
-			super(zombieIn, speedIn, longMemoryIn);
+		public AttackGoal(DemonEntity zombieIn, double speedIn) {
 			this.entity = zombieIn;
+			this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
 			this.speedModifier = speedIn;
-			this.followingTargetEvenIfNotSeen = longMemoryIn;
+		}
+
+		public boolean canStart() {
+			return this.entity.getTarget() != null;
+		}
+
+		public boolean shouldContinue() {
+			return this.canStart();
 		}
 
 		public void start() {
 			super.start();
-		}
-
-		@Override
-		public boolean shouldContinue() {
-			return super.shouldContinue();
+			this.entity.setAttacking(true);
 		}
 
 		public void stop() {
 			super.stop();
 			this.entity.setAttacking(false);
 			this.entity.setAttackingState(0);
+			this.attackTime = -1;
 		}
 
 		public void tick() {
 			LivingEntity livingentity = this.entity.getTarget();
 			if (livingentity != null) {
-				this.mob.getLookControl().lookAt(livingentity, 30.0F, 30.0F);
-				double d0 = this.mob.squaredDistanceTo(livingentity.getX(), livingentity.getY(), livingentity.getZ());
-				this.ticksUntilNextPathRecalculation = Math.max(this.ticksUntilNextPathRecalculation - 1, 0);
-				if ((this.followingTargetEvenIfNotSeen || this.mob.getVisibilityCache().canSee(livingentity))
-						&& this.ticksUntilNextAttack <= 0
-						&& (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D
-								|| livingentity.squaredDistanceTo(this.targetX, this.targetY, this.targetZ) >= 1.0D
-								|| this.mob.getRandom().nextFloat() < 0.05F)) {
-					this.targetX = livingentity.getX();
-					this.targetY = livingentity.getY();
-					this.targetZ = livingentity.getZ();
-					this.ticksUntilNextPathRecalculation = 4 + this.mob.getRandom().nextInt(7);
-					if (d0 > 1024.0D) {
-						this.ticksUntilNextPathRecalculation += 10;
-					} else if (d0 > 256.0D) {
-						this.ticksUntilNextPathRecalculation += 5;
+				boolean inLineOfSight = this.entity.getVisibilityCache().canSee(livingentity);
+				this.attackTime++;
+				this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
+				double d0 = this.entity.squaredDistanceTo(livingentity.getX(), livingentity.getY(),
+						livingentity.getZ());
+				double d1 = this.getAttackReachSqr(livingentity);
+				if (inLineOfSight && livingentity.distanceTo(entity) >= 4.0D && this.attackTime < 0) {
+					this.entity.getNavigation().startMovingTo(livingentity, this.speedModifier);
+					this.attackTime = -5;
+				} else {
+					this.entity.getNavigation().stop();
+					if (this.attackTime == 1) {
+						if (d0 <= d1) {
+							this.entity.setAttackingState(1);
+						}
 					}
-
-					if (!this.mob.getNavigation().startMovingTo(livingentity, this.speedModifier)) {
-						this.ticksUntilNextPathRecalculation += 15;
+					if (this.attackTime == 10) {
+						AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(entity.world,
+								entity.getX(), entity.getY(), entity.getZ());
+						areaeffectcloudentity.setParticleType(ParticleTypes.CRIMSON_SPORE);
+						areaeffectcloudentity.setRadius(3.0F);
+						areaeffectcloudentity.setDuration(5);
+						areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
+						entity.world.spawnEntity(areaeffectcloudentity);
+						this.entity.getJumpControl().setActive();
+						if (d0 <= d1) {
+							this.entity.tryAttack(livingentity);
+						}
+						livingentity.timeUntilRegen = 0;
+					}
+					if (this.attackTime == 13) {
+						this.attackTime = -5;
+						this.entity.setAttackingState(0);
+						this.entity.getNavigation().startMovingTo(livingentity, this.speedModifier);
 					}
 				}
-				this.ticksUntilNextAttack = Math.max(this.ticksUntilNextAttack - 0, 0);
-				this.attack(livingentity, d0);
 			}
 		}
 
-		@Override
-		protected void attack(LivingEntity livingentity, double squaredDistance) {
-			double d0 = this.getSquaredMaxAttackDistance(livingentity);
-			if (squaredDistance <= d0 && this.getCooldown() <= 0) {
-				this.resetCooldown();
-				this.mob.addVelocity(0, 1.0D, 0);
-				this.entity.setAttackingState(1);
-				this.mob.tryAttack(livingentity);
-			}
-		}
-
-		@Override
-		protected int getMaxCooldown() {
-			return 50;
-		}
-
-		@Override
-		protected double getSquaredMaxAttackDistance(LivingEntity entity) {
-			return (double) (this.mob.getWidth() * 1.0F * this.mob.getWidth() * 1.0F + entity.getWidth());
+		protected double getAttackReachSqr(LivingEntity entity) {
+			return (double) (this.entity.getWidth() * 2.5F * this.entity.getWidth() * 2.5F + entity.getWidth());
 		}
 	}
 

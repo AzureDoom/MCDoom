@@ -15,6 +15,7 @@ import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -44,7 +45,7 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 
 	public DoomFireEntity(EntityType<DoomFireEntity> entityType, World world) {
 		super(entityType, world);
-		this.ticksLeft = 22;
+		this.ticksLeft = 75;
 	}
 
 	public DoomFireEntity(World worldIn, double x, double y, double z, float yaw, int warmup, LivingEntity casterIn,
@@ -106,6 +107,9 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 			if (--this.ticksLeft < 0) {
 				this.remove(Entity.RemovalReason.DISCARDED);
 			}
+		}
+		if (this.isAlive() && world.getBlockState(this.getBlockPos().up()).isAir()) {
+			world.setBlockState(this.getBlockPos().up(), AbstractFireBlock.getState(world, this.getBlockPos().up()));
 		}
 		List<Entity> list = this.world.getOtherEntities(this, new Box(this.getBlockPos().up()).expand(1D, 1D, 1D));
 		for (int x = 0; x < list.size(); ++x) {

@@ -231,7 +231,7 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 			Entity entity = (Entity) list.get(x);
 			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d1)) / q);
 			if (!(entity instanceof PlayerEntity || entity instanceof EnderDragonEntity
-					|| entity instanceof GoreNestEntity)
+					|| entity instanceof GoreNestEntity || entity instanceof IconofsinEntity)
 					&& (entity instanceof HostileEntity || entity instanceof SlimeEntity
 							|| entity instanceof PhantomEntity || entity instanceof ShulkerEntity
 							|| entity instanceof HoglinEntity)) {
@@ -240,6 +240,12 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 						entity.damage(DamageSource.explosion(this.shooter), DoomMod.config.weapons.bfgball_damage_aoe);
 						setBeamTarget(entity.getId());
 					}
+				}
+			}
+			if (entity instanceof IconofsinEntity) {
+				if (entity.isAlive()) {
+					entity.damage(DamageSource.player((PlayerEntity) this.shooter),
+							DoomMod.config.weapons.bfgball_damage_aoe * 0.1F);
 				}
 			}
 			if (!(entity instanceof PlayerEntity) && entity instanceof EnderDragonEntity) {
@@ -312,7 +318,7 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 			Entity entity = (Entity) list.get(x);
 			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d)) / q);
 			if (!(entity instanceof PlayerEntity || entity instanceof EnderDragonEntity
-					|| entity instanceof GoreNestEntity)
+					|| entity instanceof GoreNestEntity || entity instanceof IconofsinEntity)
 					&& (entity instanceof HostileEntity || entity instanceof SlimeEntity
 							|| entity instanceof PhantomEntity || entity instanceof ShulkerEntity
 							|| entity instanceof HoglinEntity)) {
@@ -345,6 +351,12 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 				if (entity.isAlive()) {
 					((EnderDragonEntity) entity).head.damage(DamageSource.player((PlayerEntity) this.shooter),
 							DoomMod.config.weapons.bfgball_damage_dragon);
+				}
+			}
+			if (entity instanceof IconofsinEntity) {
+				if (entity.isAlive()) {
+					entity.damage(DamageSource.player((PlayerEntity) this.shooter),
+							DoomMod.config.weapons.bfgball_damage * 0.1F);
 				}
 			}
 		}

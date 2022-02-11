@@ -4,13 +4,15 @@ import java.util.EnumSet;
 import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
-import mod.azure.doom.entity.ai.goal.FlyingRangeAttackGoal;
+import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
+import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
+import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.ActiveTargetGoal;
@@ -18,7 +20,6 @@ import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -28,10 +29,13 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -47,7 +51,7 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	public GargoyleEntity(EntityType<GargoyleEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
-		this.moveControl = new DemonFlightMoveControl(this, 90, false);
+		this.moveControl = new GargoyleMoveControl(this);
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -61,12 +65,23 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IAnimati
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
+		if (!event.isMoving() && this.isOnGround() && this.onGround
+				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+			return PlayState.CONTINUE;
+		}
+		if (event.isMoving() && this.isOnGround() && this.onGround
+				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
+			event.getController().setAnimationSpeed(1.05);
+			return PlayState.CONTINUE;
+		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("flying", true));
 		return PlayState.CONTINUE;
 	}
 
 	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
-		if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
+		if (this.dataTracker.get(STATE) > 0 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking", true));
 			return PlayState.CONTINUE;
 		}
@@ -108,16 +123,50 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IAnimati
 		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.goalSelector.add(7, new GargoyleEntity.LookAtTargetGoal(this));
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));
-		this.initCustomGoals();
-	}
-
-	protected void initCustomGoals() {
 		this.goalSelector.add(4,
-				new FlyingRangeAttackGoal(this, config.gargoyle_ranged_damage, SoundEvents.ENTITY_BLAZE_SHOOT, false));
+				new RangedAttackGoal(this,
+						new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8)
+								.setDamage(config.gargoyle_ranged_damage).setSound(SoundEvents.ENTITY_BLAZE_SHOOT, 1.0F,
+										1.4F + this.getRandom().nextFloat() * 0.35F),
+						1.1D));
+		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
+	}
+
+	public void travel(Vec3d movementInput) {
+		if (this.isAttacking()) {
+			if (this.isTouchingWater()) {
+				this.updateVelocity(0.02F, movementInput);
+				this.move(MovementType.SELF, this.getVelocity());
+				this.setVelocity(this.getVelocity().multiply(0.800000011920929D));
+			} else if (this.isInLava()) {
+				this.updateVelocity(0.02F, movementInput);
+				this.move(MovementType.SELF, this.getVelocity());
+				this.setVelocity(this.getVelocity().multiply(0.5D));
+			} else {
+				float f = 0.91F;
+				if (this.onGround) {
+					f = this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getBlock()
+							.getSlipperiness() * 0.91F;
+				}
+
+				float g = 0.16277137F / (f * f * f);
+				f = 0.91F;
+				if (this.onGround) {
+					f = this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getBlock()
+							.getSlipperiness() * 0.91F;
+				}
+
+				this.updateVelocity(this.onGround ? 0.1F * g : 0.02F, movementInput);
+				this.move(MovementType.SELF, this.getVelocity());
+				this.setVelocity(this.getVelocity().multiply((double) f));
+			}
+			this.updateLimbs(this, false);
+		} else {
+			super.travel(movementInput);
+		}
 	}
 
 	static class LookAtTargetGoal extends Goal {
@@ -150,39 +199,76 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IAnimati
 		}
 	}
 
-	static class GhastMoveControl extends MoveControl {
-		private final GargoyleEntity ghast;
-		private int collisionCheckCooldown;
+	static class GargoyleMoveControl extends MoveControl {
+		private final GargoyleEntity entity;
+		private int courseChangeCooldown;
 
-		public GhastMoveControl(GargoyleEntity ghast) {
-			super(ghast);
-			this.ghast = ghast;
+		public GargoyleMoveControl(GargoyleEntity entity) {
+			super(entity);
+			this.entity = entity;
 		}
 
 		public void tick() {
-			if (this.state == MoveControl.State.MOVE_TO) {
-				if (this.collisionCheckCooldown-- <= 0) {
-					this.collisionCheckCooldown += this.ghast.getRandom().nextInt(5) + 2;
-					Vec3d vec3d = new Vec3d(this.targetX - this.ghast.getX(), this.targetY - this.ghast.getY(),
-							this.targetZ - this.ghast.getZ());
-					double d = vec3d.length();
-					vec3d = vec3d.normalize();
-					if (this.willCollide(vec3d, MathHelper.ceil(d))) {
-						this.ghast.setVelocity(this.ghast.getVelocity().add(vec3d.multiply(0.1D)));
-					} else {
+			if (entity.isAttacking()) {
+				if (this.state == MoveControl.State.MOVE_TO) {
+					if (this.courseChangeCooldown-- <= 0) {
+						this.courseChangeCooldown += this.entity.getRandom().nextInt(5) + 2;
+						Vec3d vector3d = new Vec3d(this.targetX - this.entity.getX(), this.targetY - this.entity.getY(),
+								this.targetZ - this.entity.getZ());
+						double d0 = vector3d.length();
+						vector3d = vector3d.normalize();
+						if (this.canReach(vector3d, MathHelper.ceil(d0))) {
+							this.entity.setVelocity(this.entity.getVelocity().add(vector3d.multiply(0.1D)));
+						} else {
+							this.state = MoveControl.State.WAIT;
+						}
+					}
+				} else {
+					this.state = MoveControl.State.WAIT;
+					this.entity.setForwardSpeed(0.0F);
+				}
+			} else {
+				if (this.state == MoveControl.State.MOVE_TO) {
+					this.state = MoveControl.State.WAIT;
+					double d0 = this.targetX - this.entity.getX();
+					double d1 = this.targetY - this.entity.getZ();
+					double d2 = this.targetZ - this.entity.getY();
+					double d3 = d0 * d0 + d2 * d2 + d1 * d1;
+					if (d3 < (double) 2.5000003E-7F) {
+						this.entity.setForwardSpeed(0.0F);
+						return;
+					}
+					float f9 = (float) (Math.atan2(d1, d0) * (double) (180F / (float) Math.PI)) - 90.0F;
+					this.entity.setYaw(this.wrapDegrees(this.entity.getYaw(), f9, 90.0F));
+					this.entity.setMovementSpeed((float) (0.25D));
+					BlockPos blockpos = this.entity.getBlockPos();
+					BlockState blockstate = this.entity.world.getBlockState(blockpos);
+					VoxelShape voxelshape = blockstate.getCollisionShape(this.entity.world, blockpos);
+					if (d2 > (double) this.entity.stepHeight
+							&& d0 * d0 + d1 * d1 < (double) Math.max(1.0F, this.entity.getWidth())
+							|| !voxelshape.isEmpty()
+									&& this.entity.getY() < voxelshape.getMax(Direction.Axis.Y)
+											+ (double) blockpos.getY()
+									&& !blockstate.isIn(BlockTags.DOORS) && !blockstate.isIn(BlockTags.FENCES)) {
+						this.state = MoveControl.State.JUMPING;
+					}
+				} else if (this.state == MoveControl.State.JUMPING) {
+					this.entity.setMovementSpeed((float) (0.25D));
+					if (this.entity.isOnGround()) {
 						this.state = MoveControl.State.WAIT;
 					}
+				} else {
+					this.state = MoveControl.State.WAIT;
+					this.entity.setForwardSpeed(0.0F);
 				}
-
 			}
 		}
 
-		private boolean willCollide(Vec3d direction, int steps) {
-			Box box = this.ghast.getBoundingBox();
-
+		private boolean canReach(Vec3d direction, int steps) {
+			Box box = this.entity.getBoundingBox();
 			for (int i = 1; i < steps; ++i) {
 				box = box.offset(direction);
-				if (!this.ghast.world.isSpaceEmpty(this.ghast, box)) {
+				if (!this.entity.world.isSpaceEmpty(this.entity, box)) {
 					return false;
 				}
 			}

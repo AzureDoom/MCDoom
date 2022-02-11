@@ -3,6 +3,7 @@ package mod.azure.doom.entity.tierambient;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.SplittableRandom;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.registry.ModEntityTypes;
@@ -18,6 +19,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
@@ -50,6 +52,7 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 			}
 		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		event.getController().setAnimationSpeed(0.25);
 		return PlayState.CONTINUE;
 	}
 
@@ -115,35 +118,16 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 				ModEntityTypes.ARACHNOTRON, ModEntityTypes.ARCHVILE, ModEntityTypes.MECHAZOMBIE, ModEntityTypes.PAIN,
 				ModEntityTypes.MANCUBUS);
 
-		for (int i = 0; i < 1; i++) {
-			int randomIndex = rand.nextInt(givenList.size());
-			EntityType<?> randomElement = givenList.get(randomIndex);
-			Entity fireballentity = randomElement.create(world);
-			fireballentity.refreshPositionAndAngles(this.getX() + 2.0D, this.getY() + 0.5D, this.getZ() + 2.0D, 0, 0);
-			world.spawnEntity(fireballentity);
-		}
-		for (int i = 0; i < 1; i++) {
-			int randomIndex = rand.nextInt(givenList.size());
-			EntityType<?> randomElement = givenList.get(randomIndex);
-			Entity fireballentity1 = randomElement.create(world);
-			fireballentity1.refreshPositionAndAngles(this.getX() + -2.0D, this.getY() + 0.5D, this.getZ() + -2.0D, 0,
-					0);
-			world.spawnEntity(fireballentity1);
-		}
-		for (int i = 0; i < 1; i++) {
-			int randomIndex = rand.nextInt(givenList.size());
-			EntityType<?> randomElement = givenList.get(randomIndex);
-			Entity fireballentity11 = randomElement.create(world);
-			fireballentity11.refreshPositionAndAngles(this.getX() + 1.0D, this.getY() + 0.5D, this.getZ() + 1.0D, 0, 0);
-			world.spawnEntity(fireballentity11);
-		}
-		for (int i = 0; i < 1; i++) {
-			int randomIndex = rand.nextInt(givenList.size());
-			EntityType<?> randomElement = givenList.get(randomIndex);
-			Entity fireballentity111 = randomElement.create(world);
-			fireballentity111.refreshPositionAndAngles(this.getX() + -1.0D, this.getY() + 0.5D, this.getZ() + -1.0D, 0,
-					0);
-			world.spawnEntity(fireballentity111);
+		SplittableRandom random = new SplittableRandom();
+		int r = random.nextInt(-3, 3);
+		for (int k = 1; k < 5; ++k) {
+			for (int i = 0; i < 1; i++) {
+				int randomIndex = rand.nextInt(givenList.size());
+				EntityType<?> randomElement = givenList.get(randomIndex);
+				Entity fireballentity = randomElement.create(world);
+				fireballentity.refreshPositionAndAngles(this.getX() + r, this.getY() + 0.5D, this.getZ() + r, 0, 0);
+				world.spawnEntity(fireballentity);
+			}
 		}
 	}
 
@@ -164,20 +148,16 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 	@Override
 	public void tickMovement() {
 		if (this.world.isClient) {
-			this.world.addParticle(ParticleTypes.SOUL_FIRE_FLAME, this.getParticleX(0.5D),
-					this.getRandomBodyY() - 0.25D, this.getParticleZ(0.5D), (this.random.nextDouble() - 0.5D) * 2.0D,
-					-this.random.nextDouble(), (this.random.nextDouble() - 0.5D) * 2.0D);
+			this.world.addParticle(DustParticleEffect.DEFAULT, this.getParticleX(0.5D), this.getRandomBodyY() - 0.25D,
+					this.getParticleZ(0.5D), (this.random.nextDouble() - 0.5D) * 2.0D, -this.random.nextDouble(),
+					(this.random.nextDouble() - 0.5D) * 2.0D);
 			this.world.addParticle(ParticleTypes.SOUL, this.getParticleX(0.2D), this.getRandomBodyY(),
 					this.getParticleZ(0.5D), 0.0D, 0D, 0D);
 		}
 		spawnTimer = (spawnTimer + 1) % 8;
 		++this.age;
-		if (!world.isClient) {
-			if (this.age % 2400 == 0 && this.getSpawnTimer() <= 3) {
-				this.spawnWave();
-			}
-		}
-		if ((this.age % 2400) * 3 == 0) {
+		if (this.age == 150) {
+			this.spawnWave();
 			this.remove(RemovalReason.KILLED);
 		}
 		super.tickMovement();

@@ -3,7 +3,7 @@ package mod.azure.doom.entity.tierboss;
 import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.RangedAttackStoppedGoal;
+import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
@@ -105,8 +105,9 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.add(6, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.goalSelector.add(4, new RangedAttackStoppedGoal(this, new SpiderMastermindEntity.FireballAttack(this)
-				.setProjectileOriginOffset(0.8, 0.4, 0.8).setDamage(config.spider_mastermind_ranged_damage)));
+		this.goalSelector.add(4, new RangedStrafeAttackGoal(this, new SpiderMastermindEntity.FireballAttack(this)
+				.setProjectileOriginOffset(0.8, 0.4, 0.8).setDamage(config.spider_mastermind_ranged_damage),
+				1.0D, 5, 30, 15, 15F, 1).setMultiShot(2, 3));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));

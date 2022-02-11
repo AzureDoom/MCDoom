@@ -150,6 +150,10 @@ public class DoomMod implements ModInitializer {
 						Biome.Category.TAIGA),
 				RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE
 						.getId(DoomStructuresConfigured.CONFIGURED_HELL_CHURCH)));
+		BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.UNDERGROUND), RegistryKey.of(
+				Registry.CONFIGURED_STRUCTURE_FEATURE_KEY,
+				BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(DoomStructuresConfigured.CONFIGURED_ICON_FIGHT)));
+
 		Identifier runAfterFabricAPIPhase = new Identifier(DoomMod.MODID, "run_after_fabric_api");
 		ServerWorldEvents.LOAD.addPhaseOrdering(Event.DEFAULT_PHASE, runAfterFabricAPIPhase);
 		ServerWorldEvents.LOAD.register(runAfterFabricAPIPhase,
@@ -165,8 +169,11 @@ public class DoomMod implements ModInitializer {
 					if (serverWorld.getRegistryKey().equals(World.OVERWORLD)) {
 						tempMap.put(DoomStructures.HELL_CHURCH,
 								FabricStructureImpl.STRUCTURE_TO_CONFIG_MAP.get(DoomStructures.HELL_CHURCH));
+						tempMap.put(DoomStructures.ICON_FIGHT,
+								FabricStructureImpl.STRUCTURE_TO_CONFIG_MAP.get(DoomStructures.ICON_FIGHT));
 					} else {
 						tempMap.remove(DoomStructures.HELL_CHURCH);
+						tempMap.remove(DoomStructures.ICON_FIGHT);
 					}
 					((StructuresConfigAccessor) worldStructureConfig).setStructures(tempMap);
 				});

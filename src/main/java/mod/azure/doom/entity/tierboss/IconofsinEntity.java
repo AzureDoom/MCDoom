@@ -6,7 +6,10 @@ import java.util.SplittableRandom;
 
 import org.jetbrains.annotations.Nullable;
 
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.ai.goal.IconAttackGoal;
+import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.block.BlockState;
@@ -16,7 +19,6 @@ import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
@@ -35,11 +37,13 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -79,7 +83,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 			return PlayState.CONTINUE;
 		}
 		if (!event.isMoving() && this.velocityModified && this.getHealth() < (this.getMaxHealth() * 0.50)) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_nohelmet", true));
 			return PlayState.CONTINUE;
 		}
 		if (!event.isMoving() && this.velocityModified) {
@@ -162,121 +166,30 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.initCustomGoals();
-	}
-
-	protected void initCustomGoals() {
-		this.goalSelector.add(2, new IconofsinEntity.ShootFireballGoal(this));
+		this.goalSelector.add(4,
+				new IconAttackGoal(this,
+						new FireballAttack(this, true).setProjectileOriginOffset(0.8, 0.8, 0.8)
+								.setDamage(config.icon_melee_damage).setSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F,
+										1.4F + this.getRandom().nextFloat() * 0.35F),
+						1.1D));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
 	}
 
-	class ShootFireballGoal extends Goal {
-		private final IconofsinEntity parentEntity;
-		protected int cooldown = 0;
-
-		public ShootFireballGoal(IconofsinEntity parentEntity) {
-			this.parentEntity = parentEntity;
-		}
-
-		public boolean canStart() {
-			return this.parentEntity.getTarget() != null;
-		}
-
-		public void start() {
-			super.start();
-			this.parentEntity.setAttacking(true);
-			this.cooldown = 0;
-			this.parentEntity.setAttackingState(0);
-		}
-
-		@Override
-		public void stop() {
-			super.stop();
-			this.parentEntity.setAttacking(false);
-			this.parentEntity.setAttackingState(0);
-		}
-
-		@Override
-		public void tick() {
-			LivingEntity livingentity = this.parentEntity.getTarget();
-			if (livingentity != null) {
-				if (parentEntity.distanceTo(livingentity) < 64.0D) {
-					this.parentEntity.getNavigation().startMovingTo(livingentity, 1.51D);
-					cooldown++;
-					Random rand = new Random();
-					float f = (float) MathHelper.atan2(livingentity.getZ() - parentEntity.getZ(),
-							livingentity.getX() - parentEntity.getX());
-					if (this.cooldown == 35) {
-						SplittableRandom random = new SplittableRandom();
-						int r = random.nextInt(0, 4);
-						if (r == 1) {
-							for (int i = 15; i < 55; ++i) {
-								double d0 = Math.min(livingentity.getY(), livingentity.getY());
-								double d1 = Math.max(livingentity.getY(), livingentity.getY()) + 1.0D;
-								float f1 = f + (float) i * (float) Math.PI * 0.4F;
-								for (int y = 0; y < 5; ++y) {
-									parentEntity.spawnFlames(
-											parentEntity.getX()
-													+ (double) MathHelper.cos(f1) * rand.nextDouble() * 11.5D,
-											parentEntity.getZ()
-													+ (double) MathHelper.sin(f1) * rand.nextDouble() * 11.5D,
-											d0, d1, f1, 0);
-								}
-								if (parentEntity.getHealth() < (parentEntity.getMaxHealth() * 0.50)) {
-									this.parentEntity.setAttackingState(2);
-								} else {
-									this.parentEntity.setAttackingState(1);
-								}
-							}
-						} else if (r == 2) {
-							if (!parentEntity.world.isClient()) {
-								float f2 = 150.0F;
-								int k1 = MathHelper.floor(parentEntity.getX() - (double) f2 - 1.0D);
-								int l1 = MathHelper.floor(parentEntity.getX() + (double) f2 + 1.0D);
-								int i2 = MathHelper.floor(parentEntity.getY() - (double) f2 - 1.0D);
-								int i1 = MathHelper.floor(parentEntity.getY() + (double) f2 + 1.0D);
-								int j2 = MathHelper.floor(parentEntity.getZ() - (double) f2 - 1.0D);
-								int j1 = MathHelper.floor(parentEntity.getZ() + (double) f2 + 1.0D);
-								List<Entity> list = parentEntity.world.getOtherEntities(parentEntity, new Box(
-										(double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
-								for (int k2 = 0; k2 < list.size(); ++k2) {
-									Entity entity = list.get(k2);
-									if (entity.isAlive()) {
-										double d0 = (this.parentEntity.getBoundingBox().minX
-												+ this.parentEntity.getBoundingBox().maxX) / 2.0D;
-										double d1 = (this.parentEntity.getBoundingBox().minZ
-												+ this.parentEntity.getBoundingBox().maxZ) / 2.0D;
-										double d2 = entity.getX() - d0;
-										double d3 = entity.getZ() - d1;
-										double d4 = Math.max(d2 * d2 + d3 * d3, 0.1D);
-										entity.addVelocity(d2 / d4 * 10.0D, (double) 0.2F * 10.0D, d3 / d4 * 10.0D);
-									}
-								}
-							}
-							if (parentEntity.getHealth() < (parentEntity.getMaxHealth() * 0.50)) {
-								this.parentEntity.setAttackingState(6);
-							} else {
-								this.parentEntity.setAttackingState(5);
-							}
-						} else {
-							parentEntity.doDamage();
-							if (parentEntity.getHealth() < (parentEntity.getMaxHealth() * 0.50)) {
-								this.parentEntity.setAttackingState(4);
-							} else {
-								this.parentEntity.setAttackingState(3);
-							}
-						}
-					}
-					if (this.cooldown == 65) {
-						this.parentEntity.setAttackingState(0);
-						this.cooldown = -75;
-					}
-				} else if (this.cooldown > 0) {
-					--this.cooldown;
-					this.parentEntity.setAttackingState(0);
-				}
+	public void spawnWave(int WaveAmount, LivingEntity entity) {
+		Random rand = new Random();
+		List<? extends String> waveEntries = DoomMod.config.stats.icon_wave_entries;
+		SplittableRandom random = new SplittableRandom();
+		for (int k = 1; k < WaveAmount; ++k) {
+			int r = random.nextInt(-3, 3);
+			for (int i = 0; i < 1; ++i) {
+				int randomIndex = rand.nextInt(waveEntries.size());
+				Identifier randomElement1 = new Identifier(waveEntries.get(randomIndex));
+				EntityType<?> randomElement = Registry.ENTITY_TYPE.get(randomElement1);
+				Entity waveentity = randomElement.create(world);
+				waveentity.refreshPositionAndAngles(entity.getX() + r, entity.getY() + 0.5D, entity.getZ() + r, 0, 0);
+				world.spawnEntity(waveentity);
 			}
 		}
 	}
@@ -329,6 +242,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 					config.icon_melee_damage);
 			fang.setFireTicks(age);
 			fang.isInvisible();
+			fang.age = -150;
 			this.world.spawnEntity(fang);
 		}
 	}
@@ -426,7 +340,6 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 				this.addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 10000000, 1));
 			}
 			if (!this.world.getDimension().isRespawnAnchorWorking()) {
-				this.setGlowing(true);
 				this.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 10000000, 3));
 				if (this.age % 2400 == 0) {
 					this.heal(40F);
@@ -436,7 +349,39 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	@Override
+	public void baseTick() {
+		super.baseTick();
+		float q = 50.0F;
+		int k = MathHelper.floor(this.getX() - (double) q - 1.0D);
+		int l = MathHelper.floor(this.getX() + (double) q + 1.0D);
+		int t = MathHelper.floor(this.getY() - (double) q - 1.0D);
+		int u = MathHelper.floor(this.getY() + (double) q + 1.0D);
+		int v = MathHelper.floor(this.getZ() - (double) q - 1.0D);
+		int w = MathHelper.floor(this.getZ() + (double) q + 1.0D);
+		List<Entity> list = this.world.getOtherEntities(this,
+				new Box((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
+		for (int x = 0; x < list.size(); ++x) {
+			Entity entity = (Entity) list.get(x);
+			if (entity instanceof IconofsinEntity && entity.age < 1) {
+				entity.remove(Entity.RemovalReason.DISCARDED);
+			}
+		}
+	}
+
+	@Override
 	public boolean damage(DamageSource source, float amount) {
 		return source == DamageSource.IN_WALL ? false : super.damage(source, amount);
+	}
+
+	@Override
+	public boolean tryAttack(Entity target) {
+		this.world.sendEntityStatus(this, (byte) 4);
+		boolean bl = target.damage(DamageSource.mob(this), (float) config.icon_melee_damage);
+		if (bl) {
+			target.setVelocity(target.getVelocity().add(4.4f, 4.4f, 4.4f));
+			this.applyDamageEffects(this, target);
+			target.timeUntilRegen = 0;
+		}
+		return bl;
 	}
 }

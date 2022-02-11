@@ -283,19 +283,22 @@ public class DoomConfig implements ConfigData {
 		public int motherdemon_max_group = 1;
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> maykrdrone_biomes = Arrays.asList("minecraft:small_end_islands", "minecraft:end_midlands", "minecraft:end_barrens", "minecraft:end_highlands");
+		public List<String> maykrdrone_biomes = Arrays.asList("minecraft:small_end_islands", "minecraft:end_midlands",
+				"minecraft:end_barrens", "minecraft:end_highlands");
 		public int maykrdrone_spawn_weight = 15;
 		public int maykrdrone_min_group = 1;
 		public int maykrdrone_max_group = 2;
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> bloodmaykr_biomes = Arrays.asList("minecraft:small_end_islands", "minecraft:end_midlands", "minecraft:end_barrens", "minecraft:end_highlands");
+		public List<String> bloodmaykr_biomes = Arrays.asList("minecraft:small_end_islands", "minecraft:end_midlands",
+				"minecraft:end_barrens", "minecraft:end_highlands");
 		public int bloodmaykr_spawn_weight = 6;
 		public int bloodmaykr_min_group = 1;
 		public int bloodmaykr_max_group = 2;
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> archmaykr_biomes = Arrays.asList("minecraft:small_end_islands", "minecraft:end_midlands", "minecraft:end_barrens", "minecraft:end_highlands");
+		public List<String> archmaykr_biomes = Arrays.asList("minecraft:small_end_islands", "minecraft:end_midlands",
+				"minecraft:end_barrens", "minecraft:end_highlands");
 		public int archmaykr_spawn_weight = 1;
 		public int archmaykr_min_group = 1;
 		public int archmaykr_max_group = 1;
@@ -309,9 +312,29 @@ public class DoomConfig implements ConfigData {
 
 	public static class MobStats {
 
+		public List<String> icon_wave_entries = Arrays.asList("doom:gladiator", "doom:mancubus", "doom:mancubus",
+				"doom:marauder", "doom:marauder", "doom:firebronebaron", "doom:baron2016", "doom:baron2016",
+				"doom:baron2016", "doom:baron2016", "doom:whiplash", "doom:whiplash", "doom:whiplash", "doom:whiplash",
+				"doom:whiplash", "doom:gargoyle", "doom:gargoyle", "doom:gargoyle", "doom:gargoyle", "doom:gargoyle",
+				"doom:gargoyle", "doom:gargoyle", "doom:gargoyle", "doom:gargoyle", "doom:gargoyle", "doom:cacodemon",
+				"doom:cacodemon", "doom:cacodemon", "doom:cacodemon", "doom:cacodemon", "doom:cacodemon",
+				"doom:cacodemon", "doom:cacodemon", "doom:cacodemon", "doom:cacodemon", "doom:painelemental",
+				"doom:painelemental", "doom:painelemental", "doom:painelemental", "doom:painelemental",
+				"doom:painelemental", "doom:painelemental", "doom:painelemental", "doom:painelemental",
+				"doom:painelemental", "doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:imp",
+				"doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:prowler", "doom:prowler", "doom:prowler",
+				"doom:prowler", "doom:prowler", "doom:prowler", "doom:prowler", "doom:prowler", "doom:prowler",
+				"doom:prowler", "doom:nightmare_imp", "doom:nightmare_imp", "doom:nightmare_imp", "doom:nightmare_imp",
+				"doom:nightmare_imp", "doom:nightmare_imp", "doom:nightmare_imp", "doom:nightmare_imp",
+				"doom:nightmare_imp", "doom:nightmare_imp", "doom:nightmare_imp", "doom:pinky2016", "doom:pinky2016",
+				"doom:pinky2016", "doom:pinky2016", "doom:pinky2016", "doom:pinky2016", "doom:pinky2016",
+				"doom:pinky2016", "doom:pinky2016", "doom:pinky2016", "doom:lost_soul", "doom:lost_soul",
+				"doom:lost_soul", "doom:lost_soul", "doom:lost_soul", "doom:lost_soul", "doom:lost_soul",
+				"doom:lost_soul", "doom:lost_soul", "doom:lost_soul");
+
 		public double motherdemon_health = 500;
 		public float motherdemon_ranged_damage = 14;
-		
+
 		public double cueball_health = 1;
 
 		public double tentacle_health = 5;

@@ -15,6 +15,7 @@
 		"LootContextAccessor",
 		"LootManagerAccessor",
 		"LootTableMixin",
+		"NoiseChunkGeneratorMixin",
 		"StructurePoolFeatureConfigAccessor",
 		"StructuresConfigAccessor"
 	],
