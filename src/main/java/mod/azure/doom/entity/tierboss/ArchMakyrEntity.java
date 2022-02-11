@@ -2,11 +2,11 @@ package mod.azure.doom.entity.tierboss;
 
 import java.util.EnumSet;
 import java.util.List;
-import java.util.SplittableRandom;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
-import mod.azure.doom.entity.projectiles.CustomFireballEntity;
+import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
+import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.nbt.CompoundTag;
@@ -208,13 +208,13 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, IronGolem.class, 8.0F));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.goalSelector.addGoal(7, new ArchMakyrEntity.LookAroundGoal(this));
+		this.goalSelector.addGoal(4,
+				new RangedStrafeAttackGoal(this,
+						new FireballAttack(this, true).setProjectileOriginOffset(0.8, 0.4, 0.8)
+								.setDamage(DoomConfig.SERVER.archmaykr_ranged_damage.get().floatValue()),
+						1.0D, 20, 30, 15, 15F, 1));
 		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.addGoal(2, new MoveTowardsTargetGoal(this, 0.9D, 32.0F));
-		this.applyEntityAI();
-	}
-
-	protected void applyEntityAI() {
-		this.goalSelector.addGoal(1, new AttackGoal(this));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
@@ -248,90 +248,6 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 				}
 			}
 
-		}
-	}
-
-	static class AttackGoal extends Goal {
-		private final ArchMakyrEntity parentEntity;
-		protected int attackTimer = 0;
-
-		public AttackGoal(ArchMakyrEntity ghast) {
-			this.parentEntity = ghast;
-		}
-
-		public boolean canUse() {
-			return this.parentEntity.getTarget() != null;
-		}
-
-		public void start() {
-			super.start();
-			this.parentEntity.setAggressive(true);
-		}
-
-		@Override
-		public void stop() {
-			super.stop();
-			this.parentEntity.setAggressive(false);
-			this.parentEntity.setAttackingState(0);
-			this.attackTimer = -1;
-		}
-
-		public void tick() {
-			LivingEntity livingentity = this.parentEntity.getTarget();
-			if (parentEntity.distanceTo(livingentity) < 64.0D) {
-				Level world = this.parentEntity.level;
-				++this.attackTimer;
-				Vec3 vector3d = this.parentEntity.getViewVector(1.0F);
-				double d2 = livingentity.getX() - (this.parentEntity.getX() + vector3d.x * 2.0D);
-				double d3 = livingentity.getY(0.5D) - (0.5D + this.parentEntity.getY(0.5D));
-				double d4 = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * 2.0D);
-				CustomFireballEntity fireballentity = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4,
-						DoomConfig.SERVER.archmaykr_ranged_damage.get().floatValue());
-				this.parentEntity.getNavigation().moveTo(livingentity, 1.4D);
-				if (this.attackTimer == 15) {
-					SplittableRandom random = new SplittableRandom();
-					int r = random.nextInt(0, 3);
-					if (r <= 1) {
-						fireballentity.setPos(this.parentEntity.getX() + vector3d.x * 2.0D,
-								this.parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z * 2.0D);
-						world.addFreshEntity(fireballentity);
-						this.parentEntity.setAttackingState(1);
-					} else {
-						if (!parentEntity.level.isClientSide) {
-							float f2 = 150.0F;
-							int k1 = Mth.floor(parentEntity.getX() - (double) f2 - 1.0D);
-							int l1 = Mth.floor(parentEntity.getX() + (double) f2 + 1.0D);
-							int i2 = Mth.floor(parentEntity.getY() - (double) f2 - 1.0D);
-							int i1 = Mth.floor(parentEntity.getY() + (double) f2 + 1.0D);
-							int j2 = Mth.floor(parentEntity.getZ() - (double) f2 - 1.0D);
-							int j1 = Mth.floor(parentEntity.getZ() + (double) f2 + 1.0D);
-							List<Entity> list = parentEntity.level.getEntities(parentEntity, new AABB((double) k1,
-									(double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
-							for (int k2 = 0; k2 < list.size(); ++k2) {
-								Entity entity = list.get(k2);
-								if (entity.isAlive()) {
-									double d0 = (this.parentEntity.getBoundingBox().minX
-											+ this.parentEntity.getBoundingBox().maxX) / 2.0D;
-									double d1 = (this.parentEntity.getBoundingBox().minZ
-											+ this.parentEntity.getBoundingBox().maxZ) / 2.0D;
-									double d21 = entity.getX() - d0;
-									double d31 = entity.getZ() - d1;
-									double d41 = Math.max(d21 * d21 + d31 * d31, 0.1D);
-									entity.push(d21 / d41 * 5.0D, (double) 0.2F * 5.0D, d31 / d41 * 5.0D);
-								}
-							}
-						}
-						this.parentEntity.setAttackingState(2);
-					}
-				}
-				if (this.attackTimer == 25) {
-					this.parentEntity.setAttackingState(0);
-					this.attackTimer = -50;
-				}
-			} else if (this.attackTimer > 0) {
-				--this.attackTimer;
-			}
-			this.parentEntity.lookAt(livingentity, 30.0F, 30.0F);
 		}
 	}
 

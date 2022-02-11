@@ -131,7 +131,7 @@ public class MaykrDroneEntity extends DemonEntity implements IAnimatable, IAnima
 				new RangedStrafeAttackGoal(this,
 						new MaykrDroneEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
 								.setDamage(DoomConfig.SERVER.maykrdrone_ranged_damage.get().floatValue()),
-						1.0D, 50, 30, 15, 15F, 1).setMultiShot(2, 3));
+						1.0D, 5, 30, 15, 15F, 1).setMultiShot(2, 3));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));

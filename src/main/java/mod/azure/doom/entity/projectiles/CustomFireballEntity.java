@@ -1,11 +1,14 @@
 package mod.azure.doom.entity.projectiles;
 
+import mod.azure.doom.util.config.DoomConfig;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.LargeFireball;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 
 public class CustomFireballEntity extends LargeFireball {
 
@@ -27,7 +30,17 @@ public class CustomFireballEntity extends LargeFireball {
 				this.doEnchantDamageEffects((LivingEntity) entity1, entity);
 				this.remove(RemovalReason.KILLED);
 			}
+		}
+	}
 
+	@Override
+	protected void onHit(HitResult p_37218_) {
+		super.onHit(p_37218_);
+		if (!this.level.isClientSide) {
+			boolean flag = DoomConfig.SERVER.enable_block_breaking.get();
+			this.level.explode((Entity) null, this.getX(), this.getY(), this.getZ(), 1, true,
+					flag ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
+			this.discard();
 		}
 	}
 

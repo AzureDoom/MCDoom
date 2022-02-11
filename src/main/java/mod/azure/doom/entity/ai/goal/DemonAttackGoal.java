@@ -45,15 +45,20 @@ public class DemonAttackGoal extends Goal {
 			boolean inLineOfSight = this.entity.getSensing().hasLineOfSight(livingentity);
 			this.attackTime++;
 			this.entity.lookAt(livingentity, 30.0F, 30.0F);
+			double d0 = this.entity.distanceToSqr(livingentity.getX(), livingentity.getY(),
+					livingentity.getZ());
+			double d1 = this.getAttackReachSqr(livingentity);
 			if (inLineOfSight) {
 				if (this.entity.distanceTo(livingentity) >= 3.0D) {
 					this.entity.getNavigation().moveTo(livingentity, this.moveSpeedAmp);
 					this.attackTime = -5;
 				} else {
 					if (this.attackTime == 4) {
-						this.entity.setAttackingState(statecheck);
 						this.entity.getNavigation().moveTo(livingentity, this.moveSpeedAmp);
-						this.entity.doHurtTarget(livingentity);
+						if (d0 <= d1) {
+							this.entity.doHurtTarget(livingentity);
+							this.entity.setAttackingState(statecheck);
+						}
 						livingentity.invulnerableTime = 0;
 					}
 					if (this.attackTime == 8) {

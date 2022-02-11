@@ -112,9 +112,9 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnima
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.goalSelector.addGoal(4,
 				new RangedStrafeAttackGoal(this,
-						new BloodMaykrEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
+						new BloodMaykrEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.5, 0.8)
 								.setDamage(DoomConfig.SERVER.bloodmaykr_ranged_damage.get().floatValue()),
-						1.0D, 50, 30, 15, 15F, 1).setMultiShot(2, 3));
+						1.0D, 10, 30, 15, 15F, 1));
 		this.goalSelector.addGoal(7, new BloodMaykrEntity.LookAroundGoal(this));
 		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));

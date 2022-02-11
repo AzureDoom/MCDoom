@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.mojang.serialization.Codec;
 
+import mod.azure.doom.structures.IconStructure;
 import mod.azure.doom.util.DoomVillagerTrades;
 import mod.azure.doom.util.LootHandler;
 import mod.azure.doom.util.SoulCubeHandler;
@@ -95,7 +96,7 @@ public class DoomMod {
 		GeckoLibNetwork.initialize();
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.addListener(EventPriority.NORMAL, this::addDimensionalSpacing);
-		//forgeBus.addListener(EventPriority.NORMAL, HellChurchStructure::setupStructureSpawns);
+		forgeBus.addListener(EventPriority.NORMAL, IconStructure::setupStructureSpawns);
 	}
 
 	@SubscribeEvent
@@ -127,9 +128,14 @@ public class DoomMod {
 					.ownedRegistryOrThrow(Registry.BIOME_REGISTRY).entrySet()) {
 				Biome.BiomeCategory biomeCategory = biomeEntry.getValue().getBiomeCategory();
 				if (biomeCategory != Biome.BiomeCategory.OCEAN && biomeCategory != Biome.BiomeCategory.THEEND
-						&& biomeCategory != Biome.BiomeCategory.NETHER && biomeCategory != Biome.BiomeCategory.NONE) {
+						&& biomeCategory != Biome.BiomeCategory.NETHER && biomeCategory != Biome.BiomeCategory.NONE
+						&& biomeCategory != Biome.BiomeCategory.UNDERGROUND) {
 					associateBiomeToConfiguredStructure(STStructureToMultiMap,
 							DoomStructuresConfigured.CONFIGURED_HELL_CHURCH, biomeEntry.getKey());
+				}
+				if (biomeCategory == Biome.BiomeCategory.UNDERGROUND) {
+					associateBiomeToConfiguredStructure(STStructureToMultiMap,
+							DoomStructuresConfigured.CONFIGURED_ICON_FIGHT, biomeEntry.getKey());
 				}
 			}
 			ImmutableMap.Builder<StructureFeature<?>, ImmutableMultimap<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>>> tempStructureToMultiMap = ImmutableMap
@@ -157,6 +163,8 @@ public class DoomMod {
 					worldStructureConfig.structureConfig());
 			tempMap.putIfAbsent(DoomStructures.HELL_CHURCH.get(),
 					StructureSettings.DEFAULTS.get(DoomStructures.HELL_CHURCH.get()));
+			tempMap.putIfAbsent(DoomStructures.ICON_FIGHT.get(),
+					StructureSettings.DEFAULTS.get(DoomStructures.ICON_FIGHT.get()));
 			worldStructureConfig.structureConfig = tempMap;
 		}
 	}

@@ -1,7 +1,7 @@
 package mod.azure.doom.entity.tierboss;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.RangedAttackStoppedGoal;
+import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
@@ -97,9 +97,10 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.goalSelector.addGoal(4,
-				new RangedAttackStoppedGoal(this,
+				new RangedStrafeAttackGoal(this,
 						new SpiderMastermindEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.4, 0.8)
-								.setDamage(DoomConfig.SERVER.spider_mastermind_ranged_damage.get().floatValue())));
+								.setDamage(DoomConfig.SERVER.spider_mastermind_ranged_damage.get().floatValue()),
+						1.0D, 5, 30, 15, 15F, 1));
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));

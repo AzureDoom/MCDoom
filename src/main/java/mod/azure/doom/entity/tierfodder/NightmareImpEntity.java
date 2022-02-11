@@ -105,7 +105,7 @@ public class NightmareImpEntity extends DemonEntity implements IAnimatable, IAni
 						new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8)
 								.setDamage(DoomConfig.SERVER.nightmare_ranged_damage.get().floatValue())
 								.setSound(SoundEvents.BLAZE_SHOOT, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
-						1.0D, 50, 30, 15, 15F, 1).setMultiShot(2, 3));
+						1.0D, 5, 30, 15, 15F, 1).setMultiShot(2, 3));
 		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.25D, 2));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));

@@ -218,7 +218,8 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 		Vec3 vector3d1 = new Vec3(this.getX(), this.getY(), this.getZ());
 		for (int k2 = 0; k2 < list.size(); ++k2) {
 			Entity entity = list.get(k2);
-			if (!(entity instanceof Player || entity instanceof EnderDragon || entity instanceof GoreNestEntity)
+			if (!(entity instanceof Player || entity instanceof EnderDragon || entity instanceof GoreNestEntity
+					|| entity instanceof IconofsinEntity)
 					&& (entity instanceof Monster || entity instanceof Slime || entity instanceof Phantom
 							|| entity instanceof DemonEntity || entity instanceof Shulker
 							|| entity instanceof Hoglin)) {
@@ -236,6 +237,12 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 					((EnderDragon) entity).head.hurt(DamageSource.playerAttack((Player) this.shooter),
 							DoomConfig.SERVER.bfgball_damage_dragon.get().floatValue());
 					this.setTargetedEntity(entity.getId());
+				}
+			}
+			if (entity instanceof IconofsinEntity) {
+				if (entity.isAlive()) {
+					entity.hurt(DamageSource.playerAttack((Player) this.shooter),
+							DoomConfig.SERVER.bfgball_damage_aoe.get().floatValue() * 0.1F);
 				}
 			}
 		}
@@ -351,6 +358,12 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 				if (entity.isAlive()) {
 					((EnderDragon) entity).head.hurt(DamageSource.playerAttack((Player) this.shooter),
 							DoomConfig.SERVER.bfgball_damage_dragon.get().floatValue());
+				}
+			}
+			if (entity instanceof IconofsinEntity) {
+				if (entity.isAlive()) {
+					entity.hurt(DamageSource.playerAttack((Player) this.shooter),
+							DoomConfig.SERVER.bfgball_damage.get().floatValue() * 0.1F);
 				}
 			}
 		}

@@ -3,6 +3,7 @@ package mod.azure.doom.entity.tierambient;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.SplittableRandom;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.config.DoomConfig;
@@ -123,13 +124,8 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 		}
 		spawnTimer = (spawnTimer + 1) % 8;
 		++this.tickCount;
-		if (!level.isClientSide) {
-			if (this.tickCount % 2400 == 0 && this.getSpawnTimer() <= 3) {
-				this.spawnWave();
-				spawnTimer = spawnTimer + 1;
-			}
-		}
-		if ((this.tickCount % 2400) * 3 == 0) {
+		if (this.tickCount == 150) {
+			this.spawnWave();
 			this.remove(RemovalReason.KILLED);
 		}
 		super.aiStep();
@@ -150,33 +146,16 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 				ModEntityTypes.ARCHVILE.get(), ModEntityTypes.MECHAZOMBIE.get(), ModEntityTypes.PAIN.get(),
 				ModEntityTypes.MANCUBUS.get());
 
-		for (int i = 0; i < 1; i++) {
-			int randomIndex = rand.nextInt(givenList.size());
-			EntityType<?> randomElement = givenList.get(randomIndex);
-			Entity fireballentity = randomElement.create(level);
-			fireballentity.setPos(this.getX() + 2.0D, this.getY() + 1.5D, this.getZ() + 2.0D);
-			level.addFreshEntity(fireballentity);
-		}
-		for (int i = 0; i < 1; i++) {
-			int randomIndex = rand.nextInt(givenList.size());
-			EntityType<?> randomElement = givenList.get(randomIndex);
-			Entity fireballentity1 = randomElement.create(level);
-			fireballentity1.setPos(this.getX() + -2.0D, this.getY() + 1.5D, this.getZ() + -2.0D);
-			level.addFreshEntity(fireballentity1);
-		}
-		for (int i = 0; i < 1; i++) {
-			int randomIndex = rand.nextInt(givenList.size());
-			EntityType<?> randomElement = givenList.get(randomIndex);
-			Entity fireballentity11 = randomElement.create(level);
-			fireballentity11.setPos(this.getX() + 1.0D, this.getY() + 1.5D, this.getZ() + 1.0D);
-			level.addFreshEntity(fireballentity11);
-		}
-		for (int i = 0; i < 1; i++) {
-			int randomIndex = rand.nextInt(givenList.size());
-			EntityType<?> randomElement = givenList.get(randomIndex);
-			Entity fireballentity111 = randomElement.create(level);
-			fireballentity111.setPos(this.getX() + -1.0D, this.getY() + 1.5D, this.getZ() + -1.0D);
-			level.addFreshEntity(fireballentity111);
+		SplittableRandom random = new SplittableRandom();
+		int r = random.nextInt(-3, 3);
+		for (int k = 1; k < 5; ++k) {
+			for (int i = 0; i < 1; i++) {
+				int randomIndex = rand.nextInt(givenList.size());
+				EntityType<?> randomElement = givenList.get(randomIndex);
+				Entity waveentity = randomElement.create(level);
+				waveentity.setPos(this.getX() + r, this.getY() + 0.5D, this.getZ() + r);
+				level.addFreshEntity(waveentity);
+			}
 		}
 	}
 

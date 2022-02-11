@@ -383,6 +383,8 @@ public class DoomConfig {
 		public final ConfigValue<Boolean> enable_toolsmith_trades;
 		public final ConfigValue<Boolean> enable_mason_trades;
 
+		public final ConfigValue<List<? extends String>> icon_wave_entries;
+
 		public Server(ForgeConfigSpec.Builder builder) {
 			builder.push("Misc");
 			this.enable_all_villager_trades = builder.translation("text.doom.config.enable_all_villager_trades")
@@ -1180,6 +1182,29 @@ public class DoomConfig {
 					.defineInRange("Sets Icon of Sin Max Health", 1000, 1, Double.MAX_VALUE);
 			this.icon_melee_damage = builder.translation("text.doom.config.icon_melee_damage")
 					.defineInRange("Sets Icon of Sin Melee Damage", 7, 1, Double.MAX_VALUE);
+			this.icon_wave_entries = builder.comment("Icon of Sin Wave Mobs List")
+					.translation("text.doom.config.icon_wave_entries")
+					.defineList("Icon of Sin Wave Mobs", Lists.newArrayList("doom:gladiator", "doom:mancubus",
+							"doom:mancubus", "doom:marauder", "doom:marauder", "doom:firebronebaron", "doom:baron2016",
+							"doom:baron2016", "doom:baron2016", "doom:baron2016", "doom:whiplash", "doom:whiplash",
+							"doom:whiplash", "doom:whiplash", "doom:whiplash", "doom:gargoyle", "doom:gargoyle",
+							"doom:gargoyle", "doom:gargoyle", "doom:gargoyle", "doom:gargoyle", "doom:gargoyle",
+							"doom:gargoyle", "doom:gargoyle", "doom:gargoyle", "doom:cacodemon", "doom:cacodemon",
+							"doom:cacodemon", "doom:cacodemon", "doom:cacodemon", "doom:cacodemon", "doom:cacodemon",
+							"doom:cacodemon", "doom:cacodemon", "doom:cacodemon", "doom:painelemental",
+							"doom:painelemental", "doom:painelemental", "doom:painelemental", "doom:painelemental",
+							"doom:painelemental", "doom:painelemental", "doom:painelemental", "doom:painelemental",
+							"doom:painelemental", "doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:imp",
+							"doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:prowler", "doom:prowler",
+							"doom:prowler", "doom:prowler", "doom:prowler", "doom:prowler", "doom:prowler",
+							"doom:prowler", "doom:prowler", "doom:prowler", "doom:nightmare_imp", "doom:nightmare_imp",
+							"doom:nightmare_imp", "doom:nightmare_imp", "doom:nightmare_imp", "doom:nightmare_imp",
+							"doom:nightmare_imp", "doom:nightmare_imp", "doom:nightmare_imp", "doom:nightmare_imp",
+							"doom:nightmare_imp", "doom:pinky2016", "doom:pinky2016", "doom:pinky2016",
+							"doom:pinky2016", "doom:pinky2016", "doom:pinky2016", "doom:pinky2016", "doom:pinky2016",
+							"doom:pinky2016", "doom:pinky2016", "doom:lost_soul", "doom:lost_soul", "doom:lost_soul",
+							"doom:lost_soul", "doom:lost_soul", "doom:lost_soul", "doom:lost_soul", "doom:lost_soul",
+							"doom:lost_soul", "doom:lost_soul"), o -> o instanceof String);
 			builder.pop();
 
 		}

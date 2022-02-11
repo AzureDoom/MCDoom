@@ -21,6 +21,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -47,7 +48,7 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 
 	private int warmupDelayTicks;
 	private boolean sentSpikeEvent;
-	private int lifeTicks = 22;
+	private int lifeTicks = 75;
 	private boolean clientSideAttackStarted;
 	private LivingEntity caster;
 	private UUID casterUuid;
@@ -112,6 +113,9 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 			if (--this.lifeTicks < 0) {
 				this.remove(RemovalReason.KILLED);
 			}
+		}
+		if (this.isAlive() && level.getBlockState(this.blockPosition().above()).isAir()) {
+			level.setBlockAndUpdate(this.blockPosition().above(), BaseFireBlock.getState(level, this.blockPosition().above()));
 		}
 		List<Entity> list = this.level.getEntities(this, new AABB(this.blockPosition().above()).inflate(1D, 1D, 1D));
 		for (int k2 = 0; k2 < list.size(); ++k2) {

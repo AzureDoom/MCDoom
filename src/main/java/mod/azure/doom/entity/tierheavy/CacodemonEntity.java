@@ -274,11 +274,7 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable, 
 					vector3d = vector3d.normalize();
 					if (this.canReach(vector3d, Mth.ceil(d0))) {
 						this.parentEntity
-								.setDeltaMovement(this.parentEntity.getDeltaMovement().add(vector3d.scale(0.1D))); // TODO
-						// test
-						// fly
-						// speed
-						// here
+								.setDeltaMovement(this.parentEntity.getDeltaMovement().add(vector3d.scale(0.1D))); 
 					} else {
 						this.operation = MoveControl.Operation.WAIT;
 					}
@@ -296,7 +292,6 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable, 
 					return false;
 				}
 			}
-
 			return true;
 		}
 	}
