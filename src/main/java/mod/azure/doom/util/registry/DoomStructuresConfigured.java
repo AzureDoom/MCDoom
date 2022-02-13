@@ -14,10 +14,14 @@ public class DoomStructuresConfigured {
 			.configure(new StructurePoolFeatureConfig(() -> PlainsVillageData.STRUCTURE_POOLS, 0));
 	public static ConfiguredStructureFeature<?, ?> CONFIGURED_ICON_FIGHT = DoomStructures.ICON_FIGHT
 			.configure(new StructurePoolFeatureConfig(() -> PlainsVillageData.STRUCTURE_POOLS, 0));
+	public static ConfiguredStructureFeature<?, ?> CONFIGURED_GLADIATOR_FIGHT = DoomStructures.GLADIATOR_FIGHT
+			.configure(new StructurePoolFeatureConfig(() -> PlainsVillageData.STRUCTURE_POOLS, 0));
 
 	public static void registerConfiguredStructures() {
 		Registry<ConfiguredStructureFeature<?, ?>> registry = BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE;
 		Registry.register(registry, new Identifier(DoomMod.MODID, "configured_hell_church"), CONFIGURED_HELL_CHURCH);
 		Registry.register(registry, new Identifier(DoomMod.MODID, "configured_icon_fight"), CONFIGURED_ICON_FIGHT);
+		Registry.register(registry, new Identifier(DoomMod.MODID, "configured_gladiator_fight"),
+				CONFIGURED_GLADIATOR_FIGHT);
 	}
 }

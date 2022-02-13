@@ -11,7 +11,7 @@
 		},
 		"frame": "challenge"
 	},
-	"parent": "minecraft:adventure/root",
+	"parent": "minecraft:nether/root",
 	"criteria": {
 		"requirement": {
 			"trigger": "minecraft:location",

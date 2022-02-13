@@ -1,7 +1,7 @@
 package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.entity.tiersuperheavy.GladiatorEntity;
+import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;

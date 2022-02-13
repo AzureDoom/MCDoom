@@ -6,7 +6,16 @@
 			"entries": [
 				{
 					"type": "minecraft:item",
-					"name": "doom:ballista"
+					"name": "doom:argent_energy",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"min": 10,
+								"max": 12
+							}
+						}
+					]
 				},
 				{
 					"type": "minecraft:item",

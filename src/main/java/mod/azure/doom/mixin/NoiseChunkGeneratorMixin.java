@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import mod.azure.doom.structures.IconStructure;
+import mod.azure.doom.structures.GladiatorStructure;
 import mod.azure.doom.util.registry.DoomStructures;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.util.collection.Pool;
@@ -32,6 +33,9 @@ public class NoiseChunkGeneratorMixin {
 		if (group == SpawnGroup.MONSTER) {
 			if (accessor.getStructureAt(pos, DoomStructures.ICON_FIGHT).hasChildren()) {
 				return IconStructure.STRUCTURE_MONSTERS;
+			}
+			if (accessor.getStructureAt(pos, DoomStructures.GLADIATOR_FIGHT).hasChildren()) {
+				return GladiatorStructure.STRUCTURE_MONSTERS;
 			}
 		}
 

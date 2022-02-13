@@ -1,11 +1,10 @@
-package mod.azure.doom.util;
+package mod.azure.doom.util.registry;
 
 import java.util.List;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.config.DoomConfig.Spawning;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.util.registry.ModEntityTypes;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;

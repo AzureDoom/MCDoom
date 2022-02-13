@@ -63,6 +63,7 @@ public class ThrowItemGoal extends Goal {
 					this.target.getZ());
 			this.updateCountdownTicks++;
 			this.rangedAttackMob.getLookControl().lookAt(this.target, 30.0F, 30.0F);
+			double d1 = this.getAttackReachSqr(livingentity);
 			if (inLineOfSight) {
 				if (this.rangedAttackMob.distanceTo(livingentity) >= 5.0D) {
 					this.rangedAttackMob.getNavigation().startMovingTo(livingentity, this.mobSpeed);
@@ -83,7 +84,9 @@ public class ThrowItemGoal extends Goal {
 					if (this.updateCountdownTicks == 4) {
 						this.rangedAttackMob.setAttackingState(1);
 						this.rangedAttackMob.getNavigation().stop();
-						this.rangedAttackMob.tryAttack(livingentity);
+						if (d0 <= d1) {
+							this.rangedAttackMob.tryAttack(livingentity);
+						}
 						livingentity.timeUntilRegen = 0;
 					}
 					if (this.updateCountdownTicks == 8) {

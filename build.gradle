@@ -44,6 +44,8 @@ dependencies {
 	modImplementation 'curse.maven:cce-318449:3475410'
 	modImplementation 'curse.maven:hookshot-396512:3541381'
 	modImplementation 'curse.maven:TDI-245733:3556912'
+	modImplementation 'curse.maven:advancement-514882:3547914'
+	modImplementation 'curse.maven:Iceberg-539382:3597368'
 }
 
 processResources {

@@ -1,7 +1,7 @@
 package mod.azure.doom.client.render;
 
 import mod.azure.doom.client.models.GladiatorModel;
-import mod.azure.doom.entity.tiersuperheavy.GladiatorEntity;
+import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;

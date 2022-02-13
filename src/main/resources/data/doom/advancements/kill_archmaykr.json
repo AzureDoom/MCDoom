@@ -14,7 +14,7 @@
 		"announce_to_chat": true,
 		"hidden": false
 	},
-	"parent": "doom:archmaykr_arena",
+	"parent": "minecraft:end/root",
 	"criteria": {
 		"requirement": {
 			"trigger": "minecraft:player_killed_entity",

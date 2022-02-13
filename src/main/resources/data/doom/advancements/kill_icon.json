@@ -14,7 +14,7 @@
 		"announce_to_chat": true,
 		"hidden": false
 	},
-	"parent": "doom:summon_icon",
+	"parent": "minecraft:nether/root",
 	"criteria": {
 		"requirement": {
 			"trigger": "minecraft:player_killed_entity",

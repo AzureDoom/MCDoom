@@ -1,12 +1,16 @@
-package mod.azure.doom.entity.tiersuperheavy;
+package mod.azure.doom.entity.tierboss;
 
+import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedStrafeGladiatorAttackGoal;
-import mod.azure.doom.entity.attack.FireballAttack;
+import mod.azure.doom.entity.attack.AbstractDoubleRangedAttack;
+import mod.azure.doom.entity.attack.AttackSound;
+import mod.azure.doom.entity.projectiles.CustomFireballEntity;
+import mod.azure.doom.entity.projectiles.entity.GladiatorMaceEntity;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.AreaEffectCloudEntity;
@@ -33,6 +37,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -40,6 +45,8 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
@@ -90,7 +97,8 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 			return PlayState.CONTINUE;
 		}
 		if (!event.isMoving() && this.velocityModified) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation((this.dataTracker.get(DEATH_STATE) == 0 ? "idle_phaseone" : "idle_phasetwo"), true));
+			event.getController().setAnimation(new AnimationBuilder()
+					.addAnimation((this.dataTracker.get(DEATH_STATE) == 0 ? "idle_phaseone" : "idle_phasetwo"), true));
 			return PlayState.CONTINUE;
 		}
 		event.getController().setAnimation(new AnimationBuilder()
@@ -111,7 +119,7 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 		}
 		if (this.dataTracker.get(DEATH_STATE) == 0 && this.dataTracker.get(STATE) == 4
 				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phaseone2", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phase3", true));
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(DEATH_STATE) == 1 && this.dataTracker.get(STATE) == 2
@@ -181,12 +189,12 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 			this.deathTime = 0;
 		}
 		if (this.deathTime == 40 && this.dataTracker.get(DEATH_STATE) == 1) {
-            this.world.sendEntityStatus(this, (byte)60);
+			this.world.sendEntityStatus(this, (byte) 60);
 			this.remove(Entity.RemovalReason.KILLED);
 			this.dropXp();
 		}
 	}
-	
+
 	@Override
 	protected boolean shouldDropLoot() {
 		return true;
@@ -248,16 +256,43 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	protected void initGoals() {
 		this.goalSelector.add(4,
 				new RangedStrafeGladiatorAttackGoal(this,
-						new FireballAttack(this, true).setProjectileOriginOffset(0.8, 0.8, 0.8)
+						new FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
 								.setDamage(config.gladiator_ranged_damage).setSound(SoundEvents.ITEM_FIRECHARGE_USE,
-										1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
-						1.1D));
+										1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F)));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));
 		this.goalSelector.add(6, new LookAtEntityGoal(this, LivingEntity.class, 8.0F));
 		this.goalSelector.add(6, new LookAroundGoal(this));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
+	}
+
+	public class FireballAttack extends AbstractDoubleRangedAttack {
+
+		public FireballAttack(DemonEntity parentEntity, double xOffSetModifier, double entityHeightFraction,
+				double zOffSetModifier, float damage) {
+			super(parentEntity, xOffSetModifier, entityHeightFraction, zOffSetModifier, damage);
+		}
+
+		public FireballAttack(DemonEntity parentEntity) {
+			super(parentEntity);
+		}
+
+		@Override
+		public AttackSound getDefaultAttackSound() {
+			return new AttackSound(ModSoundEvents.BALLISTA_FIRING, 1, 1);
+		}
+
+		@Override
+		public ProjectileEntity getProjectile(World world, double d2, double d3, double d4) {
+			return new CustomFireballEntity(world, this.parentEntity, d2, d3, d4, damage);
+
+		}
+
+		@Override
+		public ProjectileEntity getProjectile2(World world, double d2, double d3, double d4) {
+			return new GladiatorMaceEntity(world, this.parentEntity, d2, d3, d4);
+		}
 	}
 
 	@Override
@@ -349,6 +384,26 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	protected void mobTick() {
 		super.mobTick();
 		this.bossBar.setPercent(this.getHealth() / this.getMaxHealth());
+	}
+
+	@Override
+	public void baseTick() {
+		super.baseTick();
+		float q = 50.0F;
+		int k = MathHelper.floor(this.getX() - (double) q - 1.0D);
+		int l = MathHelper.floor(this.getX() + (double) q + 1.0D);
+		int t = MathHelper.floor(this.getY() - (double) q - 1.0D);
+		int u = MathHelper.floor(this.getY() + (double) q + 1.0D);
+		int v = MathHelper.floor(this.getZ() - (double) q - 1.0D);
+		int w = MathHelper.floor(this.getZ() + (double) q + 1.0D);
+		List<Entity> list = this.world.getOtherEntities(this,
+				new Box((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
+		for (int x = 0; x < list.size(); ++x) {
+			Entity entity = (Entity) list.get(x);
+			if (entity instanceof GladiatorEntity && entity.age < 1) {
+				entity.remove(Entity.RemovalReason.DISCARDED);
+			}
+		}
 	}
 
 }
