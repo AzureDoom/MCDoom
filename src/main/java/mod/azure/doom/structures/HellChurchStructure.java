@@ -2,8 +2,6 @@ package mod.azure.doom.structures;
 
 import java.util.Optional;
 
-import org.apache.logging.log4j.Level;
-
 import com.mojang.serialization.Codec;
 
 import mod.azure.doom.DoomMod;
@@ -33,16 +31,6 @@ public class HellChurchStructure extends StructureFeature<JigsawConfiguration> {
 		return GenerationStep.Decoration.SURFACE_STRUCTURES;
 	}
 
-//	private static final Lazy<List<MobSpawnSettings.SpawnerData>> STRUCTURE_MONSTERS = Lazy
-//			.of(() -> ImmutableList.of(new MobSpawnSettings.SpawnerData(EntityType.ILLUSIONER, 100, 4, 9),
-//					new MobSpawnSettings.SpawnerData(EntityType.VINDICATOR, 100, 4, 9)));
-//
-//	public static void setupStructureSpawns(final StructureSpawnListGatherEvent event) {
-//		if (event.getStructure() == DoomStructures.HELL_CHURCH.get()) {
-//			event.addEntitySpawns(MobCategory.MONSTER, STRUCTURE_MONSTERS.get());
-//		}
-//	}
-
 	private static boolean isFeatureChunk(PieceGeneratorSupplier.Context<JigsawConfiguration> context) {
 		BlockPos blockPos = context.chunkPos().getWorldPosition();
 		int landHeight = context.chunkGenerator().getFirstOccupiedHeight(blockPos.getX(), blockPos.getZ(),
@@ -70,13 +58,6 @@ public class HellChurchStructure extends StructureFeature<JigsawConfiguration> {
 
 		Optional<PieceGenerator<JigsawConfiguration>> structurePiecesGenerator = JigsawPlacement.addPieces(newContext,
 				PoolElementStructurePiece::new, blockpos, false, true);
-
-		if (structurePiecesGenerator.isPresent()) {
-			// I use to debug and quickly find out if the structure is spawning or not and
-			// where it is.
-			// This is returning the coordinates of the center starting piece.
-			DoomMod.LOGGER.log(Level.DEBUG, "Hell Church at " + blockpos);
-		}
 		return structurePiecesGenerator;
 	}
 }

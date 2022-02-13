@@ -56,6 +56,7 @@ public class ThrowItemGoal extends Goal {
 		if (livingentity != null) {
 			boolean inLineOfSight = this.rangedAttackMob.getSensing().hasLineOfSight(livingentity);
 			double d0 = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
+			double d1 = this.getAttackReachSqr(livingentity);
 			this.attackTime++;
 			this.rangedAttackMob.getLookControl().setLookAt(this.target, 30.0F, 30.0F);
 			if (inLineOfSight) {
@@ -79,7 +80,9 @@ public class ThrowItemGoal extends Goal {
 					if (this.attackTime == 4) {
 						this.rangedAttackMob.setAttackingState(1);
 						this.rangedAttackMob.getNavigation().stop();
-						this.rangedAttackMob.doHurtTarget(livingentity);
+						if (d0 <= d1) {
+							this.rangedAttackMob.doHurtTarget(livingentity);
+						}
 						livingentity.invulnerableTime = 0;
 					}
 					if (this.attackTime == 8) {
@@ -92,6 +95,7 @@ public class ThrowItemGoal extends Goal {
 	}
 
 	protected double getAttackReachSqr(LivingEntity attackTarget) {
-		return (double) (this.rangedAttackMob.getBbWidth() * 1.25F * this.rangedAttackMob.getBbWidth() * 1.25F + attackTarget.getBbWidth());
+		return (double) (this.rangedAttackMob.getBbWidth() * 1.25F * this.rangedAttackMob.getBbWidth() * 1.25F
+				+ attackTarget.getBbWidth());
 	}
 }

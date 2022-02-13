@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import mod.azure.doom.DoomMod;
+import mod.azure.doom.structures.GladiatorStructure;
 import mod.azure.doom.structures.HellChurchStructure;
 import mod.azure.doom.structures.IconStructure;
 import net.minecraft.data.BuiltinRegistries;
@@ -29,9 +30,13 @@ public class DoomStructures {
 	public static final RegistryObject<StructureFeature<JigsawConfiguration>> ICON_FIGHT = DEFERRED_REGISTRY_STRUCTURE
 			.register("icon_fight", () -> (new IconStructure(JigsawConfiguration.CODEC)));
 
+	public static final RegistryObject<StructureFeature<JigsawConfiguration>> GLADIATOR_FIGHT = DEFERRED_REGISTRY_STRUCTURE
+			.register("gladiator_fight", () -> (new GladiatorStructure(JigsawConfiguration.CODEC)));
+
 	public static void setupStructures() {
 		setupMapSpacingAndLand(HELL_CHURCH.get(), new StructureFeatureConfiguration(80, 20, 1234567890), true);
 		setupMapSpacingAndLand(ICON_FIGHT.get(), new StructureFeatureConfiguration(80, 20, 1234567891), true);
+		setupMapSpacingAndLand(GLADIATOR_FIGHT.get(), new StructureFeatureConfiguration(80, 20, 1234567892), true);
 	}
 
 	public static <F extends StructureFeature<?>> void setupMapSpacingAndLand(F structure,

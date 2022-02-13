@@ -18,12 +18,14 @@ import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.entity.projectiles.entity.DroneBoltEntity;
 import mod.azure.doom.entity.projectiles.entity.EnergyCellMobEntity;
+import mod.azure.doom.entity.projectiles.entity.GladiatorMaceEntity;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import mod.azure.doom.entity.tierambient.CueBallEntity;
 import mod.azure.doom.entity.tierambient.GoreNestEntity;
 import mod.azure.doom.entity.tierambient.TentacleEntity;
 import mod.azure.doom.entity.tierambient.TurretEntity;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
+import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tierboss.MotherDemonEntity;
 import mod.azure.doom.entity.tierboss.SpiderMastermind2016Entity;
@@ -63,7 +65,6 @@ import mod.azure.doom.entity.tiersuperheavy.Cyberdemon2016Entity;
 import mod.azure.doom.entity.tiersuperheavy.CyberdemonEntity;
 import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
 import mod.azure.doom.entity.tiersuperheavy.FireBaronEntity;
-import mod.azure.doom.entity.tiersuperheavy.GladiatorEntity;
 import mod.azure.doom.entity.tiersuperheavy.MarauderEntity;
 import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
@@ -131,9 +132,8 @@ public class ModEntityTypes {
 					.build(new ResourceLocation(DoomMod.MODID, "argent_bolt").toString()));
 
 	public static final RegistryObject<EntityType<GrenadeEntity>> GRENADE = ENTITY_TYPES.register("doomed_grenade",
-			() -> EntityType.Builder.<GrenadeEntity>of(GrenadeEntity::new, MobCategory.MISC)
-					.clientTrackingRange(9).sized(0.5F, 0.5F)
-					.build(new ResourceLocation(DoomMod.MODID, "doomed_grenade").toString()));
+			() -> EntityType.Builder.<GrenadeEntity>of(GrenadeEntity::new, MobCategory.MISC).clientTrackingRange(9)
+					.sized(0.5F, 0.5F).build(new ResourceLocation(DoomMod.MODID, "doomed_grenade").toString()));
 
 	public static final RegistryObject<EntityType<UnmaykrBoltEntity>> UNMAYKR = ENTITY_TYPES.register("unmaykr_bolt",
 			() -> EntityType.Builder.<UnmaykrBoltEntity>of(UnmaykrBoltEntity::new, MobCategory.MISC)
@@ -334,6 +334,12 @@ public class ModEntityTypes {
 	public static final RegistryObject<EntityType<RocketMobEntity>> ROCKET_MOB = ENTITY_TYPES.register("rocket_mob",
 			() -> EntityType.Builder.<RocketMobEntity>of(RocketMobEntity::new, MobCategory.MISC).sized(0.5F, 0.5F)
 					.clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "rocket_mob").toString()));
+
+	public static final RegistryObject<EntityType<GladiatorMaceEntity>> GLADIATOR_MACE = ENTITY_TYPES.register(
+			"gladiator_mace",
+			() -> EntityType.Builder.<GladiatorMaceEntity>of(GladiatorMaceEntity::new, MobCategory.MISC)
+					.sized(0.5F, 0.5F).clientTrackingRange(9)
+					.build(new ResourceLocation(DoomMod.MODID, "gladiator_mace").toString()));
 
 	public static final RegistryObject<EntityType<ChaingunMobEntity>> CHAINGUN_MOB = ENTITY_TYPES
 			.register("chaingun_mob",

@@ -1,13 +1,16 @@
-v.4.1.10
+v.4.1.12
 
-- BFG Damage is reduced on Icon of Sin.
-- Fire effects summoned by Doom mobs last longer and burn blocks.
-- Gore Nests spawn faster and still only once.
-- Icon of Sin combat AI redone. Now summons fire on the target when they aren't moving, shoots a Fireball at target if they are moving, or if close enough do a melee damaging attack. Attack cycle now much faster. 
-- Icon of Sin will now summon mobs, you can configure what mobs in the config as well!
-- Fixed range of melee based attacks. Should work properly now.
-- Hell Knight 2016 combat AI updated along with jumping animations plus new particle effect when slamming. 
-- Gargoyles now walk when not in combat and will fly when attacking and perform both a melee and ranged attack. 
-- Revenants 2016/Doot now fire much faster.
-- Blood Maykr, Arch Maykr, and Spider Masterminds fire much faster.
-- Added the Icon Structure, a naturally spawning boss room found in the depths of the Overworld. Do you have what it takes to defeat the Icon of Sin? - Credit to the amazing work of Tyrius, who built, tested and gave feedback on the Icon of Sin impovements!
+- Fixes Gladiator Mace name issue.
+
+v.4.1.11
+
+- Removes Netherite blocks from Nether Church.
+- Fixes Nether Church placement in the world, no longer 1 high. 
+- Nether Church moved to Mushroom biomes to esnure they are far from like 90% of world spawns.
+- Updates all Adavances regarding the Nether to the Nether, Arch Maykr uses the End. 
+- Updates Icon of Sin loot table to require death by player.
+- Updates Spider Masterminds to remove Ballista from drop.
+- Gladiator moved to Bosses. 
+- Gladiator Arena added to The Nether and will spawn in Soul Valleys only. 
+- Gladiator will melee more in Phase one.
+- Gladiator can now throw the mace at the player.

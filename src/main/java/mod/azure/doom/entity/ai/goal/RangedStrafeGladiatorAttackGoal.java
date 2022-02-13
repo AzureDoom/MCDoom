@@ -1,9 +1,10 @@
 package mod.azure.doom.entity.ai.goal;
 
 import java.util.EnumSet;
+import java.util.SplittableRandom;
 
-import mod.azure.doom.entity.attack.AbstractRangedAttack;
-import mod.azure.doom.entity.tiersuperheavy.GladiatorEntity;
+import mod.azure.doom.entity.attack.AbstractDoubleRangedAttack;
+import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,14 +12,12 @@ import net.minecraft.world.entity.ai.goal.Goal;
 
 public class RangedStrafeGladiatorAttackGoal extends Goal {
 	private final GladiatorEntity entity;
-	private double moveSpeedAmp = 1;
 	private int attackTime = -1;
+	private int summonTime = -1;
+	private AbstractDoubleRangedAttack attack;
 
-	private AbstractRangedAttack attack;
-
-	public RangedStrafeGladiatorAttackGoal(GladiatorEntity mob, AbstractRangedAttack attack, double moveSpeedAmpIn) {
+	public RangedStrafeGladiatorAttackGoal(GladiatorEntity mob, AbstractDoubleRangedAttack attack) {
 		this.entity = mob;
-		this.moveSpeedAmp = moveSpeedAmpIn;
 		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 		this.attack = attack;
 	}
@@ -71,52 +70,89 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 			boolean inLineOfSight = this.entity.getSensing().hasLineOfSight(livingentity);
 			this.attackTime++;
 			this.entity.lookAt(livingentity, 30.0F, 30.0F);
+			SplittableRandom random = new SplittableRandom();
+			int randomRangedPhaseOne = random.nextInt(0, 5);
 			double d0 = this.entity.distanceToSqr(livingentity.getX(), livingentity.getY(), livingentity.getZ());
 			double d1 = this.getAttackReachSqr(livingentity);
 			if (inLineOfSight) {
-				if (this.entity.distanceTo(livingentity) >= 3.0D) {
-					if (this.entity.getDeathState() == 0) {
+				if (d0 > d1) {
+					if (this.entity.getDeathState() == 0 && this.summonTime > 10) {
+						if (randomRangedPhaseOne <= 3) {
+							if (this.attackTime == 1) {
+								this.entity.getNavigation().stop();
+								this.entity.setAttackingState(1);
+								this.entity.setTextureState(1);
+							}
+							if (this.attackTime == 20) {
+								this.entity.setTextureState(2);
+							}
+							if (this.attackTime == 23) {
+								AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(entity.level, entity.getX(),
+										entity.getY(), entity.getZ());
+								areaeffectcloudentity.setParticle(ParticleTypes.SOUL_FIRE_FLAME);
+								areaeffectcloudentity.setRadius(3.0F);
+								areaeffectcloudentity.setDuration(10);
+								areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
+								entity.level.addFreshEntity(areaeffectcloudentity);
+								this.attack.shoot();
+								this.entity.setTextureState(0);
+								this.entity.setAttackingState(0);
+								this.summonTime = -300;
+							}
+							if (this.attackTime == 48) {
+								this.entity.setAttackingState(0);
+								this.entity.setTextureState(0);
+							}
+							if (this.attackTime == 83) {
+								this.attackTime = -5;
+								this.entity.setTextureState(0);
+								this.entity.setAttackingState(0);
+								this.entity.getNavigation().moveTo(livingentity, 1.0);
+							}
+						} else {
+							if (this.attackTime == 1) {
+								this.entity.getNavigation().stop();
+							}
+							if (this.attackTime == 5) {
+								this.entity.setAttackingState(4);
+							}
+							if (this.attackTime == 8) {
+								this.attack.shoot2();
+								this.summonTime = -8;
+							}
+							if (this.attackTime == 13) {
+								this.entity.getNavigation().moveTo(livingentity, 1.0);
+								this.attackTime = -5;
+							}
+						}
+					} else if (this.entity.getDeathState() == 1 && this.summonTime == 2) {
 						if (this.attackTime == 1) {
 							this.entity.getNavigation().stop();
-							this.entity.setAttackingState(1);
-							this.entity.setTextureState(1);
 						}
-						if (this.attackTime == 20) {
-							this.entity.setTextureState(2);
+						if (this.attackTime == 5) {
+							this.entity.setAttackingState(4);
 						}
-						if (this.attackTime == 23) {
-							AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(entity.level, entity.getX(),
-									entity.getY(), entity.getZ());
-							areaeffectcloudentity.setParticle(ParticleTypes.SOUL_FIRE_FLAME);
-							areaeffectcloudentity.setRadius(3.0F);
-							areaeffectcloudentity.setDuration(10);
-							areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
-							entity.level.addFreshEntity(areaeffectcloudentity);
-							this.attack.shoot();
-							this.entity.setTextureState(0);
-							this.entity.setAttackingState(0);
+						if (this.attackTime == 8) {
+							this.attack.shoot2();
+							this.summonTime = -8;
 						}
-						if (this.attackTime == 48) {
-							this.entity.setAttackingState(0);
-							this.entity.setTextureState(0);
-						}
-						if (this.attackTime == 83) {
+						if (this.attackTime == 13) {
+							this.entity.getNavigation().moveTo(livingentity, 1.25);
 							this.attackTime = -5;
-							this.entity.setTextureState(0);
-							this.entity.setAttackingState(0);
-							this.entity.getNavigation().moveTo(livingentity, this.moveSpeedAmp);
 						}
 					} else {
+						this.summonTime++;
 						this.attackTime = -25;
 						this.entity.setTextureState(0);
 						this.entity.setAttackingState(0);
-						this.entity.getNavigation().moveTo(livingentity, 1.4);
+						this.entity.getNavigation().moveTo(livingentity, 1.0);
 					}
 				} else {
-					this.entity.getNavigation().moveTo(livingentity, 1.4);
+					this.entity.getNavigation().moveTo(livingentity, this.entity.getDeathState() == 0 ? 1.0 : 1.25);
 					this.entity.setSilent(true);
 					if (this.attackTime == 1) {
 						this.entity.setAttackingState(3);
+						this.summonTime++;
 					}
 					if (this.attackTime == 18) {
 						this.entity.getNavigation().stop();

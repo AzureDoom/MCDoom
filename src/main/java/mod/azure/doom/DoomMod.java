@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.mojang.serialization.Codec;
 
+import mod.azure.doom.structures.GladiatorStructure;
 import mod.azure.doom.structures.IconStructure;
 import mod.azure.doom.util.DoomVillagerTrades;
 import mod.azure.doom.util.LootHandler;
@@ -36,6 +37,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.FlatLevelSource;
 import net.minecraft.world.level.levelgen.StructureSettings;
@@ -97,6 +99,7 @@ public class DoomMod {
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.addListener(EventPriority.NORMAL, this::addDimensionalSpacing);
 		forgeBus.addListener(EventPriority.NORMAL, IconStructure::setupStructureSpawns);
+		forgeBus.addListener(EventPriority.NORMAL, GladiatorStructure::setupStructureSpawns);
 	}
 
 	@SubscribeEvent
@@ -127,15 +130,18 @@ public class DoomMod {
 			for (Map.Entry<ResourceKey<Biome>, Biome> biomeEntry : serverLevel.registryAccess()
 					.ownedRegistryOrThrow(Registry.BIOME_REGISTRY).entrySet()) {
 				Biome.BiomeCategory biomeCategory = biomeEntry.getValue().getBiomeCategory();
-				if (biomeCategory != Biome.BiomeCategory.OCEAN && biomeCategory != Biome.BiomeCategory.THEEND
-						&& biomeCategory != Biome.BiomeCategory.NETHER && biomeCategory != Biome.BiomeCategory.NONE
-						&& biomeCategory != Biome.BiomeCategory.UNDERGROUND) {
+				ResourceKey<Biome> biome = biomeEntry.getKey();
+				if (biomeCategory == Biome.BiomeCategory.MUSHROOM) {
 					associateBiomeToConfiguredStructure(STStructureToMultiMap,
 							DoomStructuresConfigured.CONFIGURED_HELL_CHURCH, biomeEntry.getKey());
 				}
 				if (biomeCategory == Biome.BiomeCategory.UNDERGROUND) {
 					associateBiomeToConfiguredStructure(STStructureToMultiMap,
 							DoomStructuresConfigured.CONFIGURED_ICON_FIGHT, biomeEntry.getKey());
+				}
+				if (biome == Biomes.SOUL_SAND_VALLEY) {
+					associateBiomeToConfiguredStructure(STStructureToMultiMap,
+							DoomStructuresConfigured.CONFIGURED_GLADIATOR_FIGHT, biomeEntry.getKey());
 				}
 			}
 			ImmutableMap.Builder<StructureFeature<?>, ImmutableMultimap<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>>> tempStructureToMultiMap = ImmutableMap
@@ -165,6 +171,8 @@ public class DoomMod {
 					StructureSettings.DEFAULTS.get(DoomStructures.HELL_CHURCH.get()));
 			tempMap.putIfAbsent(DoomStructures.ICON_FIGHT.get(),
 					StructureSettings.DEFAULTS.get(DoomStructures.ICON_FIGHT.get()));
+			tempMap.putIfAbsent(DoomStructures.GLADIATOR_FIGHT.get(),
+					StructureSettings.DEFAULTS.get(DoomStructures.GLADIATOR_FIGHT.get()));
 			worldStructureConfig.structureConfig = tempMap;
 		}
 	}

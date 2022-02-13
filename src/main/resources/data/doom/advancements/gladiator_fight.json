@@ -1,13 +1,13 @@
 {
 	"display": {
 		"icon": {
-			"item": "doom:icon_icon"
+			"item": "doom:doom_helmet"
 		},
 		"title": {
-			"translate": "doom.achievement.summon_icon"
+			"translate": "doom.achievement.gladiator_fight"
 		},
 		"description": {
-			"translate": "doom.achievement.summon_icon.desc"
+			"translate": "doom.achievement.gladiator_fight.desc"
 		},
 		"frame": "challenge",
 		"show_toast": true,
@@ -17,10 +17,10 @@
 	"parent": "minecraft:nether/root",
 	"criteria": {
 		"requirement": {
-			"trigger": "minecraft:summoned_entity",
+			"trigger": "minecraft:location",
 			"conditions": {
-				"entity": {
-					"type": "doom:iconofsin"
+				"location": {
+					"feature": "doom:gladiator_fight"
 				}
 			}
 		}

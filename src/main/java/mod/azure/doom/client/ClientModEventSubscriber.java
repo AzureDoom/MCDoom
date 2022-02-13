@@ -104,6 +104,7 @@ import mod.azure.doom.client.render.projectiles.entity.ChainBladeRender;
 import mod.azure.doom.client.render.projectiles.entity.ChaingunMobRender;
 import mod.azure.doom.client.render.projectiles.entity.DroneBoltRender;
 import mod.azure.doom.client.render.projectiles.entity.EnergyCellMobRender;
+import mod.azure.doom.client.render.projectiles.entity.GladiatorMaceRender;
 import mod.azure.doom.client.render.projectiles.entity.RocketMobRender;
 import mod.azure.doom.client.render.tile.GunCraftingRender;
 import mod.azure.doom.client.render.tile.TotemRender;
@@ -162,6 +163,7 @@ public class ClientModEventSubscriber {
 
 	@SubscribeEvent
 	public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
+		event.registerEntityRenderer(ModEntityTypes.GLADIATOR_MACE.get(), GladiatorMaceRender::new);
 		event.registerEntityRenderer(ModEntityTypes.SHOTGUN_SHELL.get(), ShotgunShellRender::new);
 		event.registerEntityRenderer(ModEntityTypes.ARGENT_BOLT.get(), ArgentBoltRender::new);
 		event.registerEntityRenderer(ModEntityTypes.GRENADE.get(), GrenadeRender::new);

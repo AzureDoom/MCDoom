@@ -1,8 +1,13 @@
-package mod.azure.doom.entity.tiersuperheavy;
+package mod.azure.doom.entity.tierboss;
+
+import java.util.List;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedStrafeGladiatorAttackGoal;
-import mod.azure.doom.entity.attack.FireballAttack;
+import mod.azure.doom.entity.attack.AbstractDoubleRangedAttack;
+import mod.azure.doom.entity.attack.AttackSound;
+import mod.azure.doom.entity.projectiles.CustomFireballEntity;
+import mod.azure.doom.entity.projectiles.entity.GladiatorMaceEntity;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
@@ -16,6 +21,7 @@ import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -34,9 +40,11 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
@@ -85,7 +93,8 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 			return PlayState.CONTINUE;
 		}
 		if (!event.isMoving() && this.hurtMarked) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation((this.entityData.get(DEATH_STATE) == 0 ? "idle_phaseone" : "idle_phasetwo"), true));
+			event.getController().setAnimation(new AnimationBuilder()
+					.addAnimation((this.entityData.get(DEATH_STATE) == 0 ? "idle_phaseone" : "idle_phasetwo"), true));
 			return PlayState.CONTINUE;
 		}
 		event.getController().setAnimation(new AnimationBuilder()
@@ -106,7 +115,7 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 		}
 		if (this.entityData.get(DEATH_STATE) == 0 && this.entityData.get(STATE) == 4
 				&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phaseone2", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phase3", true));
 			return PlayState.CONTINUE;
 		}
 		if (this.entityData.get(DEATH_STATE) == 1 && this.entityData.get(STATE) == 2
@@ -236,10 +245,9 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(4, new RangedStrafeGladiatorAttackGoal(this,
-				new FireballAttack(this, true).setProjectileOriginOffset(0.8, 0.8, 0.8)
-						.setDamage(DoomConfig.SERVER.gladiator_ranged_damage.get().floatValue()).setSound(
-								SoundEvents.FIRECHARGE_USE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
-				1.1D));
+				new FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
+						.setDamage(DoomConfig.SERVER.gladiator_ranged_damage.get().floatValue())
+						.setSound(SoundEvents.FIRECHARGE_USE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F)));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
 		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, LivingEntity.class, 8.0F));
 		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
@@ -247,7 +255,35 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
 	}
-	
+
+	public class FireballAttack extends AbstractDoubleRangedAttack {
+
+		public FireballAttack(DemonEntity parentEntity, double xOffSetModifier, double entityHeightFraction,
+				double zOffSetModifier, float damage) {
+			super(parentEntity, xOffSetModifier, entityHeightFraction, zOffSetModifier, damage);
+		}
+
+		public FireballAttack(DemonEntity parentEntity) {
+			super(parentEntity);
+		}
+
+		@Override
+		public AttackSound getDefaultAttackSound() {
+			return new AttackSound(ModSoundEvents.BALLISTA_FIRING.get(), 1, 1);
+		}
+
+		@Override
+		public Projectile getProjectile(Level world, double d2, double d3, double d4) {
+			return new CustomFireballEntity(world, this.parentEntity, d2, d3, d4, damage);
+
+		}
+
+		@Override
+		public Projectile getProjectile2(Level world, double d2, double d3, double d4) {
+			return new GladiatorMaceEntity(world, this.parentEntity, d2, d3, d4);
+		}
+	}
+
 	@Override
 	public boolean ignoreExplosion() {
 		return true;
@@ -338,6 +374,26 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	protected void customServerAiStep() {
 		super.customServerAiStep();
 		this.bossInfo.setProgress(this.getHealth() / this.getMaxHealth());
+	}
+
+	@Override
+	public void baseTick() {
+		super.baseTick();
+		float f2 = 50.0F;
+		int k1 = Mth.floor(this.getX() - (double) f2 - 1.0D);
+		int l1 = Mth.floor(this.getX() + (double) f2 + 1.0D);
+		int i2 = Mth.floor(this.getY() - (double) f2 - 1.0D);
+		int i1 = Mth.floor(this.getY() + (double) f2 + 1.0D);
+		int j2 = Mth.floor(this.getZ() - (double) f2 - 1.0D);
+		int j1 = Mth.floor(this.getZ() + (double) f2 + 1.0D);
+		List<Entity> list = this.level.getEntities(this,
+				new AABB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
+		for (int k2 = 0; k2 < list.size(); ++k2) {
+			Entity entity = list.get(k2);
+			if (entity.isAddedToWorld() && entity instanceof GladiatorEntity && entity.tickCount < 1) {
+				this.remove(RemovalReason.KILLED);
+			}
+		}
 	}
 
 }

@@ -7,7 +7,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public abstract class AbstractRangedAttack implements IRangedAttack {
+public abstract class AbstractDoubleRangedAttack implements IRangedDoubleAttack {
 
 	public DemonEntity parentEntity;
 	public double xOffSetModifier = 2;
@@ -16,11 +16,11 @@ public abstract class AbstractRangedAttack implements IRangedAttack {
 	public float damage = 1;
 	public double accuracy = 0.95;
 
-	public AbstractRangedAttack(DemonEntity parentEntity) {
+	public AbstractDoubleRangedAttack(DemonEntity parentEntity) {
 		this.parentEntity = parentEntity;
 	}
 
-	public AbstractRangedAttack(DemonEntity parentEntity, double xOffSetModifier, double entityHeightFraction,
+	public AbstractDoubleRangedAttack(DemonEntity parentEntity, double xOffSetModifier, double entityHeightFraction,
 			double zOffSetModifier, float damage) {
 		this.parentEntity = parentEntity;
 		this.xOffSetModifier = xOffSetModifier;
@@ -29,31 +29,31 @@ public abstract class AbstractRangedAttack implements IRangedAttack {
 		this.damage = damage;
 	}
 
-	public AbstractRangedAttack setProjectileOriginOffset(double x, double entityHeightFraction, double z) {
+	public AbstractDoubleRangedAttack setProjectileOriginOffset(double x, double entityHeightFraction, double z) {
 		xOffSetModifier = x;
 		this.entityHeightFraction = entityHeightFraction;
 		zOffSetModifier = z;
 		return this;
 	}
 
-	public AbstractRangedAttack setDamage(float damage) {
+	public AbstractDoubleRangedAttack setDamage(float damage) {
 		this.damage = damage;
 		return this;
 	}
 
 	private AttackSound sound;
 
-	public AbstractRangedAttack setSound(AttackSound sound) {
+	public AbstractDoubleRangedAttack setSound(AttackSound sound) {
 		this.sound = sound;
 		return this;
 	}
 
-	public AbstractRangedAttack setSound(SoundEvent sound, float volume, float pitch) {
+	public AbstractDoubleRangedAttack setSound(SoundEvent sound, float volume, float pitch) {
 		this.sound = new AttackSound(sound, volume, pitch);
 		return this;
 	}
 
-	public AbstractRangedAttack setAccuracy(double accuracy) {
+	public AbstractDoubleRangedAttack setAccuracy(double accuracy) {
 		this.accuracy = accuracy;
 		return this;
 	}
@@ -78,4 +78,22 @@ public abstract class AbstractRangedAttack implements IRangedAttack {
 		else
 			sound.play(this.parentEntity);
 	}
+
+	public void shoot2() {
+		LivingEntity livingentity = this.parentEntity.getTarget();
+		Level world = this.parentEntity.getCommandSenderWorld();
+		Vec3 vector3d = this.parentEntity.getViewVector(1.0F);
+		double d2 = livingentity.getX() - (this.parentEntity.getX() + vector3d.x * xOffSetModifier);
+		double d3 = livingentity.getY(0.5D) - (this.parentEntity.getY(entityHeightFraction));
+		double d4 = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * zOffSetModifier);
+		Projectile projectile = getProjectile2(world, rollAccuracy(d2), rollAccuracy(d3), rollAccuracy(d4));
+		projectile.setPos(this.parentEntity.getX() + vector3d.x * xOffSetModifier,
+				this.parentEntity.getY(entityHeightFraction), this.parentEntity.getZ() + vector3d.z * zOffSetModifier);
+		world.addFreshEntity(projectile);
+		if (sound == null)
+			getDefaultAttackSound().play(this.parentEntity);
+		else
+			sound.play(this.parentEntity);
+	}
+
 }

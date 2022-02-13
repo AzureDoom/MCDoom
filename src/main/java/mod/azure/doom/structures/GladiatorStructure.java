@@ -28,10 +28,10 @@ import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplie
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.world.StructureSpawnListGatherEvent;
 
-public class IconStructure extends StructureFeature<JigsawConfiguration> {
+public class GladiatorStructure extends StructureFeature<JigsawConfiguration> {
 
-	public IconStructure(Codec<JigsawConfiguration> codec) {
-		super(codec, IconStructure::createPiecesGenerator, PostPlacementProcessor.NONE);
+	public GladiatorStructure(Codec<JigsawConfiguration> codec) {
+		super(codec, GladiatorStructure::createPiecesGenerator, PostPlacementProcessor.NONE);
 	}
 
 	@Override
@@ -40,10 +40,10 @@ public class IconStructure extends StructureFeature<JigsawConfiguration> {
 	}
 
 	private static final Lazy<List<MobSpawnSettings.SpawnerData>> STRUCTURE_MONSTERS = Lazy
-			.of(() -> ImmutableList.of(new MobSpawnSettings.SpawnerData(ModEntityTypes.ICONOFSIN.get(), 100, 1, 1)));
+			.of(() -> ImmutableList.of(new MobSpawnSettings.SpawnerData(ModEntityTypes.GLADIATOR.get(), 100, 1, 1)));
 
 	public static void setupStructureSpawns(final StructureSpawnListGatherEvent event) {
-		if (event.getStructure() == DoomStructures.ICON_FIGHT.get()) {
+		if (event.getStructure() == DoomStructures.GLADIATOR_FIGHT.get()) {
 			event.addEntitySpawns(MobCategory.MONSTER, STRUCTURE_MONSTERS.get());
 		}
 	}
@@ -60,22 +60,22 @@ public class IconStructure extends StructureFeature<JigsawConfiguration> {
 
 	public static Optional<PieceGenerator<JigsawConfiguration>> createPiecesGenerator(
 			PieceGeneratorSupplier.Context<JigsawConfiguration> context) {
-		if (!IconStructure.isFeatureChunk(context)) {
+		if (!GladiatorStructure.isFeatureChunk(context)) {
 			return Optional.empty();
 		}
 
 		JigsawConfiguration newConfig = new JigsawConfiguration(
 				() -> context.registryAccess().ownedRegistryOrThrow(Registry.TEMPLATE_POOL_REGISTRY)
-						.get(new ResourceLocation(DoomMod.MODID, "icon_fight/start_pool")),
+						.get(new ResourceLocation(DoomMod.MODID, "gladiator_fight/start_pool")),
 				10);
 		PieceGeneratorSupplier.Context<JigsawConfiguration> newContext = new PieceGeneratorSupplier.Context<>(
 				context.chunkGenerator(), context.biomeSource(), context.seed(), context.chunkPos(), newConfig,
 				context.heightAccessor(), context.validBiome(), context.structureManager(), context.registryAccess());
 
-		BlockPos blockpos = new BlockPos(context.chunkPos().getMinBlockX(), -63, context.chunkPos().getMinBlockZ());
+		BlockPos blockpos = new BlockPos(context.chunkPos().getMinBlockX(), 32, context.chunkPos().getMinBlockZ());
 
 		Optional<PieceGenerator<JigsawConfiguration>> structurePiecesGenerator = JigsawPlacement.addPieces(newContext,
-				PoolElementStructurePiece::new, blockpos, false, false);
+				PoolElementStructurePiece::new, blockpos, true, false);
 		return structurePiecesGenerator;
 	}
 }
