@@ -5,7 +5,9 @@ import java.util.function.Consumer;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.SSGRender;
+import mod.azure.doom.entity.projectiles.MeatHookEntity;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
+import mod.azure.doom.util.PlayerProperties;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
@@ -16,6 +18,7 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -58,34 +61,53 @@ public class SuperShotgun extends DoomBaseItem {
 		if (entityLiving instanceof Player) {
 			Player playerentity = (Player) entityLiving;
 			if (stack.getDamageValue() < (stack.getMaxDamage() - 2)) {
-				playerentity.getCooldowns().addCooldown(stack.getItem(), 24);
-				if (!worldIn.isClientSide) {
-					ShotgunShellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(),
-							playerentity.getYRot() + 1, 0.0F, 1.0F * 3.0F, 1.0F);
-					abstractarrowentity.isNoGravity();
-					worldIn.addFreshEntity(abstractarrowentity);
-					ShotgunShellEntity abstractarrowentity1 = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity1.shootFromRotation(playerentity, playerentity.getXRot(),
-							playerentity.getYRot() - 1, 0.0F, 1.0F * 3.0F, 1.0F);
-					abstractarrowentity1.isNoGravity();
-					worldIn.addFreshEntity(abstractarrowentity1);
-
-					stack.hurtAndBreak(2, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
-					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-							ModSoundEvents.SUPER_SHOTGUN_SHOOT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+				if (playerentity.getMainHandItem().getItem() instanceof SuperShotgun) {
+					playerentity.getCooldowns().addCooldown(this, 24);
 					if (!worldIn.isClientSide) {
-						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
-						final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
-								.with(() -> playerentity);
-						GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
+						ShotgunShellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
+						abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(),
+								playerentity.getYRot() + 1, 0.0F, 1.0F * 3.0F, 1.0F);
+						abstractarrowentity.isNoGravity();
+						worldIn.addFreshEntity(abstractarrowentity);
+						ShotgunShellEntity abstractarrowentity1 = createArrow(worldIn, stack, playerentity);
+						abstractarrowentity1.shootFromRotation(playerentity, playerentity.getXRot(),
+								playerentity.getYRot() - 1, 0.0F, 1.0F * 3.0F, 1.0F);
+						abstractarrowentity1.isNoGravity();
+						worldIn.addFreshEntity(abstractarrowentity1);
+
+						stack.hurtAndBreak(2, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
+						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
+								ModSoundEvents.SUPER_SHOTGUN_SHOOT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+						if (!worldIn.isClientSide) {
+							final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
+							final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
+									.with(() -> playerentity);
+							GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
+						}
 					}
 				}
 			} else {
 				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
 						ModSoundEvents.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
+				((PlayerProperties) playerentity).setHasMeatHook(false);
 			}
 		}
+	}
+
+	@Override
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+		ItemStack stack = player.getOffhandItem();
+		if (!world.isClientSide() && stack.getItem() instanceof SuperShotgun) {
+			player.getCooldowns().addCooldown(this, 5);
+			if (!((PlayerProperties) player).hasMeatHook()) {
+				MeatHookEntity hookshot = new MeatHookEntity(world, player);
+				hookshot.setProperties(stack, 32, 10, player.getXRot(), player.getYRot(), 0f, 1.5f * (float) (10 / 10));
+				hookshot.getEntityData().set(MeatHookEntity.FORCED_YAW, player.getYRot());
+				world.addFreshEntity(hookshot);
+			}
+			((PlayerProperties) player).setHasMeatHook(!((PlayerProperties) player).hasMeatHook());
+		}
+		return super.use(world, player, hand);
 	}
 
 	public ShotgunShellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
@@ -103,6 +125,10 @@ public class SuperShotgun extends DoomBaseItem {
 					DoomPacketHandler.SUPERSHOTGUN.sendToServer(new SSGLoadingPacket(itemSlot));
 				}
 			}
+		}
+		if (((Player) entityIn).getMainHandItem().getItem() instanceof SuperShotgun && isSelected
+				&& ((PlayerProperties) entityIn).hasMeatHook()) {
+			((PlayerProperties) entityIn).setHasMeatHook(false);
 		}
 	}
 

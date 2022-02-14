@@ -1,16 +1,5 @@
-v.4.1.12
+v.4.1.14
 
-- Fixes Gladiator Mace name issue.
-
-v.4.1.11
-
-- Removes Netherite blocks from Nether Church.
-- Fixes Nether Church placement in the world, no longer 1 high. 
-- Nether Church moved to Mushroom biomes to esnure they are far from like 90% of world spawns.
-- Updates all Adavances regarding the Nether to the Nether, Arch Maykr uses the End. 
-- Updates Icon of Sin loot table to require death by player.
-- Updates Spider Masterminds to remove Ballista from drop.
-- Gladiator moved to Bosses. 
-- Gladiator Arena added to The Nether and will spawn in Soul Valleys only. 
-- Gladiator will melee more in Phase one.
-- Gladiator can now throw the mace at the player.
+- Weapons no longer animated in the hotbar.
+- Icon of Sin takes no knockback.
+- Super Shotgun now fires it's Meat Hook when held in the offhand, pulling you towards the Entity or Block hit with it. 

@@ -30,9 +30,13 @@ import mod.azure.doom.util.registry.ModEntitySpawn;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.Registry;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -73,6 +77,7 @@ public class DoomMod {
 
 	public DoomMod() {
 		instance = this;
+		SynchedEntityDatas.MEATHOOK_TRACKER.getId();
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, DoomConfig.SERVER_SPEC, "doom-newconfig.toml");
 		DoomConfig.loadConfig(DoomConfig.SERVER_SPEC,
@@ -100,6 +105,11 @@ public class DoomMod {
 		forgeBus.addListener(EventPriority.NORMAL, this::addDimensionalSpacing);
 		forgeBus.addListener(EventPriority.NORMAL, IconStructure::setupStructureSpawns);
 		forgeBus.addListener(EventPriority.NORMAL, GladiatorStructure::setupStructureSpawns);
+	}
+
+	public static class SynchedEntityDatas {
+		public static final EntityDataAccessor<Boolean> MEATHOOK_TRACKER = SynchedEntityData.defineId(Player.class,
+				EntityDataSerializers.BOOLEAN);
 	}
 
 	@SubscribeEvent

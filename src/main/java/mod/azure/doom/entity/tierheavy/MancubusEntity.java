@@ -1,5 +1,7 @@
 package mod.azure.doom.entity.tierheavy;
 
+import java.util.EnumSet;
+
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
@@ -142,6 +144,7 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 
 		public FireballAttackGoal(MancubusEntity ghast) {
 			this.parentEntity = ghast;
+			this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 		}
 
 		public boolean canUse() {

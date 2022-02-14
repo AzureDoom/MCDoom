@@ -30,6 +30,7 @@ public class DoomBaseItem extends Item implements IAnimatable, ISyncable {
 	public AnimationFactory factory = new AnimationFactory(this);
 	public String controllerName = "controller";
 	public static final int ANIM_OPEN = 0;
+	public static final int ANIM_HOOK = 1;
 
 	public <P extends ProjectileWeaponItem & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
 		return PlayState.CONTINUE;
@@ -53,6 +54,13 @@ public class DoomBaseItem extends Item implements IAnimatable, ISyncable {
 			if (controller.getAnimationState() == AnimationState.Stopped) {
 				controller.markNeedsReload();
 				controller.setAnimation(new AnimationBuilder().addAnimation("firing", false));
+			}
+		}
+		if (state == ANIM_HOOK) {
+			final AnimationController<?> controller = GeckoLibUtil.getControllerForID(this.factory, id, controllerName);
+			if (controller.getAnimationState() == AnimationState.Stopped) {
+				controller.markNeedsReload();
+				controller.setAnimation(new AnimationBuilder().addAnimation("hook", false));
 			}
 		}
 	}

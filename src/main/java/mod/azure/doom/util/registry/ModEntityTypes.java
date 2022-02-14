@@ -8,6 +8,7 @@ import mod.azure.doom.entity.projectiles.BulletEntity;
 import mod.azure.doom.entity.projectiles.ChaingunBulletEntity;
 import mod.azure.doom.entity.projectiles.EnergyCellEntity;
 import mod.azure.doom.entity.projectiles.GrenadeEntity;
+import mod.azure.doom.entity.projectiles.MeatHookEntity;
 import mod.azure.doom.entity.projectiles.RocketEntity;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import mod.azure.doom.entity.projectiles.UnmaykrBoltEntity;
@@ -113,6 +114,12 @@ public class ModEntityTypes {
 					() -> EntityType.Builder.<ShotgunShellEntity>of(ShotgunShellEntity::new, MobCategory.MISC)
 							.sized(0.5F, 0.5F).clientTrackingRange(9)
 							.build(new ResourceLocation(DoomMod.MODID, "shotgun_shell").toString()));
+
+	public static final RegistryObject<EntityType<MeatHookEntity>> MEATHOOOK_ENTITY = ENTITY_TYPES
+			.register("meathook",
+					() -> EntityType.Builder.<MeatHookEntity>of(MeatHookEntity::new, MobCategory.MISC)
+							.sized(0.5F, 0.5F).clientTrackingRange(9)
+							.build(new ResourceLocation(DoomMod.MODID, "meathook").toString()));
 
 	public static final RegistryObject<EntityType<DroneBoltEntity>> DRONEBOLT_MOB = ENTITY_TYPES
 			.register("dronebolt_mob",

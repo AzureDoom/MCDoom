@@ -30,6 +30,7 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
@@ -140,7 +141,7 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 
 		public AttackGoal(DemonEntity zombieIn, double speedIn) {
 			this.entity = zombieIn;
-			this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+			this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Goal.Flag.JUMP));
 			this.speedModifier = speedIn;
 		}
 
@@ -170,19 +171,21 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 				boolean inLineOfSight = this.entity.getSensing().hasLineOfSight(livingentity);
 				this.attackTime++;
 				this.entity.lookAt(livingentity, 30.0F, 30.0F);
-				double d0 = this.entity.distanceToSqr(livingentity.getX(), livingentity.getY(), livingentity.getZ());
-				double d1 = this.getAttackReachSqr(livingentity);
-				if (inLineOfSight && livingentity.distanceTo(entity) >= 4.0D && this.attackTime < 0) {
+				if (inLineOfSight && livingentity.distanceTo(entity) >= 3.0D) {
 					this.entity.getNavigation().moveTo(livingentity, this.speedModifier);
 					this.attackTime = -5;
 				} else {
-					this.entity.getNavigation().stop();
 					if (this.attackTime == 1) {
-						if (d0 <= d1) {
-							this.entity.setAttackingState(1);
-						}
+						this.entity.setAttackingState(1);
 					}
-					if (this.attackTime == 10) {
+					if (this.attackTime == 4) {
+						Vec3 vec3d = this.entity.getDeltaMovement();
+						Vec3 vec3d2 = new Vec3(livingentity.getX() - this.entity.getX(), 0.0,
+								livingentity.getZ() - this.entity.getZ());
+						vec3d2 = vec3d2.normalize().scale(0.4).add(vec3d.scale(0.4));
+						this.entity.setDeltaMovement(vec3d2.x, 0.5F, vec3d2.z);
+					}
+					if (this.attackTime == 9) {
 						AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(entity.level, entity.getX(),
 								entity.getY(), entity.getZ());
 						areaeffectcloudentity.setParticle(ParticleTypes.CRIMSON_SPORE);
@@ -190,9 +193,7 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 						areaeffectcloudentity.setDuration(5);
 						areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
 						entity.level.addFreshEntity(areaeffectcloudentity);
-						if (d0 <= d1) {
-							this.entity.doHurtTarget(livingentity);
-						}
+						this.entity.doHurtTarget(livingentity);
 						livingentity.invulnerableTime = 0;
 					}
 					if (this.attackTime == 13) {
@@ -202,10 +203,6 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 					}
 				}
 			}
-		}
-
-		protected double getAttackReachSqr(LivingEntity entity) {
-			return (double) (this.entity.getBbWidth() * 2.5F * this.entity.getBbWidth() * 2.5F + entity.getBbWidth());
 		}
 	}
 

@@ -105,5 +105,10 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 
 	public void performRangedAttack(LivingEntity target, float pullProgress) {
 	}
+	
+	@Override
+	protected float getSoundVolume() {
+		return 0.4F;
+	}
 
 }

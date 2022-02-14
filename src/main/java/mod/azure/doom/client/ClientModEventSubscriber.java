@@ -95,6 +95,7 @@ import mod.azure.doom.client.render.projectiles.BulletsRender;
 import mod.azure.doom.client.render.projectiles.ChaingunBulletRender;
 import mod.azure.doom.client.render.projectiles.EnergyRender;
 import mod.azure.doom.client.render.projectiles.GrenadeRender;
+import mod.azure.doom.client.render.projectiles.MeatHookEntityRenderer;
 import mod.azure.doom.client.render.projectiles.RocketRender;
 import mod.azure.doom.client.render.projectiles.ShotgunShellRender;
 import mod.azure.doom.client.render.projectiles.UnmaykrBulletRender;
@@ -164,6 +165,7 @@ public class ClientModEventSubscriber {
 	@SubscribeEvent
 	public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
 		event.registerEntityRenderer(ModEntityTypes.GLADIATOR_MACE.get(), GladiatorMaceRender::new);
+		event.registerEntityRenderer(ModEntityTypes.MEATHOOOK_ENTITY.get(), MeatHookEntityRenderer::new);
 		event.registerEntityRenderer(ModEntityTypes.SHOTGUN_SHELL.get(), ShotgunShellRender::new);
 		event.registerEntityRenderer(ModEntityTypes.ARGENT_BOLT.get(), ArgentBoltRender::new);
 		event.registerEntityRenderer(ModEntityTypes.GRENADE.get(), GrenadeRender::new);

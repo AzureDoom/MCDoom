@@ -4,6 +4,7 @@
 	"refmap": "doom.refmap.json",
 	"compatibilityLevel": "JAVA_16",
 	"client": [
+		"PlayerEntityMixin",
 		"WeaponRenderingMixin"
 	],
 	"injectors": {

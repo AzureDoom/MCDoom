@@ -165,6 +165,11 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	@Override
+	public void knockback(double p_147241_, double p_147242_, double p_147243_) {
+		super.knockback(0, 0, 0);
+	}
+
+	@Override
 	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
