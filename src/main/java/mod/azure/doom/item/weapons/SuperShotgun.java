@@ -81,14 +81,17 @@ public class SuperShotgun extends DoomBaseItem {
 	@Override
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
 		ItemStack stack = user.getOffHandStack();
-		if (!world.isClient && stack.getItem() instanceof SuperShotgun) {
-			if (!((PlayerProperties) user).hasMeatHook()) {
-				MeatHookEntity hookshot = new MeatHookEntity(world, user);
-				hookshot.setProperties(stack, 32, 10, user.getPitch(), user.getYaw(), 0f, 1.5f);
-				hookshot.getDataTracker().set(MeatHookEntity.FORCED_YAW, user.getYaw());
-				world.spawnEntity(hookshot);
+		if (stack.getDamage() < (stack.getMaxDamage() - 2)) {
+			if (!world.isClient && stack.getItem() instanceof SuperShotgun) {
+				if (!((PlayerProperties) user).hasMeatHook()) {
+					MeatHookEntity hookshot = new MeatHookEntity(world, user);
+					hookshot.setProperties(stack, DoomMod.config.weapons.max_meathook_distance, 10, user.getPitch(),
+							user.getYaw(), 0f, 1.5f);
+					hookshot.getDataTracker().set(MeatHookEntity.FORCED_YAW, user.getYaw());
+					world.spawnEntity(hookshot);
+				}
+				((PlayerProperties) user).setHasMeatHook(!((PlayerProperties) user).hasMeatHook());
 			}
-			((PlayerProperties) user).setHasMeatHook(!((PlayerProperties) user).hasMeatHook());
 		}
 		return super.use(world, user, hand);
 	}

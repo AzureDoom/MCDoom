@@ -249,12 +249,13 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 100.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, 1000.0D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 30.0D)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomMod.config.stats.icon_health)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomMod.config.stats.icon_melee_damage)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1000.0D);
 	}
-	
+
 	@Override
 	public void takeKnockback(double strength, double x, double z) {
 		super.takeKnockback(0, 0, 0);

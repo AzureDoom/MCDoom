@@ -1,6 +1,6 @@
 package mod.azure.doom.client.render.projectiles;
 
-import dev.cammiescorner.hookshot.Hookshot;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.models.projectiles.MeatHookEntityModel;
 import mod.azure.doom.entity.projectiles.MeatHookEntity;
 import net.minecraft.client.MinecraftClient;
@@ -23,7 +23,7 @@ import software.bernie.geckolib3.renderers.geo.GeoProjectilesRenderer;
 
 public class MeatHookEntityRenderer extends GeoProjectilesRenderer<MeatHookEntity> {
 
-	private static final Identifier CHAIN_TEXTURE = new Identifier(Hookshot.MOD_ID, "textures/entity/chain.png");
+	private static final Identifier CHAIN_TEXTURE = new Identifier(DoomMod.MODID, "textures/entity/chain.png");
 	private static final RenderLayer CHAIN_LAYER = RenderLayer.getEntitySmoothCutout(CHAIN_TEXTURE);
 
 	public MeatHookEntityRenderer(EntityRendererFactory.Context context) {

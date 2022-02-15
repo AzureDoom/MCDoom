@@ -45,6 +45,7 @@ public class DoomConfig implements ConfigData {
 		public float shotgun_damage = 10F;
 		public float unmaykr_damage = 2.5F;
 		public float grenade_damage = 30F;
+		public double max_meathook_distance = 32;
 	}
 
 	public static class Spawning {
@@ -312,6 +313,19 @@ public class DoomConfig implements ConfigData {
 
 	public static class MobStats {
 
+		public double motherdemon_health = 500;
+		public float motherdemon_ranged_damage = 14;
+
+		public double cueball_health = 1;
+
+		public double tentacle_health = 5;
+		public float tentacle_melee_damage = 1;
+
+		public double turret_health = 5;
+		public float turret_ranged_damage = 6;
+
+		public double icon_health = 1000;
+		public float icon_melee_damage = 7;
 		public List<String> icon_wave_entries = Arrays.asList("doom:gladiator", "doom:mancubus", "doom:mancubus",
 				"doom:marauder", "doom:marauder", "doom:firebronebaron", "doom:baron2016", "doom:baron2016",
 				"doom:baron2016", "doom:baron2016", "doom:whiplash", "doom:whiplash", "doom:whiplash", "doom:whiplash",
@@ -331,20 +345,6 @@ public class DoomConfig implements ConfigData {
 				"doom:pinky2016", "doom:pinky2016", "doom:pinky2016", "doom:lost_soul", "doom:lost_soul",
 				"doom:lost_soul", "doom:lost_soul", "doom:lost_soul", "doom:lost_soul", "doom:lost_soul",
 				"doom:lost_soul", "doom:lost_soul", "doom:lost_soul");
-
-		public double motherdemon_health = 500;
-		public float motherdemon_ranged_damage = 14;
-
-		public double cueball_health = 1;
-
-		public double tentacle_health = 5;
-		public float tentacle_melee_damage = 1;
-
-		public double turret_health = 5;
-		public float turret_ranged_damage = 6;
-
-		public double icon_health = 1000;
-		public float icon_melee_damage = 7;
 
 		public double imp_health = 30;
 		public float imp_ranged_damage = 4;

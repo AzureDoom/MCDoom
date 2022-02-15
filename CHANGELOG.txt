@@ -1,5 +1,8 @@
-v.4.1.14
+v.4.1.15
 
-- Weapons no longer animated in the hotbar.
-- Icon of Sin takes no knockback.
-- Super Shotgun now fires it's Meat Hook when held in the offhand, pulling you towards the Entity or Block hit with it. 
+- Fixes Broken Chain texture.
+- Updates mod icon.
+- Meathook not usable if Super Shotgun is empty.
+- Meathook max distance can be set in the config. 
+- Icon of Sin actually uses config stats now for Health/Melee damage.
+- Added lang entry and moved location of Icon of Sin Spawn Pool config to be with the Icon of Sins stats.
