@@ -3,7 +3,6 @@ package mod.azure.doom.entity.projectiles;
 import mod.azure.doom.util.PlayerProperties;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -21,7 +20,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -40,7 +38,7 @@ public class MeatHookEntity extends AbstractArrow implements IAnimatable {
 	private boolean isPulling = false;
 	public Entity hookedEntity;
 	private ItemStack stack;
-	
+
 	public MeatHookEntity(EntityType<? extends AbstractArrow> type, Player owner, Level world) {
 		super(type, owner, world);
 		this.setNoGravity(true);
@@ -206,10 +204,10 @@ public class MeatHookEntity extends AbstractArrow implements IAnimatable {
 		}
 	}
 
-	@Override
-	public Packet<?> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
+//	@Override
+//	public Packet<?> getAddEntityPacket() {
+//		return NetworkHooks.getEntitySpawningPacket(this);
+//	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag) {

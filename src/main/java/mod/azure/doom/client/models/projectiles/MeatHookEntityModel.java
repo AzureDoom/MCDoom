@@ -13,7 +13,7 @@ public class MeatHookEntityModel extends AnimatedGeoModel<MeatHookEntity> {
 
 	@Override
 	public ResourceLocation getTextureLocation(MeatHookEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/entity/supershotgun.png");
+		return new ResourceLocation(DoomMod.MODID, "textures/items/supershotgun.png");
 	}
 
 	@Override

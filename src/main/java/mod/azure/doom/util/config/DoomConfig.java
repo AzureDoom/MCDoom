@@ -28,6 +28,7 @@ public class DoomConfig {
 		public final ConfigValue<Double> shotgun_damage;
 		public final ConfigValue<Double> unmaykr_damage;
 		public final ConfigValue<Double> grenade_damage;
+		public final ConfigValue<Double> max_meathook_distance;
 
 		public final ConfigValue<List<? extends String>> imp_biomes;
 		public final ConfigValue<Integer> imp_spawn_weight;
@@ -425,6 +426,8 @@ public class DoomConfig {
 					2.5, 1, Double.MAX_VALUE);
 			this.grenade_damage = builder.translation("text.doom.config.grenade_damage").defineInRange("Grenade Damage",
 					30, 1, Double.MAX_VALUE);
+			this.max_meathook_distance = builder.translation("text.doom.config.max_meathook_distance").defineInRange("Max Meathook Distance",
+					32, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Imps");

@@ -97,15 +97,18 @@ public class SuperShotgun extends DoomBaseItem {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getOffhandItem();
-		if (!world.isClientSide() && stack.getItem() instanceof SuperShotgun) {
-			player.getCooldowns().addCooldown(this, 5);
-			if (!((PlayerProperties) player).hasMeatHook()) {
-				MeatHookEntity hookshot = new MeatHookEntity(world, player);
-				hookshot.setProperties(stack, 32, 10, player.getXRot(), player.getYRot(), 0f, 1.5f * (float) (10 / 10));
-				hookshot.getEntityData().set(MeatHookEntity.FORCED_YAW, player.getYRot());
-				world.addFreshEntity(hookshot);
+		if (stack.getDamageValue() < (stack.getMaxDamage() - 2)) {
+			if (!world.isClientSide() && stack.getItem() instanceof SuperShotgun) {
+				player.getCooldowns().addCooldown(this, 5);
+				if (!((PlayerProperties) player).hasMeatHook()) {
+					MeatHookEntity hookshot = new MeatHookEntity(world, player);
+					hookshot.setProperties(stack, DoomConfig.SERVER.max_meathook_distance.get(), 10, player.getXRot(),
+							player.getYRot(), 0f, 1.5f * (float) (10 / 10));
+					hookshot.getEntityData().set(MeatHookEntity.FORCED_YAW, player.getYRot());
+					world.addFreshEntity(hookshot);
+				}
+				((PlayerProperties) player).setHasMeatHook(!((PlayerProperties) player).hasMeatHook());
 			}
-			((PlayerProperties) player).setHasMeatHook(!((PlayerProperties) player).hasMeatHook());
 		}
 		return super.use(world, player, hand);
 	}
