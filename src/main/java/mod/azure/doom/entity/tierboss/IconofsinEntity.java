@@ -254,6 +254,11 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1000.0D);
 	}
+	
+	@Override
+	public void takeKnockback(double strength, double x, double z) {
+		super.takeKnockback(0, 0, 0);
+	}
 
 	@Override
 	protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {

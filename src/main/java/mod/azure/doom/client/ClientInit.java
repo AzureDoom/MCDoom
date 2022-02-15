@@ -59,6 +59,8 @@ public class ClientInit implements ClientModInitializer {
 
 	public static KeyBinding reload = new KeyBinding("key.doom.reload", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R,
 			"category.doom.binds");
+	public static KeyBinding yeethook = new KeyBinding("key.doom.yeethook", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V,
+			"category.doom.binds");
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -91,6 +93,7 @@ public class ClientInit implements ClientModInitializer {
 			EntityPacketOnClient.onPacket(ctx, buf);
 		});
 		KeyBindingHelper.registerKeyBinding(reload);
+		KeyBindingHelper.registerKeyBinding(yeethook);
 		TrinketRendererRegistry.registerRenderer(DoomItems.SOULCUBE,
 				(stack, slotReference, contextModel, matrices, vertexConsumers, light, entity, limbAngle, limbDistance,
 						tickDelta, animationProgress, headYaw, headPitch) -> {

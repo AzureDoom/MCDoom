@@ -27,6 +27,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -68,8 +69,7 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 	}
 
 	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
-		if (!event.isMoving() && this.dataTracker.get(STATE) == 1
-				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
+		if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("jumpattack", true));
 			return PlayState.CONTINUE;
 		}
@@ -121,13 +121,13 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 	}
 
 	public class AttackGoal extends Goal {
-		private final DemonEntity entity;
+		private final Hellknight2016Entity entity;
 		private final double speedModifier;
 		private int attackTime;
 
-		public AttackGoal(DemonEntity zombieIn, double speedIn) {
+		public AttackGoal(Hellknight2016Entity zombieIn, double speedIn) {
 			this.entity = zombieIn;
-			this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
+			this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK, Goal.Control.JUMP));
 			this.speedModifier = speedIn;
 		}
 
@@ -157,44 +157,40 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 				boolean inLineOfSight = this.entity.getVisibilityCache().canSee(livingentity);
 				this.attackTime++;
 				this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
-				double d0 = this.entity.squaredDistanceTo(livingentity.getX(), livingentity.getY(),
-						livingentity.getZ());
-				double d1 = this.getAttackReachSqr(livingentity);
-				if (inLineOfSight && livingentity.distanceTo(entity) >= 4.0D && this.attackTime < 0) {
-					this.entity.getNavigation().startMovingTo(livingentity, this.speedModifier);
-					this.attackTime = -5;
-				} else {
-					this.entity.getNavigation().stop();
-					if (this.attackTime == 1) {
-						if (d0 <= d1) {
+				if (inLineOfSight) {
+					if (this.entity.distanceTo(livingentity) >= 3.0D) {
+						this.entity.getNavigation().startMovingTo(livingentity, this.speedModifier);
+						this.attackTime = -5;
+					} else {
+						if (this.attackTime == 1) {
 							this.entity.setAttackingState(1);
 						}
-					}
-					if (this.attackTime == 10) {
-						AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(entity.world,
-								entity.getX(), entity.getY(), entity.getZ());
-						areaeffectcloudentity.setParticleType(ParticleTypes.CRIMSON_SPORE);
-						areaeffectcloudentity.setRadius(3.0F);
-						areaeffectcloudentity.setDuration(5);
-						areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
-						entity.world.spawnEntity(areaeffectcloudentity);
-						this.entity.getJumpControl().setActive();
-						if (d0 <= d1) {
-							this.entity.tryAttack(livingentity);
+						if (this.attackTime == 4) {
+							Vec3d vec3d = this.entity.getVelocity();
+							Vec3d vec3d2 = new Vec3d(livingentity.getX() - this.entity.getX(), 0.0,
+									livingentity.getZ() - this.entity.getZ());
+							vec3d2 = vec3d2.normalize().multiply(0.4).add(vec3d.multiply(0.4));
+							this.entity.setVelocity(vec3d2.x, 0.5F, vec3d2.z);
 						}
-						livingentity.timeUntilRegen = 0;
-					}
-					if (this.attackTime == 13) {
-						this.attackTime = -5;
-						this.entity.setAttackingState(0);
-						this.entity.getNavigation().startMovingTo(livingentity, this.speedModifier);
+						if (this.attackTime == 9) {
+							AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(entity.world,
+									entity.getX(), entity.getY(), entity.getZ());
+							areaeffectcloudentity.setParticleType(ParticleTypes.CRIMSON_SPORE);
+							areaeffectcloudentity.setRadius(3.0F);
+							areaeffectcloudentity.setDuration(5);
+							areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
+							entity.world.spawnEntity(areaeffectcloudentity);
+							this.entity.tryAttack(livingentity);
+							livingentity.timeUntilRegen = 0;
+						}
+						if (this.attackTime == 13) {
+							this.attackTime = -5;
+							this.entity.setAttackingState(0);
+							this.entity.getNavigation().startMovingTo(livingentity, this.speedModifier);
+						}
 					}
 				}
 			}
-		}
-
-		protected double getAttackReachSqr(LivingEntity entity) {
-			return (double) (this.entity.getWidth() * 2.5F * this.entity.getWidth() * 2.5F + entity.getWidth());
 		}
 	}
 

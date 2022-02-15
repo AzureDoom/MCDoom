@@ -41,6 +41,10 @@ import net.fabricmc.fabric.impl.structure.FabricStructureImpl;
 import net.fabricmc.fabric.mixin.structure.StructuresConfigAccessor;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeSerializer;
@@ -117,6 +121,7 @@ public class DoomMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		DataTrackers.MEATHOOK_TRACKER.getId();
 		AutoConfig.register(DoomConfig.class, GsonConfigSerializer::new);
 		config = AutoConfig.getConfigHolder(DoomConfig.class).getConfig();
 		DoomBlocks.init();
@@ -142,6 +147,10 @@ public class DoomMod implements ModInitializer {
 		DoomStructures.setupAndRegisterStructureFeatures();
 		DoomStructuresConfigured.registerConfiguredStructures();
 		addStructureSpawningToDimensionsAndBiomes();
+	}
+
+	public static class DataTrackers {
+		public static final TrackedData<Boolean> MEATHOOK_TRACKER = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 	}
 
 	public static void addStructureSpawningToDimensionsAndBiomes() {

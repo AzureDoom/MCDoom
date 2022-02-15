@@ -4,6 +4,7 @@
 	"package": "mod.azure.doom.mixin",
 	"compatibilityLevel": "JAVA_16",
 	"client": [
+		"ClientPlayNetworkHandlerMixin",
 		"HeldItemRendererMixin",
 		"WeaponRenderingMixin"
 	],
@@ -16,6 +17,7 @@
 		"LootManagerAccessor",
 		"LootTableMixin",
 		"NoiseChunkGeneratorMixin",
+		"PlayerEntityMixin",
 		"StructurePoolFeatureConfigAccessor",
 		"StructuresConfigAccessor"
 	],

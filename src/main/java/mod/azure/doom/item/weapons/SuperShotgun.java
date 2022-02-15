@@ -5,7 +5,9 @@ import java.util.List;
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
+import mod.azure.doom.entity.projectiles.MeatHookEntity;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
+import mod.azure.doom.util.PlayerProperties;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
@@ -24,6 +26,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.network.GeckoLibNetwork;
 import software.bernie.geckolib3.util.GeckoLibUtil;
@@ -44,31 +47,56 @@ public class SuperShotgun extends DoomBaseItem {
 		if (entityLiving instanceof PlayerEntity) {
 			PlayerEntity playerentity = (PlayerEntity) entityLiving;
 			if (stack.getDamage() < (stack.getMaxDamage() - 2)) {
-				playerentity.getItemCooldownManager().set(this, 24);
-				if (!worldIn.isClient) {
-					ShotgunShellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.setVelocity(playerentity, playerentity.pitch, playerentity.yaw + 1, 0.0F,
-							1.0F * 3.0F, 1.0F);
-					worldIn.spawnEntity(abstractarrowentity);
-					ShotgunShellEntity abstractarrowentity1 = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity1.setVelocity(playerentity, playerentity.pitch, playerentity.yaw - 1, 0.0F,
-							1.0F * 3.0F, 1.0F);
-					worldIn.spawnEntity(abstractarrowentity1);
+				if (playerentity.getMainHandStack().getItem() instanceof SuperShotgun) {
+					playerentity.getItemCooldownManager().set(this, 24);
+					if (!worldIn.isClient) {
+						ShotgunShellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
+						abstractarrowentity.setVelocity(playerentity, playerentity.pitch, playerentity.yaw + 1, 0.0F,
+								1.0F * 3.0F, 1.0F);
+						worldIn.spawnEntity(abstractarrowentity);
+						ShotgunShellEntity abstractarrowentity1 = createArrow(worldIn, stack, playerentity);
+						abstractarrowentity1.setVelocity(playerentity, playerentity.pitch, playerentity.yaw - 1, 0.0F,
+								1.0F * 3.0F, 1.0F);
+						worldIn.spawnEntity(abstractarrowentity1);
 
-					stack.damage(2, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
-					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
-							playerentity.getZ(), ModSoundEvents.SUPER_SHOTGUN_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-					final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);
-					GeckoLibNetwork.syncAnimation(playerentity, this, id, ANIM_OPEN);
-					for (PlayerEntity otherPlayer : PlayerLookup.tracking(playerentity)) {
-						GeckoLibNetwork.syncAnimation(otherPlayer, this, id, ANIM_OPEN);
+						stack.damage(2, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
+						worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
+								playerentity.getZ(), ModSoundEvents.SUPER_SHOTGUN_SHOOT, SoundCategory.PLAYERS, 1.0F,
+								1.0F);
+						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);
+						GeckoLibNetwork.syncAnimation(playerentity, this, id, ANIM_OPEN);
+						for (PlayerEntity otherPlayer : PlayerLookup.tracking(playerentity)) {
+							GeckoLibNetwork.syncAnimation(otherPlayer, this, id, ANIM_OPEN);
+						}
 					}
 				}
 			} else {
 				worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
 						ModSoundEvents.EMPTY, SoundCategory.PLAYERS, 1.0F, 1.5F);
+				((PlayerProperties) playerentity).setHasMeatHook(false);
 			}
 		}
+	}
+
+	@Override
+	public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+		ItemStack stack = user.getOffHandStack();
+		if (!world.isClient && stack.getItem() instanceof SuperShotgun) {
+			if (!((PlayerProperties) user).hasMeatHook()) {
+				MeatHookEntity hookshot = new MeatHookEntity(world, user);
+				hookshot.setProperties(stack, 32, 10, user.getPitch(), user.getYaw(), 0f, 1.5f);
+				hookshot.getDataTracker().set(MeatHookEntity.FORCED_YAW, user.getYaw());
+				world.spawnEntity(hookshot);
+			}
+			((PlayerProperties) user).setHasMeatHook(!((PlayerProperties) user).hasMeatHook());
+		}
+		return super.use(world, user, hand);
+	}
+
+	@Override
+	public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
+		((PlayerProperties) user).setHasMeatHook(false);
+		return super.finishUsing(stack, world, user);
 	}
 
 	public static float getArrowVelocity(int charge) {
@@ -101,6 +129,10 @@ public class SuperShotgun extends DoomBaseItem {
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.SUPERSHOTGUN, passedData);
 			}
+		}
+		if (((PlayerEntity) entity).getMainHandStack().getItem() instanceof SuperShotgun && selected
+				&& ((PlayerProperties) entity).hasMeatHook()) {
+			((PlayerProperties) entity).setHasMeatHook(false);
 		}
 	}
 

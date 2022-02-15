@@ -20,6 +20,7 @@ public class SentinelHammerRender extends GeoItemRenderer<SentinelHammerItem> {
 	@Override
 	public void render(ItemStack itemStack, ModelTransformation.Mode mode, MatrixStack matrixStackIn,
 			VertexConsumerProvider bufferIn, int combinedLightIn, int combinedOverlayIn) {
+		currentTransform = mode;
 		if (mode == ModelTransformation.Mode.GUI) {
 			matrixStackIn.push();
 			VertexConsumerProvider.Immediate irendertypebuffer$impl = MinecraftClient.getInstance().getBufferBuilders()
@@ -33,5 +34,15 @@ public class SentinelHammerRender extends GeoItemRenderer<SentinelHammerItem> {
 		} else {
 			super.render(itemStack, mode, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
 		}
+	}
+
+	private ModelTransformation.Mode currentTransform;
+
+	@Override
+	public Integer getUniqueID(SentinelHammerItem animatable) {
+		if (currentTransform == ModelTransformation.Mode.GUI) {
+			return -1;
+		}
+		return super.getUniqueID(animatable);
 	}
 }

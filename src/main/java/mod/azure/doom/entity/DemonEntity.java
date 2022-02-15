@@ -121,5 +121,10 @@ public class DemonEntity extends HostileEntity implements Angerable {
 
 	public void attack(LivingEntity target, float pullProgress) {
 	}
+	
+	@Override
+	protected float getSoundVolume() {
+		return 0.4F;
+	}
 
 }
