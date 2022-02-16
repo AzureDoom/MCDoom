@@ -9,6 +9,9 @@ import mod.azure.doom.util.packets.weapons.ChaingunLoadingPacket;
 import mod.azure.doom.util.packets.weapons.ChainsawEternalLoadingPacket;
 import mod.azure.doom.util.packets.weapons.ChainsawLoadingPacket;
 import mod.azure.doom.util.packets.weapons.CrucibleLoadingPacket;
+import mod.azure.doom.util.packets.weapons.DGaussLoadingPacket;
+import mod.azure.doom.util.packets.weapons.DPlasmaLoadingPacket;
+import mod.azure.doom.util.packets.weapons.DSGLoadingPacket;
 import mod.azure.doom.util.packets.weapons.DarkLordCrucibleLoadingPacket;
 import mod.azure.doom.util.packets.weapons.HeavyCannonLoadingPacket;
 import mod.azure.doom.util.packets.weapons.PistolLoadingPacket;
@@ -102,8 +105,8 @@ public class DoomPacketHandler {
 			PROTOCOL_VERSION::equals);
 
 	public static final SimpleChannel DPLASMARIFLE = NetworkRegistry.newSimpleChannel(
-			new ResourceLocation(DoomMod.MODID, "doomed_plasma_rifle"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals,
-			PROTOCOL_VERSION::equals);
+			new ResourceLocation(DoomMod.MODID, "doomed_plasma_rifle"), () -> PROTOCOL_VERSION,
+			PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
 
 	public static final SimpleChannel CRAFTING = NetworkRegistry.newSimpleChannel(
 			new ResourceLocation(DoomMod.MODID, "crafting"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals,
@@ -112,12 +115,12 @@ public class DoomPacketHandler {
 	public static void register() {
 		CRAFTING.registerMessage(++channel_id, DoomCraftingPacket.class, DoomCraftingPacket::encode,
 				DoomCraftingPacket::new, DoomCraftingPacket::handle);
-		DSG.registerMessage(channel_id++, BallistaLoadingPacket.class, BallistaLoadingPacket::encode,
-				BallistaLoadingPacket::new, BallistaLoadingPacket::handle);
-		DGAUSS.registerMessage(channel_id++, BallistaLoadingPacket.class, BallistaLoadingPacket::encode,
-				BallistaLoadingPacket::new, BallistaLoadingPacket::handle);
-		DPLASMARIFLE.registerMessage(channel_id++, BallistaLoadingPacket.class, BallistaLoadingPacket::encode,
-				BallistaLoadingPacket::new, BallistaLoadingPacket::handle);
+		DSG.registerMessage(channel_id++, DSGLoadingPacket.class, DSGLoadingPacket::encode, DSGLoadingPacket::new,
+				DSGLoadingPacket::handle);
+		DGAUSS.registerMessage(channel_id++, DGaussLoadingPacket.class, DGaussLoadingPacket::encode,
+				DGaussLoadingPacket::new, DGaussLoadingPacket::handle);
+		DPLASMARIFLE.registerMessage(channel_id++, DPlasmaLoadingPacket.class, DPlasmaLoadingPacket::encode,
+				DPlasmaLoadingPacket::new, DPlasmaLoadingPacket::handle);
 		BALLISTA.registerMessage(channel_id++, BallistaLoadingPacket.class, BallistaLoadingPacket::encode,
 				BallistaLoadingPacket::new, BallistaLoadingPacket::handle);
 		BALLISTA.registerMessage(channel_id++, BallistaLoadingPacket.class, BallistaLoadingPacket::encode,
