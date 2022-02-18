@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -36,6 +37,7 @@ import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -48,7 +50,7 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 
 	private AnimationFactory factory = new AnimationFactory(this);
 
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+	public <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (event.isMoving()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
 			return PlayState.CONTINUE;
@@ -65,7 +67,7 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 		return PlayState.CONTINUE;
 	}
 
-	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
+	public <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
 		if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking", true));
 			return PlayState.CONTINUE;
@@ -75,10 +77,29 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(
-				new AnimationController<SpiderMastermindEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(
-				new AnimationController<SpiderMastermindEntity>(this, "controller1", 0, this::predicate1));
+		AnimationController<SpiderMastermindEntity> controller = new AnimationController<SpiderMastermindEntity>(this,
+				"controller", 0, this::predicate);
+		AnimationController<SpiderMastermindEntity> controller1 = new AnimationController<SpiderMastermindEntity>(this,
+				"controller1", 0, this::predicate1);
+		controller.registerSoundListener(this::soundListener);
+		controller1.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
+		data.addAnimationController(controller1);
+	}
+
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("walk")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
+						ModSoundEvents.SPIDERDEMON_AMBIENT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("attack")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PISTOL_HIT.get(),
+						SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
 	}
 
 	@Override

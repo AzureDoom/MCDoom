@@ -304,11 +304,6 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.GARGOLYE_AMBIENT.get();
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.GARGOLYE_HURT.get();
 	}

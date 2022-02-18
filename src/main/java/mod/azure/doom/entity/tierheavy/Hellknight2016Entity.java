@@ -8,7 +8,6 @@ import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AreaEffectCloud;
@@ -90,12 +89,6 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 		if (event.sound.matches("walk")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP.get(),
-						SoundSource.HOSTILE, 1.0F, 1.0F, true);
-			}
-		}
-		if (event.sound.matches("attack")) {
-			if (this.level.isClientSide()) {
-				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_ATTACK_CRIT,
 						SoundSource.HOSTILE, 1.0F, 1.0F, true);
 			}
 		}

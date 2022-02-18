@@ -84,10 +84,10 @@ public class ZombiemanEntity extends DemonEntity implements IAnimatable, IAnimat
 	public void registerControllers(AnimationData data) {
 		AnimationController<ZombiemanEntity> controller = new AnimationController<ZombiemanEntity>(this, "controller",
 				0, this::predicate);
-		AnimationController<ZombiemanEntity> controller1 = new AnimationController<ZombiemanEntity>(this,
-				"controller1", 0, this::predicate1);
-		AnimationController<ZombiemanEntity> controller2 = new AnimationController<ZombiemanEntity>(this,
-				"controller2", 0, this::predicate2);
+		AnimationController<ZombiemanEntity> controller1 = new AnimationController<ZombiemanEntity>(this, "controller1",
+				0, this::predicate1);
+		AnimationController<ZombiemanEntity> controller2 = new AnimationController<ZombiemanEntity>(this, "controller2",
+				0, this::predicate2);
 		controller.registerSoundListener(this::soundListener);
 		controller1.registerSoundListener(this::soundListener);
 		controller2.registerSoundListener(this::soundListener);
@@ -99,12 +99,6 @@ public class ZombiemanEntity extends DemonEntity implements IAnimatable, IAnimat
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP.get(),
 						SoundSource.HOSTILE, 1.0F, 1.0F, true);
-			}
-		}
-		if (event.sound.matches("talk")) {
-			if (this.level.isClientSide()) {
-				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.ZOMBIEMAN_AMBIENT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {

@@ -4,7 +4,6 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.ThrowItemGoal;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -30,7 +29,6 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -95,12 +93,6 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 						SoundSource.HOSTILE, 1.0F, 1.0F, true);
 			}
 		}
-		if (event.sound.matches("talk")) {
-			if (this.level.isClientSide()) {
-				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.ZOMBIEMAN_AMBIENT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
-			}
-		}
 		if (event.sound.matches("attack")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.EMPTY.get(),
@@ -161,11 +153,6 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.ZOMBIEMAN_AMBIENT.get();
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.ZOMBIEMAN_HURT.get();
 	}
@@ -173,15 +160,6 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 	@Override
 	protected SoundEvent getDeathSound() {
 		return ModSoundEvents.ZOMBIEMAN_DEATH.get();
-	}
-
-	protected SoundEvent getStepSound() {
-		return SoundEvents.ZOMBIE_STEP;
-	}
-
-	@Override
-	protected void playStepSound(BlockPos pos, BlockState blockIn) {
-		this.playSound(this.getStepSound(), 0.15F, 1.0F);
 	}
 
 	@Override

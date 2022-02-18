@@ -162,11 +162,6 @@ public class SpectreEntity extends DemonEntity implements IAnimatable, IAnimatio
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.PINKY_AMBIENT.get();
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.PINKY_HURT.get();
 	}

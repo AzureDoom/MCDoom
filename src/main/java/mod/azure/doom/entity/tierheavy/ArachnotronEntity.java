@@ -198,11 +198,6 @@ public class ArachnotronEntity extends DemonEntity implements IAnimatable, IAnim
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.ARACHNOTRON_AMBIENT.get();
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.ARACHNOTRON_HURT.get();
 	}

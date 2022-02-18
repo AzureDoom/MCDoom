@@ -132,11 +132,6 @@ public class WhiplashEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.WHIPLASH_AMBIENT.get();
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.WHIPLASH_HURT.get();
 	}

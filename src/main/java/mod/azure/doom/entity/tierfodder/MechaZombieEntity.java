@@ -160,11 +160,6 @@ public class MechaZombieEntity extends DemonEntity implements IAnimatable, IAnim
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.MECHA_AMBIENT.get();
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.MECHA_HURT.get();
 	}

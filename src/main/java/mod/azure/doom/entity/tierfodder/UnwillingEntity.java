@@ -4,10 +4,8 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;
@@ -26,7 +24,6 @@ import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
@@ -84,12 +81,6 @@ public class UnwillingEntity extends DemonEntity implements IAnimatable, IAnimat
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP.get(),
 						SoundSource.HOSTILE, 1.0F, 1.0F, true);
-			}
-		}
-		if (event.sound.matches("talk")) {
-			if (this.level.isClientSide()) {
-				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.ZOMBIEMAN_AMBIENT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
@@ -151,11 +142,6 @@ public class UnwillingEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.ZOMBIEMAN_AMBIENT.get();
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.ZOMBIEMAN_HURT.get();
 	}
@@ -163,15 +149,6 @@ public class UnwillingEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	protected SoundEvent getDeathSound() {
 		return ModSoundEvents.ZOMBIEMAN_DEATH.get();
-	}
-
-	protected SoundEvent getStepSound() {
-		return SoundEvents.ZOMBIE_STEP;
-	}
-
-	@Override
-	protected void playStepSound(BlockPos pos, BlockState blockIn) {
-		this.playSound(this.getStepSound(), 0.15F, 1.0F);
 	}
 
 	@Override
