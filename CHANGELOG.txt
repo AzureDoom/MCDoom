@@ -1,3 +1,4 @@
-v.4.1.18
+v.4.1.19
 
-- Disables Ambients sounds for common mobs. Just to many that nothing will fix the issue.
+- Adjusts Meat Hook rendering a bit. 
+- Fixes structure log spam and broken spawners from mob compressions done on Pinky and Imp.
