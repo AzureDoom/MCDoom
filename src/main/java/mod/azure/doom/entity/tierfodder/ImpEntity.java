@@ -152,11 +152,6 @@ public class ImpEntity extends DemonEntity implements IAnimatable, IAnimationTic
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.IMP_AMBIENT;
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.IMP_HURT;
 	}

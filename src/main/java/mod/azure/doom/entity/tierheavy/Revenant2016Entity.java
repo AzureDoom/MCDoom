@@ -358,11 +358,6 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.REVENANT_AMBIENT;
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.REVENANT_HURT;
 	}

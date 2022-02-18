@@ -151,11 +151,6 @@ public class HellknightEntity extends DemonEntity implements IAnimatable, IAnima
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.HELLKNIGHT_AMBIENT;
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.HELLKNIGHT_HURT;
 	}

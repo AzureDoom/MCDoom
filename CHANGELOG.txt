@@ -1,10 +1,3 @@
-v.4.1.16
+v.4.1.17
 
-- Addes the new Lost Soul type, Lost Soul Eternal. It's sadly it's own mob due to vast hit boxes between Classic end Eternals.
-- Merges Imp, Nightmare Imp, and Imp 2016 into 1 mob with variant based models.
-- Merges Pinky and Pinky 2016 into 1 mob with variant based models and 2016 keeps armor rating.
-- Pinky animations for walking and running redone.
-- Merges Cyberdemon, Cyberdemon 2016, and Tyrant into 1 mob with variant based models.
-- Tyrant model/animations redone.
-- Reworks Gladiator, Icon of Sin, Chaingunner, Possessed Scientist, Possessed Soldier, Possessed Worker, Shotgun Guy, Unwilling, Zombieman, Hell Knight 2016, Mancubus, Pinky, Archvile, Barons, Marauder, and Summoner into using Geckolibs sound keyframes, removing Ambient Sounds to help reduce the noise in the Nether.
-- Cyberdemon sounds reworked.
+- Disables Ambients sounds for common mobs. Just to many that nothing will fix the issue.

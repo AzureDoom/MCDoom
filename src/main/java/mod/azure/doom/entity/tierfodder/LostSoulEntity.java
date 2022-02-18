@@ -389,18 +389,13 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.PAIN_AMBIENT;
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.PAIN_HURT;
+		return ModSoundEvents.LOST_SOUL_DEATH;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.PAIN_DEATH;
+		return ModSoundEvents.LOST_SOUL_DEATH;
 	}
 
 	@Override

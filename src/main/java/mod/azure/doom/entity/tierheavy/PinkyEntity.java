@@ -90,12 +90,6 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
 			}
 		}
-		if (event.sound.matches("talk")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_AMBIENT,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
-			}
-		}
 		if (event.sound.matches("yell")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_YELL,

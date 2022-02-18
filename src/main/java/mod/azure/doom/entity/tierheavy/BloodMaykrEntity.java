@@ -287,11 +287,6 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnima
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.MAKYR_AMBIENT;
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.MAKYR_HURT;
 	}

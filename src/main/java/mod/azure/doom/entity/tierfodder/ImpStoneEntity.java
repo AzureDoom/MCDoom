@@ -129,11 +129,6 @@ public class ImpStoneEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.IMP_AMBIENT;
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.IMP_HURT;
 	}

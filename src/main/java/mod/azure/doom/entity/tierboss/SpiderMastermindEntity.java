@@ -9,7 +9,6 @@ import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
 import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
@@ -28,6 +27,7 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -40,6 +40,7 @@ import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -52,7 +53,7 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 
 	private AnimationFactory factory = new AnimationFactory(this);
 
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+	public <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (!(lastLimbDistance > -0.15F && lastLimbDistance < 0.15F)) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
 			return PlayState.CONTINUE;
@@ -69,7 +70,7 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 		return PlayState.CONTINUE;
 	}
 
-	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
+	public <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
 		if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking", true));
 			return PlayState.CONTINUE;
@@ -79,10 +80,29 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(
-				new AnimationController<SpiderMastermindEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(
-				new AnimationController<SpiderMastermindEntity>(this, "controller1", 0, this::predicate1));
+		AnimationController<SpiderMastermindEntity> controller = new AnimationController<SpiderMastermindEntity>(this,
+				"controller", 0, this::predicate);
+		AnimationController<SpiderMastermindEntity> controller1 = new AnimationController<SpiderMastermindEntity>(this,
+				"controller1", 0, this::predicate1);
+		controller.registerSoundListener(this::soundListener);
+		controller1.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
+		data.addAnimationController(controller1);
+	}
+
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("walk")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(),
+						ModSoundEvents.SPIDERDEMON_AMBIENT, SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("attack")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PISTOL_HIT,
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
 	}
 
 	@Override
@@ -105,9 +125,11 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.add(6, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.goalSelector.add(4, new RangedStrafeAttackGoal(this, new SpiderMastermindEntity.FireballAttack(this)
-				.setProjectileOriginOffset(0.8, 0.4, 0.8).setDamage(config.spider_mastermind_ranged_damage),
-				1.0D, 5, 30, 15, 15F, 1).setMultiShot(2, 3));
+		this.goalSelector.add(4,
+				new RangedStrafeAttackGoal(this,
+						new SpiderMastermindEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.4, 0.8)
+								.setDamage(config.spider_mastermind_ranged_damage),
+						1.0D, 5, 30, 15, 15F, 1).setMultiShot(6, 0));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
@@ -167,11 +189,6 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.SPIDERDEMON_AMBIENT;
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.SPIDERDEMON_HURT;
 	}
@@ -179,14 +196,5 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 	@Override
 	protected SoundEvent getDeathSound() {
 		return ModSoundEvents.SPIDERDEMON_DEATH;
-	}
-
-	protected SoundEvent getStepSound() {
-		return ModSoundEvents.SPIDERDEMON_AMBIENT;
-	}
-
-	@Override
-	protected void playStepSound(BlockPos pos, BlockState blockIn) {
-		this.playSound(this.getStepSound(), 0.15F, 1.0F);
 	}
 }

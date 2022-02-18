@@ -93,13 +93,7 @@ public class PossessedSoldierEntity extends DemonEntity implements IAnimatable, 
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
-			}
-		}
-		if (event.sound.matches("talk")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PSOLDIER_AMBIENT,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+						SoundCategory.HOSTILE, 0.1F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {

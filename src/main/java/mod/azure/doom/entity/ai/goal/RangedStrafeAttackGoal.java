@@ -196,7 +196,7 @@ public class RangedStrafeAttackGoal extends Goal {
 			}
 			if (this.attackTime == 8) {
 				this.entity.setAttackingState(0);
-				this.attackTime = -15;
+				this.attackTime = -5;
 			}
 		}
 	}

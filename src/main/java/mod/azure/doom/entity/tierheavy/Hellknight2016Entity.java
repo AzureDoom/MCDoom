@@ -102,12 +102,6 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
 			}
 		}
-		if (event.sound.matches("talk")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.HELLKNIGHT_AMBIENT,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
-			}
-		}
 	}
 
 	@Override

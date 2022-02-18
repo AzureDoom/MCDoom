@@ -17,7 +17,12 @@ import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.world.World;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
+import software.bernie.geckolib3.core.manager.AnimationData;
 
 public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 
@@ -37,6 +42,33 @@ public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
+	}
+
+	@Override
+	public void registerControllers(AnimationData data) {
+		AnimationController<SpiderMastermind2016Entity> controller = new AnimationController<SpiderMastermind2016Entity>(this,
+				"controller", 0, this::predicate);
+		AnimationController<SpiderMastermind2016Entity> controller1 = new AnimationController<SpiderMastermind2016Entity>(this,
+				"controller1", 0, this::predicate1);
+		controller.registerSoundListener(this::soundListener);
+		controller1.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
+		data.addAnimationController(controller1);
+	}
+
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("walk")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(),
+						ModSoundEvents.SPIDERDEMON_AMBIENT, SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("attack")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PLASMA_FIRING,
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
 	}
 
 	public class FireballAttack extends AbstractRangedAttack {

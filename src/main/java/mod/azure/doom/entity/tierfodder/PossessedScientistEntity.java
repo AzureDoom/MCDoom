@@ -5,7 +5,6 @@ import java.util.Random;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.ThrowItemGoal;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -95,12 +94,6 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
 			}
 		}
-		if (event.sound.matches("talk")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.ZOMBIEMAN_AMBIENT,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
-			}
-		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.EMPTY,
@@ -161,11 +154,6 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.ZOMBIEMAN_AMBIENT;
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.ZOMBIEMAN_HURT;
 	}
@@ -173,15 +161,6 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 	@Override
 	protected SoundEvent getDeathSound() {
 		return ModSoundEvents.ZOMBIEMAN_DEATH;
-	}
-
-	protected SoundEvent getStepSound() {
-		return SoundEvents.ENTITY_ZOMBIE_STEP;
-	}
-
-	@Override
-	protected void playStepSound(BlockPos pos, BlockState blockIn) {
-		this.playSound(this.getStepSound(), 0.15F, 1.0F);
 	}
 
 	@Override

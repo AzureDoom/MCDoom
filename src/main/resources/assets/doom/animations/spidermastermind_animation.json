@@ -458,6 +458,23 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "walk"
+				},
+				"0.52": {
+					"effect": "walk"
+				},
+				"1.04": {
+					"effect": "walk"
+				},
+				"1.56": {
+					"effect": "walk"
+				},
+				"2.08": {
+					"effect": "walk"
+				}
 			}
 		},
 		"attacking": {
@@ -739,6 +756,66 @@
 							"easing": "easeInOutSine"
 						}
 					}
+				},
+				"gunBarrel": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.32": {
+							"vector": [0, 0, 360]
+						},
+						"2.6": {
+							"vector": [0, 0, 0]
+						}
+					}
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "walk"
+				},
+				"0.04": {
+					"effect": "attack"
+				},
+				"0.08": {
+					"effect": "attack"
+				},
+				"0.12": {
+					"effect": "attack"
+				},
+				"0.16": {
+					"effect": "attack"
+				},
+				"0.2": {
+					"effect": "attack"
+				},
+				"0.24": {
+					"effect": "attack"
+				},
+				"0.28": {
+					"effect": "attack"
+				},
+				"0.32": {
+					"effect": "attack"
+				},
+				"0.36": {
+					"effect": "attack"
+				},
+				"0.4": {
+					"effect": "attack"
+				},
+				"0.44": {
+					"effect": "attack"
+				},
+				"0.52": {
+					"effect": "walk"
+				},
+				"1.56": {
+					"effect": "walk"
+				},
+				"2.08": {
+					"effect": "walk"
 				}
 			}
 		},
