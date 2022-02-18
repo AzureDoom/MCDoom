@@ -2,8 +2,8 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.ImpEntity;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
@@ -11,22 +11,29 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class ImpModel extends AnimatedTickingGeoModel<ImpEntity> {
 
-	public ImpModel() {
-	}
+	public Identifier classic_model = new Identifier(DoomMod.MODID, "geo/imp.geo.json");
+	public Identifier nightmareimp_model = new Identifier(DoomMod.MODID, "geo/nightmareimp.geo.json");
+	public Identifier imp2016_model = new Identifier(DoomMod.MODID, "geo/imp2016.geo.json");
+	public Identifier classic_texture = new Identifier(DoomMod.MODID, "textures/entity/imp-texturemap.png");
+	public Identifier nightmareimp_texture = new Identifier(DoomMod.MODID, "textures/entity/nightmareimp-texture.png");
+	public Identifier imp2016_texture = new Identifier(DoomMod.MODID, "textures/entity/imp2016.png");
+	public Identifier imp2016_animation = new Identifier(DoomMod.MODID, "animations/imp2016.animation.json");
+	public Identifier imp_animation = new Identifier(DoomMod.MODID, "animations/imp_animation.json");
 
 	@Override
 	public Identifier getModelLocation(ImpEntity object) {
-		return new Identifier(DoomMod.MODID, "geo/imp.geo.json");
+		return object.getVariant() == 2 ? nightmareimp_model : object.getVariant() == 3 ? imp2016_model : classic_model;
 	}
 
 	@Override
 	public Identifier getTextureLocation(ImpEntity object) {
-		return new Identifier(DoomMod.MODID, "textures/entity/imp-texturemap.png");
+		return object.getVariant() == 2 ? nightmareimp_texture
+				: object.getVariant() == 3 ? imp2016_texture : classic_texture;
 	}
 
 	@Override
 	public Identifier getAnimationFileLocation(ImpEntity object) {
-		return new Identifier(DoomMod.MODID, "animations/imp_animation.json");
+		return object.getVariant() == 3 ? imp2016_animation : imp_animation;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -37,8 +44,8 @@ public class ImpModel extends AnimatedTickingGeoModel<ImpEntity> {
 
 		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
 		if (head != null) {
-			head.setRotationX(Vec3f.POSITIVE_X
-					.getRadialQuaternion((extraData.headPitch - 5) * ((float) Math.PI / 180F)).getX());
+			head.setRotationX(
+					Vec3f.POSITIVE_X.getRadialQuaternion((extraData.headPitch - 5) * ((float) Math.PI / 180F)).getX());
 			head.setRotationY(
 					Vec3f.POSITIVE_Y.getRadialQuaternion(extraData.netHeadYaw * ((float) Math.PI / 340F)).getY());
 		}

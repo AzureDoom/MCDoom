@@ -111,12 +111,11 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 	public void spawnWave() {
 		Random rand = new Random();
 		List<EntityType<?>> givenList = Arrays.asList(ModEntityTypes.HELLKNIGHT, ModEntityTypes.POSSESSEDSCIENTIST,
-				ModEntityTypes.IMP, ModEntityTypes.NIGHTMARE_IMP, ModEntityTypes.PINKY, ModEntityTypes.CACODEMON,
-				ModEntityTypes.CHAINGUNNER, ModEntityTypes.GARGOYLE, ModEntityTypes.HELLKNIGHT2016,
-				ModEntityTypes.IMP2016, ModEntityTypes.LOST_SOUL, ModEntityTypes.POSSESSEDSOLDIER,
-				ModEntityTypes.SHOTGUNGUY, ModEntityTypes.UNWILLING, ModEntityTypes.ZOMBIEMAN,
-				ModEntityTypes.ARACHNOTRON, ModEntityTypes.ARCHVILE, ModEntityTypes.MECHAZOMBIE, ModEntityTypes.PAIN,
-				ModEntityTypes.MANCUBUS);
+				ModEntityTypes.IMP, ModEntityTypes.PINKY, ModEntityTypes.CACODEMON, ModEntityTypes.CHAINGUNNER,
+				ModEntityTypes.GARGOYLE, ModEntityTypes.HELLKNIGHT2016, ModEntityTypes.LOST_SOUL,
+				ModEntityTypes.POSSESSEDSOLDIER, ModEntityTypes.SHOTGUNGUY, ModEntityTypes.UNWILLING,
+				ModEntityTypes.ZOMBIEMAN, ModEntityTypes.ARACHNOTRON, ModEntityTypes.ARCHVILE,
+				ModEntityTypes.MECHAZOMBIE, ModEntityTypes.PAIN, ModEntityTypes.MANCUBUS);
 
 		SplittableRandom random = new SplittableRandom();
 		int r = random.nextInt(-3, 3);

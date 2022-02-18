@@ -49,21 +49,6 @@
 							"easing": "easeInOutSine"
 						}
 					}
-				},
-				"main": {
-					"position": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.52": {
-							"vector": [0, 0.3, 0],
-							"easing": "easeInOutSine"
-						},
-						"1.04": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutSine"
-						}
-					}
 				}
 			}
 		},
@@ -515,6 +500,20 @@
 							"vector": [0, 0, 0]
 						}
 					}
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "walk"
+				},
+				"0.04": {
+					"effect": "talk"
+				},
+				"1.04": {
+					"effect": "walk"
+				},
+				"1.08": {
+					"effect": "talk"
 				}
 			}
 		},
@@ -1018,6 +1017,14 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.28": {
+					"effect": "attack"
+				},
+				"0.84": {
+					"effect": "attack"
+				}
 			}
 		},
 		"firing": {
@@ -1206,6 +1213,14 @@
 							"vector": [0, 0, 0]
 						}
 					}
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "flames"
+				},
+				"0.6": {
+					"effect": "flames"
 				}
 			}
 		},
@@ -1461,6 +1476,11 @@
 							"vector": [0, 0, 0]
 						}
 					}
+				}
+			},
+			"sound_effects": {
+				"0.28": {
+					"effect": "flames"
 				}
 			}
 		}

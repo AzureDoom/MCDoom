@@ -1,6 +1,7 @@
 package mod.azure.doom.entity.tierheavy;
 
 import java.util.Random;
+import java.util.SplittableRandom;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
@@ -24,6 +25,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -36,13 +38,14 @@ import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
-	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(Pinky2016.class,
+	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(PinkyEntity.class,
 			TrackedDataHandlerRegistry.INTEGER);
 
 	public PinkyEntity(EntityType<PinkyEntity> entityType, World worldIn) {
@@ -74,7 +77,31 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<PinkyEntity>(this, "controller", 0, this::predicate));
+		AnimationController<PinkyEntity> controller = new AnimationController<PinkyEntity>(this, "controller", 0,
+				this::predicate);
+		controller.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
+	}
+
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("walk")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("talk")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_AMBIENT,
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("yell")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_YELL,
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
 	}
 
 	@Override
@@ -110,7 +137,7 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 	}
 
 	public int getVariant() {
-		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 2);
+		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 3);
 	}
 
 	public void setVariant(int variant) {
@@ -118,14 +145,16 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 	}
 
 	public int getVariants() {
-		return 2;
+		return 3;
 	}
 
 	@Override
 	public EntityData initialize(ServerWorldAccess serverWorldAccess, LocalDifficulty difficulty,
 			SpawnReason spawnReason, EntityData entityData, NbtCompound entityTag) {
 		entityData = super.initialize(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
-		this.setVariant(this.random.nextInt());
+		SplittableRandom random = new SplittableRandom();
+		int var = random.nextInt(0, 4);
+		this.setVariant(var);
 		return entityData;
 	}
 
@@ -170,6 +199,11 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState blockIn) {
 		this.playSound(this.getStepSound(), 0.15F, 1.0F);
+	}
+
+	@Override
+	public int getArmor() {
+		return this.getVariant() == 3 ? 3 : 0;
 	}
 
 }

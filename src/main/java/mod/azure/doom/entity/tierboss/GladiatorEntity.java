@@ -12,7 +12,6 @@ import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.CustomFireballEntity;
 import mod.azure.doom.entity.projectiles.entity.GladiatorMaceEntity;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -41,6 +40,7 @@ import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -55,6 +55,7 @@ import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -142,8 +143,41 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<GladiatorEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(new AnimationController<GladiatorEntity>(this, "controller1", 0, this::predicate1));
+		AnimationController<GladiatorEntity> controller = new AnimationController<GladiatorEntity>(this, "controller",
+				0, this::predicate);
+		AnimationController<GladiatorEntity> controller1 = new AnimationController<GladiatorEntity>(this, "controller1",
+				0, this::predicate1);
+		controller.registerSoundListener(this::soundListener);
+		controller1.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
+		data.addAnimationController(controller1);
+	}
+
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("walk")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("plantshield")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.BLOCK_METAL_PLACE,
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("shieldtalk")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.BARON_AMBIENT,
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("fireball")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_DRAGON_FIREBALL_EXPLODE,
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
 	}
 
 	@Override
@@ -341,11 +375,6 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.BARON_AMBIENT;
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.BARON_HURT;
 	}
@@ -353,15 +382,6 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	protected SoundEvent getDeathSound() {
 		return ModSoundEvents.BARON_DEATH;
-	}
-
-	protected SoundEvent getStepSound() {
-		return ModSoundEvents.BARON_STEP;
-	}
-
-	@Override
-	protected void playStepSound(BlockPos pos, BlockState blockIn) {
-		this.playSound(this.getStepSound(), 0.15F, 1.0F);
 	}
 
 	public void onStartedTrackingBy(ServerPlayerEntity player) {

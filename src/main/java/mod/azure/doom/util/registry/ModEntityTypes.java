@@ -14,13 +14,11 @@ import mod.azure.doom.entity.tierboss.SpiderMastermind2016Entity;
 import mod.azure.doom.entity.tierboss.SpiderMastermindEntity;
 import mod.azure.doom.entity.tierfodder.ChaingunnerEntity;
 import mod.azure.doom.entity.tierfodder.GargoyleEntity;
-import mod.azure.doom.entity.tierfodder.Imp2016Entity;
 import mod.azure.doom.entity.tierfodder.ImpEntity;
 import mod.azure.doom.entity.tierfodder.ImpStoneEntity;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
 import mod.azure.doom.entity.tierfodder.MaykrDroneEntity;
 import mod.azure.doom.entity.tierfodder.MechaZombieEntity;
-import mod.azure.doom.entity.tierfodder.NightmareImpEntity;
 import mod.azure.doom.entity.tierfodder.PossessedScientistEntity;
 import mod.azure.doom.entity.tierfodder.PossessedSoldierEntity;
 import mod.azure.doom.entity.tierfodder.ShotgunguyEntity;
@@ -33,7 +31,6 @@ import mod.azure.doom.entity.tierheavy.Hellknight2016Entity;
 import mod.azure.doom.entity.tierheavy.HellknightEntity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
 import mod.azure.doom.entity.tierheavy.PainEntity;
-import mod.azure.doom.entity.tierheavy.Pinky2016;
 import mod.azure.doom.entity.tierheavy.PinkyEntity;
 import mod.azure.doom.entity.tierheavy.ProwlerEntity;
 import mod.azure.doom.entity.tierheavy.Revenant2016Entity;
@@ -43,7 +40,6 @@ import mod.azure.doom.entity.tierheavy.WhiplashEntity;
 import mod.azure.doom.entity.tiersuperheavy.ArchvileEntity;
 import mod.azure.doom.entity.tiersuperheavy.ArmoredBaronEntity;
 import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
-import mod.azure.doom.entity.tiersuperheavy.Cyberdemon2016Entity;
 import mod.azure.doom.entity.tiersuperheavy.CyberdemonEntity;
 import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
 import mod.azure.doom.entity.tiersuperheavy.FireBaronEntity;
@@ -86,6 +82,12 @@ public class ModEntityTypes {
 			new Identifier(DoomMod.MODID, "lost_soul"),
 			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, LostSoulEntity::new)
 					.dimensions(EntityDimensions.fixed(1.0F, 1.0F)).fireImmune().trackRangeBlocks(90)
+					.trackedUpdateRate(4).build());
+
+	public static final EntityType<LostSoulEntity> LOST_SOUL_ETERNAL = Registry.register(Registry.ENTITY_TYPE,
+			new Identifier(DoomMod.MODID, "lost_soul_eternal"),
+			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, LostSoulEntity::new)
+					.dimensions(EntityDimensions.fixed(1.5F, 1.5F)).fireImmune().trackRangeBlocks(90)
 					.trackedUpdateRate(4).build());
 
 	public static final EntityType<CacodemonEntity> CACODEMON = Registry.register(Registry.ENTITY_TYPE,
@@ -136,24 +138,11 @@ public class ModEntityTypes {
 					.dimensions(EntityDimensions.fixed(1.9f, 3.95F)).fireImmune().trackRangeBlocks(90)
 					.trackedUpdateRate(4).build());
 
-	public static final EntityType<Imp2016Entity> IMP2016 = Registry.register(Registry.ENTITY_TYPE,
-			new Identifier(DoomMod.MODID, "imp2016"),
-			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, Imp2016Entity::new)
-					.dimensions(EntityDimensions.fixed(0.6f, 1.95F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(4).build());
-
 	public static final EntityType<ImpStoneEntity> IMP_STONE = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(DoomMod.MODID, "stone_imp"),
 			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, ImpStoneEntity::new)
 					.dimensions(EntityDimensions.fixed(0.6f, 1.95F)).fireImmune().trackRangeBlocks(90)
 					.trackedUpdateRate(4).build());
-
-	public static final EntityType<NightmareImpEntity> NIGHTMARE_IMP = Registry.register(Registry.ENTITY_TYPE,
-			new Identifier(DoomMod.MODID, "nightmare_imp"),
-			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, NightmareImpEntity::new)
-					.dimensions(EntityDimensions.fixed(0.6f, 1.95F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(4).build());
-
 	public static final EntityType<ChaingunnerEntity> CHAINGUNNER = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(DoomMod.MODID, "chaingunner"),
 			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, ChaingunnerEntity::new)
@@ -199,18 +188,6 @@ public class ModEntityTypes {
 	public static final EntityType<CyberdemonEntity> CYBERDEMON = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(DoomMod.MODID, "cyberdemon"),
 			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, CyberdemonEntity::new)
-					.dimensions(EntityDimensions.fixed(3.0f, 7.0F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(4).build());
-
-	public static final EntityType<Cyberdemon2016Entity> CYBERDEMON2016 = Registry.register(Registry.ENTITY_TYPE,
-			new Identifier(DoomMod.MODID, "cyberdemon2016"),
-			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, Cyberdemon2016Entity::new)
-					.dimensions(EntityDimensions.fixed(3.0f, 7.0F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(4).build());
-
-	public static final EntityType<Cyberdemon2016Entity> TYRANT = Registry.register(Registry.ENTITY_TYPE,
-			new Identifier(DoomMod.MODID, "tyrant"),
-			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, Cyberdemon2016Entity::new)
 					.dimensions(EntityDimensions.fixed(3.0f, 7.0F)).fireImmune().trackRangeBlocks(90)
 					.trackedUpdateRate(4).build());
 
@@ -279,12 +256,6 @@ public class ModEntityTypes {
 			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, ArachnotronEntity::new)
 					.dimensions(EntityDimensions.fixed(4.0F, 3.0F)).fireImmune().trackRangeBlocks(90)
 					.trackedUpdateRate(4).build());
-
-	public static final EntityType<Pinky2016> PINKY2016 = Registry.register(Registry.ENTITY_TYPE,
-			new Identifier(DoomMod.MODID, "pinky2016"),
-			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, Pinky2016::new)
-					.dimensions(EntityDimensions.fixed(1.7f, 2.2F)).fireImmune().trackedUpdateRate(9)
-					.trackRangeBlocks(90).build());
 
 	public static final EntityType<ArchvileEntity> ARCHVILEETERNAL = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(DoomMod.MODID, "archvileeternal"),

@@ -116,22 +116,10 @@ public class DoomConfig implements ConfigData {
 		public int arachnotron_max_group = 4;
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> imp2016_biomes = Arrays.asList("#nether");
-		public int imp2016_spawn_weight = 15;
-		public int imp2016_min_group = 1;
-		public int imp2016_max_group = 4;
-
-		@ConfigEntry.Gui.Tooltip(count = 1)
 		public List<String> gargoyle_biomes = Arrays.asList("#nether");
 		public int gargoyle_spawn_weight = 15;
 		public int gargoyle_min_group = 1;
 		public int gargoyle_max_group = 4;
-
-		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> nightmare_biomes = Arrays.asList("#nether");
-		public int nightmare_imp_spawn_weight = 15;
-		public int nightmare_min_group = 1;
-		public int nightmare_max_group = 4;
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
 		public List<String> chaingunner_biomes = Arrays.asList("#nether");
@@ -230,18 +218,6 @@ public class DoomConfig implements ConfigData {
 		public int tentacle_max_group = 1;
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> cyberdemon2016_biomes = Arrays.asList("#nether");
-		public int cyberdemon2016_spawn_weight = 4;
-		public int cyberdemon2016_min_group = 1;
-		public int cyberdemon2016_max_group = 1;
-
-		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> tyrant_biomes = Arrays.asList("#nether");
-		public int tyrant_spawn_weight = 4;
-		public int tyrant_min_group = 1;
-		public int tyrant_max_group = 1;
-
-		@ConfigEntry.Gui.Tooltip(count = 1)
 		public List<String> spider_mastermind_biomes = Arrays.asList("#nether");
 		public int spider_mastermind_spawn_weight = 4;
 		public int spider_mastermind_min_group = 1;
@@ -338,13 +314,11 @@ public class DoomConfig implements ConfigData {
 				"doom:painelemental", "doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:imp",
 				"doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:prowler", "doom:prowler", "doom:prowler",
 				"doom:prowler", "doom:prowler", "doom:prowler", "doom:prowler", "doom:prowler", "doom:prowler",
-				"doom:prowler", "doom:nightmare_imp", "doom:nightmare_imp", "doom:nightmare_imp", "doom:nightmare_imp",
-				"doom:nightmare_imp", "doom:nightmare_imp", "doom:nightmare_imp", "doom:nightmare_imp",
-				"doom:nightmare_imp", "doom:nightmare_imp", "doom:nightmare_imp", "doom:pinky2016", "doom:pinky2016",
-				"doom:pinky2016", "doom:pinky2016", "doom:pinky2016", "doom:pinky2016", "doom:pinky2016",
-				"doom:pinky2016", "doom:pinky2016", "doom:pinky2016", "doom:lost_soul", "doom:lost_soul",
+				"doom:prowler", "doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:imp",
+				"doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:pinky", "doom:pinky", "doom:pinky", "doom:pinky",
+				"doom:pinky", "doom:pinky", "doom:pinky", "doom:pinky", "doom:pinky", "doom:pinky", "doom:lost_soul",
 				"doom:lost_soul", "doom:lost_soul", "doom:lost_soul", "doom:lost_soul", "doom:lost_soul",
-				"doom:lost_soul", "doom:lost_soul", "doom:lost_soul");
+				"doom:lost_soul", "doom:lost_soul", "doom:lost_soul", "doom:lost_soul");
 
 		public double imp_health = 30;
 		public float imp_ranged_damage = 4;
@@ -404,18 +378,12 @@ public class DoomConfig implements ConfigData {
 		public double arachnotron_health = 30;
 		public float arachnotron_ranged_damage = 5;
 
-		public double imp2016_health = 30;
-		public float imp2016_ranged_damage = 4;
-
 		public double impstone_health = 15;
 		public double impstone_melee_damage = 2;
 
 		public double gargoyle_health = 30;
 		public float gargoyle_ranged_damage = 5;
 		public double gargoyle_melee_damage = 2;
-
-		public double nightmare_imp_health = 30;
-		public float nightmare_ranged_damage = 4;
 
 		public double chaingunner_health = 15;
 
@@ -461,9 +429,5 @@ public class DoomConfig implements ConfigData {
 		public float mechazombie_ranged_damage = 3;
 
 		public double gorenest_health = 5;
-
-		public double cyberdemon2016_health = 300;
-		public float cyberdemon2016_ranged_damage = 9;
-		public double cyberdemon2016_melee_damage = 7;
 	}
 }

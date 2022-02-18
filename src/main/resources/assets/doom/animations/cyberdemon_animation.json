@@ -162,7 +162,7 @@
 							"vector": [0, 0, 0]
 						},
 						"0.52": {
-							"vector": [0, 2, 0]
+							"vector": [0, 5, 0]
 						},
 						"1.0": {
 							"vector": [0, 0, 0]
@@ -188,6 +188,20 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "walk"
+				},
+				"0.04": {
+					"effect": "talk"
+				},
+				"1.0": {
+					"effect": "walk"
+				},
+				"1.04": {
+					"effect": "talk"
+				}
 			}
 		},
 		"attacking": {
@@ -204,6 +218,11 @@
 							"easing": "easeInOutSine"
 						}
 					}
+				}
+			},
+			"sound_effects": {
+				"1.04": {
+					"effect": "attack"
 				}
 			}
 		},

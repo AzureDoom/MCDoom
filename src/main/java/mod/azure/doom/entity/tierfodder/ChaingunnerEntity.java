@@ -9,7 +9,6 @@ import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
 import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
@@ -26,8 +25,8 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
@@ -36,6 +35,7 @@ import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -89,10 +89,37 @@ public class ChaingunnerEntity extends DemonEntity implements IAnimatable, IAnim
 	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController<ChaingunnerEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(
-				new AnimationController<ChaingunnerEntity>(this, "controller1", 0, this::predicate1));
-		data.addAnimationController(
-				new AnimationController<ChaingunnerEntity>(this, "controller2", 0, this::predicate2));
+		AnimationController<ChaingunnerEntity> controller = new AnimationController<ChaingunnerEntity>(this,
+				"controller", 0, this::predicate);
+		AnimationController<ChaingunnerEntity> controller1 = new AnimationController<ChaingunnerEntity>(this,
+				"controller1", 0, this::predicate1);
+		AnimationController<ChaingunnerEntity> controller2 = new AnimationController<ChaingunnerEntity>(this,
+				"controller2", 0, this::predicate2);
+		controller.registerSoundListener(this::soundListener);
+		controller1.registerSoundListener(this::soundListener);
+		controller2.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
+	}
+
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("walk")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("talk")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.ZOMBIEMAN_AMBIENT,
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("attack")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PISTOL_HIT,
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
 	}
 
 	@Override
@@ -113,8 +140,8 @@ public class ChaingunnerEntity extends DemonEntity implements IAnimatable, IAnim
 		this.goalSelector.add(4,
 				new RangedAttackGoal(this,
 						new RangedAttack(this).setProjectileOriginOffset(0.8, 0.4, 0.8)
-								.setDamage(rangedconfig.chaingun_bullet_damage).setSound(ModSoundEvents.CHAINGUN_SHOOT,
-										1.0F, 1.0F),
+								.setDamage(rangedconfig.chaingun_bullet_damage)
+								.setSound(ModSoundEvents.CHAINGUN_SHOOT, 1.0F, 1.0F),
 						1.1D));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
@@ -156,11 +183,6 @@ public class ChaingunnerEntity extends DemonEntity implements IAnimatable, IAnim
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.ZOMBIEMAN_AMBIENT;
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.ZOMBIEMAN_HURT;
 	}
@@ -168,15 +190,6 @@ public class ChaingunnerEntity extends DemonEntity implements IAnimatable, IAnim
 	@Override
 	protected SoundEvent getDeathSound() {
 		return ModSoundEvents.ZOMBIEMAN_DEATH;
-	}
-
-	protected SoundEvent getStepSound() {
-		return SoundEvents.ENTITY_ZOMBIE_STEP;
-	}
-
-	@Override
-	protected void playStepSound(BlockPos pos, BlockState blockIn) {
-		this.playSound(this.getStepSound(), 0.15F, 1.0F);
 	}
 
 }

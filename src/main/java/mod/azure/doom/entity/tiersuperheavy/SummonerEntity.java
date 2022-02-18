@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -27,6 +28,7 @@ import net.minecraft.entity.ai.goal.RevengeGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
@@ -34,6 +36,9 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -49,6 +54,7 @@ import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -95,8 +101,29 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<SummonerEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(new AnimationController<SummonerEntity>(this, "controller1", 0, this::predicate1));
+		AnimationController<SummonerEntity> controller = new AnimationController<SummonerEntity>(this, "controller", 0,
+				this::predicate);
+		AnimationController<SummonerEntity> controller1 = new AnimationController<SummonerEntity>(this, "controller1",
+				0, this::predicate1);
+		controller.registerSoundListener(this::soundListener);
+		controller1.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
+		data.addAnimationController(controller1);
+	}
+
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("walk")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_PHANTOM_SWOOP,
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("attack")) {
+			if (this.world.isClient) {
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.ARCHVILE_SCREAM,
+						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
 	}
 
 	@Override
@@ -180,8 +207,8 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	public void spawnWave() {
 		Random rand = new Random();
-		List<EntityType<?>> givenList = Arrays.asList(ModEntityTypes.IMP, ModEntityTypes.NIGHTMARE_IMP,
-				ModEntityTypes.IMP2016, ModEntityTypes.LOST_SOUL, ModEntityTypes.IMP_STONE);
+		List<EntityType<?>> givenList = Arrays.asList(ModEntityTypes.IMP, ModEntityTypes.LOST_SOUL,
+				ModEntityTypes.IMP_STONE);
 
 		for (int i = 0; i < 1; i++) {
 			int randomIndex = rand.nextInt(givenList.size());
@@ -466,5 +493,15 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 		boolean flag = this.getTarget() != null && this.canSee(this.getTarget());
 		this.goalSelector.setControlEnabled(Goal.Control.LOOK, flag);
 		super.updateGoalControls();
+	}
+	
+	@Override
+	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+		return ModSoundEvents.ARCHVILE_HURT;
+	}
+
+	@Override
+	protected SoundEvent getDeathSound() {
+		return ModSoundEvents.ARCHVILE_DEATH;
 	}
 }

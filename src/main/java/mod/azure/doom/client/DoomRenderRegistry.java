@@ -14,7 +14,6 @@ import mod.azure.doom.client.render.BloodMaykrRender;
 import mod.azure.doom.client.render.CacodemonRender;
 import mod.azure.doom.client.render.ChaingunnerRender;
 import mod.azure.doom.client.render.CueBallRender;
-import mod.azure.doom.client.render.Cyberdemon2016Render;
 import mod.azure.doom.client.render.CyberdemonRender;
 import mod.azure.doom.client.render.DoomHunterRender;
 import mod.azure.doom.client.render.DreadKnightRender;
@@ -25,18 +24,16 @@ import mod.azure.doom.client.render.GoreNestRender;
 import mod.azure.doom.client.render.Hellknight2016Render;
 import mod.azure.doom.client.render.HellknightRender;
 import mod.azure.doom.client.render.IconofsinRender;
-import mod.azure.doom.client.render.Imp2016Render;
 import mod.azure.doom.client.render.ImpRender;
 import mod.azure.doom.client.render.ImpStoneRender;
+import mod.azure.doom.client.render.LostSoulEternalRender;
 import mod.azure.doom.client.render.LostSoulRender;
 import mod.azure.doom.client.render.MancubusRender;
 import mod.azure.doom.client.render.MarauderRender;
 import mod.azure.doom.client.render.MaykrDroneRender;
 import mod.azure.doom.client.render.MechaZombieRender;
 import mod.azure.doom.client.render.MotherDemonRender;
-import mod.azure.doom.client.render.NightmareImpRender;
 import mod.azure.doom.client.render.PainRender;
-import mod.azure.doom.client.render.Pinky2016Render;
 import mod.azure.doom.client.render.PinkyRender;
 import mod.azure.doom.client.render.PossessedScientistRender;
 import mod.azure.doom.client.render.PossessedSoldierRender;
@@ -51,7 +48,6 @@ import mod.azure.doom.client.render.SpiderMastermindRender;
 import mod.azure.doom.client.render.SummonerRender;
 import mod.azure.doom.client.render.TentacleRender;
 import mod.azure.doom.client.render.TurretRender;
-import mod.azure.doom.client.render.TyrantRender;
 import mod.azure.doom.client.render.UnwillingRender;
 import mod.azure.doom.client.render.WhiplashRender;
 import mod.azure.doom.client.render.ZombiemanRender;
@@ -133,6 +129,8 @@ public class DoomRenderRegistry {
 
 		EntityRendererRegistry.register(ModEntityTypes.LOST_SOUL, (ctx) -> new LostSoulRender(ctx));
 
+		EntityRendererRegistry.register(ModEntityTypes.LOST_SOUL_ETERNAL, (ctx) -> new LostSoulEternalRender(ctx));
+
 		EntityRendererRegistry.register(ModEntityTypes.CACODEMON, (ctx) -> new CacodemonRender(ctx));
 
 		EntityRendererRegistry.register(ModEntityTypes.BARON, (ctx) -> new BaronRender(ctx));
@@ -147,11 +145,7 @@ public class DoomRenderRegistry {
 
 		EntityRendererRegistry.register(ModEntityTypes.REVENANT, (ctx) -> new RevenantRender(ctx));
 
-		EntityRendererRegistry.register(ModEntityTypes.IMP2016, (ctx) -> new Imp2016Render(ctx));
-
 		EntityRendererRegistry.register(ModEntityTypes.GORE_NEST, (ctx) -> new GoreNestRender(ctx));
-
-		EntityRendererRegistry.register(ModEntityTypes.NIGHTMARE_IMP, (ctx) -> new NightmareImpRender(ctx));
 
 		EntityRendererRegistry.register(ModEntityTypes.CHAINGUNNER, (ctx) -> new ChaingunnerRender(ctx));
 
@@ -168,8 +162,6 @@ public class DoomRenderRegistry {
 		EntityRendererRegistry.register(ModEntityTypes.CYBERDEMON, (ctx) -> new CyberdemonRender(ctx));
 
 		EntityRendererRegistry.register(ModEntityTypes.UNWILLING, (ctx) -> new UnwillingRender(ctx));
-
-		EntityRendererRegistry.register(ModEntityTypes.CYBERDEMON2016, (ctx) -> new Cyberdemon2016Render(ctx));
 
 		EntityRendererRegistry.register(ModEntityTypes.ICONOFSIN, (ctx) -> new IconofsinRender(ctx));
 
@@ -189,15 +181,11 @@ public class DoomRenderRegistry {
 
 		EntityRendererRegistry.register(ModEntityTypes.IMP_STONE, (ctx) -> new ImpStoneRender(ctx));
 
-		EntityRendererRegistry.register(ModEntityTypes.TYRANT, (ctx) -> new TyrantRender(ctx));
-
 		EntityRendererRegistry.register(ModEntityTypes.POSSESSEDWORKER, (ctx) -> new PossessedWorkerRender(ctx));
 
 		EntityRendererRegistry.register(ModEntityTypes.DOOMHUNTER, (ctx) -> new DoomHunterRender(ctx));
 
 		EntityRendererRegistry.register(ModEntityTypes.MAYKRDRONE, (ctx) -> new MaykrDroneRender(ctx));
-
-		EntityRendererRegistry.register(ModEntityTypes.PINKY2016, (ctx) -> new Pinky2016Render(ctx));
 
 		EntityRendererRegistry.register(ModEntityTypes.WHIPLASH, (ctx) -> new WhiplashRender(ctx));
 

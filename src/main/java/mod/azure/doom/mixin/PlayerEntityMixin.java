@@ -25,7 +25,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerPr
 		dataTracker.set(MEATHOOK_TRACKER, tag.getBoolean("hasHook"));
 	}
 
-	@Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
+	@Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
 	public void writeNbt(NbtCompound tag, CallbackInfo info) {
 		tag.putBoolean("hasHook", dataTracker.get(MEATHOOK_TRACKER));
 	}

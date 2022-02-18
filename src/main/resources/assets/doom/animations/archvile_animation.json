@@ -176,6 +176,11 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.52": {
+					"effect": "attack"
+				}
 			}
 		},
 		"walking": {
@@ -211,6 +216,14 @@
 					"rotation": {
 						"vector": ["Math.cos(query.anim_time * 180) * -2.5", 0, 0]
 					}
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "walk"
+				},
+				"1.04": {
+					"effect": "walk"
 				}
 			}
 		}

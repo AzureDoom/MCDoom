@@ -10,24 +10,22 @@ import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class PinkyModel extends AnimatedTickingGeoModel<PinkyEntity> {
-
-	public PinkyModel() {
-	}
-
+	
 	@Override
 	public Identifier getModelLocation(PinkyEntity object) {
-		return new Identifier(DoomMod.MODID, "geo/pinky.geo.json");
+		return new Identifier(DoomMod.MODID, "geo/" + (object.getVariant() == 3 ? "pinky2016" : "pinky") + ".geo.json");
 	}
 
 	@Override
 	public Identifier getTextureLocation(PinkyEntity object) {
-		return new Identifier(DoomMod.MODID,
-				"textures/entity/" + (object.getVariant() == 1 ? "pinky-texturemap" : "pinky_green") + ".png");
+		return new Identifier(DoomMod.MODID, "textures/entity/" + (object.getVariant() == 1 ? "pinky-texturemap"
+				: object.getVariant() == 3 ? "pinky2016" : "pinky_green") + ".png");
 	}
 
 	@Override
 	public Identifier getAnimationFileLocation(PinkyEntity object) {
-		return new Identifier(DoomMod.MODID, "animations/pinky_animation.json");
+		return new Identifier(DoomMod.MODID,
+				"animations/" + (object.getVariant() == 3 ? "pinky2016." : "pinky_") + "animation.json");
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

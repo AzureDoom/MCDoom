@@ -476,6 +476,14 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "walk"
+				},
+				"0.96": {
+					"effect": "walk"
+				}
 			}
 		},
 		"walking_nohelmet": {
@@ -900,6 +908,14 @@
 							"vector": [-5, 0, 0]
 						}
 					}
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "walk"
+				},
+				"0.76": {
+					"effect": "walk"
 				}
 			}
 		},

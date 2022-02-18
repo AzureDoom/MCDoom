@@ -65,6 +65,7 @@ public class ModSoundEvents {
 	public static SoundEvent PINKY_DEATH = of("doom.pinky_death");
 	public static SoundEvent PINKY_HURT = of("doom.pinky_hurt");
 	public static SoundEvent PINKY_STEP = of("doom.pinky_step");
+	public static SoundEvent PINKY_YELL = of("doom.pinky_yell");
 
 	public static SoundEvent LOST_SOUL_DEATH = of("doom.lost_soul_death");
 	public static SoundEvent LOST_SOUL_AMBIENT = of("doom.lost_soul_say");

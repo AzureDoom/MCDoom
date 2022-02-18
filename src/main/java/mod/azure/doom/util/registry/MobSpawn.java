@@ -33,6 +33,9 @@ public class MobSpawn {
 		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.lost_soul_biomes, context)),
 				SpawnGroup.MONSTER, ModEntityTypes.LOST_SOUL, config.lost_soul_spawn_weight, config.lost_soul_min_group,
 				config.lost_soul_max_group);
+		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.lost_soul_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.LOST_SOUL_ETERNAL, config.lost_soul_spawn_weight,
+				config.lost_soul_min_group, config.lost_soul_max_group);
 		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.cacodemon_biomes, context)),
 				SpawnGroup.MONSTER, ModEntityTypes.CACODEMON, config.cacodemon_spawn_weight, config.cacodemon_min_group,
 				config.cacodemon_max_group);
@@ -66,15 +69,9 @@ public class MobSpawn {
 				BiomeSelectors.all().and(context -> parseBiomes(config.arachnotron_biomes, context)),
 				SpawnGroup.MONSTER, ModEntityTypes.ARACHNOTRONETERNAL, config.arachnotron_spawn_weight,
 				config.arachnotron_min_group, config.arachnotron_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.imp2016_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.IMP2016, config.imp2016_spawn_weight, config.imp2016_min_group,
-				config.imp2016_min_group);
 		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.gargoyle_biomes, context)),
 				SpawnGroup.MONSTER, ModEntityTypes.GARGOYLE, config.gargoyle_spawn_weight, config.gargoyle_min_group,
 				config.gargoyle_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.nightmare_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.NIGHTMARE_IMP, config.nightmare_imp_spawn_weight,
-				config.nightmare_min_group, config.nightmare_max_group);
 		BiomeModifications.addSpawn(
 				BiomeSelectors.all().and(context -> parseBiomes(config.chaingunner_biomes, context)),
 				SpawnGroup.MONSTER, ModEntityTypes.CHAINGUNNER, config.chaingunner_spawn_weight,
@@ -127,10 +124,6 @@ public class MobSpawn {
 				SpawnGroup.MONSTER, ModEntityTypes.GORE_NEST, config.gorenest_spawn_weight, config.gorenest_min_group,
 				config.gorenest_max_group);
 		BiomeModifications.addSpawn(
-				BiomeSelectors.all().and(context -> parseBiomes(config.cyberdemon2016_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.CYBERDEMON2016, config.cyberdemon2016_spawn_weight,
-				config.cyberdemon2016_min_group, config.cyberdemon2016_max_group);
-		BiomeModifications.addSpawn(
 				BiomeSelectors.all().and(context -> parseBiomes(config.possessed_worker_biomes, context)),
 				SpawnGroup.MONSTER, ModEntityTypes.POSSESSEDWORKER, config.possessed_worker_spawn_weight,
 				config.possessed_worker_min_group, config.possessed_worker_max_group);
@@ -141,9 +134,6 @@ public class MobSpawn {
 		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.doomhunter_biomes, context)),
 				SpawnGroup.MONSTER, ModEntityTypes.DOOMHUNTER, config.doomhunter_spawn_weight,
 				config.doomhunter_min_group, config.doomhunter_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.pinky_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.PINKY2016, config.pinky_spawn_weight, config.pinky_min_group,
-				config.pinky_max_group);
 		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.archvile_biomes, context)),
 				SpawnGroup.MONSTER, ModEntityTypes.ARCHVILEETERNAL, config.archvile_spawn_weight,
 				config.archvile_min_group, config.archvile_max_group);
@@ -166,9 +156,6 @@ public class MobSpawn {
 				BiomeSelectors.all().and(context -> parseBiomes(config.armoredbaron_biomes, context)),
 				SpawnGroup.MONSTER, ModEntityTypes.ARMORBARON, config.armoredbaron_spawn_weight,
 				config.armoredbaron_min_group, config.armoredbaron_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.tyrant_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.TYRANT, config.tyrant_spawn_weight, config.tyrant_min_group,
-				config.tyrant_max_group);
 		BiomeModifications.addSpawn(
 				BiomeSelectors.all().and(context -> parseBiomes(config.motherdemon_biomes, context)),
 				SpawnGroup.MONSTER, ModEntityTypes.MOTHERDEMON, config.motherdemon_spawn_weight,
@@ -211,9 +198,7 @@ public class MobSpawn {
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.LOST_SOUL, SpawnRestriction.Location.IN_LAVA,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.IMP2016, SpawnRestriction.Location.ON_GROUND,
-				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.NIGHTMARE_IMP, SpawnRestriction.Location.ON_GROUND,
+		SpawnRestrictionAccessor.callRegister(ModEntityTypes.LOST_SOUL_ETERNAL, SpawnRestriction.Location.IN_LAVA,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.CHAINGUNNER, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
@@ -228,8 +213,6 @@ public class MobSpawn {
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.HELLKNIGHT2016, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.CYBERDEMON, SpawnRestriction.Location.ON_GROUND,
-				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.CYBERDEMON2016, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.UNWILLING, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
@@ -253,15 +236,11 @@ public class MobSpawn {
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.IMP_STONE, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.TYRANT, SpawnRestriction.Location.ON_GROUND,
-				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.POSSESSEDWORKER, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.DOOMHUNTER, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.WHIPLASH, SpawnRestriction.Location.ON_GROUND,
-				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.PINKY2016, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.FIREBARON, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);

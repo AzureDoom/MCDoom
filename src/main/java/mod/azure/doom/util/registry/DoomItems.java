@@ -157,8 +157,6 @@ public class DoomItems {
 	// Spawn Eggs
 	public static DoomSpawnEgg ARACHNOTRON_SPAWN_EGG = item(new DoomSpawnEgg(ModEntityTypes.ARACHNOTRON),
 			"arachnotron_spawn_egg");
-	public static DoomSpawnEgg NIGHTMARE_IMP_SPAWN_EGG = item(new DoomSpawnEgg(ModEntityTypes.NIGHTMARE_IMP),
-			"nightmare_imp_spawn_egg");
 	public static DoomSpawnEgg IMP_SPAWN_EGG = item(new DoomSpawnEgg(ModEntityTypes.IMP), "imp_spawn_egg");
 	public static DoomSpawnEgg PINKY_SPAWN_EGG = item("pinky_spawn_egg", new DoomSpawnEgg(ModEntityTypes.PINKY));
 	public static DoomSpawnEgg ARCHVILE_SPAWN_EGG = item("archvile_spawn_egg",
@@ -170,6 +168,8 @@ public class DoomItems {
 			new DoomSpawnEgg(ModEntityTypes.MANCUBUS));
 	public static DoomSpawnEgg LOST_SOUL_SPAWN_EGG = item("lost_soul_spawn_egg",
 			new DoomSpawnEgg(ModEntityTypes.LOST_SOUL));
+	public static DoomSpawnEgg LOST_SOUL_ETERNAL_SPAWN_EGG = item("lost_soul_eternal_spawn_egg",
+			new DoomSpawnEgg(ModEntityTypes.LOST_SOUL_ETERNAL));
 	public static DoomSpawnEgg SPIDERMASTERMIND_SPAWN_EGG = item("spidermastermind_spawn_egg",
 			new DoomSpawnEgg(ModEntityTypes.SPIDERMASTERMIND));
 	public static DoomSpawnEgg ZOMBIEMAN_SPAWN_EGG = item("zombieman_spawn_egg",
@@ -178,7 +178,6 @@ public class DoomItems {
 			new DoomSpawnEgg(ModEntityTypes.CHAINGUNNER));
 	public static DoomSpawnEgg HELLKNIGHT_SPAWN_EGG = item("hellknight_spawn_egg",
 			new DoomSpawnEgg(ModEntityTypes.HELLKNIGHT));
-	public static DoomSpawnEgg IMP2016_SPAWN_EGG = item("imp2016_spawn_egg", new DoomSpawnEgg(ModEntityTypes.IMP2016));
 	public static DoomSpawnEgg MARAUDER_SPAWN_EGG = item("marauder_spawn_egg",
 			new DoomSpawnEgg(ModEntityTypes.MARAUDER));
 	public static DoomSpawnEgg PAIN_SPAWN_EGG = item("pain_spawn_egg", new DoomSpawnEgg(ModEntityTypes.PAIN));
@@ -188,8 +187,6 @@ public class DoomItems {
 			new DoomSpawnEgg(ModEntityTypes.SHOTGUNGUY));
 	public static DoomSpawnEgg CYBERDEMON_SPAWN_EGG = item("cyberdemon_spawn_egg",
 			new DoomSpawnEgg(ModEntityTypes.CYBERDEMON));
-	public static DoomSpawnEgg CYBERDEMON2016_SPAWN_EGG = item("cyberdemon2016_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.CYBERDEMON2016));
 	public static DoomSpawnEgg ICON_SPAWN_EGG = item("icon_of_sin_spawn_egg",
 			new DoomSpawnEgg(ModEntityTypes.ICONOFSIN));
 	public static DoomSpawnEgg UNWILLING_SPAWN_EGG = item("unwilling_spawn_egg",
@@ -213,13 +210,10 @@ public class DoomItems {
 			new DoomSpawnEgg(ModEntityTypes.DREADKNIGHT));
 	public static DoomSpawnEgg STONEIMP_SPAWN_EGG = item("stoneimp_spawn_egg",
 			new DoomSpawnEgg(ModEntityTypes.IMP_STONE));
-	public static DoomSpawnEgg TYRANT_SPAWN_EGG = item("tyrant_spawn_egg", new DoomSpawnEgg(ModEntityTypes.TYRANT));
 	public static DoomSpawnEgg POSSESSED_WORKER_SPAWN_EGG = item("possessed_worker_spawn_egg",
 			new DoomSpawnEgg(ModEntityTypes.POSSESSEDWORKER));
 	public static DoomSpawnEgg DOOMHUNTER_SPAWN_EGG = item("doom_hunter_spawn_egg",
 			new DoomSpawnEgg(ModEntityTypes.DOOMHUNTER));
-	public static DoomSpawnEgg PINKY2016_SPAWN_EGG = item("pinky2016_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.PINKY2016));
 	public static DoomSpawnEgg WHIPLASH_SPAWN_EGG = item("whiplash_spawn_egg",
 			new DoomSpawnEgg(ModEntityTypes.WHIPLASH));
 	public static DoomSpawnEgg BARON2016_SPAWN_EGG = item("baron2016_spawn_egg",
