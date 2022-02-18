@@ -54,7 +54,7 @@ public class MeatHookEntityRenderer extends GeoProjectilesRenderer<MeatHookEntit
 			boolean rightHandIsActive = (mainArm == Arm.RIGHT && activeHand == Hand.MAIN_HAND)
 					|| (mainArm == Arm.LEFT && activeHand == Hand.OFF_HAND);
 			double bodyYawToRads = Math.toRadians(player.bodyYaw);
-			double radius = rightHandIsActive ? -0.4D : 0.4D;
+			double radius = rightHandIsActive ? -0.4D : 0.9D;
 			double startX = player.getX() + radius * Math.cos(bodyYawToRads);
 			double startY = player.getY() + (player.getHeight() / 3D);
 			double startZ = player.getZ() + radius * Math.sin(bodyYawToRads);
