@@ -31,6 +31,11 @@ public class ModEntitySpawn {
 			base.add(new SpawnerData(ModEntityTypes.LOST_SOUL.get(), DoomConfig.SERVER.lost_soul_spawn_weight.get(),
 					DoomConfig.SERVER.lost_soul_min_group.get(), DoomConfig.SERVER.lost_soul_max_group.get()));
 		}
+		if (parseBiomes(DoomConfig.SERVER.lost_soul_biomes.get(), event)) {
+			base.add(new SpawnerData(ModEntityTypes.LOST_SOUL_ETERNAL.get(),
+					DoomConfig.SERVER.lost_soul_spawn_weight.get(), DoomConfig.SERVER.lost_soul_min_group.get(),
+					DoomConfig.SERVER.lost_soul_max_group.get()));
+		}
 		if (parseBiomes(DoomConfig.SERVER.cacodemon_biomes.get(), event)) {
 			base.add(new SpawnerData(ModEntityTypes.CACODEMON.get(), DoomConfig.SERVER.cacodemon_spawn_weight.get(),
 					DoomConfig.SERVER.cacodemon_min_group.get(), DoomConfig.SERVER.cacodemon_max_group.get()));
@@ -74,17 +79,9 @@ public class ModEntitySpawn {
 					DoomConfig.SERVER.arachnotron_spawn_weight.get(), DoomConfig.SERVER.arachnotron_min_group.get(),
 					DoomConfig.SERVER.arachnotron_max_group.get()));
 		}
-		if (parseBiomes(DoomConfig.SERVER.imp2016_biomes.get(), event)) {
-			base.add(new SpawnerData(ModEntityTypes.IMP2016.get(), DoomConfig.SERVER.imp2016_spawn_weight.get(),
-					DoomConfig.SERVER.imp2016_min_group.get(), DoomConfig.SERVER.imp2016_min_group.get()));
-		}
 		if (parseBiomes(DoomConfig.SERVER.gargoyle_biomes.get(), event)) {
 			base.add(new SpawnerData(ModEntityTypes.GARGOYLE.get(), DoomConfig.SERVER.gargoyle_spawn_weight.get(),
 					DoomConfig.SERVER.gargoyle_min_group.get(), DoomConfig.SERVER.gargoyle_max_group.get()));
-		}
-		if (parseBiomes(DoomConfig.SERVER.nightmare_biomes.get(), event)) {
-			base.add(new SpawnerData(ModEntityTypes.NIGHTMARE_IMP.get(), DoomConfig.SERVER.nightmare_spawn_weight.get(),
-					DoomConfig.SERVER.nightmare_min_group.get(), DoomConfig.SERVER.nightmare_max_group.get()));
 		}
 		if (parseBiomes(DoomConfig.SERVER.chaingunner_biomes.get(), event)) {
 			base.add(new SpawnerData(ModEntityTypes.CHAINGUNNER.get(), DoomConfig.SERVER.chaingunner_spawn_weight.get(),
@@ -154,12 +151,6 @@ public class ModEntitySpawn {
 			base.add(new SpawnerData(ModEntityTypes.GORE_NEST.get(), DoomConfig.SERVER.gorenest_spawn_weight.get(),
 					DoomConfig.SERVER.gorenest_min_group.get(), DoomConfig.SERVER.gorenest_max_group.get()));
 		}
-		if (parseBiomes(DoomConfig.SERVER.cyberdemon2016_biomes.get(), event)) {
-			base.add(new SpawnerData(ModEntityTypes.CYBERDEMON2016.get(),
-					DoomConfig.SERVER.cyberdemon2016_spawn_weight.get(),
-					DoomConfig.SERVER.cyberdemon2016_min_group.get(),
-					DoomConfig.SERVER.cyberdemon2016_max_group.get()));
-		}
 		if (parseBiomes(DoomConfig.SERVER.possessed_worker_biomes.get(), event)) {
 			base.add(new SpawnerData(ModEntityTypes.POSSESSEDWORKER.get(),
 					DoomConfig.SERVER.possessed_worker_spawn_weight.get(),
@@ -169,15 +160,6 @@ public class ModEntitySpawn {
 		if (parseBiomes(DoomConfig.SERVER.doomhunter_biomes.get(), event)) {
 			base.add(new SpawnerData(ModEntityTypes.DOOMHUNTER.get(), DoomConfig.SERVER.doomhunter_spawn_weight.get(),
 					DoomConfig.SERVER.doomhunter_min_group.get(), DoomConfig.SERVER.doomhunter_max_group.get()));
-		}
-		if (parseBiomes(DoomConfig.SERVER.pinky_biomes.get(), event)) {
-			base.add(new SpawnerData(ModEntityTypes.PINKY2016.get(), DoomConfig.SERVER.pinky_spawn_weight.get(),
-					DoomConfig.SERVER.pinky_min_group.get(), DoomConfig.SERVER.pinky_max_group.get()));
-		}
-		if (parseBiomes(DoomConfig.SERVER.archvile_biomes.get(), event)) {
-			base.add(
-					new SpawnerData(ModEntityTypes.ARCHVILEETERNAL.get(), DoomConfig.SERVER.archvile_spawn_weight.get(),
-							DoomConfig.SERVER.archvile_min_group.get(), DoomConfig.SERVER.archvile_max_group.get()));
 		}
 		if (parseBiomes(DoomConfig.SERVER.tentacle_biomes.get(), event)) {
 			base.add(new SpawnerData(ModEntityTypes.TENTACLE.get(), DoomConfig.SERVER.tentacle_spawn_weight.get(),
@@ -208,10 +190,6 @@ public class ModEntitySpawn {
 					DoomConfig.SERVER.spider_mastermind_spawn_weight.get(),
 					DoomConfig.SERVER.spider_mastermind_min_group.get(),
 					DoomConfig.SERVER.spider_mastermind_max_group.get()));
-		}
-		if (parseBiomes(DoomConfig.SERVER.tyrant_biomes.get(), event)) {
-			base.add(new SpawnerData(ModEntityTypes.TYRANT.get(), DoomConfig.SERVER.tyrant_spawn_weight.get(),
-					DoomConfig.SERVER.tyrant_min_group.get(), DoomConfig.SERVER.tyrant_max_group.get()));
 		}
 		if (parseBiomes(DoomConfig.SERVER.motherdemon_biomes.get(), event)) {
 			base.add(new SpawnerData(ModEntityTypes.MOTHERDEMON.get(), DoomConfig.SERVER.motherdemon_spawn_weight.get(),

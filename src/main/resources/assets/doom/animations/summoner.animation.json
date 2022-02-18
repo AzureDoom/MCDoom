@@ -74,6 +74,11 @@
 						"vector": ["2+Math.cos(query.anim_time * 360) * -2", 0, 0]
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "walk"
+				}
 			}
 		},
 		"summon": {
@@ -116,6 +121,11 @@
 							"easing": "easeInOutSine"
 						}
 					}
+				}
+			},
+			"sound_effects": {
+				"0.52": {
+					"effect": "attack"
 				}
 			}
 		},

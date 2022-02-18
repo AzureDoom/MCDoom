@@ -10,22 +10,31 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class ImpModel extends AnimatedTickingGeoModel<ImpEntity> {
 
-	public ImpModel() {
-	}
+	public ResourceLocation classic_model = new ResourceLocation(DoomMod.MODID, "geo/imp.geo.json");
+	public ResourceLocation nightmareimp_model = new ResourceLocation(DoomMod.MODID, "geo/nightmareimp.geo.json");
+	public ResourceLocation imp2016_model = new ResourceLocation(DoomMod.MODID, "geo/imp2016.geo.json");
+	public ResourceLocation classic_texture = new ResourceLocation(DoomMod.MODID, "textures/entity/imp-texturemap.png");
+	public ResourceLocation nightmareimp_texture = new ResourceLocation(DoomMod.MODID,
+			"textures/entity/nightmareimp-texture.png");
+	public ResourceLocation imp2016_texture = new ResourceLocation(DoomMod.MODID, "textures/entity/imp2016.png");
+	public ResourceLocation imp2016_animation = new ResourceLocation(DoomMod.MODID,
+			"animations/imp2016.animation.json");
+	public ResourceLocation imp_animation = new ResourceLocation(DoomMod.MODID, "animations/imp_animation.json");
 
 	@Override
 	public ResourceLocation getModelLocation(ImpEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/imp.geo.json");
+		return object.getVariant() == 2 ? nightmareimp_model : object.getVariant() == 3 ? imp2016_model : classic_model;
 	}
 
 	@Override
 	public ResourceLocation getTextureLocation(ImpEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/entity/imp-texturemap.png");
+		return object.getVariant() == 2 ? nightmareimp_texture
+				: object.getVariant() == 3 ? imp2016_texture : classic_texture;
 	}
 
 	@Override
 	public ResourceLocation getAnimationFileLocation(ImpEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "animations/imp_animation.json");
+		return object.getVariant() == 3 ? imp2016_animation : imp_animation;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

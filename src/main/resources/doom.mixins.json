@@ -5,8 +5,10 @@
 	"compatibilityLevel": "JAVA_16",
 	"client": [
 		"ClientPlayNetworkHandlerMixin",
-		"PlayerEntityMixin",
 		"WeaponRenderingMixin"
+	],
+	"mixins": [
+		"PlayerEntityMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

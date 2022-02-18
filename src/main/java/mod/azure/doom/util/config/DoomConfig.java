@@ -90,20 +90,10 @@ public class DoomConfig {
 		public final ConfigValue<Integer> arachnotron_min_group;
 		public final ConfigValue<Integer> arachnotron_max_group;
 
-		public final ConfigValue<List<? extends String>> imp2016_biomes;
-		public final ConfigValue<Integer> imp2016_spawn_weight;
-		public final ConfigValue<Integer> imp2016_min_group;
-		public final ConfigValue<Integer> imp2016_max_group;
-
 		public final ConfigValue<List<? extends String>> gargoyle_biomes;
 		public final ConfigValue<Integer> gargoyle_spawn_weight;
 		public final ConfigValue<Integer> gargoyle_min_group;
 		public final ConfigValue<Integer> gargoyle_max_group;
-
-		public final ConfigValue<List<? extends String>> nightmare_biomes;
-		public final ConfigValue<Integer> nightmare_spawn_weight;
-		public final ConfigValue<Integer> nightmare_min_group;
-		public final ConfigValue<Integer> nightmare_max_group;
 
 		public final ConfigValue<List<? extends String>> chaingunner_biomes;
 		public final ConfigValue<Integer> chaingunner_spawn_weight;
@@ -184,16 +174,6 @@ public class DoomConfig {
 		public final ConfigValue<Integer> tentacle_spawn_weight;
 		public final ConfigValue<Integer> tentacle_min_group;
 		public final ConfigValue<Integer> tentacle_max_group;
-
-		public final ConfigValue<List<? extends String>> cyberdemon2016_biomes;
-		public final ConfigValue<Integer> cyberdemon2016_spawn_weight;
-		public final ConfigValue<Integer> cyberdemon2016_min_group;
-		public final ConfigValue<Integer> cyberdemon2016_max_group;
-
-		public final ConfigValue<List<? extends String>> tyrant_biomes;
-		public final ConfigValue<Integer> tyrant_spawn_weight;
-		public final ConfigValue<Integer> tyrant_min_group;
-		public final ConfigValue<Integer> tyrant_max_group;
 
 		public final ConfigValue<List<? extends String>> spider_mastermind_biomes;
 		public final ConfigValue<Integer> spider_mastermind_spawn_weight;
@@ -307,18 +287,12 @@ public class DoomConfig {
 		public final ConfigValue<Double> arachnotron_health;
 		public final ConfigValue<Double> arachnotron_ranged_damage;
 
-		public final ConfigValue<Double> imp2016_health;
-		public final ConfigValue<Double> imp2016_ranged_damage;
-
 		public final ConfigValue<Double> impstone_health;
 		public final ConfigValue<Double> impstone_melee_damage;
 
 		public final ConfigValue<Double> gargoyle_health;
 		public final ConfigValue<Double> gargoyle_ranged_damage;
 		public final ConfigValue<Double> gargoyle_melee_damage;
-
-		public final ConfigValue<Double> nightmare_imp_health;
-		public final ConfigValue<Double> nightmare_ranged_damage;
 
 		public final ConfigValue<Double> chaingunner_health;
 
@@ -364,10 +338,6 @@ public class DoomConfig {
 		public final ConfigValue<Double> mechazombie_ranged_damage;
 
 		public final ConfigValue<Double> gorenest_health;
-
-		public final ConfigValue<Double> cyberdemon2016_health;
-		public final ConfigValue<Double> cyberdemon2016_ranged_damage;
-		public final ConfigValue<Double> cyberdemon2016_melee_damage;
 
 		public final ConfigValue<Double> cueball_health;
 
@@ -426,8 +396,8 @@ public class DoomConfig {
 					2.5, 1, Double.MAX_VALUE);
 			this.grenade_damage = builder.translation("text.doom.config.grenade_damage").defineInRange("Grenade Damage",
 					30, 1, Double.MAX_VALUE);
-			this.max_meathook_distance = builder.translation("text.doom.config.max_meathook_distance").defineInRange("Max Meathook Distance",
-					32, 1, Double.MAX_VALUE);
+			this.max_meathook_distance = builder.translation("text.doom.config.max_meathook_distance")
+					.defineInRange("Max Meathook Distance", 32, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Imps");
@@ -638,23 +608,6 @@ public class DoomConfig {
 					.defineInRange("Sets Arachnotron Ranged Damage", 5, 1, Double.MAX_VALUE);
 			builder.pop();
 
-			builder.push("Mob Settings:Imps 2016");
-			this.imp2016_biomes = builder
-					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
-					.translation("text.doom.config.imp2016_biomes")
-					.defineList("Imp 2016 Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
-			this.imp2016_spawn_weight = builder.translation("text.doom.config.imp2016_spawn_weight")
-					.defineInRange("Imp 2016 Spawn Weight", 15, 1, Integer.MAX_VALUE);
-			this.imp2016_min_group = builder.translation("text.doom.config.imp2016_min_group")
-					.defineInRange("Imp 2016 Min Group", 1, 1, Integer.MAX_VALUE);
-			this.imp2016_max_group = builder.translation("text.doom.config.imp2016_max_group")
-					.defineInRange("Imp 2016 Max Group", 4, 1, Integer.MAX_VALUE);
-			this.imp2016_health = builder.translation("text.doom.config.imp2016_health")
-					.defineInRange("Sets Imp 2016 Max Health", 30, 1, Double.MAX_VALUE);
-			this.imp2016_ranged_damage = builder.translation("text.doom.config.imp2016_ranged_damage")
-					.defineInRange("Sets Imp 2016 Ranged Damage", 4, 1, Double.MAX_VALUE);
-			builder.pop();
-
 			builder.push("Mob Settings:Gargoyle");
 			this.gargoyle_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
@@ -672,23 +625,6 @@ public class DoomConfig {
 					.defineInRange("Sets Gargoyle Ranged Damage", 5, 1, Double.MAX_VALUE);
 			this.gargoyle_melee_damage = builder.translation("text.doom.config.gargoyle_melee_damage")
 					.defineInRange("Sets Gargoyle Melee Damage", 2, 1, Double.MAX_VALUE);
-			builder.pop();
-
-			builder.push("Mob Settings:Nightmare Imp");
-			this.nightmare_biomes = builder
-					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
-					.translation("text.doom.config.nightmare_biomes")
-					.defineList("Nightmare Imp Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
-			this.nightmare_spawn_weight = builder.translation("text.doom.config.nightmare_spawn_weight")
-					.defineInRange("Nightmare Imp Spawn Weight", 15, 1, Integer.MAX_VALUE);
-			this.nightmare_min_group = builder.translation("text.doom.config.nightmare_min_group")
-					.defineInRange("Nightmare Imp Min Group", 1, 1, Integer.MAX_VALUE);
-			this.nightmare_max_group = builder.translation("text.doom.config.nightmare_max_group")
-					.defineInRange("Nightmare Imp Max Group", 4, 1, Integer.MAX_VALUE);
-			this.nightmare_imp_health = builder.translation("text.doom.config.nightmare_imp_health")
-					.defineInRange("Sets Nightmare Imp Max Health", 30, 1, Double.MAX_VALUE);
-			this.nightmare_ranged_damage = builder.translation("text.doom.config.nightmare_ranged_damage")
-					.defineInRange("Sets Nightmare Imp Ranged Damage", 4, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Chaingunner");
@@ -963,39 +899,6 @@ public class DoomConfig {
 					.defineInRange("Sets Tentacle Melee Damage", 1, 1, Double.MAX_VALUE);
 			builder.pop();
 
-			builder.push("Mob Settings:Cyberdemon 2016");
-			this.cyberdemon2016_biomes = builder
-					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
-					.translation("text.doom.config.cyberdemon2016_biomes")
-					.defineList("Cyberdemon 2016 Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
-			this.cyberdemon2016_spawn_weight = builder.translation("text.doom.config.cyberdemon2016_spawn_weight")
-					.defineInRange("Cyberdemon 2016 Spawn Weight", 4, 1, Integer.MAX_VALUE);
-			this.cyberdemon2016_min_group = builder.translation("text.doom.config.cyberdemon2016_min_group")
-					.defineInRange("Cyberdemon 2016 Min Group", 1, 1, Integer.MAX_VALUE);
-			this.cyberdemon2016_max_group = builder.translation("text.doom.config.cyberdemon2016_max_group")
-					.defineInRange("Cyberdemon 2016 Max Group", 1, 1, Integer.MAX_VALUE);
-			this.cyberdemon2016_health = builder.translation("text.doom.config.cyberdemon2016_health")
-					.defineInRange("Sets Cyberdemon 2016 Max Health", 300, 1, Double.MAX_VALUE);
-			this.cyberdemon2016_ranged_damage = builder.translation("text.doom.config.cyberdemon2016_ranged_damage")
-					.defineInRange("Sets Cyberdemon 2016 Ranged Damage", 9, 1, Double.MAX_VALUE);
-			this.cyberdemon2016_melee_damage = builder.translation("text.doom.config.cyberdemon2016_melee_damage")
-					.defineInRange("Sets Cyberdemon 2016 Melee Damage", 7, 1, Double.MAX_VALUE);
-			builder.pop();
-
-			builder.push("Mob Settings:Tyrant");
-			this.tyrant_biomes = builder
-					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
-					.translation("text.doom.config.tyrant_biomes")
-					.defineList("Tyrant Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
-			this.tyrant_spawn_weight = builder.translation("text.doom.config.tyrant_spawn_weight")
-					.defineInRange("Tyrant Spawn Weight", 4, 1, Integer.MAX_VALUE);
-			this.tyrant_min_group = builder.translation("text.doom.config.tyrant_min_group")
-					.defineInRange("Tyrant Min Group", 1, 1, Integer.MAX_VALUE);
-			this.tyrant_max_group = builder.translation("text.doom.config.tyrant_max_group")
-					.defineInRange("Tyrant Max Group", 1, 1, Integer.MAX_VALUE);
-
-			builder.pop();
-
 			builder.push("Mob Settings:Spider Mastermind");
 			this.spider_mastermind_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
@@ -1200,14 +1103,13 @@ public class DoomConfig {
 							"doom:painelemental", "doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:imp",
 							"doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:prowler", "doom:prowler",
 							"doom:prowler", "doom:prowler", "doom:prowler", "doom:prowler", "doom:prowler",
-							"doom:prowler", "doom:prowler", "doom:prowler", "doom:nightmare_imp", "doom:nightmare_imp",
-							"doom:nightmare_imp", "doom:nightmare_imp", "doom:nightmare_imp", "doom:nightmare_imp",
-							"doom:nightmare_imp", "doom:nightmare_imp", "doom:nightmare_imp", "doom:nightmare_imp",
-							"doom:nightmare_imp", "doom:pinky2016", "doom:pinky2016", "doom:pinky2016",
-							"doom:pinky2016", "doom:pinky2016", "doom:pinky2016", "doom:pinky2016", "doom:pinky2016",
-							"doom:pinky2016", "doom:pinky2016", "doom:lost_soul", "doom:lost_soul", "doom:lost_soul",
+							"doom:prowler", "doom:prowler", "doom:prowler", "doom:imp", "doom:imp", "doom:imp",
+							"doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:imp", "doom:imp",
+							"doom:imp", "doom:pinky", "doom:pinky", "doom:pinky", "doom:pinky", "doom:pinky",
+							"doom:pinky", "doom:pinky", "doom:pinky", "doom:pinky", "doom:pinky", "doom:lost_soul",
 							"doom:lost_soul", "doom:lost_soul", "doom:lost_soul", "doom:lost_soul", "doom:lost_soul",
-							"doom:lost_soul", "doom:lost_soul"), o -> o instanceof String);
+							"doom:lost_soul", "doom:lost_soul", "doom:lost_soul", "doom:lost_soul"),
+							o -> o instanceof String);
 			builder.pop();
 
 		}

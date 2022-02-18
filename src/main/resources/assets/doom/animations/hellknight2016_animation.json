@@ -749,6 +749,20 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "walk"
+				},
+				"0.04": {
+					"effect": "talk"
+				},
+				"1.04": {
+					"effect": "walk"
+				},
+				"1.08": {
+					"effect": "talk"
+				}
 			}
 		},
 		"run": {
@@ -1145,6 +1159,17 @@
 							"vector": [-5, 0, 0]
 						}
 					}
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "walk"
+				},
+				"0.04": {
+					"effect": "talk"
+				},
+				"0.4": {
+					"effect": "walk"
 				}
 			}
 		},
@@ -1721,6 +1746,11 @@
 							"easing": "easeInOutSine"
 						}
 					}
+				}
+			},
+			"sound_effects": {
+				"0.84": {
+					"effect": "attack"
 				}
 			}
 		},

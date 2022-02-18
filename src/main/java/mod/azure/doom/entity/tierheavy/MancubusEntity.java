@@ -11,6 +11,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;
@@ -41,6 +43,7 @@ import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -90,8 +93,35 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<MancubusEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(new AnimationController<MancubusEntity>(this, "controller1", 0, this::predicate1));
+		AnimationController<MancubusEntity> controller = new AnimationController<MancubusEntity>(this, "controller", 0,
+				this::predicate);
+		AnimationController<MancubusEntity> controller1 = new AnimationController<MancubusEntity>(this, "controller1",
+				0, this::predicate1);
+		controller.registerSoundListener(this::soundListener);
+		controller1.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
+		data.addAnimationController(controller1);
+	}
+
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (this.level.isClientSide()) {
+			if (event.sound.matches("walk")) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP.get(),
+						SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+			if (event.sound.matches("talk")) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
+						ModSoundEvents.MANCUBUS_STEP.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+			if (event.sound.matches("attack") && this.entityData.get(STATE) == 1) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
+						ModSoundEvents.ROCKET_FIRING.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+			if (event.sound.matches("flames") && this.entityData.get(STATE) > 1) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.FIRECHARGE_USE,
+						SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
 	}
 
 	@Override
@@ -185,8 +215,8 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 							float f1 = f + (float) i * (float) Math.PI * 0.4F;
 							parentEntity.spawnFlames(parentEntity.getX() + (double) Mth.cos(f1) * 1.5D,
 									parentEntity.getZ() + (double) Mth.sin(f1) * 1.5D, d0, d1, f1, 0);
-							this.parentEntity.setAttackingState(3);
 						}
+						this.parentEntity.setAttackingState(3);
 					} else if (parentEntity.distanceTo(livingentity) < 13.0D
 							&& parentEntity.distanceTo(livingentity) > 3.0D) {
 						for (int l = 0; l < 16; ++l) {
@@ -194,8 +224,8 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 							int j = 1 * l;
 							parentEntity.spawnFlames(parentEntity.getX() + (double) Mth.cos(f) * d5,
 									parentEntity.getZ() + (double) Mth.sin(f) * d5, d0, d1, f, j);
-							this.parentEntity.setAttackingState(2);
 						}
+						this.parentEntity.setAttackingState(2);
 					} else {
 						fireballentity.setPos(this.parentEntity.getX() + vector3d.x * 2.0D,
 								this.parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z * 2.0D);
@@ -229,6 +259,7 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 					this.attackTimer = -15;
 				}
 			} else if (this.attackTimer > 0) {
+				this.parentEntity.setAttackingState(0);
 				--this.attackTimer;
 			}
 			this.parentEntity.lookAt(livingentity, 30.0F, 30.0F);
@@ -295,11 +326,6 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.MANCUBUS_AMBIENT.get();
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.MANCUBUS_HURT.get();
 	}
@@ -307,15 +333,6 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 	@Override
 	protected SoundEvent getDeathSound() {
 		return ModSoundEvents.MANCUBUS_DEATH.get();
-	}
-
-	protected SoundEvent getStepSound() {
-		return ModSoundEvents.MANCUBUS_STEP.get();
-	}
-
-	@Override
-	protected void playStepSound(BlockPos pos, BlockState blockIn) {
-		this.playSound(this.getStepSound(), 0.15F, 1.0F);
 	}
 
 	@Override

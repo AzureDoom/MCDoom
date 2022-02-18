@@ -161,6 +161,9 @@
 	"doom.pinky_step": {
 		"sounds": [{"name": "doom:pinky_step"}]
 	},
+	"doom.pinky_yell": {
+		"sounds": [{"name": "doom:pinky_yell"}]
+	},
 	"doom.spiderdemon_death": {
 		"sounds": [{"name": "doom:spiderdemon_death"}]
 	},

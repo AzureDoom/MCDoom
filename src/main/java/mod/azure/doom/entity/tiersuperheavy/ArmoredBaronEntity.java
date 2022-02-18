@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,6 +31,7 @@ import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -69,10 +71,29 @@ public class ArmoredBaronEntity extends DemonEntity implements IAnimatable, IAni
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(
-				new AnimationController<ArmoredBaronEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(
-				new AnimationController<ArmoredBaronEntity>(this, "controller1", 0, this::predicate1));
+		AnimationController<ArmoredBaronEntity> controller = new AnimationController<ArmoredBaronEntity>(this,
+				"controller", 0, this::predicate);
+		AnimationController<ArmoredBaronEntity> controller1 = new AnimationController<ArmoredBaronEntity>(this,
+				"controller1", 0, this::predicate1);
+		controller.registerSoundListener(this::soundListener);
+		controller1.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
+		data.addAnimationController(controller1);
+	}
+
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("walk")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
+						ModSoundEvents.CYBERDEMON_STEP.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("attack")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
+						ModSoundEvents.BARON_AMBIENT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
 	}
 
 	@Override

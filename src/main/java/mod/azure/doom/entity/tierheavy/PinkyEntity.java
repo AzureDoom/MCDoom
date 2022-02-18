@@ -1,16 +1,18 @@
 package mod.azure.doom.entity.tierheavy;
 
+import java.util.SplittableRandom;
+
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -31,13 +33,13 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -77,7 +79,31 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<PinkyEntity>(this, "controller", 0, this::predicate));
+		AnimationController<PinkyEntity> controller = new AnimationController<PinkyEntity>(this, "controller", 0,
+				this::predicate);
+		controller.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
+	}
+
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("walk")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP.get(),
+						SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("talk")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
+						ModSoundEvents.PINKY_AMBIENT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("yell")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_YELL.get(),
+						SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
 	}
 
 	@Override
@@ -118,7 +144,7 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 	}
 
 	public int getVariant() {
-		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 2);
+		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 3);
 	}
 
 	public void setVariant(int variant) {
@@ -126,7 +152,7 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 	}
 
 	public int getVariants() {
-		return 2;
+		return 3;
 	}
 
 	@Override
@@ -145,7 +171,9 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
 			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-		this.setVariant(this.random.nextInt());
+		SplittableRandom random = new SplittableRandom();
+		int var = random.nextInt(0, 4);
+		this.setVariant(var);
 		return spawnDataIn;
 	}
 
@@ -157,11 +185,6 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.PINKY_AMBIENT.get();
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.PINKY_HURT.get();
 	}
@@ -169,15 +192,6 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 	@Override
 	protected SoundEvent getDeathSound() {
 		return ModSoundEvents.PINKY_DEATH.get();
-	}
-
-	protected SoundEvent getStepSound() {
-		return ModSoundEvents.PINKY_STEP.get();
-	}
-
-	@Override
-	protected void playStepSound(BlockPos pos, BlockState blockIn) {
-		this.playSound(this.getStepSound(), 0.15F, 1.0F);
 	}
 
 	@Override
@@ -193,6 +207,11 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 	@Override
 	public int tickTimer() {
 		return tickCount;
+	}
+
+	@Override
+	public int getArmorValue() {
+		return this.getVariant() == 3 ? 3 : 0;
 	}
 
 }

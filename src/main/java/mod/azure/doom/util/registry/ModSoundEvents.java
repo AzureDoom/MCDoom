@@ -11,10 +11,10 @@ public class ModSoundEvents {
 
 	public static final DeferredRegister<SoundEvent> MOD_SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS,
 			DoomMod.MODID);
-	
-	public static final RegistryObject<SoundEvent>  EMPTY = MOD_SOUNDS.register("doom.emptyclip",
+
+	public static final RegistryObject<SoundEvent> EMPTY = MOD_SOUNDS.register("doom.emptyclip",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.emptyclip")));
-	public static final RegistryObject<SoundEvent>  BEEP = MOD_SOUNDS.register("doom.grenadeabouttoexplode",
+	public static final RegistryObject<SoundEvent> BEEP = MOD_SOUNDS.register("doom.grenadeabouttoexplode",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.grenadeabouttoexplode")));;
 
 	public static final RegistryObject<SoundEvent> BFG_FIRING = MOD_SOUNDS.register("doom.bfg_firing",
@@ -112,6 +112,8 @@ public class ModSoundEvents {
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.pinky_hurt")));
 	public static final RegistryObject<SoundEvent> PINKY_STEP = MOD_SOUNDS.register("doom.pinky_step",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.pinky_step")));
+	public static final RegistryObject<SoundEvent> PINKY_YELL = MOD_SOUNDS.register("doom.pinky_yell",
+			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.pinky_yell")));
 
 	public static final RegistryObject<SoundEvent> LOST_SOUL_DEATH = MOD_SOUNDS.register("doom.lost_soul_death",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.lost_soul_death")));

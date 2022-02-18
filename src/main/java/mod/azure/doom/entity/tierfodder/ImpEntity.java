@@ -1,5 +1,7 @@
 package mod.azure.doom.entity.tierfodder;
 
+import java.util.SplittableRandom;
+
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
@@ -9,12 +11,19 @@ import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -25,6 +34,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -37,6 +47,9 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class ImpEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
+
+	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(ImpEntity.class,
+			EntityDataSerializers.INT);
 
 	private AnimationFactory factory = new AnimationFactory(this);
 
@@ -117,16 +130,6 @@ public class ImpEntity extends DemonEntity implements IAnimatable, IAnimationTic
 				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
-	@Override
-	public void readAdditionalSaveData(CompoundTag compound) {
-		super.readAdditionalSaveData(compound);
-	}
-
-	@Override
-	public boolean isBaby() {
-		return false;
-	}
-
 	protected boolean shouldDrown() {
 		return false;
 	}
@@ -172,6 +175,46 @@ public class ImpEntity extends DemonEntity implements IAnimatable, IAnimationTic
 	@Override
 	public int tickTimer() {
 		return tickCount;
+	}
+
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(VARIANT, 0);
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundTag tag) {
+		super.readAdditionalSaveData(tag);
+		this.setVariant(tag.getInt("Variant"));
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putInt("Variant", this.getVariant());
+	}
+
+	public int getVariant() {
+		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 3);
+	}
+
+	public void setVariant(int variant) {
+		this.entityData.set(VARIANT, variant);
+	}
+
+	public int getVariants() {
+		return 3;
+	}
+
+	@Override
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
+			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
+		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+		SplittableRandom random = new SplittableRandom();
+		int var = random.nextInt(0, 4);
+		this.setVariant(var);
+		return spawnDataIn;
 	}
 
 }

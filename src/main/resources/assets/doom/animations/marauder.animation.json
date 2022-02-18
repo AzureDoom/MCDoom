@@ -127,6 +127,20 @@
 						"vector": ["Math.cos(query.anim_time*360)*-7", 0, 0]
 					}
 				}
+			},
+			"sound_effects": {
+				"0.24": {
+					"effect": "walk"
+				},
+				"0.76": {
+					"effect": "walk"
+				},
+				"1.24": {
+					"effect": "walk"
+				},
+				"1.76": {
+					"effect": "walk"
+				}
 			}
 		},
 		"attacking": {
@@ -408,6 +422,11 @@
 							"vector": [1, 1, 1]
 						}
 					}
+				}
+			},
+			"sound_effects": {
+				"0.4": {
+					"effect": "attack"
 				}
 			}
 		}

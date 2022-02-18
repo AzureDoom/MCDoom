@@ -96,7 +96,6 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 								entity.level.addFreshEntity(areaeffectcloudentity);
 								this.attack.shoot();
 								this.entity.setTextureState(0);
-								this.entity.setAttackingState(0);
 								this.summonTime = -300;
 							}
 							if (this.attackTime == 48) {
@@ -109,22 +108,7 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 								this.entity.setAttackingState(0);
 								this.entity.getNavigation().moveTo(livingentity, 1.0);
 							}
-						} else {
-							if (this.attackTime == 1) {
-								this.entity.getNavigation().stop();
-							}
-							if (this.attackTime == 5) {
-								this.entity.setAttackingState(4);
-							}
-							if (this.attackTime == 8) {
-								this.attack.shoot2();
-								this.summonTime = -8;
-							}
-							if (this.attackTime == 13) {
-								this.entity.getNavigation().moveTo(livingentity, 1.0);
-								this.attackTime = -5;
-							}
-						}
+						} 
 					} else if (this.entity.getDeathState() == 1 && this.summonTime == 2) {
 						if (this.attackTime == 1) {
 							this.entity.getNavigation().stop();

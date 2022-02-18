@@ -1,5 +1,7 @@
 package mod.azure.doom.entity.tiersuperheavy;
 
+import java.util.SplittableRandom;
+
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
@@ -7,17 +9,23 @@ import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -29,24 +37,27 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class CyberdemonEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
+	private AnimationFactory factory = new AnimationFactory(this);
+	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(CyberdemonEntity.class,
+			EntityDataSerializers.INT);
+
 	public CyberdemonEntity(EntityType<? extends CyberdemonEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 	}
-
-	private AnimationFactory factory = new AnimationFactory(this);
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (event.isMoving()) {
@@ -75,9 +86,35 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable, IAnima
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<CyberdemonEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(
-				new AnimationController<CyberdemonEntity>(this, "controller1", 0, this::predicate1));
+		AnimationController<CyberdemonEntity> controller = new AnimationController<CyberdemonEntity>(this, "controller",
+				0, this::predicate);
+		AnimationController<CyberdemonEntity> controller1 = new AnimationController<CyberdemonEntity>(this,
+				"controller1", 0, this::predicate1);
+		controller.registerSoundListener(this::soundListener);
+		controller1.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
+		data.addAnimationController(controller1);
+	}
+
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("walk")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
+						ModSoundEvents.CYBERDEMON_STEP.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("talk")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
+						ModSoundEvents.CYBERDEMON_AMBIENT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("attack")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
+						ModSoundEvents.ROCKET_FIRING.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
 	}
 
 	@Override
@@ -137,28 +174,48 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable, IAnima
 	}
 
 	@Override
-	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-		super.onSyncedDataUpdated(key);
+	public int getArmorValue() {
+		return this.getVariant() > 1 ? 10 : 0;
 	}
 
 	@Override
-	public void tick() {
-		super.tick();
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(VARIANT, 0);
 	}
 
 	@Override
-	public void aiStep() {
-		super.aiStep();
+	public void readAdditionalSaveData(CompoundTag tag) {
+		super.readAdditionalSaveData(tag);
+		this.setVariant(tag.getInt("Variant"));
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag compound) {
-		super.addAdditionalSaveData(compound);
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putInt("Variant", this.getVariant());
+	}
+
+	public int getVariant() {
+		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 3);
+	}
+
+	public void setVariant(int variant) {
+		this.entityData.set(VARIANT, variant);
+	}
+
+	public int getVariants() {
+		return 3;
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag compound) {
-		super.readAdditionalSaveData(compound);
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
+			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
+		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+		SplittableRandom random = new SplittableRandom();
+		int var = random.nextInt(0, 4);
+		this.setVariant(var);
+		return spawnDataIn;
 	}
 
 	@Override
@@ -170,22 +227,12 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable, IAnima
 		return 6.55F;
 	}
 
-	@Override
-	public boolean isBaby() {
-		return false;
-	}
-
 	protected boolean shouldDrown() {
 		return false;
 	}
 
 	protected boolean shouldBurnInDay() {
 		return false;
-	}
-
-	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.CYBERDEMON_AMBIENT.get();
 	}
 
 	@Override
@@ -196,15 +243,6 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable, IAnima
 	@Override
 	protected SoundEvent getDeathSound() {
 		return ModSoundEvents.CYBERDEMON_DEATH.get();
-	}
-
-	protected SoundEvent getStepSound() {
-		return ModSoundEvents.CYBERDEMON_STEP.get();
-	}
-
-	@Override
-	protected void playStepSound(BlockPos pos, BlockState blockIn) {
-		this.playSound(this.getStepSound(), 0.15F, 1.0F);
 	}
 
 	@Override

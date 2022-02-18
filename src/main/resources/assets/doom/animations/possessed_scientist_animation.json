@@ -112,6 +112,20 @@
 						"vector": ["Math.cos(query.anim_time * 180) * 2.5", 0, 0]
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "walk"
+				},
+				"0.04": {
+					"effect": "talk"
+				},
+				"1.04": {
+					"effect": "walk"
+				},
+				"1.08": {
+					"effect": "talk"
+				}
 			}
 		},
 		"attack": {
@@ -132,6 +146,11 @@
 					"rotation": {
 						"vector": [-75, 0, "Math.cos(query.anim_time * 180) * 2.5"]
 					}
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "attack"
 				}
 			}
 		},

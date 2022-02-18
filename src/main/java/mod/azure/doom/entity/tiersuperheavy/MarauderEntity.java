@@ -18,6 +18,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -45,6 +46,7 @@ import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -85,8 +87,29 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<MarauderEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(new AnimationController<MarauderEntity>(this, "controller1", 0, this::predicate1));
+		AnimationController<MarauderEntity> controller = new AnimationController<MarauderEntity>(this, "controller", 0,
+				this::predicate);
+		AnimationController<MarauderEntity> controller1 = new AnimationController<MarauderEntity>(this, "controller1",
+				0, this::predicate1);
+		controller.registerSoundListener(this::soundListener);
+		controller1.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
+		data.addAnimationController(controller1);
+	}
+
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("walk")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP.get(),
+						SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("attack")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
+						ModSoundEvents.SUPER_SHOTGUN_SHOOT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
 	}
 
 	@Override
@@ -310,11 +333,6 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.ZOMBIEMAN_AMBIENT.get();
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.ZOMBIEMAN_HURT.get();
 	}
@@ -322,15 +340,6 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 	@Override
 	protected SoundEvent getDeathSound() {
 		return ModSoundEvents.ZOMBIEMAN_DEATH.get();
-	}
-
-	protected SoundEvent getStepSound() {
-		return SoundEvents.ZOMBIE_STEP;
-	}
-
-	@Override
-	protected void playStepSound(BlockPos pos, BlockState blockIn) {
-		this.playSound(this.getStepSound(), 0.15F, 1.0F);
 	}
 
 	@Override

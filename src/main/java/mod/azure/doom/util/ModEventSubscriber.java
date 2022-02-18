@@ -14,13 +14,11 @@ import mod.azure.doom.entity.tierboss.SpiderMastermind2016Entity;
 import mod.azure.doom.entity.tierboss.SpiderMastermindEntity;
 import mod.azure.doom.entity.tierfodder.ChaingunnerEntity;
 import mod.azure.doom.entity.tierfodder.GargoyleEntity;
-import mod.azure.doom.entity.tierfodder.Imp2016Entity;
 import mod.azure.doom.entity.tierfodder.ImpEntity;
 import mod.azure.doom.entity.tierfodder.ImpStoneEntity;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
 import mod.azure.doom.entity.tierfodder.MaykrDroneEntity;
 import mod.azure.doom.entity.tierfodder.MechaZombieEntity;
-import mod.azure.doom.entity.tierfodder.NightmareImpEntity;
 import mod.azure.doom.entity.tierfodder.PossessedScientistEntity;
 import mod.azure.doom.entity.tierfodder.PossessedSoldierEntity;
 import mod.azure.doom.entity.tierfodder.ShotgunguyEntity;
@@ -33,7 +31,6 @@ import mod.azure.doom.entity.tierheavy.Hellknight2016Entity;
 import mod.azure.doom.entity.tierheavy.HellknightEntity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
 import mod.azure.doom.entity.tierheavy.PainEntity;
-import mod.azure.doom.entity.tierheavy.Pinky2016;
 import mod.azure.doom.entity.tierheavy.PinkyEntity;
 import mod.azure.doom.entity.tierheavy.ProwlerEntity;
 import mod.azure.doom.entity.tierheavy.Revenant2016Entity;
@@ -43,7 +40,6 @@ import mod.azure.doom.entity.tierheavy.WhiplashEntity;
 import mod.azure.doom.entity.tiersuperheavy.ArchvileEntity;
 import mod.azure.doom.entity.tiersuperheavy.ArmoredBaronEntity;
 import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
-import mod.azure.doom.entity.tiersuperheavy.Cyberdemon2016Entity;
 import mod.azure.doom.entity.tiersuperheavy.CyberdemonEntity;
 import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
 import mod.azure.doom.entity.tiersuperheavy.FireBaronEntity;
@@ -69,6 +65,8 @@ public class ModEventSubscriber {
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.LOST_SOUL.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+		SpawnPlacements.register(ModEntityTypes.LOST_SOUL_ETERNAL.get(), SpawnPlacements.Type.ON_GROUND,
+				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.ZOMBIEMAN.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.SPIDERMASTERMIND.get(), SpawnPlacements.Type.ON_GROUND,
@@ -83,15 +81,11 @@ public class ModEventSubscriber {
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.IMP.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.NIGHTMARE_IMP.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.PINKY.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.SPECTRE.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.CACODEMON.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.IMP2016.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.CHAINGUNNER.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
@@ -106,8 +100,6 @@ public class ModEventSubscriber {
 		SpawnPlacements.register(ModEntityTypes.HELLKNIGHT2016.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.CYBERDEMON.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.CYBERDEMON2016.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.UNWILLING.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
@@ -131,15 +123,11 @@ public class ModEventSubscriber {
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.IMP_STONE.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.TYRANT.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.POSSESSEDWORKER.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.DOOMHUNTER.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.WHIPLASH.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.PINKY2016.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.FIREBARON.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
@@ -156,8 +144,6 @@ public class ModEventSubscriber {
 		SpawnPlacements.register(ModEntityTypes.BLOODMAYKR.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.ARCHMAKER.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.ARCHVILEETERNAL.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.TENTACLE.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
@@ -178,18 +164,16 @@ public class ModEventSubscriber {
 		event.put(ModEntityTypes.ARCHVILE.get(), ArchvileEntity.createAttributes().build());
 		event.put(ModEntityTypes.BARON.get(), BaronEntity.createAttributes().build());
 		event.put(ModEntityTypes.CHAINGUNNER.get(), ChaingunnerEntity.createAttributes().build());
-		event.put(ModEntityTypes.CYBERDEMON2016.get(), Cyberdemon2016Entity.createAttributes().build());
 		event.put(ModEntityTypes.HELLKNIGHT.get(), HellknightEntity.createAttributes().build());
 		event.put(ModEntityTypes.HELLKNIGHT2016.get(), Hellknight2016Entity.createAttributes().build());
 		event.put(ModEntityTypes.ICONOFSIN.get(), IconofsinEntity.createAttributes().build());
-		event.put(ModEntityTypes.IMP2016.get(), Imp2016Entity.createAttributes().build());
-		event.put(ModEntityTypes.NIGHTMARE_IMP.get(), NightmareImpEntity.createAttributes().build());
 		event.put(ModEntityTypes.IMP.get(), ImpEntity.createAttributes().build());
 		event.put(ModEntityTypes.MANCUBUS.get(), MancubusEntity.createAttributes().build());
 		event.put(ModEntityTypes.MARAUDER.get(), MarauderEntity.createAttributes().build());
 		event.put(ModEntityTypes.PINKY.get(), PinkyEntity.createAttributes().build());
 		event.put(ModEntityTypes.SPECTRE.get(), SpectreEntity.createAttributes().build());
 		event.put(ModEntityTypes.LOST_SOUL.get(), LostSoulEntity.createAttributes().build());
+		event.put(ModEntityTypes.LOST_SOUL_ETERNAL.get(), LostSoulEntity.createAttributes().build());
 		event.put(ModEntityTypes.POSSESSEDSCIENTIST.get(), PossessedScientistEntity.createAttributes().build());
 		event.put(ModEntityTypes.POSSESSEDSOLDIER.get(), PossessedSoldierEntity.createAttributes().build());
 		event.put(ModEntityTypes.REVENANT.get(), RevenantEntity.createAttributes().build());
@@ -207,11 +191,9 @@ public class ModEventSubscriber {
 		event.put(ModEntityTypes.PROWLER.get(), ProwlerEntity.createAttributes().build());
 		event.put(ModEntityTypes.DREADKNIGHT.get(), Hellknight2016Entity.createAttributes().build());
 		event.put(ModEntityTypes.IMP_STONE.get(), ImpStoneEntity.createAttributes().build());
-		event.put(ModEntityTypes.TYRANT.get(), Cyberdemon2016Entity.createAttributes().build());
 		event.put(ModEntityTypes.POSSESSEDWORKER.get(), PossessedScientistEntity.createAttributes().build());
 		event.put(ModEntityTypes.DOOMHUNTER.get(), DoomHunterEntity.createAttributes().build());
 		event.put(ModEntityTypes.WHIPLASH.get(), WhiplashEntity.createAttributes().build());
-		event.put(ModEntityTypes.PINKY2016.get(), Pinky2016.createAttributes().build());
 		event.put(ModEntityTypes.BARON2016.get(), BaronEntity.createAttributes().build());
 		event.put(ModEntityTypes.ARMORBARON.get(), ArmoredBaronEntity.createAttributes().build());
 		event.put(ModEntityTypes.ARACHNOTRONETERNAL.get(), ArachnotronEntity.createAttributes().build());
@@ -220,7 +202,6 @@ public class ModEventSubscriber {
 		event.put(ModEntityTypes.BLOODMAYKR.get(), BloodMaykrEntity.createAttributes().build());
 		event.put(ModEntityTypes.ARCHMAKER.get(), ArchMakyrEntity.createAttributes().build());
 		event.put(ModEntityTypes.FIREBARON.get(), FireBaronEntity.createAttributes().build());
-		event.put(ModEntityTypes.ARCHVILEETERNAL.get(), ArchvileEntity.createAttributes().build());
 		event.put(ModEntityTypes.TENTACLE.get(), TentacleEntity.createAttributes().build());
 		event.put(ModEntityTypes.MOTHERDEMON.get(), MotherDemonEntity.createAttributes().build());
 		event.put(ModEntityTypes.TURRET.get(), TurretEntity.createAttributes().build());

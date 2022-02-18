@@ -12,6 +12,7 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -19,10 +20,13 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -51,6 +55,7 @@ import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -97,8 +102,29 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<SummonerEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(new AnimationController<SummonerEntity>(this, "controller1", 0, this::predicate1));
+		AnimationController<SummonerEntity> controller = new AnimationController<SummonerEntity>(this, "controller", 0,
+				this::predicate);
+		AnimationController<SummonerEntity> controller1 = new AnimationController<SummonerEntity>(this, "controller1",
+				0, this::predicate1);
+		controller.registerSoundListener(this::soundListener);
+		controller1.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
+		data.addAnimationController(controller1);
+	}
+
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("walk")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PHANTOM_SWOOP,
+						SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("attack")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
+						ModSoundEvents.ARCHVILE_SCREAM.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
 	}
 
 	@Override
@@ -183,8 +209,8 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	public void spawnWave() {
 		Random rand = new Random();
-		List<EntityType<?>> givenList = Arrays.asList(ModEntityTypes.IMP.get(), ModEntityTypes.NIGHTMARE_IMP.get(),
-				ModEntityTypes.IMP2016.get(), ModEntityTypes.LOST_SOUL.get(), ModEntityTypes.IMP_STONE.get());
+		List<EntityType<?>> givenList = Arrays.asList(ModEntityTypes.IMP.get(), ModEntityTypes.LOST_SOUL.get(),
+				ModEntityTypes.IMP_STONE.get());
 
 		for (int i = 0; i < 1; i++) {
 			int randomIndex = rand.nextInt(givenList.size());
@@ -482,6 +508,16 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 	@Override
 	public int tickTimer() {
 		return tickCount;
+	}
+
+	@Override
+	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+		return ModSoundEvents.ARCHVILE_HURT.get();
+	}
+
+	@Override
+	protected SoundEvent getDeathSound() {
+		return ModSoundEvents.ARCHVILE_DEATH.get();
 	}
 
 }

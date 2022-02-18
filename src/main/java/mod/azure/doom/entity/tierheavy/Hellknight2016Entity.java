@@ -5,11 +5,11 @@ import java.util.EnumSet;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.EntityDimensions;
@@ -29,7 +29,6 @@ import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -37,6 +36,7 @@ import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -76,10 +76,35 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(
-				new AnimationController<Hellknight2016Entity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(
-				new AnimationController<Hellknight2016Entity>(this, "controller1", 0, this::predicate1));
+		AnimationController<Hellknight2016Entity> controller = new AnimationController<Hellknight2016Entity>(this,
+				"controller", 0, this::predicate);
+		AnimationController<Hellknight2016Entity> controller1 = new AnimationController<Hellknight2016Entity>(this,
+				"controller1", 0, this::predicate1);
+		controller.registerSoundListener(this::soundListener);
+		controller1.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
+		data.addAnimationController(controller1);
+	}
+
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("walk")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP.get(),
+						SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("attack")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_ATTACK_CRIT,
+						SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("talk")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
+						ModSoundEvents.HELLKNIGHT_AMBIENT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
 	}
 
 	@Override
@@ -227,11 +252,6 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.HELLKNIGHT_AMBIENT.get();
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.HELLKNIGHT_HURT.get();
 	}
@@ -239,15 +259,6 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 	@Override
 	protected SoundEvent getDeathSound() {
 		return ModSoundEvents.HELLKNIGHT_DEATH.get();
-	}
-
-	protected SoundEvent getStepSound() {
-		return SoundEvents.ZOMBIE_STEP;
-	}
-
-	@Override
-	protected void playStepSound(BlockPos pos, BlockState blockIn) {
-		this.playSound(this.getStepSound(), 0.15F, 1.0F);
 	}
 
 	@Override

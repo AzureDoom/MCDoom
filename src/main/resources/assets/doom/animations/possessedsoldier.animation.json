@@ -125,6 +125,17 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "walk"
+				},
+				"0.04": {
+					"effect": "talk"
+				},
+				"1.12": {
+					"effect": "walk"
+				}
 			}
 		},
 		"attacking": {
@@ -242,6 +253,11 @@
 							"easing": "easeInOutSine"
 						}
 					}
+				}
+			},
+			"sound_effects": {
+				"0.56": {
+					"effect": "plasmafire"
 				}
 			}
 		},

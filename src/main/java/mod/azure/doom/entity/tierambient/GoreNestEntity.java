@@ -138,13 +138,12 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 	public void spawnWave() {
 		Random rand = new Random();
 		List<EntityType<?>> givenList = Arrays.asList(ModEntityTypes.HELLKNIGHT.get(),
-				ModEntityTypes.POSSESSEDSCIENTIST.get(), ModEntityTypes.IMP.get(), ModEntityTypes.NIGHTMARE_IMP.get(),
-				ModEntityTypes.PINKY.get(), ModEntityTypes.CACODEMON.get(), ModEntityTypes.CHAINGUNNER.get(),
-				ModEntityTypes.GARGOYLE.get(), ModEntityTypes.HELLKNIGHT2016.get(), ModEntityTypes.IMP2016.get(),
-				ModEntityTypes.LOST_SOUL.get(), ModEntityTypes.POSSESSEDSOLDIER.get(), ModEntityTypes.SHOTGUNGUY.get(),
-				ModEntityTypes.UNWILLING.get(), ModEntityTypes.ZOMBIEMAN.get(), ModEntityTypes.ARACHNOTRON.get(),
-				ModEntityTypes.ARCHVILE.get(), ModEntityTypes.MECHAZOMBIE.get(), ModEntityTypes.PAIN.get(),
-				ModEntityTypes.MANCUBUS.get());
+				ModEntityTypes.POSSESSEDSCIENTIST.get(), ModEntityTypes.IMP.get(), ModEntityTypes.PINKY.get(),
+				ModEntityTypes.CACODEMON.get(), ModEntityTypes.CHAINGUNNER.get(), ModEntityTypes.GARGOYLE.get(),
+				ModEntityTypes.HELLKNIGHT2016.get(), ModEntityTypes.LOST_SOUL.get(),
+				ModEntityTypes.POSSESSEDSOLDIER.get(), ModEntityTypes.SHOTGUNGUY.get(), ModEntityTypes.UNWILLING.get(),
+				ModEntityTypes.ZOMBIEMAN.get(), ModEntityTypes.ARACHNOTRON.get(), ModEntityTypes.ARCHVILE.get(),
+				ModEntityTypes.MECHAZOMBIE.get(), ModEntityTypes.PAIN.get(), ModEntityTypes.MANCUBUS.get());
 
 		SplittableRandom random = new SplittableRandom();
 		int r = random.nextInt(-3, 3);

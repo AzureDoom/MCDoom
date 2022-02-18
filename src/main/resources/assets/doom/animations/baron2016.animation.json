@@ -1186,6 +1186,14 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "walk"
+				},
+				"1.0": {
+					"effect": "walk"
+				}
 			}
 		},
 		"walking_fireborne": {
@@ -1501,6 +1509,14 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "walk"
+				},
+				"1.0": {
+					"effect": "walk"
+				}
 			}
 		},
 		"walking_armor": {
@@ -1735,6 +1751,14 @@
 							"vector": [0, 0, 0]
 						}
 					}
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "walk"
+				},
+				"1.0": {
+					"effect": "walk"
 				}
 			}
 		},
@@ -2154,6 +2178,11 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "attack"
+				}
 			}
 		},
 		"ranged_fireborne": {
@@ -2269,6 +2298,11 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "attack"
+				}
 			}
 		},
 		"ranged_armor": {
@@ -2302,6 +2336,11 @@
 							"vector": [0, 0, -20]
 						}
 					}
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "attack"
 				}
 			}
 		}

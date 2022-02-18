@@ -230,8 +230,8 @@ public class DoomItems {
 			() -> new DoomSpawnEgg(ModEntityTypes.ARACHNOTRON));
 	public static final RegistryObject<Item> LOST_SOUL_SPAWN_EGG = ITEMS.register("lost_soul_spawn_egg",
 			() -> new DoomSpawnEgg(ModEntityTypes.LOST_SOUL));
-	public static final RegistryObject<Item> NIGHTMARE_IMP_SPAWN_EGG = ITEMS.register("nightmare_imp_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.NIGHTMARE_IMP));
+	public static final RegistryObject<Item> LOST_SOUL_ETERNAL_SPAWN_EGG = ITEMS.register("lost_soul_eternal_spawn_egg",
+			() -> new DoomSpawnEgg(ModEntityTypes.LOST_SOUL_ETERNAL));
 	public static final RegistryObject<Item> PINKY_SPAWN_EGG = ITEMS.register("pinky_spawn_egg",
 			() -> new DoomSpawnEgg(ModEntityTypes.PINKY));
 	public static final RegistryObject<Item> ARCHVILE_SPAWN_EGG = ITEMS.register("archvile_spawn_egg",
@@ -250,8 +250,6 @@ public class DoomItems {
 			() -> new DoomSpawnEgg(ModEntityTypes.CHAINGUNNER));
 	public static final RegistryObject<Item> HELLKNIGHT_SPAWN_EGG = ITEMS.register("hellknight_spawn_egg",
 			() -> new DoomSpawnEgg(ModEntityTypes.HELLKNIGHT));
-	public static final RegistryObject<Item> IMP2016_SPAWN_EGG = ITEMS.register("imp2016_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.IMP2016));
 	public static final RegistryObject<Item> MARAUDER_SPAWN_EGG = ITEMS.register("marauder_spawn_egg",
 			() -> new DoomSpawnEgg(ModEntityTypes.MARAUDER));
 	public static final RegistryObject<Item> PAIN_SPAWN_EGG = ITEMS.register("pain_spawn_egg",
@@ -262,8 +260,6 @@ public class DoomItems {
 			() -> new DoomSpawnEgg(ModEntityTypes.SHOTGUNGUY));
 	public static final RegistryObject<Item> CYBERDEMON_SPAWN_EGG = ITEMS.register("cyberdemon_spawn_egg",
 			() -> new DoomSpawnEgg(ModEntityTypes.CYBERDEMON));
-	public static final RegistryObject<Item> CYBERDEMON2016_SPAWN_EGG = ITEMS.register("cyberdemon2016_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.CYBERDEMON2016));
 	public static final RegistryObject<Item> ICON_SPAWN_EGG = ITEMS.register("icon_of_sin_spawn_egg",
 			() -> new DoomSpawnEgg(ModEntityTypes.ICONOFSIN));
 	public static final RegistryObject<Item> UNWILLING_SPAWN_EGG = ITEMS.register("unwilling_spawn_egg",
@@ -290,14 +286,10 @@ public class DoomItems {
 			() -> new DoomSpawnEgg(ModEntityTypes.DREADKNIGHT));
 	public static final RegistryObject<Item> STONEIMP_SPAWN_EGG = ITEMS.register("stoneimp_spawn_egg",
 			() -> new DoomSpawnEgg(ModEntityTypes.IMP_STONE));
-	public static final RegistryObject<Item> TYRANT_SPAWN_EGG = ITEMS.register("tyrant_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.TYRANT));
 	public static final RegistryObject<Item> POSSESSED_WORKER_SPAWN_EGG = ITEMS.register("possessed_worker_spawn_egg",
 			() -> new DoomSpawnEgg(ModEntityTypes.POSSESSEDWORKER));
 	public static final RegistryObject<Item> DOOMHUNTER_SPAWN_EGG = ITEMS.register("doom_hunter_spawn_egg",
 			() -> new DoomSpawnEgg(ModEntityTypes.DOOMHUNTER));
-	public static final RegistryObject<Item> PINKY2016_SPAWN_EGG = ITEMS.register("pinky2016_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.PINKY2016));
 	public static final RegistryObject<Item> WHIPLASH_SPAWN_EGG = ITEMS.register("whiplash_spawn_egg",
 			() -> new DoomSpawnEgg(ModEntityTypes.WHIPLASH));
 	public static final RegistryObject<Item> BARON2016_SPAWN_EGG = ITEMS.register("baron2016_spawn_egg",
@@ -316,8 +308,6 @@ public class DoomItems {
 			.register("arachnotroneternal_spawn_egg", () -> new DoomSpawnEgg(ModEntityTypes.ARACHNOTRONETERNAL));
 	public static final RegistryObject<Item> SPIDERMASTERMIND2016_SPAWN_EGG = ITEMS
 			.register("spidermastermind2016_spawn_egg", () -> new DoomSpawnEgg(ModEntityTypes.SPIDERMASTERMIND2016));
-	public static final RegistryObject<Item> ARCHVILEETERNAL_SPAWN_EGG = ITEMS.register("archvileeternal_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.ARCHVILEETERNAL));
 	public static final RegistryObject<Item> TENTACLE_SPAWN_EGG = ITEMS.register("tentacle_spawn_egg",
 			() -> new DoomSpawnEgg(ModEntityTypes.TENTACLE));
 	public static final RegistryObject<Item> MOTHERDEMON_SPAWN_EGG = ITEMS.register("motherdemon_spawn_egg",

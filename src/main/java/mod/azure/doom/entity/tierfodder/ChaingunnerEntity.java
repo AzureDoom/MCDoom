@@ -7,10 +7,9 @@ import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -29,13 +28,13 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -83,11 +82,37 @@ public class ChaingunnerEntity extends DemonEntity implements IAnimatable, IAnim
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<ChaingunnerEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(
-				new AnimationController<ChaingunnerEntity>(this, "controller1", 0, this::predicate1));
-		data.addAnimationController(
-				new AnimationController<ChaingunnerEntity>(this, "controller2", 0, this::predicate2));
+		AnimationController<ChaingunnerEntity> controller = new AnimationController<ChaingunnerEntity>(this,
+				"controller", 0, this::predicate);
+		AnimationController<ChaingunnerEntity> controller1 = new AnimationController<ChaingunnerEntity>(this,
+				"controller1", 0, this::predicate1);
+		AnimationController<ChaingunnerEntity> controller2 = new AnimationController<ChaingunnerEntity>(this,
+				"controller2", 0, this::predicate2);
+		controller.registerSoundListener(this::soundListener);
+		controller1.registerSoundListener(this::soundListener);
+		controller2.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
+	}
+
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("walk")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP.get(),
+						SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("talk")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
+						ModSoundEvents.ZOMBIEMAN_AMBIENT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
+		if (event.sound.matches("attack")) {
+			if (this.level.isClientSide()) {
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PISTOL_HIT.get(),
+						SoundSource.HOSTILE, 1.0F, 1.0F, true);
+			}
+		}
 	}
 
 	@Override
@@ -157,11 +182,6 @@ public class ChaingunnerEntity extends DemonEntity implements IAnimatable, IAnim
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.ZOMBIEMAN_AMBIENT.get();
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.ZOMBIEMAN_HURT.get();
 	}
@@ -169,15 +189,6 @@ public class ChaingunnerEntity extends DemonEntity implements IAnimatable, IAnim
 	@Override
 	protected SoundEvent getDeathSound() {
 		return ModSoundEvents.ZOMBIEMAN_DEATH.get();
-	}
-
-	protected SoundEvent getStepSound() {
-		return SoundEvents.ZOMBIE_STEP;
-	}
-
-	@Override
-	protected void playStepSound(BlockPos pos, BlockState blockIn) {
-		this.playSound(this.getStepSound(), 0.15F, 1.0F);
 	}
 
 	@Override

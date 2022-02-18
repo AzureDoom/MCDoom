@@ -33,13 +33,11 @@ import mod.azure.doom.entity.tierboss.SpiderMastermind2016Entity;
 import mod.azure.doom.entity.tierboss.SpiderMastermindEntity;
 import mod.azure.doom.entity.tierfodder.ChaingunnerEntity;
 import mod.azure.doom.entity.tierfodder.GargoyleEntity;
-import mod.azure.doom.entity.tierfodder.Imp2016Entity;
 import mod.azure.doom.entity.tierfodder.ImpEntity;
 import mod.azure.doom.entity.tierfodder.ImpStoneEntity;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
 import mod.azure.doom.entity.tierfodder.MaykrDroneEntity;
 import mod.azure.doom.entity.tierfodder.MechaZombieEntity;
-import mod.azure.doom.entity.tierfodder.NightmareImpEntity;
 import mod.azure.doom.entity.tierfodder.PossessedScientistEntity;
 import mod.azure.doom.entity.tierfodder.PossessedSoldierEntity;
 import mod.azure.doom.entity.tierfodder.ShotgunguyEntity;
@@ -52,7 +50,6 @@ import mod.azure.doom.entity.tierheavy.Hellknight2016Entity;
 import mod.azure.doom.entity.tierheavy.HellknightEntity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
 import mod.azure.doom.entity.tierheavy.PainEntity;
-import mod.azure.doom.entity.tierheavy.Pinky2016;
 import mod.azure.doom.entity.tierheavy.PinkyEntity;
 import mod.azure.doom.entity.tierheavy.ProwlerEntity;
 import mod.azure.doom.entity.tierheavy.Revenant2016Entity;
@@ -62,7 +59,6 @@ import mod.azure.doom.entity.tierheavy.WhiplashEntity;
 import mod.azure.doom.entity.tiersuperheavy.ArchvileEntity;
 import mod.azure.doom.entity.tiersuperheavy.ArmoredBaronEntity;
 import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
-import mod.azure.doom.entity.tiersuperheavy.Cyberdemon2016Entity;
 import mod.azure.doom.entity.tiersuperheavy.CyberdemonEntity;
 import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
 import mod.azure.doom.entity.tiersuperheavy.FireBaronEntity;
@@ -115,11 +111,9 @@ public class ModEntityTypes {
 							.sized(0.5F, 0.5F).clientTrackingRange(9)
 							.build(new ResourceLocation(DoomMod.MODID, "shotgun_shell").toString()));
 
-	public static final RegistryObject<EntityType<MeatHookEntity>> MEATHOOOK_ENTITY = ENTITY_TYPES
-			.register("meathook",
-					() -> EntityType.Builder.<MeatHookEntity>of(MeatHookEntity::new, MobCategory.MISC)
-							.sized(0.5F, 0.5F).clientTrackingRange(9)
-							.build(new ResourceLocation(DoomMod.MODID, "meathook").toString()));
+	public static final RegistryObject<EntityType<MeatHookEntity>> MEATHOOOK_ENTITY = ENTITY_TYPES.register("meathook",
+			() -> EntityType.Builder.<MeatHookEntity>of(MeatHookEntity::new, MobCategory.MISC).sized(0.5F, 0.5F)
+					.clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "meathook").toString()));
 
 	public static final RegistryObject<EntityType<DroneBoltEntity>> DRONEBOLT_MOB = ENTITY_TYPES
 			.register("dronebolt_mob",
@@ -182,12 +176,6 @@ public class ModEntityTypes {
 			() -> EntityType.Builder.of(ImpEntity::new, MobCategory.MONSTER).sized(0.6f, 1.95F).fireImmune()
 					.clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "imp").toString()));
 
-	public static final RegistryObject<EntityType<NightmareImpEntity>> NIGHTMARE_IMP = ENTITY_TYPES
-			.register("nightmare_imp",
-					() -> EntityType.Builder.of(NightmareImpEntity::new, MobCategory.MONSTER).sized(0.6f, 1.95F)
-							.fireImmune().clientTrackingRange(9)
-							.build(new ResourceLocation(DoomMod.MODID, "nightmare_imp").toString()));
-
 	public static final RegistryObject<EntityType<PinkyEntity>> PINKY = ENTITY_TYPES.register("pinky",
 			() -> EntityType.Builder.of(PinkyEntity::new, MobCategory.MONSTER).sized(1.7f, 2.2F).fireImmune()
 					.clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "pinky").toString()));
@@ -232,10 +220,6 @@ public class ModEntityTypes {
 			() -> EntityType.Builder.of(RevenantEntity::new, MobCategory.MONSTER).sized(1.9f, 3.95F).fireImmune()
 					.clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "revenant").toString()));
 
-	public static final RegistryObject<EntityType<Imp2016Entity>> IMP2016 = ENTITY_TYPES.register("imp2016",
-			() -> EntityType.Builder.of(Imp2016Entity::new, MobCategory.MONSTER).sized(0.6f, 1.95F).fireImmune()
-					.clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "imp2016").toString()));
-
 	public static final RegistryObject<EntityType<ImpStoneEntity>> IMP_STONE = ENTITY_TYPES.register("stone_imp",
 			() -> EntityType.Builder.of(ImpStoneEntity::new, MobCategory.MONSTER).sized(0.6f, 1.95F).fireImmune()
 					.clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "stone_imp").toString()));
@@ -275,16 +259,6 @@ public class ModEntityTypes {
 	public static final RegistryObject<EntityType<CyberdemonEntity>> CYBERDEMON = ENTITY_TYPES.register("cyberdemon",
 			() -> EntityType.Builder.of(CyberdemonEntity::new, MobCategory.MONSTER).sized(3.0f, 7.0F).fireImmune()
 					.clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "cyberdemon").toString()));
-
-	public static final RegistryObject<EntityType<Cyberdemon2016Entity>> CYBERDEMON2016 = ENTITY_TYPES
-			.register("cyberdemon2016",
-					() -> EntityType.Builder.of(Cyberdemon2016Entity::new, MobCategory.MONSTER).sized(3.0f, 7.0F)
-							.fireImmune().clientTrackingRange(9)
-							.build(new ResourceLocation(DoomMod.MODID, "cyberdemon2016").toString()));
-
-	public static final RegistryObject<EntityType<Cyberdemon2016Entity>> TYRANT = ENTITY_TYPES.register("tyrant",
-			() -> EntityType.Builder.of(Cyberdemon2016Entity::new, MobCategory.MONSTER).sized(3.0f, 7.0F).fireImmune()
-					.clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "tyrant").toString()));
 
 	public static final RegistryObject<EntityType<UnwillingEntity>> UNWILLING = ENTITY_TYPES.register("unwilling",
 			() -> EntityType.Builder.of(UnwillingEntity::new, MobCategory.MONSTER).sized(0.6f, 1.95F).fireImmune()
@@ -364,16 +338,6 @@ public class ModEntityTypes {
 					.clientTrackingRange(9)
 					.build(new ResourceLocation(DoomMod.MODID, "arachnotroneternal").toString()));
 
-	public static final RegistryObject<EntityType<Pinky2016>> PINKY2016 = ENTITY_TYPES.register("pinky2016",
-			() -> EntityType.Builder.of(Pinky2016::new, MobCategory.MONSTER).sized(1.7f, 2.2F).fireImmune()
-					.clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "pinky2016").toString()));
-
-	public static final RegistryObject<EntityType<ArchvileEntity>> ARCHVILEETERNAL = ENTITY_TYPES
-			.register("archvileeternal",
-					() -> EntityType.Builder.of(ArchvileEntity::new, MobCategory.MONSTER).sized(0.9F, 3.3F).fireImmune()
-							.clientTrackingRange(9)
-							.build(new ResourceLocation(DoomMod.MODID, "archvileeternal").toString()));
-
 	public static final RegistryObject<EntityType<DoomHunterEntity>> DOOMHUNTER = ENTITY_TYPES.register("doom_hunter",
 			() -> EntityType.Builder.of(DoomHunterEntity::new, MobCategory.MONSTER).sized(3.0f, 7.0F).fireImmune()
 					.clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "doom_hunter").toString()));
@@ -439,5 +403,11 @@ public class ModEntityTypes {
 	public static final RegistryObject<EntityType<GladiatorEntity>> GLADIATOR = ENTITY_TYPES.register("gladiator",
 			() -> EntityType.Builder.of(GladiatorEntity::new, MobCategory.MONSTER).sized(1.7f, 4.2F).fireImmune()
 					.clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "gladiator").toString()));
+
+	public static final RegistryObject<EntityType<LostSoulEntity>> LOST_SOUL_ETERNAL = ENTITY_TYPES
+			.register("lost_soul_eternal",
+					() -> EntityType.Builder.<LostSoulEntity>of(LostSoulEntity::new, MobCategory.MISC)
+							.sized(1.50F, 1.50F).clientTrackingRange(9)
+							.build(new ResourceLocation(DoomMod.MODID, "lost_soul_eternal").toString()));
 
 }

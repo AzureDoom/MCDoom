@@ -3,39 +3,36 @@ package mod.azure.doom.client.models;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tiersuperheavy.CyberdemonEntity;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class CyberdemonModel extends AnimatedTickingGeoModel<CyberdemonEntity> {
 
-	public CyberdemonModel() {
-	}
+	public ResourceLocation classic_model = new ResourceLocation(DoomMod.MODID, "geo/cyberdemon.geo.json");
+	public ResourceLocation c2016_model = new ResourceLocation(DoomMod.MODID, "geo/cyberdemon2016.geo.json");
+	public ResourceLocation tyrant_model = new ResourceLocation(DoomMod.MODID, "geo/tyrant.geo.json");
+	public ResourceLocation classic_texture = new ResourceLocation(DoomMod.MODID,
+			"textures/entity/cyberdemon-texturemap.png");
+	public ResourceLocation c2016_texture = new ResourceLocation(DoomMod.MODID, "textures/entity/cyberdemon2016.png");
+	public ResourceLocation tyrant_texture = new ResourceLocation(DoomMod.MODID, "textures/entity/tyrant.png");
+	public ResourceLocation classic_animation = new ResourceLocation(DoomMod.MODID,
+			"animations/cyberdemon_animation.json");
+	public ResourceLocation c2016_animation = new ResourceLocation(DoomMod.MODID,
+			"animations/cyberdemon2016.animation.json");
+	public ResourceLocation tyrant_animation = new ResourceLocation(DoomMod.MODID, "animations/tyrant.animation.json");
 
 	@Override
 	public ResourceLocation getModelLocation(CyberdemonEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/cyberdemon.geo.json");
+		return object.getVariant() == 2 ? c2016_model : object.getVariant() == 3 ? tyrant_model : classic_model;
 	}
 
 	@Override
 	public ResourceLocation getTextureLocation(CyberdemonEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/entity/cyberdemon-texturemap.png");
+		return object.getVariant() == 2 ? c2016_texture : object.getVariant() == 3 ? tyrant_texture : classic_texture;
 	}
 
 	@Override
 	public ResourceLocation getAnimationFileLocation(CyberdemonEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "animations/cyberdemon_animation.json");
-	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	public void setLivingAnimations(CyberdemonEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
-		super.setLivingAnimations(entity, uniqueID, customPredicate);
-		IBone head = this.getAnimationProcessor().getBone("neck");
-
-		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
-		head.setRotationX((extraData.headPitch - 30) * ((float) Math.PI / 360F));
-		head.setRotationY((extraData.netHeadYaw) * ((float) Math.PI / 340F));
+		return object.getVariant() == 2 ? c2016_animation
+				: object.getVariant() == 3 ? tyrant_animation : classic_animation;
 	}
 }

@@ -16,9 +16,9 @@
 					"pivot": [0, -7.7, 1]
 				},
 				{
-					"name": "blade",
+					"name": "handle",
 					"parent": "group",
-					"pivot": [0, 0, 0],
+					"pivot": [0, 7.3, 1],
 					"cubes": [
 						{
 							"origin": [-6.5, 3.3, 0.5],
@@ -27,14 +27,7 @@
 								"north": {"uv": [19, 0], "uv_size": [13, 27]},
 								"south": {"uv": [32, 0], "uv_size": [-13, 27]}
 							}
-						}
-					]
-				},
-				{
-					"name": "handle",
-					"parent": "group",
-					"pivot": [0, 7.3, 1],
-					"cubes": [
+						},
 						{
 							"origin": [0.5, 2.3, 0],
 							"size": [1, 3, 1],
