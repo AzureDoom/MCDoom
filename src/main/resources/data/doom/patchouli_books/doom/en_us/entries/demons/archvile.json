@@ -13,10 +13,6 @@
 		{
 			"type": "entity",
 			"entity": "doom:archvile"
-		},
-		{
-			"type": "entity",
-			"entity": "doom:archvileeternal"
 		}
 	]
 }

@@ -1,4 +1,5 @@
-v.4.1.19
+v.4.1.20
 
-- Adjusts Meat Hook rendering a bit. 
-- Fixes structure log spam and broken spawners from mob compressions done on Pinky and Imp.
+- Fixes The Book Of Doom for Mob Compression
+- Fixes broken animation for Processed Soldier 
+- Adds in 2 more variants of the Processed Soldier, the Eternal version that can fly when attacking and the Shield version that is armored version. Credit to Undeadmonkey!

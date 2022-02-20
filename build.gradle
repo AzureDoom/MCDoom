@@ -99,11 +99,11 @@ dependencies {
 	implementation fg.deobf('software.bernie.geckolib:curios:5.0.2.3')
 	implementation fg.deobf('software.bernie.geckolib:geckolib-1.18-forge:3.0.11')
 	annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-	//implementation fg.deobf("curse.maven:TDI-245733:3556931")
-	//implementation fg.deobf("curse.maven:Patchouli-306770:3630725")
-	//implementation fg.deobf("curse.maven:WE-225608:3631606")
-	//implementation fg.deobf("curse.maven:advancement-499826:3576905")
-	//implementation fg.deobf("curse.maven:Iceberg-520110:3632396")
+	implementation fg.deobf("curse.maven:TDI-245733:3556931")
+	implementation fg.deobf("curse.maven:Patchouli-306770:3630725")
+	implementation fg.deobf("curse.maven:WE-225608:3631606")
+	implementation fg.deobf("curse.maven:advancement-499826:3576905")
+	implementation fg.deobf("curse.maven:Iceberg-520110:3632396")
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }

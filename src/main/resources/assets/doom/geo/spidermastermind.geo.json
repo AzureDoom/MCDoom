@@ -136,7 +136,7 @@
 				{
 					"name": "gunBarrel",
 					"parent": "gunBase",
-					"pivot": [0, 29.8, -17],
+					"pivot": [0, 26.8, -17],
 					"cubes": [
 						{"origin": [-3, 23.8, -21], "size": [6, 6, 4], "uv": [35, 138]}
 					]

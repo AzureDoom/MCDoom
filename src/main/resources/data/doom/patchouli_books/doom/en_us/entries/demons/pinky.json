@@ -12,10 +12,6 @@
 		{
 			"type": "entity",
 			"entity": "doom:pinky"
-		},
-		{
-			"type": "entity",
-			"entity": "doom:pinky2016"
 		}
 	]
 }
