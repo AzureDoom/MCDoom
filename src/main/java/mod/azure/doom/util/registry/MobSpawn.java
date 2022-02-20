@@ -134,9 +134,6 @@ public class MobSpawn {
 		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.doomhunter_biomes, context)),
 				SpawnGroup.MONSTER, ModEntityTypes.DOOMHUNTER, config.doomhunter_spawn_weight,
 				config.doomhunter_min_group, config.doomhunter_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.archvile_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.ARCHVILEETERNAL, config.archvile_spawn_weight,
-				config.archvile_min_group, config.archvile_max_group);
 		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.tentacle_biomes, context)),
 				SpawnGroup.MONSTER, ModEntityTypes.TENTACLE, config.tentacle_spawn_weight, config.tentacle_min_group,
 				config.tentacle_max_group);
@@ -257,8 +254,6 @@ public class MobSpawn {
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.BLOODMAYKR, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.ARCHMAKER, SpawnRestriction.Location.ON_GROUND,
-				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-		SpawnRestrictionAccessor.callRegister(ModEntityTypes.ARCHVILEETERNAL, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.TENTACLE, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);

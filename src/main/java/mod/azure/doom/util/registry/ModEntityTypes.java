@@ -257,12 +257,6 @@ public class ModEntityTypes {
 					.dimensions(EntityDimensions.fixed(4.0F, 3.0F)).fireImmune().trackRangeBlocks(90)
 					.trackedUpdateRate(4).build());
 
-	public static final EntityType<ArchvileEntity> ARCHVILEETERNAL = Registry.register(Registry.ENTITY_TYPE,
-			new Identifier(DoomMod.MODID, "archvileeternal"),
-			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, ArchvileEntity::new)
-					.dimensions(EntityDimensions.fixed(0.9F, 3.3F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(4).build());
-
 	public static final EntityType<DoomHunterEntity> DOOMHUNTER = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(DoomMod.MODID, "doom_hunter"),
 			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, DoomHunterEntity::new)

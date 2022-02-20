@@ -232,8 +232,6 @@ public class DoomItems {
 			new DoomSpawnEgg(ModEntityTypes.ARACHNOTRONETERNAL));
 	public static DoomSpawnEgg SPIDERMASTERMIND2016_SPAWN_EGG = item("spidermastermind2016_spawn_egg",
 			new DoomSpawnEgg(ModEntityTypes.SPIDERMASTERMIND2016));
-	public static DoomSpawnEgg ARCHVILEETERNAL_SPAWN_EGG = item("archvileeternal_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.ARCHVILEETERNAL));
 	public static DoomSpawnEgg TENTACLE_SPAWN_EGG = item("tentacle_spawn_egg",
 			new DoomSpawnEgg(ModEntityTypes.TENTACLE));
 	public static DoomSpawnEgg MOTHERDEMON_SPAWN_EGG = item("motherdemon_spawn_egg",

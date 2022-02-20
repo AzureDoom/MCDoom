@@ -13,18 +13,6 @@
 		{
 			"type": "entity",
 			"entity": "doom:cyberdemon"
-		},
-		{
-			"type": "entity",
-			"entity": "doom:cyberdemon2016",
-			"scale": 0.9,
-			"offset": 0.2
-		},
-		{
-			"type": "entity",
-			"entity": "doom:tyrant",
-			"scale": 0.9,
-			"offset": 0.2
 		}
 	]
 }

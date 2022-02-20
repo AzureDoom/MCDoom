@@ -106,7 +106,7 @@ public class ClientInit implements ClientModInitializer {
 								OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, 0);
 					}
 				});
-		requestParticleTexture(new Identifier("doom:particles/plasma"));
+		requestParticleTexture(new Identifier("doom:particle/plasma"));
 		ParticleFactoryRegistry.getInstance().register(DoomParticles.PLASMA, PlasmaParticle.Factory::new);
 		ParticleFactoryRegistry.getInstance().register(DoomParticles.PISTOL, PlasmaParticle.Factory::new);
 		ParticleFactoryRegistry.getInstance().register(DoomParticles.UNMAYKR, PlasmaParticle.Factory::new);

@@ -4,7 +4,6 @@ import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.render.ArachonotronEternalRender;
 import mod.azure.doom.client.render.ArachonotronRender;
 import mod.azure.doom.client.render.ArchMaykrRender;
-import mod.azure.doom.client.render.ArchvileEternalRender;
 import mod.azure.doom.client.render.ArchvileRender;
 import mod.azure.doom.client.render.ArmoredBaronRender;
 import mod.azure.doom.client.render.Baron2016Render;
@@ -203,8 +202,6 @@ public class DoomRenderRegistry {
 
 		EntityRendererRegistry.register(ModEntityTypes.SPIDERMASTERMIND2016,
 				(ctx) -> new SpiderMastermind2016Render(ctx));
-
-		EntityRendererRegistry.register(ModEntityTypes.ARCHVILEETERNAL, (ctx) -> new ArchvileEternalRender(ctx));
 
 		EntityRendererRegistry.register(ModEntityTypes.TENTACLE, (ctx) -> new TentacleRender(ctx));
 

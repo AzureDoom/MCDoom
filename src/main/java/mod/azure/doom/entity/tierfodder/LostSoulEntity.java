@@ -128,6 +128,7 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 	@Override
 	public void writeCustomDataToNbt(NbtCompound tag) {
 		super.writeCustomDataToNbt(tag);
+		tag.putInt("Variant", this.getVariant());
 	}
 
 	public int getVariant() {
