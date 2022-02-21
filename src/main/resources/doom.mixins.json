@@ -17,9 +17,7 @@
 		"LootManagerAccessor",
 		"LootTableMixin",
 		"NoiseChunkGeneratorMixin",
-		"PlayerEntityMixin",
-		"StructurePoolFeatureConfigAccessor",
-		"StructuresConfigAccessor"
+		"PlayerEntityMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

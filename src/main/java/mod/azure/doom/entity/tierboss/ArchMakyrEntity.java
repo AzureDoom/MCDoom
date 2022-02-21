@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
-import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
+import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.fabricmc.api.EnvType;
@@ -130,9 +130,8 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.goalSelector.add(7, new ArchMakyrEntity.LookAtTargetGoal(this));
 		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
-		this.goalSelector.add(4,
-				new RangedStrafeAttackGoal(this, new FireballAttack(this, true).setProjectileOriginOffset(0.8, 0.4, 0.8)
-						.setDamage(config.archmaykr_ranged_damage), 1.0D, 20, 30, 15, 15F, 1));
+		this.goalSelector.add(4, new RangedAttackGoal(this, new FireballAttack(this, true)
+				.setProjectileOriginOffset(0.8, 0.4, 0.8).setDamage(config.archmaykr_ranged_damage), 1.0D));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
