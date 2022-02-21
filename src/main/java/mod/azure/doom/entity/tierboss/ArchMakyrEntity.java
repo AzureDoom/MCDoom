@@ -5,7 +5,7 @@ import java.util.List;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
-import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
+import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModSoundEvents;
@@ -209,10 +209,8 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.goalSelector.addGoal(7, new ArchMakyrEntity.LookAroundGoal(this));
 		this.goalSelector.addGoal(4,
-				new RangedStrafeAttackGoal(this,
-						new FireballAttack(this, true).setProjectileOriginOffset(0.8, 0.4, 0.8)
-								.setDamage(DoomConfig.SERVER.archmaykr_ranged_damage.get().floatValue()),
-						1.0D, 20, 30, 15, 15F, 1));
+				new RangedAttackGoal(this, new FireballAttack(this, true).setProjectileOriginOffset(0.8, 0.4, 0.8)
+						.setDamage(DoomConfig.SERVER.archmaykr_ranged_damage.get().floatValue()), 1.0D));
 		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.addGoal(2, new MoveTowardsTargetGoal(this, 0.9D, 32.0F));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));

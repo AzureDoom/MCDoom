@@ -1,5 +1,3 @@
-v.4.1.20
+v.4.1.21
 
-- Fixes The Book Of Doom for Mob Compression
-- Fixes broken animation for Processed Soldier 
-- Adds in 2 more variants of the Processed Soldier, the Eternal version that can fly when attacking and the Shield version that is armored version. Credit to Undeadmonkey!
+- Fixes Arch Maykr crash.
