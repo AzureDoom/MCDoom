@@ -15,6 +15,8 @@ import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
+import net.minecraft.entity.ai.pathing.SpiderNavigation;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
@@ -126,5 +128,10 @@ public class DemonEntity extends HostileEntity implements Angerable {
 	protected float getSoundVolume() {
 		return 0.4F;
 	}
+	
+    @Override
+    protected EntityNavigation createNavigation(World world) {
+        return new SpiderNavigation(this, world);
+    }
 
 }
