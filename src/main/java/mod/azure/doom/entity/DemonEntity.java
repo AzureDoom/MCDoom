@@ -17,6 +17,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -109,6 +111,11 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 	@Override
 	protected float getSoundVolume() {
 		return 0.4F;
+	}
+
+	@Override
+	protected PathNavigation createNavigation(Level worldIn) {
+		return new WallClimberNavigation(this, worldIn);
 	}
 
 }
