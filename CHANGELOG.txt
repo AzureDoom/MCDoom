@@ -1,3 +1,5 @@
-v.4.1.21
+v.4.1.22
 
-+- Fixes Arch Maykr crash.
+- Gladiator explodes around him when starting and stopping his attack phase to clear a path.
+- Better Movement on demons that walk.
+- Villagers can be shot at close range, no more weird interacting with guns.
