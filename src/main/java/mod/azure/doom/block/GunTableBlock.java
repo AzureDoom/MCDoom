@@ -1,15 +1,18 @@
 package mod.azure.doom.block;
 
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
@@ -36,8 +39,8 @@ public class GunTableBlock extends Block implements BlockEntityProvider {
 	private static final VoxelShape X_AXIS_SHAPE = VoxelShapes.union(XBASE1, XBASE2);
 	private static final VoxelShape Z_AXIS_SHAPE = VoxelShapes.union(YBASE1, YBASE2);
 
-	public GunTableBlock(Settings settings) {
-		super(settings);
+	public GunTableBlock() {
+		super(FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL).strength(4.0f).nonOpaque());
 		this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
 	}
 

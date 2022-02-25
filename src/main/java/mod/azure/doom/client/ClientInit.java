@@ -69,7 +69,7 @@ public class ClientInit implements ClientModInitializer {
 		DoomRenderRegistry.init();
 		ScreenRegistry.register(DoomMod.SCREEN_HANDLER_TYPE, GunTableScreen::new);
 		GeoItemRenderer.registerItemRenderer(DoomBlocks.TOTEM.asItem(), new TotemItemRender());
-		GeoItemRenderer.registerItemRenderer(DoomItems.GUN_TABLE, new GunCraftingItemRender());
+		GeoItemRenderer.registerItemRenderer(DoomBlocks.GUN_TABLE.asItem(), new GunCraftingItemRender());
 		GeoItemRenderer.registerItemRenderer(DoomItems.BFG, new BFG9000Render());
 		GeoItemRenderer.registerItemRenderer(DoomItems.BFG_ETERNAL, new BFGRender());
 		GeoItemRenderer.registerItemRenderer(DoomItems.SG, new SGRender());

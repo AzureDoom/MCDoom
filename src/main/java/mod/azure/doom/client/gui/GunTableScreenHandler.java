@@ -7,6 +7,7 @@ import java.util.Optional;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.mixin.IngredientAccess;
 import mod.azure.doom.util.recipes.GunTableRecipe;
+import mod.azure.doom.util.registry.DoomBlocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -82,7 +83,7 @@ public class GunTableScreenHandler extends ScreenHandler {
 
 	@Override
 	public boolean canUse(PlayerEntity player) {
-		return canUse(context, player, DoomMod.GUN_TABLE);
+		return canUse(context, player, DoomBlocks.GUN_TABLE);
 	}
 
 	public boolean canInsertIntoSlot(ItemStack stack, Slot slot) {

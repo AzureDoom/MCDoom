@@ -3,12 +3,16 @@ package mod.azure.doom.entity.projectiles;
 import java.util.List;
 
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
+import mod.azure.doom.entity.tileentity.TickingLightEntity;
 import mod.azure.doom.network.EntityPacket;
+import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -26,6 +30,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -47,6 +52,8 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 	private int ticksInAir;
 	private LivingEntity shooter;
 	private float projectiledamage;
+	private BlockPos lightBlockPos = null;
+	private int idleTicks = 0;
 
 	public RocketEntity(EntityType<? extends RocketEntity> entityType, World world) {
 		super(entityType, world);
@@ -136,7 +143,15 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 
 	@Override
 	public void tick() {
-		super.tick();
+		int idleOpt = 100;
+		if (getVelocity().lengthSquared() < 0.01)
+			idleTicks++;
+		else
+			idleTicks = 0;
+		if (idleOpt <= 0 || idleTicks < idleOpt)
+			super.tick();
+		boolean isInsideWaterBlock = world.isWater(getBlockPos());
+		spawnLightSource(isInsideWaterBlock);
 		boolean bl = this.isNoClip();
 		Vec3d vec3d = this.getVelocity();
 		if (this.prevPitch == 0.0F && this.prevYaw == 0.0F) {
@@ -215,6 +230,50 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 				this.world.addParticle(ParticleTypes.SMOKE, true, d2, this.getY(), f2, 0, 0, 0);
 			}
 		}
+	}
+
+	private void spawnLightSource(boolean isInWaterBlock) {
+		if (lightBlockPos == null) {
+			lightBlockPos = findFreeSpace(world, getBlockPos(), 2);
+			if (lightBlockPos == null)
+				return;
+			world.setBlockState(lightBlockPos, DoomBlocks.TICKING_LIGHT_BLOCK.getDefaultState());
+		} else if (checkDistance(lightBlockPos, getBlockPos(), 2)) {
+			BlockEntity blockEntity = world.getBlockEntity(lightBlockPos);
+			if (blockEntity instanceof TickingLightEntity) {
+				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
+			} else
+				lightBlockPos = null;
+		} else
+			lightBlockPos = null;
+	}
+
+	private boolean checkDistance(BlockPos blockPosA, BlockPos blockPosB, int distance) {
+		return Math.abs(blockPosA.getX() - blockPosB.getX()) <= distance
+				&& Math.abs(blockPosA.getY() - blockPosB.getY()) <= distance
+				&& Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
+	}
+
+	private BlockPos findFreeSpace(World world, BlockPos blockPos, int maxDistance) {
+		if (blockPos == null)
+			return null;
+
+		int[] offsets = new int[maxDistance * 2 + 1];
+		offsets[0] = 0;
+		for (int i = 2; i <= maxDistance * 2; i += 2) {
+			offsets[i - 1] = i / 2;
+			offsets[i] = -i / 2;
+		}
+		for (int x : offsets)
+			for (int y : offsets)
+				for (int z : offsets) {
+					BlockPos offsetPos = blockPos.add(x, y, z);
+					BlockState state = world.getBlockState(offsetPos);
+					if (state.isAir() || state.getBlock().equals(DoomBlocks.TICKING_LIGHT_BLOCK))
+						return offsetPos;
+				}
+
+		return null;
 	}
 
 	public void initFromStack(ItemStack stack) {

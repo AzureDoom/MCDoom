@@ -8,11 +8,11 @@ import org.apache.logging.log4j.Logger;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
-import mod.azure.doom.block.GunTableBlock;
 import mod.azure.doom.client.gui.GunTableScreenHandler;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
 import mod.azure.doom.entity.tileentity.IconBlockEntity;
+import mod.azure.doom.entity.tileentity.TickingLightEntity;
 import mod.azure.doom.entity.tileentity.TotemEntity;
 import mod.azure.doom.network.PacketHandler;
 import mod.azure.doom.util.DoomVillagerTrades;
@@ -33,13 +33,11 @@ import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.impl.structure.FabricStructureImpl;
 import net.fabricmc.fabric.mixin.structure.StructuresConfigAccessor;
-import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
@@ -52,7 +50,6 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
@@ -80,6 +77,7 @@ public class DoomMod implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger();
 	public static BlockEntityType<GunBlockEntity> GUN_TABLE_ENTITY;
 	public static final Identifier BFG = new Identifier(MODID, "bfg");
+	public static BlockEntityType<TickingLightEntity> TICKING_LIGHT_ENTITY;
 	public static final Identifier PISTOL = new Identifier(MODID, "pistol");
 	public static final Identifier PLASMA = new Identifier(MODID, "plamsa");
 	public static final Identifier BFG9000 = new Identifier(MODID, "bfg9000");
@@ -102,8 +100,6 @@ public class DoomMod implements ModInitializer {
 	public static final Identifier DSG = new Identifier(MODID, "doomed_shotgun");
 	public static final Identifier DGAUSS = new Identifier(MODID, "doomed_gauss");
 	public static final Identifier DPLASMARIFLE = new Identifier(MODID, "doomed_plasma_rifle");
-	public static final GunTableBlock GUN_TABLE = new GunTableBlock(
-			FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL).strength(4.0f).nonOpaque());
 	public static final ItemGroup DoomEggItemGroup = FabricItemGroupBuilder.create(new Identifier(MODID, "eggs"))
 			.icon(() -> new ItemStack(DoomItems.IMP_SPAWN_EGG)).build();
 	public static final ItemGroup DoomArmorItemGroup = FabricItemGroupBuilder.create(new Identifier(MODID, "armor"))
@@ -130,13 +126,15 @@ public class DoomMod implements ModInitializer {
 		MOBS = new ModEntityTypes();
 		PROJECTILES = new ProjectilesEntityRegister();
 		FuelRegistry.INSTANCE.add(DoomItems.ARGENT_ENERGY, 32767);
-		Registry.register(Registry.BLOCK, new Identifier(MODID, "gun_table"), GUN_TABLE);
 		ICON = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":icon",
 				FabricBlockEntityTypeBuilder.create(IconBlockEntity::new, DoomBlocks.ICON_WALL1).build(null));
 		TOTEM = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":totem",
 				FabricBlockEntityTypeBuilder.create(TotemEntity::new, DoomBlocks.TOTEM).build(null));
 		GUN_TABLE_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":guntable",
-				FabricBlockEntityTypeBuilder.create(GunBlockEntity::new, GUN_TABLE).build(null));
+				FabricBlockEntityTypeBuilder.create(GunBlockEntity::new, DoomBlocks.GUN_TABLE).build(null));
+		TICKING_LIGHT_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":lightblock",
+				FabricBlockEntityTypeBuilder.create(TickingLightEntity::new, DoomBlocks.TICKING_LIGHT_BLOCK)
+						.build(null));
 		MobSpawn.addSpawnEntries();
 		if (config.misc.enable_all_villager_trades) {
 			ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> DoomVillagerTrades.addTrades());
@@ -150,7 +148,8 @@ public class DoomMod implements ModInitializer {
 	}
 
 	public static class DataTrackers {
-		public static final TrackedData<Boolean> MEATHOOK_TRACKER = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+		public static final TrackedData<Boolean> MEATHOOK_TRACKER = DataTracker.registerData(PlayerEntity.class,
+				TrackedDataHandlerRegistry.BOOLEAN);
 	}
 
 	public static void addStructureSpawningToDimensionsAndBiomes() {

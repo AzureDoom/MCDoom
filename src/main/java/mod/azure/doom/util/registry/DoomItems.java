@@ -6,7 +6,6 @@ import java.util.Map;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.ArgentEnergyItem;
 import mod.azure.doom.item.ArgentPlateItem;
-import mod.azure.doom.item.DoomBlockItem;
 import mod.azure.doom.item.E1M1MusicDisc;
 import mod.azure.doom.item.UnopenedItem;
 import mod.azure.doom.item.ammo.ArgentBolt;
@@ -83,7 +82,6 @@ import mod.azure.doom.item.weapons.SwordCrucibleItem;
 import mod.azure.doom.item.weapons.Unmaykr;
 import mod.azure.doom.util.enums.DoomArmorMaterial;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -140,8 +138,6 @@ public class DoomItems {
 	public static E1M1MusicDisc E1M1_MUSIC_DISC = item(new E1M1MusicDisc(ModSoundEvents.E1M1), "e1m1_music_disc");
 	public static Item GAS_BARREL = item(new Item(new Item.Settings().group(DoomMod.DoomWeaponItemGroup)),
 			"gas_barrel");
-	public static BlockItem GUN_TABLE = item(
-			new DoomBlockItem(DoomMod.GUN_TABLE, new Item.Settings().group(DoomMod.DoomWeaponItemGroup)), "gun_table");
 
 	public static Item[] ITEMS = { CHAINSAW_ETERNAL, CRUCIBLESWORD, ROCKETLAUNCHER, AXE_OPEN, HEAVYCANNON, SSG,
 			PLASMAGUN, CHAINSAW64, CHAINSAW, CHAINGUN, BALLISTA, UNMAYKR, BFG_ETERNAL, BFG, SG, PISTOL };
