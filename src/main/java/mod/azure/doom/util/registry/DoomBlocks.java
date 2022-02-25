@@ -11,6 +11,7 @@ import mod.azure.doom.block.E1M1TurnableBlock;
 import mod.azure.doom.block.E1M1TurnableHurtBlock;
 import mod.azure.doom.block.GunTableBlock;
 import mod.azure.doom.block.JumppadBlock;
+import mod.azure.doom.block.TickingLightBlock;
 import mod.azure.doom.block.TotemBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -28,6 +29,9 @@ public class DoomBlocks {
 			() -> new TotemBlock(
 					(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(30).strength(4.0F).sound(SoundType.BONE_BLOCK)
 							.destroyTime(3).requiresCorrectToolForDrops().strength(3.0F, 3.0F).noOcclusion())));
+
+	public static final RegistryObject<Block> TICKING_LIGHT_BLOCK = BLOCKS.register("lightblock",
+			() -> new TickingLightBlock());
 
 	public static final RegistryObject<Block> GUN_TABLE = BLOCKS.register("gun_table", () -> new GunTableBlock(
 			(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(30).strength(4.0F).sound(SoundType.METAL).noOcclusion())));

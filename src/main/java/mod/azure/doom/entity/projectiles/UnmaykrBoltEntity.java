@@ -1,9 +1,12 @@
 package mod.azure.doom.entity.projectiles;
 
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
+import mod.azure.doom.entity.tileentity.TickingLightEntity;
+import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomParticles;
 import mod.azure.doom.util.registry.ModEntityTypes;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
@@ -21,6 +24,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -33,6 +38,8 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 	protected boolean inAir;
 	private int ticksInAir;
 	private float projectiledamage;
+	private BlockPos lightBlockPos = null;
+	private int idleTicks = 0;
 
 	public UnmaykrBoltEntity(EntityType<? extends AbstractArrow> type, Level world) {
 		super(type, world);
@@ -98,7 +105,15 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 
 	@Override
 	public void tick() {
-		super.tick();
+		int idleOpt = 100;
+		if (getDeltaMovement().lengthSqr() < 0.01)
+			idleTicks++;
+		else
+			idleTicks = 0;
+		if (idleOpt <= 0 || idleTicks < idleOpt)
+			super.tick();
+		boolean isInsideWaterBlock = level.isWaterAt(blockPosition());
+		spawnLightSource(isInsideWaterBlock);
 		boolean flag = this.isNoPhysics();
 		Vec3 vector3d = this.getDeltaMovement();
 		if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
@@ -180,6 +195,50 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 				this.level.addParticle(DoomParticles.UNMAYKR.get(), true, x, this.getY(), z, 0, 0, 0);
 			}
 		}
+	}
+
+	private void spawnLightSource(boolean isInWaterBlock) {
+		if (lightBlockPos == null) {
+			lightBlockPos = findFreeSpace(level, blockPosition(), 2);
+			if (lightBlockPos == null)
+				return;
+			level.setBlockAndUpdate(lightBlockPos, DoomBlocks.TICKING_LIGHT_BLOCK.get().defaultBlockState());
+		} else if (checkDistance(lightBlockPos, blockPosition(), 2)) {
+			BlockEntity blockEntity = level.getBlockEntity(lightBlockPos);
+			if (blockEntity instanceof TickingLightEntity) {
+				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
+			} else
+				lightBlockPos = null;
+		} else
+			lightBlockPos = null;
+	}
+
+	private boolean checkDistance(BlockPos blockPosA, BlockPos blockPosB, int distance) {
+		return Math.abs(blockPosA.getX() - blockPosB.getX()) <= distance
+				&& Math.abs(blockPosA.getY() - blockPosB.getY()) <= distance
+				&& Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
+	}
+
+	private BlockPos findFreeSpace(Level world, BlockPos blockPos, int maxDistance) {
+		if (blockPos == null)
+			return null;
+
+		int[] offsets = new int[maxDistance * 2 + 1];
+		offsets[0] = 0;
+		for (int i = 2; i <= maxDistance * 2; i += 2) {
+			offsets[i - 1] = i / 2;
+			offsets[i] = -i / 2;
+		}
+		for (int x : offsets)
+			for (int y : offsets)
+				for (int z : offsets) {
+					BlockPos offsetPos = blockPos.offset(x, y, z);
+					BlockState state = world.getBlockState(offsetPos);
+					if (state.isAir() || state.getBlock().equals(DoomBlocks.TICKING_LIGHT_BLOCK.get()))
+						return offsetPos;
+				}
+
+		return null;
 	}
 
 	@Override

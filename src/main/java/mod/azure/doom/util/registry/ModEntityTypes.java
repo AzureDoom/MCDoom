@@ -66,6 +66,7 @@ import mod.azure.doom.entity.tiersuperheavy.MarauderEntity;
 import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
 import mod.azure.doom.entity.tileentity.IconBlockEntity;
+import mod.azure.doom.entity.tileentity.TickingLightEntity;
 import mod.azure.doom.entity.tileentity.TotemEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -89,6 +90,9 @@ public class ModEntityTypes {
 
 	public static final RegistryObject<BlockEntityType<GunBlockEntity>> GUN_TABLE_ENTITY = TILE_TYPES.register(
 			"guntable", () -> BlockEntityType.Builder.of(GunBlockEntity::new, DoomBlocks.GUN_TABLE.get()).build(null));
+
+	public static final RegistryObject<BlockEntityType<TickingLightEntity>> TICKING_LIGHT_ENTITY = TILE_TYPES.register(
+			"lightblock", () -> BlockEntityType.Builder.of(TickingLightEntity::new, DoomBlocks.TICKING_LIGHT_BLOCK.get()).build(null));
 
 	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES,
 			DoomMod.MODID);

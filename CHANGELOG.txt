@@ -1,5 +1,4 @@
-v.4.1.22
+v.4.1.23
 
-- Gladiator explodes around him when starting and stopping his attack phase to clear a path.
-- Better Movement on demons that walk.
-- Villagers can be shot at close range, no more weird interacting with guns.
+- All guns now produce a temp light block when fired, to create the muzzle flash.
+- BFG, Ballista, Gauss, Rocket and Unmakyr projectiles produce light when traveling.
