@@ -107,6 +107,7 @@ public class RangedStrafeAttackGoal extends Goal {
 	public void start() {
 		super.start();
 		this.entity.setAttacking(true);
+		this.entity.setAttackingState(0);
 	}
 
 	/**

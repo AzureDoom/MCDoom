@@ -9,6 +9,8 @@ import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.explosion.Explosion;
 
 public class RangedStrafeGladiatorAttackGoal extends Goal {
 	private final GladiatorEntity entity;
@@ -45,6 +47,8 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 		this.entity.setAttacking(true);
 		this.entity.setSilent(false);
 		this.entity.setTextureState(0);
+		this.entity.world.createExplosion(this.entity, this.entity.getX(), this.entity.getY() + 5D, this.entity.getZ(), 3.0F, false,
+				Explosion.DestructionType.BREAK);
 	}
 
 	/**
@@ -59,6 +63,8 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 		this.attackTime = -1;
 		this.entity.stopUsingItem();
 		this.entity.setSilent(false);
+		this.entity.world.createExplosion(this.entity, this.entity.getX(), this.entity.getY() + 5D, this.entity.getZ(), 3.0F, false,
+				Explosion.DestructionType.BREAK);
 	}
 
 	/**
@@ -75,11 +81,11 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 			double d0 = this.entity.squaredDistanceTo(livingentity.getX(), livingentity.getY(), livingentity.getZ());
 			double d1 = this.getAttackReachSqr(livingentity);
 			if (inLineOfSight) {
-				if (d0 > d1) {
+				if (this.entity.distanceTo(livingentity) >= 3.0D) {
 					if (this.entity.getDeathState() == 0 && this.summonTime > 10) {
 						if (randomRangedPhaseOne <= 3) {
+							this.entity.getNavigation().stop();
 							if (this.attackTime == 1) {
-								this.entity.getNavigation().stop();
 								this.entity.setAttackingState(1);
 								this.entity.setTextureState(1);
 							}
@@ -135,9 +141,14 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 				} else {
 					this.entity.getNavigation().startMovingTo(livingentity,
 							this.entity.getDeathState() == 0 ? 1.0 : 1.25);
-					this.summonTime++;
 					if (this.attackTime == 1) {
+						this.summonTime++;
 						this.entity.setAttackingState(3);
+						Vec3d vec3d = this.entity.getVelocity();
+						Vec3d vec3d2 = new Vec3d(livingentity.getX() - this.entity.getX(), 0.0,
+								livingentity.getZ() - this.entity.getZ());
+						vec3d2 = vec3d2.normalize().multiply(0.4).add(vec3d.multiply(0.4));
+						this.entity.setVelocity(vec3d2.x, 0.5F, vec3d2.z);
 					}
 					if (this.attackTime == 18) {
 						this.entity.getNavigation().stop();
