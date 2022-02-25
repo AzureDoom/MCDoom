@@ -8,7 +8,8 @@
 		"WeaponRenderingMixin"
 	],
 	"mixins": [
-		"PlayerEntityMixin"
+		"PlayerEntityMixin",
+		"VillagerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
