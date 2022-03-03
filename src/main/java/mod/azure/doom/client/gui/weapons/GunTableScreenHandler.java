@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import mod.azure.doom.recipes.GunTableRecipe;
+import mod.azure.doom.util.ModEventSubscriber;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomScreens;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
@@ -62,7 +63,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 			ServerPlayer serverPlayerEntity = (ServerPlayer) player;
 			ItemStack itemStack = ItemStack.EMPTY;
 			Optional<GunTableRecipe> optional = world.getServer().getRecipeManager()
-					.getRecipeFor(GunTableRecipe.GUN_TABLE, craftingInventory, world);
+					.getRecipeFor(ModEventSubscriber.GUN_TABLE_RECIPE_TYPE, craftingInventory, world);
 			if (optional.isPresent()) {
 				GunTableRecipe craftingRecipe = optional.get();
 				itemStack = craftingRecipe.assemble(craftingInventory);
@@ -129,7 +130,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 
 	public List<GunTableRecipe> getRecipes() {
 		List<GunTableRecipe> list = new ArrayList<>(
-				playerInventory.player.level.getRecipeManager().getAllRecipesFor(GunTableRecipe.GUN_TABLE));
+				playerInventory.player.level.getRecipeManager().getAllRecipesFor(ModEventSubscriber.GUN_TABLE_RECIPE_TYPE));
 		list.sort(null);
 		return list;
 	}

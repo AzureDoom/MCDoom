@@ -4,6 +4,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.gui.weapons.DoomGunInventory;
+import mod.azure.doom.util.ModEventSubscriber;
 import mod.azure.doom.util.registry.DoomRecipes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +21,6 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 	public static ResourceLocation RECIPE_TYPE_ID = new ResourceLocation(DoomMod.MODID, "guns");
 	public static final RecipeType<GunTableRecipe> GUN_TABLE = RecipeType
 			.register(new ResourceLocation(DoomMod.MODID, "gun_table").toString());
-
 	public final ResourceLocation id;
 	public final Pair<Ingredient, Integer>[] ingredients;
 	public final ItemStack output;
@@ -80,7 +80,7 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 
 	@Override
 	public RecipeType<?> getType() {
-		return GUN_TABLE;
+		return ModEventSubscriber.GUN_TABLE_RECIPE_TYPE;
 	}
 
 	@Override

@@ -4,14 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.serialization.Codec;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.util.registry.DoomStructures;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -20,18 +16,18 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
-import net.minecraft.world.level.levelgen.feature.structures.JigsawPlacement;
 import net.minecraft.world.level.levelgen.structure.PoolElementStructurePiece;
 import net.minecraft.world.level.levelgen.structure.PostPlacementProcessor;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
+import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.world.StructureSpawnListGatherEvent;
 
 public class GladiatorStructure extends StructureFeature<JigsawConfiguration> {
 
-	public GladiatorStructure(Codec<JigsawConfiguration> codec) {
-		super(codec, GladiatorStructure::createPiecesGenerator, PostPlacementProcessor.NONE);
+	public GladiatorStructure() {
+		super(JigsawConfiguration.CODEC, GladiatorStructure::createPiecesGenerator, PostPlacementProcessor.NONE);
 	}
 
 	@Override
@@ -60,22 +56,15 @@ public class GladiatorStructure extends StructureFeature<JigsawConfiguration> {
 
 	public static Optional<PieceGenerator<JigsawConfiguration>> createPiecesGenerator(
 			PieceGeneratorSupplier.Context<JigsawConfiguration> context) {
+
 		if (!GladiatorStructure.isFeatureChunk(context)) {
 			return Optional.empty();
 		}
 
-		JigsawConfiguration newConfig = new JigsawConfiguration(
-				() -> context.registryAccess().ownedRegistryOrThrow(Registry.TEMPLATE_POOL_REGISTRY)
-						.get(new ResourceLocation(DoomMod.MODID, "gladiator_fight/start_pool")),
-				10);
-		PieceGeneratorSupplier.Context<JigsawConfiguration> newContext = new PieceGeneratorSupplier.Context<>(
-				context.chunkGenerator(), context.biomeSource(), context.seed(), context.chunkPos(), newConfig,
-				context.heightAccessor(), context.validBiome(), context.structureManager(), context.registryAccess());
-
 		BlockPos blockpos = new BlockPos(context.chunkPos().getMinBlockX(), 32, context.chunkPos().getMinBlockZ());
 
-		Optional<PieceGenerator<JigsawConfiguration>> structurePiecesGenerator = JigsawPlacement.addPieces(newContext,
-				PoolElementStructurePiece::new, blockpos, true, false);
+		Optional<PieceGenerator<JigsawConfiguration>> structurePiecesGenerator = JigsawPlacement.addPieces(context,
+				PoolElementStructurePiece::new, blockpos, false, false);
 		return structurePiecesGenerator;
 	}
 }

@@ -76,8 +76,8 @@ public class SoulCubeHandler {
 				return false;
 			}
 		}
-		return CuriosApi.getCuriosHelper().findEquippedCurio(DoomItems.SOULCUBE.get(), livingEntity).map(soulcube -> {
-			this.activateSoulCube(livingEntity, soulcube.getRight());
+		return CuriosApi.getCuriosHelper().findFirstCurio(livingEntity, DoomItems.SOULCUBE.get()).map(soulcube -> {
+			this.activateSoulCube(livingEntity, soulcube.stack());
 			return true;
 		}).orElse(false);
 	}

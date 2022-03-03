@@ -3,6 +3,7 @@ package mod.azure.doom.client.gui.weapons;
 import java.util.Optional;
 
 import mod.azure.doom.recipes.GunTableRecipe;
+import mod.azure.doom.util.ModEventSubscriber;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -44,7 +45,7 @@ public class GunTableOutputSlot extends Slot {
 	public void onTake(Player player, ItemStack stack) {
 		this.checkTakeAchievements(stack);
 		Optional<GunTableRecipe> optionalGunTableRecipe = player.level.getRecipeManager()
-				.getRecipeFor(GunTableRecipe.GUN_TABLE, gunTableInventory, player.level);
+				.getRecipeFor(ModEventSubscriber.GUN_TABLE_RECIPE_TYPE, gunTableInventory, player.level);
 		if (optionalGunTableRecipe.isPresent()) {
 			GunTableRecipe gunTableRecipe = optionalGunTableRecipe.get();
 			NonNullList<ItemStack> NonNullList = gunTableRecipe.getRemainingItems(gunTableInventory);

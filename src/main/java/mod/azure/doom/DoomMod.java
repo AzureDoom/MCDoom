@@ -1,16 +1,7 @@
 package mod.azure.doom;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMultimap;
-import com.mojang.serialization.Codec;
 
 import mod.azure.doom.structures.GladiatorStructure;
 import mod.azure.doom.structures.IconStructure;
@@ -25,28 +16,13 @@ import mod.azure.doom.util.registry.DoomParticles;
 import mod.azure.doom.util.registry.DoomRecipes;
 import mod.azure.doom.util.registry.DoomScreens;
 import mod.azure.doom.util.registry.DoomStructures;
-import mod.azure.doom.util.registry.DoomStructuresConfigured;
 import mod.azure.doom.util.registry.ModEntitySpawn;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.FlatLevelSource;
-import net.minecraft.world.level.levelgen.StructureSettings;
-import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -58,7 +34,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import software.bernie.geckolib3.GeckoLib;
 import software.bernie.geckolib3.network.GeckoLibNetwork;
 import top.theillusivec4.curios.api.SlotTypeMessage;
@@ -97,7 +72,6 @@ public class DoomMod {
 		GeckoLib.initialize();
 		GeckoLibNetwork.initialize();
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
-		forgeBus.addListener(EventPriority.NORMAL, this::addDimensionalSpacing);
 		forgeBus.addListener(EventPriority.NORMAL, IconStructure::setupStructureSpawns);
 		forgeBus.addListener(EventPriority.NORMAL, GladiatorStructure::setupStructureSpawns);
 	}
@@ -110,80 +84,6 @@ public class DoomMod {
 	private void setup(final FMLCommonSetupEvent event) {
 		MinecraftForge.EVENT_BUS.register(new LootHandler());
 		DoomPacketHandler.register();
-		event.enqueueWork(() -> {
-			DoomStructures.setupStructures();
-			DoomStructuresConfigured.registerConfiguredStructures();
-		});
-	}
-
-	private static Method GETCODEC_METHOD;
-
-	public void addDimensionalSpacing(final WorldEvent.Load event) {
-		if (event.getWorld()instanceof ServerLevel serverLevel) {
-			ChunkGenerator chunkGenerator = serverLevel.getChunkSource().getGenerator();
-			if (chunkGenerator instanceof FlatLevelSource && serverLevel.dimension().equals(Level.OVERWORLD)) {
-				return;
-			}
-			StructureSettings worldStructureConfig = chunkGenerator.getSettings();
-			HashMap<StructureFeature<?>, HashMultimap<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>>> STStructureToMultiMap = new HashMap<>();
-
-			for (Map.Entry<ResourceKey<Biome>, Biome> biomeEntry : serverLevel.registryAccess()
-					.ownedRegistryOrThrow(Registry.BIOME_REGISTRY).entrySet()) {
-				Biome.BiomeCategory biomeCategory = biomeEntry.getValue().getBiomeCategory();
-				ResourceKey<Biome> biome = biomeEntry.getKey();
-				if (biomeCategory == Biome.BiomeCategory.MUSHROOM) {
-					associateBiomeToConfiguredStructure(STStructureToMultiMap,
-							DoomStructuresConfigured.CONFIGURED_HELL_CHURCH, biomeEntry.getKey());
-				}
-				if (biomeCategory == Biome.BiomeCategory.UNDERGROUND) {
-					associateBiomeToConfiguredStructure(STStructureToMultiMap,
-							DoomStructuresConfigured.CONFIGURED_ICON_FIGHT, biomeEntry.getKey());
-				}
-				if (biome == Biomes.SOUL_SAND_VALLEY) {
-					associateBiomeToConfiguredStructure(STStructureToMultiMap,
-							DoomStructuresConfigured.CONFIGURED_GLADIATOR_FIGHT, biomeEntry.getKey());
-				}
-			}
-			ImmutableMap.Builder<StructureFeature<?>, ImmutableMultimap<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>>> tempStructureToMultiMap = ImmutableMap
-					.builder();
-			worldStructureConfig.configuredStructures.entrySet().stream()
-					.filter(entry -> !STStructureToMultiMap.containsKey(entry.getKey()))
-					.forEach(tempStructureToMultiMap::put);
-			STStructureToMultiMap
-					.forEach((key, value) -> tempStructureToMultiMap.put(key, ImmutableMultimap.copyOf(value)));
-			worldStructureConfig.configuredStructures = tempStructureToMultiMap.build();
-			try {
-				if (GETCODEC_METHOD == null)
-					GETCODEC_METHOD = ObfuscationReflectionHelper.findMethod(ChunkGenerator.class, "codec");
-				@SuppressWarnings("unchecked")
-				ResourceLocation cgRL = Registry.CHUNK_GENERATOR
-						.getKey((Codec<? extends ChunkGenerator>) GETCODEC_METHOD.invoke(chunkGenerator));
-				if (cgRL != null && cgRL.getNamespace().equals("terraforged"))
-					return;
-			} catch (Exception e) {
-				DoomMod.LOGGER.error("Was unable to check if " + serverLevel.dimension().location()
-						+ " is using Terraforged's ChunkGenerator.");
-			}
-
-			Map<StructureFeature<?>, StructureFeatureConfiguration> tempMap = new HashMap<>(
-					worldStructureConfig.structureConfig());
-			tempMap.putIfAbsent(DoomStructures.HELL_CHURCH.get(),
-					StructureSettings.DEFAULTS.get(DoomStructures.HELL_CHURCH.get()));
-			tempMap.putIfAbsent(DoomStructures.ICON_FIGHT.get(),
-					StructureSettings.DEFAULTS.get(DoomStructures.ICON_FIGHT.get()));
-			tempMap.putIfAbsent(DoomStructures.GLADIATOR_FIGHT.get(),
-					StructureSettings.DEFAULTS.get(DoomStructures.GLADIATOR_FIGHT.get()));
-			worldStructureConfig.structureConfig = tempMap;
-		}
-	}
-
-	private static void associateBiomeToConfiguredStructure(
-			Map<StructureFeature<?>, HashMultimap<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>>> STStructureToMultiMap,
-			ConfiguredStructureFeature<?, ?> configuredStructureFeature, ResourceKey<Biome> biomeRegistryKey) {
-		STStructureToMultiMap.putIfAbsent(configuredStructureFeature.feature, HashMultimap.create());
-		HashMultimap<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>> configuredStructureToBiomeMultiMap = STStructureToMultiMap
-				.get(configuredStructureFeature.feature);
-		configuredStructureToBiomeMultiMap.put(configuredStructureFeature, biomeRegistryKey);
 	}
 
 	private void enqueueIMC(InterModEnqueueEvent event) {
