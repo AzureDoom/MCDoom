@@ -240,7 +240,6 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable, IAn
 	@Override
 	protected void initGoals() {
 		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(7, new PainEntity.LookAtTargetGoal(this));
 		this.goalSelector.add(4, new PainEntity.ShootFireballGoal(this));
 		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
@@ -325,36 +324,6 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable, IAn
 				--this.cooldown;
 			}
 			this.ghast.setAttackingState(cooldown >= 10 ? 1 : 0);
-		}
-	}
-
-	static class LookAtTargetGoal extends Goal {
-		private final PainEntity ghast;
-
-		public LookAtTargetGoal(PainEntity ghast) {
-			this.ghast = ghast;
-			this.setControls(EnumSet.of(Goal.Control.LOOK));
-		}
-
-		public boolean canStart() {
-			return true;
-		}
-
-		public void tick() {
-			if (this.ghast.getTarget() == null) {
-				Vec3d vec3d = this.ghast.getVelocity();
-				this.ghast.yaw = -((float) MathHelper.atan2(vec3d.x, vec3d.z)) * 57.295776F;
-				this.ghast.bodyYaw = this.ghast.yaw;
-			} else {
-				LivingEntity livingEntity = this.ghast.getTarget();
-				if (livingEntity.squaredDistanceTo(this.ghast) < 4096.0D) {
-					double e = livingEntity.getX() - this.ghast.getX();
-					double f = livingEntity.getZ() - this.ghast.getZ();
-					this.ghast.yaw = -((float) MathHelper.atan2(e, f)) * 57.295776F;
-					this.ghast.bodyYaw = this.ghast.yaw;
-				}
-			}
-
 		}
 	}
 

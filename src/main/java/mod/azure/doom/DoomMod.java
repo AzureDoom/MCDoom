@@ -1,8 +1,5 @@
 package mod.azure.doom;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,23 +18,16 @@ import mod.azure.doom.util.recipes.GunTableRecipe;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomStructures;
-import mod.azure.doom.util.registry.DoomStructuresConfigured;
 import mod.azure.doom.util.registry.MobSpawn;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
-import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
-import net.fabricmc.fabric.impl.structure.FabricStructureImpl;
-import net.fabricmc.fabric.mixin.structure.StructuresConfigAccessor;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
@@ -48,19 +38,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
-import net.minecraft.world.gen.chunk.FlatChunkGenerator;
-import net.minecraft.world.gen.chunk.StructureConfig;
-import net.minecraft.world.gen.chunk.StructuresConfig;
-import net.minecraft.world.gen.feature.StructureFeature;
 import software.bernie.geckolib3.GeckoLib;
 
 public class DoomMod implements ModInitializer {
@@ -143,53 +122,11 @@ public class DoomMod implements ModInitializer {
 		GeckoLib.initialize();
 		PacketHandler.registerMessages();
 		DoomStructures.setupAndRegisterStructureFeatures();
-		DoomStructuresConfigured.registerConfiguredStructures();
-		addStructureSpawningToDimensionsAndBiomes();
 	}
 
 	public static class DataTrackers {
 		public static final TrackedData<Boolean> MEATHOOK_TRACKER = DataTracker.registerData(PlayerEntity.class,
 				TrackedDataHandlerRegistry.BOOLEAN);
-	}
-
-	public static void addStructureSpawningToDimensionsAndBiomes() {
-		BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.MUSHROOM), RegistryKey.of(
-				Registry.CONFIGURED_STRUCTURE_FEATURE_KEY,
-				BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(DoomStructuresConfigured.CONFIGURED_HELL_CHURCH)));
-		BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.UNDERGROUND), RegistryKey.of(
-				Registry.CONFIGURED_STRUCTURE_FEATURE_KEY,
-				BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(DoomStructuresConfigured.CONFIGURED_ICON_FIGHT)));
-		BiomeModifications.addStructure(BiomeSelectors.includeByKey(BiomeKeys.SOUL_SAND_VALLEY),
-				RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE
-						.getId(DoomStructuresConfigured.CONFIGURED_GLADIATOR_FIGHT)));
-
-		Identifier runAfterFabricAPIPhase = new Identifier(DoomMod.MODID, "run_after_fabric_api");
-		ServerWorldEvents.LOAD.addPhaseOrdering(Event.DEFAULT_PHASE, runAfterFabricAPIPhase);
-		ServerWorldEvents.LOAD.register(runAfterFabricAPIPhase,
-				(MinecraftServer minecraftServer, ServerWorld serverWorld) -> {
-					if (serverWorld.getChunkManager().getChunkGenerator() instanceof FlatChunkGenerator
-							&& serverWorld.getRegistryKey().equals(World.OVERWORLD)) {
-						return;
-					}
-					StructuresConfig worldStructureConfig = serverWorld.getChunkManager().getChunkGenerator()
-							.getStructuresConfig();
-					Map<StructureFeature<?>, StructureConfig> tempMap = new HashMap<>(
-							worldStructureConfig.getStructures());
-					if (serverWorld.getRegistryKey().equals(World.OVERWORLD)) {
-						tempMap.put(DoomStructures.HELL_CHURCH,
-								FabricStructureImpl.STRUCTURE_TO_CONFIG_MAP.get(DoomStructures.HELL_CHURCH));
-						tempMap.put(DoomStructures.ICON_FIGHT,
-								FabricStructureImpl.STRUCTURE_TO_CONFIG_MAP.get(DoomStructures.ICON_FIGHT));
-					} else if (serverWorld.getRegistryKey().equals(World.NETHER)) {
-						tempMap.put(DoomStructures.GLADIATOR_FIGHT,
-								FabricStructureImpl.STRUCTURE_TO_CONFIG_MAP.get(DoomStructures.GLADIATOR_FIGHT));
-					} else {
-						tempMap.remove(DoomStructures.HELL_CHURCH);
-						tempMap.remove(DoomStructures.ICON_FIGHT);
-						tempMap.remove(DoomStructures.GLADIATOR_FIGHT);
-					}
-					((StructuresConfigAccessor) worldStructureConfig).setStructures(tempMap);
-				});
 	}
 
 }

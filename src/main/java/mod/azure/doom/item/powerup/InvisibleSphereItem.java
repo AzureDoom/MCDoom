@@ -31,7 +31,7 @@ public class InvisibleSphereItem extends Item {
 			PlayerEntity playerentity = (PlayerEntity) livingEntityIn;
 			if (!worldIn.isClient) {
 				livingEntityIn.addStatusEffect(new StatusEffectInstance(StatusEffects.INVISIBILITY, 1200, 1));
-				if (!playerentity.abilities.creativeMode) {
+				if (!playerentity.getAbilities().creativeMode) {
 					stack.decrement(1);
 					if (stack.isEmpty()) {
 						playerentity.getInventory().removeOne(stack);

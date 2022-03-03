@@ -12,6 +12,7 @@ import net.fabricmc.fabric.mixin.object.builder.SpawnRestrictionAccessor;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.biome.Biome;
 
 public class MobSpawn {
 
@@ -267,8 +268,9 @@ public class MobSpawn {
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 	}
 
+	@SuppressWarnings("deprecation")
 	private static boolean parseBiomes(List<String> biomes, BiomeSelectionContext biomeContext) {
 		return biomes.contains(biomeContext.getBiomeKey().getValue().toString())
-				|| biomes.contains("#" + biomeContext.getBiome().getCategory().asString());
+				|| biomes.contains("#" + Biome.getCategory(biomeContext.getBiomeRegistryEntry()).asString());
 	}
 }

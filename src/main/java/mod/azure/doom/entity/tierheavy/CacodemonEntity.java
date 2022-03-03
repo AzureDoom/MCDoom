@@ -1,6 +1,5 @@
 package mod.azure.doom.entity.tierheavy;
 
-import java.util.EnumSet;
 import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
@@ -23,7 +22,6 @@ import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
@@ -146,7 +144,6 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 		this.updateLimbs(this, false);
 	}
 
-
 	public boolean causeFallDamage(float distance, float damageMultiplier) {
 		return false;
 	}
@@ -225,7 +222,6 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 	@Override
 	protected void initGoals() {
 		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(7, new CacodemonEntity.LookAtTargetGoal(this));
 		this.goalSelector.add(4,
 				new RangedStaticAttackGoal(this,
 						new FireballAttack(this, true).setDamage(10).setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(
@@ -247,36 +243,6 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 	@Override
 	protected boolean isDisallowedInPeaceful() {
 		return true;
-	}
-
-	static class LookAtTargetGoal extends Goal {
-		private final CacodemonEntity ghast;
-
-		public LookAtTargetGoal(CacodemonEntity ghast) {
-			this.ghast = ghast;
-			this.setControls(EnumSet.of(Goal.Control.LOOK));
-		}
-
-		public boolean canStart() {
-			return true;
-		}
-
-		public void tick() {
-			if (this.ghast.getTarget() == null) {
-				Vec3d vec3d = this.ghast.getVelocity();
-				this.ghast.yaw = -((float) MathHelper.atan2(vec3d.x, vec3d.z)) * 57.295776F;
-				this.ghast.bodyYaw = this.ghast.yaw;
-			} else {
-				LivingEntity livingEntity = this.ghast.getTarget();
-				if (livingEntity.squaredDistanceTo(this.ghast) < 4096.0D) {
-					double e = livingEntity.getX() - this.ghast.getX();
-					double f = livingEntity.getZ() - this.ghast.getZ();
-					this.ghast.yaw = -((float) MathHelper.atan2(e, f)) * 57.295776F;
-					this.ghast.bodyYaw = this.ghast.yaw;
-				}
-			}
-
-		}
 	}
 
 	static class GhastMoveControl extends MoveControl {

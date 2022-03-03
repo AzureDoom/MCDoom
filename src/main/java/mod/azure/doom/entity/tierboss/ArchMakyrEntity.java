@@ -1,6 +1,5 @@
 package mod.azure.doom.entity.tierboss;
 
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
@@ -128,43 +127,12 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	protected void initGoals() {
 		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.add(8, new LookAroundGoal(this));
-		this.goalSelector.add(7, new ArchMakyrEntity.LookAtTargetGoal(this));
 		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.add(4, new RangedAttackGoal(this, new FireballAttack(this, true)
 				.setProjectileOriginOffset(0.8, 0.4, 0.8).setDamage(config.archmaykr_ranged_damage), 1.0D));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
-	}
-
-	static class LookAtTargetGoal extends Goal {
-		private final ArchMakyrEntity ghast;
-
-		public LookAtTargetGoal(ArchMakyrEntity ghast) {
-			this.ghast = ghast;
-			this.setControls(EnumSet.of(Goal.Control.LOOK));
-		}
-
-		public boolean canStart() {
-			return true;
-		}
-
-		public void tick() {
-			if (this.ghast.getTarget() == null) {
-				Vec3d vec3d = this.ghast.getVelocity();
-				this.ghast.yaw = -((float) MathHelper.atan2(vec3d.x, vec3d.z)) * 57.295776F;
-				this.ghast.bodyYaw = this.ghast.yaw;
-			} else {
-				LivingEntity livingEntity = this.ghast.getTarget();
-				if (livingEntity.squaredDistanceTo(this.ghast) < 4096.0D) {
-					double e = livingEntity.getX() - this.ghast.getX();
-					double f = livingEntity.getZ() - this.ghast.getZ();
-					this.ghast.yaw = -((float) MathHelper.atan2(e, f)) * 57.295776F;
-					this.ghast.bodyYaw = this.ghast.yaw;
-				}
-			}
-
-		}
 	}
 
 	static class GhastMoveControl extends MoveControl {

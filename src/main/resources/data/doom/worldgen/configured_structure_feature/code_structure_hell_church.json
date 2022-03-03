@@ -1,0 +1,31 @@
+{
+    // The base structure class to use for the behavior of the structure. (Like extra terrain checks and such)
+  "type": "doom:hell_church",
+
+  "config": {
+      // the path to the template pool json file to use
+    "start_pool": "doom:hell_church",
+
+      // This is how many pieces away from the starting piece a piece of the structure can spawn
+      // Think of it like the length of the branch of the structure
+    "size": 1
+  },
+  
+  "biomes": "#doom:has_structure/code_structure_hell_church_biomes",
+
+  "adapt_noise": false,
+
+  "spawn_overrides": {
+    "monster": {
+      "bounding_box": "piece",
+      "spawns": [
+        {
+          "type": "doom:turret",
+          "weight": 100,
+          "minCount": 1,
+          "maxCount": 1
+        }
+      ]
+    }
+  }
+}

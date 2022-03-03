@@ -39,9 +39,9 @@ public class DroneBoltRender extends EntityRenderer<DroneBoltEntity> {
 			VertexConsumerProvider vertexConsumerProvider, int i) {
 		matrixStack.push();
 		matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(
-				MathHelper.lerp(g, persistentProjectileEntity.prevYaw, persistentProjectileEntity.yaw) - 90.0F));
+				MathHelper.lerp(g, persistentProjectileEntity.prevYaw, persistentProjectileEntity.getYaw()) - 90.0F));
 		matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(
-				MathHelper.lerp(g, persistentProjectileEntity.prevPitch, persistentProjectileEntity.pitch)));
+				MathHelper.lerp(g, persistentProjectileEntity.prevPitch, persistentProjectileEntity.getPitch())));
 
 		matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(45.0F));
 		matrixStack.scale(0.05625F, 0.05625F, 0.05625F);

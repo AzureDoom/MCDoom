@@ -7,6 +7,7 @@ import java.util.Optional;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.mixin.IngredientAccess;
 import mod.azure.doom.util.recipes.GunTableRecipe;
+import mod.azure.doom.util.recipes.GunTableRecipe.Type;
 import mod.azure.doom.util.registry.DoomBlocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -64,7 +65,7 @@ public class GunTableScreenHandler extends ScreenHandler {
 			ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
 			ItemStack itemStack = ItemStack.EMPTY;
 			Optional<GunTableRecipe> optional = world.getServer().getRecipeManager()
-					.getFirstMatch(GunTableRecipe.GUN_TABLE, craftingInventory, world);
+					.getFirstMatch(Type.INSTANCE, craftingInventory, world);
 			if (optional.isPresent()) {
 				GunTableRecipe craftingRecipe = optional.get();
 				itemStack = craftingRecipe.craft(craftingInventory);
@@ -131,7 +132,7 @@ public class GunTableScreenHandler extends ScreenHandler {
 
 	public List<GunTableRecipe> getRecipes() {
 		List<GunTableRecipe> list = new ArrayList<>(
-				playerInventory.player.world.getRecipeManager().listAllOfType(GunTableRecipe.GUN_TABLE));
+				playerInventory.player.world.getRecipeManager().listAllOfType(Type.INSTANCE));
 		list.sort(null);
 		return list;
 	}

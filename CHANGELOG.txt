@@ -1,4 +1,3 @@
-v.4.1.23
+v.4.2.0
 
-- All guns now produce a temp light block when fired, to create the muzzle flash.
-- BFG, Ballista, Gauss, Rocket and Unmakyr projectiles produce light when traveling.
+- 1.18.2 update with new datapack Structures!

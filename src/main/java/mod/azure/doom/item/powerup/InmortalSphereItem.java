@@ -32,7 +32,7 @@ public class InmortalSphereItem extends Item {
 			if (!worldIn.isClient) {
 				livingEntityIn.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 600, 4));
 				livingEntityIn.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 600, 4));
-				if (!playerentity.abilities.creativeMode) {
+				if (!playerentity.getAbilities().creativeMode) {
 					stack.decrement(1);
 					if (stack.isEmpty()) {
 						playerentity.getInventory().removeOne(stack);

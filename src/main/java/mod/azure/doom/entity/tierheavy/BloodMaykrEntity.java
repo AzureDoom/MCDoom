@@ -1,6 +1,5 @@
 package mod.azure.doom.entity.tierheavy;
 
-import java.util.EnumSet;
 import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
@@ -20,7 +19,6 @@ import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
@@ -110,7 +108,6 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnima
 	protected void initGoals() {
 		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.add(8, new LookAroundGoal(this));
-		this.goalSelector.add(7, new BloodMaykrEntity.LookAtTargetGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
 		this.goalSelector.add(4,
 				new RangedStrafeAttackGoal(this, new BloodMaykrEntity.FireballAttack(this)
@@ -129,36 +126,6 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnima
 			this.setGlowing(true);
 		} else {
 			this.setGlowing(false);
-		}
-	}
-
-	static class LookAtTargetGoal extends Goal {
-		private final BloodMaykrEntity ghast;
-
-		public LookAtTargetGoal(BloodMaykrEntity ghast) {
-			this.ghast = ghast;
-			this.setControls(EnumSet.of(Goal.Control.LOOK));
-		}
-
-		public boolean canStart() {
-			return true;
-		}
-
-		public void tick() {
-			if (this.ghast.getTarget() == null) {
-				Vec3d vec3d = this.ghast.getVelocity();
-				this.ghast.yaw = -((float) MathHelper.atan2(vec3d.x, vec3d.z)) * 57.295776F;
-				this.ghast.bodyYaw = this.ghast.yaw;
-			} else {
-				LivingEntity livingEntity = this.ghast.getTarget();
-				if (livingEntity.squaredDistanceTo(this.ghast) < 4096.0D) {
-					double e = livingEntity.getX() - this.ghast.getX();
-					double f = livingEntity.getZ() - this.ghast.getZ();
-					this.ghast.yaw = -((float) MathHelper.atan2(e, f)) * 57.295776F;
-					this.ghast.bodyYaw = this.ghast.yaw;
-				}
-			}
-
 		}
 	}
 

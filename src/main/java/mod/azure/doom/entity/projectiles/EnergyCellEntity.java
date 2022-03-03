@@ -24,9 +24,6 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -130,83 +127,10 @@ public class EnergyCellEntity extends PersistentProjectileEntity implements IAni
 	@Override
 	public void tick() {
 		super.tick();
-		boolean bl = this.isNoClip();
-		Vec3d vec3d = this.getVelocity();
-		if (this.prevPitch == 0.0F && this.prevYaw == 0.0F) {
-			double f = vec3d.horizontalLength();
-			this.yaw = (float) (MathHelper.atan2(vec3d.x, vec3d.z) * 57.2957763671875D);
-			this.pitch = (float) (MathHelper.atan2(vec3d.y, (double) f) * 57.2957763671875D);
-			this.prevYaw = this.yaw;
-			this.prevPitch = this.pitch;
-		}
-		if (this.age >= 60) {
-			this.remove(Entity.RemovalReason.DISCARDED);
-		}
-		if (this.inAir && !bl) {
-			this.age();
-			++this.timeInAir;
-		} else {
-			this.timeInAir = 0;
-			Vec3d vec3d3 = this.getPos();
-			Vec3d vector3d3 = vec3d3.add(vec3d);
-			HitResult hitResult = this.world.raycast(new RaycastContext(vec3d3, vector3d3,
-					RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, this));
-			if (((HitResult) hitResult).getType() != HitResult.Type.MISS) {
-				vector3d3 = ((HitResult) hitResult).getPos();
-			}
-			while (!this.isRemoved()) {
-				EntityHitResult entityHitResult = this.getEntityCollision(vec3d3, vector3d3);
-				if (entityHitResult != null) {
-					hitResult = entityHitResult;
-				}
-				if (hitResult != null && ((HitResult) hitResult).getType() == HitResult.Type.ENTITY) {
-					Entity entity = ((EntityHitResult) hitResult).getEntity();
-					Entity entity2 = this.getOwner();
-					if (entity instanceof PlayerEntity && entity2 instanceof PlayerEntity
-							&& !((PlayerEntity) entity2).shouldDamagePlayer((PlayerEntity) entity)) {
-						hitResult = null;
-						entityHitResult = null;
-					}
-				}
-				if (hitResult != null && !bl) {
-					this.onCollision((HitResult) hitResult);
-					this.velocityDirty = true;
-				}
-				if (entityHitResult == null || this.getPierceLevel() <= 0) {
-					break;
-				}
-				hitResult = null;
-			}
-			vec3d = this.getVelocity();
-			double d = vec3d.x;
-			double e = vec3d.y;
-			double g = vec3d.z;
-			double h = this.getX() + d;
-			double j = this.getY() + e;
-			double k = this.getZ() + g;
-			double l = vec3d.horizontalLength();
-			if (bl) {
-				this.yaw = (float) (MathHelper.atan2(-d, -g) * 57.2957763671875D);
-			} else {
-				this.yaw = (float) (MathHelper.atan2(d, g) * 57.2957763671875D);
-			}
-			this.pitch = (float) (MathHelper.atan2(e, (double) l) * 57.2957763671875D);
-			this.pitch = updateRotation(this.prevPitch, this.pitch);
-			this.yaw = updateRotation(this.prevYaw, this.yaw);
-			float m = 0.99F;
-
-			this.setVelocity(vec3d.multiply((double) m));
-			if (!this.hasNoGravity() && !bl) {
-				Vec3d vec3d5 = this.getVelocity();
-				this.setVelocity(vec3d5.x, vec3d5.y - 0.05000000074505806D, vec3d5.z);
-			}
-			this.updatePosition(h, j, k);
-			this.checkBlockCollision();
-			if (this.world.isClient) {
-				double d2 = this.getX() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getWidth() * 0.5D;
-				double f2 = this.getZ() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getWidth() * 0.5D;
-				this.world.addParticle(DoomParticles.PLASMA, true, d2, this.getY(), f2, 0, 0, 0);
-			}
+		if (this.world.isClient) {
+			double d2 = this.getX() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getWidth() * 0.5D;
+			double f2 = this.getZ() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getWidth() * 0.5D;
+			this.world.addParticle(DoomParticles.PLASMA, true, d2, this.getY(), f2, 0, 0, 0);
 		}
 	}
 

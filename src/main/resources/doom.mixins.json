@@ -11,13 +11,9 @@
 	"mixins": [
 		"LivingEntityMixin",
 		"AnvilScreenHandlerMixin",
-		"BuilderAccessor",
 		"IngredientAccess",
-		"LootContextAccessor",
-		"LootManagerAccessor",
-		"LootTableMixin",
-		"NoiseChunkGeneratorMixin",
 		"PlayerEntityMixin",
+		"StructureFeatureAccessor",
 		"VillagerMixin"
 	],
 	"injectors": {

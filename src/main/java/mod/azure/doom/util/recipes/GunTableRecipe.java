@@ -31,10 +31,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 public class GunTableRecipe implements Recipe<GunTableInventory>, Comparable<GunTableRecipe> {
-
-	public static final RecipeType<GunTableRecipe> GUN_TABLE = RecipeType
-			.register(new Identifier(DoomMod.MODID, "gun_table").toString());
-
 	private final Identifier id;
 	private final Pair<Ingredient, Integer>[] ingredients;
 	private final ItemStack output;
@@ -91,10 +87,16 @@ public class GunTableRecipe implements Recipe<GunTableInventory>, Comparable<Gun
 	public RecipeSerializer<?> getSerializer() {
 		return DoomMod.GUN_TABLE_RECIPE_SERIALIZER;
 	}
+	
+	public static class Type implements RecipeType<GunTableRecipe> {
+		private Type() {}
+		public static final Type INSTANCE = new Type();
+		public static final String ID = "gun_table";
+	}
 
 	@Override
 	public RecipeType<?> getType() {
-		return GUN_TABLE;
+		return Type.INSTANCE;
 	}
 
 	@Override

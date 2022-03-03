@@ -5,7 +5,7 @@ buildscript {
 }
 
 plugins {
-    id 'fabric-loom' version '0.10-SNAPSHOT'
+    id 'fabric-loom' version '0.11-SNAPSHOT'
 	id 'maven-publish'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
@@ -27,6 +27,8 @@ repositories {
     maven { url 'https://maven.blamejared.com' }
     maven { url 'https://plugins.gradle.org/m2/' }
     maven { url 'https://jitpack.io' }
+	maven { url = "https://maven.terraformersmc.com/" }
+	maven {url = "https://ladysnake.jfrog.io/artifactory/mods" }
 }
 
 dependencies {
@@ -34,18 +36,17 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation "software.bernie.geckolib:geckolib-fabric-1.18:3.0.32"
-    modApi("me.shedaniel.cloth:cloth-config-fabric:6.0.42") {
-    	exclude(group: "com.terraformersmc.modmenu")
+    modImplementation "software.bernie.geckolib:geckolib-fabric-1.18:3.0.35"
+	modImplementation("curse.maven:modmenu-308702:3472549") {
+    	exclude(group: "net.fabricmc.fabric-api")
     }
-	modImplementation 'curse.maven:modmenu-308702:3472549'
-	modImplementation 'curse.maven:trinkets-341284:3542826'
-	modImplementation 'curse.maven:ccb-318449:3475407'
-	modImplementation 'curse.maven:cce-318449:3475410'
-	modImplementation 'curse.maven:hookshot-396512:3541381'
-	modImplementation 'curse.maven:TDI-245733:3556912'
-	modImplementation 'curse.maven:advancement-514882:3547914'
-	modImplementation 'curse.maven:Iceberg-539382:3597368'
+    modApi("me.shedaniel.cloth:cloth-config-fabric:6.2.57") {
+    	exclude(group: "net.fabricmc.fabric-api")
+    }
+    modImplementation "dev.emi:trinkets:3.3.0"
+	//modImplementation 'curse.maven:ccb-318449:3475407'
+	//modImplementation 'curse.maven:cce-318449:3475410'
+	//modImplementation 'curse.maven:TDI-245733:3556912'
 }
 
 processResources {
@@ -102,7 +103,7 @@ if (file('key.properties').exists()) {
         	releaseType = "${curse_release}"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
-			addGameVersion("1.18.1")
+			addGameVersion("1.18.2")
 			addGameVersion("Fabric")
 			addGameVersion("Java 17")
 
@@ -110,7 +111,6 @@ if (file('key.properties').exists()) {
             	requiredDependency 'fabric-api'  
             	requiredDependency 'geckolib'  
             	requiredDependency 'cloth-config'  
-            	//requiredDependency 'cardinal-components'  
             	requiredDependency 'trinkets-fabric'  
         	}
         	mainArtifact(remapJar)

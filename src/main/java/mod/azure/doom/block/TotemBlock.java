@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tileentity.TotemEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockRenderType;
@@ -47,10 +46,9 @@ public class TotemBlock extends BlockWithEntity implements BlockEntityProvider {
 	private static final VoxelShape Z_AXIS_AABB = VoxelShapes.union(Y_LENGTH1, Y_LENGTH2);
 	protected Random RANDOM = new Random();
 
-	@SuppressWarnings("removal")
 	public TotemBlock() {
-		super(FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL)
-				.breakByTool(FabricToolTags.PICKAXES, 3).nonOpaque().requiresTool().strength(3, 3).luminance(15));
+		super(FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL).nonOpaque().requiresTool()
+				.strength(3, 3).luminance(15));
 	}
 
 	@Override

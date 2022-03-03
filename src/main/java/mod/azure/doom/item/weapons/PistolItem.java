@@ -48,7 +48,7 @@ public class PistolItem extends DoomBaseItem {
 				playerentity.getItemCooldownManager().set(this, 5);
 				if (!worldIn.isClient) {
 					BulletEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.setVelocity(playerentity, playerentity.pitch, playerentity.yaw, 0.0F,
+					abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
 							1.0F, 1.0F);
 					abstractarrowentity.setParticle(1);
 					abstractarrowentity.hasNoGravity();

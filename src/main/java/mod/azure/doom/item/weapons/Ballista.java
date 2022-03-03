@@ -44,7 +44,7 @@ public class Ballista extends DoomBaseItem {
 				playerentity.getItemCooldownManager().set(this, 17);
 				if (!worldIn.isClient) {
 					ArgentBoltEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.setVelocity(playerentity, playerentity.pitch, playerentity.yaw, 0.0F,
+					abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
 							1.0F * 3.0F, 1.0F);
 					abstractarrowentity.setParticle(true);
 					stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));

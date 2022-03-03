@@ -22,7 +22,7 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.Angerable;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.network.Packet;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.TimeHelper;
@@ -59,8 +59,9 @@ public class DemonEntity extends HostileEntity implements Angerable {
 		return EntityGroup.UNDEAD;
 	}
 
-	public boolean canWalkOnFluid(Fluid fluid) {
-		return fluid.isIn(FluidTags.LAVA);
+	@Override
+	public boolean canWalkOnFluid(FluidState fluidState) {
+		return fluidState.isIn(FluidTags.LAVA);
 	}
 
 	public int getAttckingState() {
@@ -123,15 +124,15 @@ public class DemonEntity extends HostileEntity implements Angerable {
 
 	public void attack(LivingEntity target, float pullProgress) {
 	}
-	
+
 	@Override
 	protected float getSoundVolume() {
 		return 0.4F;
 	}
-	
-    @Override
-    protected EntityNavigation createNavigation(World world) {
-        return new SpiderNavigation(this, world);
-    }
+
+	@Override
+	protected EntityNavigation createNavigation(World world) {
+		return new SpiderNavigation(this, world);
+	}
 
 }

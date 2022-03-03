@@ -147,7 +147,7 @@ public class Chainsaw extends Item {
 
 	private void damageItem(LivingEntity user, ItemStack stack) {
 		PlayerEntity player = (PlayerEntity) user;
-		if (!player.abilities.creativeMode) {
+		if (!player.getAbilities().creativeMode) {
 			stack.setDamage(stack.getDamage() + 1);
 		}
 	}

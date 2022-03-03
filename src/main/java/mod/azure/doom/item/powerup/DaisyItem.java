@@ -44,7 +44,6 @@ public class DaisyItem extends TrinketItem {
 		var modifiers = super.getModifiers(stack, slot, entity, uuid);
 		modifiers.put(EntityAttributes.GENERIC_MOVEMENT_SPEED, new EntityAttributeModifier(uuid,
 				DoomMod.MODID + ":movement_speed", 2.0, EntityAttributeModifier.Operation.MULTIPLY_TOTAL));
-		// If the player has access to ring slots, this will give them an extra one
 		SlotAttributes.addSlotModifier(modifiers, "legs/belt", uuid, 1, EntityAttributeModifier.Operation.ADDITION);
 		return modifiers;
 	}

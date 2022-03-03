@@ -29,7 +29,7 @@ public class PowerSphereItem extends Item {
 			PlayerEntity playerentity = (PlayerEntity) livingEntityIn;
 			if (!worldIn.isClient) {
 				livingEntityIn.heal(20);
-				if (!playerentity.abilities.creativeMode) {
+				if (!playerentity.getAbilities().creativeMode) {
 					stack.decrement(1);
 					if (stack.isEmpty()) {
 						playerentity.getInventory().removeOne(stack);

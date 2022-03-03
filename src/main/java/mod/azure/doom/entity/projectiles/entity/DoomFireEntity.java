@@ -53,7 +53,6 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 		this(ProjectilesEntityRegister.FIRING, worldIn);
 		this.warmup = warmup;
 		this.setOwner(owner);
-		this.yaw = yaw * 57.295776F;
 		this.updatePosition(x, y, z);
 		this.damage = damage;
 	}

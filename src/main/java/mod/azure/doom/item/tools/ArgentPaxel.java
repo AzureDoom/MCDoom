@@ -26,7 +26,7 @@ import net.minecraft.item.MiningToolItem;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.Tag.Identified;
+import net.minecraft.tag.TagKey;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
@@ -57,7 +57,7 @@ public class ArgentPaxel extends MiningToolItem {
 			.put(Blocks.CRIMSON_HYPHAE, Blocks.STRIPPED_CRIMSON_HYPHAE).build();
 
 	@SuppressWarnings("unused")
-	private static final List<Identified<Block>> MINEABLE = ImmutableList.of(BlockTags.AXE_MINEABLE,
+	private static final List<TagKey<Block>> MINEABLE = ImmutableList.of(BlockTags.AXE_MINEABLE,
 			BlockTags.PICKAXE_MINEABLE, BlockTags.SHOVEL_MINEABLE);
 
 	public ArgentPaxel() {

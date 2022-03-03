@@ -17,7 +17,7 @@ public class SoulCubeItem extends TrinketItem {
 	public SoulCubeItem() {
 		super(new Item.Settings().group(DoomMod.DoomPowerUPItemGroup).maxCount(1).maxDamage(5));
 	}
-	
+
 	@Override
 	public boolean isEnchantable(ItemStack stack) {
 		return false;
@@ -25,7 +25,8 @@ public class SoulCubeItem extends TrinketItem {
 
 	@Override
 	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(new TranslatableText("Uses Remaining: " + (stack.getMaxDamage() - stack.getDamage())).formatted(Formatting.ITALIC));
+		tooltip.add(new TranslatableText("Uses Remaining: " + (stack.getMaxDamage() - stack.getDamage()))
+				.formatted(Formatting.ITALIC));
 		super.appendTooltip(stack, world, tooltip, context);
 	}
 }

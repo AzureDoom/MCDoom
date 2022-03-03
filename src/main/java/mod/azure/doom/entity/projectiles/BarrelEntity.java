@@ -18,7 +18,7 @@ public class BarrelEntity extends Entity {
 
 	public BarrelEntity(EntityType<? extends BarrelEntity> entityType, World world) {
 		super(entityType, world);
-		this.inanimate = true;
+		this.intersectionChecked = true;
 	}
 
 	protected void explode() {
