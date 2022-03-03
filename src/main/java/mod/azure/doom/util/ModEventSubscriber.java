@@ -45,12 +45,9 @@ import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
 import mod.azure.doom.entity.tiersuperheavy.FireBaronEntity;
 import mod.azure.doom.entity.tiersuperheavy.MarauderEntity;
 import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
-import mod.azure.doom.recipes.GunTableRecipe;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.SpawnPlacements;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -59,13 +56,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber(modid = DoomMod.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class ModEventSubscriber {
-
-	public static RecipeType<GunTableRecipe> GUN_TABLE_RECIPE_TYPE;
-
-	@SubscribeEvent
-	public static void registerRecipeType(RegistryEvent.Register<Item> e) {
-		GUN_TABLE_RECIPE_TYPE = RecipeType.register(GunTableRecipe.RECIPE_TYPE_ID.toString());
-	}
 
 	@SubscribeEvent
 	public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event) {

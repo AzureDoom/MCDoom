@@ -4,23 +4,20 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.gui.weapons.DoomGunInventory;
-import mod.azure.doom.util.ModEventSubscriber;
 import mod.azure.doom.util.registry.DoomRecipes;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunTableRecipe> {
 
 	public static ResourceLocation RECIPE_TYPE_ID = new ResourceLocation(DoomMod.MODID, "guns");
-	public static final RecipeType<GunTableRecipe> GUN_TABLE = RecipeType
-			.register(new ResourceLocation(DoomMod.MODID, "gun_table").toString());
 	public final ResourceLocation id;
 	public final Pair<Ingredient, Integer>[] ingredients;
 	public final ItemStack output;
@@ -78,9 +75,14 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 		return DoomRecipes.GUN_TABLE_RECIPE_SERIALIZER.get();
 	}
 
+	public static class Type implements RecipeType<GunTableRecipe> {
+		public static final Type INSTANCE = new Type();
+		public static final String ID = "gun_table";
+	}
+
 	@Override
 	public RecipeType<?> getType() {
-		return ModEventSubscriber.GUN_TABLE_RECIPE_TYPE;
+		return Type.INSTANCE;
 	}
 
 	@Override
