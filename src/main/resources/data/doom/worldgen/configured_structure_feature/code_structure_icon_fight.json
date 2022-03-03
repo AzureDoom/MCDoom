@@ -20,8 +20,8 @@
       "bounding_box": "piece",
       "spawns": [
         {
-          "type": "doom:gladiator",
-          "weight": 5,
+          "type": "doom:iconofsin",
+          "weight": 100,
           "minCount": 1,
           "maxCount": 1
         }

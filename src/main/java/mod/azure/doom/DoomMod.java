@@ -19,9 +19,13 @@ import mod.azure.doom.util.registry.DoomStructures;
 import mod.azure.doom.util.registry.ModEntitySpawn;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -34,6 +38,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.registries.ForgeRegistries;
 import software.bernie.geckolib3.GeckoLib;
 import software.bernie.geckolib3.network.GeckoLibNetwork;
 import top.theillusivec4.curios.api.SlotTypeMessage;
@@ -49,6 +54,7 @@ public class DoomMod {
 	public DoomMod() {
 		instance = this;
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, DoomConfig.SERVER_SPEC, "doom-newconfig.toml");
 		DoomConfig.loadConfig(DoomConfig.SERVER_SPEC,
 				FMLPaths.CONFIGDIR.get().resolve("doom-newconfig.toml").toString());
@@ -56,6 +62,7 @@ public class DoomMod {
 		MinecraftForge.EVENT_BUS.register(new SoulCubeHandler());
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::enqueueIMC);
+		forgeBus.addGenericListener(EntityType.class, DoomMod::updatingPinkyID);
 		if (DoomConfig.SERVER.enable_all_villager_trades.get()) {
 			MinecraftForge.EVENT_BUS.addListener(DoomVillagerTrades::onVillagerTradesEvent);
 		}
@@ -71,7 +78,6 @@ public class DoomMod {
 		DoomStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
 		GeckoLib.initialize();
 		GeckoLibNetwork.initialize();
-		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.addListener(EventPriority.NORMAL, IconStructure::setupStructureSpawns);
 		forgeBus.addListener(EventPriority.NORMAL, GladiatorStructure::setupStructureSpawns);
 	}
@@ -91,6 +97,15 @@ public class DoomMod {
 				() -> SlotTypePreset.CHARM.getMessageBuilder().build());
 		InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
 				() -> SlotTypePreset.BELT.getMessageBuilder().build());
+	}
+
+	@SubscribeEvent
+	public static void updatingPinkyID(final RegistryEvent.MissingMappings<EntityType<?>> event) {
+		for (Mapping<EntityType<?>> mapping : event.getAllMappings()) {
+			if (mapping.key.getPath().equals("pinky2016")) {
+				mapping.remap(ForgeRegistries.ENTITIES.getValue(new ResourceLocation(DoomMod.MODID, "pinky")));
+			}
+		}
 	}
 
 	public static final CreativeModeTab DoomWeaponItemGroup = (new CreativeModeTab("doomweapons") {
