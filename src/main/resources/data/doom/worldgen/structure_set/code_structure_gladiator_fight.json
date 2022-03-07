@@ -1,7 +1,7 @@
 {
 	"structures": [
 		{
-			"structure": "doom:code_structure_gladiator",
+			"structure": "doom:code_structure_gladiator_fight",
 			"weight": 1
 		}
 	],
