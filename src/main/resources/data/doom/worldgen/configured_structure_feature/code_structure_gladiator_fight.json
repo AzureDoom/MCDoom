@@ -4,7 +4,7 @@
 		"start_pool": "doom:gladiator_fight",
 		"size": 1
 	},
-	"biomes": "#doom:has_structure/code_structure_gladiator_biomes",
+	"biomes": "#doom:has_structure/code_structure_gladiator_fight_biomes",
 	"adapt_noise": false,
 	"spawn_overrides": {
 		"monster": {
