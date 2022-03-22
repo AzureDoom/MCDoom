@@ -81,8 +81,7 @@ public class DaisyItem extends Item {
 
 			@Override
 			public boolean canEquip(String identifier, LivingEntity entityLivingBase) {
-				return !CuriosApi.getCuriosHelper().findEquippedCurio(DoomItems.DAISY.get(), entityLivingBase)
-						.isPresent();
+				return !CuriosApi.getCuriosHelper().findFirstCurio(entityLivingBase, DoomItems.DAISY.get()).isPresent();
 			}
 
 			@Override
@@ -104,6 +103,6 @@ public class DaisyItem extends Item {
 	}
 
 	public static boolean isRingInCuriosSlot(ItemStack belt, LivingEntity player) {
-		return CuriosApi.getCuriosHelper().findEquippedCurio(belt.getItem(), player).isPresent();
+		return CuriosApi.getCuriosHelper().findFirstCurio(player, belt.getItem()).isPresent();
 	}
 }

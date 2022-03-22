@@ -10,7 +10,6 @@ import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.PistolLoadingPacket;
-import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -78,7 +77,8 @@ public class PistolItem extends DoomBaseItem {
 								.with(() -> playerentity);
 						GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
 					}
-					worldIn.setBlockAndUpdate(playerentity.eyeBlockPosition(), DoomBlocks.TICKING_LIGHT_BLOCK.get().defaultBlockState());
+					boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
+					spawnLightSource(entityLiving, isInsideWaterBlock);
 				}
 			} else {
 				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),

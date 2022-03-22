@@ -8,6 +8,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -51,6 +52,7 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 		return !world.getBlockState(pos.below()).is(Blocks.NETHER_WART_BLOCK);
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean canStandOnFluid(Fluid p_230285_1_) {
 		return p_230285_1_.is(FluidTags.LAVA);
 	}
@@ -107,7 +109,7 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 
 	public void performRangedAttack(LivingEntity target, float pullProgress) {
 	}
-	
+
 	@Override
 	protected float getSoundVolume() {
 		return 0.4F;
@@ -116,6 +118,15 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 	@Override
 	protected PathNavigation createNavigation(Level worldIn) {
 		return new WallClimberNavigation(this, worldIn);
+	}
+
+	@Override
+	public void playAmbientSound() {
+		SoundEvent soundevent = this.getAmbientSound();
+		if (soundevent != null) {
+			this.playSound(soundevent, 0.25F, this.getVoicePitch());
+		}
+
 	}
 
 }
