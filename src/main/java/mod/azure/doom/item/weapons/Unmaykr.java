@@ -5,7 +5,6 @@ import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.entity.projectiles.UnmaykrBoltEntity;
 import mod.azure.doom.util.enums.DoomTier;
-import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -49,11 +48,11 @@ public class Unmaykr extends DoomBaseItem {
 					abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
 							1.0F * 3.0F, 1.0F);
 					UnmaykrBoltEntity abstractarrowentity2 = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity2.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw() - 10, 0.0F,
-							1.0F * 3.0F, 1.0F);
+					abstractarrowentity2.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw() - 10,
+							0.0F, 1.0F * 3.0F, 1.0F);
 					UnmaykrBoltEntity abstractarrowentity1 = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity1.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw() + 10, 0.0F,
-							1.0F * 3.0F, 1.0F);
+					abstractarrowentity1.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw() + 10,
+							0.0F, 1.0F * 3.0F, 1.0F);
 
 					abstractarrowentity.hasNoGravity();
 					abstractarrowentity1.hasNoGravity();
@@ -74,7 +73,8 @@ public class Unmaykr extends DoomBaseItem {
 							GeckoLibNetwork.syncAnimation(otherPlayer, this, id, ANIM_OPEN);
 						}
 					}
-					worldIn.setBlockState(playerentity.getCameraBlockPos(), DoomBlocks.TICKING_LIGHT_BLOCK.getDefaultState());
+					boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
+					spawnLightSource(entityLiving, isInsideWaterBlock);
 				}
 			}
 		}

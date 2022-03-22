@@ -3,7 +3,10 @@
 		"sounds": [{"name": "doom:loading_end"}]
 	},
 	"doom.e1m1": {
-		"sounds": [{"name": "doom:e1m1", "stream": true}]
+		"sounds": [{"name": "doom:e1m1"}]
+	},
+	"doom.netherambient_geoffplaysguitar": {
+		"sounds": [{"name": "doom:netherambient_geoffplaysguitar"}]
 	},
 	"doom.chaingun_fire": {
 		"sounds": [{"name": "doom:chaingun_fire"}]

@@ -7,7 +7,6 @@ import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.entity.projectiles.ArgentBoltEntity;
 import mod.azure.doom.util.enums.DoomTier;
-import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -50,15 +49,15 @@ public class DGauss extends DoomBaseItem {
 				playerentity.getItemCooldownManager().set(this, 17);
 				if (!worldIn.isClient) {
 					ArgentBoltEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F, 1.0F,
-							1.0F);
+					abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
+							1.0F, 1.0F);
 					stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
 					worldIn.spawnEntity(abstractarrowentity);
 					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
 							playerentity.getZ(), ModSoundEvents.BALLISTA_FIRING, SoundCategory.PLAYERS, 1.0F,
 							1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
-			        Vec3d vec3d = playerentity.getVelocity();
-			        playerentity.setVelocity(vec3d.x, vec3d.y * 3, vec3d.z);
+					Vec3d vec3d = playerentity.getVelocity();
+					playerentity.setVelocity(vec3d.x, vec3d.y * 3, vec3d.z);
 					playerentity.velocityDirty = true;
 					if (!worldIn.isClient) {
 						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);
@@ -67,7 +66,8 @@ public class DGauss extends DoomBaseItem {
 							GeckoLibNetwork.syncAnimation(otherPlayer, this, id, ANIM_OPEN);
 						}
 					}
-					worldIn.setBlockState(playerentity.getCameraBlockPos(), DoomBlocks.TICKING_LIGHT_BLOCK.getDefaultState());
+					boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
+					spawnLightSource(entityLiving, isInsideWaterBlock);
 				}
 			} else {
 				worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),

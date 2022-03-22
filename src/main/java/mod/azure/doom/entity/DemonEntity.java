@@ -24,6 +24,7 @@ import net.minecraft.entity.mob.Angerable;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.network.Packet;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.BlockPos;
@@ -133,6 +134,14 @@ public class DemonEntity extends HostileEntity implements Angerable {
 	@Override
 	protected EntityNavigation createNavigation(World world) {
 		return new SpiderNavigation(this, world);
+	}
+	
+	@Override
+	public void playAmbientSound() {
+        SoundEvent soundEvent = this.getAmbientSound();
+        if (soundEvent != null) {
+            this.playSound(soundEvent, 0.25F, this.getSoundPitch());
+        }
 	}
 
 }

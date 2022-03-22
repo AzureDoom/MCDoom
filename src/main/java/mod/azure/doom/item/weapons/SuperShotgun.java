@@ -9,7 +9,6 @@ import mod.azure.doom.entity.projectiles.MeatHookEntity;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import mod.azure.doom.util.PlayerProperties;
 import mod.azure.doom.util.enums.DoomTier;
-import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -52,12 +51,12 @@ public class SuperShotgun extends DoomBaseItem {
 					playerentity.getItemCooldownManager().set(this, 24);
 					if (!worldIn.isClient) {
 						ShotgunShellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-						abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw() + 1, 0.0F,
-								1.0F * 3.0F, 1.0F);
+						abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(),
+								playerentity.getYaw() + 1, 0.0F, 1.0F * 3.0F, 1.0F);
 						worldIn.spawnEntity(abstractarrowentity);
 						ShotgunShellEntity abstractarrowentity1 = createArrow(worldIn, stack, playerentity);
-						abstractarrowentity1.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw() - 1, 0.0F,
-								1.0F * 3.0F, 1.0F);
+						abstractarrowentity1.setVelocity(playerentity, playerentity.getPitch(),
+								playerentity.getYaw() - 1, 0.0F, 1.0F * 3.0F, 1.0F);
 						worldIn.spawnEntity(abstractarrowentity1);
 
 						stack.damage(2, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
@@ -69,7 +68,8 @@ public class SuperShotgun extends DoomBaseItem {
 						for (PlayerEntity otherPlayer : PlayerLookup.tracking(playerentity)) {
 							GeckoLibNetwork.syncAnimation(otherPlayer, this, id, ANIM_OPEN);
 						}
-						worldIn.setBlockState(playerentity.getCameraBlockPos(), DoomBlocks.TICKING_LIGHT_BLOCK.getDefaultState());
+						boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
+						spawnLightSource(entityLiving, isInsideWaterBlock);
 					}
 				}
 			} else {

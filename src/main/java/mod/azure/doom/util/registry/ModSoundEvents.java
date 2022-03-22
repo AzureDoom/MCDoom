@@ -43,6 +43,7 @@ public class ModSoundEvents {
 	public static SoundEvent QUICK1_1 = of("doom.quick1_1");
 
 	public static SoundEvent E1M1 = of("doom.e1m1");
+	public static SoundEvent NETHERAMBIENT_GEOFFPLAYSGUITAR = of("doom.netherambient_geoffplaysguitar");
 
 	public static SoundEvent IMP_AMBIENT = of("doom.imp_ambient");
 	public static SoundEvent IMP_DEATH = of("doom.imp_death");

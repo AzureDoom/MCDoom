@@ -5,7 +5,6 @@ import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.entity.projectiles.EnergyCellEntity;
 import mod.azure.doom.util.enums.DoomTier;
-import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -45,8 +44,8 @@ public class PlasmaGun extends DoomBaseItem {
 					playerentity.getItemCooldownManager().set(this, 5);
 					if (!worldIn.isClient) {
 						EnergyCellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-						abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
-								0.15F * 3.0F, 1.0F);
+						abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(),
+								0.0F, 0.15F * 3.0F, 1.0F);
 						abstractarrowentity.hasNoGravity();
 
 						stack.damage(1, livingEntityIn, p -> p.sendToolBreakStatus(livingEntityIn.getActiveHand()));
@@ -61,7 +60,8 @@ public class PlasmaGun extends DoomBaseItem {
 								GeckoLibNetwork.syncAnimation(otherPlayer, this, id, ANIM_OPEN);
 							}
 						}
-						worldIn.setBlockState(playerentity.getCameraBlockPos(), DoomBlocks.TICKING_LIGHT_BLOCK.getDefaultState());
+						boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
+						spawnLightSource(livingEntityIn, isInsideWaterBlock);
 					}
 				}
 			} else {
