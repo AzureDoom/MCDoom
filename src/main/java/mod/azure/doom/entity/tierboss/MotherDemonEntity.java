@@ -244,7 +244,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 										d, e1, h2, 0);
 							}
 							parentEntity.world.playSound(this.parentEntity.getX(), this.parentEntity.getY(),
-									this.parentEntity.getZ(), ModSoundEvents.MOTHER_ATTACK, SoundCategory.HOSTILE, 1.0F,
+									this.parentEntity.getZ(), ModSoundEvents.MOTHER_ATTACK, SoundCategory.HOSTILE, 0.25F,
 									1.0F, true);
 							this.parentEntity.setAttackingState(2);
 						}
@@ -264,7 +264,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 								this.parentEntity.getBodyY(0.5D) + 0.5D, parentEntity.getZ() + vec3d.z * 1.0D);
 						world.spawnEntity(fireballEntity2);
 						parentEntity.world.playSound(this.parentEntity.getX(), this.parentEntity.getY(),
-								this.parentEntity.getZ(), ModSoundEvents.MOTHER_ATTACK, SoundCategory.HOSTILE, 1.0F,
+								this.parentEntity.getZ(), ModSoundEvents.MOTHER_ATTACK, SoundCategory.HOSTILE, 0.25F,
 								1.0F, true);
 						TentacleEntity lost_soul = ModEntityTypes.TENTACLE.create(world);
 						lost_soul.refreshPositionAndAngles(livingEntity.getX(), livingEntity.getY(),

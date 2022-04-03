@@ -60,13 +60,13 @@ public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.SPIDERDEMON_AMBIENT, SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+						ModSoundEvents.SPIDERDEMON_AMBIENT, SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PLASMA_FIRING,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}

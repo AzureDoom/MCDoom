@@ -102,11 +102,11 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 	private <ENTITY extends IAnimatable> void soundListener1(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("attack") && this.dataTracker.get(STATE) == 1) {
 			this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.ROCKET_FIRING,
-					SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+					SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 		}
 		if (event.sound.matches("flames") && this.dataTracker.get(STATE) > 1) {
 			this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ITEM_FIRECHARGE_USE,
-					SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+					SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 		}
 	}
 
@@ -114,11 +114,11 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 		if (this.world.isClient) {
 			if (event.sound.matches("walk")) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 			if (event.sound.matches("talk")) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.MANCUBUS_STEP,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}

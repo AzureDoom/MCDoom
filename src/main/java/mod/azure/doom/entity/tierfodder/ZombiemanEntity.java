@@ -104,13 +104,13 @@ public class ZombiemanEntity extends DemonEntity implements IAnimatable, IAnimat
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, false);
+						SoundCategory.HOSTILE, 0.25F, 1.0F, false);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PISTOL_HIT,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, false);
+						SoundCategory.HOSTILE, 0.25F, 1.0F, false);
 			}
 		}
 	}

@@ -157,25 +157,25 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("plantshield")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.BLOCK_METAL_PLACE,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("shieldtalk")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.BARON_AMBIENT,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("fireball")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_DRAGON_FIREBALL_EXPLODE,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}

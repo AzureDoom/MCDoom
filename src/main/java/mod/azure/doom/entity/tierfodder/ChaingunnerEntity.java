@@ -105,13 +105,13 @@ public class ChaingunnerEntity extends DemonEntity implements IAnimatable, IAnim
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PISTOL_HIT,
-						SoundCategory.HOSTILE, 1.0F, 1.0F, true);
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}
