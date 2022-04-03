@@ -107,19 +107,19 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 		if (this.level.isClientSide()) {
 			if (event.sound.matches("walk")) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP.get(),
-						SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 			if (event.sound.matches("talk")) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.MANCUBUS_STEP.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						ModSoundEvents.MANCUBUS_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 			if (event.sound.matches("attack") && this.entityData.get(STATE) == 1) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.ROCKET_FIRING.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						ModSoundEvents.ROCKET_FIRING.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 			if (event.sound.matches("flames") && this.entityData.get(STATE) > 1) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.FIRECHARGE_USE,
-						SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}

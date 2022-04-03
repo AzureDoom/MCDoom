@@ -100,13 +100,13 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable, IAnima
 		if (event.sound.matches("walk")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.CYBERDEMON_STEP.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						ModSoundEvents.CYBERDEMON_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.ROCKET_FIRING.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						ModSoundEvents.ROCKET_FIRING.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}

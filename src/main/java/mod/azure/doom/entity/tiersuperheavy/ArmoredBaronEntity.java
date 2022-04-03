@@ -85,13 +85,13 @@ public class ArmoredBaronEntity extends DemonEntity implements IAnimatable, IAni
 		if (event.sound.matches("walk")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.CYBERDEMON_STEP.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						ModSoundEvents.CYBERDEMON_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.BARON_AMBIENT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						ModSoundEvents.BARON_AMBIENT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}

@@ -89,13 +89,13 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 		if (event.sound.matches("walk")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP.get(),
-						SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("talk")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.HELLKNIGHT_AMBIENT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						ModSoundEvents.HELLKNIGHT_AMBIENT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}

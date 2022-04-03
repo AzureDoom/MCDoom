@@ -149,13 +149,13 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable, IAnimati
 		if (event.sound.matches("walk")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP.get(),
-						SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.ARCHVILE_SCREAM.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						ModSoundEvents.ARCHVILE_SCREAM.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}
