@@ -19,7 +19,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix3f;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3f;
-import software.bernie.geckolib3.renderers.geo.GeoProjectilesRenderer;
+import software.bernie.geckolib3q.renderers.geo.GeoProjectilesRenderer;
 
 public class MeatHookEntityRenderer extends GeoProjectilesRenderer<MeatHookEntity> {
 
@@ -90,8 +90,8 @@ public class MeatHookEntityRenderer extends GeoProjectilesRenderer<MeatHookEntit
 		float minV = 0.0F - ((float) age + tickDelta) * 0.01F;
 		float maxV = MathHelper.sqrt(squaredLength) / 8F - ((float) age + tickDelta) * 0.01F;
 		MatrixStack.Entry entry = stack.peek();
-		Matrix4f matrix4f = entry.getPositionMatrix();
-		Matrix3f matrix3f = entry.getNormalMatrix();
+		Matrix4f matrix4f = entry.getModel();
+		Matrix3f matrix3f = entry.getNormal();
 
 		vertexConsumer.vertex(matrix4f, vertX1, vertY1, 0F).color(0, 0, 0, 255).texture(minU, minV)
 				.overlay(OverlayTexture.DEFAULT_UV).light(light).normal(matrix3f, 0.0F, -1.0F, 0.0F).next();
@@ -107,8 +107,8 @@ public class MeatHookEntityRenderer extends GeoProjectilesRenderer<MeatHookEntit
 		stack.translate(-0.015, -0.2, 0);
 
 		entry = stack.peek();
-		matrix4f = entry.getPositionMatrix();
-		matrix3f = entry.getNormalMatrix();
+		matrix4f = entry.getModel();
+		matrix3f = entry.getNormal();
 
 		vertexConsumer.vertex(matrix4f, vertX1, vertY1, 0F).color(0, 0, 0, 255).texture(minU, minV)
 				.overlay(OverlayTexture.DEFAULT_UV).light(light).normal(matrix3f, 0.0F, -1.0F, 0.0F).next();

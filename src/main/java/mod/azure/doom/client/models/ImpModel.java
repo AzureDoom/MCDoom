@@ -6,8 +6,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class ImpModel extends AnimatedTickingGeoModel<ImpEntity> {
 
@@ -21,18 +21,18 @@ public class ImpModel extends AnimatedTickingGeoModel<ImpEntity> {
 	public Identifier imp_animation = new Identifier(DoomMod.MODID, "animations/imp_animation.json");
 
 	@Override
-	public Identifier getModelLocation(ImpEntity object) {
+	public Identifier getModelResource(ImpEntity object) {
 		return object.getVariant() == 2 ? nightmareimp_model : object.getVariant() == 3 ? imp2016_model : classic_model;
 	}
 
 	@Override
-	public Identifier getTextureLocation(ImpEntity object) {
+	public Identifier getTextureResource(ImpEntity object) {
 		return object.getVariant() == 2 ? nightmareimp_texture
 				: object.getVariant() == 3 ? imp2016_texture : classic_texture;
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(ImpEntity object) {
+	public Identifier getAnimationResource(ImpEntity object) {
 		return object.getVariant() == 3 ? imp2016_animation : imp_animation;
 	}
 

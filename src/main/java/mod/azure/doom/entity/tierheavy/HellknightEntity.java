@@ -14,7 +14,7 @@ import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
@@ -101,8 +101,8 @@ public class HellknightEntity extends DemonEntity implements IAnimatable, IAnima
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
 		this.goalSelector.add(4, new RangedAttackGoal(this, new HellknightEntity.FireballAttack(this)
 				.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(config.hellknight_ranged_damage), 1.1));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, PlayerEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
 	}
 

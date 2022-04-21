@@ -15,7 +15,7 @@ import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
@@ -140,8 +140,8 @@ public class MaykrDroneEntity extends DemonEntity implements IAnimatable, IAnima
 						new MaykrDroneEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
 								.setDamage(config.maykrdrone_ranged_damage),
 						1.0D, 5, 30, 15, 15F, 1).setMultiShot(2, 3));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, PlayerEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
 	}
 

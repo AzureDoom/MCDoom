@@ -16,7 +16,7 @@ import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
@@ -125,8 +125,8 @@ public class ImpEntity extends DemonEntity implements IAnimatable, IAnimationTic
 										1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.0D, 5, 30, 15, 15F, 1).setMultiShot(2, 3));
 		this.goalSelector.add(4, new DemonAttackGoal(this, 1.25D, 2));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, PlayerEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
 	}
 

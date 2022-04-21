@@ -3,21 +3,21 @@ package mod.azure.doom.client.models.weapons;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.BFG;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3q.model.AnimatedGeoModel;
 
 public class BFGModel extends AnimatedGeoModel<BFG> {
 	@Override
-	public Identifier getModelLocation(BFG object) {
+	public Identifier getModelResource(BFG object) {
 		return new Identifier(DoomMod.MODID, "geo/bfgeternal.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(BFG object) {
+	public Identifier getTextureResource(BFG object) {
 		return new Identifier(DoomMod.MODID, "textures/items/bfgeternal.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(BFG animatable) {
+	public Identifier getAnimationResource(BFG animatable) {
 		return new Identifier(DoomMod.MODID, "animations/bfg.animation.json");
 	}
 }

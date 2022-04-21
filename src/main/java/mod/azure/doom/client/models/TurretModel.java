@@ -6,23 +6,23 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class TurretModel extends AnimatedTickingGeoModel<TurretEntity> {
 
 	@Override
-	public Identifier getModelLocation(TurretEntity object) {
+	public Identifier getModelResource(TurretEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/turret.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(TurretEntity object) {
+	public Identifier getTextureResource(TurretEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/turret.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(TurretEntity object) {
+	public Identifier getAnimationResource(TurretEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/turret.animation.json");
 	}
 

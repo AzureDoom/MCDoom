@@ -13,7 +13,7 @@ import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
@@ -101,11 +101,11 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	private <ENTITY extends IAnimatable> void soundListener1(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("attack") && this.dataTracker.get(STATE) == 1) {
-			this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.ROCKET_FIRING,
+			this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.ROCKET_FIRING,
 					SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 		}
 		if (event.sound.matches("flames") && this.dataTracker.get(STATE) > 1) {
-			this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ITEM_FIRECHARGE_USE,
+			this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ITEM_FIRECHARGE_USE,
 					SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 		}
 	}
@@ -113,11 +113,11 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (this.world.isClient) {
 			if (event.sound.matches("walk")) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 			if (event.sound.matches("talk")) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.MANCUBUS_STEP,
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.MANCUBUS_STEP,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
@@ -159,9 +159,9 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	protected void initCustomGoals() {
 		this.goalSelector.add(1, new MancubusEntity.ShootFireballGoal(this));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, IronGolemEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, PlayerEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, MerchantEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, IronGolemEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
 	}
 

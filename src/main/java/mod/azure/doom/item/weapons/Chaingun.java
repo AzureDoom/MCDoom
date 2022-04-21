@@ -21,8 +21,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib3q.network.GeckoLibNetwork;
+import software.bernie.geckolib3q.util.GeckoLibUtil;
 
 public class Chaingun extends DoomBaseItem {
 
@@ -44,7 +44,7 @@ public class Chaingun extends DoomBaseItem {
 					playerentity.getItemCooldownManager().set(this, 3);
 					if (!worldIn.isClient) {
 						ChaingunBulletEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-						abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(),
+						abstractarrowentity.setProperties(playerentity, playerentity.getPitch(), playerentity.getYaw(),
 								0.0F, 1.0F * 3.0F, 1.0F);
 						abstractarrowentity.hasNoGravity();
 
@@ -87,8 +87,8 @@ public class Chaingun extends DoomBaseItem {
 					&& user.getInventory().count(DoomItems.CHAINGUN_BULLETS) > 0) {
 				removeAmmo(DoomItems.CHAINGUN_BULLETS, user);
 				user.getStackInHand(hand).damage(-50, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setBobbingAnimationTime(3);
-				user.getEntityWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
+				user.getStackInHand(hand).setCooldown(3);
+				user.getWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
 						ModSoundEvents.CLIPRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
 			}
 		}

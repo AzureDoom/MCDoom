@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredica
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
+@SuppressWarnings("deprecation")
 public class ModelProviderinit {
 
 	public static void init() {

@@ -6,8 +6,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class PossessedSoldierModel extends AnimatedTickingGeoModel<PossessedSoldierEntity> {
 
@@ -16,7 +16,7 @@ public class PossessedSoldierModel extends AnimatedTickingGeoModel<PossessedSold
 			new Identifier(DoomMod.MODID, "textures/entity/possessedsoldier-eternal_flames_2.png") };
 
 	@Override
-	public Identifier getModelLocation(PossessedSoldierEntity object) {
+	public Identifier getModelResource(PossessedSoldierEntity object) {
 		return new Identifier(
 				DoomMod.MODID, "geo/"
 						+ (object.getVariant() == 3 ? "possessedsoldier-shield"
@@ -25,7 +25,7 @@ public class PossessedSoldierModel extends AnimatedTickingGeoModel<PossessedSold
 	}
 
 	@Override
-	public Identifier getTextureLocation(PossessedSoldierEntity object) {
+	public Identifier getTextureResource(PossessedSoldierEntity object) {
 		return (object.getVariant() == 2 && object.isAttacking() ? TEX[(object.getFlameTimer())]
 				: object.getVariant() == 2 && !object.isAttacking() ? new Identifier(DoomMod.MODID, "textures/entity/possessedsoldier-eternal.png")
 						:object.getVariant() == 3
@@ -34,7 +34,7 @@ public class PossessedSoldierModel extends AnimatedTickingGeoModel<PossessedSold
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(PossessedSoldierEntity object) {
+	public Identifier getAnimationResource(PossessedSoldierEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/possessedsoldier.animation.json");
 	}
 

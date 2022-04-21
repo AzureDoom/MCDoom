@@ -18,7 +18,7 @@ import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
@@ -141,7 +141,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.CYBERDEMON_STEP,
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.CYBERDEMON_STEP,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, false);
 			}
 		}
@@ -186,8 +186,8 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 								.setDamage(config.icon_melee_damage).setSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F,
 										1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.1D));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, PlayerEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
 	}
 

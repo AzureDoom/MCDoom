@@ -2,12 +2,12 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.GargoyleEntity;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class GargoyleModel extends AnimatedTickingGeoModel<GargoyleEntity> {
 
@@ -15,17 +15,17 @@ public class GargoyleModel extends AnimatedTickingGeoModel<GargoyleEntity> {
 	}
 
 	@Override
-	public Identifier getModelLocation(GargoyleEntity object) {
+	public Identifier getModelResource(GargoyleEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/gargoyleimp.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(GargoyleEntity object) {
+	public Identifier getTextureResource(GargoyleEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/gargoyleimp.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(GargoyleEntity object) {
+	public Identifier getAnimationResource(GargoyleEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/gargoyleimp.animation.json");
 	}
 

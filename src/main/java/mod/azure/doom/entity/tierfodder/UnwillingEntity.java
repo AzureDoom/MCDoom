@@ -8,7 +8,7 @@ import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
@@ -77,13 +77,13 @@ public class UnwillingEntity extends DemonEntity implements IAnimatable, IAnimat
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(),
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(),
 						ModSoundEvents.ZOMBIEMAN_AMBIENT,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
@@ -115,8 +115,8 @@ public class UnwillingEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.goalSelector.add(4, new DemonAttackGoal(this, 1.0D, 1));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, PlayerEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
 	}
 

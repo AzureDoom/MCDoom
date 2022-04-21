@@ -52,7 +52,7 @@ public class GrenadeItem extends Item implements IAnimatable {
 			user.getItemCooldownManager().set(this, 25);
 			if (!world.isClient) {
 				GrenadeEntity snowballEntity = new GrenadeEntity(world, user);
-				snowballEntity.setVelocity(user, user.getPitch(), user.getYaw(), 0.0F, 1.05F, 1.0F);
+				snowballEntity.setProperties(user, user.getPitch(), user.getYaw(), 0.0F, 1.05F, 1.0F);
 				snowballEntity.setDamage(0);
 				world.spawnEntity(snowballEntity);
 			}

@@ -36,9 +36,9 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.network.ISyncable;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib3q.network.GeckoLibNetwork;
+import software.bernie.geckolib3q.network.ISyncable;
+import software.bernie.geckolib3q.util.GeckoLibUtil;
 
 public class SentinelHammerItem extends Item implements IAnimatable, ISyncable {
 
@@ -68,8 +68,7 @@ public class SentinelHammerItem extends Item implements IAnimatable, ISyncable {
 			if (stack.getDamage() < (stack.getMaxDamage() - 1)) {
 				playerentity.getItemCooldownManager().set(this, 200);
 				final Box aabb = new Box(entityLiving.getBlockPos().up()).expand(5D, 5D, 5D);
-				entityLiving.getEntityWorld().getOtherEntities(entityLiving, aabb)
-						.forEach(e -> doDamage(entityLiving, e));
+				entityLiving.getWorld().getOtherEntities(entityLiving, aabb).forEach(e -> doDamage(entityLiving, e));
 				stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
 				AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(playerentity.world,
 						playerentity.getX(), playerentity.getY(), playerentity.getZ());
@@ -142,7 +141,7 @@ public class SentinelHammerItem extends Item implements IAnimatable, ISyncable {
 					&& user.getInventory().count(DoomItems.ARGENT_ENERGY.asItem()) > 0) {
 				removeAmmo(DoomItems.ARGENT_ENERGY.asItem(), user);
 				user.getStackInHand(hand).damage(-5, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setBobbingAnimationTime(3);
+				user.getStackInHand(hand).setCooldown(3);
 			}
 		}
 	}

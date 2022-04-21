@@ -9,7 +9,7 @@ import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
@@ -40,8 +40,8 @@ public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 				.setProjectileOriginOffset(0.8, 0.2, 0.8).setDamage(config.spider_mastermind_ranged_damage),
 				1.0D, 20, 30, 15, 15F, 1));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, PlayerEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, MerchantEntity.class, true));
 	}
 
 	@Override
@@ -59,13 +59,13 @@ public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(),
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(),
 						ModSoundEvents.SPIDERDEMON_AMBIENT, SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PLASMA_FIRING,
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PLASMA_FIRING,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}

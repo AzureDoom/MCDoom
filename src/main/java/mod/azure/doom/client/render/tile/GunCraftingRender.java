@@ -12,8 +12,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
-import software.bernie.geckolib3.geo.render.built.GeoBone;
-import software.bernie.geckolib3.renderers.geo.GeoBlockRenderer;
+import software.bernie.geckolib3q.geo.render.built.GeoBone;
+import software.bernie.geckolib3q.renderers.geo.GeoBlockRenderer;
 
 public class GunCraftingRender extends GeoBlockRenderer<GunBlockEntity> {
 

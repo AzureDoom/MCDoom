@@ -110,8 +110,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
+import software.bernie.geckolib3q.renderers.geo.GeoArmorRenderer;
 
+@SuppressWarnings("deprecation")
 public class DoomRenderRegistry {
 
 	@SuppressWarnings("unchecked")

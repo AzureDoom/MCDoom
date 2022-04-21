@@ -17,10 +17,10 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.TargetPredicate;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -102,13 +102,13 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(),
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(),
 						ModSoundEvents.SUPER_SHOTGUN_SHOOT, SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
@@ -140,8 +140,8 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 										1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.1D));
 		this.targetSelector.add(1, new MarauderEntity.TeleportTowardsPlayerGoal(this, this::shouldAngerAt));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, PlayerEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
 	}
 
@@ -167,7 +167,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 		}
 	}
 
-	static class TeleportTowardsPlayerGoal extends ActiveTargetGoal<PlayerEntity> {
+	static class TeleportTowardsPlayerGoal extends TargetGoal<PlayerEntity> {
 		private final MarauderEntity enderman;
 		private PlayerEntity targetPlayer;
 		private int lookAtPlayerWarmup;

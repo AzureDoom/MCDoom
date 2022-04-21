@@ -16,8 +16,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix3f;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3f;
-import software.bernie.geckolib3.geo.render.built.GeoModel;
-import software.bernie.geckolib3.renderers.geo.GeoProjectilesRenderer;
+import software.bernie.geckolib3q.geo.render.built.GeoModel;
+import software.bernie.geckolib3q.renderers.geo.GeoProjectilesRenderer;
 
 public class BFGCellRender extends GeoProjectilesRenderer<BFGEntity> {
 
@@ -94,8 +94,8 @@ public class BFGCellRender extends GeoProjectilesRenderer<BFGEntity> {
 		float l = 0.75F;
 		float m = 0.0F;
 		MatrixStack.Entry entry = matrices.peek();
-		Matrix4f matrix4f = entry.getPositionMatrix();
-		Matrix3f matrix3f = entry.getNormalMatrix();
+		Matrix4f matrix4f = entry.getModel();
+		Matrix3f matrix3f = entry.getNormal();
 
 		for (int n = 1; n <= 8; ++n) {
 			float o = MathHelper.sin((float) n * 6.2831855F / 8.0F) * 0.75F;

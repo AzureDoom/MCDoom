@@ -28,8 +28,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib3q.network.GeckoLibNetwork;
+import software.bernie.geckolib3q.util.GeckoLibUtil;
 
 public class SuperShotgun extends DoomBaseItem {
 
@@ -51,11 +51,11 @@ public class SuperShotgun extends DoomBaseItem {
 					playerentity.getItemCooldownManager().set(this, 24);
 					if (!worldIn.isClient) {
 						ShotgunShellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-						abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(),
+						abstractarrowentity.setProperties(playerentity, playerentity.getPitch(),
 								playerentity.getYaw() + 1, 0.0F, 1.0F * 3.0F, 1.0F);
 						worldIn.spawnEntity(abstractarrowentity);
 						ShotgunShellEntity abstractarrowentity1 = createArrow(worldIn, stack, playerentity);
-						abstractarrowentity1.setVelocity(playerentity, playerentity.getPitch(),
+						abstractarrowentity1.setProperties(playerentity, playerentity.getPitch(),
 								playerentity.getYaw() - 1, 0.0F, 1.0F * 3.0F, 1.0F);
 						worldIn.spawnEntity(abstractarrowentity1);
 
@@ -120,7 +120,7 @@ public class SuperShotgun extends DoomBaseItem {
 					&& user.getInventory().count(DoomItems.SHOTGUN_SHELLS) > 0) {
 				removeAmmo(DoomItems.SHOTGUN_SHELLS, user);
 				user.getStackInHand(hand).damage(-4, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setBobbingAnimationTime(3);
+				user.getStackInHand(hand).setCooldown(3);
 			}
 		}
 	}

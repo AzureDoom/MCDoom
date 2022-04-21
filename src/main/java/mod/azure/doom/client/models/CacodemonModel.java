@@ -6,8 +6,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class CacodemonModel extends AnimatedTickingGeoModel<CacodemonEntity> {
 
@@ -17,17 +17,17 @@ public class CacodemonModel extends AnimatedTickingGeoModel<CacodemonEntity> {
 	public Identifier doom64_texture = new Identifier(DoomMod.MODID, "textures/entity/cacodemon64.png");
 
 	@Override
-	public Identifier getModelLocation(CacodemonEntity object) {
+	public Identifier getModelResource(CacodemonEntity object) {
 		return object.getVariant() == 1 ? classic_model : doom64_model;
 	}
 
 	@Override
-	public Identifier getTextureLocation(CacodemonEntity object) {
+	public Identifier getTextureResource(CacodemonEntity object) {
 		return object.getVariant() == 1 ? classic_texture : doom64_texture;
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(CacodemonEntity object) {
+	public Identifier getAnimationResource(CacodemonEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/cacodemon_animation.json");
 	}
 

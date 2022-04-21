@@ -2,12 +2,12 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tiersuperheavy.MarauderEntity;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class MarauderModel extends AnimatedTickingGeoModel<MarauderEntity> {
 
@@ -15,17 +15,17 @@ public class MarauderModel extends AnimatedTickingGeoModel<MarauderEntity> {
 	}
 
 	@Override
-	public Identifier getModelLocation(MarauderEntity object) {
+	public Identifier getModelResource(MarauderEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/marauder.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(MarauderEntity object) {
+	public Identifier getTextureResource(MarauderEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/marauder.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(MarauderEntity object) {
+	public Identifier getAnimationResource(MarauderEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/marauder.animation.json");
 	}
 

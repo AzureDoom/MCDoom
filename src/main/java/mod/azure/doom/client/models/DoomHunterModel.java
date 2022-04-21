@@ -6,8 +6,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class DoomHunterModel extends AnimatedTickingGeoModel<DoomHunterEntity> {
 
@@ -21,17 +21,17 @@ public class DoomHunterModel extends AnimatedTickingGeoModel<DoomHunterEntity> {
 			new Identifier(DoomMod.MODID, "textures/entity/doomhunter_7.png") };
 
 	@Override
-	public Identifier getModelLocation(DoomHunterEntity object) {
+	public Identifier getModelResource(DoomHunterEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/doomhunter.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(DoomHunterEntity object) {
+	public Identifier getTextureResource(DoomHunterEntity object) {
 		return TEX[(object.getFlameTimer())];
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(DoomHunterEntity object) {
+	public Identifier getAnimationResource(DoomHunterEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/doomhunter.animation.json");
 	}
 

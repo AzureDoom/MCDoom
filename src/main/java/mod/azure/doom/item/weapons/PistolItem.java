@@ -23,8 +23,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib3q.network.GeckoLibNetwork;
+import software.bernie.geckolib3q.util.GeckoLibUtil;
 
 public class PistolItem extends DoomBaseItem {
 
@@ -47,7 +47,7 @@ public class PistolItem extends DoomBaseItem {
 				playerentity.getItemCooldownManager().set(this, 5);
 				if (!worldIn.isClient) {
 					BulletEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
+					abstractarrowentity.setProperties(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
 							1.0F, 1.0F);
 					abstractarrowentity.setParticle(1);
 					abstractarrowentity.hasNoGravity();
@@ -80,8 +80,8 @@ public class PistolItem extends DoomBaseItem {
 					&& user.getInventory().count(DoomItems.BULLETS) > 0) {
 				removeAmmo(DoomItems.BULLETS, user);
 				user.getStackInHand(hand).damage(-10, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setBobbingAnimationTime(3);
-				user.getEntityWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
+				user.getStackInHand(hand).setCooldown(3);
+				user.getWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
 						ModSoundEvents.CLIPRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
 			}
 		}

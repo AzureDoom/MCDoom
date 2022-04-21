@@ -2,12 +2,12 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.ImpStoneEntity;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class ImpStoneModel extends AnimatedTickingGeoModel<ImpStoneEntity> {
 
@@ -15,17 +15,17 @@ public class ImpStoneModel extends AnimatedTickingGeoModel<ImpStoneEntity> {
 	}
 
 	@Override
-	public Identifier getModelLocation(ImpStoneEntity object) {
+	public Identifier getModelResource(ImpStoneEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/imp2016.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(ImpStoneEntity object) {
+	public Identifier getTextureResource(ImpStoneEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/stoneimp.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(ImpStoneEntity object) {
+	public Identifier getAnimationResource(ImpStoneEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/imp2016.animation.json");
 	}
 

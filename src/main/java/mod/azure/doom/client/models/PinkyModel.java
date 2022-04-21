@@ -6,24 +6,24 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class PinkyModel extends AnimatedTickingGeoModel<PinkyEntity> {
 	
 	@Override
-	public Identifier getModelLocation(PinkyEntity object) {
+	public Identifier getModelResource(PinkyEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/" + (object.getVariant() == 3 ? "pinky2016" : "pinky") + ".geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(PinkyEntity object) {
+	public Identifier getTextureResource(PinkyEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/" + (object.getVariant() == 1 ? "pinky-texturemap"
 				: object.getVariant() == 3 ? "pinky2016" : "pinky_green") + ".png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(PinkyEntity object) {
+	public Identifier getAnimationResource(PinkyEntity object) {
 		return new Identifier(DoomMod.MODID,
 				"animations/" + (object.getVariant() == 3 ? "pinky2016." : "pinky_") + "animation.json");
 	}

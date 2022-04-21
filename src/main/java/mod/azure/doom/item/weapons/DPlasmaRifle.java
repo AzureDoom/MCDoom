@@ -27,8 +27,8 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib3q.network.GeckoLibNetwork;
+import software.bernie.geckolib3q.util.GeckoLibUtil;
 
 public class DPlasmaRifle extends DoomBaseItem {
 
@@ -50,7 +50,7 @@ public class DPlasmaRifle extends DoomBaseItem {
 					playerentity.getItemCooldownManager().set(this, 5);
 					if (!worldIn.isClient) {
 						EnergyCellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-						abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(),
+						abstractarrowentity.setProperties(playerentity, playerentity.getPitch(), playerentity.getYaw(),
 								0.0F, 0.15F * 3.0F, 1.0F);
 						abstractarrowentity.hasNoGravity();
 
@@ -83,8 +83,8 @@ public class DPlasmaRifle extends DoomBaseItem {
 					&& user.getInventory().count(DoomItems.ENERGY_CELLS) > 0) {
 				removeAmmo(DoomItems.ENERGY_CELLS, user);
 				user.getStackInHand(hand).damage(-20, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setBobbingAnimationTime(3);
-				user.getEntityWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
+				user.getStackInHand(hand).setCooldown(3);
+				user.getWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
 						ModSoundEvents.CLIPRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
 			}
 		}

@@ -3,21 +3,21 @@ package mod.azure.doom.client.models.projectiles;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.projectiles.BulletEntity;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3q.model.AnimatedGeoModel;
 
 public class BulletModel extends AnimatedGeoModel<BulletEntity> {
 	@Override
-	public Identifier getModelLocation(BulletEntity object) {
+	public Identifier getModelResource(BulletEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/bullet.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(BulletEntity object) {
+	public Identifier getTextureResource(BulletEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/items/clip.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(BulletEntity animatable) {
+	public Identifier getAnimationResource(BulletEntity animatable) {
 		return new Identifier(DoomMod.MODID, "animations/empty.animation.json");
 	}
 }

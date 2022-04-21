@@ -124,7 +124,7 @@ public class GunTableScreen extends HandledScreen<GunTableScreenHandler> {
 					}
 
 				for (WidgetButtonPage widgetButtonPage : this.offers) {
-					if (widgetButtonPage.isHovered()) {
+					if (widgetButtonPage.isHoveredOrFocused()) {
 						widgetButtonPage.renderToolTip(matrices, mouseX, mouseY);
 					}
 

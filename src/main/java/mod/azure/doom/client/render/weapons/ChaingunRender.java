@@ -10,7 +10,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
+import software.bernie.geckolib3q.renderers.geo.GeoItemRenderer;
 
 public class ChaingunRender extends GeoItemRenderer<Chaingun> {
 	public ChaingunRender() {

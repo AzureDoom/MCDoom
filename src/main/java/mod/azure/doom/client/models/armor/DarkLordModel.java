@@ -3,21 +3,21 @@ package mod.azure.doom.client.models.armor;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.armor.DarkLordArmor;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3q.model.AnimatedGeoModel;
 
 public class DarkLordModel extends AnimatedGeoModel<DarkLordArmor> {
 	@Override
-	public Identifier getModelLocation(DarkLordArmor object) {
+	public Identifier getModelResource(DarkLordArmor object) {
 		return new Identifier(DoomMod.MODID, "geo/darklordarmor.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(DarkLordArmor object) {
+	public Identifier getTextureResource(DarkLordArmor object) {
 		return new Identifier(DoomMod.MODID, "textures/models/armor/darklordarmor.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(DarkLordArmor animatable) {
+	public Identifier getAnimationResource(DarkLordArmor animatable) {
 		return new Identifier(DoomMod.MODID, "animations/darklordarmor.animation.json");
 	}
 }

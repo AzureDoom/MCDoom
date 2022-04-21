@@ -21,8 +21,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib3q.network.GeckoLibNetwork;
+import software.bernie.geckolib3q.util.GeckoLibUtil;
 
 public class RocketLauncher extends DoomBaseItem {
 
@@ -49,7 +49,7 @@ public class RocketLauncher extends DoomBaseItem {
 				playerentity.getItemCooldownManager().set(this, 15);
 				if (!worldIn.isClient) {
 					RocketEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
+					abstractarrowentity.setProperties(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
 							0.25F * 3.0F, 1.0F);
 
 					stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
@@ -90,7 +90,7 @@ public class RocketLauncher extends DoomBaseItem {
 					&& user.getInventory().count(DoomItems.ROCKET) > 0) {
 				removeAmmo(DoomItems.ROCKET, user);
 				user.getStackInHand(hand).damage(-2, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setBobbingAnimationTime(3);
+				user.getStackInHand(hand).setCooldown(3);
 			}
 		}
 	}

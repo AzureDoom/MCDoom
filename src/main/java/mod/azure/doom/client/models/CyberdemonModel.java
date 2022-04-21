@@ -3,7 +3,7 @@ package mod.azure.doom.client.models;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tiersuperheavy.CyberdemonEntity;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
 
 public class CyberdemonModel extends AnimatedTickingGeoModel<CyberdemonEntity> {
 
@@ -18,17 +18,17 @@ public class CyberdemonModel extends AnimatedTickingGeoModel<CyberdemonEntity> {
 	public Identifier tyrant_animation = new Identifier(DoomMod.MODID, "animations/tyrant.animation.json");
 
 	@Override
-	public Identifier getModelLocation(CyberdemonEntity object) {
+	public Identifier getModelResource(CyberdemonEntity object) {
 		return object.getVariant() == 2 ? c2016_model : object.getVariant() == 3 ? tyrant_model : classic_model;
 	}
 
 	@Override
-	public Identifier getTextureLocation(CyberdemonEntity object) {
+	public Identifier getTextureResource(CyberdemonEntity object) {
 		return object.getVariant() == 2 ? c2016_texture : object.getVariant() == 3 ? tyrant_texture : classic_texture;
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(CyberdemonEntity object) {
+	public Identifier getAnimationResource(CyberdemonEntity object) {
 		return object.getVariant() == 2 ? c2016_animation
 				: object.getVariant() == 3 ? tyrant_animation : classic_animation;
 	}

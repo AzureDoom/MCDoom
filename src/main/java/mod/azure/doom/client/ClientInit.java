@@ -1,6 +1,10 @@
 package mod.azure.doom.client;
 
 import org.lwjgl.glfw.GLFW;
+import org.quiltmc.loader.api.ModContainer;
+import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
+
+import com.mojang.blaze3d.platform.InputUtil;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.gui.GunTableScreen;
@@ -31,7 +35,6 @@ import mod.azure.doom.particles.PlasmaParticle;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomParticles;
-import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -39,23 +42,22 @@ import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.option.KeyBind;
 import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
+import software.bernie.geckolib3q.renderers.geo.GeoItemRenderer;
 
 @SuppressWarnings("deprecation")
 @Environment(EnvType.CLIENT)
 public class ClientInit implements ClientModInitializer {
 
-	public static KeyBinding reload = new KeyBinding("key.doom.reload", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R,
+	public static KeyBind reload = new KeyBind("key.doom.reload", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R,
 			"category.doom.binds");
-	public static KeyBinding yeethook = new KeyBinding("key.doom.yeethook", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V,
+	public static KeyBind yeethook = new KeyBind("key.doom.yeethook", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V,
 			"category.doom.binds");
 	
 	@Override
-	public void onInitializeClient() {
+	public void onInitializeClient(ModContainer mod) {
 		ModelProviderinit.init();
 		DoomRenderRegistry.init();
 		ScreenRegistry.register(DoomMod.SCREEN_HANDLER_TYPE, GunTableScreen::new);

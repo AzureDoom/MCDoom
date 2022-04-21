@@ -1,0 +1,46 @@
+{
+	"schema_version": 1,
+	"quilt_loader": {
+		"group": "mod.azure.doom",
+		"id": "doom",
+		"version": "${version}",
+		"metadata": {
+			"name": "MCDoom",
+			"description": "This is my Quilt port of my Doom mod!",
+			"contributors": {
+				"Me!": "Owner"
+			},
+			"icon": "assets/doom/icon.png"
+		},
+		"intermediate_mappings": "net.fabricmc:intermediary",
+		"entrypoints": {
+			"init": [
+				"mod.azure.doom.DoomMod"
+			],
+			"client_init": [
+				"mod.azure.doom.client.ClientInit"
+			]
+		},
+		"depends": [
+			{
+				"id": "quilt_loader",
+				"versions": ">=0.16.0-"
+			},
+			{
+				"id": "quilted_fabric_api",
+				"versions": ">=1.0.0-"
+			},
+			{
+				"id": "minecraft",
+				"versions": ">=1.18.2"
+			}
+		]
+	},
+	"mixin": [
+		"doom.mixins.json"
+	],
+	"minecraft": {
+		"environment": "*"
+	},
+	"accessWidener": "doom.accesswidener"
+}

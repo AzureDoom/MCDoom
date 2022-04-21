@@ -2,12 +2,12 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierheavy.HellknightEntity;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class HellknightModel extends AnimatedTickingGeoModel<HellknightEntity> {
 
@@ -15,17 +15,17 @@ public class HellknightModel extends AnimatedTickingGeoModel<HellknightEntity> {
 	}
 
 	@Override
-	public Identifier getModelLocation(HellknightEntity object) {
+	public Identifier getModelResource(HellknightEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/hellknight.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(HellknightEntity object) {
+	public Identifier getTextureResource(HellknightEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/hellknight-texturemap.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(HellknightEntity object) {
+	public Identifier getAnimationResource(HellknightEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/baron_hell_animation.json");
 	}
 

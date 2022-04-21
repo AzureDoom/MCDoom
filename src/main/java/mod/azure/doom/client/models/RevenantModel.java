@@ -2,12 +2,12 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierheavy.RevenantEntity;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class RevenantModel extends AnimatedTickingGeoModel<RevenantEntity> {
 
@@ -15,17 +15,17 @@ public class RevenantModel extends AnimatedTickingGeoModel<RevenantEntity> {
 	}
 
 	@Override
-	public Identifier getModelLocation(RevenantEntity object) {
+	public Identifier getModelResource(RevenantEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/revenant.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(RevenantEntity object) {
+	public Identifier getTextureResource(RevenantEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/revenant_nojetpack.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(RevenantEntity object) {
+	public Identifier getAnimationResource(RevenantEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/revenant.animation.json");
 	}
 

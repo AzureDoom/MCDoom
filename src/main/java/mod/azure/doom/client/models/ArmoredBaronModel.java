@@ -5,23 +5,23 @@ import mod.azure.doom.entity.tiersuperheavy.ArmoredBaronEntity;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class ArmoredBaronModel extends AnimatedTickingGeoModel<ArmoredBaronEntity> {
 
 	@Override
-	public Identifier getModelLocation(ArmoredBaronEntity object) {
+	public Identifier getModelResource(ArmoredBaronEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/baron2016.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(ArmoredBaronEntity object) {
+	public Identifier getTextureResource(ArmoredBaronEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/armoredbaron.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(ArmoredBaronEntity object) {
+	public Identifier getAnimationResource(ArmoredBaronEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/baron2016.animation.json");
 	}
 

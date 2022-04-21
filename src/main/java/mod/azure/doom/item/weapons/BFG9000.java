@@ -19,8 +19,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib3q.network.GeckoLibNetwork;
+import software.bernie.geckolib3q.util.GeckoLibUtil;
 
 public class BFG9000 extends DoomBaseItem {
 
@@ -42,7 +42,7 @@ public class BFG9000 extends DoomBaseItem {
 				playerentity.getItemCooldownManager().set(this, 20);
 				if (!worldIn.isClient) {
 					BFGEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
+					abstractarrowentity.setProperties(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
 							0.25F * 3.0F, 1.0F);
 
 					stack.damage(20, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
@@ -80,7 +80,7 @@ public class BFG9000 extends DoomBaseItem {
 					&& user.getInventory().count(DoomItems.BFG_CELL) > 0) {
 				removeAmmo(DoomItems.BFG_CELL, user);
 				user.getStackInHand(hand).damage(-20, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setBobbingAnimationTime(3);
+				user.getStackInHand(hand).setCooldown(3);
 			}
 		}
 	}

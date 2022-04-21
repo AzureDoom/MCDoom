@@ -59,10 +59,10 @@ public class Chainsaw extends Item {
 		if (player.getMainHandStack().isItemEqualIgnoreDamage(stack)
 				&& stack.getDamage() < (stack.getMaxDamage() - 1)) {
 			final Box aabb = new Box(entityIn.getBlockPos().up()).expand(1D, 1D, 1D);
-			entityIn.getEntityWorld().getOtherEntities(user, aabb).forEach(e -> doDamage(user, e));
-			entityIn.getEntityWorld().getOtherEntities(user, aabb).forEach(e -> doDeathCheck(user, e, stack));
-			entityIn.getEntityWorld().getOtherEntities(user, aabb).forEach(e -> damageItem(user, stack));
-			entityIn.getEntityWorld().getOtherEntities(user, aabb).forEach(e -> addParticle(e));
+			entityIn.getWorld().getOtherEntities(user, aabb).forEach(e -> doDamage(user, e));
+			entityIn.getWorld().getOtherEntities(user, aabb).forEach(e -> doDeathCheck(user, e, stack));
+			entityIn.getWorld().getOtherEntities(user, aabb).forEach(e -> damageItem(user, stack));
+			entityIn.getWorld().getOtherEntities(user, aabb).forEach(e -> addParticle(e));
 		}
 		if (isSelected && stack.getDamage() < (stack.getMaxDamage() - 1)) {
 			worldIn.playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(), ModSoundEvents.CHAINSAW_IDLE,
@@ -106,7 +106,7 @@ public class Chainsaw extends Item {
 					&& user.getInventory().count(DoomItems.GAS_BARREL) > 0) {
 				removeAmmo(DoomItems.BULLETS, user);
 				user.getStackInHand(hand).damage(-200, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setBobbingAnimationTime(3);
+				user.getStackInHand(hand).setCooldown(3);
 			}
 		}
 	}

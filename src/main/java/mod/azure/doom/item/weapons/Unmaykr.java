@@ -21,8 +21,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib3q.network.GeckoLibNetwork;
+import software.bernie.geckolib3q.util.GeckoLibUtil;
 
 public class Unmaykr extends DoomBaseItem {
 
@@ -45,13 +45,13 @@ public class Unmaykr extends DoomBaseItem {
 				playerentity.getItemCooldownManager().set(this, 5);
 				if (!worldIn.isClient) {
 					UnmaykrBoltEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
+					abstractarrowentity.setProperties(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
 							1.0F * 3.0F, 1.0F);
 					UnmaykrBoltEntity abstractarrowentity2 = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity2.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw() - 10,
+					abstractarrowentity2.setProperties(playerentity, playerentity.getPitch(), playerentity.getYaw() - 10,
 							0.0F, 1.0F * 3.0F, 1.0F);
 					UnmaykrBoltEntity abstractarrowentity1 = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity1.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw() + 10,
+					abstractarrowentity1.setProperties(playerentity, playerentity.getPitch(), playerentity.getYaw() + 10,
 							0.0F, 1.0F * 3.0F, 1.0F);
 
 					abstractarrowentity.hasNoGravity();
@@ -90,7 +90,7 @@ public class Unmaykr extends DoomBaseItem {
 					&& user.getInventory().count(DoomItems.UNMAKRY_BOLT) > 0) {
 				removeAmmo(DoomItems.UNMAKRY_BOLT, user);
 				user.getStackInHand(hand).damage(-20, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setBobbingAnimationTime(3);
+				user.getStackInHand(hand).setCooldown(3);
 			}
 		}
 	}

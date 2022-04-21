@@ -6,8 +6,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class PainModel extends AnimatedTickingGeoModel<PainEntity> {
 
@@ -21,18 +21,18 @@ public class PainModel extends AnimatedTickingGeoModel<PainEntity> {
 			"textures/entity/painelemental64-attacking.png");
 
 	@Override
-	public Identifier getModelLocation(PainEntity object) {
+	public Identifier getModelResource(PainEntity object) {
 		return object.getVariant() == 1 ? classic_model : doom64_model;
 	}
 
 	@Override
-	public Identifier getTextureLocation(PainEntity object) {
+	public Identifier getTextureResource(PainEntity object) {
 		return object.getVariant() == 1 ? (object.getAttckingState() == 1 ? classic_texture_attacking : classic_texture)
 				: (object.getAttckingState() == 1 ? doom64_texture_attacking : doom64_texture);
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(PainEntity object) {
+	public Identifier getAnimationResource(PainEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/pain_animation.json");
 	}
 

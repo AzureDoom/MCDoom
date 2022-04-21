@@ -22,7 +22,7 @@ public class PlasmaParticle extends SpriteBillboardParticle {
 			double velocityZ, SpriteProvider spriteProvider) {
 		super(world, x, y, z, velocityX, velocityY, velocityZ);
 		this.velocityMultiplier = 0.96f;
-		this.field_28787 = true;
+		this.collidesWithWorld = true;
 		this.spriteProvider = spriteProvider;
 		this.scale *= 0.75f;
 		this.collidesWithWorld = false;

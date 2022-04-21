@@ -2,6 +2,9 @@ package mod.azure.doom;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.quiltmc.loader.api.ModContainer;
+import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
+import org.quiltmc.qsl.lifecycle.api.event.ServerLifecycleEvents;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -22,9 +25,7 @@ import mod.azure.doom.util.registry.MobSpawn;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
-import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
@@ -40,8 +41,9 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import software.bernie.geckolib3.GeckoLib;
+import software.bernie.geckolib3q.GeckoLib;
 
+@SuppressWarnings("deprecation")
 public class DoomMod implements ModInitializer {
 
 	public static DoomItems ITEMS;
@@ -95,7 +97,7 @@ public class DoomMod implements ModInitializer {
 			.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "gun_table"), new GunTableRecipe.Serializer());
 
 	@Override
-	public void onInitialize() {
+	public void onInitialize(ModContainer mod) {
 		DataTrackers.MEATHOOK_TRACKER.getId();
 		AutoConfig.register(DoomConfig.class, GsonConfigSerializer::new);
 		config = AutoConfig.getConfigHolder(DoomConfig.class).getConfig();
@@ -116,7 +118,7 @@ public class DoomMod implements ModInitializer {
 						.build(null));
 		MobSpawn.addSpawnEntries();
 		if (config.misc.enable_all_villager_trades) {
-			ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> DoomVillagerTrades.addTrades());
+			ServerLifecycleEvents.READY.register(minecraftServer -> DoomVillagerTrades.addTrades());
 		}
 		MobAttributes.init();
 		GeckoLib.initialize();

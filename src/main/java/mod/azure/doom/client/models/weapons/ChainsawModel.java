@@ -3,21 +3,21 @@ package mod.azure.doom.client.models.weapons;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.ChainsawAnimated;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3q.model.AnimatedGeoModel;
 
 public class ChainsawModel extends AnimatedGeoModel<ChainsawAnimated> {
 	@Override
-	public Identifier getModelLocation(ChainsawAnimated object) {
+	public Identifier getModelResource(ChainsawAnimated object) {
 		return new Identifier(DoomMod.MODID, "geo/chainsaw_eternal.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(ChainsawAnimated object) {
+	public Identifier getTextureResource(ChainsawAnimated object) {
 		return new Identifier(DoomMod.MODID, "textures/items/chainsaweternal.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(ChainsawAnimated animatable) {
+	public Identifier getAnimationResource(ChainsawAnimated animatable) {
 		return new Identifier(DoomMod.MODID, "animations/chainsaw.animation.json");
 	}
 }

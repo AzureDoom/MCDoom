@@ -64,7 +64,7 @@ public abstract class AbstractDoubleRangedAttack implements IRangedDoubleAttack 
 
 	public void shoot() {
 		LivingEntity livingentity = this.parentEntity.getTarget();
-		World world = this.parentEntity.getEntityWorld();
+		World world = this.parentEntity.getWorld();
 		Vec3d vector3d = this.parentEntity.getRotationVec(1.0F);
 		double d2 = livingentity.getX() - (this.parentEntity.getX() + vector3d.x * xOffSetModifier);
 		double d3 = livingentity.getBodyY(0.5D) - (this.parentEntity.getBodyY(entityHeightFraction));
@@ -82,7 +82,7 @@ public abstract class AbstractDoubleRangedAttack implements IRangedDoubleAttack 
 
 	public void shoot2() {
 		LivingEntity livingentity = this.parentEntity.getTarget();
-		World world = this.parentEntity.getEntityWorld();
+		World world = this.parentEntity.getWorld();
 		Vec3d vector3d = this.parentEntity.getRotationVec(1.0F);
 		double d2 = livingentity.getX() - (this.parentEntity.getX() + vector3d.x * xOffSetModifier);
 		double d3 = livingentity.getBodyY(0.5D) - (this.parentEntity.getBodyY(entityHeightFraction));

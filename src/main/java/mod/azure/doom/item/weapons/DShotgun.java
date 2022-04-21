@@ -27,8 +27,8 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib3q.network.GeckoLibNetwork;
+import software.bernie.geckolib3q.util.GeckoLibUtil;
 
 public class DShotgun extends DoomBaseItem {
 
@@ -49,7 +49,7 @@ public class DShotgun extends DoomBaseItem {
 				playerentity.getItemCooldownManager().set(this, 10);
 				if (!worldIn.isClient) {
 					ShotgunShellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
+					abstractarrowentity.setProperties(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
 							1.0F * 3.0F, 1.0F);
 					stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
 					worldIn.spawnEntity(abstractarrowentity);
@@ -78,8 +78,8 @@ public class DShotgun extends DoomBaseItem {
 					&& user.getInventory().count(DoomItems.SHOTGUN_SHELLS) > 0) {
 				removeAmmo(DoomItems.SHOTGUN_SHELLS, user);
 				user.getStackInHand(hand).damage(-4, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setBobbingAnimationTime(3);
-				user.getEntityWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
+				user.getStackInHand(hand).setCooldown(3);
+				user.getWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
 						ModSoundEvents.SHOTGUNRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
 			}
 		}

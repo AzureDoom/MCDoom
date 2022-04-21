@@ -6,8 +6,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class ChaingunnerModel extends AnimatedTickingGeoModel<ChaingunnerEntity> {
 
@@ -15,17 +15,17 @@ public class ChaingunnerModel extends AnimatedTickingGeoModel<ChaingunnerEntity>
 	}
 
 	@Override
-	public Identifier getModelLocation(ChaingunnerEntity object) {
+	public Identifier getModelResource(ChaingunnerEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/shotgunzombie.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(ChaingunnerEntity object) {
+	public Identifier getTextureResource(ChaingunnerEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/chaingunner.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(ChaingunnerEntity object) {
+	public Identifier getAnimationResource(ChaingunnerEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/chaingunner.animation.json");
 	}
 

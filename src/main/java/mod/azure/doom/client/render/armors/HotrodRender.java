@@ -2,7 +2,7 @@ package mod.azure.doom.client.render.armors;
 
 import mod.azure.doom.client.models.armor.HotrodModel;
 import mod.azure.doom.item.armor.HotrodDoomArmor;
-import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
+import software.bernie.geckolib3q.renderers.geo.GeoArmorRenderer;
 
 public class HotrodRender extends GeoArmorRenderer<HotrodDoomArmor> {
 	public HotrodRender() {

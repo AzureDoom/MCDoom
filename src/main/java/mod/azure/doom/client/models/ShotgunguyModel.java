@@ -2,12 +2,12 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.ShotgunguyEntity;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class ShotgunguyModel extends AnimatedTickingGeoModel<ShotgunguyEntity> {
 
@@ -15,17 +15,17 @@ public class ShotgunguyModel extends AnimatedTickingGeoModel<ShotgunguyEntity> {
 	}
 
 	@Override
-	public Identifier getModelLocation(ShotgunguyEntity object) {
+	public Identifier getModelResource(ShotgunguyEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/shotgunzombie.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(ShotgunguyEntity object) {
+	public Identifier getTextureResource(ShotgunguyEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/shotgunguy.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(ShotgunguyEntity object) {
+	public Identifier getAnimationResource(ShotgunguyEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/shotgunzombie.animation.json");
 	}
 

@@ -6,23 +6,23 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class ArchMaykrModel extends AnimatedTickingGeoModel<ArchMakyrEntity> {
 
 	@Override
-	public Identifier getModelLocation(ArchMakyrEntity object) {
+	public Identifier getModelResource(ArchMakyrEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/archmaykr_" + object.getVariant() + ".geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(ArchMakyrEntity object) {
+	public Identifier getTextureResource(ArchMakyrEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/archmaykr_" + object.getVariant() + ".png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(ArchMakyrEntity object) {
+	public Identifier getAnimationResource(ArchMakyrEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/archmaykr_" + object.getVariant() + ".animation.json");
 	}
 

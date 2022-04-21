@@ -6,8 +6,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class Revenant2016Model extends AnimatedTickingGeoModel<Revenant2016Entity> {
 
@@ -30,17 +30,17 @@ public class Revenant2016Model extends AnimatedTickingGeoModel<Revenant2016Entit
 			new Identifier(DoomMod.MODID, "textures/entity/revenant_golden_7.png") };
 
 	@Override
-	public Identifier getModelLocation(Revenant2016Entity object) {
+	public Identifier getModelResource(Revenant2016Entity object) {
 		return new Identifier(DoomMod.MODID, "geo/revenant.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(Revenant2016Entity object) {
+	public Identifier getTextureResource(Revenant2016Entity object) {
 		return (object.getVariant() == 10 ? TEX2[(object.getFlameTimer())] : TEX[(object.getFlameTimer())]);
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(Revenant2016Entity object) {
+	public Identifier getAnimationResource(Revenant2016Entity object) {
 		return new Identifier(DoomMod.MODID, "animations/revenant.animation.json");
 	}
 

@@ -6,8 +6,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class DreadknightModel extends AnimatedTickingGeoModel<Hellknight2016Entity> {
 
@@ -15,17 +15,17 @@ public class DreadknightModel extends AnimatedTickingGeoModel<Hellknight2016Enti
 	}
 
 	@Override
-	public Identifier getModelLocation(Hellknight2016Entity object) {
+	public Identifier getModelResource(Hellknight2016Entity object) {
 		return new Identifier(DoomMod.MODID, "geo/dreadknight.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(Hellknight2016Entity object) {
+	public Identifier getTextureResource(Hellknight2016Entity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/dreadknight.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(Hellknight2016Entity object) {
+	public Identifier getAnimationResource(Hellknight2016Entity object) {
 		return new Identifier(DoomMod.MODID, "animations/hellknight2016_animation.json");
 	}
 

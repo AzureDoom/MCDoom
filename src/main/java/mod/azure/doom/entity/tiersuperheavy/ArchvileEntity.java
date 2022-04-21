@@ -17,7 +17,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.TargetPredicate;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
@@ -148,13 +148,13 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable, IAnimati
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.ARCHVILE_SCREAM,
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.ARCHVILE_SCREAM,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
@@ -234,8 +234,8 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable, IAnimati
 		this.goalSelector.add(7, new ArchvileEntity.AttackGoal(this));
 		this.targetSelector.add(1, new ArchvileEntity.TeleportTowardsPlayerGoal(this, this::shouldAngerAt));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, PlayerEntity.class, true));
+		this.targetSelector.add(2, new TargetGoal<>(this, MerchantEntity.class, true));
 	}
 
 	@Override
@@ -342,7 +342,7 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable, IAnimati
 		}
 	}
 
-	static class TeleportTowardsPlayerGoal extends ActiveTargetGoal<PlayerEntity> {
+	static class TeleportTowardsPlayerGoal extends TargetGoal<PlayerEntity> {
 		private final ArchvileEntity enderman;
 		private PlayerEntity targetPlayer;
 		private int lookAtPlayerWarmup;
