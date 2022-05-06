@@ -31,3 +31,4 @@ cursetoken
 build.bat
 key.properties
 update_mappings.bat
+*.bat

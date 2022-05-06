@@ -254,7 +254,7 @@ public class DoomConfig implements ConfigData {
 		public int summoner_max_group = 2;
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> motherdemon_biomes = Arrays.asList("#nether");
+		public List<String> motherdemon_biomes = Arrays.asList("");
 		public int motherdemon_spawn_weight = 1;
 		public int motherdemon_min_group = 1;
 		public int motherdemon_max_group = 1;
@@ -274,14 +274,13 @@ public class DoomConfig implements ConfigData {
 		public int bloodmaykr_max_group = 2;
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> archmaykr_biomes = Arrays.asList("minecraft:small_end_islands", "minecraft:end_midlands",
-				"minecraft:end_barrens", "minecraft:end_highlands");
+		public List<String> archmaykr_biomes = Arrays.asList("");
 		public int archmaykr_spawn_weight = 1;
 		public int archmaykr_min_group = 1;
 		public int archmaykr_max_group = 1;
 
 		@ConfigEntry.Gui.Tooltip(count = 1)
-		public List<String> gladiator_biomes = Arrays.asList("#nether");
+		public List<String> gladiator_biomes = Arrays.asList("");
 		public int gladiator_spawn_weight = 1;
 		public int gladiator_min_group = 1;
 		public int gladiator_max_group = 1;
