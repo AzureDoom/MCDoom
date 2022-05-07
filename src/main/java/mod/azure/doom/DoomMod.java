@@ -3,8 +3,6 @@ package mod.azure.doom;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import mod.azure.doom.structures.GladiatorStructure;
-import mod.azure.doom.structures.IconStructure;
 import mod.azure.doom.util.DoomVillagerTrades;
 import mod.azure.doom.util.LootHandler;
 import mod.azure.doom.util.SoulCubeHandler;
@@ -27,7 +25,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
@@ -78,8 +75,6 @@ public class DoomMod {
 		DoomStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
 		GeckoLib.initialize();
 		GeckoLibNetwork.initialize();
-		forgeBus.addListener(EventPriority.NORMAL, IconStructure::setupStructureSpawns);
-		forgeBus.addListener(EventPriority.NORMAL, GladiatorStructure::setupStructureSpawns);
 	}
 
 	@SubscribeEvent

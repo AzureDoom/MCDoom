@@ -1,16 +1,9 @@
 package mod.azure.doom.structures;
 
-import java.util.List;
 import java.util.Optional;
 
-import com.google.common.collect.ImmutableList;
-
-import mod.azure.doom.util.registry.DoomStructures;
-import mod.azure.doom.util.registry.ModEntityTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.NoiseColumn;
-import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -21,8 +14,6 @@ import net.minecraft.world.level.levelgen.structure.PostPlacementProcessor;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.event.world.StructureSpawnListGatherEvent;
 
 public class GladiatorStructure extends StructureFeature<JigsawConfiguration> {
 
@@ -33,15 +24,6 @@ public class GladiatorStructure extends StructureFeature<JigsawConfiguration> {
 	@Override
 	public GenerationStep.Decoration step() {
 		return GenerationStep.Decoration.SURFACE_STRUCTURES;
-	}
-
-	private static final Lazy<List<MobSpawnSettings.SpawnerData>> STRUCTURE_MONSTERS = Lazy
-			.of(() -> ImmutableList.of(new MobSpawnSettings.SpawnerData(ModEntityTypes.GLADIATOR.get(), 100, 1, 1)));
-
-	public static void setupStructureSpawns(final StructureSpawnListGatherEvent event) {
-		if (event.getStructure() == DoomStructures.GLADIATOR_FIGHT.get()) {
-			event.addEntitySpawns(MobCategory.MONSTER, STRUCTURE_MONSTERS.get());
-		}
 	}
 
 	private static boolean isFeatureChunk(PieceGeneratorSupplier.Context<JigsawConfiguration> context) {

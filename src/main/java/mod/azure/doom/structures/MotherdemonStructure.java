@@ -15,10 +15,11 @@ import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
 
-public class IconStructure extends StructureFeature<JigsawConfiguration> {
+public class MotherdemonStructure extends StructureFeature<JigsawConfiguration> {
 
-	public IconStructure() {
-		super(JigsawConfiguration.CODEC, IconStructure::createPiecesGenerator, PostPlacementProcessor.NONE);
+	public MotherdemonStructure() {
+		super(JigsawConfiguration.CODEC, MotherdemonStructure::createPiecesGenerator,
+				PostPlacementProcessor.NONE);
 	}
 
 	@Override
@@ -38,13 +39,13 @@ public class IconStructure extends StructureFeature<JigsawConfiguration> {
 
 	public static Optional<PieceGenerator<JigsawConfiguration>> createPiecesGenerator(
 			PieceGeneratorSupplier.Context<JigsawConfiguration> context) {
-		if (!IconStructure.isFeatureChunk(context)) {
+		if (!MotherdemonStructure.isFeatureChunk(context)) {
 			return Optional.empty();
 		}
+		BlockPos blockpos = context.chunkPos().getMiddleBlockPosition(0).offset(0, -3, 0);
+		Optional<PieceGenerator<JigsawConfiguration>> structurePiecesGenerator = JigsawPlacement
+				.addPieces(context, PoolElementStructurePiece::new, blockpos, true, false);
 
-		BlockPos blockpos = new BlockPos(context.chunkPos().getMinBlockX(), -63, context.chunkPos().getMinBlockZ());
-		Optional<PieceGenerator<JigsawConfiguration>> structurePiecesGenerator = JigsawPlacement.addPieces(context,
-				PoolElementStructurePiece::new, blockpos, false, false);
 		return structurePiecesGenerator;
 	}
 }

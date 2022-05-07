@@ -523,7 +523,7 @@ public class DoomConfig {
 			this.gladiator_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.baron_biomes")
-					.defineList("Gladiator Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
+					.defineList("Gladiator Biomes", Lists.newArrayList(""), o -> o instanceof String);
 			this.gladiator_spawn_weight = builder.translation("text.doom.config.gladiator_spawn_weight")
 					.defineInRange("Gladiator Spawn Weight", 4, 1, Integer.MAX_VALUE);
 			this.gladiator_min_group = builder.translation("text.doom.config.gladiator_min_group")
@@ -1043,10 +1043,8 @@ public class DoomConfig {
 			builder.push("Mob Settings:Archmaykr");
 			this.archmaykr_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
-					.translation("text.doom.config.archmaykr_biomes").defineList(
-							"Archmaykr Biomes", Lists.newArrayList("minecraft:small_end_islands",
-									"minecraft:end_midlands", "minecraft:end_barrens", "minecraft:end_highlands"),
-							o -> o instanceof String);
+					.translation("text.doom.config.archmaykr_biomes")
+					.defineList("Archmaykr Biomes", Lists.newArrayList(""), o -> o instanceof String);
 			this.archmaykr_spawn_weight = builder.translation("text.doom.config.archmaykr_spawn_weight")
 					.defineInRange("Archmaykr Spawn Weight", 1, 1, Integer.MAX_VALUE);
 			this.archmaykr_min_group = builder.translation("text.doom.config.archmaykr_min_group")
@@ -1063,7 +1061,7 @@ public class DoomConfig {
 			this.motherdemon_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
 					.translation("text.doom.config.motherdemon_biomes")
-					.defineList("Motherdemon Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
+					.defineList("Motherdemon Biomes", Lists.newArrayList(""), o -> o instanceof String);
 			this.motherdemon_spawn_weight = builder.translation("text.doom.config.archmaykr_spawn_weight")
 					.defineInRange("Motherdemon Spawn Weight", 1, 1, Integer.MAX_VALUE);
 			this.motherdemon_min_group = builder.translation("text.doom.config.motherdemon_spawn_weight")
