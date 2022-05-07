@@ -42,7 +42,8 @@ public class MotherdemonStructure extends StructureFeature<JigsawConfiguration> 
 		if (!MotherdemonStructure.isFeatureChunk(context)) {
 			return Optional.empty();
 		}
-		BlockPos blockpos = context.chunkPos().getMiddleBlockPosition(0).offset(0, -3, 0);
+
+		BlockPos blockpos = new BlockPos(context.chunkPos().getMinBlockX(), 32, context.chunkPos().getMinBlockZ());
 		Optional<PieceGenerator<JigsawConfiguration>> structurePiecesGenerator = JigsawPlacement
 				.addPieces(context, PoolElementStructurePiece::new, blockpos, true, false);
 
