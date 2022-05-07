@@ -1,0 +1,1 @@
+cmd /k gradlew.bat modrinth -Dorg.gradle.java.home="C:\Program Files\Java\jdk-17.0.1" --info

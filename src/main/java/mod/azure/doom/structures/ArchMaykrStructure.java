@@ -14,10 +14,10 @@ import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 
-public class GladiatorStructure extends StructureFeature<StructurePoolFeatureConfig> {
+public class ArchMaykrStructure extends StructureFeature<StructurePoolFeatureConfig> {
 
-	public GladiatorStructure() {
-		super(StructurePoolFeatureConfig.CODEC, GladiatorStructure::createPiecesGenerator,
+	public ArchMaykrStructure() {
+		super(StructurePoolFeatureConfig.CODEC, ArchMaykrStructure::createPiecesGenerator,
 				PostPlacementProcessor.EMPTY);
 	}
 
@@ -33,13 +33,13 @@ public class GladiatorStructure extends StructureFeature<StructurePoolFeatureCon
 
 	public static Optional<StructurePiecesGenerator<StructurePoolFeatureConfig>> createPiecesGenerator(
 			StructureGeneratorFactory.Context<StructurePoolFeatureConfig> context) {
-		if (!GladiatorStructure.isFeatureChunk(context)) {
+
+		if (!ArchMaykrStructure.isFeatureChunk(context)) {
 			return Optional.empty();
 		}
-		BlockPos blockpos = new BlockPos(context.chunkPos().getStartX(), 32, context.chunkPos().getStartZ());
+		BlockPos blockpos = context.chunkPos().getCenterAtY(0);
 		Optional<StructurePiecesGenerator<StructurePoolFeatureConfig>> structurePiecesGenerator = StructurePoolBasedGenerator
-				.generate(context, PoolStructurePiece::new, blockpos, true, false);
-
+				.generate(context, PoolStructurePiece::new, blockpos, true, true);
 		return structurePiecesGenerator;
 	}
 }

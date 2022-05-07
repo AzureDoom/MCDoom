@@ -14,10 +14,10 @@ import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 
-public class GladiatorStructure extends StructureFeature<StructurePoolFeatureConfig> {
+public class MotherdemonStructure extends StructureFeature<StructurePoolFeatureConfig> {
 
-	public GladiatorStructure() {
-		super(StructurePoolFeatureConfig.CODEC, GladiatorStructure::createPiecesGenerator,
+	public MotherdemonStructure() {
+		super(StructurePoolFeatureConfig.CODEC, MotherdemonStructure::createPiecesGenerator,
 				PostPlacementProcessor.EMPTY);
 	}
 
@@ -33,13 +33,12 @@ public class GladiatorStructure extends StructureFeature<StructurePoolFeatureCon
 
 	public static Optional<StructurePiecesGenerator<StructurePoolFeatureConfig>> createPiecesGenerator(
 			StructureGeneratorFactory.Context<StructurePoolFeatureConfig> context) {
-		if (!GladiatorStructure.isFeatureChunk(context)) {
+		if (!MotherdemonStructure.isFeatureChunk(context)) {
 			return Optional.empty();
 		}
 		BlockPos blockpos = new BlockPos(context.chunkPos().getStartX(), 32, context.chunkPos().getStartZ());
 		Optional<StructurePiecesGenerator<StructurePoolFeatureConfig>> structurePiecesGenerator = StructurePoolBasedGenerator
 				.generate(context, PoolStructurePiece::new, blockpos, true, false);
-
 		return structurePiecesGenerator;
 	}
 }

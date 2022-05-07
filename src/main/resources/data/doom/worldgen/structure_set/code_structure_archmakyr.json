@@ -1,0 +1,14 @@
+{
+	"structures": [
+		{
+			"structure": "doom:code_structure_archmakyr",
+			"weight": 1
+		}
+	],
+	"placement": {
+		"salt": 1234968792,
+		"spacing": 80,
+		"separation": 20,
+		"type": "minecraft:random_spread"
+	}
+}

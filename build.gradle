@@ -8,10 +8,12 @@ plugins {
     id 'fabric-loom' version '0.11-SNAPSHOT'
 	id 'maven-publish'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
+	id "com.modrinth.minotaur" version "2.+"
 }
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
+import com.modrinth.minotaur.dependencies.ModDependency
 
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
@@ -91,6 +93,29 @@ loom {
 }
 
 if (file('key.properties').exists()) {
+	modrinth {
+		def modrinthProp = new Properties()
+		File secretPropsFile = file("key.properties")
+		modrinthProp.load(secretPropsFile.newInputStream())
+		
+		token = modrinthProp.getProperty('modrinthKey')
+		projectId = 'DxHU4sIU' 
+		versionNumber = project.mod_version 
+		versionName = 'MCDoom Fabric'
+		uploadFile = remapJar 
+		changelog = rootProject.file("changelog.txt").text
+		gameVersions = ['1.18.2']
+		loaders = ['fabric']
+		dependencies = [ 
+            new ModDependency("E5H4km4c", "required"),
+            new ModDependency("P7dR8mSH", "required"),
+            new ModDependency("9s6osm5g", "required"),
+            new ModDependency("5aaWibi9", "required")
+		]
+	}
+}
+
+if (file('key.properties').exists()) {
     curseforge {
 
     	def curseProp = new Properties()
@@ -124,4 +149,9 @@ if (file('key.properties').exists()) {
         	forgeGradleIntegration = false
     	}
     }
+}
+
+task publishToModSites {
+    publishToModSites.dependsOn modrinth
+    publishToModSites.dependsOn curseforge
 }
