@@ -37,8 +37,8 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
+import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.screen.PlayerScreenHandler;
@@ -57,7 +57,7 @@ public class ClientInit implements ClientModInitializer {
 	public void onInitializeClient() {
 		ModelProviderinit.init();
 		DoomRenderRegistry.init();
-		ScreenRegistry.register(DoomMod.SCREEN_HANDLER_TYPE, GunTableScreen::new);
+		HandledScreens.register(DoomMod.SCREEN_HANDLER_TYPE, GunTableScreen::new);
 		GeoItemRenderer.registerItemRenderer(DoomBlocks.TOTEM.asItem(), new TotemItemRender());
 		GeoItemRenderer.registerItemRenderer(DoomBlocks.GUN_TABLE.asItem(), new GunCraftingItemRender());
 		GeoItemRenderer.registerItemRenderer(DoomItems.BFG, new BFG9000Render());
