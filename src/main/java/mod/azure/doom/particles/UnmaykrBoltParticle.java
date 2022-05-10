@@ -1,7 +1,5 @@
 package mod.azure.doom.particles;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleTextureSheet;
@@ -43,7 +41,6 @@ public class UnmaykrBoltParticle extends SpriteBillboardParticle {
 		return ParticleTextureSheet.PARTICLE_SHEET_LIT;
 	}
 
-	@Environment(value = EnvType.CLIENT)
 	public static class Factory implements ParticleFactory<DefaultParticleType> {
 		private final SpriteProvider spriteProvider;
 

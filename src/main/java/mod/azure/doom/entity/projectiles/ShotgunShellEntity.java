@@ -4,8 +4,6 @@ import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -216,7 +214,6 @@ public class ShotgunShellEntity extends PersistentProjectileEntity implements IA
 	}
 
 	@Override
-	@Environment(EnvType.CLIENT)
 	public boolean shouldRender(double distance) {
 		return true;
 	}

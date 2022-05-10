@@ -13,8 +13,6 @@ import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
 import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -127,7 +125,6 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 		}
 	}
 
-	@Environment(EnvType.CLIENT)
 	public void handleStatus(byte status) {
 		super.handleStatus(status);
 		if (status == 4) {
@@ -136,7 +133,6 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 
 	}
 
-	@Environment(EnvType.CLIENT)
 	public float getAnimationProgress(float tickDelta) {
 		if (!this.playingAnimation) {
 			return 0.0F;

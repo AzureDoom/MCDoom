@@ -5,8 +5,6 @@ import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomParticles;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -239,7 +237,6 @@ public class BulletEntity extends PersistentProjectileEntity implements IAnimata
 	}
 
 	@Override
-	@Environment(EnvType.CLIENT)
 	public boolean shouldRender(double distance) {
 		return true;
 	}

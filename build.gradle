@@ -24,7 +24,11 @@ repositories {
 	maven { url "https://cfa2.cursemaven.com" }
     maven { url "https://maven.shedaniel.me/" }
     maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+    maven { url 'https://maven.blamejared.com' }
+    maven { url 'https://plugins.gradle.org/m2/' }
+    maven { url 'https://jitpack.io' }
 	maven { url = "https://maven.terraformersmc.com/" }
+	maven {url = "https://ladysnake.jfrog.io/artifactory/mods" }
 }
 
 dependencies {
@@ -36,6 +40,11 @@ dependencies {
 	modImplementation libs.quilt.loader
     modImplementation 'software.bernie.geckolib:geckolib-quilt-1.18:3.0.0'
     modImplementation 'curse.maven:cloth-348521:3761416'
+    modImplementation ("dev.emi:trinkets:3.3.0") {
+  		exclude group: "net.fabricmc.fabric-api"
+  		exclude group: "net.fabricmc", module: "fabric-loader"
+	}
+	modImplementation "curse.maven:stfu-401978:3677546"
 }
 
 processResources {

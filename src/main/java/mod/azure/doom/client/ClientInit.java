@@ -36,8 +36,6 @@ import mod.azure.doom.particles.PlasmaParticle;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomParticles;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
@@ -47,7 +45,6 @@ import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3q.renderers.geo.GeoItemRenderer;
 
-@Environment(EnvType.CLIENT)
 public class ClientInit implements ClientModInitializer {
 
 	public static KeyBind reload = new KeyBind("key.doom.reload", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R,

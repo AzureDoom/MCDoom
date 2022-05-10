@@ -2,8 +2,6 @@ package mod.azure.doom.network;
 
 import java.util.UUID;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -12,7 +10,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.registry.Registry;
 
 public class EntityPacketOnClient {
-	@Environment(EnvType.CLIENT)
 	public static void onPacket(MinecraftClient context, PacketByteBuf byteBuf) {
 		EntityType<?> type = Registry.ENTITY_TYPE.get(byteBuf.readVarInt());
 		UUID entityUUID = byteBuf.readUuid();

@@ -7,8 +7,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.network.C2SMessageSelectCraft;
 import mod.azure.doom.util.recipes.GunTableRecipe;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.GameRenderer;
@@ -204,7 +202,6 @@ public class GunTableScreen extends HandledScreen<GunTableScreenHandler> {
 		return super.mouseClicked(mouseX, mouseY, button);
 	}
 
-	@Environment(EnvType.CLIENT)
 	class WidgetButtonPage extends ButtonWidget {
 		final int index;
 

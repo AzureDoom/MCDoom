@@ -1,5 +1,7 @@
 package mod.azure.doom.client;
 
+import org.quiltmc.qsl.block.extensions.api.client.BlockRenderLayerMap;
+
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.render.ArachonotronEternalRender;
 import mod.azure.doom.client.render.ArachonotronRender;
@@ -105,14 +107,12 @@ import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import software.bernie.geckolib3q.renderers.geo.GeoArmorRenderer;
 
-@SuppressWarnings("deprecation")
 public class DoomRenderRegistry {
 
 	@SuppressWarnings("unchecked")
@@ -320,7 +320,7 @@ public class DoomRenderRegistry {
 		GeoArmorRenderer.registerArmorRenderer(new DarkLordArmorRender(), DoomItems.DARKLORD_BOOTS,
 				DoomItems.DARKLORD_CHESTPLATE, DoomItems.DARKLORD_HELMET, DoomItems.DARKLORD_LEGGINGS);
 
-		BlockRenderLayerMap.INSTANCE.putBlock(DoomBlocks.JUMP_PAD, RenderLayer.getTranslucent());
+		BlockRenderLayerMap.put(RenderLayer.getTranslucent(), DoomBlocks.JUMP_PAD);
 
 		EntityRendererRegistry.register(ProjectilesEntityRegister.MEATHOOOK_ENTITY, MeatHookEntityRenderer::new);
 	}

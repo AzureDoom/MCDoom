@@ -3,8 +3,6 @@ package mod.azure.doom.util.enums;
 import java.util.function.Supplier;
 
 import mod.azure.doom.util.registry.DoomItems;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.recipe.Ingredient;
@@ -18,12 +16,12 @@ public enum DoomArmorMaterial implements ArmorMaterial {
 			() -> {
 				return Ingredient.ofItems(DoomItems.ARGENT_ENERGY);
 			}),
-	HOTROD_DOOM_ARMOR("hotrod_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
-			SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 8.0F, 0.4F, () -> {
+	HOTROD_DOOM_ARMOR("hotrod_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 8.0F,
+			0.4F, () -> {
 				return Ingredient.ofItems(DoomItems.ARGENT_ENERGY);
 			}),
-	DEMONCIDE_DOOM_ARMOR("demoncide_armor", 50, new int[] { 5, 8, 10, 5 }, 30,
-			SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 8.0F, 0.4F, () -> {
+	DEMONCIDE_DOOM_ARMOR("demoncide_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC,
+			8.0F, 0.4F, () -> {
 				return Ingredient.ofItems(DoomItems.ARGENT_ENERGY);
 			}),
 	PRAETOR_DOOM_ARMOR("praetor_armor", 50, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 8.0F,
@@ -173,7 +171,6 @@ public enum DoomArmorMaterial implements ArmorMaterial {
 		return (Ingredient) this.repairIngredientSupplier.get();
 	}
 
-	@Environment(EnvType.CLIENT)
 	public String getName() {
 		return this.name;
 	}

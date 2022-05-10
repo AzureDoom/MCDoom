@@ -2,8 +2,6 @@ package mod.azure.doom.particles;
 
 import java.util.Random;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleTextureSheet;
@@ -13,7 +11,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.util.math.MathHelper;
 
-@Environment(value = EnvType.CLIENT)
 public class PlasmaParticle extends SpriteBillboardParticle {
 	static final Random RANDOM = new Random();
 	private final SpriteProvider spriteProvider;
@@ -53,7 +50,6 @@ public class PlasmaParticle extends SpriteBillboardParticle {
 		this.setSpriteForAge(this.spriteProvider);
 	}
 
-	@Environment(value = EnvType.CLIENT)
 	public static class Factory implements ParticleFactory<DefaultParticleType> {
 		private final SpriteProvider spriteProvider;
 
