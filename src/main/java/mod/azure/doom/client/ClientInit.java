@@ -35,17 +35,16 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 
-@SuppressWarnings("deprecation")
 @Environment(EnvType.CLIENT)
 public class ClientInit implements ClientModInitializer {
 
@@ -53,7 +52,7 @@ public class ClientInit implements ClientModInitializer {
 			"category.doom.binds");
 	public static KeyBinding yeethook = new KeyBinding("key.doom.yeethook", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V,
 			"category.doom.binds");
-	
+
 	@Override
 	public void onInitializeClient() {
 		ModelProviderinit.init();
@@ -80,20 +79,18 @@ public class ClientInit implements ClientModInitializer {
 		GeoItemRenderer.registerItemRenderer(DoomItems.DPLASMARIFLE, new DPlamsaRifleRender());
 		GeoItemRenderer.registerItemRenderer(DoomItems.DGAUSS, new DGaussRender());
 		GeoItemRenderer.registerItemRenderer(DoomItems.GRENADE, new GrenadeItemRender());
-		ClientSidePacketRegistry.INSTANCE.register(EntityPacket.ID, (ctx, buf) -> {
-			EntityPacketOnClient.onPacket(ctx, buf);
+		ClientPlayNetworking.registerGlobalReceiver(EntityPacket.ID, (client, handler, buf, responseSender) -> {
+			EntityPacketOnClient.onPacket(client, buf);
 		});
 		KeyBindingHelper.registerKeyBinding(reload);
 		KeyBindingHelper.registerKeyBinding(yeethook);
-		requestParticleTexture(new Identifier("doom:particle/plasma"));
+		ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE)
+				.register(((atlasTexture, registry) -> {
+					registry.register(new Identifier("doom", "particle/plasma"));
+				}));
 		ParticleFactoryRegistry.getInstance().register(DoomParticles.PLASMA, PlasmaParticle.Factory::new);
 		ParticleFactoryRegistry.getInstance().register(DoomParticles.PISTOL, PlasmaParticle.Factory::new);
 		ParticleFactoryRegistry.getInstance().register(DoomParticles.UNMAYKR, PlasmaParticle.Factory::new);
-	}
-
-	public static void requestParticleTexture(Identifier id) {
-		ClientSpriteRegistryCallback.event(SpriteAtlasTexture.PARTICLE_ATLAS_TEXTURE)
-				.register(((texture, registry) -> registry.register(id)));
 	}
 
 }

@@ -89,8 +89,7 @@ public class DoomMod implements ModInitializer {
 			.icon(() -> new ItemStack(DoomItems.BFG_ETERNAL)).build();
 	public static final ItemGroup DoomPowerUPItemGroup = FabricItemGroupBuilder.create(new Identifier(MODID, "powerup"))
 			.icon(() -> new ItemStack(DoomItems.INMORTAL)).build();
-	public static ScreenHandlerType<GunTableScreenHandler> SCREEN_HANDLER_TYPE = ScreenHandlerRegistry
-			.registerSimple(GUN_TABLE_GUI, GunTableScreenHandler::new);
+	public static ScreenHandlerType<GunTableScreenHandler> SCREEN_HANDLER_TYPE;
 	public static final RecipeSerializer<GunTableRecipe> GUN_TABLE_RECIPE_SERIALIZER = Registry
 			.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "gun_table"), new GunTableRecipe.Serializer());
 
@@ -122,6 +121,7 @@ public class DoomMod implements ModInitializer {
 		GeckoLib.initialize();
 		PacketHandler.registerMessages();
 		DoomStructures.setupAndRegisterStructureFeatures();
+		SCREEN_HANDLER_TYPE = ScreenHandlerRegistry.registerSimple(GUN_TABLE_GUI, GunTableScreenHandler::new);
 	}
 
 	public static class DataTrackers {
