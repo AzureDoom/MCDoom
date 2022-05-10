@@ -30,11 +30,11 @@
 		"doom.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.12.5",
+		"fabricloader": ">=0.14.4",
 		"fabric": "*",
-		"minecraft": "1.18.x",
+		"minecraft": "1.18.2",
 		"java": ">=17",
-		"geckolib3": ">=3.0.30"
+		"geckolib3": ">=3.0.35"
 	},
 	"accessWidener": "doom.accesswidener"
 }
