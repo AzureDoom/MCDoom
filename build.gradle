@@ -11,7 +11,6 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.4.0'
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-        classpath "com.modrinth.minotaur:Minotaur:2.+"
     }
 }
 
@@ -22,7 +21,6 @@ apply plugin: 'com.matthewprenger.cursegradle'
 apply plugin: 'java'
 apply plugin: 'org.spongepowered.mixin'
 apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
-apply plugin: "com.modrinth.minotaur"
 
 configurations.all {
     resolutionStrategy {
@@ -32,7 +30,6 @@ configurations.all {
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
-import com.modrinth.minotaur.dependencies.ModDependency
 
 version = project.mod_version
 group = "mod.azure.doomweapon"
@@ -102,7 +99,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.18.2-40.0.19'
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18.2-5.0.6.3")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18.2-5.0.6.3:api")
-	implementation fg.deobf('software.bernie.geckolib:geckolib-1.18-forge:3.0.12')
+	implementation fg.deobf('software.bernie.geckolib:geckolib-1.18-forge:3.0.16')
 	annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 }
 
@@ -152,31 +149,6 @@ processResources {
         }
         println('Minified ' + jsonMinified + ' json files. Saved ' + jsonBytesSaved + ' bytes. Took ' + (System.currentTimeMillis() - jsonMinifyStart) + 'ms.')
     }
-}
-
-task publishToModSites {
-    publishToModSites.dependsOn modrinth
-    publishToModSites.dependsOn curseforge
-}
-
-if (file('key.properties').exists()) {
-	modrinth {
-		def modrinthProp = new Properties()
-		File secretPropsFile = file("key.properties")
-		modrinthProp.load(secretPropsFile.newInputStream())
-		
-		token = modrinthProp.getProperty('modrinthKey')
-		projectId = 'DxHU4sIU' 
-		versionNumber = project.mod_version 
-		versionName = 'MCDoom Forge'
-		uploadFile = jar 
-		changelog = rootProject.file("changelog.txt").text
-		gameVersions = ['1.18.2']
-		loaders = ['forge']
-		dependencies = [ 
-            new ModDependency("E5H4km4c", "required")
-		]
-	}
 }
 
 if (file('key.properties').exists()) {
