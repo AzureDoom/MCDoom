@@ -1,6 +1,7 @@
 package mod.azure.doom.block;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.sound.BlockSoundGroup;
@@ -8,6 +9,6 @@ import net.minecraft.sound.BlockSoundGroup;
 public class ArgentBlock extends Block {
 
 	public ArgentBlock() {
-		super(FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL));
+		super(QuiltBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL));
 	}
 }

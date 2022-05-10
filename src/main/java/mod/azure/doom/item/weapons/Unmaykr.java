@@ -1,5 +1,8 @@
 package mod.azure.doom.item.weapons;
 
+import org.quiltmc.qsl.networking.api.PlayerLookup;
+import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
+
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
@@ -7,8 +10,6 @@ import mod.azure.doom.entity.projectiles.UnmaykrBoltEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ModSoundEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
@@ -45,14 +46,14 @@ public class Unmaykr extends DoomBaseItem {
 				playerentity.getItemCooldownManager().set(this, 5);
 				if (!worldIn.isClient) {
 					UnmaykrBoltEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.setProperties(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
-							1.0F * 3.0F, 1.0F);
+					abstractarrowentity.setProperties(playerentity, playerentity.getPitch(), playerentity.getYaw(),
+							0.0F, 1.0F * 3.0F, 1.0F);
 					UnmaykrBoltEntity abstractarrowentity2 = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity2.setProperties(playerentity, playerentity.getPitch(), playerentity.getYaw() - 10,
-							0.0F, 1.0F * 3.0F, 1.0F);
+					abstractarrowentity2.setProperties(playerentity, playerentity.getPitch(),
+							playerentity.getYaw() - 10, 0.0F, 1.0F * 3.0F, 1.0F);
 					UnmaykrBoltEntity abstractarrowentity1 = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity1.setProperties(playerentity, playerentity.getPitch(), playerentity.getYaw() + 10,
-							0.0F, 1.0F * 3.0F, 1.0F);
+					abstractarrowentity1.setProperties(playerentity, playerentity.getPitch(),
+							playerentity.getYaw() + 10, 0.0F, 1.0F * 3.0F, 1.0F);
 
 					abstractarrowentity.hasNoGravity();
 					abstractarrowentity1.hasNoGravity();

@@ -1,8 +1,9 @@
 package mod.azure.doom.block;
 
+import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings;
+
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -28,7 +29,7 @@ public class TickingLightBlock extends BlockWithEntity {
 	public static final IntProperty LIGHT_LEVEL = Properties.LEVEL_15;
 
 	public TickingLightBlock() {
-		super(FabricBlockSettings.of(Material.AIR).sounds(BlockSoundGroup.CANDLE).luminance(15).strength(4.0f)
+		super(QuiltBlockSettings.of(Material.AIR).sounds(BlockSoundGroup.CANDLE).luminance(15).strength(4.0f)
 				.nonOpaque());
 	}
 

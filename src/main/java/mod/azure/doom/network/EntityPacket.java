@@ -1,8 +1,9 @@
 package mod.azure.doom.network;
 
+import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
+
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;

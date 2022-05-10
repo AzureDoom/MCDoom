@@ -1,7 +1,8 @@
 package mod.azure.doom.block;
 
+import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings;
+
 import mod.azure.doom.entity.projectiles.BarrelEntity;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -30,7 +31,7 @@ import net.minecraft.world.explosion.Explosion;
 public class BarrelBlock extends Block {
 
 	public BarrelBlock() {
-		super(FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL).nonOpaque());
+		super(QuiltBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL).nonOpaque());
 	}
 
 	@Override

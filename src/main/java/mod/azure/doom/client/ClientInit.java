@@ -3,6 +3,7 @@ package mod.azure.doom.client;
 import org.lwjgl.glfw.GLFW;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
+import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
 import com.mojang.blaze3d.platform.InputUtil;
 
@@ -39,15 +40,13 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.option.KeyBind;
-import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3q.renderers.geo.GeoItemRenderer;
 
-@SuppressWarnings("deprecation")
 @Environment(EnvType.CLIENT)
 public class ClientInit implements ClientModInitializer {
 
@@ -55,12 +54,12 @@ public class ClientInit implements ClientModInitializer {
 			"category.doom.binds");
 	public static KeyBind yeethook = new KeyBind("key.doom.yeethook", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V,
 			"category.doom.binds");
-	
+
 	@Override
 	public void onInitializeClient(ModContainer mod) {
 		ModelProviderinit.init();
 		DoomRenderRegistry.init();
-		ScreenRegistry.register(DoomMod.SCREEN_HANDLER_TYPE, GunTableScreen::new);
+		HandledScreens.register(DoomMod.SCREEN_HANDLER_TYPE, GunTableScreen::new);
 		GeoItemRenderer.registerItemRenderer(DoomBlocks.TOTEM.asItem(), new TotemItemRender());
 		GeoItemRenderer.registerItemRenderer(DoomBlocks.GUN_TABLE.asItem(), new GunCraftingItemRender());
 		GeoItemRenderer.registerItemRenderer(DoomItems.BFG, new BFG9000Render());
@@ -82,20 +81,17 @@ public class ClientInit implements ClientModInitializer {
 		GeoItemRenderer.registerItemRenderer(DoomItems.DPLASMARIFLE, new DPlamsaRifleRender());
 		GeoItemRenderer.registerItemRenderer(DoomItems.DGAUSS, new DGaussRender());
 		GeoItemRenderer.registerItemRenderer(DoomItems.GRENADE, new GrenadeItemRender());
-		ClientSidePacketRegistry.INSTANCE.register(EntityPacket.ID, (ctx, buf) -> {
-			EntityPacketOnClient.onPacket(ctx, buf);
+		ClientPlayNetworking.registerGlobalReceiver(EntityPacket.ID, (client, handler, buf, responseSender) -> {
+			EntityPacketOnClient.onPacket(client, buf);
 		});
 		KeyBindingHelper.registerKeyBinding(reload);
 		KeyBindingHelper.registerKeyBinding(yeethook);
-		requestParticleTexture(new Identifier("doom:particle/plasma"));
+		ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE)
+				.register(((atlasTexture, registry) -> {
+					registry.register(new Identifier("doom", "particle/plasma"));
+				}));
 		ParticleFactoryRegistry.getInstance().register(DoomParticles.PLASMA, PlasmaParticle.Factory::new);
 		ParticleFactoryRegistry.getInstance().register(DoomParticles.PISTOL, PlasmaParticle.Factory::new);
 		ParticleFactoryRegistry.getInstance().register(DoomParticles.UNMAYKR, PlasmaParticle.Factory::new);
 	}
-
-	public static void requestParticleTexture(Identifier id) {
-		ClientSpriteRegistryCallback.event(SpriteAtlasTexture.PARTICLE_ATLAS_TEXTURE)
-				.register(((texture, registry) -> registry.register(id)));
-	}
-
 }

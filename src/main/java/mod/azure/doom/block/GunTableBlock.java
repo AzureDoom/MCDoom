@@ -1,7 +1,8 @@
 package mod.azure.doom.block;
 
+import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings;
+
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -28,6 +29,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldView;
 
 public class GunTableBlock extends Block implements BlockEntityProvider {
 
@@ -40,7 +42,7 @@ public class GunTableBlock extends Block implements BlockEntityProvider {
 	private static final VoxelShape Z_AXIS_SHAPE = VoxelShapes.union(YBASE1, YBASE2);
 
 	public GunTableBlock() {
-		super(FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL).strength(4.0f).nonOpaque());
+		super(QuiltBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL).strength(4.0f).nonOpaque());
 		this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
 	}
 
@@ -56,6 +58,14 @@ public class GunTableBlock extends Block implements BlockEntityProvider {
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		Direction direction = (Direction) state.get(FACING);
 		return direction.getAxis() == Direction.Axis.X ? X_AXIS_SHAPE : Z_AXIS_SHAPE;
+	}
+
+	@Override
+	public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
+		Direction direction = (Direction) state.get(FACING);
+		return direction.getAxis() == Direction.Axis.X
+				? world.getBlockState(pos.south()).isAir() && world.getBlockState(pos.north()).isAir()
+				: world.getBlockState(pos.east()).isAir() && world.getBlockState(pos.west()).isAir();
 	}
 
 	public BlockState mirror(BlockState state, BlockMirror mirror) {

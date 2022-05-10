@@ -2,11 +2,12 @@ package mod.azure.doom.block;
 
 import java.util.Iterator;
 
+import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings;
+
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tileentity.IconBlockEntity;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.ModEntityTypes;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -40,7 +41,7 @@ public class DoomWallBlock extends BlockWithEntity {
 	private static BlockPattern iconPatternFull;
 
 	public DoomWallBlock() {
-		super(FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.BONE));
+		super(QuiltBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.BONE));
 		this.setDefaultState(this.stateManager.getDefaultState().with(light, Boolean.valueOf(true)));
 	}
 

@@ -1,3 +1,6 @@
-v.4.2.4
+v.4.2.5
 
-- Motherdemon and Arch Maykr Structures now added, configs default changed to remove natural spawning outside of structures by default.
+- Packets moved to proper system. 
+- Particles moved to proper system. 
+- Gun Table placement check added. 
+- Most Fabric systems moved to Quilts built-in versions.

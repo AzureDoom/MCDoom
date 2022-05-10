@@ -1,6 +1,7 @@
 package mod.azure.doom.block;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
@@ -23,7 +24,7 @@ public class E1M1TurnableBlock extends Block {
 	public static final BooleanProperty light = RedstoneTorchBlock.LIT;
 
 	public E1M1TurnableBlock() {
-		super(FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.BONE));
+		super(QuiltBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.BONE));
 		this.setDefaultState(this.stateManager.getDefaultState().with(direction, Direction.NORTH).with(light,
 				Boolean.valueOf(true)));
 	}

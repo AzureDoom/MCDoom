@@ -1,5 +1,7 @@
 package mod.azure.doom.network;
 
+import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
+
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.AxeMarauderItem;
 import mod.azure.doom.item.weapons.BFG;
@@ -21,7 +23,6 @@ import mod.azure.doom.item.weapons.Shotgun;
 import mod.azure.doom.item.weapons.SuperShotgun;
 import mod.azure.doom.item.weapons.SwordCrucibleItem;
 import mod.azure.doom.item.weapons.Unmaykr;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 

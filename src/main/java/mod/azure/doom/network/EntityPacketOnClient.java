@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -12,10 +11,9 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.registry.Registry;
 
-@SuppressWarnings("deprecation")
 public class EntityPacketOnClient {
 	@Environment(EnvType.CLIENT)
-	public static void onPacket(PacketContext context, PacketByteBuf byteBuf) {
+	public static void onPacket(MinecraftClient context, PacketByteBuf byteBuf) {
 		EntityType<?> type = Registry.ENTITY_TYPE.get(byteBuf.readVarInt());
 		UUID entityUUID = byteBuf.readUuid();
 		int entityID = byteBuf.readVarInt();
@@ -24,7 +22,7 @@ public class EntityPacketOnClient {
 		double z = byteBuf.readDouble();
 		float pitch = (byteBuf.readByte() * 360) / 256.0F;
 		float yaw = (byteBuf.readByte() * 360) / 256.0F;
-		context.getTaskQueue().execute(() -> {
+		context.execute(() -> {
 			@SuppressWarnings("resource")
 			ClientWorld world = MinecraftClient.getInstance().world;
 			Entity entity = type.create(world);

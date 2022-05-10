@@ -1,6 +1,7 @@
 package mod.azure.doom.block;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.sound.BlockSoundGroup;
@@ -8,6 +9,6 @@ import net.minecraft.sound.BlockSoundGroup;
 public class DoomSandBlock extends Block {
 
 	public DoomSandBlock() {
-		super(FabricBlockSettings.of(Material.SOIL).sounds(BlockSoundGroup.BONE));
+		super(QuiltBlockSettings.of(Material.SOIL).sounds(BlockSoundGroup.BONE));
 	}
 }

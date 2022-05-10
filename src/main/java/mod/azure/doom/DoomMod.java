@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
+import org.quiltmc.qsl.item.group.api.QuiltItemGroup;
 import org.quiltmc.qsl.lifecycle.api.event.ServerLifecycleEvents;
 
 import me.shedaniel.autoconfig.AutoConfig;
@@ -25,7 +26,6 @@ import mod.azure.doom.util.registry.MobSpawn;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
@@ -81,18 +81,17 @@ public class DoomMod implements ModInitializer {
 	public static final Identifier DSG = new Identifier(MODID, "doomed_shotgun");
 	public static final Identifier DGAUSS = new Identifier(MODID, "doomed_gauss");
 	public static final Identifier DPLASMARIFLE = new Identifier(MODID, "doomed_plasma_rifle");
-	public static final ItemGroup DoomEggItemGroup = FabricItemGroupBuilder.create(new Identifier(MODID, "eggs"))
+	public static final ItemGroup DoomEggItemGroup = QuiltItemGroup.builder(new Identifier(MODID, "eggs"))
 			.icon(() -> new ItemStack(DoomItems.IMP_SPAWN_EGG)).build();
-	public static final ItemGroup DoomArmorItemGroup = FabricItemGroupBuilder.create(new Identifier(MODID, "armor"))
+	public static final ItemGroup DoomArmorItemGroup = QuiltItemGroup.builder(new Identifier(MODID, "armor"))
 			.icon(() -> new ItemStack(DoomItems.DOOM_HELMET)).build();
-	public static final ItemGroup DoomBlockItemGroup = FabricItemGroupBuilder.create(new Identifier(MODID, "blocks"))
+	public static final ItemGroup DoomBlockItemGroup = QuiltItemGroup.builder(new Identifier(MODID, "blocks"))
 			.icon(() -> new ItemStack(DoomBlocks.BARREL_BLOCK)).build();
-	public static final ItemGroup DoomWeaponItemGroup = FabricItemGroupBuilder.create(new Identifier(MODID, "weapons"))
+	public static final ItemGroup DoomWeaponItemGroup = QuiltItemGroup.builder(new Identifier(MODID, "weapons"))
 			.icon(() -> new ItemStack(DoomItems.BFG_ETERNAL)).build();
-	public static final ItemGroup DoomPowerUPItemGroup = FabricItemGroupBuilder.create(new Identifier(MODID, "powerup"))
+	public static final ItemGroup DoomPowerUPItemGroup = QuiltItemGroup.builder(new Identifier(MODID, "powerup"))
 			.icon(() -> new ItemStack(DoomItems.INMORTAL)).build();
-	public static ScreenHandlerType<GunTableScreenHandler> SCREEN_HANDLER_TYPE = ScreenHandlerRegistry
-			.registerSimple(GUN_TABLE_GUI, GunTableScreenHandler::new);
+	public static ScreenHandlerType<GunTableScreenHandler> SCREEN_HANDLER_TYPE;
 	public static final RecipeSerializer<GunTableRecipe> GUN_TABLE_RECIPE_SERIALIZER = Registry
 			.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "gun_table"), new GunTableRecipe.Serializer());
 
@@ -124,6 +123,7 @@ public class DoomMod implements ModInitializer {
 		GeckoLib.initialize();
 		PacketHandler.registerMessages();
 		DoomStructures.setupAndRegisterStructureFeatures();
+		SCREEN_HANDLER_TYPE = ScreenHandlerRegistry.registerSimple(GUN_TABLE_GUI, GunTableScreenHandler::new);
 	}
 
 	public static class DataTrackers {

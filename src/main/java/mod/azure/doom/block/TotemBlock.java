@@ -3,10 +3,10 @@ package mod.azure.doom.block;
 import java.util.Random;
 
 import org.jetbrains.annotations.Nullable;
+import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tileentity.TotemEntity;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockRenderType;
@@ -47,7 +47,7 @@ public class TotemBlock extends BlockWithEntity implements BlockEntityProvider {
 	protected Random RANDOM = new Random();
 
 	public TotemBlock() {
-		super(FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL).nonOpaque().requiresTool()
+		super(QuiltBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL).nonOpaque().requiresTool()
 				.strength(3, 3).luminance(15));
 	}
 

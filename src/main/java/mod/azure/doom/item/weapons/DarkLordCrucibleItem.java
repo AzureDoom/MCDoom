@@ -2,12 +2,13 @@ package mod.azure.doom.item.weapons;
 
 import java.util.List;
 
+import org.quiltmc.qsl.networking.api.PlayerLookup;
+import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
+
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.util.registry.DoomBlocks;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -59,8 +60,7 @@ public class DarkLordCrucibleItem extends Item implements IAnimatable, ISyncable
 			if (stack.getDamage() < (stack.getMaxDamage() - 1)) {
 				playerentity.getItemCooldownManager().set(this, 200);
 				final Box aabb = new Box(entityLiving.getBlockPos().up()).expand(4D, 1D, 4D);
-				entityLiving.getWorld().getOtherEntities(entityLiving, aabb)
-						.forEach(e -> doDamage(entityLiving, e));
+				entityLiving.getWorld().getOtherEntities(entityLiving, aabb).forEach(e -> doDamage(entityLiving, e));
 				stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
 				if (!worldIn.isClient) {
 					final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);
@@ -105,7 +105,7 @@ public class DarkLordCrucibleItem extends Item implements IAnimatable, ISyncable
 			}
 		}
 	}
-	
+
 	@Override
 	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
 		tooltip.add(new TranslatableText(
@@ -129,8 +129,8 @@ public class DarkLordCrucibleItem extends Item implements IAnimatable, ISyncable
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
 		PlayerEntity playerentity = (PlayerEntity) entity;
 		if (world.isClient) {
-			if (playerentity.getMainHandStack().getItem() instanceof DarkLordCrucibleItem && ClientInit.reload.isPressed()
-					&& selected) {
+			if (playerentity.getMainHandStack().getItem() instanceof DarkLordCrucibleItem
+					&& ClientInit.reload.isPressed() && selected) {
 				PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.DARKLORDCRUCIBLE, passedData);

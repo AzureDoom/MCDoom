@@ -8,12 +8,10 @@ plugins {
 	id 'maven-publish'
 	alias(libs.plugins.quilt.loom)
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-	id "com.modrinth.minotaur" version "2.+"
 }
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
-import com.modrinth.minotaur.dependencies.ModDependency
 
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
@@ -83,32 +81,6 @@ loom {
 	accessWidenerPath = file("src/main/resources/doom.accesswidener")
 }
 
-task publishToModSites {
-    publishToModSites.dependsOn modrinth
-    publishToModSites.dependsOn curseforge
-}
-
-if (file('key.properties').exists()) {
-	modrinth {
-		def modrinthProp = new Properties()
-		File secretPropsFile = file("key.properties")
-		modrinthProp.load(secretPropsFile.newInputStream())
-		
-		token = modrinthProp.getProperty('modrinthKey')
-		projectId = 'DxHU4sIU' 
-		versionNumber = project.mod_version
-		uploadFile = remapJar 
-		changelog = rootProject.file("changelog.txt").text
-		gameVersions = ['1.18.2']
-		loaders = ['quilt']
-		dependencies = [ 
-            new ModDependency("E5H4km4c", "required"),
-            new ModDependency("9s6osm5g", "required"),
-            new ModDependency("5aaWibi9", "required")
-		]
-	}
-}
-
 if (file('key.properties').exists()) {
     curseforge {
 
@@ -123,6 +95,7 @@ if (file('key.properties').exists()) {
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
 			addGameVersion("1.18.2")
+			addGameVersion("Fabric")
 			addGameVersion("Java 17")
 
         	relations {
