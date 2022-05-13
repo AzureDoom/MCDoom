@@ -18,8 +18,7 @@ import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
 public class MotherdemonStructure extends StructureFeature<JigsawConfiguration> {
 
 	public MotherdemonStructure() {
-		super(JigsawConfiguration.CODEC, MotherdemonStructure::createPiecesGenerator,
-				PostPlacementProcessor.NONE);
+		super(JigsawConfiguration.CODEC, MotherdemonStructure::createPiecesGenerator, PostPlacementProcessor.NONE);
 	}
 
 	@Override
@@ -44,8 +43,8 @@ public class MotherdemonStructure extends StructureFeature<JigsawConfiguration> 
 		}
 
 		BlockPos blockpos = new BlockPos(context.chunkPos().getMinBlockX(), 32, context.chunkPos().getMinBlockZ());
-		Optional<PieceGenerator<JigsawConfiguration>> structurePiecesGenerator = JigsawPlacement
-				.addPieces(context, PoolElementStructurePiece::new, blockpos, true, false);
+		Optional<PieceGenerator<JigsawConfiguration>> structurePiecesGenerator = JigsawPlacement.addPieces(context,
+				PoolElementStructurePiece::new, blockpos, true, false);
 
 		return structurePiecesGenerator;
 	}

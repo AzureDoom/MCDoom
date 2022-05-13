@@ -1,7 +1,6 @@
 package mod.azure.doom;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.List;
 
 import mod.azure.doom.util.DoomVillagerTrades;
 import mod.azure.doom.util.LootHandler;
@@ -18,12 +17,17 @@ import mod.azure.doom.util.registry.ModEntitySpawn;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.ForgeTier;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
+import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -35,7 +39,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.registries.ForgeRegistries;
 import software.bernie.geckolib3.GeckoLib;
 import software.bernie.geckolib3.network.GeckoLibNetwork;
 import top.theillusivec4.curios.api.SlotTypeMessage;
@@ -46,12 +49,14 @@ public class DoomMod {
 
 	public static DoomMod instance;
 	public static final String MODID = "doom";
-	public static final Logger LOGGER = LogManager.getLogger();
+	public static final TagKey<Block> ARGENT_TAG = BlockTags.create(new ResourceLocation(MODID, "needs_argent_tool"));
+	public static final Tier ARGENT_TIER = TierSortingRegistry.registerTier(
+			new ForgeTier(17, 5000, 18, 3.0F, 30, ARGENT_TAG, () -> Ingredient.of(DoomItems.ARGENT_BLOCK.get())),
+			new ResourceLocation(MODID, "argent"), List.of(Tiers.NETHERITE), List.of());
 
 	public DoomMod() {
 		instance = this;
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, DoomConfig.SERVER_SPEC, "doom-newconfig.toml");
 		DoomConfig.loadConfig(DoomConfig.SERVER_SPEC,
 				FMLPaths.CONFIGDIR.get().resolve("doom-newconfig.toml").toString());
@@ -59,7 +64,6 @@ public class DoomMod {
 		MinecraftForge.EVENT_BUS.register(new SoulCubeHandler());
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::enqueueIMC);
-		forgeBus.addGenericListener(EntityType.class, DoomMod::updatingPinkyID);
 		if (DoomConfig.SERVER.enable_all_villager_trades.get()) {
 			MinecraftForge.EVENT_BUS.addListener(DoomVillagerTrades::onVillagerTradesEvent);
 		}
@@ -92,15 +96,6 @@ public class DoomMod {
 				() -> SlotTypePreset.CHARM.getMessageBuilder().build());
 		InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
 				() -> SlotTypePreset.BELT.getMessageBuilder().build());
-	}
-
-	@SubscribeEvent
-	public static void updatingPinkyID(final RegistryEvent.MissingMappings<EntityType<?>> event) {
-		for (Mapping<EntityType<?>> mapping : event.getAllMappings()) {
-			if (mapping.key.getPath().equals("pinky2016")) {
-				mapping.remap(ForgeRegistries.ENTITIES.getValue(new ResourceLocation(DoomMod.MODID, "pinky")));
-			}
-		}
 	}
 
 	public static final CreativeModeTab DoomWeaponItemGroup = (new CreativeModeTab("doomweapons") {

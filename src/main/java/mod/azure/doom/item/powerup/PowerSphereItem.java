@@ -29,9 +29,6 @@ public class PowerSphereItem extends Item {
 			ServerPlayer playerentity = (ServerPlayer) livingEntityIn;
 			if (!worldIn.isClientSide) {
 				livingEntityIn.heal(20);
-//				if (ModList.get().isLoaded("pmmo")) {
-//					PMMOCompat.awardPowerXp(playerentity);
-//				}
 				if (!playerentity.getAbilities().instabuild) {
 					stack.shrink(1);
 					if (stack.isEmpty()) {

@@ -9,6 +9,7 @@ import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModSoundEvents;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -22,6 +23,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -37,6 +39,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MoveTowardsTargetGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
@@ -59,7 +62,9 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
-
+	
+	public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(ArchMakyrEntity.class,
+			EntityDataSerializers.INT);
 	private AnimationFactory factory = new AnimationFactory(this);
 	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(ArchMakyrEntity.class,
 			EntityDataSerializers.INT);
@@ -73,7 +78,11 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
+		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) < 5) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_phaseone", false));
+			return PlayState.CONTINUE;
+		}
+		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 5) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
@@ -109,12 +118,70 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	@Override
+	public void die(DamageSource source) {
+		if (!this.level.isClientSide) {
+			if (source == DamageSource.OUT_OF_WORLD) {
+				this.setDeathState(1);
+			}
+			if (this.entityData.get(DEATH_STATE) == 0) {
+				AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(),
+						this.getZ());
+				areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
+				areaeffectcloudentity.setRadius(3.0F);
+				areaeffectcloudentity.setDuration(55);
+				areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
+				this.level.addFreshEntity(areaeffectcloudentity);
+				this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
+				this.setLastHurtMob(this.getLastHurtByMob());
+				this.level.broadcastEntityEvent(this, (byte) 3);
+			}
+			if (this.entityData.get(DEATH_STATE) == 0) {
+				super.die(source);
+			}
+		}
+	}
+
+	@Override
 	protected void tickDeath() {
 		++this.deathTime;
-		if (this.deathTime == 30) {
-			this.remove(RemovalReason.KILLED);
+		if (this.deathTime == 80 && this.entityData.get(DEATH_STATE) == 0) {
+			this.setHealth(this.getMaxHealth());
+			this.setDeathState(1);
+			this.deathTime = 0;
+		}
+		if (this.deathTime == 80 && this.entityData.get(DEATH_STATE) == 1) {
+			this.setHealth(this.getMaxHealth());
+			this.setDeathState(2);
+			this.deathTime = 0;
+		}
+		if (this.deathTime == 80 && this.entityData.get(DEATH_STATE) == 2) {
+			this.setHealth(this.getMaxHealth());
+			this.setDeathState(3);
+			this.deathTime = 0;
+		}
+		if (this.deathTime == 80 && this.entityData.get(DEATH_STATE) == 3) {
+			this.setHealth(this.getMaxHealth());
+			this.setDeathState(4);
+			this.deathTime = 0;
+		}
+		if (this.deathTime == 80 && this.entityData.get(DEATH_STATE) == 4) {
+			this.setHealth(this.getMaxHealth());
+			this.setDeathState(5);
+			this.deathTime = 0;
+		}
+		if (this.deathTime == 40 && this.entityData.get(DEATH_STATE) == 5) {
+			this.level.broadcastEntityEvent(this, (byte) 60);
+			this.remove(Entity.RemovalReason.KILLED);
 			this.dropExperience();
 		}
+	}
+
+	public int getDeathState() {
+		return this.entityData.get(DEATH_STATE);
+	}
+
+	public void setDeathState(int state) {
+		this.entityData.set(DEATH_STATE, state);
 	}
 
 	@Override
@@ -264,6 +331,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	protected void defineSynchedData() {
 		super.defineSynchedData();
 		this.entityData.define(VARIANT, 0);
+		this.entityData.define(DEATH_STATE, 0);
 	}
 
 	@Override
@@ -273,11 +341,13 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		if (this.hasCustomName()) {
 			this.bossInfo.setName(this.getDisplayName());
 		}
+		this.setDeathState(compound.getInt("Phase"));
 	}
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag tag) {
 		super.addAdditionalSaveData(tag);
+		tag.putInt("Phase", this.getDeathState());
 		tag.putInt("Variant", this.getVariant());
 	}
 

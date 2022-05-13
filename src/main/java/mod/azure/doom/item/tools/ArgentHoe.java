@@ -3,7 +3,6 @@ package mod.azure.doom.item.tools;
 import java.util.List;
 
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.util.enums.DoomTier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -16,7 +15,7 @@ import net.minecraft.world.level.Level;
 public class ArgentHoe extends HoeItem {
 
 	public ArgentHoe() {
-		super(DoomTier.DOOM, 4, -2.4F, new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1));
+		super(DoomMod.ARGENT_TIER, 4, -2.4F, new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1));
 	}
 
 	@Override

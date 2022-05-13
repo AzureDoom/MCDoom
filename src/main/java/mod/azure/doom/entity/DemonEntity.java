@@ -43,10 +43,8 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 
 	public static boolean passPeacefulAndYCheck(EntityType<? extends DemonEntity> config, LevelAccessor world,
 			MobSpawnType reason, BlockPos pos, Random random) {
-		// peaceful check
 		if (world.getDifficulty() == Difficulty.PEACEFUL)
 			return false;
-		// pass through if natural spawn and using individual spawn rules
 		if ((reason != MobSpawnType.CHUNK_GENERATION && reason != MobSpawnType.NATURAL))
 			return !world.getBlockState(pos.below()).is(Blocks.NETHER_WART_BLOCK);
 		return !world.getBlockState(pos.below()).is(Blocks.NETHER_WART_BLOCK);

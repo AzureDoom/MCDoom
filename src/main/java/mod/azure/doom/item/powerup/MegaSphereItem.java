@@ -34,9 +34,6 @@ public class MegaSphereItem extends Item {
 			livingEntityIn.heal(40);
 			livingEntityIn.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 600, 4));
 			livingEntityIn.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 600, 4));
-//			if (ModList.get().isLoaded("pmmo")) {
-//				PMMOCompat.awardMegaXp(playerentity);
-//			}
 			if (!playerentity.getAbilities().instabuild) {
 				stack.shrink(1);
 				if (stack.isEmpty()) {

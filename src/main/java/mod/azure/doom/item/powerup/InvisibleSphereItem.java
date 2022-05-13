@@ -31,9 +31,6 @@ public class InvisibleSphereItem extends Item {
 			ServerPlayer playerentity = (ServerPlayer) livingEntityIn;
 			if (!worldIn.isClientSide) {
 				livingEntityIn.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 1200, 1));
-//				if (ModList.get().isLoaded("pmmo")) {
-//					PMMOCompat.awardInvisibleXp(playerentity);
-//				}
 				if (!playerentity.getAbilities().instabuild) {
 					stack.shrink(1);
 					if (stack.isEmpty()) {

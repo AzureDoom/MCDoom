@@ -3,7 +3,6 @@ package mod.azure.doom.item.weapons;
 import java.util.List;
 
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.util.enums.DoomTier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -16,7 +15,7 @@ import net.minecraft.world.level.Level;
 public class ArgentSword extends SwordItem {
 
 	public ArgentSword() {
-		super(DoomTier.DOOM, 6, -2.4F,
+		super(DoomMod.ARGENT_TIER, 6, -2.4F,
 				new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(9000));
 	}
 

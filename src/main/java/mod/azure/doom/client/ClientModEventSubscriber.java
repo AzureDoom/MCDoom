@@ -322,7 +322,6 @@ public class ClientModEventSubscriber {
 
 	@SubscribeEvent
 	public static void registerRenderers(final EntityRenderersEvent.AddLayers event) {
-
 		GeoArmorRenderer.registerArmorRenderer(DoomicornDoomArmor.class, new DoomicornRender());
 		GeoArmorRenderer.registerArmorRenderer(NightmareDoomArmor.class, new NightmareRender());
 		GeoArmorRenderer.registerArmorRenderer(PurplePonyDoomArmor.class, new PurplePonyRender());

@@ -1,7 +1,7 @@
 package mod.azure.doom.recipes;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 public abstract class DoomSpecialCraftingRecipe implements GunRecipes {
 	private final ResourceLocation id;

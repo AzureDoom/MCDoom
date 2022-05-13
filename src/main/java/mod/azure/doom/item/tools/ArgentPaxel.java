@@ -11,7 +11,6 @@ import javax.annotation.Nonnull;
 import com.google.common.collect.Sets;
 
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.util.enums.DoomTier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -42,7 +41,7 @@ public class ArgentPaxel extends DiggerItem {
 			.collect(Collectors.toCollection(Sets::newIdentityHashSet));
 
 	public ArgentPaxel() {
-		super(8, -2.4F, DoomTier.DOOM, BlockTags.MINEABLE_WITH_PICKAXE,
+		super(8, -2.4F, DoomMod.ARGENT_TIER, BlockTags.MINEABLE_WITH_PICKAXE,
 				new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1));
 	}
 
@@ -73,14 +72,13 @@ public class ArgentPaxel extends DiggerItem {
 		BlockPos blockpos = context.getClickedPos();
 		Player player = context.getPlayer();
 		BlockState blockstate = level.getBlockState(blockpos);
-		Optional<BlockState> optional = Optional.ofNullable(blockstate.getToolModifiedState(level, blockpos, player,
-				context.getItemInHand(), ToolActions.AXE_STRIP));
-		Optional<BlockState> optional1 = Optional.ofNullable(blockstate.getToolModifiedState(level, blockpos, player,
-				context.getItemInHand(), ToolActions.AXE_SCRAPE));
-		Optional<BlockState> optional2 = Optional.ofNullable(blockstate.getToolModifiedState(level, blockpos, player,
-				context.getItemInHand(), ToolActions.AXE_WAX_OFF));
-		BlockState optional3 = blockstate.getToolModifiedState(level, blockpos, player, context.getItemInHand(),
-				ToolActions.SHOVEL_FLATTEN);
+		Optional<BlockState> optional = Optional
+				.ofNullable(blockstate.getToolModifiedState(context, ToolActions.AXE_STRIP, false));
+		Optional<BlockState> optional1 = Optional
+				.ofNullable(blockstate.getToolModifiedState(context, ToolActions.AXE_SCRAPE, false));
+		Optional<BlockState> optional2 = Optional
+				.ofNullable(blockstate.getToolModifiedState(context, ToolActions.AXE_WAX_OFF, false));
+		BlockState optional3 = blockstate.getToolModifiedState(context, ToolActions.SHOVEL_FLATTEN, false);
 		ItemStack itemstack = context.getItemInHand();
 		Optional<BlockState> optional4 = Optional.empty();
 		if (optional.isPresent()) {

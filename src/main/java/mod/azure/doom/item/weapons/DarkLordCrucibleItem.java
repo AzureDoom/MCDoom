@@ -6,6 +6,12 @@ import java.util.function.Consumer;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.DarkLordCrucibleRender;
+import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
+import mod.azure.doom.entity.tierboss.GladiatorEntity;
+import mod.azure.doom.entity.tierboss.IconofsinEntity;
+import mod.azure.doom.entity.tierboss.MotherDemonEntity;
+import mod.azure.doom.entity.tierboss.SpiderMastermind2016Entity;
+import mod.azure.doom.entity.tierboss.SpiderMastermindEntity;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.DarkLordCrucibleLoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
@@ -91,7 +97,10 @@ public class DarkLordCrucibleItem extends Item implements IAnimatable, ISyncable
 	private void doDamage(LivingEntity user, final Entity target) {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
-			target.hurt(DamageSource.playerAttack((Player) user), 200F);
+			target.hurt(DamageSource.playerAttack((Player) user), !(target instanceof ArchMakyrEntity)
+					|| !(target instanceof GladiatorEntity) || !(target instanceof IconofsinEntity)
+					|| !(target instanceof MotherDemonEntity) || !(target instanceof SpiderMastermind2016Entity)
+					|| !(target instanceof SpiderMastermindEntity) ? 30F : 200F);
 		}
 	}
 

@@ -18,8 +18,7 @@ import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
 public class ArchMaykrStructure extends StructureFeature<JigsawConfiguration> {
 
 	public ArchMaykrStructure() {
-		super(JigsawConfiguration.CODEC, ArchMaykrStructure::createPiecesGenerator,
-				PostPlacementProcessor.NONE);
+		super(JigsawConfiguration.CODEC, ArchMaykrStructure::createPiecesGenerator, PostPlacementProcessor.NONE);
 	}
 
 	@Override
@@ -43,9 +42,9 @@ public class ArchMaykrStructure extends StructureFeature<JigsawConfiguration> {
 		if (!ArchMaykrStructure.isFeatureChunk(context)) {
 			return Optional.empty();
 		}
-		BlockPos blockpos = context.chunkPos().getMiddleBlockPosition(0).offset(0, -3, 0);
-		Optional<PieceGenerator<JigsawConfiguration>> structurePiecesGenerator = JigsawPlacement
-				.addPieces(context, PoolElementStructurePiece::new, blockpos, true, true);
+		BlockPos blockpos = context.chunkPos().getMiddleBlockPosition(0);
+		Optional<PieceGenerator<JigsawConfiguration>> structurePiecesGenerator = JigsawPlacement.addPieces(context,
+				PoolElementStructurePiece::new, blockpos, true, true);
 		return structurePiecesGenerator;
 	}
 }

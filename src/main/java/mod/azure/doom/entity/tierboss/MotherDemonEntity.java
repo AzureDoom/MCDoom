@@ -12,9 +12,13 @@ import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -23,6 +27,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -37,6 +42,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MoveTowardsTargetGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
@@ -59,7 +65,9 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
-
+	
+	public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(MotherDemonEntity.class,
+			EntityDataSerializers.INT);
 	private final ServerBossEvent bossInfo = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(),
 			BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true)
 					.setCreateWorldFog(true);
@@ -75,7 +83,11 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("moving", true));
 			return PlayState.CONTINUE;
 		}
-		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
+		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 0) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_phaseone", false));
+			return PlayState.CONTINUE;
+		}
+		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 1) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
@@ -108,12 +120,49 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 	}
 
 	@Override
+	public void die(DamageSource source) {
+		if (!this.level.isClientSide) {
+			if (source == DamageSource.OUT_OF_WORLD) {
+				this.setDeathState(1);
+			}
+			if (this.entityData.get(DEATH_STATE) == 0) {
+				AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(),
+						this.getZ());
+				areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
+				areaeffectcloudentity.setRadius(3.0F);
+				areaeffectcloudentity.setDuration(55);
+				areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
+				this.level.addFreshEntity(areaeffectcloudentity);
+				this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
+				this.setLastHurtMob(this.getLastHurtByMob());
+				this.level.broadcastEntityEvent(this, (byte) 3);
+			}
+			if (this.entityData.get(DEATH_STATE) == 0) {
+				super.die(source);
+			}
+		}
+	}
+
+	@Override
 	protected void tickDeath() {
 		++this.deathTime;
-		if (this.deathTime == 40) {
-			this.remove(RemovalReason.KILLED);
+		if (this.deathTime == 80 && this.entityData.get(DEATH_STATE) == 0) {
+			this.setHealth(this.getMaxHealth());
+			this.setDeathState(1);
+			this.deathTime = 0;
+		}
+		if (this.deathTime == 40 && this.entityData.get(DEATH_STATE) == 1) {
+			this.remove(Entity.RemovalReason.KILLED);
 			this.dropExperience();
 		}
+	}
+
+	public int getDeathState() {
+		return this.entityData.get(DEATH_STATE);
+	}
+
+	public void setDeathState(int state) {
+		this.entityData.set(DEATH_STATE, state);
 	}
 
 	@Override
@@ -385,6 +434,19 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 		if (this.hasCustomName()) {
 			this.bossInfo.setName(this.getDisplayName());
 		}
+		this.setDeathState(compound.getInt("Phase"));
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putInt("Phase", this.getDeathState());
+	}
+
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(DEATH_STATE, 0);
 	}
 
 	@Override

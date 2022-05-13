@@ -1,4 +1,4 @@
-package mod.azure.doom.item;
+package mod.azure.doom.item.powerup;
 
 import java.util.List;
 

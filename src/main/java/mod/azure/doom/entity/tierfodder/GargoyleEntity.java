@@ -222,7 +222,7 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IAnimati
 					BlockPos blockpos = this.mob.blockPosition();
 					BlockState blockstate = this.mob.level.getBlockState(blockpos);
 					VoxelShape voxelshape = blockstate.getCollisionShape(this.mob.level, blockpos);
-					if (d2 > (double) this.mob.maxUpStep
+					if (d2 > (double) this.mob.getStepHeight()
 							&& d0 * d0 + d1 * d1 < (double) Math.max(1.0F, this.mob.getBbWidth())
 							|| !voxelshape.isEmpty()
 									&& this.mob.getY() < voxelshape.max(Direction.Axis.Y) + (double) blockpos.getY()

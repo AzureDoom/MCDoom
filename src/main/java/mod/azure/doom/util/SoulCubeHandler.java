@@ -98,12 +98,5 @@ public class SoulCubeHandler {
 			livingEntity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 100, 4));
 			livingEntity.level.broadcastEntityEvent(livingEntity, (byte) 90);
 		}
-
-//		if (soulcube.isEmpty()) {
-//			ServerPlayer playerentity = (ServerPlayer) livingEntity;
-//			if (ModList.get().isLoaded("pmmo")) {
-//				PMMOCompat.awardSoulXp(playerentity);
-//			}
-//		}
 	}
 }

@@ -96,11 +96,15 @@ repositories {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.0.19'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.1.19'
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18.2-5.0.6.3")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18.2-5.0.6.3:api")
 	implementation fg.deobf('software.bernie.geckolib:geckolib-1.18-forge:3.0.16')
 	annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+    implementation fg.deobf("curse.maven:stfu-407174:3759881")
+    implementation fg.deobf("curse.maven:toolstats-377109:3697308")
+    implementation fg.deobf("curse.maven:bookshelf-228525:3753798")
+    implementation fg.deobf("curse.maven:torohealth-245733:3556931")
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
