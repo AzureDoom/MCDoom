@@ -1,5 +1,7 @@
-v.4.2.5
+v.4.2.6
 
-- Packets moved to proper system. 
-- Particles moved to proper system. 
-- Gun Table placement check added. 
+- Bosses redone to use a life system similar to Gladiator. 
+ - Arch Maykr now has a 5 life cycle before death.
+ - Mother Demon has a 2 life cycle before death. 
+ - Icon of Sin has a 2 life cycle before death, first phase has armor. 2nd Phase has no armor. 
+- Crucibles do about 90% less damage against the Boss Tier mobs. 

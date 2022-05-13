@@ -44,9 +44,9 @@ dependencies {
     	exclude(group: "net.fabricmc.fabric-api")
     }
     modImplementation "dev.emi:trinkets:3.3.0"
-	//modImplementation 'curse.maven:ccb-318449:3475407'
-	//modImplementation 'curse.maven:cce-318449:3475410'
-	//modImplementation 'curse.maven:TDI-245733:3556912'
+	modImplementation "curse.maven:RoughlyEnoughItems-310111:3768212"
+	modImplementation "curse.maven:arch-419699:3784130"
+	modImplementation "curse.maven:stfu-401978:3677546"
 }
 
 processResources {

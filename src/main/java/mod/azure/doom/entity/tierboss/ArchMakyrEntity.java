@@ -13,6 +13,7 @@ import mod.azure.doom.util.registry.ModSoundEvents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityDimensions;
@@ -26,6 +27,7 @@ import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
+import net.minecraft.entity.ai.goal.PrioritizedGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
@@ -40,6 +42,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
@@ -62,6 +65,8 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
+	public static final TrackedData<Integer> DEATH_STATE = DataTracker.registerData(ArchMakyrEntity.class,
+			TrackedDataHandlerRegistry.INTEGER);
 	private AnimationFactory factory = new AnimationFactory(this);
 	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(ArchMakyrEntity.class,
 			TrackedDataHandlerRegistry.INTEGER);
@@ -74,7 +79,11 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
+		if ((this.dead || this.getHealth() < 0.01 || this.isDead()) && this.dataTracker.get(DEATH_STATE) < 5) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_phaseone", false));
+			return PlayState.CONTINUE;
+		}
+		if ((this.dead || this.getHealth() < 0.01 || this.isDead()) && this.dataTracker.get(DEATH_STATE) == 5) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
@@ -117,9 +126,67 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	protected void updatePostDeath() {
 		++this.deathTime;
-		if (this.deathTime == 30) {
+		if (this.deathTime == 80 && this.dataTracker.get(DEATH_STATE) == 0) {
+			this.setHealth(this.getMaxHealth());
+			this.setDeathState(1);
+			this.deathTime = 0;
+		}
+		if (this.deathTime == 80 && this.dataTracker.get(DEATH_STATE) == 1) {
+			this.setHealth(this.getMaxHealth());
+			this.setDeathState(2);
+			this.deathTime = 0;
+		}
+		if (this.deathTime == 80 && this.dataTracker.get(DEATH_STATE) == 2) {
+			this.setHealth(this.getMaxHealth());
+			this.setDeathState(3);
+			this.deathTime = 0;
+		}
+		if (this.deathTime == 80 && this.dataTracker.get(DEATH_STATE) == 3) {
+			this.setHealth(this.getMaxHealth());
+			this.setDeathState(4);
+			this.deathTime = 0;
+		}
+		if (this.deathTime == 80 && this.dataTracker.get(DEATH_STATE) == 4) {
+			this.setHealth(this.getMaxHealth());
+			this.setDeathState(5);
+			this.deathTime = 0;
+		}
+		if (this.deathTime == 40 && this.dataTracker.get(DEATH_STATE) == 5) {
+			this.world.sendEntityStatus(this, (byte) 60);
 			this.remove(Entity.RemovalReason.KILLED);
 			this.dropXp();
+		}
+	}
+
+	public int getDeathState() {
+		return this.dataTracker.get(DEATH_STATE);
+	}
+
+	public void setDeathState(int state) {
+		this.dataTracker.set(DEATH_STATE, state);
+	}
+
+	@Override
+	public void onDeath(DamageSource source) {
+		if (!this.world.isClient) {
+			if (source == DamageSource.OUT_OF_WORLD) {
+				this.setDeathState(1);
+			}
+			if (this.dataTracker.get(DEATH_STATE) == 0) {
+				AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(this.world, this.getX(),
+						this.getY(), this.getZ());
+				areaeffectcloudentity.setParticleType(ParticleTypes.EXPLOSION);
+				areaeffectcloudentity.setRadius(3.0F);
+				areaeffectcloudentity.setDuration(55);
+				areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
+				this.world.spawnEntity(areaeffectcloudentity);
+				this.goalSelector.getRunningGoals().forEach(PrioritizedGoal::stop);
+				this.onAttacking(this.getAttacker());
+				this.world.sendEntityStatus(this, (byte) 3);
+			}
+			if (this.dataTracker.get(DEATH_STATE) == 1) {
+				super.onDeath(source);
+			}
 		}
 	}
 
@@ -246,18 +313,21 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	protected void initDataTracker() {
 		super.initDataTracker();
 		this.dataTracker.startTracking(VARIANT, 0);
+		this.dataTracker.startTracking(DEATH_STATE, 0);
 	}
 
 	@Override
 	public void writeCustomDataToNbt(NbtCompound tag) {
 		super.writeCustomDataToNbt(tag);
 		tag.putInt("Variant", this.getVariant());
+		tag.putInt("Phase", this.getDeathState());
 	}
 
 	@Override
 	public void readCustomDataFromNbt(NbtCompound tag) {
 		super.readCustomDataFromNbt(tag);
 		this.setVariant(tag.getInt("Variant"));
+		this.setDeathState(tag.getInt("Phase"));
 		if (this.hasCustomName()) {
 			this.bossBar.setName(this.getDisplayName());
 		}

@@ -5,6 +5,12 @@ import java.util.List;
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
+import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
+import mod.azure.doom.entity.tierboss.GladiatorEntity;
+import mod.azure.doom.entity.tierboss.IconofsinEntity;
+import mod.azure.doom.entity.tierboss.MotherDemonEntity;
+import mod.azure.doom.entity.tierboss.SpiderMastermind2016Entity;
+import mod.azure.doom.entity.tierboss.SpiderMastermindEntity;
 import mod.azure.doom.util.registry.DoomBlocks;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -76,7 +82,11 @@ public class SwordCrucibleItem extends Item implements IAnimatable, ISyncable {
 	private void doDamage(LivingEntity user, Entity target) {
 		if (target instanceof LivingEntity) {
 			target.timeUntilRegen = 0;
-			target.damage(DamageSource.player((PlayerEntity) user), 200F);
+			target.damage(DamageSource.player((PlayerEntity) user),
+					!(target instanceof ArchMakyrEntity) || !(target instanceof GladiatorEntity)
+							|| !(target instanceof IconofsinEntity) || !(target instanceof MotherDemonEntity)
+							|| !(target instanceof SpiderMastermind2016Entity)
+							|| !(target instanceof SpiderMastermindEntity) ? 30F : 200F);
 		}
 	}
 
@@ -105,7 +115,7 @@ public class SwordCrucibleItem extends Item implements IAnimatable, ISyncable {
 			}
 		}
 	}
-	
+
 	@Override
 	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
 		tooltip.add(new TranslatableText("doom.crucible_sword.text").formatted(Formatting.RED)

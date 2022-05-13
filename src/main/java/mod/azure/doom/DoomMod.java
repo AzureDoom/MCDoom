@@ -1,8 +1,5 @@
 package mod.azure.doom;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import mod.azure.doom.client.gui.GunTableScreenHandler;
@@ -52,7 +49,6 @@ public class DoomMod implements ModInitializer {
 	public static BlockEntityType<IconBlockEntity> ICON;
 	public static ProjectilesEntityRegister PROJECTILES;
 	public static RecipeType<GunTableRecipe> GUN_TABLE_RECIPE;
-	public static final Logger LOGGER = LogManager.getLogger();
 	public static BlockEntityType<GunBlockEntity> GUN_TABLE_ENTITY;
 	public static final Identifier BFG = new Identifier(MODID, "bfg");
 	public static BlockEntityType<TickingLightEntity> TICKING_LIGHT_ENTITY;
