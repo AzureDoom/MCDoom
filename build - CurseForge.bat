@@ -1,1 +1,0 @@
-cmd /k gradlew.bat curseforge -Dorg.gradle.java.home="C:\Program Files\Java\jdk-17.0.1" --info
