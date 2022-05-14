@@ -125,6 +125,10 @@ public class EnergyCellEntity extends PersistentProjectileEntity implements IAni
 	@Override
 	public void tick() {
 		super.tick();
+		++this.ticksInAir;
+		if (this.ticksInAir >= 80) {
+			this.remove(Entity.RemovalReason.DISCARDED);
+		}
 		if (this.world.isClient) {
 			double d2 = this.getX() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getWidth() * 0.5D;
 			double f2 = this.getZ() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getWidth() * 0.5D;

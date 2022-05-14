@@ -140,6 +140,10 @@ public class ArgentBoltEntity extends PersistentProjectileEntity {
 			idleTicks = 0;
 		if (idleOpt <= 0 || idleTicks < idleOpt)
 			super.tick();
+		++this.ticksInAir;
+		if (this.ticksInAir >= 80) {
+			this.remove(Entity.RemovalReason.DISCARDED);
+		}
 		boolean isInsideWaterBlock = world.isWater(getBlockPos());
 		spawnLightSource(isInsideWaterBlock);
 		if (this.world.isClient) {
