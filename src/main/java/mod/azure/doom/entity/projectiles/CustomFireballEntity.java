@@ -26,7 +26,7 @@ public class CustomFireballEntity extends FireballEntity {
 			Entity entity = entityHitResult.getEntity();
 			Entity entity2 = this.getOwner();
 			entity.setOnFireFor(5);
-			entity.damage(DamageSource.fireball(this, entity2), directHitDamage);
+			entity.damage(DamageSource.magic(this, entity2), directHitDamage);
 			if (entity2 instanceof LivingEntity) {
 				this.applyDamageEffects((LivingEntity) entity2, entity);
 				this.remove(Entity.RemovalReason.DISCARDED);

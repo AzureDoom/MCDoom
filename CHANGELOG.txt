@@ -1,3 +1,5 @@
-v.4.2.8
+v.4.2.9
 
-- Min depend of 0.14.2 instead of 0.14.4
+- Arch Maykr Knockback is returned, better then ever. 
+- Mother Demon now does knockback. 
+- Buffed Fireballs, because die. 
