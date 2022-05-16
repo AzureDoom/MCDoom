@@ -6,9 +6,11 @@ import java.util.Random;
 import org.jetbrains.annotations.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.ai.goal.KnockbackGoal;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
+import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.AreaEffectCloudEntity;
@@ -46,8 +48,10 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -168,9 +172,9 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	public void onDeath(DamageSource source) {
 		if (!this.world.isClient) {
 			if (source == DamageSource.OUT_OF_WORLD) {
-				this.setDeathState(1);
+				this.setDeathState(5);
 			}
-			if (this.dataTracker.get(DEATH_STATE) == 0) {
+			if (this.dataTracker.get(DEATH_STATE) > 5) {
 				AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(this.world, this.getX(),
 						this.getY(), this.getZ());
 				areaeffectcloudentity.setParticleType(ParticleTypes.EXPLOSION);
@@ -182,7 +186,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 				this.onAttacking(this.getAttacker());
 				this.world.sendEntityStatus(this, (byte) 3);
 			}
-			if (this.dataTracker.get(DEATH_STATE) == 1) {
+			if (this.dataTracker.get(DEATH_STATE) == 5) {
 				super.onDeath(source);
 			}
 		}
@@ -195,6 +199,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.add(4, new RangedAttackGoal(this, new FireballAttack(this, true)
 				.setProjectileOriginOffset(0.8, 0.4, 0.8).setDamage(config.archmaykr_ranged_damage), 1.0D));
+		this.targetSelector.add(4, new KnockbackGoal(this, 1.0D));
 		this.targetSelector.add(2, new TargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new TargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
@@ -433,6 +438,37 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	protected void mobTick() {
 		super.mobTick();
 		this.bossBar.setPercent(this.getHealth() / this.getMaxHealth());
+	}
+
+	public void spawnFlames(double x, double z, double maxY, double y, float yaw, int warmup) {
+		BlockPos blockPos = new BlockPos(x, y, z);
+		boolean bl = false;
+		double d = -0.75D;
+		do {
+			BlockPos blockPos2 = blockPos.down();
+			BlockState blockState = this.world.getBlockState(blockPos2);
+			if (blockState.isSideSolidFullSquare(this.world, blockPos2, Direction.UP)) {
+				if (!this.world.isAir(blockPos)) {
+					BlockState blockState2 = this.world.getBlockState(blockPos);
+					VoxelShape voxelShape = blockState2.getCollisionShape(this.world, blockPos);
+					if (!voxelShape.isEmpty()) {
+						d = voxelShape.getMax(Direction.Axis.Y);
+					}
+				}
+				bl = true;
+				break;
+			}
+			blockPos = blockPos.down();
+		} while (blockPos.getY() >= MathHelper.floor(maxY) - 1);
+
+		if (bl) {
+			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
+					config.archmaykr_ranged_damage);
+			fang.setFireTicks(age);
+			fang.isInvisible();
+			fang.age = -150;
+			this.world.spawnEntity(fang);
+		}
 	}
 
 }

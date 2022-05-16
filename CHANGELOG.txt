@@ -1,3 +1,5 @@
-v.4.2.7
+v.4.2.9
 
-- Fixes Projectiles not despawning.
+- Arch Maykr Knockback is returned, better then ever. 
+- Mother Demon now does knockback. 
+- Buffed Fireballs, because die. 
