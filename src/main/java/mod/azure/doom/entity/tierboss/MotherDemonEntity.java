@@ -284,6 +284,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 									1.0F, 1.0F, true);
 							this.parentEntity.setAttackingState(2);
 						}
+						livingentity.setDeltaMovement(livingentity.getDeltaMovement().multiply(0.4f, 1.4f, 0.4f));
 						TentacleEntity lost_soul = ModEntityTypes.TENTACLE.get().create(world);
 						lost_soul.moveTo(livingentity.getX(), livingentity.getY(), livingentity.getZ(), 0, 0);
 						world.addFreshEntity(lost_soul);

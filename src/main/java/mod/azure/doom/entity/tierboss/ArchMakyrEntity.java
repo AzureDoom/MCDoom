@@ -4,11 +4,15 @@ import java.util.EnumSet;
 import java.util.List;
 
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.ai.goal.KnockbackGoal;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
+import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModSoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -49,8 +53,10 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
@@ -62,7 +68,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
-	
+
 	public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(ArchMakyrEntity.class,
 			EntityDataSerializers.INT);
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -121,9 +127,9 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	public void die(DamageSource source) {
 		if (!this.level.isClientSide) {
 			if (source == DamageSource.OUT_OF_WORLD) {
-				this.setDeathState(1);
+				this.setDeathState(5);
 			}
-			if (this.entityData.get(DEATH_STATE) == 0) {
+			if (this.entityData.get(DEATH_STATE) > 5) {
 				AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(),
 						this.getZ());
 				areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
@@ -135,7 +141,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 				this.setLastHurtMob(this.getLastHurtByMob());
 				this.level.broadcastEntityEvent(this, (byte) 3);
 			}
-			if (this.entityData.get(DEATH_STATE) == 0) {
+			if (this.entityData.get(DEATH_STATE) == 5) {
 				super.die(source);
 			}
 		}
@@ -278,6 +284,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.goalSelector.addGoal(4,
 				new RangedAttackGoal(this, new FireballAttack(this, true).setProjectileOriginOffset(0.8, 0.4, 0.8)
 						.setDamage(DoomConfig.SERVER.archmaykr_ranged_damage.get().floatValue()), 1.0D));
+		this.targetSelector.addGoal(4, new KnockbackGoal(this, 1.0D));
 		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.addGoal(2, new MoveTowardsTargetGoal(this, 0.9D, 32.0F));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
@@ -478,6 +485,36 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	public int tickTimer() {
 		return tickCount;
+	}
+
+	public void spawnFlames(double x, double z, double maxY, double y, float yaw, int warmup) {
+		BlockPos blockpos = new BlockPos(x, y, z);
+		boolean flag = false;
+		double d0 = 0.0D;
+		do {
+			BlockPos blockpos1 = blockpos.below();
+			BlockState blockstate = this.level.getBlockState(blockpos1);
+			if (blockstate.isFaceSturdy(this.level, blockpos1, Direction.UP)) {
+				if (!this.level.isEmptyBlock(blockpos)) {
+					BlockState blockstate1 = this.level.getBlockState(blockpos);
+					VoxelShape voxelshape = blockstate1.getCollisionShape(this.level, blockpos);
+					if (!voxelshape.isEmpty()) {
+						d0 = voxelshape.max(Direction.Axis.Y);
+					}
+				}
+				flag = true;
+				break;
+			}
+			blockpos = blockpos.below();
+		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
+
+		if (flag) {
+			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this,
+					DoomConfig.SERVER.archmaykr_ranged_damage.get().floatValue());
+			fang.setSecondsOnFire(tickCount);
+			fang.setInvisible(false);
+			this.level.addFreshEntity(fang);
+		}
 	}
 
 }

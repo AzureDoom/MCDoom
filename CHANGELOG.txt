@@ -1,8 +1,5 @@
-v.4.2.7
+v.4.2.9
 
-- Bosses redone to use a life system similar to Gladiator. 
- - Arch Maykr now has a 5 life cycle before death.
- - Mother Demon has a 2 life cycle before death. 
- - Icon of Sin has a 2 life cycle before death, first phase has armor. 2nd Phase has no armor. 
-- Fixes the Argent Tools for Forges Ass system for Harvest Levels. 
-- Crucibles do about 90% less damage against the Boss Tier mobs. 
+- Arch Maykr Knockback is returned, better then ever. 
+- Mother Demon now does knockback. 
+- Buffed Fireballs, because die. 
