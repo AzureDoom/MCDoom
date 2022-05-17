@@ -451,7 +451,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		float f2 = 50.0F;
+		float f2 = 300.0F;
 		int k1 = Mth.floor(this.getX() - (double) f2 - 1.0D);
 		int l1 = Mth.floor(this.getX() + (double) f2 + 1.0D);
 		int i2 = Mth.floor(this.getY() - (double) f2 - 1.0D);
@@ -463,7 +463,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 		for (int k2 = 0; k2 < list.size(); ++k2) {
 			Entity entity = list.get(k2);
 			if (entity.isAddedToWorld() && entity instanceof IconofsinEntity && entity.tickCount < 1) {
-				this.remove(RemovalReason.KILLED);
+				entity.remove(RemovalReason.KILLED);
 			}
 		}
 	}
@@ -488,6 +488,15 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	public int tickTimer() {
 		return tickCount;
+	}
+
+	@Override
+	public boolean requiresCustomPersistence() {
+		return true;
+	}
+
+	@Override
+	public void checkDespawn() {
 	}
 
 }

@@ -6,7 +6,10 @@ import javax.annotation.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierambient.GoreNestEntity;
+import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
+import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
+import mod.azure.doom.entity.tierboss.MotherDemonEntity;
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomBlocks;
@@ -234,7 +237,8 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 		for (int k2 = 0; k2 < list.size(); ++k2) {
 			Entity entity = list.get(k2);
 			if (!(entity instanceof Player || entity instanceof EnderDragon || entity instanceof GoreNestEntity
-					|| entity instanceof IconofsinEntity)
+					|| entity instanceof IconofsinEntity || entity instanceof ArchMakyrEntity
+					|| entity instanceof GladiatorEntity || entity instanceof MotherDemonEntity)
 					&& (entity instanceof Monster || entity instanceof Slime || entity instanceof Phantom
 							|| entity instanceof DemonEntity || entity instanceof Shulker
 							|| entity instanceof Hoglin)) {
@@ -250,11 +254,12 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 			if (entity instanceof EnderDragon) {
 				if (entity.isAlive()) {
 					((EnderDragon) entity).head.hurt(DamageSource.playerAttack((Player) this.shooter),
-							DoomConfig.SERVER.bfgball_damage_dragon.get().floatValue());
+							DoomConfig.SERVER.bfgball_damage_dragon.get().floatValue() * 0.3F);
 					this.setTargetedEntity(entity.getId());
 				}
 			}
-			if (entity instanceof IconofsinEntity) {
+			if (entity instanceof IconofsinEntity || entity instanceof ArchMakyrEntity
+					|| entity instanceof GladiatorEntity || entity instanceof MotherDemonEntity) {
 				if (entity.isAlive()) {
 					entity.hurt(DamageSource.playerAttack((Player) this.shooter),
 							DoomConfig.SERVER.bfgball_damage_aoe.get().floatValue() * 0.1F);
@@ -384,7 +389,9 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 		Vec3 vector3d = new Vec3(this.getX(), this.getY(), this.getZ());
 		for (int k2 = 0; k2 < list.size(); ++k2) {
 			Entity entity = list.get(k2);
-			if (!(entity instanceof Player || entity instanceof EnderDragon || entity instanceof GoreNestEntity)
+			if (!(entity instanceof Player || entity instanceof EnderDragon || entity instanceof GoreNestEntity
+					|| entity instanceof IconofsinEntity || entity instanceof ArchMakyrEntity
+					|| entity instanceof GladiatorEntity || entity instanceof MotherDemonEntity)
 					&& (entity instanceof Monster || entity instanceof Slime || entity instanceof Phantom
 							|| entity instanceof DemonEntity || entity instanceof Shulker
 							|| entity instanceof Hoglin)) {
@@ -416,10 +423,11 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 			if (entity instanceof EnderDragon) {
 				if (entity.isAlive()) {
 					((EnderDragon) entity).head.hurt(DamageSource.playerAttack((Player) this.shooter),
-							DoomConfig.SERVER.bfgball_damage_dragon.get().floatValue());
+							DoomConfig.SERVER.bfgball_damage_dragon.get().floatValue() * 0.3F);
 				}
 			}
-			if (entity instanceof IconofsinEntity) {
+			if (entity instanceof IconofsinEntity || entity instanceof ArchMakyrEntity
+					|| entity instanceof GladiatorEntity || entity instanceof MotherDemonEntity) {
 				if (entity.isAlive()) {
 					entity.hurt(DamageSource.playerAttack((Player) this.shooter),
 							DoomConfig.SERVER.bfgball_damage.get().floatValue() * 0.1F);
