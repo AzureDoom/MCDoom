@@ -218,7 +218,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		float q = 50.0F;
+		float q = 300.0F;
 		int k = MathHelper.floor(this.getX() - (double) q - 1.0D);
 		int l = MathHelper.floor(this.getX() + (double) q + 1.0D);
 		int t = MathHelper.floor(this.getY() - (double) q - 1.0D);
@@ -427,6 +427,20 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 	protected void mobTick() {
 		super.mobTick();
 		this.bossBar.setPercent(this.getHealth() / this.getMaxHealth());
+	}
+
+	@Override
+	public boolean cannotDespawn() {
+		return true;
+	}
+
+	@Override
+	public void checkDespawn() {
+	}
+
+	@Override
+	public void takeKnockback(double strength, double x, double z) {
+		super.takeKnockback(0, 0, 0);
 	}
 
 }

@@ -6,7 +6,10 @@ import org.jetbrains.annotations.Nullable;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierambient.GoreNestEntity;
+import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
+import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
+import mod.azure.doom.entity.tierboss.MotherDemonEntity;
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.DoomBlocks;
@@ -172,7 +175,9 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 			Entity entity = (Entity) list.get(x);
 			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d1)) / q);
 			if (!(entity instanceof PlayerEntity || entity instanceof EnderDragonEntity
-					|| entity instanceof GoreNestEntity || entity instanceof IconofsinEntity)
+					|| entity instanceof GoreNestEntity || entity instanceof IconofsinEntity
+					|| entity instanceof ArchMakyrEntity || entity instanceof GladiatorEntity
+					|| entity instanceof MotherDemonEntity)
 					&& (entity instanceof HostileEntity || entity instanceof SlimeEntity
 							|| entity instanceof PhantomEntity || entity instanceof ShulkerEntity
 							|| entity instanceof HoglinEntity)) {
@@ -183,7 +188,8 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 					}
 				}
 			}
-			if (entity instanceof IconofsinEntity) {
+			if (entity instanceof IconofsinEntity || entity instanceof ArchMakyrEntity
+					|| entity instanceof GladiatorEntity || entity instanceof MotherDemonEntity) {
 				if (entity.isAlive()) {
 					entity.damage(DamageSource.player((PlayerEntity) this.shooter),
 							DoomMod.config.weapons.bfgball_damage_aoe * 0.1F);
@@ -192,7 +198,7 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 			if (!(entity instanceof PlayerEntity) && entity instanceof EnderDragonEntity) {
 				if (entity.isAlive()) {
 					((EnderDragonEntity) entity).head.damage(DamageSource.player((PlayerEntity) this.shooter),
-							DoomMod.config.weapons.bfgball_damage_aoe);
+							DoomMod.config.weapons.bfgball_damage_aoe * 0.3F);
 					setBeamTarget(entity.getId());
 				}
 			}
@@ -303,7 +309,9 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 			Entity entity = (Entity) list.get(x);
 			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d)) / q);
 			if (!(entity instanceof PlayerEntity || entity instanceof EnderDragonEntity
-					|| entity instanceof GoreNestEntity || entity instanceof IconofsinEntity)
+					|| entity instanceof GoreNestEntity || entity instanceof IconofsinEntity
+					|| entity instanceof ArchMakyrEntity || entity instanceof GladiatorEntity
+					|| entity instanceof MotherDemonEntity)
 					&& (entity instanceof HostileEntity || entity instanceof SlimeEntity
 							|| entity instanceof PhantomEntity || entity instanceof ShulkerEntity
 							|| entity instanceof HoglinEntity)) {
@@ -335,10 +343,11 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 			if (entity instanceof EnderDragonEntity) {
 				if (entity.isAlive()) {
 					((EnderDragonEntity) entity).head.damage(DamageSource.player((PlayerEntity) this.shooter),
-							DoomMod.config.weapons.bfgball_damage_dragon);
+							DoomMod.config.weapons.bfgball_damage_dragon * 0.3F);
 				}
 			}
-			if (entity instanceof IconofsinEntity) {
+			if (entity instanceof IconofsinEntity || entity instanceof ArchMakyrEntity
+					|| entity instanceof GladiatorEntity || entity instanceof MotherDemonEntity) {
 				if (entity.isAlive()) {
 					entity.damage(DamageSource.player((PlayerEntity) this.shooter),
 							DoomMod.config.weapons.bfgball_damage * 0.1F);

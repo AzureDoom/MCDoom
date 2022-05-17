@@ -430,7 +430,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		float q = 50.0F;
+		float q = 300.0F;
 		int k = MathHelper.floor(this.getX() - (double) q - 1.0D);
 		int l = MathHelper.floor(this.getX() + (double) q + 1.0D);
 		int t = MathHelper.floor(this.getY() - (double) q - 1.0D);
@@ -462,5 +462,14 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 			target.timeUntilRegen = 0;
 		}
 		return bl;
+	}
+
+	@Override
+	public boolean cannotDespawn() {
+		return true;
+	}
+
+	@Override
+	public void checkDespawn() {
 	}
 }
