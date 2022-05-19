@@ -1,8 +1,4 @@
-v.4.2.10
+v.4.2.11
 
-- Arch Maykr, Mother Demon, Gladiator, and Icon of Sin block radius check for others of itself to remove to ensure only 1 at a time is increased from 50 blocks to 300 to account for new larger structures.
-- Arch Maykr, Mother Demon, Gladiator, and Icon of Sin no longer naturally despawn.
-- Arch Maykr, Mother Demon, and Gladiator no longer take knockback.
-- BFG debuffed for Arch Maykr, Mother Demon, Gladiator and Ender Dragon.
-- Fixed Arch Maykr, Mother Demon, Gladiator, and Icon of Sin itself instead of the other entity version. 
-- Fixed broken datapack tag name for Gladitor structure. 
+- Mother Demon Arena spawns it's peices in order correctly now. 
+- Ports new Nether music disc from the Fabric version. 

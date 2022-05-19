@@ -217,6 +217,9 @@ public class DoomItems {
 	public static final RegistryObject<Item> DAISY = ITEMS.register("daisy", () -> new DaisyItem());
 	public static final RegistryObject<Item> E1M1_MUSIC_DISC = ITEMS.register("e1m1_music_disc",
 			() -> new E1M1MusicDisc(ModSoundEvents.E1M1));
+	public static final RegistryObject<Item> GEOF_MUSIC_DISC = ITEMS.register(
+			"netherambient_geoffplaysguitar_music_disc",
+			() -> new E1M1MusicDisc(ModSoundEvents.NETHERAMBIENT_GEOFFPLAYSGUITAR));
 	public static final RegistryObject<Item> INMORTAL = ITEMS.register("inmortalsphere",
 			() -> new InmortalSphereItem());
 	public static final RegistryObject<Item> INVISIBLE = ITEMS.register("invisiblesphere",

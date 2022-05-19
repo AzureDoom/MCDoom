@@ -72,6 +72,9 @@ public class ModSoundEvents {
 
 	public static final RegistryObject<SoundEvent> E1M1 = MOD_SOUNDS.register("doom.e1m1",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.e1m1")));
+	public static final RegistryObject<SoundEvent> NETHERAMBIENT_GEOFFPLAYSGUITAR = MOD_SOUNDS.register(
+			"doom.netherambient_geoffplaysguitar",
+			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.netherambient_geoffplaysguitar")));
 
 	public static final RegistryObject<SoundEvent> IMP_AMBIENT = MOD_SOUNDS.register("doom.imp_ambient",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.imp_ambient")));

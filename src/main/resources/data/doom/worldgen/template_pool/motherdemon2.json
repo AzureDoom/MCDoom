@@ -1,11 +1,11 @@
 {
-	"name": "doom:motherdemon1a",
+	"name": "doom:motherdemon2",
 	"fallback": "minecraft:empty",
 	"elements": [
 		{
 			"weight": 1,
 			"element": {
-				"location": "doom:motherdemon1a",
+				"location": "doom:motherdemon2a",
 				"processors": "doom:randomize_stonebrick",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
