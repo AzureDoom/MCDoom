@@ -1,7 +1,10 @@
 package mod.azure.doom.rei;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
@@ -12,15 +15,17 @@ import mod.azure.doom.util.recipes.GunTableRecipe;
 public class DoomDisplay implements Display {
 	public final List<EntryIngredient> input;
 	public final EntryIngredient output;
+	public final GunTableRecipe recipe2;
 
 	public DoomDisplay(GunTableRecipe recipe) {
-		input = recipe.getIngredients().stream().map(EntryIngredients::ofIngredient).toList();
+		input = Arrays.stream(recipe.ingredients).map(Pair::getLeft).map(EntryIngredients::ofIngredient).toList();
 		this.output = EntryIngredients.of(recipe.getOutput());
+		this.recipe2 = recipe;
 	}
 
 	@Override
 	public List<EntryIngredient> getInputEntries() {
-		return input;
+		return Arrays.stream(recipe2.ingredients).map(Pair::getLeft).map(EntryIngredients::ofIngredient).toList();
 	}
 
 	@Override

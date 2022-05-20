@@ -32,8 +32,13 @@ public class DoomCategory implements DisplayCategory<DoomDisplay> {
 	}
 
 	@Override
+	public int getMaximumDisplaysPerPage() {
+		return 3;
+	}
+
+	@Override
 	public int getDisplayHeight() {
-		return 49;
+		return 75;
 	}
 
 	@Override
@@ -44,25 +49,28 @@ public class DoomCategory implements DisplayCategory<DoomDisplay> {
 	@Override
 	public List<Widget> setupDisplay(DoomDisplay display, Rectangle bounds) {
 		Point startPoint = new Point(bounds.getCenterX() - 64, bounds.getCenterY() - 16);
-		Point outputPoint = new Point(startPoint.x + 100, startPoint.y + 15);
+		Point outputPoint = new Point(startPoint.x + 100, startPoint.y + 30);
 		List<Widget> widgets = new ArrayList<>();
 		widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x, startPoint.y)));
-		widgets.add(Widgets.createSlot(startPoint).markInput());
+		widgets.add(Widgets.createSlot(startPoint).entries(display.input.get(0)).markInput());
 
 		widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 30, startPoint.y)));
-		widgets.add(Widgets.createSlot(new Point(startPoint.x + 30, startPoint.y)).markInput());
+		widgets.add(Widgets.createSlot(new Point(startPoint.x + 30, startPoint.y)).entries(display.input.get(1))
+				.markInput());
 
-		widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 60, startPoint.y)));
-		widgets.add(Widgets.createSlot(new Point(startPoint.x + 60, startPoint.y))
-				.entries(display.getInputEntries().get(3)).markInput());
+		widgets.add(Widgets.createSlot(new Point(startPoint.x + 60, startPoint.y)).entries(display.input.get(2))
+				.markInput());
 
 		widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x, startPoint.y + 30)));
-		widgets.add(Widgets.createSlot(new Point(startPoint.x, startPoint.y + 30)).markInput());
+		widgets.add(Widgets.createSlot(new Point(startPoint.x, startPoint.y + 30)).entries(display.input.get(3))
+				.markInput());
 
 		widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 30, startPoint.y + 30)));
-		widgets.add(Widgets.createSlot(new Point(startPoint.x + 30, startPoint.y + 30)).markInput());
+		widgets.add(Widgets.createSlot(new Point(startPoint.x + 30, startPoint.y + 30)).entries(display.input.get(4))
+				.markInput());
 
 		widgets.add(Widgets.createResultSlotBackground(outputPoint));
+		widgets.add(Widgets.createArrow(new Point(startPoint.x + 70, startPoint.y + 30)));
 		widgets.add(Widgets.createSlot(outputPoint).entries(display.getOutputEntries().get(0)).disableBackground()
 				.markOutput());
 		return widgets;
