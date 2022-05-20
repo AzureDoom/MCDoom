@@ -46,14 +46,6 @@
 			"loop": true,
 			"animation_length": 4.76,
 			"bones": {
-				"blade": {
-					"position": {
-						"vector": [5, 0, 0]
-					},
-					"scale": {
-						"vector": [0.7, 0.7, 0.7]
-					}
-				},
 				"launcher": {
 					"rotation": {
 						"0.0": {
