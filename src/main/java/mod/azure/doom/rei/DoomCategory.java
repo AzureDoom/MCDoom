@@ -52,25 +52,26 @@ public class DoomCategory implements DisplayCategory<DoomDisplay> {
 		Point outputPoint = new Point(startPoint.x + 100, startPoint.y + 30);
 		List<Widget> widgets = new ArrayList<>();
 		widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x, startPoint.y)));
-		widgets.add(Widgets.createSlot(startPoint).entries(display.input.get(0)).markInput());
+		widgets.add(Widgets.createSlot(startPoint).entries(display.input.get(0)).disableBackground());
 
 		widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 30, startPoint.y)));
 		widgets.add(Widgets.createSlot(new Point(startPoint.x + 30, startPoint.y)).entries(display.input.get(1))
-				.markInput());
+				.disableBackground());
 
+		widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 60, startPoint.y)));
 		widgets.add(Widgets.createSlot(new Point(startPoint.x + 60, startPoint.y)).entries(display.input.get(2))
-				.markInput());
+				.disableBackground());
 
 		widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x, startPoint.y + 30)));
 		widgets.add(Widgets.createSlot(new Point(startPoint.x, startPoint.y + 30)).entries(display.input.get(3))
-				.markInput());
+				.disableBackground());
 
 		widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 30, startPoint.y + 30)));
 		widgets.add(Widgets.createSlot(new Point(startPoint.x + 30, startPoint.y + 30)).entries(display.input.get(4))
-				.markInput());
+				.disableBackground());
 
-		widgets.add(Widgets.createResultSlotBackground(outputPoint));
 		widgets.add(Widgets.createArrow(new Point(startPoint.x + 70, startPoint.y + 30)));
+		widgets.add(Widgets.createResultSlotBackground(outputPoint));
 		widgets.add(Widgets.createSlot(outputPoint).entries(display.getOutputEntries().get(0)).disableBackground()
 				.markOutput());
 		return widgets;

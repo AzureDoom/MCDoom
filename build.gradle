@@ -112,6 +112,7 @@ if (file('key.properties').exists()) {
             	requiredDependency 'geckolib'  
             	requiredDependency 'cloth-config'  
             	requiredDependency 'trinkets-fabric'  
+            	optionalDependency 'roughly-enough-items' 
         	}
         	mainArtifact(remapJar)
 
