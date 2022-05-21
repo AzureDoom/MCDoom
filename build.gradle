@@ -91,6 +91,7 @@ repositories {
     maven { url "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" }
     maven { url "https://maven.blamejared.com" }
 	maven { url "https://cfa2.cursemaven.com" }
+	maven { url "https://maven.shedaniel.me" }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -104,7 +105,9 @@ dependencies {
     implementation fg.deobf("curse.maven:stfu-407174:3759881")
     implementation fg.deobf("curse.maven:toolstats-377109:3697308")
     implementation fg.deobf("curse.maven:bookshelf-228525:3753798")
-    implementation fg.deobf("curse.maven:torohealth-245733:3556931")
+    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:8.1.457")
+    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:6.2.62")
+    implementation fg.deobf("dev.architectury:architectury-forge:4.4.60")
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
