@@ -44,7 +44,13 @@ dependencies {
   		exclude group: "net.fabricmc.fabric-api"
   		exclude group: "net.fabricmc", module: "fabric-loader"
 	}
+	modImplementation "curse.maven:RoughlyEnoughItems-310111:3768212"
+	modImplementation ("curse.maven:arch-419699:3784130") {
+  		exclude group: "net.fabricmc.fabric-api"
+  		exclude group: "net.fabricmc", module: "fabric-loader"
+	}
 	modImplementation "curse.maven:stfu-401978:3677546"
+    modImplementation ("me.shedaniel.cloth:basic-math:0.6.1")
 }
 
 processResources {

@@ -22,6 +22,9 @@
 			],
 			"modmenu": [
 				"mod.azure.doom.config.ModMenuDoom"
+			],
+			"rei_plugins": [
+				"mod.azure.doom.rei.ReiPlugin"
 			]
 		},
 		"depends": [

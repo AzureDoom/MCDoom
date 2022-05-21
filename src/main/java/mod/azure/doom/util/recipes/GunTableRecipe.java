@@ -32,8 +32,8 @@ import net.minecraft.world.World;
 
 public class GunTableRecipe implements Recipe<GunTableInventory>, Comparable<GunTableRecipe> {
 	private final Identifier id;
-	private final Pair<Ingredient, Integer>[] ingredients;
-	private final ItemStack output;
+	public final Pair<Ingredient, Integer>[] ingredients;
+	public final ItemStack output;
 
 	public GunTableRecipe(Identifier id, Pair<Ingredient, Integer>[] ingredients, ItemStack output) {
 		this.id = id;
