@@ -74,6 +74,11 @@ public class DoomCategory implements DisplayCategory<DoomDisplay> {
 		widgets.add(Widgets.createResultSlotBackground(outputPoint));
 		widgets.add(Widgets.createSlot(outputPoint).entries(display.getOutputEntries().get(0)).disableBackground()
 				.markOutput());
+		
+        widgets.add(Widgets
+                .createLabel(new Point(bounds.getMaxX() - 15, bounds.y + 5),
+                        new TranslatableText("rei.doom.crafting.issue"))
+                .rightAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
 		return widgets;
 	}
 }
