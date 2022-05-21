@@ -127,7 +127,7 @@ public class SentinelHammerItem extends Item implements IAnimatable, ISyncable {
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
 		PlayerEntity playerentity = (PlayerEntity) entity;
 		if (world.isClient) {
-			if (playerentity.getMainHandStack().getItem() instanceof AxeMarauderItem && ClientInit.reload.isPressed()
+			if (playerentity.getMainHandStack().getItem() instanceof SentinelHammerItem && ClientInit.reload.isPressed()
 					&& selected) {
 				PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
@@ -137,7 +137,7 @@ public class SentinelHammerItem extends Item implements IAnimatable, ISyncable {
 	}
 
 	public void reload(PlayerEntity user, Hand hand) {
-		if (user.getStackInHand(hand).getItem() instanceof AxeMarauderItem) {
+		if (user.getStackInHand(hand).getItem() instanceof SentinelHammerItem) {
 			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0
 					&& user.getInventory().count(DoomItems.ARGENT_ENERGY.asItem()) > 0) {
 				removeAmmo(DoomItems.ARGENT_ENERGY.asItem(), user);
