@@ -4,19 +4,16 @@ import java.util.List;
 
 import mod.azure.doom.DoomMod;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -25,7 +22,6 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
-import net.minecraft.item.ArmorItem;
 
 public class SentinelDoomArmor extends ArmorItem implements IAnimatable {
 
@@ -60,27 +56,6 @@ public class SentinelDoomArmor extends ArmorItem implements IAnimatable {
 		tooltip.add(new TranslatableText("doom.sentinelarmor.text").formatted(Formatting.YELLOW)
 				.formatted(Formatting.ITALIC));
 		super.appendTooltip(stack, world, tooltip, context);
-	}
-
-	@Override
-	public boolean hasGlint(ItemStack stack) {
-		return false;
-	}
-
-	@Override
-	public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks) {
-		ItemStack stack = new ItemStack(this);
-		stack.hasNbt();
-		stack.addEnchantment(Enchantments.FIRE_PROTECTION, 1);
-		if ((group == DoomMod.DoomArmorItemGroup) || (group == ItemGroup.SEARCH)) {
-			stacks.add(stack);
-		}
-	}
-
-	@Override
-	public void onCraft(ItemStack stack, World world, PlayerEntity player) {
-		stack.hasNbt();
-		stack.addEnchantment(Enchantments.FIRE_PROTECTION, 1);
 	}
 
 }
