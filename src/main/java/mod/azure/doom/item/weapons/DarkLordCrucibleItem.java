@@ -13,7 +13,6 @@ import mod.azure.doom.entity.tierboss.SpiderMastermind2016Entity;
 import mod.azure.doom.entity.tierboss.SpiderMastermindEntity;
 import mod.azure.doom.util.registry.DoomBlocks;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -22,12 +21,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.AnimationState;
@@ -59,24 +56,19 @@ public class DarkLordCrucibleItem extends Item implements IAnimatable, ISyncable
 	}
 
 	@Override
-	public void onStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int remainingUseTicks) {
-		if (entityLiving instanceof PlayerEntity) {
-			PlayerEntity playerentity = (PlayerEntity) entityLiving;
-			if (stack.getDamage() < (stack.getMaxDamage() - 1)) {
+	public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity miner) {
+		if (miner instanceof PlayerEntity) {
+			PlayerEntity playerentity = (PlayerEntity) miner;
+			if (!playerentity.getItemCooldownManager().isCoolingDown(this)
+					&& playerentity.getMainHandStack().getItem() instanceof DarkLordCrucibleItem) {
 				playerentity.getItemCooldownManager().set(this, 200);
-				final Box aabb = new Box(entityLiving.getBlockPos().up()).expand(4D, 1D, 4D);
-				entityLiving.getEntityWorld().getOtherEntities(entityLiving, aabb)
-						.forEach(e -> doDamage(entityLiving, e));
-				stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
-				if (!worldIn.isClient) {
-					final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);
-					GeckoLibNetwork.syncAnimation(playerentity, this, id, ANIM_OPEN);
-					for (PlayerEntity otherPlayer : PlayerLookup.tracking(playerentity)) {
-						GeckoLibNetwork.syncAnimation(otherPlayer, this, id, ANIM_OPEN);
-					}
-				}
+				final Box aabb = new Box(playerentity.getBlockPos().up()).expand(4D, 1D, 4D);
+				playerentity.getEntityWorld().getOtherEntities(playerentity, aabb)
+						.forEach(e -> doDamage(playerentity, e));
+				stack.damage(1, playerentity, p -> p.sendToolBreakStatus(playerentity.getActiveHand()));
 			}
 		}
+		return true;
 	}
 
 	private void doDamage(LivingEntity user, Entity target) {
@@ -163,13 +155,6 @@ public class DarkLordCrucibleItem extends Item implements IAnimatable, ISyncable
 				}
 			}
 		}
-	}
-
-	@Override
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-		ItemStack itemStack = user.getStackInHand(hand);
-		user.setCurrentHand(hand);
-		return TypedActionResult.consume(itemStack);
 	}
 
 	@Override
