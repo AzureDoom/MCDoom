@@ -49,36 +49,59 @@ public class DoomCategory implements DisplayCategory<DoomDisplay> {
 	@Override
 	public List<Widget> setupDisplay(DoomDisplay display, Rectangle bounds) {
 		Point startPoint = new Point(bounds.getCenterX() - 64, bounds.getCenterY() - 16);
-		Point outputPoint = new Point(startPoint.x + 100, startPoint.y + 30);
+		Point outputPoint = new Point(startPoint.x + 100, startPoint.y + 20);
 		List<Widget> widgets = new ArrayList<>();
-		widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x, startPoint.y)));
-		widgets.add(Widgets.createSlot(startPoint).entries(display.input.get(0)).disableBackground());
+		widgets.add(Widgets.createRecipeBase(bounds));
+		if (display.count.get(0).intValue() > 0) {
+			widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x, startPoint.y - 10)));
+			widgets.add(Widgets.createSlot(new Point(startPoint.x - 3, startPoint.y - 14)).entries(display.input.get(0))
+					.disableBackground());
+			widgets.add(Widgets
+					.createLabel(new Point(display.count.get(0).intValue() < 10 ? startPoint.x + 17 : startPoint.x + 13,
+							startPoint.y + 1), new TranslatableText(display.count.get(0).toString()))
+					.horizontalAlignment(50));
+		}
 
-		widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 30, startPoint.y)));
-		widgets.add(Widgets.createSlot(new Point(startPoint.x + 30, startPoint.y)).entries(display.input.get(1))
-				.disableBackground());
+		if (display.count.get(1).intValue() > 0) {
+			widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 30, startPoint.y - 10)));
+			widgets.add(Widgets.createSlot(new Point(startPoint.x + 27, startPoint.y - 14))
+					.entries(display.input.get(1)).disableBackground().unmarkInputOrOutput());
+			widgets.add(Widgets
+					.createLabel(new Point(display.count.get(1).intValue() < 10 ? startPoint.x + 46 : startPoint.x + 43,
+							startPoint.y + 1), new TranslatableText(display.count.get(1).toString())));
+		}
 
-		widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 60, startPoint.y)));
-		widgets.add(Widgets.createSlot(new Point(startPoint.x + 60, startPoint.y)).entries(display.input.get(2))
-				.disableBackground());
+		if (display.count.get(2).intValue() > 0) {
+			widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 60, startPoint.y - 10)));
+			widgets.add(Widgets.createSlot(new Point(startPoint.x + 57, startPoint.y - 14))
+					.entries(display.input.get(2)).disableBackground());
+			widgets.add(Widgets
+					.createLabel(new Point(display.count.get(2).intValue() < 10 ? startPoint.x + 76 : startPoint.x + 73,
+							startPoint.y + 1), new TranslatableText(display.count.get(2).toString())));
+		}
 
-		widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x, startPoint.y + 30)));
-		widgets.add(Widgets.createSlot(new Point(startPoint.x, startPoint.y + 30)).entries(display.input.get(3))
-				.disableBackground());
+		if (display.count.get(3).intValue() > 0) {
+			widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x, startPoint.y + 20)));
+			widgets.add(Widgets.createSlot(new Point(startPoint.x - 3, startPoint.y + 16)).entries(display.input.get(3))
+					.disableBackground());
+			widgets.add(Widgets
+					.createLabel(new Point(display.count.get(3).intValue() < 10 ? startPoint.x + 16 : startPoint.x + 14,
+							startPoint.y + 31), new TranslatableText(display.count.get(3).toString())));
+		}
 
-		widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 30, startPoint.y + 30)));
-		widgets.add(Widgets.createSlot(new Point(startPoint.x + 30, startPoint.y + 30)).entries(display.input.get(4))
-				.disableBackground());
+		if (display.count.get(4).intValue() > 0) {
+			widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 30, startPoint.y + 20)));
+			widgets.add(Widgets.createSlot(new Point(startPoint.x + 27, startPoint.y + 16))
+					.entries(display.input.get(4)).disableBackground());
+			widgets.add(Widgets
+					.createLabel(new Point(display.count.get(4).intValue() < 10 ? startPoint.x + 46 : startPoint.x + 43,
+							startPoint.y + 31), new TranslatableText(display.count.get(4).toString())));
+		}
 
-		widgets.add(Widgets.createArrow(new Point(startPoint.x + 70, startPoint.y + 30)));
+		widgets.add(Widgets.createArrow(new Point(startPoint.x + 70, startPoint.y + 20)));
 		widgets.add(Widgets.createResultSlotBackground(outputPoint));
 		widgets.add(Widgets.createSlot(outputPoint).entries(display.getOutputEntries().get(0)).disableBackground()
 				.markOutput());
-		
-        widgets.add(Widgets
-                .createLabel(new Point(bounds.getMaxX() - 15, bounds.y + 5),
-                        new TranslatableText("rei.doom.crafting.issue"))
-                .rightAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
 		return widgets;
 	}
 }
