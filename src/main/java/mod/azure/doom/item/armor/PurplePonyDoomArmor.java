@@ -8,19 +8,15 @@ import mod.azure.doom.DoomMod;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -82,27 +78,6 @@ public class PurplePonyDoomArmor extends GeoArmorItem implements IAnimatable {
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
 		return false;
-	}
-
-	@Override
-	public boolean isFoil(ItemStack stack) {
-		return false;
-	}
-
-	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-		ItemStack stack = new ItemStack(this);
-		stack.hasTag();
-		stack.enchant(Enchantments.FIRE_PROTECTION, 1);
-		if ((group == DoomMod.DoomArmorItemGroup) || (group == CreativeModeTab.TAB_SEARCH)) {
-			items.add(stack);
-		}
-	}
-
-	@Override
-	public void onCraftedBy(ItemStack stack, Level worldIn, Player playerIn) {
-		stack.hasTag();
-		stack.enchant(Enchantments.FIRE_PROTECTION, 1);
 	}
 
 }
