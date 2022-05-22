@@ -2,7 +2,6 @@ package mod.azure.doom.item.weapons;
 
 import java.util.List;
 
-import org.quiltmc.qsl.networking.api.PlayerLookup;
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
 import io.netty.buffer.Unpooled;
@@ -21,12 +20,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.AnimationState;
@@ -54,8 +51,6 @@ public class SentinelHammerItem extends Item implements IAnimatable, ISyncable {
 
 	@Override
 	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-//		tooltip.add(
-//				new TranslatableText("doom.marauder_axe1.text").formatted(Formatting.RED).formatted(Formatting.ITALIC));
 		tooltip.add(new TranslatableText(
 				"Ammo: " + (stack.getMaxDamage() - stack.getDamage() - 1) + " / " + (stack.getMaxDamage() - 1))
 						.formatted(Formatting.ITALIC));
@@ -63,30 +58,25 @@ public class SentinelHammerItem extends Item implements IAnimatable, ISyncable {
 	}
 
 	@Override
-	public void onStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int remainingUseTicks) {
-		if (entityLiving instanceof PlayerEntity) {
-			PlayerEntity playerentity = (PlayerEntity) entityLiving;
-			if (stack.getDamage() < (stack.getMaxDamage() - 1)) {
+	public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity miner) {
+		if (miner instanceof PlayerEntity) {
+			PlayerEntity playerentity = (PlayerEntity) miner;
+			if (!playerentity.getItemCooldownManager().isCoolingDown(this)
+					&& playerentity.getMainHandStack().getItem() instanceof SentinelHammerItem) {
 				playerentity.getItemCooldownManager().set(this, 200);
-				final Box aabb = new Box(entityLiving.getBlockPos().up()).expand(5D, 5D, 5D);
-				entityLiving.getWorld().getOtherEntities(entityLiving, aabb).forEach(e -> doDamage(entityLiving, e));
-				stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
-				AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(playerentity.world,
-						playerentity.getX(), playerentity.getY(), playerentity.getZ());
+				final Box aabb = new Box(miner.getBlockPos().up()).expand(5D, 5D, 5D);
+				miner.getWorld().getOtherEntities(miner, aabb).forEach(e -> doDamage(playerentity, e));
+				stack.damage(1, miner, p -> p.sendToolBreakStatus(playerentity.getActiveHand()));
+				AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(miner.world, miner.getX(),
+						playerentity.getY(), playerentity.getZ());
 				areaeffectcloudentity.setParticleType(ParticleTypes.CRIT);
 				areaeffectcloudentity.setRadius(5.0F);
 				areaeffectcloudentity.setDuration(20);
 				areaeffectcloudentity.updatePosition(playerentity.getX(), playerentity.getY(), playerentity.getZ());
-				worldIn.spawnEntity(areaeffectcloudentity);
-				if (!worldIn.isClient) {
-					final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);
-					GeckoLibNetwork.syncAnimation(playerentity, this, id, ANIM_OPEN);
-					for (PlayerEntity otherPlayer : PlayerLookup.tracking(playerentity)) {
-						GeckoLibNetwork.syncAnimation(otherPlayer, this, id, ANIM_OPEN);
-					}
-				}
+				playerentity.world.spawnEntity(areaeffectcloudentity);
 			}
 		}
+		return true;
 	}
 
 	private void doDamage(LivingEntity user, Entity target) {
@@ -162,13 +152,6 @@ public class SentinelHammerItem extends Item implements IAnimatable, ISyncable {
 				}
 			}
 		}
-	}
-
-	@Override
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-		ItemStack itemStack = user.getStackInHand(hand);
-		user.setCurrentHand(hand);
-		return TypedActionResult.consume(itemStack);
 	}
 
 	@Override
