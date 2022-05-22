@@ -19,9 +19,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -32,7 +30,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.IItemRenderProperties;
-import net.minecraftforge.network.PacketDistributor;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -70,32 +67,28 @@ public class SwordCrucibleItem extends Item implements IAnimatable, ISyncable {
 	}
 
 	@Override
-	public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
-		if (entityLiving instanceof Player) {
-			Player Player = (Player) entityLiving;
-			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
-				Player.getCooldowns().addCooldown(this, 200);
-				final AABB aabb = new AABB(entityLiving.blockPosition().above()).inflate(4D, 1D, 4D);
-				entityLiving.getCommandSenderWorld().getEntities(entityLiving, aabb)
-						.forEach(e -> doDamage(entityLiving, e));
-				stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
-				if (!worldIn.isClientSide) {
-					final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
-					final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
-							.with(() -> Player);
-					GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
-				}
+	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity miner) {
+		if (miner instanceof Player) {
+			Player playerentity = (Player) miner;
+			if (!playerentity.getCooldowns().isOnCooldown(this)
+					&& playerentity.getMainHandItem().getItem() instanceof SwordCrucibleItem) {
+				playerentity.getCooldowns().addCooldown(this, 200);
+				final AABB aabb = new AABB(miner.blockPosition().above()).inflate(4D, 1D, 4D);
+				miner.getCommandSenderWorld().getEntities(miner, aabb).forEach(e -> doDamage(playerentity, e));
+				stack.hurtAndBreak(1, miner, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
 			}
 		}
+		return true;
 	}
 
 	private void doDamage(LivingEntity user, final Entity target) {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
-			target.hurt(DamageSource.playerAttack((Player) user), !(target instanceof ArchMakyrEntity)
-					|| !(target instanceof GladiatorEntity) || !(target instanceof IconofsinEntity)
-					|| !(target instanceof MotherDemonEntity) || !(target instanceof SpiderMastermind2016Entity)
-					|| !(target instanceof SpiderMastermindEntity) ? 30F : 200F);
+			target.hurt(DamageSource.playerAttack((Player) user),
+					!(target instanceof ArchMakyrEntity) || !(target instanceof GladiatorEntity)
+							|| !(target instanceof IconofsinEntity) || !(target instanceof MotherDemonEntity)
+							|| !(target instanceof SpiderMastermind2016Entity)
+							|| !(target instanceof SpiderMastermindEntity) ? 30F : 200F);
 		}
 	}
 
@@ -178,13 +171,6 @@ public class SwordCrucibleItem extends Item implements IAnimatable, ISyncable {
 	@Override
 	public boolean isFoil(ItemStack stack) {
 		return false;
-	}
-
-	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-		ItemStack itemstack = player.getItemInHand(hand);
-		player.startUsingItem(hand);
-		return InteractionResultHolder.consume(itemstack);
 	}
 
 	@Override

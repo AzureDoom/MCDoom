@@ -14,9 +14,7 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -30,7 +28,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.IItemRenderProperties;
-import net.minecraftforge.network.PacketDistributor;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -76,30 +73,25 @@ public class SentinelHammerItem extends Item implements IAnimatable, ISyncable {
 	}
 
 	@Override
-	public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
-		if (entityLiving instanceof Player) {
-			Player Player = (Player) entityLiving;
-			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
-				Player.getCooldowns().addCooldown(this, 200);
-				final AABB aabb = new AABB(entityLiving.blockPosition().above()).inflate(5D, 5D, 5D);
-				entityLiving.getCommandSenderWorld().getEntities(entityLiving, aabb)
-						.forEach(e -> doDamage(entityLiving, e));
-				AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(Player.level, Player.getX(), Player.getY(),
-						Player.getZ());
+	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity miner) {
+		if (miner instanceof Player) {
+			Player playerentity = (Player) miner;
+			if (!playerentity.getCooldowns().isOnCooldown(this)
+					&& playerentity.getMainHandItem().getItem() instanceof SentinelHammerItem) {
+				playerentity.getCooldowns().addCooldown(this, 200);
+				final AABB aabb = new AABB(miner.blockPosition().above()).inflate(5D, 5D, 5D);
+				miner.getCommandSenderWorld().getEntities(miner, aabb).forEach(e -> doDamage(playerentity, e));
+				stack.hurtAndBreak(1, miner, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
+				AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(miner.level, miner.getX(),
+						playerentity.getY(), playerentity.getZ());
 				areaeffectcloudentity.setParticle(ParticleTypes.CRIT);
 				areaeffectcloudentity.setRadius(5.0F);
 				areaeffectcloudentity.setDuration(20);
-				areaeffectcloudentity.setPos(Player.getX(), Player.getY(), Player.getZ());
-				worldIn.addFreshEntity(areaeffectcloudentity);
-				stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
-				if (!worldIn.isClientSide) {
-					final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
-					final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
-							.with(() -> Player);
-					GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
-				}
+				areaeffectcloudentity.setPos(playerentity.getX(), playerentity.getY(), playerentity.getZ());
+				playerentity.level.addFreshEntity(areaeffectcloudentity);
 			}
 		}
+		return true;
 	}
 
 	private void doDamage(LivingEntity user, final Entity target) {
@@ -179,13 +171,6 @@ public class SentinelHammerItem extends Item implements IAnimatable, ISyncable {
 	@Override
 	public boolean isFoil(ItemStack stack) {
 		return false;
-	}
-
-	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-		ItemStack itemstack = player.getItemInHand(hand);
-		player.startUsingItem(hand);
-		return InteractionResultHolder.consume(itemstack);
 	}
 
 	@Override
