@@ -36,12 +36,10 @@ public class DoomHunterRender extends GeoEntityRenderer<DoomHunterEntity> {
 			int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		super.render(model, animatable, partialTicks, type, matrixStackIn, renderTypeBuffer, vertexBuilder,
 				packedLightIn, packedOverlayIn, red, green, blue, alpha);
-		float health = animatable.getHealth();
-		float maxhealth = animatable.getMaxHealth();
-		if (health > (maxhealth * 0.5)) {
+		if (animatable.getEntityData().get(DoomHunterEntity.DEATH_STATE) == 0) {
 			model.getBone("sled").get().setHidden(false);
 		}
-		if (health <= (maxhealth * 0.5)) {
+		if (animatable.getEntityData().get(DoomHunterEntity.DEATH_STATE) == 1) {
 			model.getBone("sled").get().setHidden(true);
 		}
 	}

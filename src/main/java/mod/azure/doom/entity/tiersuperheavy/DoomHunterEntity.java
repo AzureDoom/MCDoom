@@ -8,12 +8,19 @@ import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,6 +33,7 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
@@ -48,14 +56,15 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
-	public int flameTimer;
-
 	public DoomHunterEntity(EntityType<DoomHunterEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 		this.moveControl = new DemonFlightMoveControl(this, 90, false);
 	}
 
+	public int flameTimer;
 	private AnimationFactory factory = new AnimationFactory(this);
+	public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(DoomHunterEntity.class,
+			EntityDataSerializers.INT);
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
@@ -380,29 +389,6 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 		return 1;
 	}
 
-	@Override
-	public int getArmorValue() {
-		float health = this.getHealth();
-		return (health < (this.getMaxHealth() * 0.90) && health >= (this.getMaxHealth() * 0.85) ? 8
-				: health < (this.getMaxHealth() * 0.80) && health >= (this.getMaxHealth() * 0.75) ? 6
-						: health < (this.getMaxHealth() * 0.70) && health >= (this.getMaxHealth() * 0.65) ? 4
-								: health < (this.getMaxHealth() * 0.60) && health >= (this.getMaxHealth() * 0.55) ? 4
-										: health < (this.getMaxHealth() * 0.55)
-												&& health >= (this.getMaxHealth() * 0.50) ? 2
-														: health < (this.getMaxHealth() * 0.50) ? 0 : 10);
-	}
-
-	@Override
-	public void aiStep() {
-		super.aiStep();
-		flameTimer = (flameTimer + 1) % 8;
-		if (this.getHealth() < (this.getMaxHealth() * 0.50)) {
-			if (!this.level.isClientSide) {
-				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 10000000, 2));
-			}
-		}
-	}
-
 	public int getFlameTimer() {
 		return flameTimer;
 	}
@@ -410,6 +396,99 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 	@Override
 	public int tickTimer() {
 		return tickCount;
+	}
+
+	@Override
+	public void aiStep() {
+		super.aiStep();
+		flameTimer = (flameTimer + 1) % 8;
+		++this.tickCount;
+		if (!this.level.isClientSide) {
+			if (this.entityData.get(DEATH_STATE) == 0) {
+				this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000000, 1));
+			} else if (this.entityData.get(DEATH_STATE) == 1) {
+				this.removeEffect(MobEffects.DAMAGE_BOOST);
+				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 10000000, 2));
+			}
+		}
+	}
+
+	@Override
+	public int getArmorValue() {
+		return this.entityData.get(DEATH_STATE) == 1 ? 0 : (int) ((getHealth() / getMaxHealth()) * 100);
+	}
+
+	@Override
+	protected void tickDeath() {
+		++this.deathTime;
+		if (this.deathTime == 80 && this.entityData.get(DEATH_STATE) == 0) {
+			this.setHealth(this.getMaxHealth());
+			this.setDeathState(1);
+			this.deathTime = 0;
+		}
+		if (this.deathTime == 40 && this.entityData.get(DEATH_STATE) == 1) {
+			this.remove(Entity.RemovalReason.KILLED);
+			this.dropExperience();
+		}
+	}
+
+	public int getDeathState() {
+		return this.entityData.get(DEATH_STATE);
+	}
+
+	public void setDeathState(int state) {
+		this.entityData.set(DEATH_STATE, state);
+	}
+
+	@Override
+	public void die(DamageSource source) {
+		if (!this.level.isClientSide) {
+			if (source == DamageSource.OUT_OF_WORLD) {
+				this.setDeathState(1);
+			}
+			if (this.entityData.get(DEATH_STATE) == 0) {
+				AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(),
+						this.getZ());
+				areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
+				areaeffectcloudentity.setRadius(3.0F);
+				areaeffectcloudentity.setDuration(55);
+				areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
+				this.level.addFreshEntity(areaeffectcloudentity);
+				this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
+				this.setLastHurtMob(this.getLastHurtByMob());
+				this.level.broadcastEntityEvent(this, (byte) 3);
+			}
+			if (this.entityData.get(DEATH_STATE) == 1) {
+				super.die(source);
+			}
+		}
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
+		this.setDeathState(compound.getInt("Phase"));
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putInt("Phase", this.getDeathState());
+	}
+
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(DEATH_STATE, 0);
+	}
+
+	@Override
+	public boolean requiresCustomPersistence() {
+		return true;
+	}
+
+	@Override
+	public void checkDespawn() {
 	}
 
 }
