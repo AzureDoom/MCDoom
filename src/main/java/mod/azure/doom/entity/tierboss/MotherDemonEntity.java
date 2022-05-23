@@ -137,7 +137,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 				this.setLastHurtMob(this.getLastHurtByMob());
 				this.level.broadcastEntityEvent(this, (byte) 3);
 			}
-			if (this.entityData.get(DEATH_STATE) == 0) {
+			if (this.entityData.get(DEATH_STATE) == 1) {
 				super.die(source);
 			}
 		}
