@@ -8,27 +8,35 @@ import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.AreaEffectCloudEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.PrioritizedGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -58,6 +66,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 
 	private AnimationFactory factory = new AnimationFactory(this);
 	public int flameTimer;
+	public static final TrackedData<Integer> DEATH_STATE = DataTracker.registerData(DoomHunterEntity.class,
+			TrackedDataHandlerRegistry.INTEGER);
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
@@ -109,8 +119,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
-				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(),
-						SoundEvents.ENTITY_PLAYER_ATTACK_CRIT, SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_PLAYER_ATTACK_CRIT,
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}
@@ -395,30 +405,105 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 	}
 
 	@Override
-	public int getArmor() {
-		float health = this.getHealth();
-		return (health < (this.getMaxHealth() * 0.90) && health >= (this.getMaxHealth() * 0.85) ? 8
-				: health < (this.getMaxHealth() * 0.80) && health >= (this.getMaxHealth() * 0.75) ? 6
-						: health < (this.getMaxHealth() * 0.70) && health >= (this.getMaxHealth() * 0.65) ? 4
-								: health < (this.getMaxHealth() * 0.60) && health >= (this.getMaxHealth() * 0.55) ? 4
-										: health < (this.getMaxHealth() * 0.55)
-												&& health >= (this.getMaxHealth() * 0.50) ? 2
-														: health < (this.getMaxHealth() * 0.50) ? 0 : 10);
-	}
-
-	@Override
 	public void tick() {
 		super.tick();
 		flameTimer = (flameTimer + 1) % 8;
-		if (this.getHealth() < (this.getMaxHealth() * 0.50)) {
-			if (!this.world.isClient) {
+	}
+
+	public int getFlameTimer() {
+		return flameTimer;
+	}
+
+	@Override
+	public void tickMovement() {
+		super.tickMovement();
+		++this.age;
+		if (!this.world.isClient) {
+			if (this.dataTracker.get(DEATH_STATE) == 0) {
+				this.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 1000000, 1));
+			} else if (this.dataTracker.get(DEATH_STATE) == 1) {
+				this.removeStatusEffect(StatusEffects.STRENGTH);
 				this.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 10000000, 2));
 			}
 		}
 	}
 
-	public int getFlameTimer() {
-		return flameTimer;
+	@Override
+	public int getArmor() {
+		return this.dataTracker.get(DEATH_STATE) == 1 ? 0 : (int) ((getHealth() / getMaxHealth()) * 100);
+	}
+
+	@Override
+	protected void updatePostDeath() {
+		++this.deathTime;
+		if (this.deathTime == 80 && this.dataTracker.get(DEATH_STATE) == 0) {
+			this.setHealth(this.getMaxHealth());
+			this.setDeathState(1);
+			this.deathTime = 0;
+		}
+		if (this.deathTime == 40 && this.dataTracker.get(DEATH_STATE) == 1) {
+			this.world.sendEntityStatus(this, (byte) 60);
+			this.remove(Entity.RemovalReason.KILLED);
+			this.dropXp();
+		}
+	}
+
+	public int getDeathState() {
+		return this.dataTracker.get(DEATH_STATE);
+	}
+
+	public void setDeathState(int state) {
+		this.dataTracker.set(DEATH_STATE, state);
+	}
+
+	@Override
+	public void onDeath(DamageSource source) {
+		if (!this.world.isClient) {
+			if (source == DamageSource.OUT_OF_WORLD) {
+				this.setDeathState(1);
+			}
+			if (this.dataTracker.get(DEATH_STATE) == 0) {
+				AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(this.world, this.getX(),
+						this.getY(), this.getZ());
+				areaeffectcloudentity.setParticleType(ParticleTypes.EXPLOSION);
+				areaeffectcloudentity.setRadius(3.0F);
+				areaeffectcloudentity.setDuration(55);
+				areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
+				this.world.spawnEntity(areaeffectcloudentity);
+				this.goalSelector.getRunningGoals().forEach(PrioritizedGoal::stop);
+				this.onAttacking(this.getAttacker());
+				this.world.sendEntityStatus(this, (byte) 3);
+			}
+			if (this.dataTracker.get(DEATH_STATE) == 1) {
+				super.onDeath(source);
+			}
+		}
+	}
+
+	@Override
+	public void readCustomDataFromNbt(NbtCompound tag) {
+		super.readCustomDataFromNbt(tag);
+		this.setDeathState(tag.getInt("Phase"));
+	}
+
+	@Override
+	public void writeCustomDataToNbt(NbtCompound tag) {
+		super.writeCustomDataToNbt(tag);
+		tag.putInt("Phase", this.getDeathState());
+	}
+
+	protected void initDataTracker() {
+		super.initDataTracker();
+		this.dataTracker.startTracking(DEATH_STATE, 0);
+	}
+
+	@Override
+	public boolean cannotDespawn() {
+		return true;
+	}
+
+	@Override
+	public void checkDespawn() {
 	}
 
 }
