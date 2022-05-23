@@ -51,6 +51,7 @@ public class DoomCategory implements DisplayCategory<DoomDisplay> {
 		Point startPoint = new Point(bounds.getCenterX() - 64, bounds.getCenterY() - 16);
 		Point outputPoint = new Point(startPoint.x + 100, startPoint.y + 20);
 		List<Widget> widgets = new ArrayList<>();
+		widgets.add(Widgets.createRecipeBase(bounds));
 		if (display.count.get(0).intValue() > 0) {
 			widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x, startPoint.y - 10)));
 			widgets.add(Widgets.createSlot(new Point(startPoint.x - 3, startPoint.y - 14)).entries(display.input.get(0))
