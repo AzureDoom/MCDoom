@@ -1,5 +1,6 @@
 package mod.azure.doom.entity.projectiles.entity;
 
+import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import net.minecraft.core.particles.ParticleTypes;
@@ -147,7 +148,10 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements IA
 			Entity entity = p_213868_1_.getEntity();
 			Entity entity1 = this.getOwner();
 			entity.hurt(DamageSource.mobAttack((LivingEntity) entity1),
-					DoomConfig.SERVER.gladiator_ranged_damage.get().floatValue());
+					DoomConfig.SERVER.gladiator_ranged_damage.get().floatValue()
+							+ (this.entityData.get(GladiatorEntity.DEATH_STATE) == 1
+									? DoomConfig.SERVER.gladiator_phaseone_damage_boost.get().floatValue()
+									: 0));
 			if (entity1 instanceof LivingEntity) {
 				this.doEnchantDamageEffects((LivingEntity) entity1, entity);
 			}

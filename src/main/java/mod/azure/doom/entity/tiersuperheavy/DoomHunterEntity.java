@@ -1,7 +1,6 @@
 package mod.azure.doom.entity.tiersuperheavy;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import mod.azure.doom.util.config.DoomConfig;
@@ -15,6 +14,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -30,14 +30,11 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -50,6 +47,7 @@ import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
@@ -58,7 +56,6 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 
 	public DoomHunterEntity(EntityType<DoomHunterEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
-		this.moveControl = new DemonFlightMoveControl(this, 90, false);
 	}
 
 	public int flameTimer;
@@ -67,19 +64,18 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 			EntityDataSerializers.INT);
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
+		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 1) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
-		if (!event.isMoving() && this.hurtMarked) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("sled_death", false));
 			return PlayState.CONTINUE;
 		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
-		return PlayState.CONTINUE;
-	}
-
-	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
+		if (event.isMoving() && this.hurtDuration < 0) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
+			return PlayState.CONTINUE;
+		}
 		if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("rockets", true));
 			return PlayState.CONTINUE;
@@ -92,14 +88,26 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("chainsaw", true));
 			return PlayState.CONTINUE;
 		}
-		return PlayState.STOP;
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		event.getController().setAnimationSpeed(0.5);
+		return PlayState.CONTINUE;
 	}
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<DoomHunterEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(
-				new AnimationController<DoomHunterEntity>(this, "controller1", 0, this::predicate1));
+		AnimationController<DoomHunterEntity> controller = new AnimationController<DoomHunterEntity>(this, "controller",
+				0, this::predicate);
+		controller.registerSoundListener(this::soundListener);
+		data.addAnimationController(controller);
+	}
+
+	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
+		if (event.sound.matches("phasechange")) {
+			if (this.level.isClientSide) {
+				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
+						ModSoundEvents.DOOMHUNTER_PHASECHANGE.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
+			}
+		}
 	}
 
 	@Override
@@ -118,117 +126,9 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.goalSelector.addGoal(4, new DoomHunterEntity.AttackGoal(this));
-		this.goalSelector.addGoal(4, new DoomHunterEntity.DemonAttackGoal(this, 1.0D, false));
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
-	}
-
-	@Override
-	protected void updateControlFlags() {
-		boolean flag = this.getTarget() != null && this.hasLineOfSight(this.getTarget());
-		this.goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
-		super.updateControlFlags();
-	}
-
-	public class DemonAttackGoal extends MeleeAttackGoal {
-		private final DoomHunterEntity entity;
-		private final double speedModifier;
-		private int ticksUntilNextAttack;
-		private int ticksUntilNextPathRecalculation;
-		private final boolean followingTargetEvenIfNotSeen;
-		private double pathedTargetX;
-		private double pathedTargetY;
-		private double pathedTargetZ;
-		private int failedPathFindingPenalty = 0;
-		private boolean canPenalize = false;
-
-		public DemonAttackGoal(DoomHunterEntity zombieIn, double speedIn, boolean longMemoryIn) {
-			super(zombieIn, speedIn, longMemoryIn);
-			this.entity = zombieIn;
-			this.speedModifier = speedIn;
-			this.followingTargetEvenIfNotSeen = longMemoryIn;
-		}
-
-		public void start() {
-			super.start();
-		}
-
-		public boolean canUse() {
-			return super.canUse();
-		}
-
-		public void stop() {
-			super.stop();
-			this.entity.setAggressive(false);
-			this.entity.setAttackingState(0);
-		}
-
-		public void tick() {
-			LivingEntity livingentity = this.entity.getTarget();
-			if (livingentity != null) {
-				this.mob.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
-				double d0 = this.mob.distanceToSqr(livingentity.getX(), livingentity.getY(), livingentity.getZ());
-				this.ticksUntilNextPathRecalculation = Math.max(this.ticksUntilNextPathRecalculation - 1, 0);
-				if ((this.followingTargetEvenIfNotSeen || this.mob.getSensing().hasLineOfSight(livingentity))
-						&& this.ticksUntilNextPathRecalculation <= 0
-						&& (this.pathedTargetX == 0.0D && this.pathedTargetY == 0.0D && this.pathedTargetZ == 0.0D
-								|| livingentity.distanceToSqr(this.pathedTargetX, this.pathedTargetY,
-										this.pathedTargetZ) >= 1.0D
-								|| this.mob.getRandom().nextFloat() < 0.05F)) {
-					this.pathedTargetX = livingentity.getX();
-					this.pathedTargetY = livingentity.getY();
-					this.pathedTargetZ = livingentity.getZ();
-					this.ticksUntilNextPathRecalculation = 4 + this.mob.getRandom().nextInt(7);
-					if (this.canPenalize) {
-						this.ticksUntilNextPathRecalculation += failedPathFindingPenalty;
-						if (this.mob.getNavigation().getPath() != null) {
-							net.minecraft.world.level.pathfinder.Node finalPathPoint = this.mob.getNavigation()
-									.getPath().getEndNode();
-							if (finalPathPoint != null && livingentity.distanceToSqr(finalPathPoint.x, finalPathPoint.y,
-									finalPathPoint.z) < 1)
-								failedPathFindingPenalty = 0;
-							else
-								failedPathFindingPenalty += 10;
-						} else {
-							failedPathFindingPenalty += 10;
-						}
-					}
-					if (d0 > 1024.0D) {
-						this.ticksUntilNextPathRecalculation += 10;
-					} else if (d0 > 256.0D) {
-						this.ticksUntilNextPathRecalculation += 5;
-					}
-
-					if (!this.mob.getNavigation().moveTo(livingentity, this.speedModifier)) {
-						this.ticksUntilNextPathRecalculation += 15;
-					}
-				}
-
-				this.ticksUntilNextAttack = Math.max(this.ticksUntilNextAttack - 1, 0);
-				this.checkAndPerformAttack(livingentity, d0);
-			}
-		}
-
-		@Override
-		protected void checkAndPerformAttack(LivingEntity livingentity, double squaredDistance) {
-			double d0 = this.getAttackReachSqr(livingentity);
-			if (squaredDistance <= d0 && this.getTicksUntilNextAttack() <= 0) {
-				this.resetAttackCooldown();
-				this.entity.setAttackingState(3);
-				this.mob.doHurtTarget(livingentity);
-			}
-		}
-
-		@Override
-		protected int getAttackInterval() {
-			return 50;
-		}
-
-		@Override
-		protected double getAttackReachSqr(LivingEntity attackTarget) {
-			return (double) (this.mob.getBbWidth() * 2.0F * this.mob.getBbWidth() * 2.0F + attackTarget.getBbWidth());
-		}
 	}
 
 	static class AttackGoal extends Goal {
@@ -271,27 +171,37 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 				float f = (float) Mth.atan2(livingentity.getZ() - parentEntity.getZ(),
 						livingentity.getX() - parentEntity.getX());
 				RocketMobEntity fireballentity = new RocketMobEntity(world, this.parentEntity, d2, d3, d4,
-						DoomConfig.SERVER.doomhunter_ranged_damage.get().floatValue());
+						DoomConfig.SERVER.doomhunter_ranged_damage.get().floatValue()
+								+ (this.parentEntity.entityData.get(DEATH_STATE) == 1
+										? DoomConfig.SERVER.doomhunter_extra_phase_two_damage.get().floatValue()
+										: 0));
+				this.parentEntity.getNavigation().moveTo(livingentity,
+						this.parentEntity.getDeathState() == 0 ? 0.75 : 1.0);
 				if (this.attackTimer == 15) {
-					if (parentEntity.getHealth() < (parentEntity.getMaxHealth() * 0.50)) {
-						for (int l = 0; l < 16; ++l) {
-							double d5 = 1.25D * (double) (l + 1);
-							int j = 1 * l;
-							parentEntity.spawnFlames(parentEntity.getX() + (double) Mth.cos(f) * d5,
-									parentEntity.getZ() + (double) Mth.sin(f) * d5, d0, d1, f, j);
-							this.parentEntity.setAttackingState(2);
+					if (this.parentEntity.distanceTo(livingentity) >= 3.0D) {
+						if (this.parentEntity.entityData.get(DEATH_STATE) == 1) {
+							for (int l = 0; l < 16; ++l) {
+								double d5 = 1.25D * (double) (l + 1);
+								int j = 1 * l;
+								parentEntity.spawnFlames(parentEntity.getX() + (double) Mth.cos(f) * d5,
+										parentEntity.getZ() + (double) Mth.sin(f) * d5, d0, d1, f, j);
+								this.parentEntity.setAttackingState(2);
+							}
 						}
-					}
-					if (parentEntity.getHealth() > (parentEntity.getMaxHealth() * 0.50)) {
-						fireballentity.setPos(this.parentEntity.getX() + vector3d.x * 2.0D,
-								this.parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z * 2.0D);
-						world.addFreshEntity(fireballentity);
-						this.parentEntity.setAttackingState(1);
+						if (this.parentEntity.entityData.get(DEATH_STATE) == 0) {
+							fireballentity.setPos(this.parentEntity.getX() + vector3d.x * 2.0D,
+									this.parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z * 2.0D);
+							world.addFreshEntity(fireballentity);
+							this.parentEntity.setAttackingState(1);
+						}
+					} else {
+						this.parentEntity.setAttackingState(3);
+						this.parentEntity.doHurtTarget(livingentity);
 					}
 				}
-				if (this.attackTimer == 25) {
+				if (this.attackTimer == 35) {
 					this.parentEntity.setAttackingState(0);
-					this.attackTimer = -150;
+					this.attackTimer = -15;
 				}
 			} else if (this.attackTimer > 0) {
 				--this.attackTimer;
@@ -324,7 +234,10 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 
 		if (flag) {
 			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this,
-					DoomConfig.SERVER.doomhunter_ranged_damage.get().floatValue());
+					DoomConfig.SERVER.doomhunter_ranged_damage.get().floatValue()
+							+ (this.entityData.get(DEATH_STATE) == 1
+									? DoomConfig.SERVER.doomhunter_extra_phase_two_damage.get().floatValue()
+									: 0));
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
 			this.level.addFreshEntity(fang);
@@ -336,15 +249,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.doomhunter_health.get())
 				.add(Attributes.FLYING_SPEED, 2.25D)
 				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.doomhunter_melee_damage.get())
-				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
-	}
-
-	protected PathNavigation createNavigation(Level worldIn) {
-		FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
-		flyingpathnavigator.setCanOpenDoors(false);
-		flyingpathnavigator.setCanFloat(true);
-		flyingpathnavigator.setCanPassDoors(true);
-		return flyingpathnavigator;
+				.add(Attributes.MOVEMENT_SPEED, 0.55D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	public boolean causeFallDamage(float distance, float damageMultiplier) {

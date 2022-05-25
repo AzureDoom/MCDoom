@@ -238,11 +238,16 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		this.goalSelector.addGoal(4, new IconAttackGoal(this,
-				new FireballAttack(this, true).setProjectileOriginOffset(0.8, 0.8, 0.8)
-						.setDamage(DoomConfig.SERVER.icon_melee_damage.get().floatValue()).setSound(
-								SoundEvents.FIRECHARGE_USE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
-				1.1D));
+		this.goalSelector.addGoal(4,
+				new IconAttackGoal(this,
+						new FireballAttack(this, true).setProjectileOriginOffset(0.8, 0.8, 0.8)
+								.setDamage(DoomConfig.SERVER.icon_melee_damage.get().floatValue()
+										+ (this.entityData.get(DEATH_STATE) == 1
+												? DoomConfig.SERVER.icon_phaseone_damage_boos.get().floatValue()
+												: 0))
+								.setSound(SoundEvents.FIRECHARGE_USE, 1.0F,
+										1.4F + this.getRandom().nextFloat() * 0.35F),
+						1.1D));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
@@ -283,7 +288,10 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 			if (d12 <= 1.0D) {
 				if (entity instanceof LivingEntity) {
 					entity.hurt(DamageSource.indirectMobAttack(this, this.getTarget()),
-							DoomConfig.SERVER.icon_melee_damage.get().floatValue());
+							DoomConfig.SERVER.icon_melee_damage.get().floatValue()
+									+ (this.entityData.get(DEATH_STATE) == 1
+											? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
+											: 0));
 				}
 			}
 		}
@@ -312,7 +320,9 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 
 		if (flag) {
 			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this,
-					DoomConfig.SERVER.icon_melee_damage.get().floatValue());
+					DoomConfig.SERVER.icon_melee_damage.get().floatValue() + (this.entityData.get(DEATH_STATE) == 1
+							? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
+							: 0));
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
 			this.level.addFreshEntity(fang);
@@ -471,7 +481,10 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	public boolean doHurtTarget(Entity target) {
 		this.level.broadcastEntityEvent(this, (byte) 4);
-		boolean bl = target.hurt(DamageSource.mobAttack(this), DoomConfig.SERVER.icon_melee_damage.get().floatValue());
+		boolean bl = target.hurt(DamageSource.mobAttack(this),
+				DoomConfig.SERVER.icon_melee_damage.get().floatValue() + (this.entityData.get(DEATH_STATE) == 1
+						? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
+						: 0));
 		if (bl) {
 			target.setDeltaMovement(target.getDeltaMovement().multiply(4.4f, 4.4f, 4.4f));
 			this.doEnchantDamageEffects(this, target);

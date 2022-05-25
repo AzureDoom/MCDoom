@@ -65,7 +65,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
-	
+
 	public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(MotherDemonEntity.class,
 			EntityDataSerializers.INT);
 	private final ServerBossEvent bossInfo = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(),
@@ -263,11 +263,20 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 				float f = (float) Mth.atan2(livingentity.getZ() - parentEntity.getZ(),
 						livingentity.getX() - parentEntity.getX());
 				CustomFireballEntity fireballentity = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4,
-						DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue());
+						DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue()
+								+ (this.parentEntity.entityData.get(DEATH_STATE) == 1
+										? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
+										: 0));
 				CustomFireballEntity fireballentity1 = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4,
-						DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue());
+						DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue()
+								+ (this.parentEntity.entityData.get(DEATH_STATE) == 1
+										? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
+										: 0));
 				CustomFireballEntity fireballentity2 = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4,
-						DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue());
+						DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue()
+								+ (this.parentEntity.entityData.get(DEATH_STATE) == 1
+										? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
+										: 0));
 				this.parentEntity.getNavigation().moveTo(livingentity, 1.5D);
 				if (this.attackTimer == 15) {
 					if (parentEntity.getHealth() <= (parentEntity.getMaxHealth() * 0.50)) {
@@ -342,7 +351,10 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 
 		if (flag) {
 			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this,
-					DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue());
+					DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue()
+							+ (this.entityData.get(DEATH_STATE) == 1
+									? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
+									: 0));
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
 			this.level.addFreshEntity(fang);

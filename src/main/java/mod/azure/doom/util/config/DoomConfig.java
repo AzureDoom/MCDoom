@@ -227,6 +227,7 @@ public class DoomConfig {
 
 		public final ConfigValue<Double> motherdemon_health;
 		public final ConfigValue<Double> motherdemon_ranged_damage;
+		public final ConfigValue<Double> motherdemon_phaseone_damage_boos;
 
 		public final ConfigValue<Double> imp_health;
 		public final ConfigValue<Double> imp_ranged_damage;
@@ -261,6 +262,10 @@ public class DoomConfig {
 
 		public final ConfigValue<Double> archmaykr_health;
 		public final ConfigValue<Double> archmaykr_ranged_damage;
+		public final ConfigValue<Double> archmaykr_phaseone_damage_boost;
+		public final ConfigValue<Double> archmaykr_phasetwo_damage_boost;
+		public final ConfigValue<Double> archmaykr_phasethree_damage_boost;
+		public final ConfigValue<Double> archmaykr_phasefour_damage_boost;
 
 		public final ConfigValue<Double> baron_health;
 		public final ConfigValue<Double> baron_ranged_damage;
@@ -268,6 +273,7 @@ public class DoomConfig {
 
 		public final ConfigValue<Double> gladiator_health;
 		public final ConfigValue<Double> gladiator_ranged_damage;
+		public final ConfigValue<Double> gladiator_phaseone_damage_boost;
 		public final ConfigValue<Double> gladiator_melee_damage;
 
 		public final ConfigValue<Double> mancubus_health;
@@ -318,6 +324,7 @@ public class DoomConfig {
 		public final ConfigValue<Double> doomhunter_health;
 		public final ConfigValue<Double> doomhunter_ranged_damage;
 		public final ConfigValue<Double> doomhunter_melee_damage;
+		public final ConfigValue<Double> doomhunter_extra_phase_two_damage;
 
 		public final ConfigValue<Double> whiplash_health;
 		public final ConfigValue<Double> whiplash_melee_damage;
@@ -349,6 +356,7 @@ public class DoomConfig {
 
 		public final ConfigValue<Double> icon_health;
 		public final ConfigValue<Double> icon_melee_damage;
+		public final ConfigValue<Double> icon_phaseone_damage_boos;
 		public final ConfigValue<Boolean> enable_all_villager_trades;
 		public final ConfigValue<Boolean> enable_weaponsmith_trades;
 		public final ConfigValue<Boolean> enable_toolsmith_trades;
@@ -534,6 +542,9 @@ public class DoomConfig {
 					.defineInRange("Sets Gladiator Max Health", 240, 1, Double.MAX_VALUE);
 			this.gladiator_ranged_damage = builder.translation("text.doom.config.gladiator_ranged_damage")
 					.defineInRange("Sets Gladiator Ranged Damage", 6, 1, Double.MAX_VALUE);
+			this.gladiator_phaseone_damage_boost = builder
+					.translation("text.doom.config.gladiator_phaseone_damage_boost")
+					.defineInRange("Sets Gladiator Ranged Damage For 2nd Phase", 6, 1, Double.MAX_VALUE);
 			this.gladiator_melee_damage = builder.translation("text.doom.config.gladiator_melee_damage")
 					.defineInRange("Sets Gladiator Melee Damage", 7, 1, Double.MAX_VALUE);
 			builder.pop();
@@ -953,6 +964,9 @@ public class DoomConfig {
 					.defineInRange("Sets Doomhunter Ranged Damage", 7, 1, Double.MAX_VALUE);
 			this.doomhunter_melee_damage = builder.translation("text.doom.config.doomhunter_melee_damage")
 					.defineInRange("Sets Doomhunter Melee Damage", 5, 1, Double.MAX_VALUE);
+			this.doomhunter_extra_phase_two_damage = builder
+					.translation("text.doom.config.doomhunter_extra_phase_two_damage")
+					.defineInRange("Sets Doomhunter Melee Damage For 2nd Phase", 5, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Possessed Worker");
@@ -1055,6 +1069,18 @@ public class DoomConfig {
 					.defineInRange("Sets Archmaykr Max Health", 400, 1, Double.MAX_VALUE);
 			this.archmaykr_ranged_damage = builder.translation("text.doom.config.archmaykr_ranged_damage")
 					.defineInRange("Sets Archmaykr Ranged Damage", 14, 1, Double.MAX_VALUE);
+			this.archmaykr_phaseone_damage_boost = builder
+					.translation("text.doom.config.archmaykr_phaseone_damage_boost")
+					.defineInRange("Sets Archmaykr Ranged Damage For 2nd Phase", 14, 1, Double.MAX_VALUE);
+			this.archmaykr_phasetwo_damage_boost = builder
+					.translation("text.doom.config.archmaykr_phasetwo_damage_boost")
+					.defineInRange("Sets Archmaykr Ranged Damage For 3nd Phase", 28, 1, Double.MAX_VALUE);
+			this.archmaykr_phasethree_damage_boost = builder
+					.translation("text.doom.config.archmaykr_phasethree_damage_boost")
+					.defineInRange("Sets Archmaykr Ranged Damage For 4th Phase", 42, 1, Double.MAX_VALUE);
+			this.archmaykr_phasefour_damage_boost = builder
+					.translation("text.doom.config.archmaykr_phasefour_damage_boost")
+					.defineInRange("Sets Archmaykr Ranged Damage For 5th Phase", 56, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Motherdemon");
@@ -1072,6 +1098,9 @@ public class DoomConfig {
 					.defineInRange("Sets Motherdemon Max Health", 500, 1, Double.MAX_VALUE);
 			this.motherdemon_ranged_damage = builder.translation("text.doom.config.motherdemon_ranged_damage")
 					.defineInRange("Sets Motherdemon Ranged Damage", 14, 1, Double.MAX_VALUE);
+			this.motherdemon_phaseone_damage_boos = builder
+					.translation("text.doom.config.motherdemon_phaseone_damage_boos")
+					.defineInRange("Sets Motherdemon Extra Ranged Damage For 2nd Phase", 14, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Turret");
@@ -1086,6 +1115,8 @@ public class DoomConfig {
 					.defineInRange("Sets Icon of Sin Max Health", 1000, 1, Double.MAX_VALUE);
 			this.icon_melee_damage = builder.translation("text.doom.config.icon_melee_damage")
 					.defineInRange("Sets Icon of Sin Melee Damage", 7, 1, Double.MAX_VALUE);
+			this.icon_phaseone_damage_boos = builder.translation("text.doom.config.icon_phaseone_damage_boos")
+					.defineInRange("Sets Icon of Sin Extra Melee Damage For 2nd Phase", 7, 1, Double.MAX_VALUE);
 			this.icon_wave_entries = builder.comment("Icon of Sin Wave Mobs List")
 					.translation("text.doom.config.icon_wave_entries")
 					.defineList("Icon of Sin Wave Mobs", Lists.newArrayList("doom:gladiator", "doom:mancubus",

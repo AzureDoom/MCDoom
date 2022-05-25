@@ -281,9 +281,20 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, IronGolem.class, 8.0F));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.goalSelector.addGoal(7, new ArchMakyrEntity.LookAroundGoal(this));
-		this.goalSelector.addGoal(4,
-				new RangedAttackGoal(this, new FireballAttack(this, true).setProjectileOriginOffset(0.8, 0.4, 0.8)
-						.setDamage(DoomConfig.SERVER.archmaykr_ranged_damage.get().floatValue()), 1.0D));
+		this.goalSelector.addGoal(4, new RangedAttackGoal(this, new FireballAttack(this, true)
+				.setProjectileOriginOffset(0.8, 0.4, 0.8)
+				.setDamage(DoomConfig.SERVER.archmaykr_ranged_damage.get().floatValue()
+						+ (this.entityData.get(DEATH_STATE) == 1
+								? DoomConfig.SERVER.archmaykr_phaseone_damage_boost.get().floatValue()
+								: this.entityData.get(DEATH_STATE) == 2
+										? DoomConfig.SERVER.archmaykr_phasetwo_damage_boost.get().floatValue()
+										: this.entityData.get(DEATH_STATE) == 3
+												? DoomConfig.SERVER.archmaykr_phasethree_damage_boost.get().floatValue()
+												: this.entityData.get(DEATH_STATE) == 4
+														? DoomConfig.SERVER.archmaykr_phasefour_damage_boost.get()
+																.floatValue()
+														: 0)),
+				1.0D));
 		this.targetSelector.addGoal(4, new KnockbackGoal(this, 1.0D));
 		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.addGoal(2, new MoveTowardsTargetGoal(this, 0.9D, 32.0F));
@@ -510,7 +521,18 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 
 		if (flag) {
 			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this,
-					DoomConfig.SERVER.archmaykr_ranged_damage.get().floatValue());
+					DoomConfig.SERVER.archmaykr_ranged_damage.get().floatValue()
+							+ (this.entityData.get(DEATH_STATE) == 1
+									? DoomConfig.SERVER.archmaykr_phaseone_damage_boost.get().floatValue()
+									: this.entityData.get(DEATH_STATE) == 2
+											? DoomConfig.SERVER.archmaykr_phasetwo_damage_boost.get().floatValue()
+											: this.entityData.get(DEATH_STATE) == 3
+													? DoomConfig.SERVER.archmaykr_phasethree_damage_boost.get()
+															.floatValue()
+													: this.entityData.get(DEATH_STATE) == 4
+															? DoomConfig.SERVER.archmaykr_phasefour_damage_boost.get()
+																	.floatValue()
+															: 0));
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
 			this.level.addFreshEntity(fang);

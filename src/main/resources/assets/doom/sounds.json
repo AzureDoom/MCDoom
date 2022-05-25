@@ -313,5 +313,8 @@
 	},
 	"doom.grenadeabouttoexplode": {
 		"sounds": [{"name": "doom:grenadeabouttoexplode"}]
+	},
+	"doom.doomhunter_phasechange": {
+		"sounds": [{"name": "doom:doomhunter_phasechange"}]
 	}
 }

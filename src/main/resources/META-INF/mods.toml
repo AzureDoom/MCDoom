@@ -5,7 +5,7 @@ license="CC-BY-NC-4.0"
 modId="doom"
 version="${file.jarVersion}"
 displayName="Doom Mod"
-logoFile="doomlogo.png"
+logoFile="icon.png"
 authors="AzureDoomC" 
 description='''
 Adds Doom into Minecraft

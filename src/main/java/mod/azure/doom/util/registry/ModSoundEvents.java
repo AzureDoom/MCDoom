@@ -241,6 +241,9 @@ public class ModSoundEvents {
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.doomhunter_death")));
 	public static final RegistryObject<SoundEvent> DOOMHUNTER_HURT = MOD_SOUNDS.register("doom.doomhunter_hurt",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.doomhunter_hurt")));
+	public static final RegistryObject<SoundEvent> DOOMHUNTER_PHASECHANGE = MOD_SOUNDS.register(
+			"doom.doomhunter_phasechange",
+			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.doomhunter_phasechange")));
 
 	public static final RegistryObject<SoundEvent> MAKYR_AMBIENT = MOD_SOUNDS.register("doom.maykr_ambient",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.maykr_ambient")));
