@@ -277,11 +277,17 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 				double g = livingEntity.getBodyY(0.5D) - (0.5D + this.parentEntity.getBodyY(0.5D));
 				double h = livingEntity.getZ() - (this.parentEntity.getZ() + vec3d.z * 2.0D);
 				CustomFireballEntity fireballEntity = new CustomFireballEntity(world, this.parentEntity, f, g, h,
-						config.motherdemon_ranged_damage);
+						config.motherdemon_ranged_damage + (this.parentEntity.dataTracker.get(DEATH_STATE) == 1
+								? config.motherdemon_phaseone_damage_boos
+								: 0));
 				CustomFireballEntity fireballEntity1 = new CustomFireballEntity(world, this.parentEntity, f, g, h,
-						config.motherdemon_ranged_damage);
+						config.motherdemon_ranged_damage + (this.parentEntity.dataTracker.get(DEATH_STATE) == 1
+								? config.motherdemon_phaseone_damage_boos
+								: 0));
 				CustomFireballEntity fireballEntity2 = new CustomFireballEntity(world, this.parentEntity, f, g, h,
-						config.motherdemon_ranged_damage);
+						config.motherdemon_ranged_damage + (this.parentEntity.dataTracker.get(DEATH_STATE) == 1
+								? config.motherdemon_phaseone_damage_boos
+								: 0));
 				double d = Math.min(livingEntity.getY(), parentEntity.getY());
 				double e1 = Math.max(livingEntity.getY(), parentEntity.getY()) + 1.0D;
 				float f2 = (float) MathHelper.atan2(livingEntity.getZ() - parentEntity.getZ(),
@@ -363,7 +369,8 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 
 		if (bl) {
 			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
-					config.motherdemon_ranged_damage);
+					config.motherdemon_ranged_damage
+							+ (this.dataTracker.get(DEATH_STATE) == 1 ? config.motherdemon_phaseone_damage_boos : 0));
 			fang.setFireTicks(age);
 			fang.isInvisible();
 			this.world.spawnEntity(fang);
@@ -376,6 +383,11 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1000.0D);
+	}
+
+	@Override
+	public void takeKnockback(double strength, double x, double z) {
+		super.takeKnockback(0, 0, 0);
 	}
 
 	@Override
@@ -436,11 +448,6 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 
 	@Override
 	public void checkDespawn() {
-	}
-
-	@Override
-	public void takeKnockback(double strength, double x, double z) {
-		super.takeKnockback(0, 0, 0);
 	}
 
 }

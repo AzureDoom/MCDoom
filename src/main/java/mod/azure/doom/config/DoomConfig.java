@@ -290,6 +290,7 @@ public class DoomConfig implements ConfigData {
 
 		public double motherdemon_health = 500;
 		public float motherdemon_ranged_damage = 14;
+		public float motherdemon_phaseone_damage_boos = 14;
 
 		public double cueball_health = 1;
 
@@ -301,6 +302,7 @@ public class DoomConfig implements ConfigData {
 
 		public double icon_health = 1000;
 		public float icon_melee_damage = 7;
+		public float icon_phaseone_damage_boos = 7;
 		public List<String> icon_wave_entries = Arrays.asList("doom:gladiator", "doom:mancubus", "doom:mancubus",
 				"doom:marauder", "doom:marauder", "doom:firebronebaron", "doom:baron2016", "doom:baron2016",
 				"doom:baron2016", "doom:baron2016", "doom:whiplash", "doom:whiplash", "doom:whiplash", "doom:whiplash",
@@ -352,6 +354,10 @@ public class DoomConfig implements ConfigData {
 
 		public double archmaykr_health = 400;
 		public float archmaykr_ranged_damage = 14;
+		public float archmaykr_phaseone_damage_boost = 14;
+		public float archmaykr_phasetwo_damage_boost = 28;
+		public float archmaykr_phasethree_damage_boost = 42;
+		public float archmaykr_phasefour_damage_boost = 56;
 
 		public double baron_health = 180;
 		public float baron_ranged_damage = 6;
@@ -359,6 +365,7 @@ public class DoomConfig implements ConfigData {
 
 		public double gladiator_health = 240;
 		public float gladiator_ranged_damage = 6;
+		public float gladiator_phaseone_damage_boost = 6;
 		public double gladiator_melee_damage = 7;
 
 		public double mancubus_health = 80;
@@ -408,6 +415,7 @@ public class DoomConfig implements ConfigData {
 		public double doomhunter_health = 150;
 		public float doomhunter_ranged_damage = 7;
 		public double doomhunter_melee_damage = 5;
+		public float doomhunter_extra_phase_two_damage = 5;
 
 		public double whiplash_health = 90;
 		public double whiplash_melee_damage = 4;

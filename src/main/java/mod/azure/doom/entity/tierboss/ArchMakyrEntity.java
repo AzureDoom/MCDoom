@@ -12,6 +12,8 @@ import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.util.registry.ModSoundEvents;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
@@ -198,7 +200,15 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.add(4, new RangedAttackGoal(this, new FireballAttack(this, true)
-				.setProjectileOriginOffset(0.8, 0.4, 0.8).setDamage(config.archmaykr_ranged_damage), 1.0D));
+				.setProjectileOriginOffset(0.8, 0.4, 0.8)
+				.setDamage(config.archmaykr_ranged_damage + (this.dataTracker.get(DEATH_STATE) == 1
+						? config.archmaykr_phaseone_damage_boost
+						: this.dataTracker.get(DEATH_STATE) == 2 ? config.archmaykr_phasetwo_damage_boost
+								: this.dataTracker.get(DEATH_STATE) == 3 ? config.archmaykr_phasethree_damage_boost
+										: this.dataTracker.get(DEATH_STATE) == 4
+												? config.archmaykr_phasefour_damage_boost
+												: 0)),
+				1.0D));
 		this.targetSelector.add(4, new KnockbackGoal(this, 1.0D));
 		this.targetSelector.add(2, new TargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new TargetGoal<>(this, MerchantEntity.class, true));
@@ -361,6 +371,11 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	@Override
+	public void takeKnockback(double strength, double x, double z) {
+		super.takeKnockback(0, 0, 0);
+	}
+
+	@Override
 	public EntityData initialize(ServerWorldAccess serverWorldAccess, LocalDifficulty difficulty,
 			SpawnReason spawnReason, EntityData entityData, NbtCompound entityTag) {
 		entityData = super.initialize(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
@@ -374,6 +389,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	@Override
+	@Environment(EnvType.CLIENT)
 	public boolean shouldRender(double distance) {
 		return true;
 	}
@@ -463,7 +479,13 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 
 		if (bl) {
 			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
-					config.archmaykr_ranged_damage);
+					config.archmaykr_ranged_damage + (this.dataTracker.get(DEATH_STATE) == 1
+							? config.archmaykr_phaseone_damage_boost
+							: this.dataTracker.get(DEATH_STATE) == 2 ? config.archmaykr_phasetwo_damage_boost
+									: this.dataTracker.get(DEATH_STATE) == 3 ? config.archmaykr_phasethree_damage_boost
+											: this.dataTracker.get(DEATH_STATE) == 4
+													? config.archmaykr_phasefour_damage_boost
+													: 0));
 			fang.setFireTicks(age);
 			fang.isInvisible();
 			fang.age = -150;
@@ -478,11 +500,6 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	@Override
 	public void checkDespawn() {
-	}
-
-	@Override
-	public void takeKnockback(double strength, double x, double z) {
-		super.takeKnockback(0, 0, 0);
 	}
 
 }
