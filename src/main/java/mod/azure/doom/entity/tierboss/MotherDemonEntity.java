@@ -277,11 +277,17 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 				double g = livingEntity.getBodyY(0.5D) - (0.5D + this.parentEntity.getBodyY(0.5D));
 				double h = livingEntity.getZ() - (this.parentEntity.getZ() + vec3d.z * 2.0D);
 				CustomFireballEntity fireballEntity = new CustomFireballEntity(world, this.parentEntity, f, g, h,
-						config.motherdemon_ranged_damage);
+						config.motherdemon_ranged_damage + (this.parentEntity.dataTracker.get(DEATH_STATE) == 1
+								? config.motherdemon_phaseone_damage_boos
+								: 0));
 				CustomFireballEntity fireballEntity1 = new CustomFireballEntity(world, this.parentEntity, f, g, h,
-						config.motherdemon_ranged_damage);
+						config.motherdemon_ranged_damage + (this.parentEntity.dataTracker.get(DEATH_STATE) == 1
+								? config.motherdemon_phaseone_damage_boos
+								: 0));
 				CustomFireballEntity fireballEntity2 = new CustomFireballEntity(world, this.parentEntity, f, g, h,
-						config.motherdemon_ranged_damage);
+						config.motherdemon_ranged_damage + (this.parentEntity.dataTracker.get(DEATH_STATE) == 1
+								? config.motherdemon_phaseone_damage_boos
+								: 0));
 				double d = Math.min(livingEntity.getY(), parentEntity.getY());
 				double e1 = Math.max(livingEntity.getY(), parentEntity.getY()) + 1.0D;
 				float f2 = (float) MathHelper.atan2(livingEntity.getZ() - parentEntity.getZ(),
@@ -300,8 +306,8 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 										d, e1, h2, 0);
 							}
 							parentEntity.world.playSound(this.parentEntity.getX(), this.parentEntity.getY(),
-									this.parentEntity.getZ(), ModSoundEvents.MOTHER_ATTACK, SoundCategory.HOSTILE, 0.25F,
-									1.0F, true);
+									this.parentEntity.getZ(), ModSoundEvents.MOTHER_ATTACK, SoundCategory.HOSTILE,
+									0.25F, 1.0F, true);
 							this.parentEntity.setAttackingState(2);
 						}
 						livingEntity.setVelocity(livingEntity.getVelocity().add(0.4f, 1.4f, 0.4f));
@@ -363,7 +369,8 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 
 		if (bl) {
 			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
-					config.motherdemon_ranged_damage);
+					config.motherdemon_ranged_damage
+							+ (this.dataTracker.get(DEATH_STATE) == 1 ? config.motherdemon_phaseone_damage_boos : 0));
 			fang.setFireTicks(age);
 			fang.isInvisible();
 			this.world.spawnEntity(fang);

@@ -9,7 +9,7 @@ public class ModSoundEvents {
 
 	public static SoundEvent EMPTY = of("doom.emptyclip");
 	public static SoundEvent BEEP = of("doom.grenadeabouttoexplode");
-	
+
 	public static SoundEvent BFG_FIRING = of("doom.bfg_firing");
 	public static SoundEvent BFG_HIT = of("doom.bfg_hit");
 
@@ -137,6 +137,7 @@ public class ModSoundEvents {
 	public static SoundEvent DOOMHUNTER_AMBIENT = of("doom.doomhunter_ambient");
 	public static SoundEvent DOOMHUNTER_DEATH = of("doom.doomhunter_death");
 	public static SoundEvent DOOMHUNTER_HURT = of("doom.doomhunter_hurt");
+	public static SoundEvent DOOMHUNTER_PHASECHANGE = of("doom.doomhunter_phasechange");
 
 	public static SoundEvent MAKYR_AMBIENT = of("doom.maykr_ambient");
 	public static SoundEvent MAKYR_DEATH = of("doom.maykr_death");

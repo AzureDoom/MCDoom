@@ -174,8 +174,8 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 		}
 		if (event.sound.matches("fireball")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_DRAGON_FIREBALL_EXPLODE,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(),
+						SoundEvents.ENTITY_DRAGON_FIREBALL_EXPLODE, SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}
@@ -288,11 +288,11 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	@Override
 	protected void initGoals() {
-		this.goalSelector.add(4,
-				new RangedStrafeGladiatorAttackGoal(this,
-						new FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(config.gladiator_ranged_damage).setSound(SoundEvents.ITEM_FIRECHARGE_USE,
-										1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F)));
+		this.goalSelector.add(4, new RangedStrafeGladiatorAttackGoal(this,
+				new FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
+						.setDamage(config.gladiator_ranged_damage
+								+ (this.dataTracker.get(DEATH_STATE) == 1 ? config.gladiator_phaseone_damage_boost : 0))
+						.setSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F)));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));
 		this.goalSelector.add(6, new LookAtEntityGoal(this, LivingEntity.class, 8.0F));
 		this.goalSelector.add(6, new LookAroundGoal(this));
@@ -337,7 +337,8 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	public boolean tryAttack(Entity target) {
 		this.world.sendEntityStatus(this, (byte) 4);
-		boolean bl = target.damage(DamageSource.mob(this), (float) config.gladiator_melee_damage);
+		boolean bl = target.damage(DamageSource.mob(this), (float) config.gladiator_melee_damage
+				+ (this.dataTracker.get(DEATH_STATE) == 1 ? config.gladiator_phaseone_damage_boost : 0));
 		if (bl) {
 			target.setVelocity(target.getVelocity().add(0.4f, 0.4f, 0.4f));
 			this.applyDamageEffects(this, target);
@@ -350,7 +351,8 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	public boolean tryAttack1(Entity target) {
 		this.world.sendEntityStatus(this, (byte) 4);
-		boolean bl = target.damage(DamageSource.mob(this), (float) config.gladiator_melee_damage);
+		boolean bl = target.damage(DamageSource.mob(this), (float) config.gladiator_melee_damage
+				+ (this.dataTracker.get(DEATH_STATE) == 1 ? config.gladiator_phaseone_damage_boost : 0));
 		if (bl) {
 			this.applyDamageEffects(this, target);
 			this.world.createExplosion(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false,

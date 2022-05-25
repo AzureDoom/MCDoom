@@ -48,6 +48,7 @@ public class DemonEntity extends HostileEntity implements Angerable {
 		super(type, worldIn);
 		this.ignoreCameraFrustum = true;
 		this.experiencePoints = (int) (this.getMaxHealth());
+		stepHeight = 1.5f;
 	}
 
 	@Override

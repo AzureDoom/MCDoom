@@ -243,10 +243,10 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
 		this.goalSelector.add(4,
-				new IconAttackGoal(this,
-						new FireballAttack(this, true).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(config.icon_melee_damage).setSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F,
-										1.4F + this.getRandom().nextFloat() * 0.35F),
+				new IconAttackGoal(this, new FireballAttack(this, true).setProjectileOriginOffset(0.8, 0.8, 0.8)
+						.setDamage(config.icon_melee_damage
+								+ (this.dataTracker.get(DEATH_STATE) == 1 ? config.icon_phaseone_damage_boos : 0))
+						.setSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.1D));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
@@ -315,7 +315,8 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 
 		if (bl) {
 			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
-					config.icon_melee_damage);
+					config.icon_melee_damage
+							+ (this.dataTracker.get(DEATH_STATE) == 1 ? config.icon_phaseone_damage_boos : 0));
 			fang.setFireTicks(age);
 			fang.isInvisible();
 			fang.age = -150;
@@ -455,7 +456,8 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	public boolean tryAttack(Entity target) {
 		this.world.sendEntityStatus(this, (byte) 4);
-		boolean bl = target.damage(DamageSource.mob(this), (float) config.icon_melee_damage);
+		boolean bl = target.damage(DamageSource.mob(this), (float) config.icon_melee_damage
+				+ (this.dataTracker.get(DEATH_STATE) == 1 ? config.icon_phaseone_damage_boos : 0));
 		if (bl) {
 			target.setVelocity(target.getVelocity().add(4.4f, 4.4f, 4.4f));
 			this.applyDamageEffects(this, target);

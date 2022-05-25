@@ -3,7 +3,6 @@ package mod.azure.doom.entity.tiersuperheavy;
 import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import mod.azure.doom.util.registry.ModSoundEvents;
@@ -23,8 +22,6 @@ import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.PrioritizedGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
-import net.minecraft.entity.ai.pathing.BirdNavigation;
-import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -39,7 +36,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -61,7 +57,6 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 
 	public DoomHunterEntity(EntityType<? extends DoomHunterEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
-		this.moveControl = new DemonFlightMoveControl(this, 90, false);
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -70,19 +65,18 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 			TrackedDataHandlerRegistry.INTEGER);
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
+		if ((this.dead || this.getHealth() < 0.01 || this.isDead()) && this.dataTracker.get(DEATH_STATE) == 1) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
-		if (!event.isMoving() && this.velocityModified) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("sled_death", false));
 			return PlayState.CONTINUE;
 		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
-		return PlayState.CONTINUE;
-	}
-
-	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
+		if (event.isMoving() && this.maxHurtTime < 0) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
+			return PlayState.CONTINUE;
+		}
 		if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("rockets", true));
 			return PlayState.CONTINUE;
@@ -95,32 +89,24 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("chainsaw", true));
 			return PlayState.CONTINUE;
 		}
-		return PlayState.STOP;
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		event.getController().setAnimationSpeed(0.5);
+		return PlayState.CONTINUE;
 	}
 
 	@Override
 	public void registerControllers(AnimationData data) {
 		AnimationController<DoomHunterEntity> controller = new AnimationController<DoomHunterEntity>(this, "controller",
 				0, this::predicate);
-		AnimationController<DoomHunterEntity> controller1 = new AnimationController<DoomHunterEntity>(this,
-				"controller1", 0, this::predicate1);
 		controller.registerSoundListener(this::soundListener);
-		controller1.registerSoundListener(this::soundListener);
 		data.addAnimationController(controller);
-		data.addAnimationController(controller1);
 	}
 
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("walk")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
-			}
-		}
-		if (event.sound.matches("attack")) {
+		if (event.sound.matches("phasechange")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(),
-						SoundEvents.ENTITY_PLAYER_ATTACK_CRIT, SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+						ModSoundEvents.DOOMHUNTER_PHASECHANGE, SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}
@@ -146,25 +132,9 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));
 		this.goalSelector.add(4, new DoomHunterEntity.AttackGoal(this));
-		this.goalSelector.add(4, new DemonAttackGoal(this, 1.0D, false));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
-	}
-
-	@Override
-	protected void updateGoalControls() {
-		boolean flag = this.getTarget() != null && this.canSee(this.getTarget());
-		this.goalSelector.setControlEnabled(Goal.Control.LOOK, flag);
-		super.updateGoalControls();
-	}
-
-	protected EntityNavigation createNavigation(World worldIn) {
-		BirdNavigation flyingpathnavigator = new BirdNavigation(this, worldIn);
-		flyingpathnavigator.setCanPathThroughDoors(false);
-		flyingpathnavigator.setCanSwim(true);
-		flyingpathnavigator.setCanEnterOpenDoors(true);
-		return flyingpathnavigator;
 	}
 
 	public boolean causeFallDamage(float distance, float damageMultiplier) {
@@ -219,12 +189,16 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 				double g = livingEntity.getBodyY(0.5D) - (0.5D + this.parentEntity.getBodyY(0.5D));
 				double h = livingEntity.getZ() - (this.parentEntity.getZ() + vec3d.z * 2.0D);
 				RocketMobEntity fireballEntity = new RocketMobEntity(world, this.parentEntity, f, g, h,
-						config.doomhunter_ranged_damage);
+						config.doomhunter_ranged_damage + (this.parentEntity.dataTracker.get(DEATH_STATE) == 1
+								? config.doomhunter_extra_phase_two_damage
+								: 0));
 				double d = Math.min(livingEntity.getY(), parentEntity.getY());
 				double e1 = Math.max(livingEntity.getY(), parentEntity.getY()) + 1.0D;
 				float f2 = (float) MathHelper.atan2(livingEntity.getZ() - parentEntity.getZ(),
 						livingEntity.getX() - parentEntity.getX());
+				this.parentEntity.getNavigation().startMovingTo(livingEntity, 0.75);
 				if (this.cooldown == 15) {
+					if (this.parentEntity.distanceTo(livingEntity) >= 3.0D) {
 					if (parentEntity.getHealth() < (parentEntity.getMaxHealth() * 0.50)) {
 						for (int l = 0; l < 16; ++l) {
 							double l1 = 1.25D * (double) (l + 1);
@@ -240,10 +214,14 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 								this.parentEntity.getBodyY(0.5D) + 0.5D, parentEntity.getZ() + vec3d.z * 2.0D);
 						world.spawnEntity(fireballEntity);
 					}
+					} else {
+						this.parentEntity.setAttackingState(3);
+						this.parentEntity.tryAttack(livingEntity);
+					}
 				}
-				if (this.cooldown == 25) {
+				if (this.cooldown == 35) {
 					this.parentEntity.setAttackingState(0);
-					this.cooldown = -150;
+					this.cooldown = -15;
 				}
 			} else if (this.cooldown > 0) {
 				--this.cooldown;
@@ -275,100 +253,17 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 
 		if (bl) {
 			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
-					config.doomhunter_ranged_damage);
+					config.doomhunter_ranged_damage
+							+ (this.dataTracker.get(DEATH_STATE) == 1 ? config.doomhunter_extra_phase_two_damage : 0));
 			fang.setFireTicks(age);
 			fang.isInvisible();
 			this.world.spawnEntity(fang);
 		}
 	}
 
-	public class DemonAttackGoal extends MeleeAttackGoal {
-		private final DoomHunterEntity entity;
-		private final double speedModifier;
-		private int ticksUntilNextAttack;
-		private int ticksUntilNextPathRecalculation;
-		private final boolean followingTargetEvenIfNotSeen;
-		private double pathedTargetX;
-		private double pathedTargetY;
-		private double pathedTargetZ;
-
-		public DemonAttackGoal(DoomHunterEntity zombieIn, double speedIn, boolean longMemoryIn) {
-			super(zombieIn, speedIn, longMemoryIn);
-			this.entity = zombieIn;
-			this.speedModifier = speedIn;
-			this.followingTargetEvenIfNotSeen = longMemoryIn;
-		}
-
-		public void start() {
-			super.start();
-		}
-
-		public boolean canStart() {
-			return super.canStart();
-		}
-
-		public void stop() {
-			super.stop();
-			this.entity.setAttacking(false);
-			this.entity.setAttackingState(0);
-		}
-
-		public void tick() {
-			LivingEntity livingentity = this.entity.getTarget();
-			if (livingentity != null) {
-				this.mob.getLookControl().lookAt(livingentity, 30.0F, 30.0F);
-				double d0 = this.mob.squaredDistanceTo(livingentity.getX(), livingentity.getY(), livingentity.getZ());
-				this.ticksUntilNextPathRecalculation = Math.max(this.ticksUntilNextPathRecalculation - 1, 0);
-				if ((this.followingTargetEvenIfNotSeen || this.mob.getVisibilityCache().canSee(livingentity))
-						&& this.ticksUntilNextPathRecalculation <= 0
-						&& (this.pathedTargetX == 0.0D && this.pathedTargetY == 0.0D && this.pathedTargetZ == 0.0D
-								|| livingentity.squaredDistanceTo(this.pathedTargetX, this.pathedTargetY,
-										this.pathedTargetZ) >= 1.0D
-								|| this.mob.getRandom().nextFloat() < 0.05F)) {
-					this.pathedTargetX = livingentity.getX();
-					this.pathedTargetY = livingentity.getY();
-					this.pathedTargetZ = livingentity.getZ();
-					this.ticksUntilNextPathRecalculation = 4 + this.mob.getRandom().nextInt(7);
-					if (d0 > 1024.0D) {
-						this.ticksUntilNextPathRecalculation += 10;
-					} else if (d0 > 256.0D) {
-						this.ticksUntilNextPathRecalculation += 5;
-					}
-
-					if (!this.mob.getNavigation().startMovingTo(livingentity, this.speedModifier)) {
-						this.ticksUntilNextPathRecalculation += 15;
-					}
-				}
-
-				this.ticksUntilNextAttack = Math.max(this.ticksUntilNextAttack - 1, 0);
-				this.attack(livingentity, d0);
-			}
-		}
-
-		@Override
-		protected void attack(LivingEntity livingentity, double squaredDistance) {
-			double d0 = this.getSquaredMaxAttackDistance(livingentity);
-			if (squaredDistance <= d0 && this.getCooldown() <= 0) {
-				this.resetCooldown();
-				this.entity.setAttackingState(3);
-				this.mob.tryAttack(livingentity);
-			}
-		}
-
-		@Override
-		protected int getMaxCooldown() {
-			return 50;
-		}
-
-		@Override
-		protected double getSquaredMaxAttackDistance(LivingEntity attackTarget) {
-			return (double) (this.mob.getWidth() * 2.0F * this.mob.getWidth() * 2.0F + attackTarget.getWidth());
-		}
-	}
-
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.5D)
+				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.55D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.doomhunter_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.doomhunter_melee_damage)
 				.add(EntityAttributes.GENERIC_FLYING_SPEED, 2.25D)

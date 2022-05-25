@@ -21,7 +21,7 @@ public class DoomHunterRender extends GeoEntityRenderer<DoomHunterEntity> {
 	public RenderLayer getRenderType(DoomHunterEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureLocation(animatable));
+		return RenderLayer.getEntityCutout(getTextureLocation(animatable));
 	}
 
 	@Override
@@ -33,8 +33,8 @@ public class DoomHunterRender extends GeoEntityRenderer<DoomHunterEntity> {
 	public void render(GeoModel model, DoomHunterEntity animatable, float partialTicks, RenderLayer type,
 			MatrixStack matrixStackIn, VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder,
 			int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		super.render(model, animatable, partialTicks, type, matrixStackIn, renderTypeBuffer, vertexBuilder, packedLightIn,
-				packedOverlayIn, red, green, blue, alpha);
+		super.render(model, animatable, partialTicks, type, matrixStackIn, renderTypeBuffer, vertexBuilder,
+				packedLightIn, packedOverlayIn, red, green, blue, alpha);
 		if (animatable.getDataTracker().get(DoomHunterEntity.DEATH_STATE) == 0) {
 			model.getBone("sled").get().setHidden(false);
 		}
