@@ -18,7 +18,6 @@ import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.PrioritizedGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
@@ -199,21 +198,21 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 				this.parentEntity.getNavigation().startMovingTo(livingEntity, 0.75);
 				if (this.cooldown == 15) {
 					if (this.parentEntity.distanceTo(livingEntity) >= 3.0D) {
-					if (parentEntity.getHealth() < (parentEntity.getMaxHealth() * 0.50)) {
-						for (int l = 0; l < 16; ++l) {
-							double l1 = 1.25D * (double) (l + 1);
-							int m = 1 * l;
-							parentEntity.spawnFlames(parentEntity.getX() + (double) MathHelper.cos(f2) * l1,
-									parentEntity.getZ() + (double) MathHelper.sin(f2) * l1 + 0.5, d, e1, f2, m);
-							this.parentEntity.setAttackingState(2);
+						if (parentEntity.getHealth() < (parentEntity.getMaxHealth() * 0.50)) {
+							for (int l = 0; l < 16; ++l) {
+								double l1 = 1.25D * (double) (l + 1);
+								int m = 1 * l;
+								parentEntity.spawnFlames(parentEntity.getX() + (double) MathHelper.cos(f2) * l1,
+										parentEntity.getZ() + (double) MathHelper.sin(f2) * l1 + 0.5, d, e1, f2, m);
+								this.parentEntity.setAttackingState(2);
+							}
 						}
-					}
-					if (parentEntity.getHealth() > (parentEntity.getMaxHealth() * 0.50)) {
-						this.parentEntity.setAttackingState(1);
-						fireballEntity.updatePosition(this.parentEntity.getX() + vec3d.x * 2.0D,
-								this.parentEntity.getBodyY(0.5D) + 0.5D, parentEntity.getZ() + vec3d.z * 2.0D);
-						world.spawnEntity(fireballEntity);
-					}
+						if (parentEntity.getHealth() > (parentEntity.getMaxHealth() * 0.50)) {
+							this.parentEntity.setAttackingState(1);
+							fireballEntity.updatePosition(this.parentEntity.getX() + vec3d.x * 2.0D,
+									this.parentEntity.getBodyY(0.5D) + 0.5D, parentEntity.getZ() + vec3d.z * 2.0D);
+							world.spawnEntity(fireballEntity);
+						}
 					} else {
 						this.parentEntity.setAttackingState(3);
 						this.parentEntity.tryAttack(livingEntity);
