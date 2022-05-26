@@ -1,4 +1,10 @@
-v.4.2.11
+v.4.2.12
 
-- Mother Demon Arena spawns it's peices in order correctly now. 
-- Ports new Nether music disc from the Fabric version. 
+- Added REI support for the Gun Table Recipes.
+- New Armor Model of Launcher + Blade.
+- Armors rebalanced, removing Fire Prot 1 but boosting all stats. 
+- Fixes Nether Ambient Recipe.
+- Sentinel Hammer, Crucible, and Dark Lord Crucible now do their effects when hitting an entity instead of right-clicking.
+- Doom Hunter was rewritten for new animations and a phase system. Now has a sled phase with extra strength and armor and no sled with different speed.
+- Doom Hunter, Arch Maykr, Gladiator, Icon of Sin and Mother Demon do extra damage in thier next phase. 
+- Fixes Icon of Sin, Gladiator, and Mother Demon drops appearing in their first death phase.
