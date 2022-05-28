@@ -1030,9 +1030,9 @@ public class DoomConfig {
 			this.maykrdrone_max_group = builder.translation("text.doom.config.maykrdrone_max_group")
 					.defineInRange("Maykr Drone Max Group", 2, 1, Integer.MAX_VALUE);
 			this.maykrdrone_health = builder.translation("text.doom.config.maykrdrone_health")
-					.defineInRange("Sets Maykr Drone Max Health", 20, 1, Double.MAX_VALUE);
+					.defineInRange("Sets Maykr Drone Max Health", 50, 1, Double.MAX_VALUE);
 			this.maykrdrone_ranged_damage = builder.translation("text.doom.config.maykrdrone_ranged_damage")
-					.defineInRange("Sets Maykr Drone Ranged Damage", 2, 1, Double.MAX_VALUE);
+					.defineInRange("Sets Maykr Drone Ranged Damage", 5, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Blood Maykr");
@@ -1049,9 +1049,9 @@ public class DoomConfig {
 			this.bloodmaykr_max_group = builder.translation("text.doom.config.bloodmaykr_max_group")
 					.defineInRange("Blood Maykr Max Group", 1, 1, Integer.MAX_VALUE);
 			this.bloodmaykr_health = builder.translation("text.doom.config.bloodmaykr_health")
-					.defineInRange("Sets Blood Maykr Max Health", 45, 1, Double.MAX_VALUE);
+					.defineInRange("Sets Blood Maykr Max Health", 100, 1, Double.MAX_VALUE);
 			this.bloodmaykr_ranged_damage = builder.translation("text.doom.config.bloodmaykr_ranged_damage")
-					.defineInRange("Sets Blood Maykr Ranged Damage", 5, 1, Double.MAX_VALUE);
+					.defineInRange("Sets Blood Maykr Ranged Damage", 10, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Archmaykr");
