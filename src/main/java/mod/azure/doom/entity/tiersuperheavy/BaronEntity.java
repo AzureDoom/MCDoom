@@ -2,6 +2,7 @@ package mod.azure.doom.entity.tiersuperheavy;
 
 import java.util.Random;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
@@ -170,7 +171,7 @@ public class BaronEntity extends DemonEntity implements IAnimatable, IAnimationT
 		this.goalSelector.add(6, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
 		this.goalSelector.add(4, new RangedAttackGoal(this, new BaronEntity.FireballAttack(this)
-				.setProjectileOriginOffset(0.8, 0.4, 0.8).setDamage(config.baron_ranged_damage), 1.2));
+				.setProjectileOriginOffset(0.8, 0.4, 0.8).setDamage(DoomConfig.baron_ranged_damage), 1.2));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 		this.targetSelector.add(2, new TargetGoal(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new TargetGoal<>(this, MerchantEntity.class, true));
@@ -202,8 +203,8 @@ public class BaronEntity extends DemonEntity implements IAnimatable, IAnimationT
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.baron_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.baron_melee_damage)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.baron_health)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.baron_melee_damage)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 50D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}

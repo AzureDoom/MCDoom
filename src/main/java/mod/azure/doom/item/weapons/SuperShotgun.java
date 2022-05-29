@@ -8,6 +8,7 @@ import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.MeatHookEntity;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import mod.azure.doom.util.PlayerProperties;
@@ -88,8 +89,8 @@ public class SuperShotgun extends DoomBaseItem {
 			if (!world.isClient && stack.getItem() instanceof SuperShotgun) {
 				if (!((PlayerProperties) user).hasMeatHook()) {
 					MeatHookEntity hookshot = new MeatHookEntity(world, user);
-					hookshot.setProperties(stack, DoomMod.config.weapons.max_meathook_distance, 10, user.getPitch(),
-							user.getYaw(), 0f, 1.5f);
+					hookshot.setProperties(stack, DoomConfig.max_meathook_distance, 10, user.getPitch(), user.getYaw(),
+							0f, 1.5f);
 					hookshot.getDataTracker().set(MeatHookEntity.FORCED_YAW, user.getYaw());
 					world.spawnEntity(hookshot);
 				}
@@ -145,7 +146,7 @@ public class SuperShotgun extends DoomBaseItem {
 	public ShotgunShellEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
 		float j = EnchantmentHelper.getLevel(Enchantments.POWER, stack);
 		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter,
-				(DoomMod.config.weapons.shotgun_damage + (j * 2.0F)));
+				(DoomConfig.shotgun_damage + (j * 2.0F)));
 		return arrowentity;
 	}
 

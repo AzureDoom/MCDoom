@@ -5,6 +5,7 @@ import java.util.Random;
 
 import org.jetbrains.annotations.Nullable;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.CustomFireballEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
@@ -277,16 +278,16 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 				double g = livingEntity.getBodyY(0.5D) - (0.5D + this.parentEntity.getBodyY(0.5D));
 				double h = livingEntity.getZ() - (this.parentEntity.getZ() + vec3d.z * 2.0D);
 				CustomFireballEntity fireballEntity = new CustomFireballEntity(world, this.parentEntity, f, g, h,
-						config.motherdemon_ranged_damage + (this.parentEntity.dataTracker.get(DEATH_STATE) == 1
-								? config.motherdemon_phaseone_damage_boos
+						DoomConfig.motherdemon_ranged_damage + (this.parentEntity.dataTracker.get(DEATH_STATE) == 1
+								? DoomConfig.motherdemon_phaseone_damage_boos
 								: 0));
 				CustomFireballEntity fireballEntity1 = new CustomFireballEntity(world, this.parentEntity, f, g, h,
-						config.motherdemon_ranged_damage + (this.parentEntity.dataTracker.get(DEATH_STATE) == 1
-								? config.motherdemon_phaseone_damage_boos
+						DoomConfig.motherdemon_ranged_damage + (this.parentEntity.dataTracker.get(DEATH_STATE) == 1
+								? DoomConfig.motherdemon_phaseone_damage_boos
 								: 0));
 				CustomFireballEntity fireballEntity2 = new CustomFireballEntity(world, this.parentEntity, f, g, h,
-						config.motherdemon_ranged_damage + (this.parentEntity.dataTracker.get(DEATH_STATE) == 1
-								? config.motherdemon_phaseone_damage_boos
+						DoomConfig.motherdemon_ranged_damage + (this.parentEntity.dataTracker.get(DEATH_STATE) == 1
+								? DoomConfig.motherdemon_phaseone_damage_boos
 								: 0));
 				double d = Math.min(livingEntity.getY(), parentEntity.getY());
 				double e1 = Math.max(livingEntity.getY(), parentEntity.getY()) + 1.0D;
@@ -369,8 +370,9 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 
 		if (bl) {
 			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
-					config.motherdemon_ranged_damage
-							+ (this.dataTracker.get(DEATH_STATE) == 1 ? config.motherdemon_phaseone_damage_boos : 0));
+					DoomConfig.motherdemon_ranged_damage
+							+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.motherdemon_phaseone_damage_boos
+									: 0));
 			fang.setFireTicks(age);
 			fang.isInvisible();
 			this.world.spawnEntity(fang);
@@ -379,7 +381,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.motherdemon_health)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.motherdemon_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1000.0D);

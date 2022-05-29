@@ -2,6 +2,7 @@ package mod.azure.doom.entity.tierboss;
 
 import java.util.Random;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
@@ -15,10 +16,10 @@ import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -93,8 +94,8 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
-				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.SPIDERDEMON_AMBIENT, SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.SPIDERDEMON_AMBIENT,
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
@@ -128,7 +129,7 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 		this.goalSelector.add(4,
 				new RangedStrafeAttackGoal(this,
 						new SpiderMastermindEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.4, 0.8)
-								.setDamage(config.spider_mastermind_ranged_damage),
+								.setDamage(DoomConfig.spider_mastermind_ranged_damage),
 						1.0D, 5, 30, 15, 15F, 1).setMultiShot(6, 0));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 		this.targetSelector.add(2, new TargetGoal<>(this, PlayerEntity.class, true));
@@ -161,8 +162,8 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.spider_mastermind_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.spider_mastermind_melee_damage)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.spider_mastermind_health)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.spider_mastermind_melee_damage)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 

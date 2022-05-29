@@ -7,6 +7,7 @@ import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomBlocks;
 import net.minecraft.client.item.TooltipContext;
@@ -29,7 +30,7 @@ public class AxeMarauderItem extends AxeItem {
 
 	public AxeMarauderItem() {
 		super(DoomTier.DOOM_HIGHTEIR, 36, -2.4F, new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1)
-				.maxDamage(DoomMod.config.weapons.crucible_marauder_max_damage));
+				.maxDamage(DoomConfig.crucible_marauder_max_damage));
 	}
 
 	@Override

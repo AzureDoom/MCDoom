@@ -1,6 +1,7 @@
 package mod.azure.doom.entity.projectiles;
 
-import mod.azure.doom.DoomMod;
+import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.entity.DemonEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -26,9 +27,11 @@ public class CustomFireballEntity extends FireballEntity {
 			Entity entity = entityHitResult.getEntity();
 			Entity entity2 = this.getOwner();
 			entity.setOnFireFor(5);
-			entity.damage(DamageSource.magic(this, entity2), directHitDamage);
+			if (!(entity2 instanceof DemonEntity))
+				entity.damage(DamageSource.magic(this, entity2), directHitDamage);
 			if (entity2 instanceof LivingEntity) {
-				this.applyDamageEffects((LivingEntity) entity2, entity);
+				if (!(entity2 instanceof DemonEntity))
+					this.applyDamageEffects((LivingEntity) entity2, entity);
 				this.remove(Entity.RemovalReason.DISCARDED);
 			}
 		}
@@ -38,7 +41,7 @@ public class CustomFireballEntity extends FireballEntity {
 	protected void onCollision(HitResult hitResult) {
 		super.onCollision(hitResult);
 		if (!this.world.isClient) {
-			boolean bl = DoomMod.config.weapons.enable_block_breaking;
+			boolean bl = DoomConfig.enable_block_breaking;
 			this.world.createExplosion(null, this.getX(), this.getY(), this.getZ(), 1, true,
 					bl ? Explosion.DestructionType.DESTROY : Explosion.DestructionType.NONE);
 			this.discard();

@@ -3,6 +3,7 @@ package mod.azure.doom.entity.tierheavy;
 import java.util.EnumSet;
 import java.util.Random;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
@@ -231,7 +232,7 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable, IAn
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D).add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.pain_health)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.pain_health)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 

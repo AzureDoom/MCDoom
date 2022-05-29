@@ -5,9 +5,6 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
 
-import mod.azure.doom.DoomMod;
-import mod.azure.doom.config.DoomConfig.MobStats;
-import mod.azure.doom.config.DoomConfig.Weapons;
 import mod.azure.doom.network.EntityPacket;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -41,8 +38,6 @@ public class DemonEntity extends HostileEntity implements Angerable {
 			TrackedDataHandlerRegistry.INTEGER);
 	private static final UniformIntProvider ANGER_TIME_RANGE = TimeHelper.betweenSeconds(20, 39);
 	private UUID targetUuid;
-	public static MobStats config = DoomMod.config.stats;
-	public static Weapons rangedconfig = DoomMod.config.weapons;
 
 	protected DemonEntity(EntityType<? extends HostileEntity> type, World worldIn) {
 		super(type, worldIn);
@@ -135,13 +130,13 @@ public class DemonEntity extends HostileEntity implements Angerable {
 	protected EntityNavigation createNavigation(World world) {
 		return new SpiderNavigation(this, world);
 	}
-	
+
 	@Override
 	public void playAmbientSound() {
-        SoundEvent soundEvent = this.getAmbientSound();
-        if (soundEvent != null) {
-            this.playSound(soundEvent, 0.25F, this.getSoundPitch());
-        }
+		SoundEvent soundEvent = this.getAmbientSound();
+		if (soundEvent != null) {
+			this.playSound(soundEvent, 0.25F, this.getSoundPitch());
+		}
 	}
 
 }

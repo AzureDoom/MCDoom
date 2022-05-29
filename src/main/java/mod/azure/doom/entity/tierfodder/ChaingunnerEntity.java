@@ -2,6 +2,7 @@ package mod.azure.doom.entity.tierfodder;
 
 import java.util.Random;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
@@ -14,10 +15,10 @@ import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -134,7 +135,7 @@ public class ChaingunnerEntity extends DemonEntity implements IAnimatable, IAnim
 		this.goalSelector.add(4,
 				new RangedAttackGoal(this,
 						new RangedAttack(this).setProjectileOriginOffset(0.8, 0.4, 0.8)
-								.setDamage(rangedconfig.chaingun_bullet_damage)
+								.setDamage(DoomConfig.chaingun_bullet_damage)
 								.setSound(ModSoundEvents.CHAINGUN_SHOOT, 1.0F, 1.0F),
 						1.1D));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
@@ -166,7 +167,7 @@ public class ChaingunnerEntity extends DemonEntity implements IAnimatable, IAnim
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.chaingunner_health)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.chaingunner_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 2.5D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}

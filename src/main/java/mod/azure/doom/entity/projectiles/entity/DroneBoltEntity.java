@@ -1,5 +1,6 @@
 package mod.azure.doom.entity.projectiles.entity;
 
+import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
@@ -70,9 +71,11 @@ public class DroneBoltEntity extends ExplosiveProjectileEntity {
 		if (!this.world.isClient) {
 			Entity entity = entityHitResult.getEntity();
 			Entity entity2 = this.getOwner();
-			entity.damage(DamageSource.mob((LivingEntity) entity2), directHitDamage);
+			if (!(entity2 instanceof DemonEntity))
+				entity.damage(DamageSource.mob((LivingEntity) entity2), directHitDamage);
 			if (entity2 instanceof LivingEntity) {
-				this.applyDamageEffects((LivingEntity) entity2, entity);
+				if (!(entity2 instanceof DemonEntity))
+					this.applyDamageEffects((LivingEntity) entity2, entity);
 				this.remove(Entity.RemovalReason.DISCARDED);
 			}
 		}

@@ -2,8 +2,7 @@ package mod.azure.doom.entity.projectiles;
 
 import java.util.List;
 
-import mod.azure.doom.DoomMod;
-import mod.azure.doom.config.DoomConfig.Weapons;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
 import mod.azure.doom.network.EntityPacket;
@@ -47,7 +46,6 @@ public class ArgentBoltEntity extends PersistentProjectileEntity {
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
-	public static Weapons config = DoomMod.config.weapons;
 	private static final TrackedData<Boolean> PARTICLE = DataTracker.registerData(ArgentBoltEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
 	private LivingEntity shooter;
@@ -271,7 +269,7 @@ public class ArgentBoltEntity extends PersistentProjectileEntity {
 			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d)) / 6);
 			if (entity instanceof LivingEntity) {
 				if (y <= 1.0D) {
-					entity.damage(DamageSource.player((PlayerEntity) this.shooter), config.argent_bolt_damage);
+					entity.damage(DamageSource.player((PlayerEntity) this.shooter), DoomConfig.argent_bolt_damage);
 				}
 			}
 		}
@@ -296,7 +294,7 @@ public class ArgentBoltEntity extends PersistentProjectileEntity {
 				((LivingEntity) entity2).onAttacking(entity);
 			}
 		}
-		if (entity.damage(damageSource2, DoomMod.config.weapons.argent_bolt_damage)) {
+		if (entity.damage(damageSource2, DoomConfig.argent_bolt_damage)) {
 			if (entity instanceof LivingEntity) {
 				LivingEntity livingEntity = (LivingEntity) entity;
 				if (!this.world.isClient && entity2 instanceof LivingEntity) {

@@ -6,6 +6,7 @@ import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.RocketEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
@@ -110,8 +111,7 @@ public class RocketLauncher extends DoomBaseItem {
 
 	public RocketEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
 		float j = EnchantmentHelper.getLevel(Enchantments.POWER, stack);
-		RocketEntity arrowentity = new RocketEntity(worldIn, shooter,
-				(DoomMod.config.weapons.rocket_damage + (j * 2.0F)));
+		RocketEntity arrowentity = new RocketEntity(worldIn, shooter, (DoomConfig.rocket_damage + (j * 2.0F)));
 		return arrowentity;
 	}
 }

@@ -26,7 +26,7 @@ repositories {
     maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
     maven { url 'https://maven.blamejared.com' }
     maven { url 'https://plugins.gradle.org/m2/' }
-    maven { url 'https://jitpack.io' }
+    maven { url "https://api.modrinth.com/maven" }
 	maven { url = "https://maven.terraformersmc.com/" }
 	maven {url = "https://ladysnake.jfrog.io/artifactory/mods" }
 }
@@ -51,6 +51,7 @@ dependencies {
 	}
 	modImplementation "curse.maven:stfu-401978:3677546"
     modImplementation ("me.shedaniel.cloth:basic-math:0.6.1")
+    modImplementation "maven.modrinth:midnightlib:0.4.0"
 }
 
 processResources {
@@ -110,12 +111,11 @@ if (file('key.properties').exists()) {
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
 			addGameVersion("1.18.2")
-			addGameVersion("Quilt")
+			addGameVersion("Fabric")
 			addGameVersion("Java 17")
 
         	relations {
             	requiredDependency 'geckolib'  
-            	requiredDependency 'cloth-config'  
             	requiredDependency 'trinkets-fabric'  
         	}
         	mainArtifact(remapJar)

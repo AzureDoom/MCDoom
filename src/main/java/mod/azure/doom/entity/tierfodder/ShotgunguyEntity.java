@@ -2,6 +2,7 @@ package mod.azure.doom.entity.tierfodder;
 
 import java.util.Random;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
@@ -14,10 +15,10 @@ import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -131,7 +132,7 @@ public class ShotgunguyEntity extends DemonEntity implements IAnimatable, IAnima
 		this.goalSelector.add(6, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
 		this.goalSelector.add(4, new RangedAttackGoal(this,
-				new RangedAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(rangedconfig.shotgun_damage)
+				new RangedAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomConfig.shotgun_damage)
 						.setSound(ModSoundEvents.SHOTGUN_SHOOT, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
 				1.1D));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
@@ -163,7 +164,7 @@ public class ShotgunguyEntity extends DemonEntity implements IAnimatable, IAnima
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.shotgunguy_health)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.shotgunguy_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 2.5D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}

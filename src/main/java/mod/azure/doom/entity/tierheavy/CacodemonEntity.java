@@ -2,6 +2,7 @@ package mod.azure.doom.entity.tierheavy;
 
 import java.util.Random;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedStaticAttackGoal;
@@ -213,7 +214,7 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D).add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.cacodemon_health)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.cacodemon_health)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 

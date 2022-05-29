@@ -1,5 +1,6 @@
 package mod.azure.doom.entity.tierboss;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
@@ -9,10 +10,10 @@ import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,9 +37,10 @@ public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.add(6, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.goalSelector.add(4, new RangedStrafeAttackGoal(this, new SpiderMastermind2016Entity.FireballAttack(this)
-				.setProjectileOriginOffset(0.8, 0.2, 0.8).setDamage(config.spider_mastermind_ranged_damage),
-				1.0D, 20, 30, 15, 15F, 1));
+		this.goalSelector.add(4,
+				new RangedStrafeAttackGoal(this, new SpiderMastermind2016Entity.FireballAttack(this)
+						.setProjectileOriginOffset(0.8, 0.2, 0.8).setDamage(DoomConfig.spider_mastermind_ranged_damage),
+						1.0D, 20, 30, 15, 15F, 1));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 		this.targetSelector.add(2, new TargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new TargetGoal<>(this, MerchantEntity.class, true));
@@ -46,10 +48,10 @@ public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		AnimationController<SpiderMastermind2016Entity> controller = new AnimationController<SpiderMastermind2016Entity>(this,
-				"controller", 0, this::predicate);
-		AnimationController<SpiderMastermind2016Entity> controller1 = new AnimationController<SpiderMastermind2016Entity>(this,
-				"controller1", 0, this::predicate1);
+		AnimationController<SpiderMastermind2016Entity> controller = new AnimationController<SpiderMastermind2016Entity>(
+				this, "controller", 0, this::predicate);
+		AnimationController<SpiderMastermind2016Entity> controller1 = new AnimationController<SpiderMastermind2016Entity>(
+				this, "controller1", 0, this::predicate1);
 		controller.registerSoundListener(this::soundListener);
 		controller1.registerSoundListener(this::soundListener);
 		data.addAnimationController(controller);
@@ -59,8 +61,8 @@ public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
-				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.SPIDERDEMON_AMBIENT, SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.SPIDERDEMON_AMBIENT,
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {

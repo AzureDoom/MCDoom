@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
@@ -108,8 +109,8 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
-				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.SUPER_SHOTGUN_SHOOT, SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.SUPER_SHOTGUN_SHOOT,
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}
@@ -136,8 +137,8 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 		this.goalSelector.add(4,
 				new RangedAttackGoal(this,
 						new RangedAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(config.marauder_ssgdamage).setSound(ModSoundEvents.SUPER_SHOTGUN_SHOOT, 1.0F,
-										1.4F + this.getRandom().nextFloat() * 0.35F),
+								.setDamage(DoomConfig.marauder_ssgdamage).setSound(ModSoundEvents.SUPER_SHOTGUN_SHOOT,
+										1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.1D));
 		this.targetSelector.add(1, new MarauderEntity.TeleportTowardsPlayerGoal(this, this::shouldAngerAt));
 		this.targetSelector.add(2, new TargetGoal<>(this, PlayerEntity.class, true));
@@ -328,8 +329,8 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.marauder_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.marauder_axe_damage)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.marauder_health)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.marauder_axe_damage)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 

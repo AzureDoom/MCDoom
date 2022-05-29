@@ -5,6 +5,7 @@ import java.util.Random;
 
 import org.jetbrains.annotations.Nullable;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.tierheavy.PainEntity;
@@ -210,9 +211,9 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D).add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.lost_soul_health)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.lost_soul_health)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D).add(EntityAttributes.HORSE_JUMP_STRENGTH, 2.0D)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.lost_soul_melee_damage);
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.lost_soul_melee_damage);
 	}
 
 	@Override

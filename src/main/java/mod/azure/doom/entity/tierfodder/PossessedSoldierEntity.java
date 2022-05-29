@@ -3,6 +3,7 @@ package mod.azure.doom.entity.tierfodder;
 import java.util.Random;
 import java.util.SplittableRandom;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
@@ -20,10 +21,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
@@ -151,7 +152,7 @@ public class PossessedSoldierEntity extends DemonEntity implements IAnimatable, 
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
 		this.goalSelector.add(4,
 				new RangedStrafeAttackGoal(this, new PossessedSoldierEntity.FireballAttack(this)
-						.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(config.possessed_soldier_ranged_damage),
+						.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomConfig.possessed_soldier_ranged_damage),
 						1.0D, 5, 30, 15, 15F, 1));
 		if (this.getVariant() == 2) {
 			this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
@@ -186,7 +187,7 @@ public class PossessedSoldierEntity extends DemonEntity implements IAnimatable, 
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.possessed_soldier_health)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.possessed_soldier_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}

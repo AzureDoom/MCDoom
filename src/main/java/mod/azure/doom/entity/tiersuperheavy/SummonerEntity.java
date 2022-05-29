@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.util.registry.ModEntityTypes;
@@ -409,7 +410,7 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 
 		if (bl) {
 			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
-					config.summoner_ranged_damage);
+					DoomConfig.summoner_ranged_damage);
 			fang.setFireTicks(age);
 			fang.isInvisible();
 			this.world.spawnEntity(fang);
@@ -475,7 +476,7 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.summoner_health)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.summoner_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
@@ -494,7 +495,7 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 		this.goalSelector.setControlEnabled(Goal.Control.LOOK, flag);
 		super.updateGoalControls();
 	}
-	
+
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return ModSoundEvents.ARCHVILE_HURT;

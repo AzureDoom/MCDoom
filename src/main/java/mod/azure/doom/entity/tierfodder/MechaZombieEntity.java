@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoField;
 import java.util.Random;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
@@ -107,10 +108,9 @@ public class MechaZombieEntity extends DemonEntity implements IAnimatable, IAnim
 		this.goalSelector.add(6, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
 		this.goalSelector.add(4,
-				new RangedStrafeAttackGoal(this,
-						new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(config.mechazombie_ranged_damage).setSound(SoundEvents.ENTITY_BLAZE_SHOOT,
-										1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
+				new RangedStrafeAttackGoal(this, new FireballAttack(this, false)
+						.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomConfig.mechazombie_ranged_damage)
+						.setSound(SoundEvents.ENTITY_BLAZE_SHOOT, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.0D, 50, 30, 15, 15F, 1).setMultiShot(4, 3));
 		this.goalSelector.add(4, new DemonAttackGoal(this, 1.25D, 2));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
@@ -121,7 +121,7 @@ public class MechaZombieEntity extends DemonEntity implements IAnimatable, IAnim
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.mechazombie_health)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.mechazombie_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 

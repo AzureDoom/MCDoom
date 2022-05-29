@@ -1,6 +1,7 @@
 package mod.azure.doom.entity.projectiles.entity;
 
-import mod.azure.doom.DoomMod;
+import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
@@ -67,7 +68,7 @@ public class RocketMobEntity extends ExplosiveProjectileEntity implements IAnima
 	public AnimationFactory getFactory() {
 		return this.factory;
 	}
-	
+
 	@Override
 	public boolean doesRenderOnFire() {
 		return false;
@@ -111,9 +112,11 @@ public class RocketMobEntity extends ExplosiveProjectileEntity implements IAnima
 			Entity entity = entityHitResult.getEntity();
 			Entity entity2 = this.getOwner();
 			entity.setOnFireFor(5);
-			entity.damage(DamageSource.mob((LivingEntity) entity2), directHitDamage);
+			if (!(entity2 instanceof DemonEntity))
+				entity.damage(DamageSource.mob((LivingEntity) entity2), directHitDamage);
 			if (entity2 instanceof LivingEntity) {
-				this.applyDamageEffects((LivingEntity) entity2, entity);
+				if (!(entity2 instanceof DemonEntity))
+					this.applyDamageEffects((LivingEntity) entity2, entity);
 			}
 		}
 		this.playSound(ModSoundEvents.ROCKET_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
@@ -131,8 +134,7 @@ public class RocketMobEntity extends ExplosiveProjectileEntity implements IAnima
 
 	protected void explode() {
 		this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.0F, false,
-				DoomMod.config.weapons.enable_block_breaking ? Explosion.DestructionType.BREAK
-						: Explosion.DestructionType.NONE);
+				DoomConfig.enable_block_breaking ? Explosion.DestructionType.BREAK : Explosion.DestructionType.NONE);
 	}
 
 	public LivingEntity getShooter() {

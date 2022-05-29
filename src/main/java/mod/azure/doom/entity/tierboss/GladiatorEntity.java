@@ -5,6 +5,7 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedStrafeGladiatorAttackGoal;
 import mod.azure.doom.entity.attack.AbstractDoubleRangedAttack;
@@ -288,11 +289,11 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	@Override
 	protected void initGoals() {
-		this.goalSelector.add(4, new RangedStrafeGladiatorAttackGoal(this,
-				new FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
-						.setDamage(config.gladiator_ranged_damage
-								+ (this.dataTracker.get(DEATH_STATE) == 1 ? config.gladiator_phaseone_damage_boost : 0))
-						.setSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F)));
+		this.goalSelector.add(4, new RangedStrafeGladiatorAttackGoal(this, new FireballAttack(this)
+				.setProjectileOriginOffset(0.8, 0.8, 0.8)
+				.setDamage(DoomConfig.gladiator_ranged_damage
+						+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0))
+				.setSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F)));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));
 		this.goalSelector.add(6, new LookAtEntityGoal(this, LivingEntity.class, 8.0F));
 		this.goalSelector.add(6, new LookAroundGoal(this));
@@ -337,8 +338,8 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	public boolean tryAttack(Entity target) {
 		this.world.sendEntityStatus(this, (byte) 4);
-		boolean bl = target.damage(DamageSource.mob(this), (float) config.gladiator_melee_damage
-				+ (this.dataTracker.get(DEATH_STATE) == 1 ? config.gladiator_phaseone_damage_boost : 0));
+		boolean bl = target.damage(DamageSource.mob(this), (float) DoomConfig.gladiator_melee_damage
+				+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
 		if (bl) {
 			target.setVelocity(target.getVelocity().add(0.4f, 0.4f, 0.4f));
 			this.applyDamageEffects(this, target);
@@ -351,8 +352,8 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	public boolean tryAttack1(Entity target) {
 		this.world.sendEntityStatus(this, (byte) 4);
-		boolean bl = target.damage(DamageSource.mob(this), (float) config.gladiator_melee_damage
-				+ (this.dataTracker.get(DEATH_STATE) == 1 ? config.gladiator_phaseone_damage_boost : 0));
+		boolean bl = target.damage(DamageSource.mob(this), (float) DoomConfig.gladiator_melee_damage
+				+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
 		if (bl) {
 			this.applyDamageEffects(this, target);
 			this.world.createExplosion(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false,
@@ -370,8 +371,8 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.gladiator_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.gladiator_melee_damage)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.gladiator_health)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.gladiator_melee_damage)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 50D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}

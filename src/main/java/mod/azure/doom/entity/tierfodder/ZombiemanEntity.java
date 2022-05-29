@@ -2,6 +2,7 @@ package mod.azure.doom.entity.tierfodder;
 
 import java.util.Random;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
@@ -14,10 +15,10 @@ import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -90,10 +91,10 @@ public class ZombiemanEntity extends DemonEntity implements IAnimatable, IAnimat
 	public void registerControllers(AnimationData data) {
 		AnimationController<ZombiemanEntity> controller = new AnimationController<ZombiemanEntity>(this, "controller",
 				0, this::predicate);
-		AnimationController<ZombiemanEntity> controller1 = new AnimationController<ZombiemanEntity>(this,
-				"controller1", 0, this::predicate1);
-		AnimationController<ZombiemanEntity> controller2 = new AnimationController<ZombiemanEntity>(this,
-				"controller2", 0, this::predicate2);
+		AnimationController<ZombiemanEntity> controller1 = new AnimationController<ZombiemanEntity>(this, "controller1",
+				0, this::predicate1);
+		AnimationController<ZombiemanEntity> controller2 = new AnimationController<ZombiemanEntity>(this, "controller2",
+				0, this::predicate2);
 		controller.registerSoundListener(this::soundListener);
 		controller1.registerSoundListener(this::soundListener);
 		controller2.registerSoundListener(this::soundListener);
@@ -133,7 +134,7 @@ public class ZombiemanEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.goalSelector.add(4,
 				new RangedAttackGoal(this,
 						new RangedAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(rangedconfig.bullet_damage).setSound(ModSoundEvents.PISTOL_HIT, 1.0F,
+								.setDamage(DoomConfig.bullet_damage).setSound(ModSoundEvents.PISTOL_HIT, 1.0F,
 										1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.1D));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
@@ -166,7 +167,7 @@ public class ZombiemanEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.zombieman_health)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.zombieman_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 2.5D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}

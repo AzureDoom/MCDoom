@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.SplittableRandom;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import net.minecraft.entity.Entity;
@@ -131,7 +132,7 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.gorenest_health)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.gorenest_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 
