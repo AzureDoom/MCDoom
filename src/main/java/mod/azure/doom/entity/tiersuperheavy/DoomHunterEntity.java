@@ -2,6 +2,7 @@ package mod.azure.doom.entity.tiersuperheavy;
 
 import java.util.Random;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
@@ -188,8 +189,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 				double g = livingEntity.getBodyY(0.5D) - (0.5D + this.parentEntity.getBodyY(0.5D));
 				double h = livingEntity.getZ() - (this.parentEntity.getZ() + vec3d.z * 2.0D);
 				RocketMobEntity fireballEntity = new RocketMobEntity(world, this.parentEntity, f, g, h,
-						config.doomhunter_ranged_damage + (this.parentEntity.dataTracker.get(DEATH_STATE) == 1
-								? config.doomhunter_extra_phase_two_damage
+						DoomConfig.doomhunter_ranged_damage + (this.parentEntity.dataTracker.get(DEATH_STATE) == 1
+								? DoomConfig.doomhunter_extra_phase_two_damage
 								: 0));
 				double d = Math.min(livingEntity.getY(), parentEntity.getY());
 				double e1 = Math.max(livingEntity.getY(), parentEntity.getY()) + 1.0D;
@@ -252,8 +253,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 
 		if (bl) {
 			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
-					config.doomhunter_ranged_damage
-							+ (this.dataTracker.get(DEATH_STATE) == 1 ? config.doomhunter_extra_phase_two_damage : 0));
+					DoomConfig.doomhunter_ranged_damage
+							+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.doomhunter_extra_phase_two_damage : 0));
 			fang.setFireTicks(age);
 			fang.isInvisible();
 			this.world.spawnEntity(fang);
@@ -263,8 +264,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.55D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.doomhunter_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.doomhunter_melee_damage)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.doomhunter_health)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.doomhunter_melee_damage)
 				.add(EntityAttributes.GENERIC_FLYING_SPEED, 2.25D)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 50D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);

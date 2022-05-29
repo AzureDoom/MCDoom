@@ -1,8 +1,7 @@
 package mod.azure.doom;
 
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import mod.azure.doom.client.gui.GunTableScreenHandler;
+import mod.azure.doom.config.CustomMidnightConfig;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
 import mod.azure.doom.entity.tileentity.IconBlockEntity;
@@ -41,7 +40,6 @@ import software.bernie.geckolib3.GeckoLib;
 public class DoomMod implements ModInitializer {
 
 	public static DoomItems ITEMS;
-	public static DoomConfig config;
 	public static ModSoundEvents SOUNDS;
 	public static ModEntityTypes MOBS;
 	public static final String MODID = "doom";
@@ -91,9 +89,8 @@ public class DoomMod implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		DataTrackers.MEATHOOK_TRACKER.getId();
-		AutoConfig.register(DoomConfig.class, GsonConfigSerializer::new);
-		config = AutoConfig.getConfigHolder(DoomConfig.class).getConfig();
 		DoomBlocks.init();
+		CustomMidnightConfig.init(MODID, DoomConfig.class);
 		ITEMS = new DoomItems();
 		SOUNDS = new ModSoundEvents();
 		MOBS = new ModEntityTypes();
@@ -109,7 +106,7 @@ public class DoomMod implements ModInitializer {
 				FabricBlockEntityTypeBuilder.create(TickingLightEntity::new, DoomBlocks.TICKING_LIGHT_BLOCK)
 						.build(null));
 		MobSpawn.addSpawnEntries();
-		if (config.misc.enable_all_villager_trades) {
+		if (DoomConfig.enable_all_villager_trades) {
 			ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> DoomVillagerTrades.addTrades());
 		}
 		MobAttributes.init();

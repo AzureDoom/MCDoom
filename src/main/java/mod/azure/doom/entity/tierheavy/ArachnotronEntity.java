@@ -2,6 +2,7 @@ package mod.azure.doom.entity.tierheavy;
 
 import java.util.Random;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
@@ -115,7 +116,7 @@ public class ArachnotronEntity extends DemonEntity implements IAnimatable, IAnim
 		this.goalSelector.add(4,
 				new RangedStrafeAttackGoal(this,
 						new ArachnotronEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(config.arachnotron_ranged_damage),
+								.setDamage(DoomConfig.arachnotron_ranged_damage),
 						1.5D, 15, 30, 15, 15F, 1).setMultiShot(5, 3));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
@@ -148,7 +149,7 @@ public class ArachnotronEntity extends DemonEntity implements IAnimatable, IAnim
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.arachnotron_health)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.arachnotron_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 

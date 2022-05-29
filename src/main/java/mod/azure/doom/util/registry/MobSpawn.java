@@ -2,8 +2,7 @@ package mod.azure.doom.util.registry;
 
 import java.util.List;
 
-import mod.azure.doom.DoomMod;
-import mod.azure.doom.config.DoomConfig.Spawning;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
@@ -16,160 +15,184 @@ import net.minecraft.world.biome.Biome;
 
 public class MobSpawn {
 
-	private static Spawning config = DoomMod.config.spawn;
-
 	public static void addSpawnEntries() {
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.imp_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.IMP, config.imp_spawn_weight, config.imp_min_group,
-				config.imp_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.imp_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.IMP_STONE, config.impstone_spawn_weight, config.impstone_min_group,
-				config.impstone_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.pinky_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.PINKY, config.pinky_spawn_weight, config.pinky_min_group,
-				config.pinky_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.spectre_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.SPECTRE, config.spectre_spawn_weight, config.spectre_min_group,
-				config.spectre_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.lost_soul_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.LOST_SOUL, config.lost_soul_spawn_weight, config.lost_soul_min_group,
-				config.lost_soul_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.lost_soul_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.LOST_SOUL_ETERNAL, config.lost_soul_spawn_weight,
-				config.lost_soul_min_group, config.lost_soul_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.cacodemon_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.CACODEMON, config.cacodemon_spawn_weight, config.cacodemon_min_group,
-				config.cacodemon_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.archvile_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.ARCHVILE, config.archvile_spawn_weight, config.archvile_min_group,
-				config.archvile_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.baron_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.BARON, config.baron_spawn_weight, config.baron_min_group,
-				config.baron_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.mancubus_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.MANCUBUS, config.mancubus_spawn_weight, config.mancubus_min_group,
-				config.mancubus_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.revenant_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.REVENANT, config.revenant_spawn_weight, config.revenant_min_group,
-				config.revenant_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.revenant_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.REVENANT2016, config.revenant_spawn_weight,
-				config.revenant_min_group, config.revenant_max_group);
+		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.imp_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.IMP, DoomConfig.imp_spawn_weight, DoomConfig.imp_min_group,
+				DoomConfig.imp_max_group);
+		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.imp_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.IMP_STONE, DoomConfig.impstone_spawn_weight,
+				DoomConfig.impstone_min_group, DoomConfig.impstone_max_group);
+		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.pinky_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.PINKY, DoomConfig.pinky_spawn_weight, DoomConfig.pinky_min_group,
+				DoomConfig.pinky_max_group);
 		BiomeModifications.addSpawn(
-				BiomeSelectors.all().and(context -> parseBiomes(config.spider_mastermind_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.SPIDERMASTERMIND, config.spider_mastermind_spawn_weight,
-				config.spider_mastermind_min_group, config.spider_mastermind_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.zombieman_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.ZOMBIEMAN, config.zombieman_spawn_weight, config.zombieman_min_group,
-				config.zombieman_max_group);
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.spectre_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.SPECTRE, DoomConfig.spectre_spawn_weight,
+				DoomConfig.spectre_min_group, DoomConfig.spectre_max_group);
 		BiomeModifications.addSpawn(
-				BiomeSelectors.all().and(context -> parseBiomes(config.arachnotron_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.ARACHNOTRON, config.arachnotron_spawn_weight,
-				config.arachnotron_min_group, config.arachnotron_max_group);
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.lost_soul_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.LOST_SOUL, DoomConfig.lost_soul_spawn_weight,
+				DoomConfig.lost_soul_min_group, DoomConfig.lost_soul_max_group);
 		BiomeModifications.addSpawn(
-				BiomeSelectors.all().and(context -> parseBiomes(config.arachnotron_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.ARACHNOTRONETERNAL, config.arachnotron_spawn_weight,
-				config.arachnotron_min_group, config.arachnotron_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.gargoyle_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.GARGOYLE, config.gargoyle_spawn_weight, config.gargoyle_min_group,
-				config.gargoyle_max_group);
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.lost_soul_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.LOST_SOUL_ETERNAL, DoomConfig.lost_soul_spawn_weight,
+				DoomConfig.lost_soul_min_group, DoomConfig.lost_soul_max_group);
 		BiomeModifications.addSpawn(
-				BiomeSelectors.all().and(context -> parseBiomes(config.chaingunner_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.CHAINGUNNER, config.chaingunner_spawn_weight,
-				config.chaingunner_min_group, config.chaingunner_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.shotgunguy_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.SHOTGUNGUY, config.shotgunguy_spawn_weight,
-				config.shotgunguy_min_group, config.shotgunguy_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.marauder_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.MARAUDER, config.marauder_spawn_weight, config.marauder_min_group,
-				config.marauder_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.pain_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.PAIN, config.pain_spawn_weight, config.pain_min_group,
-				config.pain_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.hellknight_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.HELLKNIGHT, config.hellknight_spawn_weight,
-				config.hellknight_min_group, config.hellknight_max_group);
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.cacodemon_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.CACODEMON, DoomConfig.cacodemon_spawn_weight,
+				DoomConfig.cacodemon_min_group, DoomConfig.cacodemon_max_group);
 		BiomeModifications.addSpawn(
-				BiomeSelectors.all().and(context -> parseBiomes(config.hellknight2016_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.HELLKNIGHT2016, config.hellknight2016_spawn_weight,
-				config.hellknight2016_min_group, config.hellknight2016_max_group);
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.archvile_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.ARCHVILE, DoomConfig.archvile_spawn_weight,
+				DoomConfig.archvile_min_group, DoomConfig.archvile_max_group);
+		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.baron_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.BARON, DoomConfig.baron_spawn_weight, DoomConfig.baron_min_group,
+				DoomConfig.baron_max_group);
 		BiomeModifications.addSpawn(
-				BiomeSelectors.all().and(context -> parseBiomes(config.hellknight2016_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.DREADKNIGHT, config.hellknight2016_spawn_weight,
-				config.hellknight2016_min_group, config.hellknight2016_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.cyberdemon_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.CYBERDEMON, config.cyberdemon_spawn_weight,
-				config.cyberdemon_min_group, config.cyberdemon_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.unwilling_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.UNWILLING, config.unwilling_spawn_weight, config.unwilling_min_group,
-				config.unwilling_max_group);
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.mancubus_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.MANCUBUS, DoomConfig.mancubus_spawn_weight,
+				DoomConfig.mancubus_min_group, DoomConfig.mancubus_max_group);
 		BiomeModifications.addSpawn(
-				BiomeSelectors.all().and(context -> parseBiomes(config.possessed_scientist_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.POSSESSEDSCIENTIST, config.possessed_scientist_spawn_weight,
-				config.possessed_scientist_min_group, config.possessed_scientist_max_group);
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.revenant_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.REVENANT, DoomConfig.revenant_spawn_weight,
+				DoomConfig.revenant_min_group, DoomConfig.revenant_max_group);
 		BiomeModifications.addSpawn(
-				BiomeSelectors.all().and(context -> parseBiomes(config.possessed_soldier_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.POSSESSEDSOLDIER, config.possessed_soldier_spawn_weight,
-				config.possessed_soldier_min_group, config.possessed_soldier_max_group);
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.revenant_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.REVENANT2016, DoomConfig.revenant_spawn_weight,
+				DoomConfig.revenant_min_group, DoomConfig.revenant_max_group);
 		BiomeModifications.addSpawn(
-				BiomeSelectors.all().and(context -> parseBiomes(config.mechazombie_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.MECHAZOMBIE, config.mechazombie_spawn_weight,
-				config.mechazombie_min_group, config.mechazombie_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.cueball_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.CUEBALL, config.cueball_spawn_weight, config.cueball_min_group,
-				config.cueball_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.prowler_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.PROWLER, config.prowler_spawn_weight, config.prowler_min_group,
-				config.prowler_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.gorenest_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.GORE_NEST, config.gorenest_spawn_weight, config.gorenest_min_group,
-				config.gorenest_max_group);
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.spider_mastermind_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.SPIDERMASTERMIND, DoomConfig.spider_mastermind_spawn_weight,
+				DoomConfig.spider_mastermind_min_group, DoomConfig.spider_mastermind_max_group);
 		BiomeModifications.addSpawn(
-				BiomeSelectors.all().and(context -> parseBiomes(config.possessed_worker_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.POSSESSEDWORKER, config.possessed_worker_spawn_weight,
-				config.possessed_worker_min_group, config.possessed_worker_max_group);
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.zombieman_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.ZOMBIEMAN, DoomConfig.zombieman_spawn_weight,
+				DoomConfig.zombieman_min_group, DoomConfig.zombieman_max_group);
 		BiomeModifications.addSpawn(
-				BiomeSelectors.all().and(context -> parseBiomes(config.spider_mastermind_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.SPIDERMASTERMIND2016, config.spider_mastermind_spawn_weight,
-				config.spider_mastermind_min_group, config.spider_mastermind_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.doomhunter_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.DOOMHUNTER, config.doomhunter_spawn_weight,
-				config.doomhunter_min_group, config.doomhunter_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.tentacle_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.TENTACLE, config.tentacle_spawn_weight, config.tentacle_min_group,
-				config.tentacle_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.summoner_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.SUMMONER, config.summoner_spawn_weight, config.summoner_min_group,
-				config.summoner_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.whiplash_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.WHIPLASH, config.whiplash_spawn_weight, config.whiplash_min_group,
-				config.whiplash_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.baron_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.BARON2016, config.baron_spawn_weight, config.baron_min_group,
-				config.baron_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.baron_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.FIREBARON, config.baron_spawn_weight, config.baron_min_group,
-				config.baron_max_group);
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.arachnotron_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.ARACHNOTRON, DoomConfig.arachnotron_spawn_weight,
+				DoomConfig.arachnotron_min_group, DoomConfig.arachnotron_max_group);
 		BiomeModifications.addSpawn(
-				BiomeSelectors.all().and(context -> parseBiomes(config.armoredbaron_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.ARMORBARON, config.armoredbaron_spawn_weight,
-				config.armoredbaron_min_group, config.armoredbaron_max_group);
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.arachnotron_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.ARACHNOTRONETERNAL, DoomConfig.arachnotron_spawn_weight,
+				DoomConfig.arachnotron_min_group, DoomConfig.arachnotron_max_group);
 		BiomeModifications.addSpawn(
-				BiomeSelectors.all().and(context -> parseBiomes(config.motherdemon_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.MOTHERDEMON, config.motherdemon_spawn_weight,
-				config.motherdemon_min_group, config.motherdemon_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.maykrdrone_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.MAYKRDRONE, config.maykrdrone_spawn_weight,
-				config.maykrdrone_min_group, config.maykrdrone_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.bloodmaykr_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.BLOODMAYKR, config.bloodmaykr_spawn_weight,
-				config.bloodmaykr_min_group, config.bloodmaykr_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.archmaykr_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.ARCHMAKER, config.archmaykr_spawn_weight, config.archmaykr_min_group,
-				config.archmaykr_max_group);
-		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(config.gladiator_biomes, context)),
-				SpawnGroup.MONSTER, ModEntityTypes.GLADIATOR, config.gladiator_spawn_weight, config.gladiator_min_group,
-				config.gladiator_max_group);
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.gargoyle_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.GARGOYLE, DoomConfig.gargoyle_spawn_weight,
+				DoomConfig.gargoyle_min_group, DoomConfig.gargoyle_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.chaingunner_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.CHAINGUNNER, DoomConfig.chaingunner_spawn_weight,
+				DoomConfig.chaingunner_min_group, DoomConfig.chaingunner_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.shotgunguy_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.SHOTGUNGUY, DoomConfig.shotgunguy_spawn_weight,
+				DoomConfig.shotgunguy_min_group, DoomConfig.shotgunguy_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.marauder_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.MARAUDER, DoomConfig.marauder_spawn_weight,
+				DoomConfig.marauder_min_group, DoomConfig.marauder_max_group);
+		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.pain_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.PAIN, DoomConfig.pain_spawn_weight, DoomConfig.pain_min_group,
+				DoomConfig.pain_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.hellknight_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.HELLKNIGHT, DoomConfig.hellknight_spawn_weight,
+				DoomConfig.hellknight_min_group, DoomConfig.hellknight_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.hellknight2016_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.HELLKNIGHT2016, DoomConfig.hellknight2016_spawn_weight,
+				DoomConfig.hellknight2016_min_group, DoomConfig.hellknight2016_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.hellknight2016_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.DREADKNIGHT, DoomConfig.hellknight2016_spawn_weight,
+				DoomConfig.hellknight2016_min_group, DoomConfig.hellknight2016_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.cyberdemon_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.CYBERDEMON, DoomConfig.cyberdemon_spawn_weight,
+				DoomConfig.cyberdemon_min_group, DoomConfig.cyberdemon_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.unwilling_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.UNWILLING, DoomConfig.unwilling_spawn_weight,
+				DoomConfig.unwilling_min_group, DoomConfig.unwilling_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.possessed_scientist_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.POSSESSEDSCIENTIST, DoomConfig.possessed_scientist_spawn_weight,
+				DoomConfig.possessed_scientist_min_group, DoomConfig.possessed_scientist_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.possessed_soldier_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.POSSESSEDSOLDIER, DoomConfig.possessed_soldier_spawn_weight,
+				DoomConfig.possessed_soldier_min_group, DoomConfig.possessed_soldier_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.mechazombie_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.MECHAZOMBIE, DoomConfig.mechazombie_spawn_weight,
+				DoomConfig.mechazombie_min_group, DoomConfig.mechazombie_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.cueball_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.CUEBALL, DoomConfig.cueball_spawn_weight,
+				DoomConfig.cueball_min_group, DoomConfig.cueball_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.prowler_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.PROWLER, DoomConfig.prowler_spawn_weight,
+				DoomConfig.prowler_min_group, DoomConfig.prowler_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.gorenest_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.GORE_NEST, DoomConfig.gorenest_spawn_weight,
+				DoomConfig.gorenest_min_group, DoomConfig.gorenest_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.possessed_worker_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.POSSESSEDWORKER, DoomConfig.possessed_worker_spawn_weight,
+				DoomConfig.possessed_worker_min_group, DoomConfig.possessed_worker_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.spider_mastermind_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.SPIDERMASTERMIND2016, DoomConfig.spider_mastermind_spawn_weight,
+				DoomConfig.spider_mastermind_min_group, DoomConfig.spider_mastermind_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.doomhunter_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.DOOMHUNTER, DoomConfig.doomhunter_spawn_weight,
+				DoomConfig.doomhunter_min_group, DoomConfig.doomhunter_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.tentacle_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.TENTACLE, DoomConfig.tentacle_spawn_weight,
+				DoomConfig.tentacle_min_group, DoomConfig.tentacle_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.summoner_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.SUMMONER, DoomConfig.summoner_spawn_weight,
+				DoomConfig.summoner_min_group, DoomConfig.summoner_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.whiplash_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.WHIPLASH, DoomConfig.whiplash_spawn_weight,
+				DoomConfig.whiplash_min_group, DoomConfig.whiplash_max_group);
+		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.baron_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.BARON2016, DoomConfig.baron_spawn_weight, DoomConfig.baron_min_group,
+				DoomConfig.baron_max_group);
+		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.baron_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.FIREBARON, DoomConfig.baron_spawn_weight, DoomConfig.baron_min_group,
+				DoomConfig.baron_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.armoredbaron_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.ARMORBARON, DoomConfig.armoredbaron_spawn_weight,
+				DoomConfig.armoredbaron_min_group, DoomConfig.armoredbaron_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.motherdemon_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.MOTHERDEMON, DoomConfig.motherdemon_spawn_weight,
+				DoomConfig.motherdemon_min_group, DoomConfig.motherdemon_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.maykrdrone_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.MAYKRDRONE, DoomConfig.maykrdrone_spawn_weight,
+				DoomConfig.maykrdrone_min_group, DoomConfig.maykrdrone_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.bloodmaykr_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.BLOODMAYKR, DoomConfig.bloodmaykr_spawn_weight,
+				DoomConfig.bloodmaykr_min_group, DoomConfig.bloodmaykr_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.archmaykr_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.ARCHMAKER, DoomConfig.archmaykr_spawn_weight,
+				DoomConfig.archmaykr_min_group, DoomConfig.archmaykr_max_group);
+		BiomeModifications.addSpawn(
+				BiomeSelectors.all().and(context -> parseBiomes(DoomConfig.gladiator_biomes, context)),
+				SpawnGroup.MONSTER, ModEntityTypes.GLADIATOR, DoomConfig.gladiator_spawn_weight,
+				DoomConfig.gladiator_min_group, DoomConfig.gladiator_max_group);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.GLADIATOR, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnRestrictionAccessor.callRegister(ModEntityTypes.ARCHVILE, SpawnRestriction.Location.ON_GROUND,

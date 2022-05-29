@@ -16,7 +16,6 @@ import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import mod.azure.doom.entity.projectiles.UnmaykrBoltEntity;
 import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
 import mod.azure.doom.entity.projectiles.entity.BloodBoltEntity;
-import mod.azure.doom.entity.projectiles.entity.ChainBladeEntity;
 import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.entity.projectiles.entity.DroneBoltEntity;
@@ -39,7 +38,6 @@ public class ProjectilesEntityRegister {
 	public static List<EntityType<? extends Entity>> ENTITY_THAT_USE_ITEM_RENDERS = new LinkedList();
 
 	public static EntityType<DoomFireEntity> FIRING = projectile(DoomFireEntity::new, "archvile_firing");
-	public static EntityType<ChainBladeEntity> CHAINBLADE = projectile(ChainBladeEntity::new, "chain_blade");
 	public static EntityType<ArgentBoltEntity> ARGENT_BOLT = projectile(ArgentBoltEntity::new, "argent_bolt");
 	public static EntityType<DroneBoltEntity> DRONEBOLT_MOB = projectile(DroneBoltEntity::new, "dronebolt_mob");
 	public static EntityType<BloodBoltEntity> BLOODBOLT_MOB = projectile2(BloodBoltEntity::new, "bloodbolt_mob");

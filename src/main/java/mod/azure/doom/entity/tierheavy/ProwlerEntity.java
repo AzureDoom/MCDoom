@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
@@ -111,8 +112,8 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.prowler_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.prowler_melee_damage)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.prowler_health)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.prowler_melee_damage)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.4D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
@@ -124,7 +125,7 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 		this.goalSelector.add(4,
 				new ProwlerEntity.RangedStrafeAttackGoal(this,
 						new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(config.prowler_ranged_damage).setSound(SoundEvents.ENTITY_BLAZE_SHOOT, 1.0F,
+								.setDamage(DoomConfig.prowler_ranged_damage).setSound(SoundEvents.ENTITY_BLAZE_SHOOT, 1.0F,
 										1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.0D, 50, 30, 15, 15F).setMultiShot(3, 2));
 		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));

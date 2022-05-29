@@ -1,6 +1,7 @@
 package mod.azure.doom.entity.projectiles.entity;
 
-import mod.azure.doom.DoomMod;
+import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
@@ -106,13 +107,15 @@ public class GladiatorMaceEntity extends ExplosiveProjectileEntity implements IA
 			Entity entity = entityHitResult.getEntity();
 			Entity entity2 = this.getOwner();
 			entity.setOnFireFor(5);
-			entity.damage(DamageSource.mob((LivingEntity) entity2),
-					DoomMod.config.stats.gladiator_ranged_damage
-							+ (this.shooter.getDataTracker().get(GladiatorEntity.DEATH_STATE) == 1
-									? DoomMod.config.stats.gladiator_phaseone_damage_boost
-									: 0));
+			if (!(entity2 instanceof DemonEntity))
+				entity.damage(DamageSource.mob((LivingEntity) entity2),
+						DoomConfig.gladiator_ranged_damage
+								+ (this.shooter.getDataTracker().get(GladiatorEntity.DEATH_STATE) == 1
+										? DoomConfig.gladiator_phaseone_damage_boost
+										: 0));
 			if (entity2 instanceof LivingEntity) {
-				this.applyDamageEffects((LivingEntity) entity2, entity);
+				if (!(entity2 instanceof DemonEntity))
+					this.applyDamageEffects((LivingEntity) entity2, entity);
 			}
 		}
 		this.playSound(SoundEvents.BLOCK_NETHERITE_BLOCK_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));

@@ -5,6 +5,7 @@ import java.util.Random;
 
 import org.jetbrains.annotations.Nullable;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.KnockbackGoal;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
@@ -201,12 +202,12 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.add(4, new RangedAttackGoal(this, new FireballAttack(this, true)
 				.setProjectileOriginOffset(0.8, 0.4, 0.8)
-				.setDamage(config.archmaykr_ranged_damage + (this.dataTracker.get(DEATH_STATE) == 1
-						? config.archmaykr_phaseone_damage_boost
-						: this.dataTracker.get(DEATH_STATE) == 2 ? config.archmaykr_phasetwo_damage_boost
-								: this.dataTracker.get(DEATH_STATE) == 3 ? config.archmaykr_phasethree_damage_boost
+				.setDamage(DoomConfig.archmaykr_ranged_damage + (this.dataTracker.get(DEATH_STATE) == 1
+						? DoomConfig.archmaykr_phaseone_damage_boost
+						: this.dataTracker.get(DEATH_STATE) == 2 ? DoomConfig.archmaykr_phasetwo_damage_boost
+								: this.dataTracker.get(DEATH_STATE) == 3 ? DoomConfig.archmaykr_phasethree_damage_boost
 										: this.dataTracker.get(DEATH_STATE) == 4
-												? config.archmaykr_phasefour_damage_boost
+												? DoomConfig.archmaykr_phasefour_damage_boost
 												: 0)),
 				1.0D));
 		this.targetSelector.add(4, new KnockbackGoal(this, 1.0D));
@@ -366,7 +367,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 150.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.55D).add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.archmaykr_health)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.archmaykr_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 
@@ -479,12 +480,12 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 
 		if (bl) {
 			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
-					config.archmaykr_ranged_damage + (this.dataTracker.get(DEATH_STATE) == 1
-							? config.archmaykr_phaseone_damage_boost
-							: this.dataTracker.get(DEATH_STATE) == 2 ? config.archmaykr_phasetwo_damage_boost
-									: this.dataTracker.get(DEATH_STATE) == 3 ? config.archmaykr_phasethree_damage_boost
+					DoomConfig.archmaykr_ranged_damage + (this.dataTracker.get(DEATH_STATE) == 1
+							? DoomConfig.archmaykr_phaseone_damage_boost
+							: this.dataTracker.get(DEATH_STATE) == 2 ? DoomConfig.archmaykr_phasetwo_damage_boost
+									: this.dataTracker.get(DEATH_STATE) == 3 ? DoomConfig.archmaykr_phasethree_damage_boost
 											: this.dataTracker.get(DEATH_STATE) == 4
-													? config.archmaykr_phasefour_damage_boost
+													? DoomConfig.archmaykr_phasefour_damage_boost
 													: 0));
 			fang.setFireTicks(age);
 			fang.isInvisible();

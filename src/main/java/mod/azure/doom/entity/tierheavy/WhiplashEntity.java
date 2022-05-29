@@ -2,6 +2,7 @@ package mod.azure.doom.entity.tierheavy;
 
 import java.util.Random;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.util.registry.ModSoundEvents;
@@ -112,8 +113,8 @@ public class WhiplashEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.whiplash_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.whiplash_melee_damage)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.whiplash_health)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.whiplash_melee_damage)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.45D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}

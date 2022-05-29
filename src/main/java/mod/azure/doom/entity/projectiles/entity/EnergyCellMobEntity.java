@@ -1,5 +1,6 @@
 package mod.azure.doom.entity.projectiles.entity;
 
+import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
@@ -108,9 +109,11 @@ public class EnergyCellMobEntity extends ExplosiveProjectileEntity implements IA
 			Entity entity = entityHitResult.getEntity();
 			Entity entity2 = this.getOwner();
 			entity.setOnFireFor(5);
-			entity.damage(DamageSource.mob((LivingEntity) entity2), directHitDamage);
+			if (!(entity2 instanceof DemonEntity))
+				entity.damage(DamageSource.mob((LivingEntity) entity2), directHitDamage);
 			if (entity2 instanceof LivingEntity) {
-				this.applyDamageEffects((LivingEntity) entity2, entity);
+				if (!(entity2 instanceof DemonEntity))
+					this.applyDamageEffects((LivingEntity) entity2, entity);
 			}
 		}
 		this.playSound(ModSoundEvents.PLASMA_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));

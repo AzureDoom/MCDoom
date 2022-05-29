@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import mod.azure.doom.DoomMod;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.item.Items;
@@ -14,7 +14,7 @@ import net.minecraft.village.VillagerProfession;
 public class DoomVillagerTrades {
 
 	public static void addTrades() {
-		if (DoomMod.config.misc.enable_weaponsmith_trades) {
+		if (DoomConfig.enable_weaponsmith_trades) {
 		List<TradeOffers.Factory> weapon_trades = new ArrayList<>(
 				Arrays.asList(TradeOffers.PROFESSION_TO_LEVELED_TRADE.get(VillagerProfession.WEAPONSMITH).get(3)));
 		TradeOffers.Factory[] result = new TradeOffers.Factory[] {};
@@ -30,7 +30,7 @@ public class DoomVillagerTrades {
 				weapon_trades.toArray(result));
 		}
 
-		if (DoomMod.config.misc.enable_toolsmith_trades) {
+		if (DoomConfig.enable_toolsmith_trades) {
 			TradeOffers.Factory[] result = new TradeOffers.Factory[] {};
 		List<TradeOffers.Factory> tool_trades = new ArrayList<>(
 				Arrays.asList(TradeOffers.PROFESSION_TO_LEVELED_TRADE.get(VillagerProfession.TOOLSMITH).get(3)));
@@ -42,7 +42,7 @@ public class DoomVillagerTrades {
 				tool_trades.toArray(result));
 		}
 
-		if (DoomMod.config.misc.enable_mason_trades) {
+		if (DoomConfig.enable_mason_trades) {
 		List<TradeOffers.Factory> block_trades = new ArrayList<>(
 				Arrays.asList(TradeOffers.PROFESSION_TO_LEVELED_TRADE.get(VillagerProfession.MASON).get(3)));
 		TradeOffers.Factory[] result = new TradeOffers.Factory[] {};

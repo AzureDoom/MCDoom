@@ -6,7 +6,7 @@ import java.util.SplittableRandom;
 
 import org.jetbrains.annotations.Nullable;
 
-import mod.azure.doom.DoomMod;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.IconAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
@@ -242,12 +242,11 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.goalSelector.add(4,
-				new IconAttackGoal(this, new FireballAttack(this, true).setProjectileOriginOffset(0.8, 0.8, 0.8)
-						.setDamage(config.icon_melee_damage
-								+ (this.dataTracker.get(DEATH_STATE) == 1 ? config.icon_phaseone_damage_boos : 0))
-						.setSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
-						1.1D));
+		this.goalSelector.add(4, new IconAttackGoal(this, new FireballAttack(this, true)
+				.setProjectileOriginOffset(0.8, 0.8, 0.8)
+				.setDamage(DoomConfig.icon_melee_damage
+						+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.icon_phaseone_damage_boos : 0))
+				.setSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F), 1.1D));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
@@ -255,7 +254,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	public void spawnWave(int WaveAmount, LivingEntity entity) {
 		Random rand = new Random();
-		List<? extends String> waveEntries = DoomMod.config.stats.icon_wave_entries;
+		List<? extends String> waveEntries = DoomConfig.icon_wave_entries;
 		SplittableRandom random = new SplittableRandom();
 		for (int k = 1; k < WaveAmount; ++k) {
 			int r = random.nextInt(-3, 3);
@@ -315,8 +314,9 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 
 		if (bl) {
 			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
-					config.icon_melee_damage
-							+ (this.dataTracker.get(DEATH_STATE) == 1 ? config.icon_phaseone_damage_boos : 0));
+					DoomConfig.icon_melee_damage
+							+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.icon_phaseone_damage_boos
+									: 0));
 			fang.setFireTicks(age);
 			fang.isInvisible();
 			fang.age = -150;
@@ -326,8 +326,8 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 100.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomMod.config.stats.icon_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomMod.config.stats.icon_melee_damage)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.icon_health)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.icon_melee_damage)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1000.0D);
@@ -456,8 +456,8 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	public boolean tryAttack(Entity target) {
 		this.world.sendEntityStatus(this, (byte) 4);
-		boolean bl = target.damage(DamageSource.mob(this), (float) config.icon_melee_damage
-				+ (this.dataTracker.get(DEATH_STATE) == 1 ? config.icon_phaseone_damage_boos : 0));
+		boolean bl = target.damage(DamageSource.mob(this), (float) DoomConfig.icon_melee_damage
+				+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.icon_phaseone_damage_boos : 0));
 		if (bl) {
 			target.setVelocity(target.getVelocity().add(4.4f, 4.4f, 4.4f));
 			this.applyDamageEffects(this, target);

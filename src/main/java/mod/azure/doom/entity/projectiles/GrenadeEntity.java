@@ -2,8 +2,7 @@ package mod.azure.doom.entity.projectiles;
 
 import java.util.List;
 
-import mod.azure.doom.DoomMod;
-import mod.azure.doom.config.DoomConfig.Weapons;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tierheavy.CacodemonEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
@@ -48,7 +47,6 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 	protected boolean inAir;
 	protected String type;
 	private int ticksInAir;
-	public static Weapons config = DoomMod.config.weapons;
 	private static final TrackedData<Boolean> SPINNING = DataTracker.registerData(GrenadeEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
 	private LivingEntity shooter;
@@ -223,7 +221,7 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d)) / 6);
 			if (entity instanceof LivingEntity) {
 				if (y <= 1.0D) {
-					entity.damage(DamageSource.player((PlayerEntity) this.shooter), config.grenade_damage);
+					entity.damage(DamageSource.player((PlayerEntity) this.shooter), DoomConfig.grenade_damage);
 				}
 			}
 		}

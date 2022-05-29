@@ -2,6 +2,7 @@ package mod.azure.doom.entity.tierfodder;
 
 import java.util.Random;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.util.registry.ModSoundEvents;
@@ -83,8 +84,7 @@ public class UnwillingEntity extends DemonEntity implements IAnimatable, IAnimat
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.ZOMBIEMAN_AMBIENT,
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.ZOMBIEMAN_AMBIENT,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
@@ -122,8 +122,8 @@ public class UnwillingEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.unwilling_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.unwilling_melee_damage)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.unwilling_health)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.unwilling_melee_damage)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.15D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}

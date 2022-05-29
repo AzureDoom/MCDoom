@@ -5,6 +5,7 @@ import java.util.Random;
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.BulletEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
@@ -102,7 +103,7 @@ public class PistolItem extends DoomBaseItem {
 	public BulletEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
 		float j = EnchantmentHelper.getLevel(Enchantments.POWER, stack);
 		BulletEntity arrowentity = new BulletEntity(worldIn, shooter,
-				(DoomMod.config.weapons.bullet_damage + (j * 2.0F)));
+				(DoomConfig.bullet_damage + (j * 2.0F)));
 		return arrowentity;
 	}
 

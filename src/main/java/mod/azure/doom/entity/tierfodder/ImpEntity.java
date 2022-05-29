@@ -3,6 +3,7 @@ package mod.azure.doom.entity.tierfodder;
 import java.util.Random;
 import java.util.SplittableRandom;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
@@ -121,7 +122,7 @@ public class ImpEntity extends DemonEntity implements IAnimatable, IAnimationTic
 		this.goalSelector.add(4,
 				new RangedStrafeAttackGoal(this,
 						new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(config.imp_ranged_damage).setSound(SoundEvents.ENTITY_BLAZE_SHOOT, 1.0F,
+								.setDamage(DoomConfig.imp_ranged_damage).setSound(SoundEvents.ENTITY_BLAZE_SHOOT, 1.0F,
 										1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.0D, 5, 30, 15, 15F, 1).setMultiShot(2, 3));
 		this.goalSelector.add(4, new DemonAttackGoal(this, 1.25D, 2));
@@ -132,7 +133,7 @@ public class ImpEntity extends DemonEntity implements IAnimatable, IAnimationTic
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.imp_health)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.imp_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}

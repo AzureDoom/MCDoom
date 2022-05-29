@@ -2,6 +2,7 @@ package mod.azure.doom.entity.tierfodder;
 
 import java.util.Random;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.ThrowItemGoal;
 import mod.azure.doom.util.registry.ModSoundEvents;
@@ -139,8 +140,8 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.possessed_scientist_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.possessed_scientist_melee_damage)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.possessed_scientist_health)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.possessed_scientist_melee_damage)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.15D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}

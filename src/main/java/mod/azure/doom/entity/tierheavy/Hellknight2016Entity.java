@@ -3,6 +3,7 @@ package mod.azure.doom.entity.tierheavy;
 import java.util.EnumSet;
 import java.util.Random;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.entity.AreaEffectCloudEntity;
@@ -217,8 +218,8 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.hellknight2016_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.hellknight2016_melee_damage)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.hellknight2016_health)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.hellknight2016_melee_damage)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 50D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}

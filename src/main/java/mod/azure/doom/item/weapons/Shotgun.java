@@ -3,6 +3,7 @@ package mod.azure.doom.item.weapons;
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
@@ -104,7 +105,7 @@ public class Shotgun extends DoomBaseItem {
 	public ShotgunShellEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
 		float j = EnchantmentHelper.getLevel(Enchantments.POWER, stack);
 		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter,
-				(DoomMod.config.weapons.shotgun_damage + (j * 2.0F)));
+				(DoomConfig.shotgun_damage + (j * 2.0F)));
 		return arrowentity;
 	}
 
