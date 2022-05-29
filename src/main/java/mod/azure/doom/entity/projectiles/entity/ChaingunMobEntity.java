@@ -1,5 +1,6 @@
 package mod.azure.doom.entity.projectiles.entity;
 
+import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.registry.ModEntityTypes;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.core.particles.ParticleTypes;
@@ -129,10 +130,12 @@ public class ChaingunMobEntity extends AbstractHurtingProjectile {
 		if (!this.level.isClientSide) {
 			Entity entity = p_213868_1_.getEntity();
 			Entity entity1 = this.getOwner();
-			entity.hurt(DamageSource.mobAttack((LivingEntity) entity1), directHitDamage);
+			if (!(entity instanceof DemonEntity))
+				entity.hurt(DamageSource.mobAttack((LivingEntity) entity1), directHitDamage);
 			this.remove(RemovalReason.KILLED);
 			if (entity1 instanceof LivingEntity) {
-				this.doEnchantDamageEffects((LivingEntity) entity1, entity);
+				if (!(entity instanceof DemonEntity))
+					this.doEnchantDamageEffects((LivingEntity) entity1, entity);
 			}
 		}
 		this.playSound(ModSoundEvents.CHAINGUN_SHOOT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));

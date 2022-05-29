@@ -14,7 +14,6 @@ import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import mod.azure.doom.entity.projectiles.UnmaykrBoltEntity;
 import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
 import mod.azure.doom.entity.projectiles.entity.BloodBoltEntity;
-import mod.azure.doom.entity.projectiles.entity.ChainBladeEntity;
 import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.entity.projectiles.entity.DroneBoltEntity;
@@ -91,8 +90,9 @@ public class ModEntityTypes {
 	public static final RegistryObject<BlockEntityType<GunBlockEntity>> GUN_TABLE_ENTITY = TILE_TYPES.register(
 			"guntable", () -> BlockEntityType.Builder.of(GunBlockEntity::new, DoomBlocks.GUN_TABLE.get()).build(null));
 
-	public static final RegistryObject<BlockEntityType<TickingLightEntity>> TICKING_LIGHT_ENTITY = TILE_TYPES.register(
-			"lightblock", () -> BlockEntityType.Builder.of(TickingLightEntity::new, DoomBlocks.TICKING_LIGHT_BLOCK.get()).build(null));
+	public static final RegistryObject<BlockEntityType<TickingLightEntity>> TICKING_LIGHT_ENTITY = TILE_TYPES
+			.register("lightblock", () -> BlockEntityType.Builder
+					.of(TickingLightEntity::new, DoomBlocks.TICKING_LIGHT_BLOCK.get()).build(null));
 
 	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES,
 			DoomMod.MODID);
@@ -100,10 +100,6 @@ public class ModEntityTypes {
 	public static final RegistryObject<EntityType<DoomFireEntity>> FIRING = ENTITY_TYPES.register("archvile_firing",
 			() -> EntityType.Builder.<DoomFireEntity>of(DoomFireEntity::new, MobCategory.MISC).sized(0.5F, 0.8F)
 					.clientTrackingRange(10).build(new ResourceLocation(DoomMod.MODID, "archvile_firing").toString()));
-
-	public static final RegistryObject<EntityType<ChainBladeEntity>> CHAINBLADE = ENTITY_TYPES.register("chain_blade",
-			() -> EntityType.Builder.<ChainBladeEntity>of(ChainBladeEntity::new, MobCategory.MISC).sized(0.5F, 0.8F)
-					.clientTrackingRange(10).build(new ResourceLocation(DoomMod.MODID, "chain_blade").toString()));
 
 	public static final RegistryObject<EntityType<BarrelEntity>> BARREL = ENTITY_TYPES.register("barrel",
 			() -> EntityType.Builder.<BarrelEntity>of(BarrelEntity::new, MobCategory.MISC).sized(0.98F, 0.98F)

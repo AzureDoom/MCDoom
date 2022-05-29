@@ -1,5 +1,6 @@
 package mod.azure.doom.entity.projectiles;
 
+import mod.azure.doom.entity.DemonEntity;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,7 +30,8 @@ public class CustomSmallFireballEntity extends SmallFireball {
 				if (!flag) {
 					entity.setRemainingFireTicks(i);
 				} else if (entity1 instanceof LivingEntity) {
-					this.doEnchantDamageEffects((LivingEntity) entity1, entity);
+					if (!(entity instanceof DemonEntity))
+						this.doEnchantDamageEffects((LivingEntity) entity1, entity);
 					this.remove(RemovalReason.KILLED);
 				}
 			}

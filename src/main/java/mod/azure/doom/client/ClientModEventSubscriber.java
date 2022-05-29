@@ -96,7 +96,6 @@ import mod.azure.doom.client.render.projectiles.ShotgunShellRender;
 import mod.azure.doom.client.render.projectiles.UnmaykrBulletRender;
 import mod.azure.doom.client.render.projectiles.entity.ArchvileFiringRender;
 import mod.azure.doom.client.render.projectiles.entity.BloodBoltRender;
-import mod.azure.doom.client.render.projectiles.entity.ChainBladeRender;
 import mod.azure.doom.client.render.projectiles.entity.ChaingunMobRender;
 import mod.azure.doom.client.render.projectiles.entity.DroneBoltRender;
 import mod.azure.doom.client.render.projectiles.entity.EnergyCellMobRender;
@@ -203,7 +202,6 @@ public class ClientModEventSubscriber {
 		event.registerEntityRenderer(ModEntityTypes.GARGOYLE.get(), GargoyleRender::new);
 		event.registerEntityRenderer(ModEntityTypes.HELLKNIGHT2016.get(), Hellknight2016Render::new);
 		event.registerEntityRenderer(ModEntityTypes.FIRING.get(), ArchvileFiringRender::new);
-		event.registerEntityRenderer(ModEntityTypes.CHAINBLADE.get(), ChainBladeRender::new);
 		event.registerEntityRenderer(ModEntityTypes.SPECTRE.get(), SpectreRender::new);
 		event.registerEntityRenderer(ModEntityTypes.CUEBALL.get(), CueBallRender::new);
 		event.registerEntityRenderer(ModEntityTypes.PROWLER.get(), ProwlerRender::new);
