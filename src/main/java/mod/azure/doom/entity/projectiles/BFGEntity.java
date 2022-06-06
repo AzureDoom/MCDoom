@@ -1,6 +1,7 @@
 package mod.azure.doom.entity.projectiles;
 
 import java.util.List;
+import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -23,6 +24,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
@@ -51,6 +53,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -234,14 +237,20 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 		List<Entity> list = this.level.getEntities(this,
 				new AABB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
 		Vec3 vector3d1 = new Vec3(this.getX(), this.getY(), this.getZ());
+		Random rand = new Random();
+		List<? extends String> whitelistEntries = DoomConfig.SERVER.bfg_damage_mob_whitelist.get();
+		int randomIndex = rand.nextInt(whitelistEntries.size());
+		ResourceLocation randomElement1 = new ResourceLocation(whitelistEntries.get(randomIndex));
+		EntityType<?> randomElement = ForgeRegistries.ENTITIES.getValue(randomElement1);
 		for (int k2 = 0; k2 < list.size(); ++k2) {
 			Entity entity = list.get(k2);
+			Entity listEntity = randomElement.tryCast(entity);
 			if (!(entity instanceof Player || entity instanceof EnderDragon || entity instanceof GoreNestEntity
 					|| entity instanceof IconofsinEntity || entity instanceof ArchMakyrEntity
 					|| entity instanceof GladiatorEntity || entity instanceof MotherDemonEntity)
 					&& (entity instanceof Monster || entity instanceof Slime || entity instanceof Phantom
-							|| entity instanceof DemonEntity || entity instanceof Shulker
-							|| entity instanceof Hoglin)) {
+							|| entity instanceof DemonEntity || entity instanceof Shulker || entity instanceof Hoglin
+							|| (entity == listEntity))) {
 				double d12 = (double) (Mth.sqrt((float) entity.distanceToSqr(vector3d1)) / f2);
 				if (d12 <= 1.0D) {
 					if (entity.isAlive()) {
@@ -387,14 +396,20 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 		List<Entity> list = this.level.getEntities(this,
 				new AABB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
 		Vec3 vector3d = new Vec3(this.getX(), this.getY(), this.getZ());
+		Random rand = new Random();
+		List<? extends String> whitelistEntries = DoomConfig.SERVER.bfg_damage_mob_whitelist.get();
+		int randomIndex = rand.nextInt(whitelistEntries.size());
+		ResourceLocation randomElement1 = new ResourceLocation(whitelistEntries.get(randomIndex));
+		EntityType<?> randomElement = ForgeRegistries.ENTITIES.getValue(randomElement1);
 		for (int k2 = 0; k2 < list.size(); ++k2) {
 			Entity entity = list.get(k2);
+			Entity listEntity = randomElement.tryCast(entity);
 			if (!(entity instanceof Player || entity instanceof EnderDragon || entity instanceof GoreNestEntity
 					|| entity instanceof IconofsinEntity || entity instanceof ArchMakyrEntity
 					|| entity instanceof GladiatorEntity || entity instanceof MotherDemonEntity)
 					&& (entity instanceof Monster || entity instanceof Slime || entity instanceof Phantom
-							|| entity instanceof DemonEntity || entity instanceof Shulker
-							|| entity instanceof Hoglin)) {
+							|| entity instanceof DemonEntity || entity instanceof Shulker || entity instanceof Hoglin
+							|| (entity == listEntity))) {
 				double d12 = (double) (Mth.sqrt((float) entity.distanceToSqr(vector3d)) / f2);
 				if (d12 <= 1.0D) {
 					entity.hurt(DamageSource.playerAttack((Player) this.shooter),

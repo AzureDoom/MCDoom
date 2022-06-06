@@ -21,6 +21,7 @@ public class DoomConfig {
 		public final ConfigValue<Double> bfgball_damage;
 		public final ConfigValue<Double> bfgball_damage_dragon;
 		public final ConfigValue<Double> bfgball_damage_aoe;
+		public final ConfigValue<List<? extends String>> bfg_damage_mob_whitelist;
 		public final ConfigValue<Double> bullet_damage;
 		public final ConfigValue<Double> chaingun_bullet_damage;
 		public final ConfigValue<Double> energycell_damage;
@@ -390,6 +391,9 @@ public class DoomConfig {
 					.defineInRange("BFG Dragon Damage", 30.5, 1, Double.MAX_VALUE);
 			this.bfgball_damage_aoe = builder.translation("text.doom.config.bfgball_damage_aoe")
 					.defineInRange("BFG AoE Damage", 10.5, 1, Double.MAX_VALUE);
+			this.bfg_damage_mob_whitelist = builder.comment("Adds mob to list of mobs that can hurt by the BFG. Supports Registry Names (minecraft:cow)")
+					.translation("text.doom.config.bfg_damage_mob_whitelist")
+					.defineList("BFG Damage Whitelist", Lists.newArrayList(""), o -> o instanceof String);
 			this.bullet_damage = builder.translation("text.doom.config.bullet_damage").defineInRange("Bullet Damage",
 					5.5, 1, Double.MAX_VALUE);
 			this.chaingun_bullet_damage = builder.translation("text.doom.config.chaingun_bullet_damage")
