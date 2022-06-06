@@ -51,7 +51,6 @@ dependencies {
 	}
 	modImplementation "curse.maven:stfu-401978:3677546"
     modImplementation ("me.shedaniel.cloth:basic-math:0.6.1")
-    modImplementation "maven.modrinth:midnightlib:0.4.0"
 }
 
 processResources {
@@ -111,12 +110,12 @@ if (file('key.properties').exists()) {
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
 			addGameVersion("1.18.2")
-			addGameVersion("Fabric")
+			addGameVersion("Quilt")
 			addGameVersion("Java 17")
 
         	relations {
             	requiredDependency 'geckolib'  
-            	requiredDependency 'trinkets-fabric'  
+            	requiredDependency 'trinkets'  
         	}
         	mainArtifact(remapJar)
 

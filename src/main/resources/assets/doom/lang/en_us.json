@@ -403,6 +403,7 @@
 	"doom.midnightconfig.bfgball_damage": "BFG Damage.",
 	"doom.midnightconfig.bfgball_damage_dragon": "BFG Ender Dragon Damage.",
 	"doom.midnightconfig.bfgball_damage_aoe": "BFG AoE Damage.",
+	"doom.midnightconfig.bfg_damage_mob_whitelist": "BFG Damage Whitelist.",
 	"doom.midnightconfig.bullet_damage": "Bullet Damage.",
 	"doom.midnightconfig.chaingun_bullet_damage": "Chaingun Bullet Damage.",
 	"doom.midnightconfig.energycell_damage": "Energy Cell Damage.",

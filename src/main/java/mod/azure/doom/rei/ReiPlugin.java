@@ -17,7 +17,6 @@ public class ReiPlugin implements REIClientPlugin {
 	public void registerCategories(CategoryRegistry registry) {
 		registry.add(new DoomCategory());
 		registry.addWorkstations(CRAFTING, DoomCategory.ICON);
-		registry.removePlusButton(CRAFTING);
 	}
 
 	@Override

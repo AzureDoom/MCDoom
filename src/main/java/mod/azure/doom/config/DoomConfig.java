@@ -29,6 +29,8 @@ public class DoomConfig extends CustomMidnightConfig {
 	@Entry
 	public static float bfgball_damage_aoe = 10F;
 	@Entry
+	public static List<String> bfg_damage_mob_whitelist = Arrays.asList("");
+	@Entry
 	public static float bullet_damage = 5.5F;
 	@Entry
 	public static float chaingun_bullet_damage = 5.5F;
