@@ -1,6 +1,7 @@
 package mod.azure.doom.entity.projectiles;
 
 import java.util.List;
+import java.util.Random;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -40,12 +41,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -172,9 +175,14 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 		List<Entity> list = this.world.getOtherEntities(this,
 				new Box((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
 		Vec3d vec3d1 = new Vec3d(this.getX(), this.getY(), this.getZ());
-
+		Random rand = new Random();
+		List<? extends String> whitelistEntries = DoomConfig.bfg_damage_mob_whitelist;
+		int randomIndex = rand.nextInt(whitelistEntries.size());
+		Identifier randomElement1 = new Identifier(whitelistEntries.get(randomIndex));
+		EntityType<?> randomElement = Registry.ENTITY_TYPE.get(randomElement1);
 		for (int x = 0; x < list.size(); ++x) {
 			Entity entity = (Entity) list.get(x);
+			Entity listEntity = randomElement.downcast(entity);
 			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d1)) / q);
 			if (!(entity instanceof PlayerEntity || entity instanceof EnderDragonEntity
 					|| entity instanceof GoreNestEntity || entity instanceof IconofsinEntity
@@ -182,7 +190,7 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 					|| entity instanceof MotherDemonEntity)
 					&& (entity instanceof HostileEntity || entity instanceof SlimeEntity
 							|| entity instanceof PhantomEntity || entity instanceof ShulkerEntity
-							|| entity instanceof HoglinEntity)) {
+							|| entity instanceof HoglinEntity || (entity == listEntity))) {
 				if (y <= 1.0D) {
 					if (entity.isAlive()) {
 						entity.damage(DamageSource.explosion(this.shooter), DoomConfig.bfgball_damage_aoe);
@@ -306,9 +314,15 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 		List<Entity> list = this.world.getOtherEntities(this,
 				new Box((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
 		Vec3d vec3d = new Vec3d(this.getX(), this.getY(), this.getZ());
+		Random rand = new Random();
+		List<? extends String> whitelistEntries = DoomConfig.bfg_damage_mob_whitelist;
+		int randomIndex = rand.nextInt(whitelistEntries.size());
+		Identifier randomElement1 = new Identifier(whitelistEntries.get(randomIndex));
+		EntityType<?> randomElement = Registry.ENTITY_TYPE.get(randomElement1);
 
 		for (int x = 0; x < list.size(); ++x) {
 			Entity entity = (Entity) list.get(x);
+			Entity listEntity = randomElement.downcast(entity);
 			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d)) / q);
 			if (!(entity instanceof PlayerEntity || entity instanceof EnderDragonEntity
 					|| entity instanceof GoreNestEntity || entity instanceof IconofsinEntity
@@ -316,10 +330,9 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 					|| entity instanceof MotherDemonEntity)
 					&& (entity instanceof HostileEntity || entity instanceof SlimeEntity
 							|| entity instanceof PhantomEntity || entity instanceof ShulkerEntity
-							|| entity instanceof HoglinEntity)) {
+							|| entity instanceof HoglinEntity || (entity == listEntity))) {
 				if (y <= 1.0D) {
-					entity.damage(DamageSource.player((PlayerEntity) this.shooter),
-							DoomConfig.bfgball_damage);
+					entity.damage(DamageSource.player((PlayerEntity) this.shooter), DoomConfig.bfgball_damage);
 					if (!this.world.isClient) {
 						List<LivingEntity> list1 = this.world.getNonSpectatingEntities(LivingEntity.class,
 								this.getBoundingBox().expand(4.0D, 2.0D, 4.0D));
@@ -351,8 +364,7 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 			if (entity instanceof IconofsinEntity || entity instanceof ArchMakyrEntity
 					|| entity instanceof GladiatorEntity || entity instanceof MotherDemonEntity) {
 				if (entity.isAlive()) {
-					entity.damage(DamageSource.player((PlayerEntity) this.shooter),
-							DoomConfig.bfgball_damage * 0.1F);
+					entity.damage(DamageSource.player((PlayerEntity) this.shooter), DoomConfig.bfgball_damage * 0.1F);
 				}
 			}
 		}
