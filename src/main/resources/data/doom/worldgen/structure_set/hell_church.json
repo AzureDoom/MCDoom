@@ -1,12 +1,12 @@
 {
 	"structures": [
 		{
-			"structure": "doom:code_structure_gladiator_fight",
+			"structure": "doom:hell_church",
 			"weight": 1
 		}
 	],
 	"placement": {
-		"salt": 1234567892,
+		"salt": 1234567890,
 		"spacing": 80,
 		"separation": 20,
 		"type": "minecraft:random_spread"

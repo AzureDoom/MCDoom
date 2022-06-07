@@ -32,8 +32,8 @@ import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 version = project.mod_version
-group = "mod.azure.doomweapon"
-archivesBaseName = "MCDoom-1.18.2"
+group = "mod.azure.doom"
+archivesBaseName = "MCDoom-Forge-1.19"
 
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -100,14 +100,11 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.18.2-40.1.19'
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18.2-5.0.6.3")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18.2-5.0.6.3:api")
-	implementation fg.deobf('software.bernie.geckolib:geckolib-1.18-forge:3.0.16')
+	implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19:3.1.0')
 	annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-    implementation fg.deobf("curse.maven:stfu-407174:3759881")
-    implementation fg.deobf("curse.maven:toolstats-377109:3697308")
-    implementation fg.deobf("curse.maven:bookshelf-228525:3753798")
-    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:8.1.457")
-    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:6.2.62")
-    implementation fg.deobf("dev.architectury:architectury-forge:4.4.60")
+    //implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:8.1.457")
+    //implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:6.2.62")
+    //implementation fg.deobf("dev.architectury:architectury-forge:4.4.60")
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -171,7 +168,7 @@ if (file('key.properties').exists()) {
         	releaseType = "${curse_release}"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
-        	addGameVersion("1.18.2")
+        	addGameVersion("1.19")
         	addGameVersion("Forge")
         	addGameVersion("Java 17")
 

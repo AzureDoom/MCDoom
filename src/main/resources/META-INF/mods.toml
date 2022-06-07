@@ -13,12 +13,12 @@ Adds Doom into Minecraft
 [[dependencies.geckolib]]
     modId="geckolib3"
     mandatory=true
-    versionRange="[3.0.10,)"
+    versionRange="[3.1.0,)"
     ordering="BEFORE"
     side="BOTH"
 [[dependencies.forge]]
     modId="forge"
     mandatory=true 
-    versionRange="[37.0.59,)" 
+    versionRange="[41.0.0,)" 
     ordering="NONE"
     side="BOTH"
