@@ -65,7 +65,7 @@ public class BFG9000 extends DoomBaseItem {
 	}
 
 	public static float getArrowVelocity(int charge) {
-		float f = (float) charge / 20.0F;
+		float f = charge / 20.0F;
 		f = (f * f + f * 2.0F) / 3.0F;
 		if (f > 1.0F) {
 			f = 1.0F;

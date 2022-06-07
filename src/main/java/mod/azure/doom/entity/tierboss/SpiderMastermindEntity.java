@@ -1,7 +1,5 @@
 package mod.azure.doom.entity.tierboss;
 
-import java.util.Random;
-
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
@@ -32,6 +30,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -171,7 +170,7 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 	public EntityData initialize(ServerWorldAccess serverWorldAccess, LocalDifficulty difficulty,
 			SpawnReason spawnReason, EntityData entityData, NbtCompound entityTag) {
 		entityData = super.initialize(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
-		this.initEquipment(difficulty);
+		this.initEquipment(random, difficulty);
 
 		return entityData;
 	}

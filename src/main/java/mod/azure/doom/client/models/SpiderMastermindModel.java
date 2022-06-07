@@ -11,17 +11,17 @@ public class SpiderMastermindModel extends AnimatedTickingGeoModel<SpiderMasterm
 	}
 
 	@Override
-	public Identifier getModelLocation(SpiderMastermindEntity object) {
+	public Identifier getModelResource(SpiderMastermindEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/spidermastermind.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(SpiderMastermindEntity object) {
+	public Identifier getTextureResource(SpiderMastermindEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/spidermastermind-texturemap.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(SpiderMastermindEntity object) {
+	public Identifier getAnimationResource(SpiderMastermindEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/spidermastermind_animation.json");
 	}
 }

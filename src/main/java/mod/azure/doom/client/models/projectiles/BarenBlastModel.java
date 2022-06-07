@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class BarenBlastModel extends AnimatedGeoModel<BarenBlastEntity> {
 	@Override
-	public Identifier getModelLocation(BarenBlastEntity object) {
+	public Identifier getModelResource(BarenBlastEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/smallprojectile.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(BarenBlastEntity object) {
+	public Identifier getTextureResource(BarenBlastEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/projectiles/plasma_ball_red.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(BarenBlastEntity animatable) {
+	public Identifier getAnimationResource(BarenBlastEntity animatable) {
 		return new Identifier(DoomMod.MODID, "animations/smallprojectile.animation.json");
 	}
 }

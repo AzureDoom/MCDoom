@@ -12,7 +12,6 @@ import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -29,7 +28,7 @@ public class MaykrDoomArmor extends ArmorItem implements IAnimatable {
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<MaykrDoomArmor>(this, "controller", 20, this::predicate));
+		data.addAnimationController(new AnimationController<>(this, "controller", 20, this::predicate));
 	}
 
 	private <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
@@ -53,7 +52,7 @@ public class MaykrDoomArmor extends ArmorItem implements IAnimatable {
 	@Override
 	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
 		tooltip.add(
-				new TranslatableText("doom.makyrarmor.text").formatted(Formatting.YELLOW).formatted(Formatting.ITALIC));
+				Text.translatable("doom.makyrarmor.text").formatted(Formatting.YELLOW).formatted(Formatting.ITALIC));
 		super.appendTooltip(stack, world, tooltip, context);
 	}
 

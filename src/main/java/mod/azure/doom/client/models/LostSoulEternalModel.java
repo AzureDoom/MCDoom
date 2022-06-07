@@ -18,17 +18,17 @@ public class LostSoulEternalModel extends AnimatedTickingGeoModel<LostSoulEntity
 			new Identifier(DoomMod.MODID, "textures/entity/lostsould_eternal_8.png") };
 
 	@Override
-	public Identifier getModelLocation(LostSoulEntity object) {
+	public Identifier getModelResource(LostSoulEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/lostsouleternal.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(LostSoulEntity object) {
+	public Identifier getTextureResource(LostSoulEntity object) {
 		return TEX[(object.getFlameTimer())];
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(LostSoulEntity object) {
+	public Identifier getAnimationResource(LostSoulEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/lostsoul_animation.json");
 	}
 }

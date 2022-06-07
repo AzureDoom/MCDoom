@@ -11,7 +11,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.registry.Registry;
 
-public class EntityPacketOnClient {
+public class ClientEntityPacket {
 	@Environment(EnvType.CLIENT)
 	public static void onPacket(MinecraftClient context, PacketByteBuf byteBuf) {
 		EntityType<?> type = Registry.ENTITY_TYPE.get(byteBuf.readVarInt());

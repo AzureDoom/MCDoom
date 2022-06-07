@@ -15,10 +15,9 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import mod.azure.doom.util.registry.DoomBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 public class DoomCategory implements DisplayCategory<DoomDisplay> {
-	public static final TranslatableText TITLE = new TranslatableText("rei.doom.crafting");
+	public static final Text TITLE = Text.translatable("rei.doom.crafting");
 	public static final EntryStack<ItemStack> ICON = EntryStacks.of(DoomBlocks.GUN_TABLE);
 
 	@Override
@@ -58,7 +57,7 @@ public class DoomCategory implements DisplayCategory<DoomDisplay> {
 					.disableBackground());
 			widgets.add(Widgets
 					.createLabel(new Point(display.count.get(0).intValue() < 10 ? startPoint.x + 17 : startPoint.x + 13,
-							startPoint.y + 1), new TranslatableText(display.count.get(0).toString()))
+							startPoint.y + 1), Text.translatable(display.count.get(0).toString()))
 					.horizontalAlignment(50));
 		}
 
@@ -68,7 +67,7 @@ public class DoomCategory implements DisplayCategory<DoomDisplay> {
 					.entries(display.input.get(1)).disableBackground().unmarkInputOrOutput());
 			widgets.add(Widgets
 					.createLabel(new Point(display.count.get(1).intValue() < 10 ? startPoint.x + 46 : startPoint.x + 43,
-							startPoint.y + 1), new TranslatableText(display.count.get(1).toString())));
+							startPoint.y + 1), Text.translatable(display.count.get(1).toString())));
 		}
 
 		if (display.count.get(2).intValue() > 0) {
@@ -77,7 +76,7 @@ public class DoomCategory implements DisplayCategory<DoomDisplay> {
 					.entries(display.input.get(2)).disableBackground());
 			widgets.add(Widgets
 					.createLabel(new Point(display.count.get(2).intValue() < 10 ? startPoint.x + 76 : startPoint.x + 73,
-							startPoint.y + 1), new TranslatableText(display.count.get(2).toString())));
+							startPoint.y + 1), Text.translatable(display.count.get(2).toString())));
 		}
 
 		if (display.count.get(3).intValue() > 0) {
@@ -86,7 +85,7 @@ public class DoomCategory implements DisplayCategory<DoomDisplay> {
 					.disableBackground());
 			widgets.add(Widgets
 					.createLabel(new Point(display.count.get(3).intValue() < 10 ? startPoint.x + 16 : startPoint.x + 14,
-							startPoint.y + 31), new TranslatableText(display.count.get(3).toString())));
+							startPoint.y + 31), Text.translatable(display.count.get(3).toString())));
 		}
 
 		if (display.count.get(4).intValue() > 0) {
@@ -95,7 +94,7 @@ public class DoomCategory implements DisplayCategory<DoomDisplay> {
 					.entries(display.input.get(4)).disableBackground());
 			widgets.add(Widgets
 					.createLabel(new Point(display.count.get(4).intValue() < 10 ? startPoint.x + 46 : startPoint.x + 43,
-							startPoint.y + 31), new TranslatableText(display.count.get(4).toString())));
+							startPoint.y + 31), Text.translatable(display.count.get(4).toString())));
 		}
 
 		widgets.add(Widgets.createArrow(new Point(startPoint.x + 70, startPoint.y + 20)));

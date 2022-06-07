@@ -15,17 +15,17 @@ public class GargoyleModel extends AnimatedTickingGeoModel<GargoyleEntity> {
 	}
 
 	@Override
-	public Identifier getModelLocation(GargoyleEntity object) {
+	public Identifier getModelResource(GargoyleEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/gargoyleimp.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(GargoyleEntity object) {
+	public Identifier getTextureResource(GargoyleEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/gargoyleimp.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(GargoyleEntity object) {
+	public Identifier getAnimationResource(GargoyleEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/gargoyleimp.animation.json");
 	}
 

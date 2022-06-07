@@ -24,7 +24,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
@@ -109,8 +108,8 @@ public class DShotgun extends DoomBaseItem {
 	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
 		super.appendTooltip(stack, world, tooltip, context);
 		tooltip.add(
-				new TranslatableText("doom.doomed_credit.text").formatted(Formatting.RED).formatted(Formatting.ITALIC));
-		tooltip.add(new TranslatableText("doom.doomed_credit1.text").formatted(Formatting.RED)
+				Text.translatable("doom.doomed_credit.text").formatted(Formatting.RED).formatted(Formatting.ITALIC));
+		tooltip.add(Text.translatable("doom.doomed_credit1.text").formatted(Formatting.RED)
 				.formatted(Formatting.ITALIC));
 	}
 

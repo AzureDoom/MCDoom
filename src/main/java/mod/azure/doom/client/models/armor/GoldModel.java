@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class GoldModel extends AnimatedGeoModel<GoldDoomArmor> {
 	@Override
-	public Identifier getModelLocation(GoldDoomArmor object) {
+	public Identifier getModelResource(GoldDoomArmor object) {
 		return new Identifier(DoomMod.MODID, "geo/doomarmor.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(GoldDoomArmor object) {
+	public Identifier getTextureResource(GoldDoomArmor object) {
 		return new Identifier(DoomMod.MODID, "textures/models/armor/gold_armor_layer_1.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(GoldDoomArmor animatable) {
+	public Identifier getAnimationResource(GoldDoomArmor animatable) {
 		return new Identifier(DoomMod.MODID, "animations/armor_animation.json");
 	}
 }

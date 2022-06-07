@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class SSGModel extends AnimatedGeoModel<SuperShotgun> {
 	@Override
-	public Identifier getModelLocation(SuperShotgun object) {
+	public Identifier getModelResource(SuperShotgun object) {
 		return new Identifier(DoomMod.MODID, "geo/supershotgun.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(SuperShotgun object) {
+	public Identifier getTextureResource(SuperShotgun object) {
 		return new Identifier(DoomMod.MODID, "textures/items/supershotgun.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(SuperShotgun animatable) {
+	public Identifier getAnimationResource(SuperShotgun animatable) {
 		return new Identifier(DoomMod.MODID, "animations/supershotgun.animation.json");
 	}
 }

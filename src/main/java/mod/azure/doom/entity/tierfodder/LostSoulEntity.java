@@ -1,15 +1,13 @@
 package mod.azure.doom.entity.tierfodder;
 
 import java.util.EnumSet;
-import java.util.Random;
 
 import org.jetbrains.annotations.Nullable;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
-import mod.azure.doom.entity.tierheavy.PainEntity;
-import mod.azure.doom.network.EntityPacket;
+import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -45,11 +43,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.explosion.Explosion;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
@@ -207,7 +203,7 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 
 	@Override
 	public Packet<?> createSpawnPacket() {
-		return EntityPacket.createPacket(this);
+		return DoomEntityPacket.createPacket(this);
 	}
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
@@ -226,12 +222,6 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
-	}
-
-	public static boolean canSpawn(EntityType<PainEntity> type, WorldAccess world, SpawnReason spawnReason,
-			BlockPos pos, Random random) {
-		return world.getDifficulty() != Difficulty.PEACEFUL && random.nextInt(20) == 0
-				&& canMobSpawn(type, world, spawnReason, pos, random);
 	}
 
 	private boolean areFlagsSet(int mask) {

@@ -25,7 +25,7 @@ public class BarenBlastRender extends GeoProjectilesRenderer<BarenBlastEntity> {
 	public RenderLayer getRenderType(BarenBlastEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 
 }

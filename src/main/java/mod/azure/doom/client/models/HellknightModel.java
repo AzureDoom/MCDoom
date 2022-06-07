@@ -15,17 +15,17 @@ public class HellknightModel extends AnimatedTickingGeoModel<HellknightEntity> {
 	}
 
 	@Override
-	public Identifier getModelLocation(HellknightEntity object) {
+	public Identifier getModelResource(HellknightEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/hellknight.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(HellknightEntity object) {
+	public Identifier getTextureResource(HellknightEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/hellknight-texturemap.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(HellknightEntity object) {
+	public Identifier getAnimationResource(HellknightEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/baron_hell_animation.json");
 	}
 

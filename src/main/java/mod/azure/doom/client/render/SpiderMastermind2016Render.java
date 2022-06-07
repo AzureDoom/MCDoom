@@ -20,7 +20,7 @@ public class SpiderMastermind2016Render extends GeoEntityRenderer<SpiderMastermi
 	public RenderLayer getRenderType(SpiderMastermind2016Entity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 
 	@Override

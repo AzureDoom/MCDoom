@@ -1,11 +1,10 @@
 package mod.azure.doom.entity;
 
-import java.util.Random;
 import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
 
-import mod.azure.doom.network.EntityPacket;
+import mod.azure.doom.network.DoomEntityPacket;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
@@ -26,6 +25,7 @@ import net.minecraft.tag.FluidTags;
 import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
@@ -48,7 +48,7 @@ public class DemonEntity extends HostileEntity implements Angerable {
 
 	@Override
 	public Packet<?> createSpawnPacket() {
-		return EntityPacket.createPacket(this);
+		return DoomEntityPacket.createPacket(this);
 	}
 
 	@Override

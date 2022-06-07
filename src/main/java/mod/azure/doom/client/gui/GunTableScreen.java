@@ -15,7 +15,7 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -209,7 +209,7 @@ public class GunTableScreen extends HandledScreen<GunTableScreenHandler> {
 		final int index;
 
 		public WidgetButtonPage(int x, int y, int index, ButtonWidget.PressAction onPress) {
-			super(x, y, 112, 20, LiteralText.EMPTY, onPress);
+			super(x, y, 112, 20, ScreenTexts.EMPTY, onPress);
 			this.index = index;
 			this.visible = false;
 		}

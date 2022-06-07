@@ -10,7 +10,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 
-public class EntityPacket {
+public class DoomEntityPacket {
 	public static final Identifier ID = new Identifier(DoomMod.MODID, "spawn_entity");
 
 	public static Packet<?> createPacket(Entity entity) {

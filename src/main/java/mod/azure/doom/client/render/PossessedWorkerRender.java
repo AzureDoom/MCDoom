@@ -30,7 +30,7 @@ public class PossessedWorkerRender extends GeoEntityRenderer<PossessedScientistE
 	public RenderLayer getRenderType(PossessedScientistEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class PossessedWorkerRender extends GeoEntityRenderer<PossessedScientistE
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			int packedOverlayIn, float red, float green, float blue, float partialTicks) {
 		this.rtb = renderTypeBuffer;
-		this.whTexture = this.getTextureLocation(animatable);
+		this.whTexture = this.getTextureResource(animatable);
 		super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn,
 				red, green, blue, partialTicks);
 	}

@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class PurplePonyModel extends AnimatedGeoModel<PurplePonyDoomArmor> {
 	@Override
-	public Identifier getModelLocation(PurplePonyDoomArmor object) {
+	public Identifier getModelResource(PurplePonyDoomArmor object) {
 		return new Identifier(DoomMod.MODID, "geo/doomicornarmor.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(PurplePonyDoomArmor object) {
+	public Identifier getTextureResource(PurplePonyDoomArmor object) {
 		return new Identifier(DoomMod.MODID, "textures/models/armor/purplepony_armor_layer_1.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(PurplePonyDoomArmor animatable) {
+	public Identifier getAnimationResource(PurplePonyDoomArmor animatable) {
 		return new Identifier(DoomMod.MODID, "animations/doomicorn_animation.json");
 	}
 }

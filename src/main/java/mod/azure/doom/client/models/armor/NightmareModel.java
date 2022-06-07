@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class NightmareModel extends AnimatedGeoModel<NightmareDoomArmor> {
 	@Override
-	public Identifier getModelLocation(NightmareDoomArmor object) {
+	public Identifier getModelResource(NightmareDoomArmor object) {
 		return new Identifier(DoomMod.MODID, "geo/doomicornarmor.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(NightmareDoomArmor object) {
+	public Identifier getTextureResource(NightmareDoomArmor object) {
 		return new Identifier(DoomMod.MODID, "textures/models/armor/nightmare_armor_layer_1.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(NightmareDoomArmor animatable) {
+	public Identifier getAnimationResource(NightmareDoomArmor animatable) {
 		return new Identifier(DoomMod.MODID, "animations/doomicorn_animation.json");
 	}
 }

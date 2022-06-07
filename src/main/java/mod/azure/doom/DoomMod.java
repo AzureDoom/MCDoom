@@ -112,7 +112,7 @@ public class DoomMod implements ModInitializer {
 		MobAttributes.init();
 		GeckoLib.initialize();
 		PacketHandler.registerMessages();
-		DoomStructures.setupAndRegisterStructureFeatures();
+		DoomStructures.registerStructureFeatures();
 		SCREEN_HANDLER_TYPE = new ScreenHandlerType<>(GunTableScreenHandler::new);
 		Registry.register(Registry.SCREEN_HANDLER, new Identifier(MODID, "guntable_screen_type"), SCREEN_HANDLER_TYPE);
 	}

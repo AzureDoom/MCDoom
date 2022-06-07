@@ -12,17 +12,17 @@ public class CueballModel extends AnimatedTickingGeoModel<CueBallEntity> {
 			new Identifier(DoomMod.MODID, "textures/entity/cueball_flame_1.png")};
 
 	@Override
-	public Identifier getModelLocation(CueBallEntity object) {
+	public Identifier getModelResource(CueBallEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/cueball.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(CueBallEntity object) {
+	public Identifier getTextureResource(CueBallEntity object) {
 		return TEX[(object.getFlameTimer())];
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(CueBallEntity object) {
+	public Identifier getAnimationResource(CueBallEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/rocket.animation.json");
 	}
 

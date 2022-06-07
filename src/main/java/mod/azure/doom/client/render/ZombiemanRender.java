@@ -30,7 +30,7 @@ public class ZombiemanRender extends GeoEntityRenderer<ZombiemanEntity> {
 	public RenderLayer getRenderType(ZombiemanEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class ZombiemanRender extends GeoEntityRenderer<ZombiemanEntity> {
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			int packedOverlayIn, float red, float green, float blue, float partialTicks) {
 		this.rtb = renderTypeBuffer;
-		this.whTexture = this.getTextureLocation(animatable);
+		this.whTexture = this.getTextureResource(animatable);
 		super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn,
 				red, green, blue, partialTicks);
 	}

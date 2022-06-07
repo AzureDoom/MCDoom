@@ -274,6 +274,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 		super.tickMovement();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void mobTick() {
 		if (this.world.isDay() && this.age >= this.ageWhenTargetSet + 600) {

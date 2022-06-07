@@ -1,12 +1,12 @@
 {
 	"structures": [
 		{
-			"structure": "doom:code_structure_hell_church",
+			"structure": "doom:icon_fight",
 			"weight": 1
 		}
 	],
 	"placement": {
-		"salt": 1234567890,
+		"salt": 1234567891,
 		"spacing": 80,
 		"separation": 20,
 		"type": "minecraft:random_spread"

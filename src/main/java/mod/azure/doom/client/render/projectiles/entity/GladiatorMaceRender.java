@@ -25,7 +25,7 @@ public class GladiatorMaceRender extends GeoProjectilesRenderer<GladiatorMaceEnt
 	public RenderLayer getRenderType(GladiatorMaceEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 
 }

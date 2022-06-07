@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class AstroModel extends AnimatedGeoModel<AstroDoomArmor> {
 	@Override
-	public Identifier getModelLocation(AstroDoomArmor object) {
+	public Identifier getModelResource(AstroDoomArmor object) {
 		return new Identifier(DoomMod.MODID, "geo/doomarmor.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(AstroDoomArmor object) {
+	public Identifier getTextureResource(AstroDoomArmor object) {
 		return new Identifier(DoomMod.MODID, "textures/models/armor/astro_armor_layer_1.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(AstroDoomArmor animatable) {
+	public Identifier getAnimationResource(AstroDoomArmor animatable) {
 		return new Identifier(DoomMod.MODID, "animations/armor_animation.json");
 	}
 }

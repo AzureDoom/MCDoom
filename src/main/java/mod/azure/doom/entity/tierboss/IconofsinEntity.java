@@ -1,7 +1,6 @@
 package mod.azure.doom.entity.tierboss;
 
 import java.util.List;
-import java.util.Random;
 import java.util.SplittableRandom;
 
 import org.jetbrains.annotations.Nullable;
@@ -50,6 +49,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
@@ -253,7 +253,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	public void spawnWave(int WaveAmount, LivingEntity entity) {
-		Random rand = new Random();
+		Random rand = this.getRandom();
 		List<? extends String> waveEntries = DoomConfig.icon_wave_entries;
 		SplittableRandom random = new SplittableRandom();
 		for (int k = 1; k < WaveAmount; ++k) {
@@ -419,7 +419,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 				this.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 10000000, 2));
 				this.addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 10000000, 1));
 			}
-			if (!this.world.getDimension().isRespawnAnchorWorking()) {
+			if (!this.world.getDimension().respawnAnchorWorks()) {
 				this.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 10000000, 3));
 				if (this.age % 2400 == 0) {
 					this.heal(40F);

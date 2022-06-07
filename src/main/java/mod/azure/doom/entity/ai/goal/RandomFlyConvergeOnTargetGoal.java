@@ -1,12 +1,12 @@
 package mod.azure.doom.entity.ai.goal;
 
 import java.util.EnumSet;
-import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.util.math.random.Random;
 
 public class RandomFlyConvergeOnTargetGoal extends Goal {
 	private final DemonEntity parentEntity;

@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class BallistaModel extends AnimatedGeoModel<Ballista> {
 	@Override
-	public Identifier getModelLocation(Ballista object) {
+	public Identifier getModelResource(Ballista object) {
 		return new Identifier(DoomMod.MODID, "geo/ballista.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(Ballista object) {
+	public Identifier getTextureResource(Ballista object) {
 		return new Identifier(DoomMod.MODID, "textures/items/ballista.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(Ballista animatable) {
+	public Identifier getAnimationResource(Ballista animatable) {
 		return new Identifier(DoomMod.MODID, "animations/ballista.animation.json");
 	}
 }

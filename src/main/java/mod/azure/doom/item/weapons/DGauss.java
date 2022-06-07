@@ -21,7 +21,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -77,7 +76,7 @@ public class DGauss extends DoomBaseItem {
 	}
 
 	public static float getArrowVelocity(int charge) {
-		float f = (float) charge / 20.0F;
+		float f = charge / 20.0F;
 		f = (f * f + f * 2.0F) / 3.0F;
 		if (f > 1.0F) {
 			f = 1.0F;
@@ -125,8 +124,8 @@ public class DGauss extends DoomBaseItem {
 	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
 		super.appendTooltip(stack, world, tooltip, context);
 		tooltip.add(
-				new TranslatableText("doom.doomed_credit.text").formatted(Formatting.RED).formatted(Formatting.ITALIC));
-		tooltip.add(new TranslatableText("doom.doomed_credit1.text").formatted(Formatting.RED)
+				Text.translatable("doom.doomed_credit.text").formatted(Formatting.RED).formatted(Formatting.ITALIC));
+		tooltip.add(Text.translatable("doom.doomed_credit1.text").formatted(Formatting.RED)
 				.formatted(Formatting.ITALIC));
 	}
 }

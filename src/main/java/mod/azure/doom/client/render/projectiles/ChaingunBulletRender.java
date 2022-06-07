@@ -25,7 +25,7 @@ public class ChaingunBulletRender extends GeoProjectilesRenderer<ChaingunBulletE
 	public RenderLayer getRenderType(ChaingunBulletEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 
 	@Override

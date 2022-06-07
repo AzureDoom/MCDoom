@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class DarkLordModel extends AnimatedGeoModel<DarkLordArmor> {
 	@Override
-	public Identifier getModelLocation(DarkLordArmor object) {
+	public Identifier getModelResource(DarkLordArmor object) {
 		return new Identifier(DoomMod.MODID, "geo/darklordarmor.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(DarkLordArmor object) {
+	public Identifier getTextureResource(DarkLordArmor object) {
 		return new Identifier(DoomMod.MODID, "textures/models/armor/darklordarmor.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(DarkLordArmor animatable) {
+	public Identifier getAnimationResource(DarkLordArmor animatable) {
 		return new Identifier(DoomMod.MODID, "animations/darklordarmor.animation.json");
 	}
 }

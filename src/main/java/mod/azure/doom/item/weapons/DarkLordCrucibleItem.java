@@ -22,7 +22,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Box;
@@ -110,7 +109,7 @@ public class DarkLordCrucibleItem extends Item implements IAnimatable, ISyncable
 
 	@Override
 	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(new TranslatableText(
+		tooltip.add(Text.translatable(
 				"Ammo: " + (stack.getMaxDamage() - stack.getDamage() - 1) + " / " + (stack.getMaxDamage() - 1))
 						.formatted(Formatting.ITALIC));
 		super.appendTooltip(stack, world, tooltip, context);

@@ -15,17 +15,17 @@ public class UnwillingModel extends AnimatedTickingGeoModel<UnwillingEntity> {
 	}
 
 	@Override
-	public Identifier getModelLocation(UnwillingEntity object) {
+	public Identifier getModelResource(UnwillingEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/unwilling.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(UnwillingEntity object) {
+	public Identifier getTextureResource(UnwillingEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/unwilling.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(UnwillingEntity object) {
+	public Identifier getAnimationResource(UnwillingEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/possessed_scientist_animation.json");
 	}
 

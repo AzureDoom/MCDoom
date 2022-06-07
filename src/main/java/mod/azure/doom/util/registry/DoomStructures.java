@@ -1,34 +1,36 @@
 package mod.azure.doom.util.registry;
 
+import com.mojang.serialization.Codec;
+
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.mixin.StructureFeatureAccessor;
 import mod.azure.doom.structures.ArchMaykrStructure;
 import mod.azure.doom.structures.GladiatorStructure;
 import mod.azure.doom.structures.HellChurchStructure;
 import mod.azure.doom.structures.IconStructure;
 import mod.azure.doom.structures.MotherdemonStructure;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.feature.StructureFeature;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.gen.structure.Structure;
+import net.minecraft.world.gen.structure.StructureType;
 
 public class DoomStructures {
 
-	public static StructureFeature<?> HELL_CHURCH = new HellChurchStructure();
-	public static StructureFeature<?> ICON_FIGHT = new IconStructure();
-	public static StructureFeature<?> GLADIATOR_FIGHT = new GladiatorStructure();
-	public static StructureFeature<?> MOTHERDEMON = new MotherdemonStructure();
-	public static StructureFeature<?> ARCHMAYKR = new ArchMaykrStructure();
+	public static StructureType<?> HELL_CHURCH;
+	public static StructureType<?> ICON_FIGHT;
+	public static StructureType<?> GLADIATOR_FIGHT;
+	public static StructureType<?> MOTHERDEMON;
+	public static StructureType<?> ARCHMAYKR;
 
-	public static void setupAndRegisterStructureFeatures() {
-		StructureFeatureAccessor.callRegister(DoomMod.MODID + ":hell_church", HELL_CHURCH,
-				GenerationStep.Feature.SURFACE_STRUCTURES);
-		StructureFeatureAccessor.callRegister(DoomMod.MODID + ":icon_fight", ICON_FIGHT,
-				GenerationStep.Feature.SURFACE_STRUCTURES);
-		StructureFeatureAccessor.callRegister(DoomMod.MODID + ":gladiator_fight", GLADIATOR_FIGHT,
-				GenerationStep.Feature.SURFACE_STRUCTURES);
-		StructureFeatureAccessor.callRegister(DoomMod.MODID + ":motherdemon1a", MOTHERDEMON,
-				GenerationStep.Feature.SURFACE_STRUCTURES);
-		StructureFeatureAccessor.callRegister(DoomMod.MODID + ":archmakyr", ARCHMAYKR,
-				GenerationStep.Feature.SURFACE_STRUCTURES);
+	public static void registerStructureFeatures() {
+		HELL_CHURCH = register(new Identifier(DoomMod.MODID, "hell_church"), HellChurchStructure.CODEC);
+		ICON_FIGHT = register(new Identifier(DoomMod.MODID, "icon_fight"), IconStructure.CODEC);
+		GLADIATOR_FIGHT = register(new Identifier(DoomMod.MODID, "gladiator_fight"), GladiatorStructure.CODEC);
+		MOTHERDEMON = register(new Identifier(DoomMod.MODID, "motherdemon1a"), MotherdemonStructure.CODEC);
+		ARCHMAYKR = register(new Identifier(DoomMod.MODID, "archmakyr"), ArchMaykrStructure.CODEC);
+	}
+
+	private static <S extends Structure> StructureType<S> register(Identifier id, Codec<S> codec) {
+		return Registry.register(Registry.STRUCTURE_TYPE, id, () -> codec);
 	}
 
 }

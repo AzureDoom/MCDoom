@@ -2,44 +2,71 @@ package mod.azure.doom.structures;
 
 import java.util.Optional;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.structure.PoolStructurePiece;
-import net.minecraft.structure.PostPlacementProcessor;
-import net.minecraft.structure.StructureGeneratorFactory;
-import net.minecraft.structure.StructurePiecesGenerator;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import mod.azure.doom.util.registry.DoomStructures;
+import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolBasedGenerator;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.gen.chunk.VerticalBlockSample;
-import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
+import net.minecraft.world.gen.HeightContext;
+import net.minecraft.world.gen.heightprovider.HeightProvider;
+import net.minecraft.world.gen.structure.Structure;
+import net.minecraft.world.gen.structure.StructureType;
 
-public class HellChurchStructure extends StructureFeature<StructurePoolFeatureConfig> {
+public class HellChurchStructure extends Structure {
 
-	public HellChurchStructure() {
-		super(StructurePoolFeatureConfig.CODEC, HellChurchStructure::createPiecesGenerator,
-				PostPlacementProcessor.EMPTY);
+	public static final Codec<HellChurchStructure> CODEC = RecordCodecBuilder
+			.<HellChurchStructure>mapCodec(instance -> instance.group(HellChurchStructure.configCodecBuilder(instance),
+					StructurePool.REGISTRY_CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
+					Identifier.CODEC.optionalFieldOf("start_jigsaw_name")
+							.forGetter(structure -> structure.startJigsawName),
+					Codec.intRange(0, 4).fieldOf("size").forGetter(structure -> structure.size),
+					HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
+					Heightmap.Type.CODEC.optionalFieldOf("project_start_to_heightmap")
+							.forGetter(structure -> structure.projectStartToHeightmap),
+					Codec.intRange(1, 128).fieldOf("max_distance_from_center")
+							.forGetter(structure -> structure.maxDistanceFromCenter))
+					.apply(instance, HellChurchStructure::new))
+			.codec();
+	private final RegistryEntry<StructurePool> startPool;
+	private final Optional<Identifier> startJigsawName;
+	private final int size;
+	private final HeightProvider startHeight;
+	private final Optional<Heightmap.Type> projectStartToHeightmap;
+	private final int maxDistanceFromCenter;
+
+	public HellChurchStructure(Structure.Config config, RegistryEntry<StructurePool> startPool,
+			Optional<Identifier> startJigsawName, int size, HeightProvider startHeight,
+			Optional<Heightmap.Type> projectStartToHeightmap, int maxDistanceFromCenter) {
+		super(config);
+		this.startPool = startPool;
+		this.startJigsawName = startJigsawName;
+		this.size = size;
+		this.startHeight = startHeight;
+		this.projectStartToHeightmap = projectStartToHeightmap;
+		this.maxDistanceFromCenter = maxDistanceFromCenter;
 	}
 
-	private static boolean isFeatureChunk(StructureGeneratorFactory.Context<StructurePoolFeatureConfig> context) {
-		BlockPos spawnXZPosition = context.chunkPos().getCenterAtY(0);
-		int landHeight = context.chunkGenerator().getHeightInGround(spawnXZPosition.getX(), spawnXZPosition.getZ(),
-				Heightmap.Type.WORLD_SURFACE_WG, context.world());
-		VerticalBlockSample columnOfBlocks = context.chunkGenerator().getColumnSample(spawnXZPosition.getX(),
-				spawnXZPosition.getZ(), context.world());
-		BlockState topBlock = columnOfBlocks.getState(landHeight);
-		return topBlock.getFluidState().isEmpty();
-	}
+	@Override
+	public Optional<Structure.StructurePosition> getStructurePosition(Structure.Context context) {
+		int startY = this.startHeight.get(context.random(),
+				new HeightContext(context.chunkGenerator(), context.world()));
+		ChunkPos chunkPos = context.chunkPos();
+		BlockPos blockpos = new BlockPos(chunkPos.getStartX(), startY, chunkPos.getStartZ());
 
-	public static Optional<StructurePiecesGenerator<StructurePoolFeatureConfig>> createPiecesGenerator(
-			StructureGeneratorFactory.Context<StructurePoolFeatureConfig> context) {
-
-		if (!HellChurchStructure.isFeatureChunk(context)) {
-			return Optional.empty();
-		}
-		BlockPos blockpos = context.chunkPos().getCenterAtY(0);
-		Optional<StructurePiecesGenerator<StructurePoolFeatureConfig>> structurePiecesGenerator = StructurePoolBasedGenerator
-				.generate(context, PoolStructurePiece::new, blockpos, true, true);
+		Optional<StructurePosition> structurePiecesGenerator = StructurePoolBasedGenerator.generate(context,
+				this.startPool, this.startJigsawName, this.size, blockpos, false, this.projectStartToHeightmap,
+				this.maxDistanceFromCenter);
 		return structurePiecesGenerator;
+	}
+
+	@Override
+	public StructureType<?> getType() {
+		return DoomStructures.HELL_CHURCH;
 	}
 }

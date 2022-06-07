@@ -8,17 +8,17 @@ import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 public class MaykrDroneModel extends AnimatedTickingGeoModel<MaykrDroneEntity> {
 
 	@Override
-	public Identifier getModelLocation(MaykrDroneEntity object) {
+	public Identifier getModelResource(MaykrDroneEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/maykrdrone.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(MaykrDroneEntity object) {
+	public Identifier getTextureResource(MaykrDroneEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/maykrdrone_" + object.getVariant() + ".png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(MaykrDroneEntity object) {
+	public Identifier getAnimationResource(MaykrDroneEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/maykrdrone.animation.json");
 	}
 }

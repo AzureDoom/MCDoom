@@ -2,44 +2,62 @@ package mod.azure.doom.structures;
 
 import java.util.Optional;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.structure.PoolStructurePiece;
-import net.minecraft.structure.PostPlacementProcessor;
-import net.minecraft.structure.StructureGeneratorFactory;
-import net.minecraft.structure.StructurePiecesGenerator;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import mod.azure.doom.util.registry.DoomStructures;
+import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolBasedGenerator;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.gen.chunk.VerticalBlockSample;
-import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
+import net.minecraft.world.gen.structure.Structure;
+import net.minecraft.world.gen.structure.StructureType;
 
-public class GladiatorStructure extends StructureFeature<StructurePoolFeatureConfig> {
+public class GladiatorStructure extends Structure {
 
-	public GladiatorStructure() {
-		super(StructurePoolFeatureConfig.CODEC, GladiatorStructure::createPiecesGenerator,
-				PostPlacementProcessor.EMPTY);
+	public static final Codec<GladiatorStructure> CODEC = RecordCodecBuilder
+			.<GladiatorStructure>mapCodec(instance -> instance.group(GladiatorStructure.configCodecBuilder(instance),
+					StructurePool.REGISTRY_CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
+					Identifier.CODEC.optionalFieldOf("start_jigsaw_name")
+							.forGetter(structure -> structure.startJigsawName),
+					Codec.intRange(0, 4).fieldOf("size").forGetter(structure -> structure.size),
+					Heightmap.Type.CODEC.optionalFieldOf("project_start_to_heightmap")
+							.forGetter(structure -> structure.projectStartToHeightmap),
+					Codec.intRange(1, 128).fieldOf("max_distance_from_center")
+							.forGetter(structure -> structure.maxDistanceFromCenter))
+					.apply(instance, GladiatorStructure::new))
+			.codec();
+	private final RegistryEntry<StructurePool> startPool;
+	private final Optional<Identifier> startJigsawName;
+	private final int size;
+	private final Optional<Heightmap.Type> projectStartToHeightmap;
+	private final int maxDistanceFromCenter;
+
+	public GladiatorStructure(Structure.Config config, RegistryEntry<StructurePool> startPool,
+			Optional<Identifier> startJigsawName, int size, Optional<Heightmap.Type> projectStartToHeightmap,
+			int maxDistanceFromCenter) {
+		super(config);
+		this.startPool = startPool;
+		this.startJigsawName = startJigsawName;
+		this.size = size;
+		this.projectStartToHeightmap = projectStartToHeightmap;
+		this.maxDistanceFromCenter = maxDistanceFromCenter;
 	}
 
-	private static boolean isFeatureChunk(StructureGeneratorFactory.Context<StructurePoolFeatureConfig> context) {
-		BlockPos spawnXZPosition = context.chunkPos().getCenterAtY(0);
-		int landHeight = context.chunkGenerator().getHeightInGround(spawnXZPosition.getX(), spawnXZPosition.getZ(),
-				Heightmap.Type.WORLD_SURFACE_WG, context.world());
-		VerticalBlockSample columnOfBlocks = context.chunkGenerator().getColumnSample(spawnXZPosition.getX(),
-				spawnXZPosition.getZ(), context.world());
-		BlockState topBlock = columnOfBlocks.getState(landHeight);
-		return topBlock.getFluidState().isEmpty();
-	}
-
-	public static Optional<StructurePiecesGenerator<StructurePoolFeatureConfig>> createPiecesGenerator(
-			StructureGeneratorFactory.Context<StructurePoolFeatureConfig> context) {
-		if (!GladiatorStructure.isFeatureChunk(context)) {
-			return Optional.empty();
-		}
+	@Override
+	public Optional<Structure.StructurePosition> getStructurePosition(Structure.Context context) {
 		BlockPos blockpos = new BlockPos(context.chunkPos().getStartX(), 32, context.chunkPos().getStartZ());
-		Optional<StructurePiecesGenerator<StructurePoolFeatureConfig>> structurePiecesGenerator = StructurePoolBasedGenerator
-				.generate(context, PoolStructurePiece::new, blockpos, true, false);
 
+		Optional<StructurePosition> structurePiecesGenerator = StructurePoolBasedGenerator.generate(context,
+				this.startPool, this.startJigsawName, this.size, blockpos, false, Optional.empty(),
+				this.maxDistanceFromCenter);
 		return structurePiecesGenerator;
+	}
+
+	@Override
+	public StructureType<?> getType() {
+		return DoomStructures.GLADIATOR_FIGHT;
 	}
 }

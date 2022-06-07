@@ -8,17 +8,17 @@ import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 public class MotherDemonModel extends AnimatedTickingGeoModel<MotherDemonEntity> {
 
 	@Override
-	public Identifier getModelLocation(MotherDemonEntity object) {
+	public Identifier getModelResource(MotherDemonEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/motherdemon.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(MotherDemonEntity object) {
+	public Identifier getTextureResource(MotherDemonEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/motherdemon.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(MotherDemonEntity object) {
+	public Identifier getAnimationResource(MotherDemonEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/motherdemon.animation.json");
 	}
 }

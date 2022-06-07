@@ -15,17 +15,17 @@ public class MechaZombieModel extends AnimatedTickingGeoModel<MechaZombieEntity>
 	}
 
 	@Override
-	public Identifier getModelLocation(MechaZombieEntity object) {
+	public Identifier getModelResource(MechaZombieEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/mechazombie.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(MechaZombieEntity object) {
+	public Identifier getTextureResource(MechaZombieEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/mechazombie.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(MechaZombieEntity object) {
+	public Identifier getAnimationResource(MechaZombieEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/mechazombie_animation.json");
 	}
 

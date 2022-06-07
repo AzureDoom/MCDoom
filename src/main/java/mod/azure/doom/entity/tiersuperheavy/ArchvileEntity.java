@@ -436,6 +436,7 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable, IAnimati
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void mobTick() {
 		if (this.world.isDay() && this.age >= this.ageWhenTargetSet + 600) {

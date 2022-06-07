@@ -20,7 +20,7 @@ public class ProwlerRender extends GeoEntityRenderer<ProwlerEntity> {
 	public RenderLayer getRenderType(ProwlerEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 
 	@Override

@@ -436,6 +436,7 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 		super.tickMovement();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void mobTick() {
 		if (this.world.isDay() && this.age >= this.ageWhenTargetSet + 600) {

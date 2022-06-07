@@ -15,17 +15,17 @@ public class MarauderModel extends AnimatedTickingGeoModel<MarauderEntity> {
 	}
 
 	@Override
-	public Identifier getModelLocation(MarauderEntity object) {
+	public Identifier getModelResource(MarauderEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/marauder.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(MarauderEntity object) {
+	public Identifier getTextureResource(MarauderEntity object) {
 		return new Identifier(DoomMod.MODID, "textures/entity/marauder.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(MarauderEntity object) {
+	public Identifier getAnimationResource(MarauderEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/marauder.animation.json");
 	}
 

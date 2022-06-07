@@ -21,17 +21,17 @@ public class DoomHunterModel extends AnimatedTickingGeoModel<DoomHunterEntity> {
 			new Identifier(DoomMod.MODID, "textures/entity/doomhunter_7.png") };
 
 	@Override
-	public Identifier getModelLocation(DoomHunterEntity object) {
+	public Identifier getModelResource(DoomHunterEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/doomhunter.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(DoomHunterEntity object) {
+	public Identifier getTextureResource(DoomHunterEntity object) {
 		return TEX[(object.getFlameTimer())];
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(DoomHunterEntity object) {
+	public Identifier getAnimationResource(DoomHunterEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/doomhunter.animation.json");
 	}
 
