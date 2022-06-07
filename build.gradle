@@ -34,7 +34,7 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation "software.bernie.geckolib:geckolib-fabric-1.19-rc2:3.1.0"
+    modImplementation "software.bernie.geckolib:geckolib-fabric-1.19:3.1.0"
 	modImplementation ("com.terraformersmc:modmenu:4.0.0-beta.4")
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:9.0.466") {
         exclude(group: "net.fabricmc.fabric-api")
@@ -104,7 +104,7 @@ if (file('key.properties').exists()) {
         	releaseType = "${curse_release}"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
-			addGameVersion("1.19")
+			addGameVersion("1.19-Snapshot")
 			addGameVersion("Fabric")
 			addGameVersion("Java 17")
 
