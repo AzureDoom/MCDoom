@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.SplittableRandom;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;

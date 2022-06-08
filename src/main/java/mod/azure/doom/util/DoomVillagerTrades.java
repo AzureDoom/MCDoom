@@ -1,6 +1,6 @@
 package mod.azure.doom.util;
 
-import mod.azure.doom.util.config.DoomConfig;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;

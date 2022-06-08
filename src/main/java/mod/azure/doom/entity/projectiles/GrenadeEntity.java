@@ -2,8 +2,8 @@ package mod.azure.doom.entity.projectiles;
 
 import java.util.List;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tierheavy.CacodemonEntity;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.DoomSounds;

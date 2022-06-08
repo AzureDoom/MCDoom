@@ -2,11 +2,11 @@ package mod.azure.doom.entity.tierheavy;
 
 import java.util.EnumSet;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedStaticAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

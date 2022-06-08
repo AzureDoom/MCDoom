@@ -1,8 +1,8 @@
 package mod.azure.doom.entity.projectiles.entity;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;

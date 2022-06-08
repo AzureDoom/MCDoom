@@ -4,10 +4,10 @@ import java.util.List;
 
 import com.mojang.serialization.Codec;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.DoomVillagerTrades;
 import mod.azure.doom.util.LootHandler;
 import mod.azure.doom.util.SoulCubeHandler;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomEntities;

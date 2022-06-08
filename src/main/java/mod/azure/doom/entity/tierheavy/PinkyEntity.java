@@ -2,9 +2,9 @@ package mod.azure.doom.entity.tierheavy;
 
 import java.util.SplittableRandom;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;

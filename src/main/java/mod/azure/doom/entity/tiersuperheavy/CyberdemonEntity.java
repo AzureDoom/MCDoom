@@ -2,12 +2,12 @@ package mod.azure.doom.entity.tiersuperheavy;
 
 import java.util.SplittableRandom;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;

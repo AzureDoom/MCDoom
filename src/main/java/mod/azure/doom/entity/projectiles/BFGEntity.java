@@ -5,6 +5,7 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierambient.GoreNestEntity;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
@@ -12,7 +13,6 @@ import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tierboss.MotherDemonEntity;
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomEntities;

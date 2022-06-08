@@ -2,8 +2,8 @@ package mod.azure.doom.entity.tierambient;
 
 import java.util.List;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.util.config.DoomConfig;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;

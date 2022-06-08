@@ -2,7 +2,7 @@ package mod.azure.doom.util.enums;
 
 import java.util.function.Supplier;
 
-import mod.azure.doom.util.config.DoomConfig;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.item.Tier;
