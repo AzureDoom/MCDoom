@@ -5,10 +5,10 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
-import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -148,14 +148,14 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable, IAnimati
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.level.isClientSide()) {
-				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP.get(),
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(),
 						SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.ARCHVILE_SCREAM.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
+						DoomSounds.ARCHVILE_SCREAM.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}
@@ -328,7 +328,7 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable, IAnimati
 						}
 					}
 					if (!(this.parentEntity.level.isClientSide)) {
-						this.parentEntity.playSound(ModSoundEvents.ARCHVILE_SCREAM.get(), 1.0F,
+						this.parentEntity.playSound(DoomSounds.ARCHVILE_SCREAM.get(), 1.0F,
 								1.2F / (this.parentEntity.random.nextFloat() * 0.2F + 0.9F));
 					}
 					this.parentEntity.setAttackingState(1);
@@ -531,12 +531,12 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.ARCHVILE_HURT.get();
+		return DoomSounds.ARCHVILE_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.ARCHVILE_DEATH.get();
+		return DoomSounds.ARCHVILE_DEATH.get();
 	}
 
 	@Override

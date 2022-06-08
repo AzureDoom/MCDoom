@@ -1,7 +1,7 @@
 package mod.azure.doom.entity.tileentity;
 
 import mod.azure.doom.block.TickingLightBlock;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -12,7 +12,7 @@ public class TickingLightEntity extends BlockEntity {
 	private int lifespan = 0;
 
 	public TickingLightEntity(BlockPos blockPos, BlockState blockState) {
-		super(ModEntityTypes.TICKING_LIGHT_ENTITY.get(), blockPos, blockState);
+		super(DoomEntities.TICKING_LIGHT_ENTITY.get(), blockPos, blockState);
 	}
 
 	public void refresh(int lifeExtension) {

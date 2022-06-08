@@ -2,12 +2,12 @@ package mod.azure.doom.entity.projectiles;
 
 import java.util.List;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -58,7 +58,7 @@ public class ArgentBoltEntity extends AbstractArrow {
 	}
 
 	public ArgentBoltEntity(Level world, LivingEntity shooter) {
-		super(ModEntityTypes.ARGENT_BOLT.get(), shooter, world);
+		super(DoomEntities.ARGENT_BOLT.get(), shooter, world);
 		this.shooter = shooter;
 	}
 

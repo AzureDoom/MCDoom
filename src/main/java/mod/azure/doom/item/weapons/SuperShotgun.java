@@ -5,15 +5,15 @@ import java.util.function.Consumer;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.SSGRender;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.MeatHookEntity;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import mod.azure.doom.util.PlayerProperties;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.SSGLoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -77,7 +77,7 @@ public class SuperShotgun extends DoomBaseItem {
 
 						stack.hurtAndBreak(2, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
 						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-								ModSoundEvents.SUPER_SHOTGUN_SHOOT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+								DoomSounds.SUPER_SHOTGUN_SHOOT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 						if (!worldIn.isClientSide) {
 							final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
 							final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
@@ -90,7 +90,7 @@ public class SuperShotgun extends DoomBaseItem {
 				}
 			} else {
 				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-						ModSoundEvents.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
+						DoomSounds.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
 				((PlayerProperties) playerentity).setHasMeatHook(false);
 			}
 		}

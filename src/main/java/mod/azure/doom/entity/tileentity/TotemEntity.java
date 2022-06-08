@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -27,7 +27,7 @@ public class TotemEntity extends BlockEntity implements IAnimatable {
 	private final AnimationFactory factory = new AnimationFactory(this);
 
 	public TotemEntity(BlockPos pos, BlockState state) {
-		super(ModEntityTypes.TOTEM.get(), pos, state);
+		super(DoomEntities.TOTEM.get(), pos, state);
 	}
 
 	private <E extends BlockEntity & IAnimatable> PlayState predicate(AnimationEvent<E> event) {

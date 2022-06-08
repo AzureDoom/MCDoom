@@ -1,4 +1,4 @@
-package mod.azure.doom.util.config;
+package mod.azure.doom.config;
 
 import java.io.File;
 import java.util.List;
@@ -225,6 +225,11 @@ public class DoomConfig {
 		public final ConfigValue<Integer> archmaykr_spawn_weight;
 		public final ConfigValue<Integer> archmaykr_min_group;
 		public final ConfigValue<Integer> archmaykr_max_group;
+
+		public final ConfigValue<List<? extends String>> turret_biomes;
+		public final ConfigValue<Integer> turret_spawn_weight;
+		public final ConfigValue<Integer> turret_min_group;
+		public final ConfigValue<Integer> turret_max_group;
 
 		public final ConfigValue<Double> motherdemon_health;
 		public final ConfigValue<Double> motherdemon_ranged_damage;
@@ -984,8 +989,21 @@ public class DoomConfig {
 					.defineInRange("Possessed Worker Min Group", 1, 1, Integer.MAX_VALUE);
 			this.possessed_worker_max_group = builder.translation("text.doom.config.possessed_worker_max_group")
 					.defineInRange("Possessed Worker Max Group", 4, 1, Integer.MAX_VALUE);
-
 			builder.pop();
+
+			builder.push("Mob Settings:Turret");
+			this.turret_biomes = builder
+					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")
+					.translation("text.doom.config.turret_biomes")
+					.defineList("Turret Biomes", Lists.newArrayList("#nether"), o -> o instanceof String);
+			this.turret_spawn_weight = builder.translation("text.doom.config.turret_spawn_weight")
+					.defineInRange("Turret Spawn Weight", 15, 1, Integer.MAX_VALUE);
+			this.turret_min_group = builder.translation("text.doom.config.turret_min_group")
+					.defineInRange("Turret Min Group", 1, 1, Integer.MAX_VALUE);
+			this.turret_max_group = builder.translation("text.doom.config.turret_max_group")
+					.defineInRange("Turret Max Group", 4, 1, Integer.MAX_VALUE);
+			builder.pop();
+			
 			builder.push("Mob Settings:Armored Baron");
 			this.armoredbaron_biomes = builder
 					.comment("Supports Biome Registry Names (minecraft:desert) or Biomes Tag with #")

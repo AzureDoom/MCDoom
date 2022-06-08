@@ -3,14 +3,14 @@ package mod.azure.doom.entity.tierboss;
 import java.util.EnumSet;
 import java.util.List;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.KnockbackGoal;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
-import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -421,17 +421,17 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.MAKYR_AMBIENT.get();
+		return DoomSounds.MAKYR_AMBIENT.get();
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.MAKYR_HURT.get();
+		return DoomSounds.MAKYR_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.MAKYR_DEATH.get();
+		return DoomSounds.MAKYR_DEATH.get();
 	}
 
 	@Override

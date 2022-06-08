@@ -2,7 +2,7 @@ package mod.azure.doom.entity.projectiles;
 
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -73,7 +73,7 @@ public class ShotgunShellEntity extends AbstractArrow implements IAnimatable {
 	}
 
 	public ShotgunShellEntity(Level world, LivingEntity owner, float damage) {
-		super(ModEntityTypes.SHOTGUN_SHELL.get(), owner, world);
+		super(DoomEntities.SHOTGUN_SHELL.get(), owner, world);
 		this.shelldamage = damage;
 	}
 

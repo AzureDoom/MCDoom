@@ -216,10 +216,10 @@ public class DoomItems {
 	public static final RegistryObject<Item> ARGENT_PLATE = ITEMS.register("argent_plate", () -> new ArgentPlateItem());
 	public static final RegistryObject<Item> DAISY = ITEMS.register("daisy", () -> new DaisyItem());
 	public static final RegistryObject<Item> E1M1_MUSIC_DISC = ITEMS.register("e1m1_music_disc",
-			() -> new E1M1MusicDisc(ModSoundEvents.E1M1));
+			() -> new E1M1MusicDisc(DoomSounds.E1M1));
 	public static final RegistryObject<Item> GEOF_MUSIC_DISC = ITEMS.register(
 			"netherambient_geoffplaysguitar_music_disc",
-			() -> new E1M1MusicDisc(ModSoundEvents.NETHERAMBIENT_GEOFFPLAYSGUITAR));
+			() -> new E1M1MusicDisc(DoomSounds.NETHERAMBIENT_GEOFFPLAYSGUITAR));
 	public static final RegistryObject<Item> INMORTAL = ITEMS.register("inmortalsphere",
 			() -> new InmortalSphereItem());
 	public static final RegistryObject<Item> INVISIBLE = ITEMS.register("invisiblesphere",
@@ -228,101 +228,101 @@ public class DoomItems {
 	public static final RegistryObject<Item> POWER = ITEMS.register("powersphere", () -> new PowerSphereItem());
 	public static final RegistryObject<Item> SOULCUBE = ITEMS.register("soulcube", () -> new SoulCubeItem());
 	public static final RegistryObject<Item> IMP_SPAWN_EGG = ITEMS.register("imp_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.IMP));
+			() -> new DoomSpawnEgg(DoomEntities.IMP));
 	public static final RegistryObject<Item> ARACHNOTRON_SPAWN_EGG = ITEMS.register("arachnotron_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.ARACHNOTRON));
+			() -> new DoomSpawnEgg(DoomEntities.ARACHNOTRON));
 	public static final RegistryObject<Item> LOST_SOUL_SPAWN_EGG = ITEMS.register("lost_soul_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.LOST_SOUL));
+			() -> new DoomSpawnEgg(DoomEntities.LOST_SOUL));
 	public static final RegistryObject<Item> LOST_SOUL_ETERNAL_SPAWN_EGG = ITEMS.register("lost_soul_eternal_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.LOST_SOUL_ETERNAL));
+			() -> new DoomSpawnEgg(DoomEntities.LOST_SOUL_ETERNAL));
 	public static final RegistryObject<Item> PINKY_SPAWN_EGG = ITEMS.register("pinky_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.PINKY));
+			() -> new DoomSpawnEgg(DoomEntities.PINKY));
 	public static final RegistryObject<Item> ARCHVILE_SPAWN_EGG = ITEMS.register("archvile_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.ARCHVILE));
+			() -> new DoomSpawnEgg(DoomEntities.ARCHVILE));
 	public static final RegistryObject<Item> BARON_SPAWN_EGG = ITEMS.register("baron_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.BARON));
+			() -> new DoomSpawnEgg(DoomEntities.BARON));
 	public static final RegistryObject<Item> CACODEMON_SPAWN_EGG = ITEMS.register("cacodemon_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.CACODEMON));
+			() -> new DoomSpawnEgg(DoomEntities.CACODEMON));
 	public static final RegistryObject<Item> MANCUBUS_SPAWN_EGG = ITEMS.register("mancubus_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.MANCUBUS));
+			() -> new DoomSpawnEgg(DoomEntities.MANCUBUS));
 	public static final RegistryObject<Item> SPIDERMASTERMIND_SPAWN_EGG = ITEMS.register("spidermastermind_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.SPIDERMASTERMIND));
+			() -> new DoomSpawnEgg(DoomEntities.SPIDERMASTERMIND));
 	public static final RegistryObject<Item> ZOMBIEMAN_SPAWN_EGG = ITEMS.register("zombieman_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.ZOMBIEMAN));
+			() -> new DoomSpawnEgg(DoomEntities.ZOMBIEMAN));
 	public static final RegistryObject<Item> CHAINGUNNER_SPAWN_EGG = ITEMS.register("chaingunner_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.CHAINGUNNER));
+			() -> new DoomSpawnEgg(DoomEntities.CHAINGUNNER));
 	public static final RegistryObject<Item> HELLKNIGHT_SPAWN_EGG = ITEMS.register("hellknight_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.HELLKNIGHT));
+			() -> new DoomSpawnEgg(DoomEntities.HELLKNIGHT));
 	public static final RegistryObject<Item> MARAUDER_SPAWN_EGG = ITEMS.register("marauder_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.MARAUDER));
+			() -> new DoomSpawnEgg(DoomEntities.MARAUDER));
 	public static final RegistryObject<Item> PAIN_SPAWN_EGG = ITEMS.register("pain_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.PAIN));
+			() -> new DoomSpawnEgg(DoomEntities.PAIN));
 	public static final RegistryObject<Item> REVENANT_SPAWN_EGG = ITEMS.register("revenant_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.REVENANT));
+			() -> new DoomSpawnEgg(DoomEntities.REVENANT));
 	public static final RegistryObject<Item> SHOTGUNGUY_SPAWN_EGG = ITEMS.register("shotgunguy_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.SHOTGUNGUY));
+			() -> new DoomSpawnEgg(DoomEntities.SHOTGUNGUY));
 	public static final RegistryObject<Item> CYBERDEMON_SPAWN_EGG = ITEMS.register("cyberdemon_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.CYBERDEMON));
+			() -> new DoomSpawnEgg(DoomEntities.CYBERDEMON));
 	public static final RegistryObject<Item> ICON_SPAWN_EGG = ITEMS.register("icon_of_sin_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.ICONOFSIN));
+			() -> new DoomSpawnEgg(DoomEntities.ICONOFSIN));
 	public static final RegistryObject<Item> UNWILLING_SPAWN_EGG = ITEMS.register("unwilling_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.UNWILLING));
+			() -> new DoomSpawnEgg(DoomEntities.UNWILLING));
 	public static final RegistryObject<Item> MECHAZOMBIE_SPAWN_EGG = ITEMS.register("mechazombie_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.MECHAZOMBIE));
+			() -> new DoomSpawnEgg(DoomEntities.MECHAZOMBIE));
 	public static final RegistryObject<Item> GORENEST_SPAWN_EGG = ITEMS.register("gorenest_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.GORE_NEST));
+			() -> new DoomSpawnEgg(DoomEntities.GORE_NEST));
 	public static final RegistryObject<Item> POSSESSED_SCIENTIST_SPAWN_EGG = ITEMS
-			.register("possessed_scientist_spawn_egg", () -> new DoomSpawnEgg(ModEntityTypes.POSSESSEDSCIENTIST));
+			.register("possessed_scientist_spawn_egg", () -> new DoomSpawnEgg(DoomEntities.POSSESSEDSCIENTIST));
 	public static final RegistryObject<Item> POSSESSED_SOLDIER_SPAWN_EGG = ITEMS.register("possessed_soldier_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.POSSESSEDSOLDIER));
+			() -> new DoomSpawnEgg(DoomEntities.POSSESSEDSOLDIER));
 	public static final RegistryObject<Item> HELLKNIGHT2016_SPAWN_EGG = ITEMS.register("hellknight2016_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.HELLKNIGHT2016));
+			() -> new DoomSpawnEgg(DoomEntities.HELLKNIGHT2016));
 	public static final RegistryObject<Item> GARGOYLE_SPAWN_EGG = ITEMS.register("gargoyle_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.GARGOYLE));
+			() -> new DoomSpawnEgg(DoomEntities.GARGOYLE));
 	public static final RegistryObject<Item> SPECTRE_SPAWN_EGG = ITEMS.register("spectre_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.SPECTRE));
+			() -> new DoomSpawnEgg(DoomEntities.SPECTRE));
 	public static final RegistryObject<Item> CUEBALL_SPAWN_EGG = ITEMS.register("cueball_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.CUEBALL));
+			() -> new DoomSpawnEgg(DoomEntities.CUEBALL));
 	public static final RegistryObject<Item> PROWLER_SPAWN_EGG = ITEMS.register("prowler_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.PROWLER));
+			() -> new DoomSpawnEgg(DoomEntities.PROWLER));
 	public static final RegistryObject<Item> DREADKNIGHT_SPAWN_EGG = ITEMS.register("dreadknight_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.DREADKNIGHT));
+			() -> new DoomSpawnEgg(DoomEntities.DREADKNIGHT));
 	public static final RegistryObject<Item> STONEIMP_SPAWN_EGG = ITEMS.register("stoneimp_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.IMP_STONE));
+			() -> new DoomSpawnEgg(DoomEntities.IMP_STONE));
 	public static final RegistryObject<Item> POSSESSED_WORKER_SPAWN_EGG = ITEMS.register("possessed_worker_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.POSSESSEDWORKER));
+			() -> new DoomSpawnEgg(DoomEntities.POSSESSEDWORKER));
 	public static final RegistryObject<Item> DOOMHUNTER_SPAWN_EGG = ITEMS.register("doom_hunter_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.DOOMHUNTER));
+			() -> new DoomSpawnEgg(DoomEntities.DOOMHUNTER));
 	public static final RegistryObject<Item> WHIPLASH_SPAWN_EGG = ITEMS.register("whiplash_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.WHIPLASH));
+			() -> new DoomSpawnEgg(DoomEntities.WHIPLASH));
 	public static final RegistryObject<Item> BARON2016_SPAWN_EGG = ITEMS.register("baron2016_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.BARON2016));
+			() -> new DoomSpawnEgg(DoomEntities.BARON2016));
 	public static final RegistryObject<Item> FIREBORNE_BARON_SPAWN_EGG = ITEMS.register("firebronebaron_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.FIREBARON));
+			() -> new DoomSpawnEgg(DoomEntities.FIREBARON));
 	public static final RegistryObject<Item> ARMORED_BARON_SPAWN_EGG = ITEMS.register("armoredbaron_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.ARMORBARON));
+			() -> new DoomSpawnEgg(DoomEntities.ARMORBARON));
 	public static final RegistryObject<Item> MAYKR_DRONE_SPAWN_EGG = ITEMS.register("maykr_drone_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.MAYKRDRONE));
+			() -> new DoomSpawnEgg(DoomEntities.MAYKRDRONE));
 	public static final RegistryObject<Item> BLOOD_MAYKR_SPAWN_EGG = ITEMS.register("blood_maykr_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.BLOODMAYKR));
+			() -> new DoomSpawnEgg(DoomEntities.BLOODMAYKR));
 	public static final RegistryObject<Item> ARCH_MAKYR_SPAWN_EGG = ITEMS.register("arch_maykr_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.ARCHMAKER));
+			() -> new DoomSpawnEgg(DoomEntities.ARCHMAKER));
 	public static final RegistryObject<Item> ARACHNOTRONETERNAL_SPAWN_EGG = ITEMS
-			.register("arachnotroneternal_spawn_egg", () -> new DoomSpawnEgg(ModEntityTypes.ARACHNOTRONETERNAL));
+			.register("arachnotroneternal_spawn_egg", () -> new DoomSpawnEgg(DoomEntities.ARACHNOTRONETERNAL));
 	public static final RegistryObject<Item> SPIDERMASTERMIND2016_SPAWN_EGG = ITEMS
-			.register("spidermastermind2016_spawn_egg", () -> new DoomSpawnEgg(ModEntityTypes.SPIDERMASTERMIND2016));
+			.register("spidermastermind2016_spawn_egg", () -> new DoomSpawnEgg(DoomEntities.SPIDERMASTERMIND2016));
 	public static final RegistryObject<Item> TENTACLE_SPAWN_EGG = ITEMS.register("tentacle_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.TENTACLE));
+			() -> new DoomSpawnEgg(DoomEntities.TENTACLE));
 	public static final RegistryObject<Item> MOTHERDEMON_SPAWN_EGG = ITEMS.register("motherdemon_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.MOTHERDEMON));
+			() -> new DoomSpawnEgg(DoomEntities.MOTHERDEMON));
 	public static final RegistryObject<Item> TURRET_SPAWN_EGG = ITEMS.register("turret_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.TURRET));
+			() -> new DoomSpawnEgg(DoomEntities.TURRET));
 	public static final RegistryObject<Item> SUMMONER_SPAWN_EGG = ITEMS.register("summoner_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.SUMMONER));
+			() -> new DoomSpawnEgg(DoomEntities.SUMMONER));
 	public static final RegistryObject<Item> REVENANT2016_SPAWN_EGG = ITEMS.register("revenant2016_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.REVENANT2016));
+			() -> new DoomSpawnEgg(DoomEntities.REVENANT2016));
 	public static final RegistryObject<Item> GLADIATOR_SPAWN_EGG = ITEMS.register("gladiator_spawn_egg",
-			() -> new DoomSpawnEgg(ModEntityTypes.GLADIATOR));
+			() -> new DoomSpawnEgg(DoomEntities.GLADIATOR));
 
 	// WEAPONS AND TOOLS
 	public static final RegistryObject<Item> CRUCIBLESWORD = ITEMS.register("cruciblesword",

@@ -6,13 +6,13 @@ import java.util.function.Consumer;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.DSGRender;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.DSGLoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
@@ -73,7 +73,7 @@ public class DShotgun extends DoomBaseItem {
 					stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
 					worldIn.addFreshEntity(abstractarrowentity);
 					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-							ModSoundEvents.SHOTGUN_SHOOT.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
+							DoomSounds.SHOTGUN_SHOOT.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
 					if (!worldIn.isClientSide) {
 						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
 						final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
@@ -85,7 +85,7 @@ public class DShotgun extends DoomBaseItem {
 				}
 			} else {
 				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-						ModSoundEvents.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
+						DoomSounds.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}
@@ -116,7 +116,7 @@ public class DShotgun extends DoomBaseItem {
 				user.getItemInHand(hand).hurtAndBreak(-4, user, s -> user.broadcastBreakEvent(hand));
 				user.getItemInHand(hand).setPopTime(3);
 				user.getCommandSenderWorld().playSound((Player) null, user.getX(), user.getY(), user.getZ(),
-						ModSoundEvents.SHOTGUNRELOAD.get(), SoundSource.PLAYERS, 1.00F, 1.0F);
+						DoomSounds.SHOTGUNRELOAD.get(), SoundSource.PLAYERS, 1.00F, 1.0F);
 			}
 		}
 	}

@@ -1,3 +1,5 @@
-v.4.2.14
+v.4.2.15
 
-- Added Whitelist config for BFG Damage. This will make the BFG damage any entities added to this whitelist on top of the current checks.
+- Turret spawns naturally
+- Few class renames.
+- Fixes log spawn with Nether Church, Icon of Sin Fight Arena and Gladiator arena. 

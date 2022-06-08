@@ -1,12 +1,12 @@
 package mod.azure.doom.entity.tierboss;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
-import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvent;
@@ -91,12 +91,12 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 		if (event.sound.matches("walk")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.SPIDERDEMON_AMBIENT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						DoomSounds.SPIDERDEMON_AMBIENT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.level.isClientSide()) {
-				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PISTOL_HIT.get(),
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PISTOL_HIT.get(),
 						SoundSource.HOSTILE, 1.0F, 1.0F, true);
 			}
 		}
@@ -179,21 +179,21 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.SPIDERDEMON_AMBIENT.get();
+		return DoomSounds.SPIDERDEMON_AMBIENT.get();
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.SPIDERDEMON_HURT.get();
+		return DoomSounds.SPIDERDEMON_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.SPIDERDEMON_DEATH.get();
+		return DoomSounds.SPIDERDEMON_DEATH.get();
 	}
 
 	protected SoundEvent getStepSound() {
-		return ModSoundEvents.SPIDERDEMON_AMBIENT.get();
+		return DoomSounds.SPIDERDEMON_AMBIENT.get();
 	}
 
 	@Override

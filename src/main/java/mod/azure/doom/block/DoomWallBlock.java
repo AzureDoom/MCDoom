@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tileentity.IconBlockEntity;
 import mod.azure.doom.util.registry.DoomBlocks;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -85,7 +85,7 @@ public class DoomWallBlock extends BaseEntityBlock {
 						}
 					}
 
-					IconofsinEntity witherentity = ModEntityTypes.ICONOFSIN.get().create(worldIn);
+					IconofsinEntity witherentity = DoomEntities.ICONOFSIN.get().create(worldIn);
 					BlockPos blockpos = blockpattern$patternhelper.getBlock(1, 2, 0).getPos();
 					witherentity.moveTo((double) blockpos.getX() + 0.5D, (double) blockpos.getY() + 0.55D,
 							(double) blockpos.getZ() + 0.5D,
@@ -141,7 +141,7 @@ public class DoomWallBlock extends BaseEntityBlock {
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return ModEntityTypes.ICON.get().create(pos, state);
+		return DoomEntities.ICON.get().create(pos, state);
 	}
 
 	@Override

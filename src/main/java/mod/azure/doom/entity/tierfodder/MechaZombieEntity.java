@@ -1,11 +1,11 @@
 package mod.azure.doom.entity.tierfodder;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
-import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -161,12 +161,12 @@ public class MechaZombieEntity extends DemonEntity implements IAnimatable, IAnim
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.MECHA_HURT.get();
+		return DoomSounds.MECHA_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.MECHA_DEATH.get();
+		return DoomSounds.MECHA_DEATH.get();
 	}
 
 	protected SoundEvent getStepSound() {

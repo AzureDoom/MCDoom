@@ -1,9 +1,9 @@
 package mod.azure.doom.entity.projectiles.entity;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
-import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -40,7 +40,7 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements IA
 	}
 
 	public GladiatorMaceEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ) {
-		super(ModEntityTypes.GLADIATOR_MACE.get(), shooter, accelX, accelY, accelZ, worldIn);
+		super(DoomEntities.GLADIATOR_MACE.get(), shooter, accelX, accelY, accelZ, worldIn);
 		this.shooter = shooter;
 	}
 

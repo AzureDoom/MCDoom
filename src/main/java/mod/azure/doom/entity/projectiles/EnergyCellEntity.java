@@ -3,8 +3,8 @@ package mod.azure.doom.entity.projectiles;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomParticles;
-import mod.azure.doom.util.registry.ModEntityTypes;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
@@ -46,11 +46,11 @@ public class EnergyCellEntity extends AbstractArrow implements IAnimatable {
 	}
 
 	public EnergyCellEntity(Level world, LivingEntity owner) {
-		super(ModEntityTypes.ENERGY_CELL.get(), owner, world);
+		super(DoomEntities.ENERGY_CELL.get(), owner, world);
 	}
 
 	public EnergyCellEntity(Level world, LivingEntity owner, float damage) {
-		super(ModEntityTypes.ENERGY_CELL.get(), owner, world);
+		super(DoomEntities.ENERGY_CELL.get(), owner, world);
 		this.projectiledamage = damage;
 	}
 
@@ -216,7 +216,7 @@ public class EnergyCellEntity extends AbstractArrow implements IAnimatable {
 	@Override
 	protected void onHitBlock(BlockHitResult p_230299_1_) {
 		super.onHitBlock(p_230299_1_);
-		this.setSoundEvent(ModSoundEvents.PLASMA_HIT.get());
+		this.setSoundEvent(DoomSounds.PLASMA_HIT.get());
 	}
 
 	@Override
@@ -226,7 +226,7 @@ public class EnergyCellEntity extends AbstractArrow implements IAnimatable {
 
 	@Override
 	protected SoundEvent getDefaultHitGroundSoundEvent() {
-		return ModSoundEvents.PLASMA_HIT.get();
+		return DoomSounds.PLASMA_HIT.get();
 	}
 
 	@Override

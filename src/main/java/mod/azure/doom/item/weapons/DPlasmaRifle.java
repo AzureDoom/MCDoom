@@ -6,13 +6,13 @@ import java.util.function.Consumer;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.DPlamsaRifleRender;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.EnergyCellEntity;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.DPlasmaLoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
@@ -74,7 +74,7 @@ public class DPlasmaRifle extends DoomBaseItem {
 						stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
 						worldIn.addFreshEntity(abstractarrowentity);
 						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-								ModSoundEvents.PLASMA_FIRING.get(), SoundSource.PLAYERS, 1.0F,
+								DoomSounds.PLASMA_FIRING.get(), SoundSource.PLAYERS, 1.0F,
 								1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 						if (!worldIn.isClientSide) {
 							final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
@@ -88,7 +88,7 @@ public class DPlasmaRifle extends DoomBaseItem {
 				}
 			} else {
 				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-						ModSoundEvents.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
+						DoomSounds.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}
@@ -119,7 +119,7 @@ public class DPlasmaRifle extends DoomBaseItem {
 				user.getItemInHand(hand).hurtAndBreak(-20, user, s -> user.broadcastBreakEvent(hand));
 				user.getItemInHand(hand).setPopTime(3);
 				user.getCommandSenderWorld().playSound((Player) null, user.getX(), user.getY(), user.getZ(),
-						ModSoundEvents.CLIPRELOAD.get(), SoundSource.PLAYERS, 1.00F, 1.0F);
+						DoomSounds.CLIPRELOAD.get(), SoundSource.PLAYERS, 1.00F, 1.0F);
 			}
 		}
 	}

@@ -2,10 +2,10 @@ package mod.azure.doom;
 
 import java.util.List;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.DoomVillagerTrades;
 import mod.azure.doom.util.LootHandler;
 import mod.azure.doom.util.SoulCubeHandler;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
@@ -14,8 +14,8 @@ import mod.azure.doom.util.registry.DoomRecipes;
 import mod.azure.doom.util.registry.DoomScreens;
 import mod.azure.doom.util.registry.DoomStructures;
 import mod.azure.doom.util.registry.ModEntitySpawn;
-import mod.azure.doom.util.registry.ModEntityTypes;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -67,11 +67,11 @@ public class DoomMod {
 		if (DoomConfig.SERVER.enable_all_villager_trades.get()) {
 			MinecraftForge.EVENT_BUS.addListener(DoomVillagerTrades::onVillagerTradesEvent);
 		}
-		ModSoundEvents.MOD_SOUNDS.register(modEventBus);
-		ModEntityTypes.ENTITY_TYPES.register(modEventBus);
+		DoomSounds.MOD_SOUNDS.register(modEventBus);
+		DoomEntities.ENTITY_TYPES.register(modEventBus);
 		DoomItems.ITEMS.register(modEventBus);
 		DoomBlocks.BLOCKS.register(modEventBus);
-		ModEntityTypes.TILE_TYPES.register(modEventBus);
+		DoomEntities.TILE_TYPES.register(modEventBus);
 		DoomScreens.CONTAIN.register(modEventBus);
 		DoomRecipes.SERIAL.register(modEventBus);
 		DoomParticles.PARTICLES.register(modEventBus);

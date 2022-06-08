@@ -1,8 +1,8 @@
 package mod.azure.doom.entity.projectiles.entity;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.util.registry.ModEntityTypes;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -41,7 +41,7 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements IA
 
 	public EnergyCellMobEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
 			float directHitDamage) {
-		super(ModEntityTypes.ENERGY_CELL_MOB.get(), shooter, accelX, accelY, accelZ, worldIn);
+		super(DoomEntities.ENERGY_CELL_MOB.get(), shooter, accelX, accelY, accelZ, worldIn);
 		this.shooter = shooter;
 		this.walkDist = 3.0F;
 		this.directHitDamage = directHitDamage;
@@ -159,7 +159,7 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements IA
 					this.doEnchantDamageEffects((LivingEntity) entity1, entity);
 			}
 		}
-		this.playSound(ModSoundEvents.PLASMA_HIT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+		this.playSound(DoomSounds.PLASMA_HIT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 	}
 
 	protected void onHit(HitResult result) {
@@ -168,7 +168,7 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements IA
 			this.explode();
 			this.remove(RemovalReason.KILLED);
 		}
-		this.playSound(ModSoundEvents.PLASMA_HIT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+		this.playSound(DoomSounds.PLASMA_HIT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 	}
 
 	protected void explode() {

@@ -1,12 +1,12 @@
 package mod.azure.doom.entity.tierboss;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.EnergyCellMobEntity;
-import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -66,13 +66,13 @@ public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 		if (event.sound.matches("walk")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.SPIDERDEMON_AMBIENT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						DoomSounds.SPIDERDEMON_AMBIENT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.PLASMA_FIRING.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						DoomSounds.PLASMA_FIRING.get(), SoundSource.HOSTILE, 1.0F, 1.0F, true);
 			}
 		}
 	}
@@ -90,7 +90,7 @@ public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 
 		@Override
 		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(ModSoundEvents.PLASMA_FIRING.get(), 1, 1);
+			return new AttackSound(DoomSounds.PLASMA_FIRING.get(), 1, 1);
 		}
 
 		@Override

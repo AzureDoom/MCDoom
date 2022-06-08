@@ -4,7 +4,7 @@ import java.util.List;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
-import mod.azure.doom.util.config.DoomConfig;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.AxeMarauderLoadingPacket;

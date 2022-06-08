@@ -1,7 +1,7 @@
 package mod.azure.doom.entity.tileentity;
 
 import mod.azure.doom.client.gui.weapons.GunTableScreenHandler;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -36,7 +36,7 @@ public class GunBlockEntity extends BlockEntity implements ImplementedInventory,
 	private final NonNullList<ItemStack> items = NonNullList.withSize(6, ItemStack.EMPTY);
 
 	public GunBlockEntity(BlockPos pos, BlockState state) {
-		super(ModEntityTypes.GUN_TABLE_ENTITY.get(), pos, state);
+		super(DoomEntities.GUN_TABLE_ENTITY.get(), pos, state);
 	}
 	
 	@Override

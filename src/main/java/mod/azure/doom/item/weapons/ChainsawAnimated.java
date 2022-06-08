@@ -13,7 +13,7 @@ import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.ChainsawEternalLoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -105,7 +105,7 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDeathCheck(user, e, stack));
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> damageItem(user, stack));
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> addParticle(e));
-			worldIn.playSound((Player) null, user.getX(), user.getY(), user.getZ(), ModSoundEvents.CHAINSAW_IDLE.get(),
+			worldIn.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_IDLE.get(),
 					SoundSource.PLAYERS, 0.05F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 		if (worldIn.isClientSide) {
@@ -151,7 +151,7 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 			target.invulnerableTime = 0;
 			target.hurt(DamageSource.playerAttack((Player) user), 2F);
 			user.level.playSound((Player) null, user.getX(), user.getY(), user.getZ(),
-					ModSoundEvents.CHAINSAW_ATTACKING.get(), SoundSource.PLAYERS, 0.3F,
+					DoomSounds.CHAINSAW_ATTACKING.get(), SoundSource.PLAYERS, 0.3F,
 					1.0F / (user.level.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 	}

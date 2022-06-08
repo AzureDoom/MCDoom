@@ -1,13 +1,13 @@
 package mod.azure.doom.entity.tierheavy;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
-import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -187,8 +187,8 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 
 		@Override
 		public AttackSound getDefaultAttackSound() {
-			return new AttackSound((actor.getVariant() == 10 ? ModSoundEvents.REVENANT_DOOT.get()
-					: ModSoundEvents.REVENANT_ATTACK.get()), 1, 1);
+			return new AttackSound((actor.getVariant() == 10 ? DoomSounds.REVENANT_DOOT.get()
+					: DoomSounds.REVENANT_ATTACK.get()), 1, 1);
 		}
 
 		@Override
@@ -337,12 +337,12 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.REVENANT_HURT.get();
+		return DoomSounds.REVENANT_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.REVENANT_DEATH.get();
+		return DoomSounds.REVENANT_DEATH.get();
 	}
 
 	protected SoundEvent getStepSound() {

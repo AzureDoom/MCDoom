@@ -1,7 +1,7 @@
 package mod.azure.doom.block;
 
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Containers;
@@ -48,7 +48,7 @@ public class GunTableBlock extends Block implements EntityBlock {
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return ModEntityTypes.GUN_TABLE_ENTITY.get().create(pos, state);
+		return DoomEntities.GUN_TABLE_ENTITY.get().create(pos, state);
 	}
 
 	@Override

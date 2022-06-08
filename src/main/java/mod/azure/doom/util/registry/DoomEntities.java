@@ -75,7 +75,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-public class ModEntityTypes {
+public class DoomEntities {
 
 	public static final DeferredRegister<BlockEntityType<?>> TILE_TYPES = DeferredRegister
 			.create(ForgeRegistries.BLOCK_ENTITIES, DoomMod.MODID);

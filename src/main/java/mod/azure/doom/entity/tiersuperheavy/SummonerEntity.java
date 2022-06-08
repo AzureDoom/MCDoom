@@ -8,11 +8,11 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
-import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModEntityTypes;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -122,7 +122,7 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 		if (event.sound.matches("attack")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.ARCHVILE_SCREAM.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
+						DoomSounds.ARCHVILE_SCREAM.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}
@@ -209,8 +209,8 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	public void spawnWave() {
 		Random rand = new Random();
-		List<EntityType<?>> givenList = Arrays.asList(ModEntityTypes.IMP.get(), ModEntityTypes.LOST_SOUL.get(),
-				ModEntityTypes.IMP_STONE.get());
+		List<EntityType<?>> givenList = Arrays.asList(DoomEntities.IMP.get(), DoomEntities.LOST_SOUL.get(),
+				DoomEntities.IMP_STONE.get());
 
 		for (int i = 0; i < 1; i++) {
 			int randomIndex = rand.nextInt(givenList.size());
@@ -512,12 +512,12 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.ARCHVILE_HURT.get();
+		return DoomSounds.ARCHVILE_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.ARCHVILE_DEATH.get();
+		return DoomSounds.ARCHVILE_DEATH.get();
 	}
 
 }

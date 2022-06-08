@@ -1,7 +1,7 @@
 package mod.azure.doom.block;
 
 import mod.azure.doom.entity.tileentity.TotemEntity;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -47,12 +47,12 @@ public class TotemBlock extends BaseEntityBlock implements EntityBlock {
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
 			BlockEntityType<T> type) {
-		return createTickerHelper(type, ModEntityTypes.TOTEM.get(), TotemEntity::tick);
+		return createTickerHelper(type, DoomEntities.TOTEM.get(), TotemEntity::tick);
 	}
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return ModEntityTypes.TOTEM.get().create(pos, state);
+		return DoomEntities.TOTEM.get().create(pos, state);
 	}
 
 	@Override

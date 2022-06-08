@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.SplittableRandom;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.IconAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
-import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -350,17 +350,17 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.ICON_AMBIENT.get();
+		return DoomSounds.ICON_AMBIENT.get();
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.ICON_HURT.get();
+		return DoomSounds.ICON_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.ICON_DEATH.get();
+		return DoomSounds.ICON_DEATH.get();
 	}
 
 	protected SoundEvent getStepSound() {

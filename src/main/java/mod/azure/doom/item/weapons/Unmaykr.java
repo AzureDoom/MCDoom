@@ -5,13 +5,13 @@ import java.util.function.Consumer;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.UnmaykrRender;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.UnmaykrBoltEntity;
-import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.UnmaykrLoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -85,7 +85,7 @@ public class Unmaykr extends DoomBaseItem {
 					worldIn.addFreshEntity(abstractarrowentity1);
 					worldIn.addFreshEntity(abstractarrowentity2);
 					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-							ModSoundEvents.UNMAKYR_FIRE.get(), SoundSource.PLAYERS, 1.0F,
+							DoomSounds.UNMAKYR_FIRE.get(), SoundSource.PLAYERS, 1.0F,
 							1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 					if (!worldIn.isClientSide) {
 						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);

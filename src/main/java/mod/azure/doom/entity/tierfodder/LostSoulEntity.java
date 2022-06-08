@@ -2,11 +2,11 @@ package mod.azure.doom.entity.tierfodder;
 
 import java.util.EnumSet;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
-import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModEntityTypes;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -130,11 +130,11 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 
 	@OnlyIn(Dist.CLIENT)
 	public LostSoulEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-		super(ModEntityTypes.LOST_SOUL.get(), worldIn);
+		super(DoomEntities.LOST_SOUL.get(), worldIn);
 	}
 
 	public LostSoulEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ) {
-		super(ModEntityTypes.LOST_SOUL.get(), worldIn);
+		super(DoomEntities.LOST_SOUL.get(), worldIn);
 	}
 
 	@Override
@@ -277,7 +277,7 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 			Vec3 vec3d = livingentity.getEyePosition(1.0F);
 			parentEntity.moveControl.setWantedPosition(vec3d.x, vec3d.y, vec3d.z, 4.0D);
 			parentEntity.setCharging(true);
-			parentEntity.playSound(ModSoundEvents.LOST_SOUL_AMBIENT.get(), 1.0F, 1.0F);
+			parentEntity.playSound(DoomSounds.LOST_SOUL_AMBIENT.get(), 1.0F, 1.0F);
 			this.attackTimer = 0;
 		}
 
@@ -391,12 +391,12 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.LOST_SOUL_DEATH.get();
+		return DoomSounds.LOST_SOUL_DEATH.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.LOST_SOUL_DEATH.get();
+		return DoomSounds.LOST_SOUL_DEATH.get();
 	}
 
 	@Override
