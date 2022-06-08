@@ -51,9 +51,115 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 
 @EventBusSubscriber(modid = DoomMod.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class ModEventSubscriber {
+
+	@SubscribeEvent
+	public static void onRegisterEvent(RegisterEvent event) {
+//		event.register(ForgeRegistries.Keys.BIOME_MODIFIERS, helper -> {
+//		});
+		event.register(ForgeRegistries.Keys.ENTITY_TYPES, helper -> {
+			SpawnPlacements.register(ModEntityTypes.GLADIATOR.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.ARCHVILE.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.LOST_SOUL.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.LOST_SOUL_ETERNAL.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.ZOMBIEMAN.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.SPIDERMASTERMIND.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.ARACHNOTRON.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.MANCUBUS.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.BARON.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.REVENANT.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.IMP.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.PINKY.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.SPECTRE.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.CACODEMON.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.CHAINGUNNER.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.MARAUDER.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.SHOTGUNGUY.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.PAIN.get(), SpawnPlacements.Type.IN_LAVA,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.HELLKNIGHT.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.HELLKNIGHT2016.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.CYBERDEMON.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.UNWILLING.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.POSSESSEDSCIENTIST.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.POSSESSEDSOLDIER.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.ICONOFSIN.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.GORE_NEST.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.MECHAZOMBIE.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.GARGOYLE.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.CUEBALL.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.PROWLER.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.DREADKNIGHT.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.IMP_STONE.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.POSSESSEDWORKER.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.DOOMHUNTER.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.WHIPLASH.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.FIREBARON.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.BARON2016.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.ARMORBARON.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.ARACHNOTRONETERNAL.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.MAYKRDRONE.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.SPIDERMASTERMIND2016.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.BLOODMAYKR.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.ARCHMAKER.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.TENTACLE.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.MOTHERDEMON.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.TURRET.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.SUMMONER.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+			SpawnPlacements.register(ModEntityTypes.REVENANT2016.get(), SpawnPlacements.Type.ON_GROUND,
+					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
+		});
+	}
 
 	@SubscribeEvent
 	public static void entityAttributes(EntityAttributeCreationEvent event) {
@@ -105,102 +211,5 @@ public class ModEventSubscriber {
 		event.put(ModEntityTypes.TURRET.get(), TurretEntity.createAttributes().build());
 		event.put(ModEntityTypes.SUMMONER.get(), SummonerEntity.createAttributes().build());
 		event.put(ModEntityTypes.REVENANT2016.get(), Revenant2016Entity.createAttributes().build());
-
-		SpawnPlacements.register(ModEntityTypes.GLADIATOR.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.ARCHVILE.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.LOST_SOUL.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.LOST_SOUL_ETERNAL.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.ZOMBIEMAN.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.SPIDERMASTERMIND.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.ARACHNOTRON.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.MANCUBUS.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.BARON.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.REVENANT.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.IMP.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.PINKY.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.SPECTRE.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.CACODEMON.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.CHAINGUNNER.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.MARAUDER.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.SHOTGUNGUY.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.PAIN.get(), SpawnPlacements.Type.IN_LAVA,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.HELLKNIGHT.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.HELLKNIGHT2016.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.CYBERDEMON.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.UNWILLING.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.POSSESSEDSCIENTIST.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.POSSESSEDSOLDIER.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.ICONOFSIN.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.GORE_NEST.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.MECHAZOMBIE.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.GARGOYLE.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.CUEBALL.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.PROWLER.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.DREADKNIGHT.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.IMP_STONE.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.POSSESSEDWORKER.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.DOOMHUNTER.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.WHIPLASH.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.FIREBARON.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.BARON2016.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.ARMORBARON.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.ARACHNOTRONETERNAL.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.MAYKRDRONE.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.SPIDERMASTERMIND2016.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.BLOODMAYKR.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.ARCHMAKER.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.TENTACLE.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.MOTHERDEMON.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.TURRET.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.SUMMONER.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-		SpawnPlacements.register(ModEntityTypes.REVENANT2016.get(), SpawnPlacements.Type.ON_GROUND,
-				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 	}
 }

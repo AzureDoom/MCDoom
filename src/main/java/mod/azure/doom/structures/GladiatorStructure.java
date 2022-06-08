@@ -21,7 +21,7 @@ public class GladiatorStructure extends Structure {
 					StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
 					ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name")
 							.forGetter(structure -> structure.startJigsawName),
-					Codec.intRange(0, 101).fieldOf("size").forGetter(structure -> structure.size),
+					Codec.intRange(0, 4).fieldOf("size").forGetter(structure -> structure.size),
 					Codec.intRange(1, 128).fieldOf("max_distance_from_center")
 							.forGetter(structure -> structure.maxDistanceFromCenter))
 					.apply(instance, GladiatorStructure::new))

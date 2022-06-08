@@ -23,7 +23,7 @@ public class IconStructure extends Structure {
 					StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
 					ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name")
 							.forGetter(structure -> structure.startJigsawName),
-					Codec.intRange(0, 101).fieldOf("size").forGetter(structure -> structure.size),
+					Codec.intRange(0, 4).fieldOf("size").forGetter(structure -> structure.size),
 					HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
 					Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap")
 							.forGetter(structure -> structure.projectStartToHeightmap),

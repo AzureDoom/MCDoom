@@ -28,14 +28,18 @@ import net.minecraftforge.common.ForgeTier;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import software.bernie.geckolib3.GeckoLib;
 import software.bernie.geckolib3.network.GeckoLibNetwork;
+import top.theillusivec4.curios.api.SlotTypeMessage;
+import top.theillusivec4.curios.api.SlotTypePreset;
 
 @Mod(DoomMod.MODID)
 public class DoomMod {
@@ -56,7 +60,7 @@ public class DoomMod {
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new SoulCubeHandler());
 		modEventBus.addListener(this::setup);
-//		modEventBus.addListener(this::enqueueIMC);
+		modEventBus.addListener(this::enqueueIMC);
 		if (DoomConfig.SERVER.enable_all_villager_trades.get()) {
 			MinecraftForge.EVENT_BUS.addListener(DoomVillagerTrades::onVillagerTradesEvent);
 		}
@@ -69,7 +73,7 @@ public class DoomMod {
 		DoomRecipes.SERIAL.register(modEventBus);
 		DoomParticles.PARTICLES.register(modEventBus);
 //		MinecraftForge.EVENT_BUS.addListener(this::onBiomeLoad);
-		DoomStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
+		//DoomStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
 		GeckoLib.initialize();
 		GeckoLibNetwork.initialize();
 	}
@@ -84,12 +88,12 @@ public class DoomMod {
 		DoomPacketHandler.register();
 	}
 
-//	private void enqueueIMC(InterModEnqueueEvent event) {
-//		InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
-//				() -> SlotTypePreset.CHARM.getMessageBuilder().build());
-//		InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
-//				() -> SlotTypePreset.BELT.getMessageBuilder().build());
-//	}
+	private void enqueueIMC(InterModEnqueueEvent event) {
+		InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
+				() -> SlotTypePreset.CHARM.getMessageBuilder().build());
+		InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
+				() -> SlotTypePreset.BELT.getMessageBuilder().build());
+	}
 
 	public static final CreativeModeTab DoomWeaponItemGroup = (new CreativeModeTab("doomweapons") {
 		@Override
