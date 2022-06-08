@@ -2,9 +2,9 @@
   "type": "doom:mobspawns",
   "biomes": "#minecraft:is_nether",
   "spawn": {
-    "type": "minecraft:magma_cube",
-    "maxCount": 400,
+    "type": "doom:armoredbaron",
+    "maxCount": 1,
     "minCount": 1,
-    "weight": 100
+    "weight": 4
   }
 }

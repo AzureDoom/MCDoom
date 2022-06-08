@@ -16,6 +16,7 @@ import mod.azure.doom.util.registry.DoomParticles;
 import mod.azure.doom.util.registry.DoomRecipes;
 import mod.azure.doom.util.registry.DoomScreens;
 import mod.azure.doom.util.registry.DoomSounds;
+import mod.azure.doom.util.registry.DoomStructures;
 import mod.azure.doom.util.registry.ModEntitySpawn;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -78,7 +79,7 @@ public class DoomMod {
 		DoomScreens.CONTAIN.register(modEventBus);
 		DoomRecipes.SERIAL.register(modEventBus);
 		DoomParticles.PARTICLES.register(modEventBus);
-		//DoomStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
+		DoomStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
 		GeckoLib.initialize();
 		GeckoLibNetwork.initialize();
 		final DeferredRegister<Codec<? extends BiomeModifier>> serializers = DeferredRegister

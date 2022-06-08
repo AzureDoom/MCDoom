@@ -1,0 +1,10 @@
+{
+  "type": "doom:mobspawns",
+  "biomes": "#minecraft:is_nether",
+  "spawn": {
+    "type": "doom:imp",
+    "maxCount": 1,
+    "minCount": 1,
+    "weight": 15
+  }
+}
