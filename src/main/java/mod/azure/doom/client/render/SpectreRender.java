@@ -33,7 +33,6 @@ public class SpectreRender extends GeoEntityRenderer<SpectreEntity> {
 	public void render(GeoModel model, SpectreEntity animatable, float partialTicks, RenderLayer type,
 			MatrixStack matrixStackIn, VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder,
 			int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		// TODO Auto-generated method stub
 		super.render(model, animatable, partialTicks, type, matrixStackIn, renderTypeBuffer, vertexBuilder,
 				packedLightIn, packedOverlayIn, red, green, blue, 0.1F);
 	}

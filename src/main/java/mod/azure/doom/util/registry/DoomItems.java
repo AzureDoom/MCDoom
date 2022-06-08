@@ -151,94 +151,94 @@ public class DoomItems {
 	}
 
 	// Spawn Eggs
-	public static DoomSpawnEgg ARACHNOTRON_SPAWN_EGG = item(new DoomSpawnEgg(ModEntityTypes.ARACHNOTRON),
+	public static DoomSpawnEgg ARACHNOTRON_SPAWN_EGG = item(new DoomSpawnEgg(DoomEntities.ARACHNOTRON),
 			"arachnotron_spawn_egg");
-	public static DoomSpawnEgg IMP_SPAWN_EGG = item(new DoomSpawnEgg(ModEntityTypes.IMP), "imp_spawn_egg");
-	public static DoomSpawnEgg PINKY_SPAWN_EGG = item("pinky_spawn_egg", new DoomSpawnEgg(ModEntityTypes.PINKY));
+	public static DoomSpawnEgg IMP_SPAWN_EGG = item(new DoomSpawnEgg(DoomEntities.IMP), "imp_spawn_egg");
+	public static DoomSpawnEgg PINKY_SPAWN_EGG = item("pinky_spawn_egg", new DoomSpawnEgg(DoomEntities.PINKY));
 	public static DoomSpawnEgg ARCHVILE_SPAWN_EGG = item("archvile_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.ARCHVILE));
-	public static DoomSpawnEgg BARON_SPAWN_EGG = item("baron_spawn_egg", new DoomSpawnEgg(ModEntityTypes.BARON));
+			new DoomSpawnEgg(DoomEntities.ARCHVILE));
+	public static DoomSpawnEgg BARON_SPAWN_EGG = item("baron_spawn_egg", new DoomSpawnEgg(DoomEntities.BARON));
 	public static DoomSpawnEgg CACODEMON_SPAWN_EGG = item("cacodemon_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.CACODEMON));
+			new DoomSpawnEgg(DoomEntities.CACODEMON));
 	public static DoomSpawnEgg MANCUBUS_SPAWN_EGG = item("mancubus_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.MANCUBUS));
+			new DoomSpawnEgg(DoomEntities.MANCUBUS));
 	public static DoomSpawnEgg LOST_SOUL_SPAWN_EGG = item("lost_soul_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.LOST_SOUL));
+			new DoomSpawnEgg(DoomEntities.LOST_SOUL));
 	public static DoomSpawnEgg LOST_SOUL_ETERNAL_SPAWN_EGG = item("lost_soul_eternal_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.LOST_SOUL_ETERNAL));
+			new DoomSpawnEgg(DoomEntities.LOST_SOUL_ETERNAL));
 	public static DoomSpawnEgg SPIDERMASTERMIND_SPAWN_EGG = item("spidermastermind_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.SPIDERMASTERMIND));
+			new DoomSpawnEgg(DoomEntities.SPIDERMASTERMIND));
 	public static DoomSpawnEgg ZOMBIEMAN_SPAWN_EGG = item("zombieman_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.ZOMBIEMAN));
+			new DoomSpawnEgg(DoomEntities.ZOMBIEMAN));
 	public static DoomSpawnEgg CHAINGUNNER_SPAWN_EGG = item("chaingunner_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.CHAINGUNNER));
+			new DoomSpawnEgg(DoomEntities.CHAINGUNNER));
 	public static DoomSpawnEgg HELLKNIGHT_SPAWN_EGG = item("hellknight_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.HELLKNIGHT));
+			new DoomSpawnEgg(DoomEntities.HELLKNIGHT));
 	public static DoomSpawnEgg MARAUDER_SPAWN_EGG = item("marauder_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.MARAUDER));
-	public static DoomSpawnEgg PAIN_SPAWN_EGG = item("pain_spawn_egg", new DoomSpawnEgg(ModEntityTypes.PAIN));
+			new DoomSpawnEgg(DoomEntities.MARAUDER));
+	public static DoomSpawnEgg PAIN_SPAWN_EGG = item("pain_spawn_egg", new DoomSpawnEgg(DoomEntities.PAIN));
 	public static DoomSpawnEgg REVENANT_SPAWN_EGG = item("revenant_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.REVENANT));
+			new DoomSpawnEgg(DoomEntities.REVENANT));
 	public static DoomSpawnEgg SHOTGUNGUY_SPAWN_EGG = item("shotgunguy_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.SHOTGUNGUY));
+			new DoomSpawnEgg(DoomEntities.SHOTGUNGUY));
 	public static DoomSpawnEgg CYBERDEMON_SPAWN_EGG = item("cyberdemon_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.CYBERDEMON));
+			new DoomSpawnEgg(DoomEntities.CYBERDEMON));
 	public static DoomSpawnEgg ICON_SPAWN_EGG = item("icon_of_sin_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.ICONOFSIN));
+			new DoomSpawnEgg(DoomEntities.ICONOFSIN));
 	public static DoomSpawnEgg UNWILLING_SPAWN_EGG = item("unwilling_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.UNWILLING));
+			new DoomSpawnEgg(DoomEntities.UNWILLING));
 	public static DoomSpawnEgg POSSESSED_SCIENTIST_SPAWN_EGG = item("possessed_scientist_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.POSSESSEDSCIENTIST));
+			new DoomSpawnEgg(DoomEntities.POSSESSEDSCIENTIST));
 	public static DoomSpawnEgg POSSESSED_SOLDIER_SPAWN_EGG = item("possessed_soldier_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.POSSESSEDSOLDIER));
+			new DoomSpawnEgg(DoomEntities.POSSESSEDSOLDIER));
 	public static DoomSpawnEgg GORE_NEST_SPAWN_EGG = item("gorenest_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.GORE_NEST));
+			new DoomSpawnEgg(DoomEntities.GORE_NEST));
 	public static DoomSpawnEgg MECH_ZOMBIE_SPAWN_EGG = item("mechazombie_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.MECHAZOMBIE));
+			new DoomSpawnEgg(DoomEntities.MECHAZOMBIE));
 	public static DoomSpawnEgg HELLKNIGHT2016_SPAWN_EGG = item("hellknight2016_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.HELLKNIGHT2016));
+			new DoomSpawnEgg(DoomEntities.HELLKNIGHT2016));
 	public static DoomSpawnEgg GARGOYLE_SPAWN_EGG = item("gargoyle_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.GARGOYLE));
-	public static DoomSpawnEgg SPECTRE_SPAWN_EGG = item("spectre_spawn_egg", new DoomSpawnEgg(ModEntityTypes.SPECTRE));
-	public static DoomSpawnEgg CUEBALL_SPAWN_EGG = item("cueball_spawn_egg", new DoomSpawnEgg(ModEntityTypes.CUEBALL));
-	public static DoomSpawnEgg PROWLER_SPAWN_EGG = item("prowler_spawn_egg", new DoomSpawnEgg(ModEntityTypes.PROWLER));
+			new DoomSpawnEgg(DoomEntities.GARGOYLE));
+	public static DoomSpawnEgg SPECTRE_SPAWN_EGG = item("spectre_spawn_egg", new DoomSpawnEgg(DoomEntities.SPECTRE));
+	public static DoomSpawnEgg CUEBALL_SPAWN_EGG = item("cueball_spawn_egg", new DoomSpawnEgg(DoomEntities.CUEBALL));
+	public static DoomSpawnEgg PROWLER_SPAWN_EGG = item("prowler_spawn_egg", new DoomSpawnEgg(DoomEntities.PROWLER));
 	public static DoomSpawnEgg DREADKNIGHT_SPAWN_EGG = item("dreadknight_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.DREADKNIGHT));
+			new DoomSpawnEgg(DoomEntities.DREADKNIGHT));
 	public static DoomSpawnEgg STONEIMP_SPAWN_EGG = item("stoneimp_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.IMP_STONE));
+			new DoomSpawnEgg(DoomEntities.IMP_STONE));
 	public static DoomSpawnEgg POSSESSED_WORKER_SPAWN_EGG = item("possessed_worker_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.POSSESSEDWORKER));
+			new DoomSpawnEgg(DoomEntities.POSSESSEDWORKER));
 	public static DoomSpawnEgg DOOMHUNTER_SPAWN_EGG = item("doom_hunter_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.DOOMHUNTER));
+			new DoomSpawnEgg(DoomEntities.DOOMHUNTER));
 	public static DoomSpawnEgg WHIPLASH_SPAWN_EGG = item("whiplash_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.WHIPLASH));
+			new DoomSpawnEgg(DoomEntities.WHIPLASH));
 	public static DoomSpawnEgg BARON2016_SPAWN_EGG = item("baron2016_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.BARON2016));
+			new DoomSpawnEgg(DoomEntities.BARON2016));
 	public static DoomSpawnEgg FIREBORNE_BARON_SPAWN_EGG = item("firebronebaron_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.FIREBARON));
+			new DoomSpawnEgg(DoomEntities.FIREBARON));
 	public static DoomSpawnEgg ARMORED_BARON_SPAWN_EGG = item("armoredbaron_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.ARMORBARON));
+			new DoomSpawnEgg(DoomEntities.ARMORBARON));
 	public static DoomSpawnEgg MAYKR_DRONE_SPAWN_EGG = item("maykr_drone_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.MAYKRDRONE));
+			new DoomSpawnEgg(DoomEntities.MAYKRDRONE));
 	public static DoomSpawnEgg BLOOD_MAYKR_SPAWN_EGG = item("blood_maykr_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.BLOODMAYKR));
+			new DoomSpawnEgg(DoomEntities.BLOODMAYKR));
 	public static DoomSpawnEgg ARCH_MAKYR_SPAWN_EGG = item("arch_maykr_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.ARCHMAKER));
+			new DoomSpawnEgg(DoomEntities.ARCHMAKER));
 	public static DoomSpawnEgg ARACHNOTRONETERNAL_SPAWN_EGG = item("arachnotroneternal_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.ARACHNOTRONETERNAL));
+			new DoomSpawnEgg(DoomEntities.ARACHNOTRONETERNAL));
 	public static DoomSpawnEgg SPIDERMASTERMIND2016_SPAWN_EGG = item("spidermastermind2016_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.SPIDERMASTERMIND2016));
+			new DoomSpawnEgg(DoomEntities.SPIDERMASTERMIND2016));
 	public static DoomSpawnEgg TENTACLE_SPAWN_EGG = item("tentacle_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.TENTACLE));
+			new DoomSpawnEgg(DoomEntities.TENTACLE));
 	public static DoomSpawnEgg MOTHERDEMON_SPAWN_EGG = item("motherdemon_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.MOTHERDEMON));
-	public static DoomSpawnEgg TURRET_SPAWN_EGG = item("turret_spawn_egg", new DoomSpawnEgg(ModEntityTypes.TURRET));
+			new DoomSpawnEgg(DoomEntities.MOTHERDEMON));
+	public static DoomSpawnEgg TURRET_SPAWN_EGG = item("turret_spawn_egg", new DoomSpawnEgg(DoomEntities.TURRET));
 	public static DoomSpawnEgg SUMMONER_SPAWN_EGG = item("summoner_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.SUMMONER));
+			new DoomSpawnEgg(DoomEntities.SUMMONER));
 	public static DoomSpawnEgg REVENANT2016_SPAWN_EGG = item("revenant2016_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.REVENANT2016));
+			new DoomSpawnEgg(DoomEntities.REVENANT2016));
 	public static DoomSpawnEgg GLADIATOR_SPAWN_EGG = item("gladiator_spawn_egg",
-			new DoomSpawnEgg(ModEntityTypes.GLADIATOR));
+			new DoomSpawnEgg(DoomEntities.GLADIATOR));
 
 	// Armor
 	public static DoomArmor DOOM_HELMET = item("doom_helmet",

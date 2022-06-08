@@ -7,7 +7,7 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
 import mod.azure.doom.network.DoomEntityPacket;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -115,13 +115,13 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable, IAn
 			this.remove(Entity.RemovalReason.KILLED);
 			this.dropXp();
 			if (!this.world.isClient) {
-				LostSoulEntity lost_soul = ModEntityTypes.LOST_SOUL.create(world);
+				LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.create(world);
 				lost_soul.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), 0, 0);
 				this.world.spawnEntity(lost_soul);
-				LostSoulEntity lost_soul1 = ModEntityTypes.LOST_SOUL.create(world);
+				LostSoulEntity lost_soul1 = DoomEntities.LOST_SOUL.create(world);
 				lost_soul1.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), 0, 0);
 				this.world.spawnEntity(lost_soul1);
-				LostSoulEntity lost_soul2 = ModEntityTypes.LOST_SOUL.create(world);
+				LostSoulEntity lost_soul2 = DoomEntities.LOST_SOUL.create(world);
 				lost_soul2.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), 0, 0);
 				this.world.spawnEntity(lost_soul2);
 			}
@@ -297,19 +297,19 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable, IAn
 				}
 				if (this.cooldown == 20) {
 					if (this.ghast.getVariant() == 1) {
-						LostSoulEntity lost_soul = ModEntityTypes.LOST_SOUL.create(world);
+						LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.create(world);
 						lost_soul.refreshPositionAndAngles(this.ghast.getX(), this.ghast.getY(), this.ghast.getZ(), 0,
 								0);
 						lost_soul.addVelocity(1.0D, 0.0D, 0.0D);
 						world.spawnEntity(lost_soul);
 					} else {
-						LostSoulEntity lost_soul = ModEntityTypes.LOST_SOUL.create(world);
+						LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.create(world);
 						lost_soul.refreshPositionAndAngles(this.ghast.getX(), this.ghast.getY(), this.ghast.getZ(), 0,
 								0);
 						lost_soul.addVelocity(1.0D, 0.0D, 0.0D);
 						world.spawnEntity(lost_soul);
 
-						LostSoulEntity lost_soul1 = ModEntityTypes.LOST_SOUL.create(world);
+						LostSoulEntity lost_soul1 = DoomEntities.LOST_SOUL.create(world);
 						lost_soul1.refreshPositionAndAngles(this.ghast.getX(), this.ghast.getY(), this.ghast.getZ(), 0,
 								0);
 						lost_soul1.addVelocity(1.0D, 0.0D, 0.0D);

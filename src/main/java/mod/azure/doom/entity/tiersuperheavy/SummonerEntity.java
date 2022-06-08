@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -208,8 +208,8 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	public void spawnWave() {
 		Random rand = new Random();
-		List<EntityType<?>> givenList = Arrays.asList(ModEntityTypes.IMP, ModEntityTypes.LOST_SOUL,
-				ModEntityTypes.IMP_STONE);
+		List<EntityType<?>> givenList = Arrays.asList(DoomEntities.IMP, DoomEntities.LOST_SOUL,
+				DoomEntities.IMP_STONE);
 
 		for (int i = 0; i < 1; i++) {
 			int randomIndex = rand.nextInt(givenList.size());

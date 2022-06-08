@@ -5,7 +5,7 @@ import java.util.Iterator;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tileentity.IconBlockEntity;
 import mod.azure.doom.util.registry.DoomBlocks;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
@@ -87,7 +87,7 @@ public class DoomWallBlock extends BlockWithEntity {
 						}
 					}
 
-					IconofsinEntity witherentity = ModEntityTypes.ICONOFSIN.create(world);
+					IconofsinEntity witherentity = DoomEntities.ICONOFSIN.create(world);
 					BlockPos blockPos = result.translate(1, 2, 0).getBlockPos();
 					witherentity.refreshPositionAndAngles((double) blockPos.getX() + 0.5D,
 							(double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D,
