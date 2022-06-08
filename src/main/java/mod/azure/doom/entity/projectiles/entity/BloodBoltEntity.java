@@ -1,8 +1,8 @@
 package mod.azure.doom.entity.projectiles.entity;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.util.registry.ModEntityTypes;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -53,12 +53,12 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements IAnima
 
 	public BloodBoltEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
 			float directHitDamage) {
-		super(ModEntityTypes.BLOODBOLT_MOB.get(), shooter, accelX, accelY, accelZ, worldIn);
+		super(DoomEntities.BLOODBOLT_MOB.get(), shooter, accelX, accelY, accelZ, worldIn);
 		this.directHitDamage = directHitDamage;
 	}
 
 	public BloodBoltEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-		super(ModEntityTypes.BLOODBOLT_MOB.get(), x, y, z, accelX, accelY, accelZ, worldIn);
+		super(DoomEntities.BLOODBOLT_MOB.get(), x, y, z, accelX, accelY, accelZ, worldIn);
 	}
 
 	@Override
@@ -137,7 +137,7 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements IAnima
 					this.doEnchantDamageEffects((LivingEntity) entity1, entity);
 			}
 		}
-		this.playSound(ModSoundEvents.UNMAKYR_FIRE.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+		this.playSound(DoomSounds.UNMAKYR_FIRE.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 	}
 
 }

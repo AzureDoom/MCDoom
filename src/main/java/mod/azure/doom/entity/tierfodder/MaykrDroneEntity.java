@@ -6,7 +6,7 @@ import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.DroneBoltEntity;
 import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -150,7 +150,7 @@ public class MaykrDroneEntity extends DemonEntity implements IAnimatable, IAnima
 
 		@Override
 		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(ModSoundEvents.UNMAKYR_FIRE.get(), 0.7F, 1);
+			return new AttackSound(DoomSounds.UNMAKYR_FIRE.get(), 0.7F, 1);
 		}
 
 		@Override
@@ -175,12 +175,12 @@ public class MaykrDroneEntity extends DemonEntity implements IAnimatable, IAnima
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.MAKYR_HURT.get();
+		return DoomSounds.MAKYR_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.MAKYR_DEATH.get();
+		return DoomSounds.MAKYR_DEATH.get();
 	}
 
 	@Override

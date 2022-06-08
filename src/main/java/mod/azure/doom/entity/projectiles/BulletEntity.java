@@ -3,7 +3,7 @@ package mod.azure.doom.entity.projectiles;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomParticles;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -66,11 +66,11 @@ public class BulletEntity extends AbstractArrow implements IAnimatable {
 	}
 
 	public BulletEntity(Level world, LivingEntity owner) {
-		super(ModEntityTypes.BULLETS.get(), owner, world);
+		super(DoomEntities.BULLETS.get(), owner, world);
 	}
 
 	public BulletEntity(Level world, LivingEntity owner, float damage) {
-		super(ModEntityTypes.BULLETS.get(), owner, world);
+		super(DoomEntities.BULLETS.get(), owner, world);
 		this.projectiledamage = damage;
 	}
 

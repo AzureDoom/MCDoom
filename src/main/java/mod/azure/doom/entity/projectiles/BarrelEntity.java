@@ -2,7 +2,7 @@ package mod.azure.doom.entity.projectiles;
 
 import javax.annotation.Nullable;
 
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.world.entity.Entity;
@@ -28,7 +28,7 @@ public class BarrelEntity extends Entity {
 	}
 
 	public BarrelEntity(Level worldIn, double x, double y, double z, @Nullable LivingEntity igniter) {
-		this(ModEntityTypes.BARREL.get(), worldIn);
+		this(DoomEntities.BARREL.get(), worldIn);
 		this.setPos(x, y, z);
 		double d0 = worldIn.random.nextDouble() * (double) ((float) Math.PI * 2F);
 		this.setDeltaMovement(-Math.sin(d0) * 0.02D, (double) 0.2F, -Math.cos(d0) * 0.02D);

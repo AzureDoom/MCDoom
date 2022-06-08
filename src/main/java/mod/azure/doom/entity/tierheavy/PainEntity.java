@@ -6,8 +6,8 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
 import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModEntityTypes;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -164,13 +164,13 @@ public class PainEntity extends DemonEntity implements Enemy, IAnimatable, IAnim
 			this.remove(RemovalReason.KILLED);
 			this.dropExperience();
 			if (!this.level.isClientSide()) {
-				LostSoulEntity lost_soul = ModEntityTypes.LOST_SOUL.get().create(level);
+				LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.get().create(level);
 				lost_soul.moveTo(this.getX(), this.getY(), this.getZ(), 0, 0);
 				this.level.addFreshEntity(lost_soul);
-				LostSoulEntity lost_soul1 = ModEntityTypes.LOST_SOUL.get().create(level);
+				LostSoulEntity lost_soul1 = DoomEntities.LOST_SOUL.get().create(level);
 				lost_soul1.moveTo(this.getX(), this.getY(), this.getZ(), 0, 0);
 				this.level.addFreshEntity(lost_soul1);
-				LostSoulEntity lost_soul2 = ModEntityTypes.LOST_SOUL.get().create(level);
+				LostSoulEntity lost_soul2 = DoomEntities.LOST_SOUL.get().create(level);
 				lost_soul2.moveTo(this.getX(), this.getY(), this.getZ(), 0, 0);
 				this.level.addFreshEntity(lost_soul2);
 			}
@@ -255,18 +255,18 @@ public class PainEntity extends DemonEntity implements Enemy, IAnimatable, IAnim
 				++this.attackTimer;
 				if (this.attackTimer == 20) {
 					if (this.parentEntity.getVariant() == 1) {
-						LostSoulEntity lost_soul = ModEntityTypes.LOST_SOUL.get().create(world);
+						LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.get().create(world);
 						lost_soul.moveTo(this.parentEntity.getX(), this.parentEntity.getY(), this.parentEntity.getZ(),
 								0, 0);
 						lost_soul.push(1.0D, 0.0D, 0.0D);
 						world.addFreshEntity(lost_soul);
 					} else {
-						LostSoulEntity lost_soul = ModEntityTypes.LOST_SOUL.get().create(world);
+						LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.get().create(world);
 						lost_soul.moveTo(this.parentEntity.getX(), this.parentEntity.getY(), this.parentEntity.getZ(),
 								0, 0);
 						lost_soul.push(1.0D, 0.0D, 0.0D);
 						world.addFreshEntity(lost_soul);
-						LostSoulEntity lost_soul1 = ModEntityTypes.LOST_SOUL.get().create(world);
+						LostSoulEntity lost_soul1 = DoomEntities.LOST_SOUL.get().create(world);
 						lost_soul1.moveTo(this.parentEntity.getX(), this.parentEntity.getY(), this.parentEntity.getZ(),
 								0, 0);
 						lost_soul1.push(1.0D, 0.0D, 0.0D);
@@ -372,17 +372,17 @@ public class PainEntity extends DemonEntity implements Enemy, IAnimatable, IAnim
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.PAIN_AMBIENT.get();
+		return DoomSounds.PAIN_AMBIENT.get();
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.PAIN_HURT.get();
+		return DoomSounds.PAIN_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.PAIN_DEATH.get();
+		return DoomSounds.PAIN_DEATH.get();
 	}
 
 	@Override

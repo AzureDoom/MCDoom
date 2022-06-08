@@ -11,7 +11,7 @@ import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.DGaussLoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
@@ -70,7 +70,7 @@ public class DGauss extends DoomBaseItem {
 					stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
 					worldIn.addFreshEntity(abstractarrowentity);
 					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-							ModSoundEvents.BALLISTA_FIRING.get(), SoundSource.PLAYERS, 1.0F,
+							DoomSounds.BALLISTA_FIRING.get(), SoundSource.PLAYERS, 1.0F,
 							1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 					if (!worldIn.isClientSide) {
 						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
@@ -83,7 +83,7 @@ public class DGauss extends DoomBaseItem {
 				}
 			} else {
 				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-						ModSoundEvents.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
+						DoomSounds.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}

@@ -9,7 +9,7 @@ import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.CustomFireballEntity;
 import mod.azure.doom.entity.projectiles.entity.GladiatorMaceEntity;
 import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -272,7 +272,7 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 
 		@Override
 		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(ModSoundEvents.BALLISTA_FIRING.get(), 1, 1);
+			return new AttackSound(DoomSounds.BALLISTA_FIRING.get(), 1, 1);
 		}
 
 		@Override
@@ -329,21 +329,21 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.BARON_AMBIENT.get();
+		return DoomSounds.BARON_AMBIENT.get();
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.BARON_HURT.get();
+		return DoomSounds.BARON_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.BARON_DEATH.get();
+		return DoomSounds.BARON_DEATH.get();
 	}
 
 	protected SoundEvent getStepSound() {
-		return ModSoundEvents.BARON_STEP.get();
+		return DoomSounds.BARON_STEP.get();
 	}
 
 	@Override

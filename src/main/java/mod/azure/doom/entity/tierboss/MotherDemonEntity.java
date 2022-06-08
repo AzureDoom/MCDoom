@@ -8,8 +8,8 @@ import mod.azure.doom.entity.projectiles.CustomFireballEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.entity.tierambient.TentacleEntity;
 import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModEntityTypes;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -289,12 +289,12 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 										f1, 0);
 							}
 							parentEntity.level.playLocalSound(this.parentEntity.getX(), this.parentEntity.getY(),
-									this.parentEntity.getZ(), ModSoundEvents.MOTHER_ATTACK.get(), SoundSource.HOSTILE,
+									this.parentEntity.getZ(), DoomSounds.MOTHER_ATTACK.get(), SoundSource.HOSTILE,
 									1.0F, 1.0F, true);
 							this.parentEntity.setAttackingState(2);
 						}
 						livingentity.setDeltaMovement(livingentity.getDeltaMovement().multiply(0.4f, 1.4f, 0.4f));
-						TentacleEntity lost_soul = ModEntityTypes.TENTACLE.get().create(world);
+						TentacleEntity lost_soul = DoomEntities.TENTACLE.get().create(world);
 						lost_soul.moveTo(livingentity.getX(), livingentity.getY(), livingentity.getZ(), 0, 0);
 						world.addFreshEntity(lost_soul);
 					} else {
@@ -308,9 +308,9 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 								this.parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z * 1.0D);
 						world.addFreshEntity(fireballentity2);
 						parentEntity.level.playLocalSound(this.parentEntity.getX(), this.parentEntity.getY(),
-								this.parentEntity.getZ(), ModSoundEvents.MOTHER_ATTACK.get(), SoundSource.HOSTILE, 1.0F,
+								this.parentEntity.getZ(), DoomSounds.MOTHER_ATTACK.get(), SoundSource.HOSTILE, 1.0F,
 								1.0F, true);
-						TentacleEntity lost_soul = ModEntityTypes.TENTACLE.get().create(world);
+						TentacleEntity lost_soul = DoomEntities.TENTACLE.get().create(world);
 						lost_soul.moveTo(livingentity.getX(), livingentity.getY(), livingentity.getZ(), 0, 0);
 						world.addFreshEntity(lost_soul);
 						this.parentEntity.setAttackingState(1);
@@ -370,17 +370,17 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.MOTHER_AMBIENT.get();
+		return DoomSounds.MOTHER_AMBIENT.get();
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.MOTHER_HURT.get();
+		return DoomSounds.MOTHER_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.MOTHER_DEATH.get();
+		return DoomSounds.MOTHER_DEATH.get();
 	}
 
 	@Override

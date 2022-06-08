@@ -6,8 +6,8 @@ import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModEntityTypes;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -57,12 +57,12 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 	}
 
 	public RocketEntity(Level world, LivingEntity owner) {
-		super(ModEntityTypes.ROCKET.get(), owner, world);
+		super(DoomEntities.ROCKET.get(), owner, world);
 		this.shooter = owner;
 	}
 
 	public RocketEntity(Level world, LivingEntity owner, float damage) {
-		super(ModEntityTypes.ROCKET.get(), owner, world);
+		super(DoomEntities.ROCKET.get(), owner, world);
 		this.shooter = owner;
 		this.projectiledamage = damage;
 	}
@@ -281,7 +281,7 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 	@Override
 	protected void onHitBlock(BlockHitResult p_230299_1_) {
 		super.onHitBlock(p_230299_1_);
-		this.setSoundEvent(ModSoundEvents.ROCKET_HIT.get());
+		this.setSoundEvent(DoomSounds.ROCKET_HIT.get());
 	}
 
 	@Override
@@ -291,7 +291,7 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 
 	@Override
 	protected SoundEvent getDefaultHitGroundSoundEvent() {
-		return ModSoundEvents.ROCKET_HIT.get();
+		return DoomSounds.ROCKET_HIT.get();
 	}
 
 	@Override

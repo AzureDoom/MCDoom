@@ -11,7 +11,7 @@ import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.PistolLoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -69,7 +69,7 @@ public class PistolItem extends DoomBaseItem {
 					stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
 					worldIn.addFreshEntity(abstractarrowentity);
 					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-							ModSoundEvents.PISTOL_HIT.get(), SoundSource.PLAYERS, 1.0F,
+							DoomSounds.PISTOL_HIT.get(), SoundSource.PLAYERS, 1.0F,
 							1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 					if (!worldIn.isClientSide) {
 						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
@@ -82,7 +82,7 @@ public class PistolItem extends DoomBaseItem {
 				}
 			} else {
 				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-						ModSoundEvents.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
+						DoomSounds.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}
@@ -113,7 +113,7 @@ public class PistolItem extends DoomBaseItem {
 				user.getMainHandItem().hurtAndBreak(-10, user, s -> user.broadcastBreakEvent(hand));
 				user.getMainHandItem().setPopTime(3);
 				user.getCommandSenderWorld().playSound((Player) null, user.getX(), user.getY(), user.getZ(),
-						ModSoundEvents.CLIPRELOAD.get(), SoundSource.PLAYERS, 1.00F, 1.0F);
+						DoomSounds.CLIPRELOAD.get(), SoundSource.PLAYERS, 1.00F, 1.0F);
 			}
 		}
 	}

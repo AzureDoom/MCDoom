@@ -6,7 +6,7 @@ import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
 import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -99,14 +99,14 @@ public class BaronEntity extends DemonEntity implements IAnimatable, IAnimationT
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.level.isClientSide()) {
-				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP.get(),
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(),
 						SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.BARON_AMBIENT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
+						DoomSounds.BARON_AMBIENT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}
@@ -191,7 +191,7 @@ public class BaronEntity extends DemonEntity implements IAnimatable, IAnimationT
 
 		@Override
 		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(ModSoundEvents.PLASMA_FIRING.get(), 0.7F, 1);
+			return new AttackSound(DoomSounds.PLASMA_FIRING.get(), 0.7F, 1);
 		}
 
 		@Override
@@ -226,12 +226,12 @@ public class BaronEntity extends DemonEntity implements IAnimatable, IAnimationT
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.BARON_HURT.get();
+		return DoomSounds.BARON_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.BARON_DEATH.get();
+		return DoomSounds.BARON_DEATH.get();
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.EnergyCellMobEntity;
 import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -132,7 +132,7 @@ public class ArachnotronEntity extends DemonEntity implements IAnimatable, IAnim
 
 		@Override
 		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(ModSoundEvents.PLASMA_FIRING.get(), 1, 1);
+			return new AttackSound(DoomSounds.PLASMA_FIRING.get(), 1, 1);
 		}
 
 		@Override
@@ -194,16 +194,16 @@ public class ArachnotronEntity extends DemonEntity implements IAnimatable, IAnim
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.ARACHNOTRON_HURT.get();
+		return DoomSounds.ARACHNOTRON_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.ARACHNOTRON_DEATH.get();
+		return DoomSounds.ARACHNOTRON_DEATH.get();
 	}
 
 	protected SoundEvent getStepSound() {
-		return ModSoundEvents.ARACHNOTRON_AMBIENT.get();
+		return DoomSounds.ARACHNOTRON_AMBIENT.get();
 	}
 
 	@Override

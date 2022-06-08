@@ -1,7 +1,7 @@
 package mod.azure.doom.entity.projectiles;
 
 import mod.azure.doom.util.PlayerProperties;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -46,19 +46,19 @@ public class MeatHookEntity extends AbstractArrow implements IAnimatable {
 	}
 
 	public MeatHookEntity(Level world, LivingEntity owner) {
-		super(ModEntityTypes.MEATHOOOK_ENTITY.get(), owner, world);
+		super(DoomEntities.MEATHOOOK_ENTITY.get(), owner, world);
 		this.setNoGravity(true);
 		this.setBaseDamage(0);
 	}
 
 	public MeatHookEntity(Level world, double x, double y, double z) {
-		super(ModEntityTypes.MEATHOOOK_ENTITY.get(), x, y, z, world);
+		super(DoomEntities.MEATHOOOK_ENTITY.get(), x, y, z, world);
 		this.setNoGravity(true);
 		this.setBaseDamage(0);
 	}
 
 	public MeatHookEntity(Level world) {
-		super(ModEntityTypes.MEATHOOOK_ENTITY.get(), world);
+		super(DoomEntities.MEATHOOOK_ENTITY.get(), world);
 		this.setNoGravity(true);
 		this.setBaseDamage(0);
 	}

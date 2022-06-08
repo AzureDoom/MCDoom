@@ -2,7 +2,7 @@ package mod.azure.doom.entity.projectiles;
 
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -62,11 +62,11 @@ public class ChaingunBulletEntity extends AbstractArrow implements IAnimatable {
 	}
 
 	public ChaingunBulletEntity(Level world, LivingEntity owner) {
-		super(ModEntityTypes.CHAINGUN_BULLET.get(), owner, world);
+		super(DoomEntities.CHAINGUN_BULLET.get(), owner, world);
 	}
 
 	public ChaingunBulletEntity(Level world, LivingEntity owner, float damage) {
-		super(ModEntityTypes.CHAINGUN_BULLET.get(), owner, world);
+		super(DoomEntities.CHAINGUN_BULLET.get(), owner, world);
 		this.projectiledamage = damage;
 	}
 

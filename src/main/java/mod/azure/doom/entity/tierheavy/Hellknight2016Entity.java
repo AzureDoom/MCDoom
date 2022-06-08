@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvent;
@@ -88,14 +88,14 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.level.isClientSide()) {
-				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP.get(),
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(),
 						SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("talk")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.HELLKNIGHT_AMBIENT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
+						DoomSounds.HELLKNIGHT_AMBIENT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}
@@ -246,12 +246,12 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.HELLKNIGHT_HURT.get();
+		return DoomSounds.HELLKNIGHT_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.HELLKNIGHT_DEATH.get();
+		return DoomSounds.HELLKNIGHT_DEATH.get();
 	}
 
 	@Override

@@ -2,19 +2,21 @@ package mod.azure.doom;
 
 import java.util.List;
 
+import com.mojang.serialization.Codec;
+
 import mod.azure.doom.util.DoomVillagerTrades;
 import mod.azure.doom.util.LootHandler;
 import mod.azure.doom.util.SoulCubeHandler;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.registry.DoomBlocks;
+import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomParticles;
 import mod.azure.doom.util.registry.DoomRecipes;
 import mod.azure.doom.util.registry.DoomScreens;
-import mod.azure.doom.util.registry.DoomStructures;
-import mod.azure.doom.util.registry.ModEntityTypes;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
+import mod.azure.doom.util.registry.ModEntitySpawn;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -27,6 +29,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeTier;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.TierSortingRegistry;
+import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -36,6 +39,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import software.bernie.geckolib3.GeckoLib;
 import software.bernie.geckolib3.network.GeckoLibNetwork;
 import top.theillusivec4.curios.api.SlotTypeMessage;
@@ -50,6 +55,7 @@ public class DoomMod {
 	public static final Tier ARGENT_TIER = TierSortingRegistry.registerTier(
 			new ForgeTier(17, 5000, 18, 3.0F, 30, ARGENT_TAG, () -> Ingredient.of(DoomItems.ARGENT_BLOCK.get())),
 			new ResourceLocation(MODID, "argent"), List.of(Tiers.NETHERITE), List.of());
+	public static final ResourceLocation ADD_SPAWNS_TO_BIOMES = new ResourceLocation(MODID, "mobspawns");
 
 	public DoomMod() {
 		instance = this;
@@ -64,24 +70,22 @@ public class DoomMod {
 		if (DoomConfig.SERVER.enable_all_villager_trades.get()) {
 			MinecraftForge.EVENT_BUS.addListener(DoomVillagerTrades::onVillagerTradesEvent);
 		}
-		ModSoundEvents.MOD_SOUNDS.register(modEventBus);
-		ModEntityTypes.ENTITY_TYPES.register(modEventBus);
+		DoomSounds.MOD_SOUNDS.register(modEventBus);
+		DoomEntities.ENTITY_TYPES.register(modEventBus);
 		DoomItems.ITEMS.register(modEventBus);
 		DoomBlocks.BLOCKS.register(modEventBus);
-		ModEntityTypes.TILE_TYPES.register(modEventBus);
+		DoomEntities.TILE_TYPES.register(modEventBus);
 		DoomScreens.CONTAIN.register(modEventBus);
 		DoomRecipes.SERIAL.register(modEventBus);
 		DoomParticles.PARTICLES.register(modEventBus);
-//		MinecraftForge.EVENT_BUS.addListener(this::onBiomeLoad);
 		//DoomStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
 		GeckoLib.initialize();
 		GeckoLibNetwork.initialize();
+		final DeferredRegister<Codec<? extends BiomeModifier>> serializers = DeferredRegister
+				.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, MODID);
+		serializers.register(modEventBus);
+		serializers.register("mobspawns", ModEntitySpawn::makeCodec);
 	}
-
-//	@SubscribeEvent
-//	public void onBiomeLoad(BiomeLoadingEvent event) {
-//		ModEntitySpawn.onBiomesLoad(event);
-//	}
 
 	private void setup(final FMLCommonSetupEvent event) {
 		MinecraftForge.EVENT_BUS.register(new LootHandler());

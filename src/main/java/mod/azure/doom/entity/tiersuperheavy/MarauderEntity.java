@@ -10,7 +10,7 @@ import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
 import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -100,14 +100,14 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.level.isClientSide()) {
-				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP.get(),
+				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(),
 						SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.SUPER_SHOTGUN_SHOOT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
+						DoomSounds.SUPER_SHOTGUN_SHOOT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}
@@ -135,7 +135,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 				new RangedAttackGoal(this,
 						new RangedAttack(this).setProjectileOriginOffset(0.8, 0.4, 0.8)
 								.setDamage(DoomConfig.SERVER.marauder_ssgdamage.get().floatValue())
-								.setSound(ModSoundEvents.SUPER_SHOTGUN_SHOOT.get(), 1.0F, 1.0F),
+								.setSound(DoomSounds.SUPER_SHOTGUN_SHOOT.get(), 1.0F, 1.0F),
 						1.1D));
 		this.targetSelector.addGoal(1, new MarauderEntity.FindPlayerGoal(this, this::isAngryAt));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
@@ -157,7 +157,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 
 		@Override
 		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(ModSoundEvents.SUPER_SHOTGUN_SHOOT.get(), 1, 1);
+			return new AttackSound(DoomSounds.SUPER_SHOTGUN_SHOOT.get(), 1, 1);
 		}
 
 		@Override
@@ -335,12 +335,12 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.ZOMBIEMAN_HURT.get();
+		return DoomSounds.ZOMBIEMAN_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.ZOMBIEMAN_DEATH.get();
+		return DoomSounds.ZOMBIEMAN_DEATH.get();
 	}
 
 	@Override

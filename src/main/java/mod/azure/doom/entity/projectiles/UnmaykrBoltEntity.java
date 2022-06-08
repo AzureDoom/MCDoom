@@ -5,7 +5,7 @@ import mod.azure.doom.entity.tileentity.TickingLightEntity;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomParticles;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -46,21 +46,21 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 	}
 
 	public UnmaykrBoltEntity(Level world, LivingEntity owner) {
-		super(ModEntityTypes.UNMAYKR.get(), owner, world);
+		super(DoomEntities.UNMAYKR.get(), owner, world);
 	}
 
 	public UnmaykrBoltEntity(Level world, LivingEntity owner, float damage) {
-		super(ModEntityTypes.UNMAYKR.get(), owner, world);
+		super(DoomEntities.UNMAYKR.get(), owner, world);
 		this.projectiledamage = damage;
 	}
 
 	public UnmaykrBoltEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
 			float directHitDamage) {
-		super(ModEntityTypes.UNMAYKR.get(), accelX, accelY, accelZ, worldIn);
+		super(DoomEntities.UNMAYKR.get(), accelX, accelY, accelZ, worldIn);
 	}
 
 	public UnmaykrBoltEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-		super(ModEntityTypes.UNMAYKR.get(), x, y, z, worldIn);
+		super(DoomEntities.UNMAYKR.get(), x, y, z, worldIn);
 	}
 
 	@Override

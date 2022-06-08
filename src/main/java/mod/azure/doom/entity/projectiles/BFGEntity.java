@@ -15,8 +15,8 @@ import mod.azure.doom.entity.tileentity.TickingLightEntity;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModEntityTypes;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -79,7 +79,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 	}
 
 	public BFGEntity(Level world, LivingEntity shooter) {
-		super(ModEntityTypes.BFG_CELL.get(), shooter, world);
+		super(DoomEntities.BFG_CELL.get(), shooter, world);
 		this.shooter = shooter;
 	}
 
@@ -340,7 +340,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 	@Override
 	protected void onHitBlock(BlockHitResult p_230299_1_) {
 		super.onHitBlock(p_230299_1_);
-		this.setSoundEvent(ModSoundEvents.BFG_HIT.get());
+		this.setSoundEvent(DoomSounds.BFG_HIT.get());
 	}
 
 	@Override
@@ -350,7 +350,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 
 	@Override
 	protected SoundEvent getDefaultHitGroundSoundEvent() {
-		return ModSoundEvents.BFG_HIT.get();
+		return DoomSounds.BFG_HIT.get();
 	}
 
 	@Override
@@ -367,7 +367,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 							: Explosion.BlockInteraction.NONE);
 			this.remove(RemovalReason.KILLED);
 		}
-		this.playSound(ModSoundEvents.BFG_HIT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+		this.playSound(DoomSounds.BFG_HIT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 	}
 
 	protected void onHit(HitResult result) {
@@ -381,7 +381,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 								: Explosion.BlockInteraction.NONE);
 				this.remove(RemovalReason.KILLED);
 			}
-			this.playSound(ModSoundEvents.BFG_HIT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+			this.playSound(DoomSounds.BFG_HIT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 		}
 	}
 

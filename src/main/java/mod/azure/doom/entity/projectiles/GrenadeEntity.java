@@ -5,8 +5,8 @@ import java.util.List;
 import mod.azure.doom.entity.tierheavy.CacodemonEntity;
 import mod.azure.doom.util.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModEntityTypes;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -48,7 +48,7 @@ public class GrenadeEntity extends AbstractArrow implements IAnimatable {
 	}
 
 	public GrenadeEntity(Level world, LivingEntity user) {
-		super(ModEntityTypes.GRENADE.get(), user, world);
+		super(DoomEntities.GRENADE.get(), user, world);
 		this.shooter = user;
 	}
 
@@ -131,7 +131,7 @@ public class GrenadeEntity extends AbstractArrow implements IAnimatable {
 
 	@Override
 	protected SoundEvent getDefaultHitGroundSoundEvent() {
-		return ModSoundEvents.BEEP.get();
+		return DoomSounds.BEEP.get();
 	}
 
 	@Override

@@ -3,7 +3,7 @@ package mod.azure.doom.entity.tierheavy;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvent;
@@ -133,12 +133,12 @@ public class WhiplashEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.WHIPLASH_HURT.get();
+		return DoomSounds.WHIPLASH_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.WHIPLASH_DEATH.get();
+		return DoomSounds.WHIPLASH_DEATH.get();
 	}
 
 	@Override

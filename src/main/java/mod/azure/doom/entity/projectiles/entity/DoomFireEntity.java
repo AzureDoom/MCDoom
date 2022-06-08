@@ -11,7 +11,7 @@ import mod.azure.doom.entity.tierheavy.MancubusEntity;
 import mod.azure.doom.entity.tiersuperheavy.ArchvileEntity;
 import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
 import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
@@ -60,7 +60,7 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 
 	public DoomFireEntity(Level worldIn, double x, double y, double z, float p_i47276_8_, int p_i47276_9_,
 			LivingEntity casterIn, float damage) {
-		this(ModEntityTypes.FIRING.get(), worldIn);
+		this(DoomEntities.FIRING.get(), worldIn);
 		this.warmupDelayTicks = p_i47276_9_;
 		this.setCaster(casterIn);
 		this.yRot = p_i47276_8_ * (180F / (float) Math.PI);

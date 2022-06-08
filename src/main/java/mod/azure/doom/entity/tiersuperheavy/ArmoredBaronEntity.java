@@ -3,7 +3,7 @@ package mod.azure.doom.entity.tiersuperheavy;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -85,13 +85,13 @@ public class ArmoredBaronEntity extends DemonEntity implements IAnimatable, IAni
 		if (event.sound.matches("walk")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.CYBERDEMON_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
+						DoomSounds.CYBERDEMON_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.level.isClientSide()) {
 				this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.BARON_AMBIENT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
+						DoomSounds.BARON_AMBIENT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}
@@ -159,21 +159,21 @@ public class ArmoredBaronEntity extends DemonEntity implements IAnimatable, IAni
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.BARON_AMBIENT.get();
+		return DoomSounds.BARON_AMBIENT.get();
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.BARON_HURT.get();
+		return DoomSounds.BARON_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.BARON_DEATH.get();
+		return DoomSounds.BARON_DEATH.get();
 	}
 
 	protected SoundEvent getStepSound() {
-		return ModSoundEvents.BARON_STEP.get();
+		return DoomSounds.BARON_STEP.get();
 	}
 
 	@Override

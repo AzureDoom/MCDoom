@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import mod.azure.doom.entity.projectiles.MeatHookEntity;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -28,7 +28,7 @@ public class ClientPlayNetworkHandlerMixin {
 		double z = packet.getZ();
 		AbstractArrow entity = null;
 
-		if (type == ModEntityTypes.MEATHOOOK_ENTITY.get())
+		if (type == DoomEntities.MEATHOOOK_ENTITY.get())
 			entity = new MeatHookEntity(level, x, y, z);
 
 		if (entity != null) {

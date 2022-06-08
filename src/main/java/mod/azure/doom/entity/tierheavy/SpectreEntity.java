@@ -3,7 +3,7 @@ package mod.azure.doom.entity.tierheavy;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -163,16 +163,16 @@ public class SpectreEntity extends DemonEntity implements IAnimatable, IAnimatio
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.PINKY_HURT.get();
+		return DoomSounds.PINKY_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.PINKY_DEATH.get();
+		return DoomSounds.PINKY_DEATH.get();
 	}
 
 	protected SoundEvent getStepSound() {
-		return ModSoundEvents.PINKY_STEP.get();
+		return DoomSounds.PINKY_STEP.get();
 	}
 
 	@Override

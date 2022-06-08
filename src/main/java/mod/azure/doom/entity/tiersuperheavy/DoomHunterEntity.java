@@ -4,7 +4,7 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import mod.azure.doom.util.config.DoomConfig;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -105,7 +105,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 		if (event.sound.matches("phasechange")) {
 			if (this.level.isClientSide) {
 				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.DOOMHUNTER_PHASECHANGE.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
+						DoomSounds.DOOMHUNTER_PHASECHANGE.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}
@@ -266,17 +266,17 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.DOOMHUNTER_AMBIENT.get();
+		return DoomSounds.DOOMHUNTER_AMBIENT.get();
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.DOOMHUNTER_HURT.get();
+		return DoomSounds.DOOMHUNTER_HURT.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.DOOMHUNTER_DEATH.get();
+		return DoomSounds.DOOMHUNTER_DEATH.get();
 	}
 
 	@Override

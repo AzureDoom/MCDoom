@@ -3,7 +3,7 @@ package mod.azure.doom.block;
 import java.util.function.ToIntFunction;
 
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -79,7 +79,7 @@ public class TickingLightBlock extends BaseEntityBlock implements EntityBlock {
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
 			BlockEntityType<T> type) {
-		return createTickerHelper(type, ModEntityTypes.TICKING_LIGHT_ENTITY.get(), TickingLightEntity::tick);
+		return createTickerHelper(type, DoomEntities.TICKING_LIGHT_ENTITY.get(), TickingLightEntity::tick);
 	}
 
 	@Override
