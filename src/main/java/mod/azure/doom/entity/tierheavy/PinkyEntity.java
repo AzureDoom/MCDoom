@@ -6,7 +6,7 @@ import java.util.SplittableRandom;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
@@ -87,13 +87,13 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("yell")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_YELL,
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_YELL,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
@@ -174,21 +174,21 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.PINKY_AMBIENT;
+		return DoomSounds.PINKY_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.PINKY_HURT;
+		return DoomSounds.PINKY_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.PINKY_DEATH;
+		return DoomSounds.PINKY_DEATH;
 	}
 
 	protected SoundEvent getStepSound() {
-		return ModSoundEvents.PINKY_STEP;
+		return DoomSounds.PINKY_STEP;
 	}
 
 	@Override

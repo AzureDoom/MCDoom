@@ -8,7 +8,7 @@ import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedStaticAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.network.EntityPacket;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -226,7 +226,7 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 		this.goalSelector.add(4,
 				new RangedStaticAttackGoal(this,
 						new FireballAttack(this, true).setDamage(10).setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(
-								ModSoundEvents.CACODEMON_AFFECTIONATE_SCREAM, 1.0F,
+								DoomSounds.CACODEMON_AFFECTIONATE_SCREAM, 1.0F,
 								1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
 						60, 20, 30F, 1));
 		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
@@ -298,17 +298,17 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.CACODEMON_AMBIENT;
+		return DoomSounds.CACODEMON_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.CACODEMON_HURT;
+		return DoomSounds.CACODEMON_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.CACODEMON_DEATH;
+		return DoomSounds.CACODEMON_DEATH;
 	}
 
 	@Override

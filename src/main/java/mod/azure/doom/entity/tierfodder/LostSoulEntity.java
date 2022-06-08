@@ -10,7 +10,7 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.tierheavy.PainEntity;
 import mod.azure.doom.network.EntityPacket;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -326,7 +326,7 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 			Vec3d vec3d = livingEntity.getCameraPosVec(1.0F);
 			LostSoulEntity.this.moveControl.moveTo(vec3d.x, vec3d.y, vec3d.z, 4.0D);
 			LostSoulEntity.this.setCharging(true);
-			LostSoulEntity.this.playSound(ModSoundEvents.LOST_SOUL_AMBIENT, 1.0F, 1.0F);
+			LostSoulEntity.this.playSound(DoomSounds.LOST_SOUL_AMBIENT, 1.0F, 1.0F);
 			this.attackTimer = 0;
 		}
 
@@ -361,12 +361,12 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.LOST_SOUL_DEATH;
+		return DoomSounds.LOST_SOUL_DEATH;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.LOST_SOUL_DEATH;
+		return DoomSounds.LOST_SOUL_DEATH;
 	}
 
 	@Override

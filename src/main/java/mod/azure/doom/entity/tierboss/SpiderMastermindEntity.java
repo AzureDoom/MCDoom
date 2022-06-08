@@ -9,7 +9,7 @@ import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
 import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
@@ -95,12 +95,12 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
 				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(),
-						ModSoundEvents.SPIDERDEMON_AMBIENT, SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+						DoomSounds.SPIDERDEMON_AMBIENT, SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PISTOL_HIT,
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PISTOL_HIT,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
@@ -191,11 +191,11 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.SPIDERDEMON_HURT;
+		return DoomSounds.SPIDERDEMON_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.SPIDERDEMON_DEATH;
+		return DoomSounds.SPIDERDEMON_DEATH;
 	}
 }

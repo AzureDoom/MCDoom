@@ -52,7 +52,7 @@ import net.minecraft.entity.SpawnGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class ModEntityTypes {
+public class DoomEntities {
 
 	public static final EntityType<BarrelEntity> BARREL = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(DoomMod.MODID, "barrel"),

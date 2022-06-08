@@ -4,7 +4,7 @@ import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomParticles;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -161,7 +161,7 @@ public class EnergyCellEntity extends PersistentProjectileEntity implements IAni
 
 	@Override
 	protected SoundEvent getHitSound() {
-		return ModSoundEvents.PLASMA_HIT;
+		return DoomSounds.PLASMA_HIT;
 	}
 
 	@Override
@@ -170,7 +170,7 @@ public class EnergyCellEntity extends PersistentProjectileEntity implements IAni
 		if (!this.world.isClient) {
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
-		this.setSound(ModSoundEvents.PLASMA_HIT);
+		this.setSound(DoomSounds.PLASMA_HIT);
 	}
 
 	@Override

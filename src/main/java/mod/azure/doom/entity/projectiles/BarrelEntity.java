@@ -1,6 +1,6 @@
 package mod.azure.doom.entity.projectiles;
 
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.Entity;
@@ -27,7 +27,7 @@ public class BarrelEntity extends Entity {
 	}
 
 	public BarrelEntity(World worldIn, double x, double y, double z, LivingEntity igniter) {
-		this(ModEntityTypes.BARREL, worldIn);
+		this(DoomEntities.BARREL, worldIn);
 		this.updatePosition(x, y, z);
 		double d = world.random.nextDouble() * 6.2831854820251465D;
 		this.setVelocity(-Math.sin(d) * 0.02D, 0.20000000298023224D, -Math.cos(d) * 0.02D);

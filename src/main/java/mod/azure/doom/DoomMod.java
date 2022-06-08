@@ -15,8 +15,8 @@ import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomStructures;
 import mod.azure.doom.util.registry.MobSpawn;
-import mod.azure.doom.util.registry.ModEntityTypes;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.DoomSounds;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
@@ -40,8 +40,8 @@ import software.bernie.geckolib3.GeckoLib;
 public class DoomMod implements ModInitializer {
 
 	public static DoomItems ITEMS;
-	public static ModSoundEvents SOUNDS;
-	public static ModEntityTypes MOBS;
+	public static DoomSounds SOUNDS;
+	public static DoomEntities MOBS;
 	public static final String MODID = "doom";
 	public static BlockEntityType<TotemEntity> TOTEM;
 	public static BlockEntityType<IconBlockEntity> ICON;
@@ -92,8 +92,8 @@ public class DoomMod implements ModInitializer {
 		DoomBlocks.init();
 		CustomMidnightConfig.init(MODID, DoomConfig.class);
 		ITEMS = new DoomItems();
-		SOUNDS = new ModSoundEvents();
-		MOBS = new ModEntityTypes();
+		SOUNDS = new DoomSounds();
+		MOBS = new DoomEntities();
 		PROJECTILES = new ProjectilesEntityRegister();
 		FuelRegistry.INSTANCE.add(DoomItems.ARGENT_ENERGY, 32767);
 		ICON = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":icon",
