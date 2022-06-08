@@ -12,7 +12,7 @@ import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -92,7 +92,7 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 			entityIn.getWorld().getOtherEntities(user, aabb).forEach(e -> addParticle(e));
 		}
 		if (isSelected && stack.getDamage() < (stack.getMaxDamage() - 1)) {
-			worldIn.playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(), ModSoundEvents.CHAINSAW_IDLE,
+			worldIn.playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_IDLE,
 					SoundCategory.PLAYERS, 0.05F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 		if (worldIn.isClient) {
@@ -143,7 +143,7 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 			target.timeUntilRegen = 0;
 			target.damage(DamageSource.player((PlayerEntity) user), 2F);
 			user.world.playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
-					ModSoundEvents.CHAINSAW_ATTACKING, SoundCategory.PLAYERS, 0.05F,
+					DoomSounds.CHAINSAW_ATTACKING, SoundCategory.PLAYERS, 0.05F,
 					1.0F / (target.world.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 	}

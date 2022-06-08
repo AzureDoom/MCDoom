@@ -6,7 +6,7 @@ import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
@@ -102,7 +102,7 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	private <ENTITY extends IAnimatable> void soundListener1(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("attack") && this.dataTracker.get(STATE) == 1) {
-			this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.ROCKET_FIRING,
+			this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.ROCKET_FIRING,
 					SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 		}
 		if (event.sound.matches("flames") && this.dataTracker.get(STATE) > 1) {
@@ -114,11 +114,11 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (this.world.isClient) {
 			if (event.sound.matches("walk")) {
-				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 			if (event.sound.matches("talk")) {
-				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.MANCUBUS_STEP,
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.MANCUBUS_STEP,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
@@ -323,11 +323,11 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.MANCUBUS_HURT;
+		return DoomSounds.MANCUBUS_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.MANCUBUS_DEATH;
+		return DoomSounds.MANCUBUS_DEATH;
 	}
 }

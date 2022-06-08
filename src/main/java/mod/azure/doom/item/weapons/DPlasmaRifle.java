@@ -12,7 +12,7 @@ import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.EnergyCellEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -59,7 +59,7 @@ public class DPlasmaRifle extends DoomBaseItem {
 						stack.damage(1, livingEntityIn, p -> p.sendToolBreakStatus(livingEntityIn.getActiveHand()));
 						worldIn.spawnEntity(abstractarrowentity);
 						worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
-								playerentity.getZ(), ModSoundEvents.PLASMA_FIRING, SoundCategory.PLAYERS, 1.0F,
+								playerentity.getZ(), DoomSounds.PLASMA_FIRING, SoundCategory.PLAYERS, 1.0F,
 								1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
 						if (!worldIn.isClient) {
 							final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);
@@ -74,7 +74,7 @@ public class DPlasmaRifle extends DoomBaseItem {
 				}
 			} else {
 				worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-						ModSoundEvents.EMPTY, SoundCategory.PLAYERS, 1.0F, 1.5F);
+						DoomSounds.EMPTY, SoundCategory.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}
@@ -87,7 +87,7 @@ public class DPlasmaRifle extends DoomBaseItem {
 				user.getStackInHand(hand).damage(-20, user, s -> user.sendToolBreakStatus(hand));
 				user.getStackInHand(hand).setCooldown(3);
 				user.getWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
-						ModSoundEvents.CLIPRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
+						DoomSounds.CLIPRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
 			}
 		}
 	}

@@ -7,7 +7,7 @@ import java.util.SplittableRandom;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
@@ -109,12 +109,12 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	public void spawnWave() {
 		Random rand = new Random();
-		List<EntityType<?>> givenList = Arrays.asList(ModEntityTypes.HELLKNIGHT, ModEntityTypes.POSSESSEDSCIENTIST,
-				ModEntityTypes.IMP, ModEntityTypes.PINKY, ModEntityTypes.CACODEMON, ModEntityTypes.CHAINGUNNER,
-				ModEntityTypes.GARGOYLE, ModEntityTypes.HELLKNIGHT2016, ModEntityTypes.LOST_SOUL,
-				ModEntityTypes.POSSESSEDSOLDIER, ModEntityTypes.SHOTGUNGUY, ModEntityTypes.UNWILLING,
-				ModEntityTypes.ZOMBIEMAN, ModEntityTypes.ARACHNOTRON, ModEntityTypes.ARCHVILE,
-				ModEntityTypes.MECHAZOMBIE, ModEntityTypes.PAIN, ModEntityTypes.MANCUBUS);
+		List<EntityType<?>> givenList = Arrays.asList(DoomEntities.HELLKNIGHT, DoomEntities.POSSESSEDSCIENTIST,
+				DoomEntities.IMP, DoomEntities.PINKY, DoomEntities.CACODEMON, DoomEntities.CHAINGUNNER,
+				DoomEntities.GARGOYLE, DoomEntities.HELLKNIGHT2016, DoomEntities.LOST_SOUL,
+				DoomEntities.POSSESSEDSOLDIER, DoomEntities.SHOTGUNGUY, DoomEntities.UNWILLING,
+				DoomEntities.ZOMBIEMAN, DoomEntities.ARACHNOTRON, DoomEntities.ARCHVILE,
+				DoomEntities.MECHAZOMBIE, DoomEntities.PAIN, DoomEntities.MANCUBUS);
 
 		SplittableRandom random = new SplittableRandom();
 		int r = random.nextInt(-3, 3);

@@ -15,7 +15,7 @@ import mod.azure.doom.entity.tileentity.TickingLightEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -287,7 +287,7 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 							: Explosion.DestructionType.NONE);
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
-		this.playSound(ModSoundEvents.BFG_HIT, 1.0F, 1.0F);
+		this.playSound(DoomSounds.BFG_HIT, 1.0F, 1.0F);
 	}
 
 	@Override
@@ -299,7 +299,7 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 							: Explosion.DestructionType.NONE);
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
-		this.playSound(ModSoundEvents.BFG_HIT, 1.0F, 1.0F);
+		this.playSound(DoomSounds.BFG_HIT, 1.0F, 1.0F);
 	}
 
 	public void doDamage() {

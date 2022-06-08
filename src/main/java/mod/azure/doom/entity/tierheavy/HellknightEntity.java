@@ -8,7 +8,7 @@ import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.CustomFireballEntity;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
@@ -120,7 +120,7 @@ public class HellknightEntity extends DemonEntity implements IAnimatable, IAnima
 
 		@Override
 		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(ModSoundEvents.PLASMA_FIRING, 1, 1);
+			return new AttackSound(DoomSounds.PLASMA_FIRING, 1, 1);
 		}
 
 		@Override
@@ -153,12 +153,12 @@ public class HellknightEntity extends DemonEntity implements IAnimatable, IAnima
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.HELLKNIGHT_HURT;
+		return DoomSounds.HELLKNIGHT_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.HELLKNIGHT_DEATH;
+		return DoomSounds.HELLKNIGHT_DEATH;
 	}
 
 	protected SoundEvent getStepSound() {

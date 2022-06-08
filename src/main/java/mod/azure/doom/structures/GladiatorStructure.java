@@ -2,7 +2,7 @@ package mod.azure.doom.structures;
 
 import java.util.Optional;
 
-import mod.azure.doom.util.registry.ModEntityTypes;
+import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.structure.PostPlacementProcessor;
 import net.minecraft.structure.StructurePiecesGenerator;
@@ -25,7 +25,7 @@ public class GladiatorStructure extends StructureFeature<StructurePoolFeatureCon
 	}
 
 	public static final Pool<SpawnSettings.SpawnEntry> STRUCTURE_MONSTERS = Pool
-			.of(new SpawnSettings.SpawnEntry(ModEntityTypes.GLADIATOR, 100, 4, 9));
+			.of(new SpawnSettings.SpawnEntry(DoomEntities.GLADIATOR, 100, 4, 9));
 
 	private static boolean isFeatureChunk(StructurePiecesGeneratorFactory.Context<StructurePoolFeatureConfig> context) {
 		BlockPos spawnXZPosition = context.chunkPos().getCenterAtY(0);

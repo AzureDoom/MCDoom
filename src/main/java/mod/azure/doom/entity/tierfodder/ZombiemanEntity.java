@@ -9,7 +9,7 @@ import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
 import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
@@ -104,13 +104,13 @@ public class ZombiemanEntity extends DemonEntity implements IAnimatable, IAnimat
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
-				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, false);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
-				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PISTOL_HIT,
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PISTOL_HIT,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, false);
 			}
 		}
@@ -134,7 +134,7 @@ public class ZombiemanEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.goalSelector.add(4,
 				new RangedAttackGoal(this,
 						new RangedAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(DoomConfig.bullet_damage).setSound(ModSoundEvents.PISTOL_HIT, 1.0F,
+								.setDamage(DoomConfig.bullet_damage).setSound(DoomSounds.PISTOL_HIT, 1.0F,
 										1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.1D));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
@@ -155,7 +155,7 @@ public class ZombiemanEntity extends DemonEntity implements IAnimatable, IAnimat
 
 		@Override
 		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(ModSoundEvents.PISTOL_HIT, 1, 1);
+			return new AttackSound(DoomSounds.PISTOL_HIT, 1, 1);
 		}
 
 		@Override
@@ -179,11 +179,11 @@ public class ZombiemanEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.ZOMBIEMAN_HURT;
+		return DoomSounds.ZOMBIEMAN_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.ZOMBIEMAN_DEATH;
+		return DoomSounds.ZOMBIEMAN_DEATH;
 	}
 }
