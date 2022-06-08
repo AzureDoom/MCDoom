@@ -1,12 +1,8 @@
-v.4.2.0
+v.4.2.0b
 
-- 1.19 release.* 
-- Mob spawn configs are dead, this is due to changes with Forge itself. All mob spawn locations and min/max/weight options are now changable via datapacks. The location of the datapacks are currently data/forge/biome_modifier
-	- Bosses such as Icon of Sin, Motherdemon, Arch Maykr and the Gladiator do not have entries as they spawn naturally with their structures. 
-- REI support is disabled until REI Forge is released.
-- Fixes log spawn with Nether Church, Icon of Sin Fight Arena and Gladiator arena. 	
+- REI support is readded.
 
-* Currently loading a world with world generation datapacks requires a work around to get working. 
+Currently loading a world with world generation datapacks requires a work around to get working. 
 	- When creating the world, simply select Datapacks and unload any random datapack such as Geckolibs.
 	- Simply reload the datapack now
 	- Save and it will properly load all datapacks, allowing you to create the world as normal and generate all stuctures and mob spawns.

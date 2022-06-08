@@ -1,6 +1,6 @@
 {
   "type": "doom:mobspawns",
-  "biomes": "#minecraft:is_nether",
+  "biomes": "minecraft:dark_forest",
   "spawn": {
     "type": "doom:unwilling",
     "maxCount": 4,
