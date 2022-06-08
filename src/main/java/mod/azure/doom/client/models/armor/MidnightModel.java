@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class MidnightModel extends AnimatedGeoModel<MidnightDoomArmor> {
 	@Override
-	public ResourceLocation getModelLocation(MidnightDoomArmor object) {
+	public ResourceLocation getModelResource(MidnightDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/doom1armor.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(MidnightDoomArmor object) {
+	public ResourceLocation getTextureResource(MidnightDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/models/armor/midnight_armor_layer_1.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(MidnightDoomArmor animatable) {
+	public ResourceLocation getAnimationResource(MidnightDoomArmor animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/armor_animation.json");
 	}
 }

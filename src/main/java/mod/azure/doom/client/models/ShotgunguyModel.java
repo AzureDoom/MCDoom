@@ -14,17 +14,17 @@ public class ShotgunguyModel extends AnimatedTickingGeoModel<ShotgunguyEntity> {
 	}
 
 	@Override
-	public ResourceLocation getModelLocation(ShotgunguyEntity object) {
+	public ResourceLocation getModelResource(ShotgunguyEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/shotgunzombie.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(ShotgunguyEntity object) {
+	public ResourceLocation getTextureResource(ShotgunguyEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/shotgunguy.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(ShotgunguyEntity object) {
+	public ResourceLocation getAnimationResource(ShotgunguyEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/shotgunzombie.animation.json");
 	}
 

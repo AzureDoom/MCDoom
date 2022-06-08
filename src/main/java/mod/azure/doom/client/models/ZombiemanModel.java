@@ -14,17 +14,17 @@ public class ZombiemanModel extends AnimatedTickingGeoModel<ZombiemanEntity> {
 	}
 
 	@Override
-	public ResourceLocation getModelLocation(ZombiemanEntity object) {
+	public ResourceLocation getModelResource(ZombiemanEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/shotgunzombie.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(ZombiemanEntity object) {
+	public ResourceLocation getTextureResource(ZombiemanEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/eternalzombiemen.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(ZombiemanEntity object) {
+	public ResourceLocation getAnimationResource(ZombiemanEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/shotgunzombie.animation.json");
 	}
 

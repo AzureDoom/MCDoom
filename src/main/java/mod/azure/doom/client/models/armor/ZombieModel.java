@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class ZombieModel extends AnimatedGeoModel<ZombieDoomArmor> {
 	@Override
-	public ResourceLocation getModelLocation(ZombieDoomArmor object) {
+	public ResourceLocation getModelResource(ZombieDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/zombiearmor.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(ZombieDoomArmor object) {
+	public ResourceLocation getTextureResource(ZombieDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/models/armor/zombie_armor_layer_1.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(ZombieDoomArmor animatable) {
+	public ResourceLocation getAnimationResource(ZombieDoomArmor animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/armor_animation.json");
 	}
 }

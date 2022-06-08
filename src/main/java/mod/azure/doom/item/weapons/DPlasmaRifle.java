@@ -16,7 +16,6 @@ import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -131,9 +130,10 @@ public class DPlasmaRifle extends DoomBaseItem {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(new TranslatableComponent("doom.doomed_credit.text").withStyle(ChatFormatting.RED)
+		tooltip.add(Component.translatable("doom.doomed_credit.text").withStyle(ChatFormatting.RED)
 				.withStyle(ChatFormatting.ITALIC));
-		tooltip.add(new TranslatableComponent("doom.doomed_credit1.text").withStyle(ChatFormatting.RED)
+		tooltip.add(Component
+				.translatable("doom.doomed_credit1.text").withStyle(ChatFormatting.RED)
 				.withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}

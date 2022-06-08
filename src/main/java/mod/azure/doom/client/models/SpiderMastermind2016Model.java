@@ -8,17 +8,17 @@ import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 public class SpiderMastermind2016Model extends AnimatedTickingGeoModel<SpiderMastermind2016Entity> {
 
 	@Override
-	public ResourceLocation getModelLocation(SpiderMastermind2016Entity object) {
+	public ResourceLocation getModelResource(SpiderMastermind2016Entity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/spidermastermind2016.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(SpiderMastermind2016Entity object) {
+	public ResourceLocation getTextureResource(SpiderMastermind2016Entity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/spidermastermind2016.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(SpiderMastermind2016Entity object) {
+	public ResourceLocation getAnimationResource(SpiderMastermind2016Entity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/spidermastermind2016.animation.json");
 	}
 }

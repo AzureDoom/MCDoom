@@ -11,18 +11,18 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 public class GladiatorModel extends AnimatedTickingGeoModel<GladiatorEntity> {
 
 	@Override
-	public ResourceLocation getModelLocation(GladiatorEntity object) {
+	public ResourceLocation getModelResource(GladiatorEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/gladiator.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(GladiatorEntity object) {
+	public ResourceLocation getTextureResource(GladiatorEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/" + (object.getTextureState() == 1 ? "gladiator_1"
 				: object.getTextureState() == 2 ? "gladiator_2" : "gladiator") + ".png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(GladiatorEntity object) {
+	public ResourceLocation getAnimationResource(GladiatorEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/gladiator.animation.json");
 	}
 

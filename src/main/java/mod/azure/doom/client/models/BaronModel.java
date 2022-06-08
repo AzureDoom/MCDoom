@@ -11,18 +11,18 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 public class BaronModel extends AnimatedTickingGeoModel<BaronEntity> {
 
 	@Override
-	public ResourceLocation getModelLocation(BaronEntity object) {
+	public ResourceLocation getModelResource(BaronEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/baron.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(BaronEntity object) {
+	public ResourceLocation getTextureResource(BaronEntity object) {
 		return new ResourceLocation(DoomMod.MODID,
 				"textures/entity/baronofhell-" + (object.getVariant() == 2 ? "green" : "texturemap") + ".png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(BaronEntity object) {
+	public ResourceLocation getAnimationResource(BaronEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/baron_hell_animation.json");
 	}
 

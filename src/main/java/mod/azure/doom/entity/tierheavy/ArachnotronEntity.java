@@ -180,11 +180,6 @@ public class ArachnotronEntity extends DemonEntity implements IAnimatable, IAnim
 	}
 
 	@Override
-	protected int getExperienceReward(Player player) {
-		return super.getExperienceReward(player);
-	}
-
-	@Override
 	public boolean isBaby() {
 		return false;
 	}

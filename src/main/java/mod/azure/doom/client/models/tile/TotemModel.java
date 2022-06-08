@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class TotemModel extends AnimatedGeoModel<TotemEntity> {
 	@Override
-	public ResourceLocation getAnimationFileLocation(TotemEntity entity) {
+	public ResourceLocation getAnimationResource(TotemEntity entity) {
 		return new ResourceLocation(DoomMod.MODID, "animations/totem.animation.json");
 	}
 
 	@Override
-	public ResourceLocation getModelLocation(TotemEntity animatable) {
+	public ResourceLocation getModelResource(TotemEntity animatable) {
 		return new ResourceLocation(DoomMod.MODID, "geo/totem.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(TotemEntity entity) {
+	public ResourceLocation getTextureResource(TotemEntity entity) {
 		return new ResourceLocation(DoomMod.MODID, "textures/blocks/totem.png");
 	}
 }

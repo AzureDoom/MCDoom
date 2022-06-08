@@ -11,19 +11,19 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 public class SpectreModel extends AnimatedTickingGeoModel<SpectreEntity> {
 
 	@Override
-	public ResourceLocation getModelLocation(SpectreEntity object) {
+	public ResourceLocation getModelResource(SpectreEntity object) {
 		return new ResourceLocation(DoomMod.MODID,
 				"geo/" + (object.getVariant() > 1 ? "pinky" : "pinky2016") + ".geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(SpectreEntity object) {
+	public ResourceLocation getTextureResource(SpectreEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/" + (object.getVariant() == 2 ? "pinky-texturemap"
 				: object.getVariant() == 3 ? "pinky_green" : "pinky2016") + ".png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(SpectreEntity object) {
+	public ResourceLocation getAnimationResource(SpectreEntity object) {
 		return new ResourceLocation(DoomMod.MODID,
 				"animations/" + (object.getVariant() > 1 ? "pinky_" : "pinky2016.") + "animation.json");
 	}

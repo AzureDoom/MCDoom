@@ -11,17 +11,17 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 public class ArchMaykrModel extends AnimatedTickingGeoModel<ArchMakyrEntity> {
 
 	@Override
-	public ResourceLocation getModelLocation(ArchMakyrEntity object) {
+	public ResourceLocation getModelResource(ArchMakyrEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/archmaykr_" + object.getVariant() + ".geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(ArchMakyrEntity object) {
+	public ResourceLocation getTextureResource(ArchMakyrEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/archmaykr_" + object.getVariant() + ".png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(ArchMakyrEntity object) {
+	public ResourceLocation getAnimationResource(ArchMakyrEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/archmaykr_" + object.getVariant() + ".animation.json");
 	}
 

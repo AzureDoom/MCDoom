@@ -15,7 +15,6 @@ import mod.azure.doom.util.registry.ModSoundEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -73,9 +72,9 @@ public class Chainsaw extends Item {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(new TranslatableComponent(
+		tooltip.add(Component.translatable(
 				"Fuel: " + (stack.getMaxDamage() - stack.getDamageValue() - 1) + " / " + (stack.getMaxDamage() - 1))
-						.withStyle(ChatFormatting.ITALIC));
+				.withStyle(ChatFormatting.ITALIC));
 	}
 
 	@Override

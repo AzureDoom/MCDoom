@@ -16,17 +16,17 @@ public class FireBaronModel extends AnimatedTickingGeoModel<FireBaronEntity> {
 			new ResourceLocation(DoomMod.MODID, "textures/entity/firebaron_2.png") };
 
 	@Override
-	public ResourceLocation getModelLocation(FireBaronEntity object) {
+	public ResourceLocation getModelResource(FireBaronEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/baron2016.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(FireBaronEntity object) {
+	public ResourceLocation getTextureResource(FireBaronEntity object) {
 		return TEX[(object.getFlameTimer())];
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(FireBaronEntity object) {
+	public ResourceLocation getAnimationResource(FireBaronEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/baron2016.animation.json");
 	}
 

@@ -1,6 +1,5 @@
 package mod.azure.doom.entity;
 
-import java.util.Random;
 import java.util.UUID;
 
 import net.minecraft.core.BlockPos;
@@ -10,6 +9,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.Difficulty;
@@ -42,7 +42,7 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 	}
 
 	public static boolean passPeacefulAndYCheck(EntityType<? extends DemonEntity> config, LevelAccessor world,
-			MobSpawnType reason, BlockPos pos, Random random) {
+			MobSpawnType reason, BlockPos pos, RandomSource random) {
 		if (world.getDifficulty() == Difficulty.PEACEFUL)
 			return false;
 		if ((reason != MobSpawnType.CHUNK_GENERATION && reason != MobSpawnType.NATURAL))

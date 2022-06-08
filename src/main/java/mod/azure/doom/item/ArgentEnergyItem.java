@@ -5,7 +5,6 @@ import java.util.List;
 import mod.azure.doom.DoomMod;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -20,11 +19,11 @@ public class ArgentEnergyItem extends Item {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(new TranslatableComponent("doom.argent_engery1.text").withStyle(ChatFormatting.RED)
+		tooltip.add(Component.translatable("doom.argent_engery1.text").withStyle(ChatFormatting.RED)
 				.withStyle(ChatFormatting.ITALIC));
-		tooltip.add(new TranslatableComponent("doom.argent_engery2.text").withStyle(ChatFormatting.RED)
+		tooltip.add(Component.translatable("doom.argent_engery2.text").withStyle(ChatFormatting.RED)
 				.withStyle(ChatFormatting.ITALIC));
-		tooltip.add(new TranslatableComponent("doom.argent_engery3.text").withStyle(ChatFormatting.RED)
+		tooltip.add(Component.translatable("doom.argent_engery3.text").withStyle(ChatFormatting.RED)
 				.withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}

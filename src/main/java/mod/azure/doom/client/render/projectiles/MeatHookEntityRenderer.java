@@ -49,7 +49,7 @@ public class MeatHookEntityRenderer extends GeoProjectilesRenderer<MeatHookEntit
 		super.render(hookshot, yaw, tickDelta, stack, provider, light);
 		if (hookshot.getOwner()instanceof Player player) {
 			@SuppressWarnings("resource")
-			HumanoidArm mainArm = Minecraft.getInstance().options.mainHand;
+			HumanoidArm mainArm = Minecraft.getInstance().options.mainHand().get();
 			InteractionHand activeHand = player.getUsedItemHand();
 
 			stack.pushPose();

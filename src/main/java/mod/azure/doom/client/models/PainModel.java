@@ -22,18 +22,18 @@ public class PainModel extends AnimatedTickingGeoModel<PainEntity> {
 			"textures/entity/painelemental64-attacking.png");
 
 	@Override
-	public ResourceLocation getModelLocation(PainEntity object) {
+	public ResourceLocation getModelResource(PainEntity object) {
 		return object.getVariant() == 1 ? classic_model : doom64_model;
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(PainEntity object) {
+	public ResourceLocation getTextureResource(PainEntity object) {
 		return object.getVariant() == 1 ? (object.getAttckingState() == 1 ? classic_texture_attacking : classic_texture)
 				: (object.getAttckingState() == 1 ? doom64_texture_attacking : doom64_texture);
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(PainEntity object) {
+	public ResourceLocation getAnimationResource(PainEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/pain_animation.json");
 	}
 

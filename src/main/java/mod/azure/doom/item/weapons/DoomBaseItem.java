@@ -7,7 +7,6 @@ import mod.azure.doom.util.registry.DoomBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -118,9 +117,9 @@ public class DoomBaseItem extends Item implements IAnimatable, ISyncable {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(new TranslatableComponent(
+		tooltip.add(Component.translatable(
 				"Ammo: " + (stack.getMaxDamage() - stack.getDamageValue() - 1) + " / " + (stack.getMaxDamage() - 1))
-						.withStyle(ChatFormatting.ITALIC));
+				.withStyle(ChatFormatting.ITALIC));
 	}
 
 	protected void spawnLightSource(Entity entity, boolean isInWaterBlock) {

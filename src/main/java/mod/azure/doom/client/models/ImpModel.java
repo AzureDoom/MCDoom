@@ -22,18 +22,18 @@ public class ImpModel extends AnimatedTickingGeoModel<ImpEntity> {
 	public ResourceLocation imp_animation = new ResourceLocation(DoomMod.MODID, "animations/imp_animation.json");
 
 	@Override
-	public ResourceLocation getModelLocation(ImpEntity object) {
+	public ResourceLocation getModelResource(ImpEntity object) {
 		return object.getVariant() == 2 ? nightmareimp_model : object.getVariant() == 3 ? imp2016_model : classic_model;
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(ImpEntity object) {
+	public ResourceLocation getTextureResource(ImpEntity object) {
 		return object.getVariant() == 2 ? nightmareimp_texture
 				: object.getVariant() == 3 ? imp2016_texture : classic_texture;
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(ImpEntity object) {
+	public ResourceLocation getAnimationResource(ImpEntity object) {
 		return object.getVariant() == 3 ? imp2016_animation : imp_animation;
 	}
 

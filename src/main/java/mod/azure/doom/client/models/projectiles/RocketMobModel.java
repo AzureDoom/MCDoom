@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class RocketMobModel extends AnimatedGeoModel<RocketMobEntity> {
 	@Override
-	public ResourceLocation getModelLocation(RocketMobEntity object) {
+	public ResourceLocation getModelResource(RocketMobEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/rocket.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(RocketMobEntity object) {
+	public ResourceLocation getTextureResource(RocketMobEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/projectiles/rocket.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(RocketMobEntity animatable) {
+	public ResourceLocation getAnimationResource(RocketMobEntity animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/rocket.animation.json");
 	}
 }

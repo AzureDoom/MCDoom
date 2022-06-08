@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class CBulletModel extends AnimatedGeoModel<ChaingunBulletEntity> {
 	@Override
-	public ResourceLocation getModelLocation(ChaingunBulletEntity object) {
+	public ResourceLocation getModelResource(ChaingunBulletEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/bullet.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(ChaingunBulletEntity object) {
+	public ResourceLocation getTextureResource(ChaingunBulletEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/items/clip.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(ChaingunBulletEntity animatable) {
+	public ResourceLocation getAnimationResource(ChaingunBulletEntity animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/empty.animation.json");
 	}
 }

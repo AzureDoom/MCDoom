@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class DoomicornModel extends AnimatedGeoModel<DoomicornDoomArmor> {
 	@Override
-	public ResourceLocation getModelLocation(DoomicornDoomArmor object) {
+	public ResourceLocation getModelResource(DoomicornDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/doomicornarmor.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(DoomicornDoomArmor object) {
+	public ResourceLocation getTextureResource(DoomicornDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/models/armor/doomicorn_armor_layer_1.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(DoomicornDoomArmor animatable) {
+	public ResourceLocation getAnimationResource(DoomicornDoomArmor animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/doomicorn_animation.json");
 	}
 }

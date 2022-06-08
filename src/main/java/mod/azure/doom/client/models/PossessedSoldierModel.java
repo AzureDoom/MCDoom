@@ -15,7 +15,7 @@ public class PossessedSoldierModel extends AnimatedTickingGeoModel<PossessedSold
 			new ResourceLocation(DoomMod.MODID, "textures/entity/possessedsoldier-eternal_flames_2.png") };
 
 	@Override
-	public ResourceLocation getModelLocation(PossessedSoldierEntity object) {
+	public ResourceLocation getModelResource(PossessedSoldierEntity object) {
 		return new ResourceLocation(
 				DoomMod.MODID, "geo/"
 						+ (object.getVariant() == 3 ? "possessedsoldier-shield"
@@ -24,7 +24,7 @@ public class PossessedSoldierModel extends AnimatedTickingGeoModel<PossessedSold
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(PossessedSoldierEntity object) {
+	public ResourceLocation getTextureResource(PossessedSoldierEntity object) {
 		return (object.getVariant() == 2 && object.isAggressive() ? TEX[(object.getFlameTimer())]
 				: object.getVariant() == 2 && !object.isAggressive()
 						? new ResourceLocation(DoomMod.MODID, "textures/entity/possessedsoldier-eternal.png")
@@ -34,7 +34,7 @@ public class PossessedSoldierModel extends AnimatedTickingGeoModel<PossessedSold
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(PossessedSoldierEntity object) {
+	public ResourceLocation getAnimationResource(PossessedSoldierEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/possessedsoldier.animation.json");
 	}
 

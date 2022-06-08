@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class GladiatorMaceModel extends AnimatedGeoModel<GladiatorMaceEntity> {
 	@Override
-	public ResourceLocation getModelLocation(GladiatorMaceEntity object) {
+	public ResourceLocation getModelResource(GladiatorMaceEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/gladiator_mace.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(GladiatorMaceEntity object) {
+	public ResourceLocation getTextureResource(GladiatorMaceEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/gladiator.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(GladiatorMaceEntity animatable) {
+	public ResourceLocation getAnimationResource(GladiatorMaceEntity animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/gladiator_mace.animation.json");
 	}
 }

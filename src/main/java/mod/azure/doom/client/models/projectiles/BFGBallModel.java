@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class BFGBallModel extends AnimatedGeoModel<BFGEntity> {
 	@Override
-	public ResourceLocation getModelLocation(BFGEntity object) {
+	public ResourceLocation getModelResource(BFGEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/bfg_ball.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(BFGEntity object) {
+	public ResourceLocation getTextureResource(BFGEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/projectiles/bfg_ball.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(BFGEntity animatable) {
+	public ResourceLocation getAnimationResource(BFGEntity animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/bfgball.animation.json");
 	}
 }

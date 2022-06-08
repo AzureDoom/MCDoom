@@ -11,17 +11,17 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 public class TentacleModel extends AnimatedTickingGeoModel<TentacleEntity> {
 
 	@Override
-	public ResourceLocation getModelLocation(TentacleEntity object) {
+	public ResourceLocation getModelResource(TentacleEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/tentacle.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(TentacleEntity object) {
+	public ResourceLocation getTextureResource(TentacleEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/tentacle.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(TentacleEntity object) {
+	public ResourceLocation getAnimationResource(TentacleEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/tentacle.animation.json");
 	}
 

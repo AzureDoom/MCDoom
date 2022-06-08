@@ -15,7 +15,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -120,7 +119,7 @@ public class ArgentPaxel extends DiggerItem {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(new TranslatableComponent("doom.argent_powered.text").withStyle(ChatFormatting.RED)
+		tooltip.add(Component.translatable("doom.argent_powered.text").withStyle(ChatFormatting.RED)
 				.withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}

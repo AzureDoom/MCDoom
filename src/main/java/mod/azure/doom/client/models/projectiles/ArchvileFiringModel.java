@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class ArchvileFiringModel extends AnimatedGeoModel<DoomFireEntity> {
 	@Override
-	public ResourceLocation getModelLocation(DoomFireEntity object) {
+	public ResourceLocation getModelResource(DoomFireEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/archvilefiring.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(DoomFireEntity object) {
+	public ResourceLocation getTextureResource(DoomFireEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/items/empty.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(DoomFireEntity animatable) {
+	public ResourceLocation getAnimationResource(DoomFireEntity animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/archvilefiring.animation.json");
 	}
 }

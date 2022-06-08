@@ -12,17 +12,17 @@ public class GoreNestModel extends AnimatedTickingGeoModel<GoreNestEntity> {
 	}
 
 	@Override
-	public ResourceLocation getModelLocation(GoreNestEntity object) {
+	public ResourceLocation getModelResource(GoreNestEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/gorenest.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(GoreNestEntity object) {
+	public ResourceLocation getTextureResource(GoreNestEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/gore_nest.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(GoreNestEntity object) {
+	public ResourceLocation getAnimationResource(GoreNestEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/gorenest_animation.json");
 	}
 }

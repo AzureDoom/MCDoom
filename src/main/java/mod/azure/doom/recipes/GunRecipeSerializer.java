@@ -21,10 +21,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class GunRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>>
-		implements RecipeSerializer<GunTableRecipe> {
+public class GunRecipeSerializer implements RecipeSerializer<GunTableRecipe> {
 
 	private static List<Pair<Ingredient, Integer>> getIngredients(String pattern,
 			Map<String, Pair<Ingredient, Integer>> keys, int width) {

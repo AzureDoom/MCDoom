@@ -260,11 +260,6 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 	}
 
 	@Override
-	protected int getExperienceReward(Player player) {
-		return super.getExperienceReward(player);
-	}
-
-	@Override
 	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
 		return 6.05F;
 	}

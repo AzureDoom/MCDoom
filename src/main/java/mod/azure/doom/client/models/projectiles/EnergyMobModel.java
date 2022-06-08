@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class EnergyMobModel extends AnimatedGeoModel<EnergyCellMobEntity> {
 	@Override
-	public ResourceLocation getModelLocation(EnergyCellMobEntity object) {
+	public ResourceLocation getModelResource(EnergyCellMobEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/smallprojectile.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(EnergyCellMobEntity object) {
+	public ResourceLocation getTextureResource(EnergyCellMobEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/projectiles/plasma_ball.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(EnergyCellMobEntity animatable) {
+	public ResourceLocation getAnimationResource(EnergyCellMobEntity animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/smallprojectile.animation.json");
 	}
 }

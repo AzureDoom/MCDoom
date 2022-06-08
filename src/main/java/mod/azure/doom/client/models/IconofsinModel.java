@@ -14,17 +14,17 @@ public class IconofsinModel extends AnimatedTickingGeoModel<IconofsinEntity> {
 	}
 
 	@Override
-	public ResourceLocation getModelLocation(IconofsinEntity object) {
+	public ResourceLocation getModelResource(IconofsinEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/icon.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(IconofsinEntity object) {
+	public ResourceLocation getTextureResource(IconofsinEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/iconofsin.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(IconofsinEntity object) {
+	public ResourceLocation getAnimationResource(IconofsinEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/icon.animation.json");
 	}
 

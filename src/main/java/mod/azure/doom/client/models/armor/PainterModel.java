@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class PainterModel extends AnimatedGeoModel<PainterDoomArmor> {
 	@Override
-	public ResourceLocation getModelLocation(PainterDoomArmor object) {
+	public ResourceLocation getModelResource(PainterDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/painterarmor.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(PainterDoomArmor object) {
+	public ResourceLocation getTextureResource(PainterDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/models/armor/painter_armor_layer_1.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(PainterDoomArmor animatable) {
+	public ResourceLocation getAnimationResource(PainterDoomArmor animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/armor_animation.json");
 	}
 }

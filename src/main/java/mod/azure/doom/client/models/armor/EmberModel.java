@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class EmberModel extends AnimatedGeoModel<EmberDoomArmor> {
 	@Override
-	public ResourceLocation getModelLocation(EmberDoomArmor object) {
+	public ResourceLocation getModelResource(EmberDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/doom1armor.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(EmberDoomArmor object) {
+	public ResourceLocation getTextureResource(EmberDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/models/armor/ember_armor_layer_1.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(EmberDoomArmor animatable) {
+	public ResourceLocation getAnimationResource(EmberDoomArmor animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/armor_animation.json");
 	}
 }

@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class UnmaykrModel extends AnimatedGeoModel<Unmaykr> {
 	@Override
-	public ResourceLocation getModelLocation(Unmaykr object) {
+	public ResourceLocation getModelResource(Unmaykr object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/unmaykr.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(Unmaykr object) {
+	public ResourceLocation getTextureResource(Unmaykr object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/items/unmaykr.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(Unmaykr animatable) {
+	public ResourceLocation getAnimationResource(Unmaykr animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/unmaykr.animation.json");
 	}
 }

@@ -14,17 +14,17 @@ public class ArachnotronModel extends AnimatedTickingGeoModel<ArachnotronEntity>
 	}
 
 	@Override
-	public ResourceLocation getModelLocation(ArachnotronEntity object) {
+	public ResourceLocation getModelResource(ArachnotronEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/arachnotron.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(ArachnotronEntity object) {
+	public ResourceLocation getTextureResource(ArachnotronEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/arachnotron-texturemap.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(ArachnotronEntity object) {
+	public ResourceLocation getAnimationResource(ArachnotronEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/arachnotron_walking.json");
 	}
 

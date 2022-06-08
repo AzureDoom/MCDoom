@@ -18,7 +18,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -89,9 +88,9 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(new TranslatableComponent(
+		tooltip.add(Component.translatable(
 				"Fuel: " + (stack.getMaxDamage() - stack.getDamageValue() - 1) + " / " + (stack.getMaxDamage() - 1))
-						.withStyle(ChatFormatting.ITALIC));
+				.withStyle(ChatFormatting.ITALIC));
 	}
 
 	@Override
@@ -159,7 +158,8 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 	private void doDeathCheck(LivingEntity user, Entity target, ItemStack stack) {
 		Random rand = new Random();
 		List<Item> givenList = Arrays.asList(DoomItems.CHAINGUN_BULLETS.get(), DoomItems.SHOTGUN_SHELLS.get(),
-				DoomItems.ARGENT_BOLT.get(), DoomItems.SHOTGUN_SHELLS.get(), DoomItems.ENERGY_CELLS.get(), DoomItems.ROCKET.get());
+				DoomItems.ARGENT_BOLT.get(), DoomItems.SHOTGUN_SHELLS.get(), DoomItems.ENERGY_CELLS.get(),
+				DoomItems.ROCKET.get());
 		if (target instanceof DemonEntity && !(target instanceof Player)) {
 			if (((LivingEntity) target).isDeadOrDying()) {
 				if (user instanceof Player) {

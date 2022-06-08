@@ -46,10 +46,8 @@ import mod.azure.doom.entity.tiersuperheavy.FireBaronEntity;
 import mod.azure.doom.entity.tiersuperheavy.MarauderEntity;
 import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
 import mod.azure.doom.util.registry.ModEntityTypes;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -58,7 +56,56 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 public class ModEventSubscriber {
 
 	@SubscribeEvent
-	public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event) {
+	public static void entityAttributes(EntityAttributeCreationEvent event) {
+		event.put(ModEntityTypes.GLADIATOR.get(), GladiatorEntity.createAttributes().build());
+		event.put(ModEntityTypes.CYBERDEMON.get(), CyberdemonEntity.createAttributes().build());
+		event.put(ModEntityTypes.ARCHVILE.get(), ArchvileEntity.createAttributes().build());
+		event.put(ModEntityTypes.BARON.get(), BaronEntity.createAttributes().build());
+		event.put(ModEntityTypes.CHAINGUNNER.get(), ChaingunnerEntity.createAttributes().build());
+		event.put(ModEntityTypes.HELLKNIGHT.get(), HellknightEntity.createAttributes().build());
+		event.put(ModEntityTypes.HELLKNIGHT2016.get(), Hellknight2016Entity.createAttributes().build());
+		event.put(ModEntityTypes.ICONOFSIN.get(), IconofsinEntity.createAttributes().build());
+		event.put(ModEntityTypes.IMP.get(), ImpEntity.createAttributes().build());
+		event.put(ModEntityTypes.MANCUBUS.get(), MancubusEntity.createAttributes().build());
+		event.put(ModEntityTypes.MARAUDER.get(), MarauderEntity.createAttributes().build());
+		event.put(ModEntityTypes.PINKY.get(), PinkyEntity.createAttributes().build());
+		event.put(ModEntityTypes.SPECTRE.get(), SpectreEntity.createAttributes().build());
+		event.put(ModEntityTypes.LOST_SOUL.get(), LostSoulEntity.createAttributes().build());
+		event.put(ModEntityTypes.LOST_SOUL_ETERNAL.get(), LostSoulEntity.createAttributes().build());
+		event.put(ModEntityTypes.POSSESSEDSCIENTIST.get(), PossessedScientistEntity.createAttributes().build());
+		event.put(ModEntityTypes.POSSESSEDSOLDIER.get(), PossessedSoldierEntity.createAttributes().build());
+		event.put(ModEntityTypes.REVENANT.get(), RevenantEntity.createAttributes().build());
+		event.put(ModEntityTypes.SHOTGUNGUY.get(), ShotgunguyEntity.createAttributes().build());
+		event.put(ModEntityTypes.ARACHNOTRON.get(), ArachnotronEntity.createAttributes().build());
+		event.put(ModEntityTypes.SPIDERMASTERMIND.get(), SpiderMastermindEntity.createAttributes().build());
+		event.put(ModEntityTypes.UNWILLING.get(), UnwillingEntity.createAttributes().build());
+		event.put(ModEntityTypes.ZOMBIEMAN.get(), ZombiemanEntity.createAttributes().build());
+		event.put(ModEntityTypes.CACODEMON.get(), CacodemonEntity.createAttributes().build());
+		event.put(ModEntityTypes.PAIN.get(), PainEntity.createAttributes().build());
+		event.put(ModEntityTypes.GORE_NEST.get(), GoreNestEntity.createAttributes().build());
+		event.put(ModEntityTypes.MECHAZOMBIE.get(), MechaZombieEntity.createAttributes().build());
+		event.put(ModEntityTypes.GARGOYLE.get(), GargoyleEntity.createAttributes().build());
+		event.put(ModEntityTypes.CUEBALL.get(), CueBallEntity.createAttributes().build());
+		event.put(ModEntityTypes.PROWLER.get(), ProwlerEntity.createAttributes().build());
+		event.put(ModEntityTypes.DREADKNIGHT.get(), Hellknight2016Entity.createAttributes().build());
+		event.put(ModEntityTypes.IMP_STONE.get(), ImpStoneEntity.createAttributes().build());
+		event.put(ModEntityTypes.POSSESSEDWORKER.get(), PossessedScientistEntity.createAttributes().build());
+		event.put(ModEntityTypes.DOOMHUNTER.get(), DoomHunterEntity.createAttributes().build());
+		event.put(ModEntityTypes.WHIPLASH.get(), WhiplashEntity.createAttributes().build());
+		event.put(ModEntityTypes.BARON2016.get(), BaronEntity.createAttributes().build());
+		event.put(ModEntityTypes.ARMORBARON.get(), ArmoredBaronEntity.createAttributes().build());
+		event.put(ModEntityTypes.ARACHNOTRONETERNAL.get(), ArachnotronEntity.createAttributes().build());
+		event.put(ModEntityTypes.MAYKRDRONE.get(), MaykrDroneEntity.createAttributes().build());
+		event.put(ModEntityTypes.SPIDERMASTERMIND2016.get(), SpiderMastermind2016Entity.createAttributes().build());
+		event.put(ModEntityTypes.BLOODMAYKR.get(), BloodMaykrEntity.createAttributes().build());
+		event.put(ModEntityTypes.ARCHMAKER.get(), ArchMakyrEntity.createAttributes().build());
+		event.put(ModEntityTypes.FIREBARON.get(), FireBaronEntity.createAttributes().build());
+		event.put(ModEntityTypes.TENTACLE.get(), TentacleEntity.createAttributes().build());
+		event.put(ModEntityTypes.MOTHERDEMON.get(), MotherDemonEntity.createAttributes().build());
+		event.put(ModEntityTypes.TURRET.get(), TurretEntity.createAttributes().build());
+		event.put(ModEntityTypes.SUMMONER.get(), SummonerEntity.createAttributes().build());
+		event.put(ModEntityTypes.REVENANT2016.get(), Revenant2016Entity.createAttributes().build());
+
 		SpawnPlacements.register(ModEntityTypes.GLADIATOR.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.ARCHVILE.get(), SpawnPlacements.Type.ON_GROUND,
@@ -155,57 +202,5 @@ public class ModEventSubscriber {
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
 		SpawnPlacements.register(ModEntityTypes.REVENANT2016.get(), SpawnPlacements.Type.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::passPeacefulAndYCheck);
-	}
-
-	@SubscribeEvent
-	public static void entityAttributes(EntityAttributeCreationEvent event) {
-		event.put(ModEntityTypes.GLADIATOR.get(), GladiatorEntity.createAttributes().build());
-		event.put(ModEntityTypes.CYBERDEMON.get(), CyberdemonEntity.createAttributes().build());
-		event.put(ModEntityTypes.ARCHVILE.get(), ArchvileEntity.createAttributes().build());
-		event.put(ModEntityTypes.BARON.get(), BaronEntity.createAttributes().build());
-		event.put(ModEntityTypes.CHAINGUNNER.get(), ChaingunnerEntity.createAttributes().build());
-		event.put(ModEntityTypes.HELLKNIGHT.get(), HellknightEntity.createAttributes().build());
-		event.put(ModEntityTypes.HELLKNIGHT2016.get(), Hellknight2016Entity.createAttributes().build());
-		event.put(ModEntityTypes.ICONOFSIN.get(), IconofsinEntity.createAttributes().build());
-		event.put(ModEntityTypes.IMP.get(), ImpEntity.createAttributes().build());
-		event.put(ModEntityTypes.MANCUBUS.get(), MancubusEntity.createAttributes().build());
-		event.put(ModEntityTypes.MARAUDER.get(), MarauderEntity.createAttributes().build());
-		event.put(ModEntityTypes.PINKY.get(), PinkyEntity.createAttributes().build());
-		event.put(ModEntityTypes.SPECTRE.get(), SpectreEntity.createAttributes().build());
-		event.put(ModEntityTypes.LOST_SOUL.get(), LostSoulEntity.createAttributes().build());
-		event.put(ModEntityTypes.LOST_SOUL_ETERNAL.get(), LostSoulEntity.createAttributes().build());
-		event.put(ModEntityTypes.POSSESSEDSCIENTIST.get(), PossessedScientistEntity.createAttributes().build());
-		event.put(ModEntityTypes.POSSESSEDSOLDIER.get(), PossessedSoldierEntity.createAttributes().build());
-		event.put(ModEntityTypes.REVENANT.get(), RevenantEntity.createAttributes().build());
-		event.put(ModEntityTypes.SHOTGUNGUY.get(), ShotgunguyEntity.createAttributes().build());
-		event.put(ModEntityTypes.ARACHNOTRON.get(), ArachnotronEntity.createAttributes().build());
-		event.put(ModEntityTypes.SPIDERMASTERMIND.get(), SpiderMastermindEntity.createAttributes().build());
-		event.put(ModEntityTypes.UNWILLING.get(), UnwillingEntity.createAttributes().build());
-		event.put(ModEntityTypes.ZOMBIEMAN.get(), ZombiemanEntity.createAttributes().build());
-		event.put(ModEntityTypes.CACODEMON.get(), CacodemonEntity.createAttributes().build());
-		event.put(ModEntityTypes.PAIN.get(), PainEntity.createAttributes().build());
-		event.put(ModEntityTypes.GORE_NEST.get(), GoreNestEntity.createAttributes().build());
-		event.put(ModEntityTypes.MECHAZOMBIE.get(), MechaZombieEntity.createAttributes().build());
-		event.put(ModEntityTypes.GARGOYLE.get(), GargoyleEntity.createAttributes().build());
-		event.put(ModEntityTypes.CUEBALL.get(), CueBallEntity.createAttributes().build());
-		event.put(ModEntityTypes.PROWLER.get(), ProwlerEntity.createAttributes().build());
-		event.put(ModEntityTypes.DREADKNIGHT.get(), Hellknight2016Entity.createAttributes().build());
-		event.put(ModEntityTypes.IMP_STONE.get(), ImpStoneEntity.createAttributes().build());
-		event.put(ModEntityTypes.POSSESSEDWORKER.get(), PossessedScientistEntity.createAttributes().build());
-		event.put(ModEntityTypes.DOOMHUNTER.get(), DoomHunterEntity.createAttributes().build());
-		event.put(ModEntityTypes.WHIPLASH.get(), WhiplashEntity.createAttributes().build());
-		event.put(ModEntityTypes.BARON2016.get(), BaronEntity.createAttributes().build());
-		event.put(ModEntityTypes.ARMORBARON.get(), ArmoredBaronEntity.createAttributes().build());
-		event.put(ModEntityTypes.ARACHNOTRONETERNAL.get(), ArachnotronEntity.createAttributes().build());
-		event.put(ModEntityTypes.MAYKRDRONE.get(), MaykrDroneEntity.createAttributes().build());
-		event.put(ModEntityTypes.SPIDERMASTERMIND2016.get(), SpiderMastermind2016Entity.createAttributes().build());
-		event.put(ModEntityTypes.BLOODMAYKR.get(), BloodMaykrEntity.createAttributes().build());
-		event.put(ModEntityTypes.ARCHMAKER.get(), ArchMakyrEntity.createAttributes().build());
-		event.put(ModEntityTypes.FIREBARON.get(), FireBaronEntity.createAttributes().build());
-		event.put(ModEntityTypes.TENTACLE.get(), TentacleEntity.createAttributes().build());
-		event.put(ModEntityTypes.MOTHERDEMON.get(), MotherDemonEntity.createAttributes().build());
-		event.put(ModEntityTypes.TURRET.get(), TurretEntity.createAttributes().build());
-		event.put(ModEntityTypes.SUMMONER.get(), SummonerEntity.createAttributes().build());
-		event.put(ModEntityTypes.REVENANT2016.get(), Revenant2016Entity.createAttributes().build());
 	}
 }

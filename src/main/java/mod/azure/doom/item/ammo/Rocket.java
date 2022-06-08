@@ -5,7 +5,6 @@ import java.util.List;
 import mod.azure.doom.DoomMod;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -19,7 +18,7 @@ public class Rocket extends Item {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(new TranslatableComponent("doom.rocket.text").withStyle(ChatFormatting.ITALIC));
+		tooltip.add(Component.translatable("doom.rocket.text").withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 

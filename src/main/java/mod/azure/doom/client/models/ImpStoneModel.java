@@ -14,17 +14,17 @@ public class ImpStoneModel extends AnimatedTickingGeoModel<ImpStoneEntity> {
 	}
 
 	@Override
-	public ResourceLocation getModelLocation(ImpStoneEntity object) {
+	public ResourceLocation getModelResource(ImpStoneEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/imp2016.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(ImpStoneEntity object) {
+	public ResourceLocation getTextureResource(ImpStoneEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/stoneimp.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(ImpStoneEntity object) {
+	public ResourceLocation getAnimationResource(ImpStoneEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/imp2016.animation.json");
 	}
 

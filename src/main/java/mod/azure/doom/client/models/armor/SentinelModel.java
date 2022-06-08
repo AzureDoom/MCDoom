@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class SentinelModel extends AnimatedGeoModel<SentinelDoomArmor> {
 	@Override
-	public ResourceLocation getModelLocation(SentinelDoomArmor object) {
+	public ResourceLocation getModelResource(SentinelDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/sentinelarmor.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(SentinelDoomArmor object) {
+	public ResourceLocation getTextureResource(SentinelDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/models/armor/sentinel_armor_layer_1.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(SentinelDoomArmor animatable) {
+	public ResourceLocation getAnimationResource(SentinelDoomArmor animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/armor_animation.json");
 	}
 }

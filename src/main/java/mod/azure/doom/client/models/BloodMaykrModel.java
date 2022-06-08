@@ -11,17 +11,17 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 public class BloodMaykrModel extends AnimatedTickingGeoModel<BloodMaykrEntity> {
 
 	@Override
-	public ResourceLocation getModelLocation(BloodMaykrEntity object) {
+	public ResourceLocation getModelResource(BloodMaykrEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/bloodmaykr.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(BloodMaykrEntity object) {
+	public ResourceLocation getTextureResource(BloodMaykrEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/bloodmaykr.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(BloodMaykrEntity object) {
+	public ResourceLocation getAnimationResource(BloodMaykrEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/bloodmaykr.animation.json");
 	}
 

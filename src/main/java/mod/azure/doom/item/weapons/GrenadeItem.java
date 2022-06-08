@@ -9,7 +9,6 @@ import mod.azure.doom.entity.projectiles.GrenadeEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -84,9 +83,9 @@ public class GrenadeItem extends Item implements IAnimatable {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(new TranslatableComponent("doom.doomed_credit.text").withStyle(ChatFormatting.RED)
+		tooltip.add(Component.translatable("doom.doomed_credit.text").withStyle(ChatFormatting.RED)
 				.withStyle(ChatFormatting.ITALIC));
-		tooltip.add(new TranslatableComponent("doom.doomed_credit1.text").withStyle(ChatFormatting.RED)
+		tooltip.add(Component.translatable("doom.doomed_credit1.text").withStyle(ChatFormatting.RED)
 				.withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}

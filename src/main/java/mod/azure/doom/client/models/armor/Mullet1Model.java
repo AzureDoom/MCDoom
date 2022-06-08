@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class Mullet1Model extends AnimatedGeoModel<MulletDoomArmor> {
 	@Override
-	public ResourceLocation getModelLocation(MulletDoomArmor object) {
+	public ResourceLocation getModelResource(MulletDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/mulletarmor.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(MulletDoomArmor object) {
+	public ResourceLocation getTextureResource(MulletDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/models/armor/redneck1_armor_layer_1.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(MulletDoomArmor animatable) {
+	public ResourceLocation getAnimationResource(MulletDoomArmor animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/armor_animation.json");
 	}
 }

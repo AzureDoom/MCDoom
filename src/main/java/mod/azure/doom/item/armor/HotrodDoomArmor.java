@@ -5,7 +5,6 @@ import java.util.List;
 import mod.azure.doom.DoomMod;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
@@ -29,7 +28,7 @@ public class HotrodDoomArmor extends GeoArmorItem implements IAnimatable {
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<HotrodDoomArmor>(this, "controller", 20, this::predicate));
+		data.addAnimationController(new AnimationController<>(this, "controller", 20, this::predicate));
 	}
 
 	private <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
@@ -49,7 +48,7 @@ public class HotrodDoomArmor extends GeoArmorItem implements IAnimatable {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(new TranslatableComponent("doom.doomarmor.text").withStyle(ChatFormatting.YELLOW)
+		tooltip.add(Component.translatable("doom.doomarmor.text").withStyle(ChatFormatting.YELLOW)
 				.withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}

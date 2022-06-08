@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class HeavyCannonModel extends AnimatedGeoModel<HeavyCannon> {
 	@Override
-	public ResourceLocation getModelLocation(HeavyCannon object) {
+	public ResourceLocation getModelResource(HeavyCannon object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/heavycannon.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(HeavyCannon object) {
+	public ResourceLocation getTextureResource(HeavyCannon object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/items/heavycannon.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(HeavyCannon animatable) {
+	public ResourceLocation getAnimationResource(HeavyCannon animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/heavycannon.animation.json");
 	}
 }

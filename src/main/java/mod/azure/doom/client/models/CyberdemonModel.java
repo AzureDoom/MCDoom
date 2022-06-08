@@ -21,17 +21,17 @@ public class CyberdemonModel extends AnimatedTickingGeoModel<CyberdemonEntity> {
 	public ResourceLocation tyrant_animation = new ResourceLocation(DoomMod.MODID, "animations/tyrant.animation.json");
 
 	@Override
-	public ResourceLocation getModelLocation(CyberdemonEntity object) {
+	public ResourceLocation getModelResource(CyberdemonEntity object) {
 		return object.getVariant() == 2 ? c2016_model : object.getVariant() == 3 ? tyrant_model : classic_model;
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(CyberdemonEntity object) {
+	public ResourceLocation getTextureResource(CyberdemonEntity object) {
 		return object.getVariant() == 2 ? c2016_texture : object.getVariant() == 3 ? tyrant_texture : classic_texture;
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(CyberdemonEntity object) {
+	public ResourceLocation getAnimationResource(CyberdemonEntity object) {
 		return object.getVariant() == 2 ? c2016_animation
 				: object.getVariant() == 3 ? tyrant_animation : classic_animation;
 	}

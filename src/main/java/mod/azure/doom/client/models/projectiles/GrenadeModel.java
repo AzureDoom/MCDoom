@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class GrenadeModel extends AnimatedGeoModel<GrenadeEntity> {
 	@Override
-	public ResourceLocation getModelLocation(GrenadeEntity object) {
+	public ResourceLocation getModelResource(GrenadeEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/doomed_grenade.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(GrenadeEntity object) {
+	public ResourceLocation getTextureResource(GrenadeEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/items/doomed_grenade.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(GrenadeEntity animatable) {
+	public ResourceLocation getAnimationResource(GrenadeEntity animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/doomed_grenade.animation.json");
 	}
 }

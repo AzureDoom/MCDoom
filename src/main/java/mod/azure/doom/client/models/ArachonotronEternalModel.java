@@ -8,17 +8,17 @@ import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 public class ArachonotronEternalModel extends AnimatedTickingGeoModel<ArachnotronEntity> {
 
 	@Override
-	public ResourceLocation getModelLocation(ArachnotronEntity object) {
+	public ResourceLocation getModelResource(ArachnotronEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/arachonotroneternal.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(ArachnotronEntity object) {
+	public ResourceLocation getTextureResource(ArachnotronEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/arachonotroneternal.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(ArachnotronEntity object) {
+	public ResourceLocation getAnimationResource(ArachnotronEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/arachonotroneternal.animation.json");
 	}
 

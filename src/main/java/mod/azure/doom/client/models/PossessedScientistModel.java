@@ -14,17 +14,17 @@ public class PossessedScientistModel extends AnimatedTickingGeoModel<PossessedSc
 	}
 
 	@Override
-	public ResourceLocation getModelLocation(PossessedScientistEntity object) {
+	public ResourceLocation getModelResource(PossessedScientistEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/scientistpossessed.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(PossessedScientistEntity object) {
+	public ResourceLocation getTextureResource(PossessedScientistEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/possessedscientist.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(PossessedScientistEntity object) {
+	public ResourceLocation getAnimationResource(PossessedScientistEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/possessed_scientist_animation.json");
 	}
 

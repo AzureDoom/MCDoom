@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[37,)"
+loaderVersion="[41,)"
 license="CC-BY-NC-4.0"
 [[mods]]
 modId="doom"

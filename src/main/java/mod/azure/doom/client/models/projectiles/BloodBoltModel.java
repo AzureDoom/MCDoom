@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class BloodBoltModel extends AnimatedGeoModel<BloodBoltEntity> {
 	@Override
-	public ResourceLocation getModelLocation(BloodBoltEntity object) {
+	public ResourceLocation getModelResource(BloodBoltEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/bloodbolt.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(BloodBoltEntity object) {
+	public ResourceLocation getTextureResource(BloodBoltEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/projectiles/bloodbolt.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(BloodBoltEntity animatable) {
+	public ResourceLocation getAnimationResource(BloodBoltEntity animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/bloodbolt.animation.json");
 	}
 }

@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class SantaModel extends AnimatedGeoModel<SantaDoomArmor> {
 	@Override
-	public ResourceLocation getModelLocation(SantaDoomArmor object) {
+	public ResourceLocation getModelResource(SantaDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/santaarmor.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(SantaDoomArmor object) {
+	public ResourceLocation getTextureResource(SantaDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/models/armor/santa_armor_layer_1.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(SantaDoomArmor animatable) {
+	public ResourceLocation getAnimationResource(SantaDoomArmor animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/armor_animation.json");
 	}
 }

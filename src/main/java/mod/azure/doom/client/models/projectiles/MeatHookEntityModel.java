@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class MeatHookEntityModel extends AnimatedGeoModel<MeatHookEntity> {
 	@Override
-	public ResourceLocation getModelLocation(MeatHookEntity object) {
+	public ResourceLocation getModelResource(MeatHookEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/archvilefiring.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(MeatHookEntity object) {
+	public ResourceLocation getTextureResource(MeatHookEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/items/supershotgun.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(MeatHookEntity animatable) {
+	public ResourceLocation getAnimationResource(MeatHookEntity animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/chainblade.animation.json");
 	}
 }

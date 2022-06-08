@@ -34,17 +34,17 @@ public class LostSoulModel extends AnimatedTickingGeoModel<LostSoulEntity> {
 			new ResourceLocation(DoomMod.MODID, "textures/entity/lost_soul_green_fire_8.png") };
 
 	@Override
-	public ResourceLocation getModelLocation(LostSoulEntity object) {
+	public ResourceLocation getModelResource(LostSoulEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/lostsoul.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(LostSoulEntity object) {
+	public ResourceLocation getTextureResource(LostSoulEntity object) {
 		return object.getVariant() == 2 ? TEX1[(object.getFlameTimer())] : TEX[(object.getFlameTimer())];
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(LostSoulEntity object) {
+	public ResourceLocation getAnimationResource(LostSoulEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/lostsoul_animation.json");
 	}
 

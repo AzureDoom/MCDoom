@@ -18,7 +18,6 @@ import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -120,11 +119,11 @@ public class SwordCrucibleItem extends Item implements IAnimatable, ISyncable {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(new TranslatableComponent("doom.crucible_sword.text").withStyle(ChatFormatting.RED)
+		tooltip.add(Component.translatable("doom.crucible_sword.text").withStyle(ChatFormatting.RED)
 				.withStyle(ChatFormatting.ITALIC));
-		tooltip.add(new TranslatableComponent(
+		tooltip.add(Component.translatable(
 				"Ammo: " + (stack.getMaxDamage() - stack.getDamageValue() - 1) + " / " + (stack.getMaxDamage() - 1))
-						.withStyle(ChatFormatting.ITALIC));
+				.withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 

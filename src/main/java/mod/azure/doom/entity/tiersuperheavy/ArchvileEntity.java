@@ -444,10 +444,11 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable, IAnimati
 		return d1 > 1.0D - 0.025D / d0 ? player.hasLineOfSight(this) : false;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void customServerAiStep() {
 		if (this.level.isDay() && this.tickCount >= this.targetChangeTime + 600) {
-			float f = this.getBrightness();
+			float f = this.getLightLevelDependentMagicValue();
 			if (f > 0.5F && this.level.canSeeSky(this.blockPosition())
 					&& this.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
 				this.setTarget((LivingEntity) null);

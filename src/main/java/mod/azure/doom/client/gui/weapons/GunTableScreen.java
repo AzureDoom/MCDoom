@@ -12,8 +12,8 @@ import mod.azure.doom.util.packets.DoomPacketHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
@@ -205,7 +205,7 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 		final int index;
 
 		public RecipeButton(int x, int y, int index, Button.OnPress onPress) {
-			super(x, y, 112, 20, TextComponent.EMPTY, onPress);
+			super(x, y, 112, 20, CommonComponents.EMPTY, onPress);
 			this.index = index;
 			this.visible = false;
 		}

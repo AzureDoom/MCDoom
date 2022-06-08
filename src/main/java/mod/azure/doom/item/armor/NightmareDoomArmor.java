@@ -9,7 +9,6 @@ import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -41,7 +40,7 @@ public class NightmareDoomArmor extends GeoArmorItem implements IAnimatable {
 	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(
-				new AnimationController<NightmareDoomArmor>(this, "controller", 20, this::predicate));
+				new AnimationController<>(this, "controller", 20, this::predicate));
 	}
 
 	private <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
@@ -70,7 +69,7 @@ public class NightmareDoomArmor extends GeoArmorItem implements IAnimatable {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(new TranslatableComponent("doom.nightmarearmor.text").withStyle(ChatFormatting.YELLOW)
+		tooltip.add(Component.translatable("doom.nightmarearmor.text").withStyle(ChatFormatting.YELLOW)
 				.withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}

@@ -11,17 +11,17 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 public class ProwlerModel extends AnimatedTickingGeoModel<ProwlerEntity> {
 
 	@Override
-	public ResourceLocation getModelLocation(ProwlerEntity object) {
+	public ResourceLocation getModelResource(ProwlerEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/prowler.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(ProwlerEntity object) {
+	public ResourceLocation getTextureResource(ProwlerEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/prowler.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(ProwlerEntity object) {
+	public ResourceLocation getAnimationResource(ProwlerEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/imp2016.animation.json");
 	}
 

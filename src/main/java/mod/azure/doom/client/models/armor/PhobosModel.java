@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class PhobosModel extends AnimatedGeoModel<PhobosDoomArmor> {
 	@Override
-	public ResourceLocation getModelLocation(PhobosDoomArmor object) {
+	public ResourceLocation getModelResource(PhobosDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/doomarmor.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(PhobosDoomArmor object) {
+	public ResourceLocation getTextureResource(PhobosDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/models/armor/phobos_armor_layer_1.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(PhobosDoomArmor animatable) {
+	public ResourceLocation getAnimationResource(PhobosDoomArmor animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/armor_animation.json");
 	}
 }

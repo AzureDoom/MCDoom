@@ -18,13 +18,13 @@ public class ArchvileModel extends AnimatedTickingGeoModel<ArchvileEntity> {
 			new ResourceLocation(DoomMod.MODID, "textures/entity/archvile_flame_8.png") };
 
 	@Override
-	public ResourceLocation getModelLocation(ArchvileEntity object) {
+	public ResourceLocation getModelResource(ArchvileEntity object) {
 		return new ResourceLocation(DoomMod.MODID,
 				"geo/" + (object.getVariant() == 1 ? "archvile" : "archvileeternal") + ".geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(ArchvileEntity object) {
+	public ResourceLocation getTextureResource(ArchvileEntity object) {
 		return (object.getVariant() == 1
 				? (object.getAttckingState() == 1 ? TEX[(object.getFlameTimer())]
 						: new ResourceLocation(DoomMod.MODID, "textures/entity/archvile.png"))
@@ -32,7 +32,7 @@ public class ArchvileModel extends AnimatedTickingGeoModel<ArchvileEntity> {
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(ArchvileEntity object) {
+	public ResourceLocation getAnimationResource(ArchvileEntity object) {
 		return new ResourceLocation(DoomMod.MODID,
 				"animations/" + (object.getVariant() == 1 ? "archvile_" : "archvileeternal.") + "animation.json");
 	}

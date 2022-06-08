@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class ClassicBronzeModel extends AnimatedGeoModel<ClassicBronzeDoomArmor> {
 	@Override
-	public ResourceLocation getModelLocation(ClassicBronzeDoomArmor object) {
+	public ResourceLocation getModelResource(ClassicBronzeDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/classicarmor.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(ClassicBronzeDoomArmor object) {
+	public ResourceLocation getTextureResource(ClassicBronzeDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/models/armor/classic_bronze_armor_layer_1.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(ClassicBronzeDoomArmor animatable) {
+	public ResourceLocation getAnimationResource(ClassicBronzeDoomArmor animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/armor_animation.json");
 	}
 }

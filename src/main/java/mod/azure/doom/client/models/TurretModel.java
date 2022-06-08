@@ -11,17 +11,17 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 public class TurretModel extends AnimatedTickingGeoModel<TurretEntity> {
 
 	@Override
-	public ResourceLocation getModelLocation(TurretEntity object) {
+	public ResourceLocation getModelResource(TurretEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/turret.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(TurretEntity object) {
+	public ResourceLocation getTextureResource(TurretEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/turret.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(TurretEntity object) {
+	public ResourceLocation getAnimationResource(TurretEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/turret.animation.json");
 	}
 

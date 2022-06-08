@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class SwordCrucibleModel extends AnimatedGeoModel<SwordCrucibleItem> {
 	@Override
-	public ResourceLocation getModelLocation(SwordCrucibleItem object) {
+	public ResourceLocation getModelResource(SwordCrucibleItem object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/cruciblesword.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(SwordCrucibleItem object) {
+	public ResourceLocation getTextureResource(SwordCrucibleItem object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/items/crucible.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(SwordCrucibleItem animatable) {
+	public ResourceLocation getAnimationResource(SwordCrucibleItem animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/cruciblesword.animation.json");
 	}
 }

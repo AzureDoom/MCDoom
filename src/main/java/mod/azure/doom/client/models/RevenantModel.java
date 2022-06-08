@@ -14,17 +14,17 @@ public class RevenantModel extends AnimatedTickingGeoModel<RevenantEntity> {
 	}
 
 	@Override
-	public ResourceLocation getModelLocation(RevenantEntity object) {
+	public ResourceLocation getModelResource(RevenantEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/revenant.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(RevenantEntity object) {
+	public ResourceLocation getTextureResource(RevenantEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_nojetpack.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(RevenantEntity object) {
+	public ResourceLocation getAnimationResource(RevenantEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/revenant.animation.json");
 	}
 

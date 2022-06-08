@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class DemonicModel extends AnimatedGeoModel<DemonicDoomArmor> {
 	@Override
-	public ResourceLocation getModelLocation(DemonicDoomArmor object) {
+	public ResourceLocation getModelResource(DemonicDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/doom1armor.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(DemonicDoomArmor object) {
+	public ResourceLocation getTextureResource(DemonicDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/models/armor/demonic_armor_layer_1.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(DemonicDoomArmor animatable) {
+	public ResourceLocation getAnimationResource(DemonicDoomArmor animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/armor_animation.json");
 	}
 }

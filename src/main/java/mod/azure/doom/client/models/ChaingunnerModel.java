@@ -14,17 +14,17 @@ public class ChaingunnerModel extends AnimatedTickingGeoModel<ChaingunnerEntity>
 	}
 
 	@Override
-	public ResourceLocation getModelLocation(ChaingunnerEntity object) {
+	public ResourceLocation getModelResource(ChaingunnerEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/shotgunzombie.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(ChaingunnerEntity object) {
+	public ResourceLocation getTextureResource(ChaingunnerEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/entity/chaingunner.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(ChaingunnerEntity object) {
+	public ResourceLocation getAnimationResource(ChaingunnerEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/chaingunner.animation.json");
 	}
 

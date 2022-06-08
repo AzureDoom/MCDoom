@@ -164,11 +164,6 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 		return 1.74F;
 	}
 
-	@Override
-	protected int getExperienceReward(Player player) {
-		return super.getExperienceReward(player);
-	}
-
 	protected boolean shouldDrown() {
 		return false;
 	}

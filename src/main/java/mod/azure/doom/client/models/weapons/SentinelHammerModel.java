@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class SentinelHammerModel extends AnimatedGeoModel<SentinelHammerItem> {
 	@Override
-	public ResourceLocation getModelLocation(SentinelHammerItem object) {
+	public ResourceLocation getModelResource(SentinelHammerItem object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/sentinelhammer.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(SentinelHammerItem object) {
+	public ResourceLocation getTextureResource(SentinelHammerItem object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/items/sentinel_hammer.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(SentinelHammerItem animatable) {
+	public ResourceLocation getAnimationResource(SentinelHammerItem animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/sentinelhammer.animation.json");
 	}
 }

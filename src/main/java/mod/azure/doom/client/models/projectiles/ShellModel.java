@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class ShellModel extends AnimatedGeoModel<ShotgunShellEntity> {
 	@Override
-	public ResourceLocation getModelLocation(ShotgunShellEntity object) {
+	public ResourceLocation getModelResource(ShotgunShellEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/shell.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(ShotgunShellEntity object) {
+	public ResourceLocation getTextureResource(ShotgunShellEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/items/shell.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(ShotgunShellEntity animatable) {
+	public ResourceLocation getAnimationResource(ShotgunShellEntity animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/empty.animation.json");
 	}
 }

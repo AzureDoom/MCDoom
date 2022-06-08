@@ -2,20 +2,19 @@ package mod.azure.doom.entity.tileentity;
 
 import mod.azure.doom.client.gui.weapons.GunTableScreenHandler;
 import mod.azure.doom.util.registry.ModEntityTypes;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -38,7 +37,7 @@ public class GunBlockEntity extends BlockEntity implements ImplementedInventory,
 	public GunBlockEntity(BlockPos pos, BlockState state) {
 		super(ModEntityTypes.GUN_TABLE_ENTITY.get(), pos, state);
 	}
-	
+
 	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController<GunBlockEntity>(this, "controller", 0, this::predicate));
@@ -56,14 +55,14 @@ public class GunBlockEntity extends BlockEntity implements ImplementedInventory,
 
 	@Override
 	public Component getDisplayName() {
-		return new TranslatableComponent("block.doom.gun_table");
+		return Component.translatable("block.doom.gun_table");
 	}
 
 	@Override
 	public NonNullList<ItemStack> getItems() {
 		return items;
 	}
-	
+
 	@Override
 	public void load(CompoundTag tag) {
 		super.load(tag);

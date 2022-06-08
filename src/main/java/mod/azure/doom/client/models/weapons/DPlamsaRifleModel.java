@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class DPlamsaRifleModel extends AnimatedGeoModel<DPlasmaRifle> {
 	@Override
-	public ResourceLocation getModelLocation(DPlasmaRifle object) {
+	public ResourceLocation getModelResource(DPlasmaRifle object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/doomed_plasma_rifle.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(DPlasmaRifle object) {
+	public ResourceLocation getTextureResource(DPlasmaRifle object) {
 		return new ResourceLocation(DoomMod.MODID, "textures/items/doomed_plasma_rifle.png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(DPlasmaRifle animatable) {
+	public ResourceLocation getAnimationResource(DPlasmaRifle animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/doomed_plasma_rifle.animation.json");
 	}
 }

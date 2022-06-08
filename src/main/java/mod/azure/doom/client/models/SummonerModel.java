@@ -8,18 +8,18 @@ import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 public class SummonerModel extends AnimatedTickingGeoModel<SummonerEntity> {
 
 	@Override
-	public ResourceLocation getModelLocation(SummonerEntity object) {
+	public ResourceLocation getModelResource(SummonerEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/summoner.geo.json");
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(SummonerEntity object) {
+	public ResourceLocation getTextureResource(SummonerEntity object) {
 		return new ResourceLocation(DoomMod.MODID,
 				"textures/entity/" + (object.getVariant() == 2 ? "summoner_red" : "summoner") + ".png");
 	}
 
 	@Override
-	public ResourceLocation getAnimationFileLocation(SummonerEntity object) {
+	public ResourceLocation getAnimationResource(SummonerEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/summoner.animation.json");
 	}
 

@@ -212,11 +212,6 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable, IAnima
 		return spawnDataIn;
 	}
 
-	@Override
-	protected int getExperienceReward(Player player) {
-		return super.getExperienceReward(player);
-	}
-
 	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
 		return 6.55F;
 	}
