@@ -204,11 +204,6 @@ public class MeatHookEntity extends AbstractArrow implements IAnimatable {
 		}
 	}
 
-//	@Override
-//	public Packet<?> getAddEntityPacket() {
-//		return NetworkHooks.getEntitySpawningPacket(this);
-//	}
-
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag) {
 		super.readAdditionalSaveData(tag);

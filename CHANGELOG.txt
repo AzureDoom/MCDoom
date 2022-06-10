@@ -1,6 +1,6 @@
-v.4.2.0b
+v.4.2.0c
 
-- REI support is readded.
+- Fix Unwilling spawning.
 
 Currently loading a world with world generation datapacks requires a work around to get working. 
 	- When creating the world, simply select Datapacks and unload any random datapack such as Geckolibs.

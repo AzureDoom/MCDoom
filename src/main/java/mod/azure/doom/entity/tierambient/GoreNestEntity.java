@@ -140,10 +140,10 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 		List<EntityType<?>> givenList = Arrays.asList(DoomEntities.HELLKNIGHT.get(),
 				DoomEntities.POSSESSEDSCIENTIST.get(), DoomEntities.IMP.get(), DoomEntities.PINKY.get(),
 				DoomEntities.CACODEMON.get(), DoomEntities.CHAINGUNNER.get(), DoomEntities.GARGOYLE.get(),
-				DoomEntities.HELLKNIGHT2016.get(), DoomEntities.LOST_SOUL.get(),
-				DoomEntities.POSSESSEDSOLDIER.get(), DoomEntities.SHOTGUNGUY.get(), DoomEntities.UNWILLING.get(),
-				DoomEntities.ZOMBIEMAN.get(), DoomEntities.ARACHNOTRON.get(), DoomEntities.ARCHVILE.get(),
-				DoomEntities.MECHAZOMBIE.get(), DoomEntities.PAIN.get(), DoomEntities.MANCUBUS.get());
+				DoomEntities.HELLKNIGHT2016.get(), DoomEntities.LOST_SOUL.get(), DoomEntities.POSSESSEDSOLDIER.get(),
+				DoomEntities.SHOTGUNGUY.get(), DoomEntities.UNWILLING.get(), DoomEntities.ZOMBIEMAN.get(),
+				DoomEntities.ARACHNOTRON.get(), DoomEntities.ARCHVILE.get(), DoomEntities.MECHAZOMBIE.get(),
+				DoomEntities.PAIN.get(), DoomEntities.MANCUBUS.get());
 
 		SplittableRandom random = new SplittableRandom();
 		int r = random.nextInt(-3, 3);

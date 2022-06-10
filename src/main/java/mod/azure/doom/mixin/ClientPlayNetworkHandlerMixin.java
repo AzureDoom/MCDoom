@@ -39,9 +39,9 @@ public class ClientPlayNetworkHandlerMixin {
 
 			int id = packet.getId();
 			entity.syncPacketPositionCodec(x, y, z);
-			entity.moveTo(x, y, z);
-			entity.setXRot((float) (packet.getXRot() * 360) / 256f);
-			entity.setYRot((float) (packet.getYRot() * 360) / 256f);
+			entity.absMoveTo(x, y, z);
+			entity.setYHeadRot((float) (packet.getXRot() * 360) / 256f);
+			entity.setYBodyRot((float) (packet.getYRot() * 360) / 256f);
 			entity.setId(id);
 			entity.setUUID(packet.getUUID());
 			level.addEntity(id, entity);
