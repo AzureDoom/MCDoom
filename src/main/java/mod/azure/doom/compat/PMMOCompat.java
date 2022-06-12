@@ -1,9 +1,7 @@
 package mod.azure.doom.compat;
 
 import harmonised.pmmo.api.APIUtils;
-import harmonised.pmmo.config.JType;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
 
 public class PMMOCompat {
 
@@ -27,8 +25,8 @@ public class PMMOCompat {
 		APIUtils.awardXpTrigger(player.getUUID(), "doomweapon.consume.soul", null, true, true);
 	}
 
-	public static void awardCrafting(ItemStack itemStack) {
-		APIUtils.getXp(itemStack, JType.XP_VALUE_CRAFT);
+	public static void awardCrafting(ServerPlayer player) {
+		APIUtils.awardXpTrigger(player.getUUID(), "doomweapon.craft.guntable", null, true, true);
 	}
 
 }

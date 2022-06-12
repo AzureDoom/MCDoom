@@ -6,6 +6,7 @@ import mod.azure.doom.compat.PMMOCompat;
 import mod.azure.doom.recipes.GunTableRecipe;
 import mod.azure.doom.recipes.GunTableRecipe.Type;
 import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -73,8 +74,8 @@ public class GunTableOutputSlot extends Slot {
 				}
 			}
 		}
-		if (ModList.get().isLoaded("pmmo")) {
-			PMMOCompat.awardCrafting(stack);
+		if (ModList.get().isLoaded("pmmo") && !player.getCommandSenderWorld().isClientSide()) {
+			PMMOCompat.awardCrafting((ServerPlayer) player);
 		}
 		this.setChanged();
 	}
