@@ -2,12 +2,14 @@ package mod.azure.doom.client.gui.weapons;
 
 import java.util.Optional;
 
+import mod.azure.doom.compat.PMMOCompat;
 import mod.azure.doom.recipes.GunTableRecipe;
 import mod.azure.doom.recipes.GunTableRecipe.Type;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fml.ModList;
 
 public class GunTableOutputSlot extends Slot {
 	private final DoomGunInventory gunTableInventory;
@@ -44,8 +46,8 @@ public class GunTableOutputSlot extends Slot {
 
 	public void onTake(Player player, ItemStack stack) {
 		this.checkTakeAchievements(stack);
-		Optional<GunTableRecipe> optionalGunTableRecipe = player.level.getRecipeManager()
-				.getRecipeFor(Type.INSTANCE, gunTableInventory, player.level);
+		Optional<GunTableRecipe> optionalGunTableRecipe = player.level.getRecipeManager().getRecipeFor(Type.INSTANCE,
+				gunTableInventory, player.level);
 		if (optionalGunTableRecipe.isPresent()) {
 			GunTableRecipe gunTableRecipe = optionalGunTableRecipe.get();
 			NonNullList<ItemStack> NonNullList = gunTableRecipe.getRemainingItems(gunTableInventory);
@@ -71,9 +73,9 @@ public class GunTableOutputSlot extends Slot {
 				}
 			}
 		}
-//		if (ModList.get().isLoaded("pmmo")) {
-//			PMMOCompat.awardCrafting(stack);
-//		}
+		if (ModList.get().isLoaded("pmmo")) {
+			PMMOCompat.awardCrafting(stack);
+		}
 		this.setChanged();
 	}
 }
