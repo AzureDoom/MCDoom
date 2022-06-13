@@ -297,7 +297,16 @@ public class DoomConfig extends CustomMidnightConfig {
 	@Entry
 	public static int tentacle_min_group = 1;
 	@Entry
-	public static int tentacle_max_group = 1;
+	public static int tentacle_max_group = 4;
+
+	@Entry
+	public static List<String> turret_biomes = Arrays.asList("#nether");
+	@Entry
+	public static int turret_spawn_weight = 4;
+	@Entry
+	public static int turret_min_group = 1;
+	@Entry
+	public static int turret_max_group = 4;
 
 	@Entry
 	public static List<String> spider_mastermind_biomes = Arrays.asList("#nether");

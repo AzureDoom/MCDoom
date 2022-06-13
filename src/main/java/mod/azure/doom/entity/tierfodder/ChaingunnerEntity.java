@@ -9,7 +9,7 @@ import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
 import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
@@ -105,13 +105,13 @@ public class ChaingunnerEntity extends DemonEntity implements IAnimatable, IAnim
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
-				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
-				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PISTOL_HIT,
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PISTOL_HIT,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
@@ -136,7 +136,7 @@ public class ChaingunnerEntity extends DemonEntity implements IAnimatable, IAnim
 				new RangedAttackGoal(this,
 						new RangedAttack(this).setProjectileOriginOffset(0.8, 0.4, 0.8)
 								.setDamage(DoomConfig.chaingun_bullet_damage)
-								.setSound(ModSoundEvents.CHAINGUN_SHOOT, 1.0F, 1.0F),
+								.setSound(DoomSounds.CHAINGUN_SHOOT, 1.0F, 1.0F),
 						1.1D));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 		this.targetSelector.add(2, new TargetGoal<>(this, PlayerEntity.class, true));
@@ -156,7 +156,7 @@ public class ChaingunnerEntity extends DemonEntity implements IAnimatable, IAnim
 
 		@Override
 		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(ModSoundEvents.CHAINGUN_SHOOT, 1, 1);
+			return new AttackSound(DoomSounds.CHAINGUN_SHOOT, 1, 1);
 		}
 
 		@Override
@@ -179,12 +179,12 @@ public class ChaingunnerEntity extends DemonEntity implements IAnimatable, IAnim
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.ZOMBIEMAN_HURT;
+		return DoomSounds.ZOMBIEMAN_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.ZOMBIEMAN_DEATH;
+		return DoomSounds.ZOMBIEMAN_DEATH;
 	}
 
 }

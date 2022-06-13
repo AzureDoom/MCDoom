@@ -10,7 +10,7 @@ import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.UnmaykrBoltEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
@@ -23,8 +23,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import software.bernie.geckolib3q.network.GeckoLibNetwork;
-import software.bernie.geckolib3q.util.GeckoLibUtil;
+import software.bernie.geckolib3.network.GeckoLibNetwork;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class Unmaykr extends DoomBaseItem {
 
@@ -66,7 +66,7 @@ public class Unmaykr extends DoomBaseItem {
 					worldIn.spawnEntity(abstractarrowentity2);
 					worldIn.spawnEntity(abstractarrowentity);
 					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
-							playerentity.getZ(), ModSoundEvents.UNMAKYR_FIRE, SoundCategory.PLAYERS, 1.0F,
+							playerentity.getZ(), DoomSounds.UNMAKYR_FIRE, SoundCategory.PLAYERS, 1.0F,
 							1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
 					if (!worldIn.isClient) {
 						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);

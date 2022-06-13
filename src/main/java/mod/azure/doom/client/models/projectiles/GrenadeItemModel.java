@@ -3,7 +3,7 @@ package mod.azure.doom.client.models.projectiles;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.GrenadeItem;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3q.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class GrenadeItemModel extends AnimatedGeoModel<GrenadeItem> {
 	@Override

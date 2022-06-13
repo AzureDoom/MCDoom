@@ -16,9 +16,14 @@
 		"requirement": {
 			"trigger": "minecraft:location",
 			"conditions": {
-				"location": {
-					"feature": "doom:icon_fight"
-				}
+				"player": [
+					{
+						"condition": "minecraft:location_check",
+						"predicate": {
+							"structure": "doom:icon_fight"
+						}
+					}
+				]
 			}
 		}
 	}

@@ -3,7 +3,7 @@ package mod.azure.doom.client.models.armor;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.armor.HotrodDoomArmor;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3q.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class HotrodModel extends AnimatedGeoModel<HotrodDoomArmor> {
 	@Override

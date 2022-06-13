@@ -3,7 +3,7 @@ package mod.azure.doom.client.models.armor;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.armor.MidnightDoomArmor;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3q.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class MidnightModel extends AnimatedGeoModel<MidnightDoomArmor> {
 	@Override

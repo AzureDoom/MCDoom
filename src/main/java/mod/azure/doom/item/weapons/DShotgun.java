@@ -12,7 +12,7 @@ import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -25,12 +25,11 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import software.bernie.geckolib3q.network.GeckoLibNetwork;
-import software.bernie.geckolib3q.util.GeckoLibUtil;
+import software.bernie.geckolib3.network.GeckoLibNetwork;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class DShotgun extends DoomBaseItem {
 
@@ -56,7 +55,7 @@ public class DShotgun extends DoomBaseItem {
 					stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
 					worldIn.spawnEntity(abstractarrowentity);
 					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
-							playerentity.getZ(), ModSoundEvents.SHOTGUN_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.5F);
+							playerentity.getZ(), DoomSounds.SHOTGUN_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.5F);
 					if (!worldIn.isClient) {
 						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);
 						GeckoLibNetwork.syncAnimation(playerentity, this, id, ANIM_OPEN);
@@ -69,7 +68,7 @@ public class DShotgun extends DoomBaseItem {
 				}
 			} else {
 				worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-						ModSoundEvents.EMPTY, SoundCategory.PLAYERS, 1.0F, 1.5F);
+						DoomSounds.EMPTY, SoundCategory.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}
@@ -82,7 +81,7 @@ public class DShotgun extends DoomBaseItem {
 				user.getStackInHand(hand).damage(-4, user, s -> user.sendToolBreakStatus(hand));
 				user.getStackInHand(hand).setCooldown(3);
 				user.getWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
-						ModSoundEvents.SHOTGUNRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
+						DoomSounds.SHOTGUNRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
 			}
 		}
 	}
@@ -110,9 +109,9 @@ public class DShotgun extends DoomBaseItem {
 	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
 		super.appendTooltip(stack, world, tooltip, context);
 		tooltip.add(
-				new TranslatableText("doom.doomed_credit.text").formatted(Formatting.RED).formatted(Formatting.ITALIC));
-		tooltip.add(new TranslatableText("doom.doomed_credit1.text").formatted(Formatting.RED)
-				.formatted(Formatting.ITALIC));
+				Text.translatable("doom.doomed_credit.text").formatted(Formatting.RED).formatted(Formatting.ITALIC));
+		tooltip.add(
+				Text.translatable("doom.doomed_credit1.text").formatted(Formatting.RED).formatted(Formatting.ITALIC));
 	}
 
 }

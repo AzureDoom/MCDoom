@@ -7,7 +7,7 @@ import mod.azure.doom.entity.tileentity.TickingLightEntity;
 import mod.azure.doom.network.EntityPacket;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -226,7 +226,7 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 
 	@Override
 	protected SoundEvent getHitSound() {
-		return ModSoundEvents.ROCKET_HIT;
+		return DoomSounds.ROCKET_HIT;
 	}
 
 	@Override
@@ -250,7 +250,7 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 			this.doDamage();
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
-		this.setSound(ModSoundEvents.ROCKET_HIT);
+		this.setSound(DoomSounds.ROCKET_HIT);
 	}
 
 	@Override

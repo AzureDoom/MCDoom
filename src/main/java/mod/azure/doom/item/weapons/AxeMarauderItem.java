@@ -20,7 +20,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
@@ -46,11 +45,11 @@ public class AxeMarauderItem extends AxeItem {
 	@Override
 	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
 		tooltip.add(
-				new TranslatableText("doom.marauder_axe1.text").formatted(Formatting.RED).formatted(Formatting.ITALIC));
+				Text.translatable("doom.marauder_axe1.text").formatted(Formatting.RED).formatted(Formatting.ITALIC));
 		tooltip.add(
-				new TranslatableText("doom.marauder_axe2.text").formatted(Formatting.RED).formatted(Formatting.ITALIC));
+				Text.translatable("doom.marauder_axe2.text").formatted(Formatting.RED).formatted(Formatting.ITALIC));
 		tooltip.add(
-				new TranslatableText("doom.marauder_axe3.text").formatted(Formatting.RED).formatted(Formatting.ITALIC));
+				Text.translatable("doom.marauder_axe3.text").formatted(Formatting.RED).formatted(Formatting.ITALIC));
 		super.appendTooltip(stack, world, tooltip, context);
 	}
 

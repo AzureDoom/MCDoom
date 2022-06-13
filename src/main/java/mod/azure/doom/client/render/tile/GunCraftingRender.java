@@ -1,26 +1,27 @@
 package mod.azure.doom.client.render.tile;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import mod.azure.doom.client.models.tile.GunCraftingModel;
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.model.json.ModelTransformation.Mode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
-import software.bernie.geckolib3q.geo.render.built.GeoBone;
-import software.bernie.geckolib3q.renderers.geo.GeoBlockRenderer;
+import software.bernie.geckolib3.geo.render.built.GeoBone;
+import software.bernie.geckolib3.renderers.geo.GeoBlockRenderer;
 
 public class GunCraftingRender extends GeoBlockRenderer<GunBlockEntity> {
 
 	private static final ItemStack gun = new ItemStack(DoomItems.PISTOL);
 	private VertexConsumerProvider rtb;
 	private Identifier whTexture;
-	
+
 	public GunCraftingRender() {
 		super(new GunCraftingModel());
 	}

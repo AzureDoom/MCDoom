@@ -1,7 +1,6 @@
 package mod.azure.doom.entity.tierfodder;
 
 import java.util.EnumSet;
-import java.util.Random;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -10,7 +9,7 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.tierheavy.PainEntity;
 import mod.azure.doom.network.EntityPacket;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityData;
@@ -43,6 +42,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -227,7 +227,7 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 	}
 
 	public static boolean canSpawn(EntityType<PainEntity> type, WorldAccess world, SpawnReason spawnReason,
-			BlockPos pos, Random random) {
+			BlockPos pos, RandomGenerator random) {
 		return world.getDifficulty() != Difficulty.PEACEFUL && random.nextInt(20) == 0
 				&& canMobSpawn(type, world, spawnReason, pos, random);
 	}
@@ -324,7 +324,7 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 			Vec3d vec3d = livingEntity.getCameraPosVec(1.0F);
 			LostSoulEntity.this.moveControl.moveTo(vec3d.x, vec3d.y, vec3d.z, 4.0D);
 			LostSoulEntity.this.setCharging(true);
-			LostSoulEntity.this.playSound(ModSoundEvents.LOST_SOUL_AMBIENT, 1.0F, 1.0F);
+			LostSoulEntity.this.playSound(DoomSounds.LOST_SOUL_AMBIENT, 1.0F, 1.0F);
 			this.attackTimer = 0;
 		}
 
@@ -359,12 +359,12 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.LOST_SOUL_DEATH;
+		return DoomSounds.LOST_SOUL_DEATH;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.LOST_SOUL_DEATH;
+		return DoomSounds.LOST_SOUL_DEATH;
 	}
 
 	@Override

@@ -1,16 +1,17 @@
 package mod.azure.doom.client.render;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import mod.azure.doom.client.models.DreadknightModel;
 import mod.azure.doom.entity.tierheavy.Hellknight2016Entity;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3q.geo.render.built.GeoBone;
-import software.bernie.geckolib3q.geo.render.built.GeoCube;
-import software.bernie.geckolib3q.renderers.geo.GeoEntityRenderer;
+import software.bernie.geckolib3.geo.render.built.GeoBone;
+import software.bernie.geckolib3.geo.render.built.GeoCube;
+import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public class DreadKnightRender extends GeoEntityRenderer<Hellknight2016Entity> {
 
@@ -24,7 +25,7 @@ public class DreadKnightRender extends GeoEntityRenderer<Hellknight2016Entity> {
 	public RenderLayer getRenderType(Hellknight2016Entity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(this.getTextureLocation(animatable));
 	}
 
 	@Override
@@ -40,7 +41,7 @@ public class DreadKnightRender extends GeoEntityRenderer<Hellknight2016Entity> {
 		for (GeoCube cube : bone.childCubes) {
 			if (bone.getName().equals("leftblade") || bone.getName().equals("rightblade"))
 				renderCube(cube, stack,
-						this.rtb.getBuffer(RenderLayer.getEntityTranslucent(getTextureLocation(animatable))),
+						this.rtb.getBuffer(RenderLayer.getEntityTranslucent(this.getTextureLocation(animatable))),
 						packedLightIn, packedOverlayIn, red, green, blue, 0.3F);
 		}
 		super.renderRecursively(bone, stack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);

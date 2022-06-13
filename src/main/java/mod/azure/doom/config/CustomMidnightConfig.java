@@ -1,6 +1,7 @@
 package mod.azure.doom.config;
 
 import java.awt.Color;
+import java.io.BufferedReader;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -38,17 +39,15 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.ScreenTexts;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
 /**
@@ -57,6 +56,7 @@ import net.minecraft.util.Formatting;
  *
  * Based on https://github.com/Minenash/TinyConfig Credits to Minenash
  */
+
 @SuppressWarnings("unchecked")
 public abstract class CustomMidnightConfig {
 	private static final Pattern INTEGER_ONLY = Pattern.compile("(-?[0-9]*)");
@@ -76,7 +76,7 @@ public abstract class CustomMidnightConfig {
 		String tempValue;
 		boolean inLimits = true;
 		String id;
-		TranslatableText name;
+		Text name;
 		int index;
 		ClickableWidget colorButton;
 	}
@@ -104,8 +104,8 @@ public abstract class CustomMidnightConfig {
 				} catch (IllegalAccessException ignored) {
 				}
 		}
-		try {
-			gson.fromJson(Files.newBufferedReader(path), config);
+		try (BufferedReader reader = Files.newBufferedReader(path)) {
+			gson.fromJson(reader, config);
 		} catch (Exception e) {
 			write(modid);
 		}
@@ -130,7 +130,7 @@ public abstract class CustomMidnightConfig {
 
 		if (e != null) {
 			if (!e.name().equals(""))
-				info.name = new TranslatableText(e.name());
+				info.name = Text.translatable(e.name());
 			if (type == int.class)
 				textField(info, Integer::parseInt, INTEGER_ONLY, (int) e.min(), (int) e.max(), true);
 			else if (type == float.class)
@@ -141,7 +141,7 @@ public abstract class CustomMidnightConfig {
 				info.max = e.max() == Double.MAX_VALUE ? Integer.MAX_VALUE : (int) e.max();
 				textField(info, String::length, null, Math.min(e.min(), 0), Math.max(e.max(), 1), true);
 			} else if (type == boolean.class) {
-				Function<Object, Text> func = value -> new LiteralText((Boolean) value ? "True" : "False")
+				Function<Object, Text> func = value -> Text.literal((Boolean) value ? "True" : "False")
 						.formatted((Boolean) value ? Formatting.GREEN : Formatting.RED);
 				info.widget = new AbstractMap.SimpleEntry<ButtonWidget.PressAction, Function<Object, Text>>(button -> {
 					info.value = !(Boolean) info.value;
@@ -149,7 +149,7 @@ public abstract class CustomMidnightConfig {
 				}, func);
 			} else if (type.isEnum()) {
 				List<?> values = Arrays.asList(field.getType().getEnumConstants());
-				Function<Object, Text> func = value -> new TranslatableText(
+				Function<Object, Text> func = value -> Text.translatable(
 						modid + ".midnightconfig." + "enum." + type.getSimpleName() + "." + info.value.toString());
 				info.widget = new AbstractMap.SimpleEntry<ButtonWidget.PressAction, Function<Object, Text>>(button -> {
 					int index = values.indexOf(info.value) + 1;
@@ -177,7 +177,7 @@ public abstract class CustomMidnightConfig {
 				inLimits = value.doubleValue() >= min && value.doubleValue() <= max;
 				info.error = inLimits ? null
 						: new AbstractMap.SimpleEntry<>(t,
-								new LiteralText(value.doubleValue() < min
+								Text.literal(value.doubleValue() < min
 										? "§cMinimum " + (isNumber ? "value" : "length")
 												+ (cast ? " is " + (int) min : " is " + min)
 										: "§cMaximum " + (isNumber ? "value" : "length")
@@ -204,8 +204,8 @@ public abstract class CustomMidnightConfig {
 				if (!HEXADECIMAL_ONLY.matcher(s).matches())
 					return false;
 				try {
-					info.colorButton.setMessage(new LiteralText("⬛")
-							.setStyle(Style.EMPTY.withColor(Color.decode(info.tempValue).getRGB())));
+					info.colorButton.setMessage(
+							Text.literal("⬛").setStyle(Style.EMPTY.withColor(Color.decode(info.tempValue).getRGB())));
 				} catch (Exception ignored) {
 				}
 			}
@@ -232,7 +232,7 @@ public abstract class CustomMidnightConfig {
 	@Environment(EnvType.CLIENT)
 	private static class MidnightConfigScreen extends Screen {
 		protected MidnightConfigScreen(Screen parent, String modid) {
-			super(new TranslatableText(modid + ".midnightconfig." + "title"));
+			super(Text.translatable(modid + ".midnightconfig." + "title"));
 			this.parent = parent;
 			this.modid = modid;
 			this.translationPrefix = modid + ".midnightconfig.";
@@ -304,10 +304,10 @@ public abstract class CustomMidnightConfig {
 			this.addSelectableChild(this.list);
 			for (EntryInfo info : entries) {
 				if (info.id.equals(modid)) {
-					TranslatableText name = Objects.requireNonNullElseGet(info.name,
-							() -> new TranslatableText(translationPrefix + info.field.getName()));
+					Text name = Objects.requireNonNullElseGet(info.name,
+							() -> Text.translatable(translationPrefix + info.field.getName()));
 					ButtonWidget resetButton = new ButtonWidget(width - 205, 0, 40, 20,
-							new LiteralText("Reset").formatted(Formatting.RED), (button -> {
+							Text.translatable("Reset").formatted(Formatting.RED), (button -> {
 								info.value = info.defaultValue;
 								info.tempValue = info.defaultValue.toString();
 								info.index = 0;
@@ -320,7 +320,7 @@ public abstract class CustomMidnightConfig {
 					if (info.widget instanceof Map.Entry) {
 						Map.Entry<ButtonWidget.PressAction, Function<Object, Text>> widget = (Map.Entry<ButtonWidget.PressAction, Function<Object, Text>>) info.widget;
 						if (info.field.getType().isEnum())
-							widget.setValue(value -> new TranslatableText(translationPrefix + "enum."
+							widget.setValue(value -> Text.translatable(translationPrefix + "enum."
 									+ info.field.getType().getSimpleName() + "." + info.value.toString()));
 						this.list
 								.addButton(
@@ -340,10 +340,10 @@ public abstract class CustomMidnightConfig {
 								.apply(widget, done);
 						widget.setTextPredicate(processor);
 						resetButton.setWidth(20);
-						resetButton.setMessage(new LiteralText("R").formatted(Formatting.RED));
+						resetButton.setMessage(Text.literal("R").formatted(Formatting.RED));
 						ButtonWidget cycleButton = new ButtonWidget(width - 185, 0, 20, 20,
-								new LiteralText(String.valueOf(info.index)).formatted(Formatting.GOLD), (button -> {
-									((List<String>) info.value).remove("");
+								Text.literal(String.valueOf(info.index)).formatted(Formatting.GOLD), (button -> {
+
 									double scrollAmount = list.getScrollAmount();
 									this.reload = true;
 									info.index = info.index + 1;
@@ -362,12 +362,12 @@ public abstract class CustomMidnightConfig {
 						widget.setTextPredicate(processor);
 						if (info.field.getAnnotation(Entry.class).isColor()) {
 							resetButton.setWidth(20);
-							resetButton.setMessage(new LiteralText("R").formatted(Formatting.RED));
-							ButtonWidget colorButton = new ButtonWidget(width - 185, 0, 20, 20, new LiteralText("⬛"),
+							resetButton.setMessage(Text.literal("R").formatted(Formatting.RED));
+							ButtonWidget colorButton = new ButtonWidget(width - 185, 0, 20, 20, Text.literal("⬛"),
 									(button -> {
 									}));
 							try {
-								colorButton.setMessage(new LiteralText("⬛")
+								colorButton.setMessage(Text.literal("⬛")
 										.setStyle(Style.EMPTY.withColor(Color.decode(info.tempValue).getRGB())));
 							} catch (Exception ignored) {
 							}
@@ -394,7 +394,7 @@ public abstract class CustomMidnightConfig {
 					if (list.getHoveredButton(mouseX, mouseY).isPresent()) {
 						ClickableWidget buttonWidget = list.getHoveredButton(mouseX, mouseY).get();
 						Text text = ButtonEntry.buttonsWithText.get(buttonWidget);
-						TranslatableText name = new TranslatableText(this.translationPrefix + info.field.getName());
+						Text name = Text.translatable(this.translationPrefix + info.field.getName());
 						String key = translationPrefix + info.field.getName() + ".tooltip";
 
 						if (info.error != null && text.equals(name))
@@ -402,7 +402,7 @@ public abstract class CustomMidnightConfig {
 						else if (I18n.hasTranslation(key) && text.equals(name)) {
 							List<Text> list = new ArrayList<>();
 							for (String str : I18n.translate(key).split("\n"))
-								list.add(new LiteralText(str));
+								list.add(Text.literal(str));
 							renderTooltip(matrices, list, mouseX, mouseY);
 						}
 					}

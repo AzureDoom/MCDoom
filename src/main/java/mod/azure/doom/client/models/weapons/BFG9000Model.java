@@ -3,7 +3,7 @@ package mod.azure.doom.client.models.weapons;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.BFG9000;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3q.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class BFG9000Model extends AnimatedGeoModel<BFG9000> {
 	@Override

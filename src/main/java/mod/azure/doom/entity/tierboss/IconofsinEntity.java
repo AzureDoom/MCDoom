@@ -11,7 +11,7 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.IconAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
@@ -159,7 +159,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
-				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.CYBERDEMON_STEP,
+				this.getWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.CYBERDEMON_STEP,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, false);
 			}
 		}
@@ -353,17 +353,17 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.ICON_AMBIENT;
+		return DoomSounds.ICON_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.ICON_HURT;
+		return DoomSounds.ICON_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.ICON_DEATH;
+		return DoomSounds.ICON_DEATH;
 	}
 
 	public void onStartedTrackingBy(ServerPlayerEntity player) {
@@ -419,7 +419,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 				this.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 10000000, 2));
 				this.addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 10000000, 1));
 			}
-			if (!this.world.getDimension().isRespawnAnchorWorking()) {
+			if (!this.world.getDimension().respawnAnchorWorks()) {
 				this.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 10000000, 3));
 				if (this.age % 2400 == 0) {
 					this.heal(40F);

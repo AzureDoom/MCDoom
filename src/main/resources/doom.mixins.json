@@ -13,7 +13,6 @@
 		"AnvilScreenHandlerMixin",
 		"IngredientAccess",
 		"PlayerEntityMixin",
-		"StructureFeatureAccessor",
 		"VillagerMixin"
 	],
 	"injectors": {

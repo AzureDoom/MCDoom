@@ -2,44 +2,56 @@ package mod.azure.doom.structures;
 
 import java.util.Optional;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.structure.PostPlacementProcessor;
-import net.minecraft.structure.StructurePiecesGenerator;
-import net.minecraft.structure.StructurePiecesGeneratorFactory;
-import net.minecraft.structure.piece.PoolStructurePiece;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import mod.azure.doom.util.registry.DoomStructures;
+import net.minecraft.structure.StructureType;
+import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolBasedGenerator;
+import net.minecraft.util.Holder;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 
-public class MotherdemonStructure extends StructureFeature<StructurePoolFeatureConfig> {
+public class MotherdemonStructure extends StructureFeature {
 
-	public MotherdemonStructure() {
-		super(StructurePoolFeatureConfig.CODEC, MotherdemonStructure::createPiecesGenerator,
-				PostPlacementProcessor.EMPTY);
+	public static final Codec<MotherdemonStructure> CODEC = RecordCodecBuilder
+			.<MotherdemonStructure>mapCodec(instance -> instance.group(MotherdemonStructure.settingsCodec(instance),
+					StructurePool.REGISTRY_CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
+					Identifier.CODEC.optionalFieldOf("start_jigsaw_name")
+							.forGetter(structure -> structure.startJigsawName),
+					Codec.intRange(0, 4).fieldOf("size").forGetter(structure -> structure.size),
+					Codec.intRange(1, 128).fieldOf("max_distance_from_center")
+							.forGetter(structure -> structure.maxDistanceFromCenter))
+					.apply(instance, MotherdemonStructure::new))
+			.codec();
+	private final Holder<StructurePool> startPool;
+	private final Optional<Identifier> startJigsawName;
+	private final int size;
+	private final int maxDistanceFromCenter;
+
+	public MotherdemonStructure(StructureFeature.StructureSettings config, Holder<StructurePool> startPool,
+			Optional<Identifier> startJigsawName, int size, int maxDistanceFromCenter) {
+		super(config);
+		this.startPool = startPool;
+		this.startJigsawName = startJigsawName;
+		this.size = size;
+		this.maxDistanceFromCenter = maxDistanceFromCenter;
 	}
 
-	private static boolean isFeatureChunk(StructurePiecesGeneratorFactory.Context<StructurePoolFeatureConfig> context) {
-		BlockPos spawnXZPosition = context.chunkPos().getCenterAtY(0);
-		int landHeight = context.chunkGenerator().getHeightInGround(spawnXZPosition.getX(), spawnXZPosition.getZ(),
-				Heightmap.Type.WORLD_SURFACE_WG, context.heightLimitView());
-		VerticalBlockSample columnOfBlocks = context.chunkGenerator().getColumnSample(spawnXZPosition.getX(),
-				spawnXZPosition.getZ(), context.heightLimitView());
-		BlockState topBlock = columnOfBlocks.getState(landHeight);
-		return topBlock.getFluidState().isEmpty();
-	}
-
-	public static Optional<StructurePiecesGenerator<StructurePoolFeatureConfig>> createPiecesGenerator(
-			StructurePiecesGeneratorFactory.Context<StructurePoolFeatureConfig> context) {
-		if (!MotherdemonStructure.isFeatureChunk(context)) {
-			return Optional.empty();
-		}
+	@Override
+	public Optional<GenerationStub> findGenerationPos(GenerationContext context) {
 		BlockPos blockpos = new BlockPos(context.chunkPos().getStartX(), 32, context.chunkPos().getStartZ());
-		Optional<StructurePiecesGenerator<StructurePoolFeatureConfig>> structurePiecesGenerator = StructurePoolBasedGenerator
-				.method_30419(context, PoolStructurePiece::new, blockpos, true, false);
 
+		Optional<GenerationStub> structurePiecesGenerator = StructurePoolBasedGenerator.method_30419(context,
+				this.startPool, this.startJigsawName, this.size, blockpos, false, Optional.empty(),
+				this.maxDistanceFromCenter);
 		return structurePiecesGenerator;
+	}
+
+	@Override
+	public StructureType<?> getType() {
+		return DoomStructures.MOTHERDEMON;
 	}
 }

@@ -10,7 +10,6 @@ import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -49,7 +48,7 @@ public class ClassicRedDoomArmor extends ArmorItem implements IAnimatable {
 	@Override
 
 	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(new TranslatableText("doom.classicarmor.text").formatted(Formatting.YELLOW)
+		tooltip.add(Text.translatable("doom.classicarmor.text").formatted(Formatting.YELLOW)
 				.formatted(Formatting.ITALIC));
 		super.appendTooltip(stack, world, tooltip, context);
 	}

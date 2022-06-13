@@ -1,12 +1,13 @@
 package mod.azure.doom.client.render.projectiles;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.models.projectiles.MeatHookEntityModel;
 import mod.azure.doom.entity.projectiles.MeatHookEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
@@ -19,7 +20,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix3f;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3f;
-import software.bernie.geckolib3q.renderers.geo.GeoProjectilesRenderer;
+import software.bernie.geckolib3.renderers.geo.GeoProjectilesRenderer;
 
 public class MeatHookEntityRenderer extends GeoProjectilesRenderer<MeatHookEntity> {
 
@@ -47,7 +48,7 @@ public class MeatHookEntityRenderer extends GeoProjectilesRenderer<MeatHookEntit
 		super.render(hookshot, yaw, tickDelta, stack, provider, light);
 		if (hookshot.getOwner()instanceof PlayerEntity player) {
 			@SuppressWarnings("resource")
-			Arm mainArm = MinecraftClient.getInstance().options.mainArm;
+			Arm mainArm = MinecraftClient.getInstance().options.getMainArm().get();
 			Hand activeHand = player.getActiveHand();
 
 			stack.push();
@@ -90,16 +91,16 @@ public class MeatHookEntityRenderer extends GeoProjectilesRenderer<MeatHookEntit
 		float minV = 0.0F - ((float) age + tickDelta) * 0.01F;
 		float maxV = MathHelper.sqrt(squaredLength) / 8F - ((float) age + tickDelta) * 0.01F;
 		MatrixStack.Entry entry = stack.peek();
-		Matrix4f matrix4f = entry.getModel();
+		Matrix4f matrix4f = entry.getPosition();
 		Matrix3f matrix3f = entry.getNormal();
 
-		vertexConsumer.vertex(matrix4f, vertX1, vertY1, 0F).color(0, 0, 0, 255).texture(minU, minV)
+		vertexConsumer.vertex(matrix4f, vertX1, vertY1, 0F).color(0, 0, 0, 255).uv(minU, minV)
 				.overlay(OverlayTexture.DEFAULT_UV).light(light).normal(matrix3f, 0.0F, -1.0F, 0.0F).next();
-		vertexConsumer.vertex(matrix4f, vertX1, vertY1, length).color(255, 255, 255, 255).texture(minU, maxV)
+		vertexConsumer.vertex(matrix4f, vertX1, vertY1, length).color(255, 255, 255, 255).uv(minU, maxV)
 				.overlay(OverlayTexture.DEFAULT_UV).light(light).normal(matrix3f, 0.0F, -1.0F, 0.0F).next();
-		vertexConsumer.vertex(matrix4f, vertX2, vertY2, length).color(255, 255, 255, 255).texture(maxU, maxV)
+		vertexConsumer.vertex(matrix4f, vertX2, vertY2, length).color(255, 255, 255, 255).uv(maxU, maxV)
 				.overlay(OverlayTexture.DEFAULT_UV).light(light).normal(matrix3f, 0.0F, -1.0F, 0.0F).next();
-		vertexConsumer.vertex(matrix4f, vertX2, vertY2, 0F).color(0, 0, 0, 255).texture(maxU, minV)
+		vertexConsumer.vertex(matrix4f, vertX2, vertY2, 0F).color(0, 0, 0, 255).uv(maxU, minV)
 				.overlay(OverlayTexture.DEFAULT_UV).light(light).normal(matrix3f, 0.0F, -1.0F, 0.0F).next();
 
 		stack.pop();
@@ -107,16 +108,17 @@ public class MeatHookEntityRenderer extends GeoProjectilesRenderer<MeatHookEntit
 		stack.translate(-0.015, -0.2, 0);
 
 		entry = stack.peek();
-		matrix4f = entry.getModel();
+		matrix4f = entry.getPosition();
 		matrix3f = entry.getNormal();
 
-		vertexConsumer.vertex(matrix4f, vertX1, vertY1, 0F).color(0, 0, 0, 255).texture(minU, minV)
+		vertexConsumer.vertex(matrix4f, vertX1, vertY1, 0F).color(0, 0, 0, 255)
+				.uv(minU, minV)
 				.overlay(OverlayTexture.DEFAULT_UV).light(light).normal(matrix3f, 0.0F, -1.0F, 0.0F).next();
-		vertexConsumer.vertex(matrix4f, vertX1, vertY1, length).color(255, 255, 255, 255).texture(minU, maxV)
+		vertexConsumer.vertex(matrix4f, vertX1, vertY1, length).color(255, 255, 255, 255).uv(minU, maxV)
 				.overlay(OverlayTexture.DEFAULT_UV).light(light).normal(matrix3f, 0.0F, -1.0F, 0.0F).next();
-		vertexConsumer.vertex(matrix4f, vertX2, vertY2, length).color(255, 255, 255, 255).texture(maxU, maxV)
+		vertexConsumer.vertex(matrix4f, vertX2, vertY2, length).color(255, 255, 255, 255).uv(maxU, maxV)
 				.overlay(OverlayTexture.DEFAULT_UV).light(light).normal(matrix3f, 0.0F, -1.0F, 0.0F).next();
-		vertexConsumer.vertex(matrix4f, vertX2, vertY2, 0F).color(0, 0, 0, 255).texture(maxU, minV)
+		vertexConsumer.vertex(matrix4f, vertX2, vertY2, 0F).color(0, 0, 0, 255).uv(maxU, minV)
 				.overlay(OverlayTexture.DEFAULT_UV).light(light).normal(matrix3f, 0.0F, -1.0F, 0.0F).next();
 
 		stack.pop();

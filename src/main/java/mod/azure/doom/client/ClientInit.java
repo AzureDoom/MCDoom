@@ -43,7 +43,7 @@ import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.option.KeyBind;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3q.renderers.geo.GeoItemRenderer;
+import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 
 public class ClientInit implements ClientModInitializer {
 

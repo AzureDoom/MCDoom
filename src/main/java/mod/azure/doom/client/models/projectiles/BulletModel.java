@@ -3,7 +3,7 @@ package mod.azure.doom.client.models.projectiles;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.projectiles.BulletEntity;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3q.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class BulletModel extends AnimatedGeoModel<BulletEntity> {
 	@Override

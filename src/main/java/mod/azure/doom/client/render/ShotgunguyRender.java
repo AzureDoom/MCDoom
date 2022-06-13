@@ -1,11 +1,12 @@
 package mod.azure.doom.client.render;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import mod.azure.doom.client.models.ShotgunguyModel;
 import mod.azure.doom.entity.tierfodder.ShotgunguyEntity;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.model.json.ModelTransformation.Mode;
@@ -13,8 +14,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
-import software.bernie.geckolib3q.geo.render.built.GeoBone;
-import software.bernie.geckolib3q.renderers.geo.GeoEntityRenderer;
+import software.bernie.geckolib3.geo.render.built.GeoBone;
+import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public class ShotgunguyRender extends GeoEntityRenderer<ShotgunguyEntity> {
 
@@ -30,7 +31,7 @@ public class ShotgunguyRender extends GeoEntityRenderer<ShotgunguyEntity> {
 	public RenderLayer getRenderType(ShotgunguyEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(this.getTextureLocation(animatable));
 	}
 
 	@Override

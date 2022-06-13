@@ -2,7 +2,7 @@ package mod.azure.doom.client.render.armors;
 
 import mod.azure.doom.client.models.armor.EmberModel;
 import mod.azure.doom.item.armor.EmberDoomArmor;
-import software.bernie.geckolib3q.renderers.geo.GeoArmorRenderer;
+import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
 public class EmberRender extends GeoArmorRenderer<EmberDoomArmor> {
 	public EmberRender() {

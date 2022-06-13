@@ -1,11 +1,12 @@
 package mod.azure.doom.client.render.projectiles;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.models.projectiles.BFGBallModel;
 import mod.azure.doom.entity.projectiles.BFGEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
@@ -16,8 +17,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix3f;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3f;
-import software.bernie.geckolib3q.geo.render.built.GeoModel;
-import software.bernie.geckolib3q.renderers.geo.GeoProjectilesRenderer;
+import software.bernie.geckolib3.geo.render.built.GeoModel;
+import software.bernie.geckolib3.renderers.geo.GeoProjectilesRenderer;
 
 public class BFGCellRender extends GeoProjectilesRenderer<BFGEntity> {
 
@@ -94,20 +95,20 @@ public class BFGCellRender extends GeoProjectilesRenderer<BFGEntity> {
 		float l = 0.75F;
 		float m = 0.0F;
 		MatrixStack.Entry entry = matrices.peek();
-		Matrix4f matrix4f = entry.getModel();
+		Matrix4f matrix4f = entry.getPosition();
 		Matrix3f matrix3f = entry.getNormal();
 
 		for (int n = 1; n <= 8; ++n) {
 			float o = MathHelper.sin((float) n * 6.2831855F / 8.0F) * 0.75F;
 			float p = MathHelper.cos((float) n * 6.2831855F / 8.0F) * 0.75F;
 			float q = (float) n / 8.0F;
-			vertexConsumer.vertex(matrix4f, k * 0.2F, l * 0.2F, 0.0F).color(0, 0, 0, 255).texture(m, h)
+			vertexConsumer.vertex(matrix4f, k * 0.2F, l * 0.2F, 0.0F).color(0, 0, 0, 255).uv(m, h)
 					.overlay(OverlayTexture.DEFAULT_UV).light(light).normal(matrix3f, 0.0F, -1.0F, 0.0F).next();
-			vertexConsumer.vertex(matrix4f, k, l, g).color(255, 255, 255, 255).texture(m, i)
+			vertexConsumer.vertex(matrix4f, k, l, g).color(255, 255, 255, 255).uv(m, i)
 					.overlay(OverlayTexture.DEFAULT_UV).light(light).normal(matrix3f, 0.0F, -1.0F, 0.0F).next();
-			vertexConsumer.vertex(matrix4f, o, p, g).color(255, 255, 255, 255).texture(q, i)
+			vertexConsumer.vertex(matrix4f, o, p, g).color(255, 255, 255, 255).uv(q, i)
 					.overlay(OverlayTexture.DEFAULT_UV).light(light).normal(matrix3f, 0.0F, -1.0F, 0.0F).next();
-			vertexConsumer.vertex(matrix4f, o * 0.2F, p * 0.2F, 0.0F).color(0, 0, 0, 255).texture(q, h)
+			vertexConsumer.vertex(matrix4f, o * 0.2F, p * 0.2F, 0.0F).color(0, 0, 0, 255).uv(q, h)
 					.overlay(OverlayTexture.DEFAULT_UV).light(light).normal(matrix3f, 0.0F, -1.0F, 0.0F).next();
 			k = o;
 			l = p;

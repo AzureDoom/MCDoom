@@ -1,19 +1,19 @@
 package mod.azure.doom.client.render.weapons;
 
+import com.mojang.blaze3d.lighting.DiffuseLighting;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import mod.azure.doom.client.models.weapons.SSGModel;
 import mod.azure.doom.item.weapons.SuperShotgun;
 import mod.azure.doom.util.PlayerProperties;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.DiffuseLighting;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import software.bernie.geckolib3q.geo.render.built.GeoBone;
-import software.bernie.geckolib3q.renderers.geo.GeoItemRenderer;
+import software.bernie.geckolib3.geo.render.built.GeoBone;
+import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 
 public class SSGRender extends GeoItemRenderer<SuperShotgun> {
 
@@ -29,11 +29,11 @@ public class SSGRender extends GeoItemRenderer<SuperShotgun> {
 			matrixStackIn.push();
 			VertexConsumerProvider.Immediate irendertypebuffer$impl = MinecraftClient.getInstance().getBufferBuilders()
 					.getEntityVertexConsumers();
-			DiffuseLighting.disableGuiDepthLighting();
+			DiffuseLighting.setupFlatGuiLighting();
 			super.render(itemStack, mode, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
 			irendertypebuffer$impl.draw();
 			RenderSystem.enableDepthTest();
-			DiffuseLighting.enableGuiDepthLighting();
+			DiffuseLighting.setup3DGuiLighting();
 			matrixStackIn.pop();
 		} else {
 			super.render(itemStack, mode, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);

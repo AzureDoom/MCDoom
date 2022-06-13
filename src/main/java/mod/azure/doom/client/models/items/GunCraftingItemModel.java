@@ -3,7 +3,7 @@ package mod.azure.doom.client.models.items;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.DoomBlockItem;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3q.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class GunCraftingItemModel extends AnimatedGeoModel<DoomBlockItem> {
 	@Override

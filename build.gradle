@@ -38,19 +38,31 @@ dependencies {
 		// officialMojangMappings() // Uncomment if you want to use Mojang mappings as your primary mappings, falling back on QM for parameters and Javadocs
 	}
 	modImplementation libs.quilt.loader
-    modImplementation 'software.bernie.geckolib:geckolib-quilt-1.18:3.0.0'
-    modImplementation 'curse.maven:cloth-348521:3761416'
-    modImplementation ("dev.emi:trinkets:3.3.0") {
+    modImplementation "software.bernie.geckolib:geckolib-quilt-1.19:3.1.0"
+	modImplementation ("com.terraformersmc:modmenu:4.0.0-beta.4") {
+        exclude(group: "net.fabricmc.fabric-api")
+  		exclude group: "net.fabricmc", module: "fabric-loader"
+    }
+    modImplementation ("dev.emi:trinkets:3.4.0") {
   		exclude group: "net.fabricmc.fabric-api"
   		exclude group: "net.fabricmc", module: "fabric-loader"
 	}
-	modImplementation "curse.maven:RoughlyEnoughItems-310111:3768212"
-	modImplementation ("curse.maven:arch-419699:3784130") {
-  		exclude group: "net.fabricmc.fabric-api"
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:9.0.466") {
+        exclude(group: "net.fabricmc.fabric-api")
   		exclude group: "net.fabricmc", module: "fabric-loader"
-	}
-	modImplementation "curse.maven:stfu-401978:3677546"
-    modImplementation ("me.shedaniel.cloth:basic-math:0.6.1")
+    }
+    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:9.0.466") {
+        exclude(group: "net.fabricmc.fabric-api")
+  		exclude group: "net.fabricmc", module: "fabric-loader"
+    }
+    modApi("dev.architectury:architectury-fabric:5.4.15") {
+        exclude(group: "net.fabricmc.fabric-api")
+  		exclude group: "net.fabricmc", module: "fabric-loader"
+    }
+    modApi("me.shedaniel.cloth:cloth-config-fabric:7.0.65") {
+        exclude(group: "net.fabricmc.fabric-api")
+  		exclude group: "net.fabricmc", module: "fabric-loader"
+    }
 }
 
 processResources {
@@ -109,13 +121,14 @@ if (file('key.properties').exists()) {
         	releaseType = "${curse_release}"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
-			addGameVersion("1.18.2")
+			addGameVersion("1.19")
 			addGameVersion("Quilt")
 			addGameVersion("Java 17")
 
         	relations {
             	requiredDependency 'geckolib'  
             	requiredDependency 'trinkets'  
+            	optionalDependency 'roughly-enough-items' 
         	}
         	mainArtifact(remapJar)
 

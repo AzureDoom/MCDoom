@@ -1,15 +1,16 @@
 package mod.azure.doom.client.render;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import mod.azure.doom.client.models.MotherDemonModel;
 import mod.azure.doom.entity.tierboss.MotherDemonEntity;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3q.geo.render.built.GeoModel;
-import software.bernie.geckolib3q.renderers.geo.GeoEntityRenderer;
+import software.bernie.geckolib3.geo.render.built.GeoModel;
+import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public class MotherDemonRender extends GeoEntityRenderer<MotherDemonEntity> {
 
@@ -21,7 +22,7 @@ public class MotherDemonRender extends GeoEntityRenderer<MotherDemonEntity> {
 	public RenderLayer getRenderType(MotherDemonEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(this.getTextureLocation(animatable));
 	}
 
 	@Override

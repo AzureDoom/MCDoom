@@ -3,7 +3,7 @@ package mod.azure.doom.client.models.tile;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tileentity.TotemEntity;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3q.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class TotemModel extends AnimatedGeoModel<TotemEntity> {
 	@Override

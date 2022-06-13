@@ -1,12 +1,12 @@
 package mod.azure.doom.entity.ai.goal;
 
 import java.util.EnumSet;
-import java.util.Random;
 
 import mod.azure.doom.entity.DemonEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.util.random.RandomGenerator;
 
 public class RandomFlyConvergeOnTargetGoal extends Goal {
 	private final DemonEntity parentEntity;
@@ -57,7 +57,7 @@ public class RandomFlyConvergeOnTargetGoal extends Goal {
 	public void start() {
 		LivingEntity target = this.parentEntity.getTarget();
 		boolean converge = shouldConverge(target);
-		Random random = this.parentEntity.getRandom();
+		RandomGenerator random = this.parentEntity.getRandom();
 		double d0 = this.parentEntity.getX() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 2.0F);
 		double d1 = this.parentEntity.getY() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 2.0F);
 		double d2 = this.parentEntity.getZ() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 2.0F);

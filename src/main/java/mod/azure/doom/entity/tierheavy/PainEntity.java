@@ -1,15 +1,14 @@
 package mod.azure.doom.entity.tierheavy;
 
 import java.util.EnumSet;
-import java.util.Random;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
 import mod.azure.doom.network.EntityPacket;
-import mod.azure.doom.util.registry.ModEntityTypes;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityData;
@@ -43,6 +42,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -113,13 +113,13 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable, IAn
 			this.remove(Entity.RemovalReason.KILLED);
 			this.dropXp();
 			if (!this.world.isClient) {
-				LostSoulEntity lost_soul = ModEntityTypes.LOST_SOUL.create(world);
+				LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.create(world);
 				lost_soul.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), 0, 0);
 				this.world.spawnEntity(lost_soul);
-				LostSoulEntity lost_soul1 = ModEntityTypes.LOST_SOUL.create(world);
+				LostSoulEntity lost_soul1 = DoomEntities.LOST_SOUL.create(world);
 				lost_soul1.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), 0, 0);
 				this.world.spawnEntity(lost_soul1);
-				LostSoulEntity lost_soul2 = ModEntityTypes.LOST_SOUL.create(world);
+				LostSoulEntity lost_soul2 = DoomEntities.LOST_SOUL.create(world);
 				lost_soul2.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), 0, 0);
 				this.world.spawnEntity(lost_soul2);
 			}
@@ -247,7 +247,7 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable, IAn
 	}
 
 	public static boolean canSpawn(EntityType<PainEntity> type, WorldAccess world, SpawnReason spawnReason,
-			BlockPos pos, Random random) {
+			BlockPos pos, RandomGenerator random) {
 		return world.getDifficulty() != Difficulty.PEACEFUL && random.nextInt(20) == 0
 				&& canMobSpawn(type, world, spawnReason, pos, random);
 	}
@@ -295,19 +295,19 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable, IAn
 				}
 				if (this.cooldown == 20) {
 					if (this.ghast.getVariant() == 1) {
-						LostSoulEntity lost_soul = ModEntityTypes.LOST_SOUL.create(world);
+						LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.create(world);
 						lost_soul.refreshPositionAndAngles(this.ghast.getX(), this.ghast.getY(), this.ghast.getZ(), 0,
 								0);
 						lost_soul.addVelocity(1.0D, 0.0D, 0.0D);
 						world.spawnEntity(lost_soul);
 					} else {
-						LostSoulEntity lost_soul = ModEntityTypes.LOST_SOUL.create(world);
+						LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.create(world);
 						lost_soul.refreshPositionAndAngles(this.ghast.getX(), this.ghast.getY(), this.ghast.getZ(), 0,
 								0);
 						lost_soul.addVelocity(1.0D, 0.0D, 0.0D);
 						world.spawnEntity(lost_soul);
 
-						LostSoulEntity lost_soul1 = ModEntityTypes.LOST_SOUL.create(world);
+						LostSoulEntity lost_soul1 = DoomEntities.LOST_SOUL.create(world);
 						lost_soul1.refreshPositionAndAngles(this.ghast.getX(), this.ghast.getY(), this.ghast.getZ(), 0,
 								0);
 						lost_soul1.addVelocity(1.0D, 0.0D, 0.0D);
@@ -393,7 +393,7 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable, IAn
 		}
 
 		public void start() {
-			Random random = this.ghast.getRandom();
+			RandomGenerator random = this.ghast.getRandom();
 			double d = this.ghast.getX() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 2.0F);
 			double e = this.ghast.getY() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 2.0F);
 			double f = this.ghast.getZ() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 2.0F);
@@ -408,17 +408,17 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable, IAn
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.PAIN_AMBIENT;
+		return DoomSounds.PAIN_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.PAIN_HURT;
+		return DoomSounds.PAIN_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.PAIN_DEATH;
+		return DoomSounds.PAIN_DEATH;
 	}
 
 	@Override

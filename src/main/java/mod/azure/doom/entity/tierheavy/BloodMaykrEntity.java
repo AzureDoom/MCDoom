@@ -9,7 +9,7 @@ import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.BloodBoltEntity;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -230,7 +230,7 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnima
 
 		@Override
 		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(ModSoundEvents.UNMAKYR_FIRE, 1, 1);
+			return new AttackSound(DoomSounds.UNMAKYR_FIRE, 1, 1);
 		}
 
 		@Override
@@ -253,12 +253,12 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnima
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.MAKYR_HURT;
+		return DoomSounds.MAKYR_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.MAKYR_DEATH;
+		return DoomSounds.MAKYR_DEATH;
 	}
 
 }

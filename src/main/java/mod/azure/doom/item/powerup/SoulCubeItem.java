@@ -8,7 +8,6 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 
@@ -25,7 +24,8 @@ public class SoulCubeItem extends TrinketItem {
 
 	@Override
 	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(new TranslatableText("Uses Remaining: " + (stack.getMaxDamage() - stack.getDamage()))
+		tooltip.add(Text
+				.translatable("Uses Remaining: " + (stack.getMaxDamage() - stack.getDamage()))
 				.formatted(Formatting.ITALIC));
 		super.appendTooltip(stack, world, tooltip, context);
 	}

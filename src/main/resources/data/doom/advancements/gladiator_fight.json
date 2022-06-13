@@ -19,10 +19,16 @@
 		"requirement": {
 			"trigger": "minecraft:location",
 			"conditions": {
-				"location": {
-					"feature": "doom:gladiator_fight"
-				}
+				"player": [
+					{
+						"condition": "minecraft:location_check",
+						"predicate": {
+							"structure": "doom:gladiator_fight"
+						}
+					}
+				]
 			}
 		}
 	}
+}
 }
