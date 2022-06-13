@@ -2,8 +2,6 @@ package mod.azure.doom;
 
 import java.util.List;
 
-import com.mojang.serialization.Codec;
-
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.DoomVillagerTrades;
 import mod.azure.doom.util.LootHandler;
@@ -30,7 +28,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeTier;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.TierSortingRegistry;
-import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -40,8 +37,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 import software.bernie.geckolib3.GeckoLib;
 import software.bernie.geckolib3.network.GeckoLibNetwork;
 import top.theillusivec4.curios.api.SlotTypeMessage;
@@ -56,7 +51,6 @@ public class DoomMod {
 	public static final Tier ARGENT_TIER = TierSortingRegistry.registerTier(
 			new ForgeTier(17, 5000, 18, 3.0F, 30, ARGENT_TAG, () -> Ingredient.of(DoomItems.ARGENT_BLOCK.get())),
 			new ResourceLocation(MODID, "argent"), List.of(Tiers.NETHERITE), List.of());
-	public static final ResourceLocation ADD_SPAWNS_TO_BIOMES = new ResourceLocation(MODID, "mobspawns");
 
 	public DoomMod() {
 		instance = this;
@@ -80,12 +74,9 @@ public class DoomMod {
 		DoomRecipes.SERIAL.register(modEventBus);
 		DoomParticles.PARTICLES.register(modEventBus);
 		DoomStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
+		ModEntitySpawn.SERIALIZER.register(modEventBus);
 		GeckoLib.initialize();
 		GeckoLibNetwork.initialize();
-		final DeferredRegister<Codec<? extends BiomeModifier>> serializers = DeferredRegister
-				.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, MODID);
-		serializers.register(modEventBus);
-		serializers.register("mobspawns", ModEntitySpawn::makeCodec);
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
@@ -94,9 +85,9 @@ public class DoomMod {
 	}
 
 	private void enqueueIMC(InterModEnqueueEvent event) {
-		InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
+		InterModComms.sendTo("curios", SlotTypeMessage.MODIFY_TYPE,
 				() -> SlotTypePreset.CHARM.getMessageBuilder().build());
-		InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE,
+		InterModComms.sendTo("curios", SlotTypeMessage.MODIFY_TYPE,
 				() -> SlotTypePreset.BELT.getMessageBuilder().build());
 	}
 

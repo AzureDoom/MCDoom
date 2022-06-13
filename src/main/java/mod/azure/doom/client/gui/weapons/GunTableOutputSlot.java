@@ -2,12 +2,15 @@ package mod.azure.doom.client.gui.weapons;
 
 import java.util.Optional;
 
+import mod.azure.doom.compat.PMMOCompat;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.recipes.GunTableRecipe;
 import mod.azure.doom.recipes.GunTableRecipe.Type;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fml.ModList;
 
 public class GunTableOutputSlot extends Slot {
 	private final DoomGunInventory gunTableInventory;
@@ -20,10 +23,12 @@ public class GunTableOutputSlot extends Slot {
 		this.gunTableInventory = gunTableInventory;
 	}
 
+	@Override
 	public boolean mayPlace(ItemStack stack) {
 		return false;
 	}
 
+	@Override
 	public ItemStack remove(int amount) {
 		if (this.hasItem()) {
 			this.removeCount += Math.min(amount, this.getItem().getCount());
@@ -32,20 +37,23 @@ public class GunTableOutputSlot extends Slot {
 		return super.remove(amount);
 	}
 
+	@Override
 	protected void onQuickCraft(ItemStack stack, int amount) {
 		this.removeCount += amount;
 		this.checkTakeAchievements(stack);
 	}
 
+	@Override
 	protected void checkTakeAchievements(ItemStack stack) {
 		stack.onCraftedBy(this.player.level, this.player, this.removeCount);
 		this.removeCount = 0;
 	}
 
+	@Override
 	public void onTake(Player player, ItemStack stack) {
 		this.checkTakeAchievements(stack);
-		Optional<GunTableRecipe> optionalGunTableRecipe = player.level.getRecipeManager()
-				.getRecipeFor(Type.INSTANCE, gunTableInventory, player.level);
+		Optional<GunTableRecipe> optionalGunTableRecipe = player.level.getRecipeManager().getRecipeFor(Type.INSTANCE,
+				gunTableInventory, player.level);
 		if (optionalGunTableRecipe.isPresent()) {
 			GunTableRecipe gunTableRecipe = optionalGunTableRecipe.get();
 			NonNullList<ItemStack> NonNullList = gunTableRecipe.getRemainingItems(gunTableInventory);
@@ -71,9 +79,12 @@ public class GunTableOutputSlot extends Slot {
 				}
 			}
 		}
-//		if (ModList.get().isLoaded("pmmo")) {
-//			PMMOCompat.awardCrafting(stack);
-//		}
+		/*
+		 * Awards crafting xp if Project MMO is installed, configurable via config.
+		 */
+		if (ModList.get().isLoaded("pmmo")) {
+			PMMOCompat.awardCrafting(player, DoomConfig.SERVER.guntable_crafting_xp_pmmo.get());
+		}
 		this.setChanged();
 	}
 }

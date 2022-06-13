@@ -97,15 +97,16 @@ repositories {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19-41.0.4'
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19-5.1.0.0")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19-5.1.0.0:api")
+    minecraft 'net.minecraftforge:forge:1.19-41.0.18'
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19-5.1.0.1")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19-5.1.0.1:api")
 	implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19:3.1.0')
 	annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
     implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:9.0.472")
     implementation fg.deobf("curse.maven:reiw-521393:3822854")
     implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:7.0.69")
     implementation fg.deobf("dev.architectury:architectury-forge:5.5.18")
+    implementation fg.deobf("curse.maven:projectmmo-353935:3825318")
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -176,6 +177,8 @@ if (file('key.properties').exists()) {
         	relations {
             	requiredDependency 'curios'  
             	requiredDependency 'geckolib' 
+            	optionalDependency 'project-mmo'
+            	optionalDependency 'roughly-enough-items'
         	}
     	}
     }
