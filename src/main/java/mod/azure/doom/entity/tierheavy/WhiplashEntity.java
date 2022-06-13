@@ -68,7 +68,7 @@ public class WhiplashEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<WhiplashEntity>(this, "controller", 2, this::predicate));
+		data.addAnimationController(new AnimationController<WhiplashEntity>(this, "controller", 10, this::predicate));
 		data.addAnimationController(new AnimationController<WhiplashEntity>(this, "controller1", 2, this::predicate1));
 	}
 

@@ -3,6 +3,7 @@ package mod.azure.doom.util;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import mod.azure.doom.compat.PMMOCompat;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -22,6 +23,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.type.capability.ICurio;
@@ -91,6 +93,11 @@ public class SoulCubeHandler {
 		if (livingEntity instanceof ServerPlayer) {
 			ServerPlayer serverPlayer = (ServerPlayer) livingEntity;
 			CriteriaTriggers.USED_TOTEM.trigger(serverPlayer, copy);
+			if (soulcube.isEmpty()) {
+				if (ModList.get().isLoaded("pmmo")) {
+					PMMOCompat.awardSoulXp(serverPlayer);
+				}
+			}
 		}
 		if (livingEntity instanceof Player) {
 			livingEntity.setHealth(20.0F);
