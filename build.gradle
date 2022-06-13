@@ -115,7 +115,8 @@ if (file('key.properties').exists()) {
 
         	relations {
             	requiredDependency 'geckolib'  
-            	requiredDependency 'trinkets'  
+            	requiredDependency 'trinkets' 
+            	optionalDependency 'roughly-enough-items'  
         	}
         	mainArtifact(remapJar)
 
