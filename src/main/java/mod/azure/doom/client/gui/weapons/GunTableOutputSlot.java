@@ -3,6 +3,7 @@ package mod.azure.doom.client.gui.weapons;
 import java.util.Optional;
 
 import mod.azure.doom.compat.PMMOCompat;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.recipes.GunTableRecipe;
 import mod.azure.doom.recipes.GunTableRecipe.Type;
 import net.minecraft.core.NonNullList;
@@ -75,7 +76,7 @@ public class GunTableOutputSlot extends Slot {
 			}
 		}
 		if (ModList.get().isLoaded("pmmo") && !player.getCommandSenderWorld().isClientSide()) {
-			PMMOCompat.awardCrafting((ServerPlayer) player);
+			PMMOCompat.awardCrafting((ServerPlayer) player, DoomConfig.SERVER.guntable_crafting_xp_pmmo.get());
 		}
 		this.setChanged();
 	}

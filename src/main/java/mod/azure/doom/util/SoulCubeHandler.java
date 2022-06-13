@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import mod.azure.doom.compat.PMMOCompat;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -95,7 +96,7 @@ public class SoulCubeHandler {
 			CriteriaTriggers.USED_TOTEM.trigger(serverPlayer, copy);
 			if (soulcube.isEmpty()) {
 				if (ModList.get().isLoaded("pmmo")) {
-					PMMOCompat.awardSoulXp(serverPlayer);
+					PMMOCompat.awardMagicXp(serverPlayer, DoomConfig.SERVER.soul_consume_xp_pmmo.get());
 				}
 			}
 		}
