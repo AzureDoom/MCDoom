@@ -1,6 +1,7 @@
 package mod.azure.doom.config;
 
 import java.awt.Color;
+import java.io.BufferedReader;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -102,8 +103,8 @@ public abstract class CustomMidnightConfig {
 				} catch (IllegalAccessException ignored) {
 				}
 		}
-		try {
-			gson.fromJson(Files.newBufferedReader(path), config);
+		try (BufferedReader reader = Files.newBufferedReader(path)) {
+			gson.fromJson(reader, config);
 		} catch (Exception e) {
 			write(modid);
 		}
