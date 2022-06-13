@@ -113,7 +113,7 @@ if (file('key.properties').exists()) {
         	relations {
             	requiredDependency 'fabric-api'  
             	requiredDependency 'geckolib'  
-            	//requiredDependency 'trinkets'  
+            	requiredDependency 'trinkets'  
             	optionalDependency 'roughly-enough-items' 
         	}
         	mainArtifact(remapJar)

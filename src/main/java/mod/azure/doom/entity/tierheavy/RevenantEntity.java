@@ -11,7 +11,7 @@ import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import mod.azure.doom.entity.tierfodder.ImpEntity;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityData;
@@ -154,7 +154,7 @@ public class RevenantEntity extends DemonEntity implements IAnimatable, IAnimati
 
 		@Override
 		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(ModSoundEvents.ROCKET_FIRING, 1, 1);
+			return new AttackSound(DoomSounds.ROCKET_FIRING, 1, 1);
 		}
 
 		@Override
@@ -174,12 +174,12 @@ public class RevenantEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.REVENANT_HURT;
+		return DoomSounds.REVENANT_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.REVENANT_DEATH;
+		return DoomSounds.REVENANT_DEATH;
 	}
 
 	protected SoundEvent getStepSound() {

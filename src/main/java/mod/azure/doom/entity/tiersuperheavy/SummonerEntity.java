@@ -12,7 +12,7 @@ import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.util.registry.DoomEntities;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -121,7 +121,7 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.ARCHVILE_SCREAM,
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.ARCHVILE_SCREAM,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
@@ -499,11 +499,11 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 	
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.ARCHVILE_HURT;
+		return DoomSounds.ARCHVILE_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.ARCHVILE_DEATH;
+		return DoomSounds.ARCHVILE_DEATH;
 	}
 }

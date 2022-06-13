@@ -8,7 +8,7 @@ import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
 import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.DoomEntities;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -410,17 +410,17 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable, IAn
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.PAIN_AMBIENT;
+		return DoomSounds.PAIN_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.PAIN_HURT;
+		return DoomSounds.PAIN_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.PAIN_DEATH;
+		return DoomSounds.PAIN_DEATH;
 	}
 
 	@Override

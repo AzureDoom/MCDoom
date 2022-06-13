@@ -135,9 +135,9 @@ public class DoomItems {
 	public static ChainsawAnimated CHAINSAW_ETERNAL = item(new ChainsawAnimated(), "chainsaweternal");
 	public static SentinelHammerItem SENTINELHAMMER = item(new SentinelHammerItem(), "sentinelhammer");
 	public static DarkLordCrucibleItem DARKLORDCRUCIBLE = item(new DarkLordCrucibleItem(), "darklordcrucible");
-	public static E1M1MusicDisc E1M1_MUSIC_DISC = item(new E1M1MusicDisc(ModSoundEvents.E1M1), "e1m1_music_disc");
+	public static E1M1MusicDisc E1M1_MUSIC_DISC = item(new E1M1MusicDisc(DoomSounds.E1M1), "e1m1_music_disc");
 	public static Item GAS_BARREL = item(new Item(new Item.Settings().group(DoomMod.DoomWeaponItemGroup)), "gas_barrel");
-	public static E1M1MusicDisc GEOF_MUSIC_DISC = item(new E1M1MusicDisc(ModSoundEvents.NETHERAMBIENT_GEOFFPLAYSGUITAR), "netherambient_geoffplaysguitar_music_disc");
+	public static E1M1MusicDisc GEOF_MUSIC_DISC = item(new E1M1MusicDisc(DoomSounds.NETHERAMBIENT_GEOFFPLAYSGUITAR), "netherambient_geoffplaysguitar_music_disc");
 
 	public static Item[] ITEMS = { CHAINSAW_ETERNAL, CRUCIBLESWORD, ROCKETLAUNCHER, AXE_OPEN, HEAVYCANNON, SSG,
 			PLASMAGUN, CHAINSAW64, CHAINSAW, CHAINGUN, BALLISTA, UNMAYKR, BFG_ETERNAL, BFG, SG, PISTOL };

@@ -9,7 +9,7 @@ import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
 import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
@@ -104,13 +104,13 @@ public class ShotgunguyEntity extends DemonEntity implements IAnimatable, IAnima
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PISTOL_HIT,
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PISTOL_HIT,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
@@ -133,7 +133,7 @@ public class ShotgunguyEntity extends DemonEntity implements IAnimatable, IAnima
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
 		this.goalSelector.add(4,
 				new RangedAttackGoal(this, new RangedAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
-						.setDamage(DoomConfig.shotgun_damage).setSound(ModSoundEvents.SHOTGUN_SHOOT,
+						.setDamage(DoomConfig.shotgun_damage).setSound(DoomSounds.SHOTGUN_SHOOT,
 								1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.1D));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
@@ -154,7 +154,7 @@ public class ShotgunguyEntity extends DemonEntity implements IAnimatable, IAnima
 
 		@Override
 		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(ModSoundEvents.SHOTGUN_SHOOT, 1, 1);
+			return new AttackSound(DoomSounds.SHOTGUN_SHOOT, 1, 1);
 		}
 
 		@Override
@@ -181,11 +181,11 @@ public class ShotgunguyEntity extends DemonEntity implements IAnimatable, IAnima
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.ZOMBIEMAN_HURT;
+		return DoomSounds.ZOMBIEMAN_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.ZOMBIEMAN_DEATH;
+		return DoomSounds.ZOMBIEMAN_DEATH;
 	}
 }

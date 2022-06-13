@@ -9,7 +9,7 @@ import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityDimensions;
@@ -100,13 +100,13 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable, IAnima
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.CYBERDEMON_STEP,
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.CYBERDEMON_STEP,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.ROCKET_FIRING,
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.ROCKET_FIRING,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
@@ -161,7 +161,7 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable, IAnima
 
 		@Override
 		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(ModSoundEvents.ROCKET_FIRING, 1, 1);
+			return new AttackSound(DoomSounds.ROCKET_FIRING, 1, 1);
 		}
 
 		@Override
@@ -239,12 +239,12 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable, IAnima
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.CYBERDEMON_HURT;
+		return DoomSounds.CYBERDEMON_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.CYBERDEMON_DEATH;
+		return DoomSounds.CYBERDEMON_DEATH;
 	}
 
 }

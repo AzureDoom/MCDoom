@@ -11,7 +11,7 @@ import mod.azure.doom.entity.projectiles.CustomFireballEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.entity.tierambient.TentacleEntity;
 import mod.azure.doom.util.registry.DoomEntities;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
@@ -307,7 +307,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 										d, e1, h2, 0);
 							}
 							parentEntity.world.playSound(this.parentEntity.getX(), this.parentEntity.getY(),
-									this.parentEntity.getZ(), ModSoundEvents.MOTHER_ATTACK, SoundCategory.HOSTILE,
+									this.parentEntity.getZ(), DoomSounds.MOTHER_ATTACK, SoundCategory.HOSTILE,
 									0.25F, 1.0F, true);
 							this.parentEntity.setAttackingState(2);
 						}
@@ -328,7 +328,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 								this.parentEntity.getBodyY(0.5D) + 0.5D, parentEntity.getZ() + vec3d.z * 1.0D);
 						world.spawnEntity(fireballEntity2);
 						parentEntity.world.playSound(this.parentEntity.getX(), this.parentEntity.getY(),
-								this.parentEntity.getZ(), ModSoundEvents.MOTHER_ATTACK, SoundCategory.HOSTILE, 0.25F,
+								this.parentEntity.getZ(), DoomSounds.MOTHER_ATTACK, SoundCategory.HOSTILE, 0.25F,
 								1.0F, true);
 						TentacleEntity lost_soul = DoomEntities.TENTACLE.create(world);
 						lost_soul.refreshPositionAndAngles(livingEntity.getX(), livingEntity.getY(),
@@ -393,17 +393,17 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.MOTHER_AMBIENT;
+		return DoomSounds.MOTHER_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.MOTHER_HURT;
+		return DoomSounds.MOTHER_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.MOTHER_DEATH;
+		return DoomSounds.MOTHER_DEATH;
 	}
 
 	public void onStartedTrackingBy(ServerPlayerEntity player) {

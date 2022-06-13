@@ -7,7 +7,7 @@ import java.util.Random;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Blocks;
@@ -93,13 +93,13 @@ public class ArmoredBaronEntity extends DemonEntity implements IAnimatable, IAni
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.CYBERDEMON_STEP,
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.CYBERDEMON_STEP,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.BARON_AMBIENT,
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.BARON_AMBIENT,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
@@ -170,12 +170,12 @@ public class ArmoredBaronEntity extends DemonEntity implements IAnimatable, IAni
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.BARON_HURT;
+		return DoomSounds.BARON_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.BARON_DEATH;
+		return DoomSounds.BARON_DEATH;
 	}
 
 	@Override

@@ -5,7 +5,7 @@ import java.util.Random;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -131,16 +131,16 @@ public class ImpStoneEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.IMP_HURT;
+		return DoomSounds.IMP_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.IMP_DEATH;
+		return DoomSounds.IMP_DEATH;
 	}
 
 	protected SoundEvent getStepSound() {
-		return ModSoundEvents.IMP_STEP;
+		return DoomSounds.IMP_STEP;
 	}
 
 	@Override

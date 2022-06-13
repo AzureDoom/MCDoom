@@ -7,7 +7,7 @@ import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.BulletEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -53,7 +53,7 @@ public class HeavyCannon extends DoomBaseItem {
 					stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
 					worldIn.spawnEntity(abstractarrowentity);
 					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
-							playerentity.getZ(), ModSoundEvents.HEAVY_CANNON, SoundCategory.PLAYERS, 1.0F, 1.0F);
+							playerentity.getZ(), DoomSounds.HEAVY_CANNON, SoundCategory.PLAYERS, 1.0F, 1.0F);
 					if (!worldIn.isClient) {
 						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);
 						GeckoLibNetwork.syncAnimation(playerentity, this, id, ANIM_OPEN);
@@ -66,7 +66,7 @@ public class HeavyCannon extends DoomBaseItem {
 				}
 			} else {
 				worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-						ModSoundEvents.EMPTY, SoundCategory.PLAYERS, 1.0F, 1.5F);
+						DoomSounds.EMPTY, SoundCategory.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}
@@ -79,7 +79,7 @@ public class HeavyCannon extends DoomBaseItem {
 				user.getStackInHand(hand).damage(-10, user, s -> user.sendToolBreakStatus(hand));
 				user.getStackInHand(hand).setBobbingAnimationTime(3);
 				user.getEntityWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
-						ModSoundEvents.CLIPRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
+						DoomSounds.CLIPRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
 			}
 		}
 	}

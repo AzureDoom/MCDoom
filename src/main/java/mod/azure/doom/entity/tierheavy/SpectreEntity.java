@@ -5,7 +5,7 @@ import java.util.Random;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
@@ -146,16 +146,16 @@ public class SpectreEntity extends DemonEntity implements IAnimatable, IAnimatio
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.PINKY_HURT;
+		return DoomSounds.PINKY_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.PINKY_DEATH;
+		return DoomSounds.PINKY_DEATH;
 	}
 
 	protected SoundEvent getStepSound() {
-		return ModSoundEvents.PINKY_STEP;
+		return DoomSounds.PINKY_STEP;
 	}
 
 	@Override

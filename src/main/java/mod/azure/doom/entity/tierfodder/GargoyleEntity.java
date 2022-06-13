@@ -7,7 +7,7 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -278,16 +278,16 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.GARGOLYE_AMBIENT;
+		return DoomSounds.GARGOLYE_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.GARGOLYE_HURT;
+		return DoomSounds.GARGOLYE_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.GARGOLYE_DEATH;
+		return DoomSounds.GARGOLYE_DEATH;
 	}
 }

@@ -8,7 +8,7 @@ import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.EntityData;
@@ -102,13 +102,13 @@ public class BaronEntity extends DemonEntity implements IAnimatable, IAnimationT
 	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
 		if (event.sound.matches("walk")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.PINKY_STEP,
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), ModSoundEvents.BARON_AMBIENT,
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.BARON_AMBIENT,
 						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
@@ -192,7 +192,7 @@ public class BaronEntity extends DemonEntity implements IAnimatable, IAnimationT
 
 		@Override
 		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(ModSoundEvents.PLASMA_FIRING, 1, 1);
+			return new AttackSound(DoomSounds.PLASMA_FIRING, 1, 1);
 		}
 
 		@Override
@@ -221,12 +221,12 @@ public class BaronEntity extends DemonEntity implements IAnimatable, IAnimationT
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.BARON_HURT;
+		return DoomSounds.BARON_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.BARON_DEATH;
+		return DoomSounds.BARON_DEATH;
 	}
 
 	@Override

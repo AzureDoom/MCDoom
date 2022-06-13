@@ -9,7 +9,7 @@ import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.client.item.TooltipContext;
@@ -54,7 +54,7 @@ public class DShotgun extends DoomBaseItem {
 					stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
 					worldIn.spawnEntity(abstractarrowentity);
 					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
-							playerentity.getZ(), ModSoundEvents.SHOTGUN_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.5F);
+							playerentity.getZ(), DoomSounds.SHOTGUN_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.5F);
 					if (!worldIn.isClient) {
 						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);
 						GeckoLibNetwork.syncAnimation(playerentity, this, id, ANIM_OPEN);
@@ -67,7 +67,7 @@ public class DShotgun extends DoomBaseItem {
 				}
 			} else {
 				worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-						ModSoundEvents.EMPTY, SoundCategory.PLAYERS, 1.0F, 1.5F);
+						DoomSounds.EMPTY, SoundCategory.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}
@@ -80,7 +80,7 @@ public class DShotgun extends DoomBaseItem {
 				user.getStackInHand(hand).damage(-4, user, s -> user.sendToolBreakStatus(hand));
 				user.getStackInHand(hand).setBobbingAnimationTime(3);
 				user.getEntityWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
-						ModSoundEvents.SHOTGUNRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
+						DoomSounds.SHOTGUNRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
 			}
 		}
 	}

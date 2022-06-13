@@ -12,7 +12,7 @@ import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -397,17 +397,17 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSoundEvents.MAKYR_AMBIENT;
+		return DoomSounds.MAKYR_AMBIENT;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSoundEvents.MAKYR_HURT;
+		return DoomSounds.MAKYR_HURT;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.MAKYR_DEATH;
+		return DoomSounds.MAKYR_DEATH;
 	}
 
 	@Override

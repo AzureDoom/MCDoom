@@ -5,7 +5,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class ModSoundEvents {
+public class DoomSounds {
 
 	public static SoundEvent EMPTY = of("doom.emptyclip");
 	public static SoundEvent BEEP = of("doom.grenadeabouttoexplode");

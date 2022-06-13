@@ -6,7 +6,7 @@ import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tierheavy.CacodemonEntity;
 import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -175,7 +175,7 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 
 	@Override
 	protected SoundEvent getHitSound() {
-		return ModSoundEvents.BEEP;
+		return DoomSounds.BEEP;
 	}
 
 	@Override

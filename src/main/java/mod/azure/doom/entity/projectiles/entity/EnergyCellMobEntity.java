@@ -2,7 +2,7 @@ package mod.azure.doom.entity.projectiles.entity;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.network.DoomEntityPacket;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -116,7 +116,7 @@ public class EnergyCellMobEntity extends ExplosiveProjectileEntity implements IA
 					this.applyDamageEffects((LivingEntity) entity2, entity);
 			}
 		}
-		this.playSound(ModSoundEvents.PLASMA_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+		this.playSound(DoomSounds.PLASMA_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class EnergyCellMobEntity extends ExplosiveProjectileEntity implements IA
 			this.explode();
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
-		this.playSound(ModSoundEvents.PLASMA_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+		this.playSound(DoomSounds.PLASMA_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 	}
 
 	protected void explode() {

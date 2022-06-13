@@ -8,7 +8,7 @@ import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.entity.projectiles.ArgentBoltEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ModSoundEvents;
+import mod.azure.doom.util.registry.DoomSounds;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.client.item.TooltipContext;
@@ -53,7 +53,7 @@ public class DGauss extends DoomBaseItem {
 					stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
 					worldIn.spawnEntity(abstractarrowentity);
 					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
-							playerentity.getZ(), ModSoundEvents.BALLISTA_FIRING, SoundCategory.PLAYERS, 1.0F,
+							playerentity.getZ(), DoomSounds.BALLISTA_FIRING, SoundCategory.PLAYERS, 1.0F,
 							1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
 					Vec3d vec3d = playerentity.getVelocity();
 					playerentity.setVelocity(vec3d.x, vec3d.y * 3, vec3d.z);
@@ -70,7 +70,7 @@ public class DGauss extends DoomBaseItem {
 				}
 			} else {
 				worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-						ModSoundEvents.EMPTY, SoundCategory.PLAYERS, 1.0F, 1.5F);
+						DoomSounds.EMPTY, SoundCategory.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}
