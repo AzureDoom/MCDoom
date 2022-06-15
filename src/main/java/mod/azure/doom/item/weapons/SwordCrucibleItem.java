@@ -59,13 +59,15 @@ public class SwordCrucibleItem extends Item implements IAnimatable, ISyncable {
 	public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity miner) {
 		if (miner instanceof PlayerEntity) {
 			PlayerEntity playerentity = (PlayerEntity) miner;
-			if (!playerentity.getItemCooldownManager().isCoolingDown(this)
-					&& playerentity.getMainHandStack().getItem() instanceof SwordCrucibleItem) {
-				playerentity.getItemCooldownManager().set(this, 200);
-				final Box aabb = new Box(playerentity.getBlockPos().up()).expand(4D, 1D, 4D);
-				playerentity.getEntityWorld().getOtherEntities(playerentity, aabb)
-						.forEach(e -> doDamage(playerentity, e));
-				stack.damage(1, playerentity, p -> p.sendToolBreakStatus(playerentity.getActiveHand()));
+			if (stack.getDamage() < (stack.getMaxDamage() - 1)) {
+				if (!playerentity.getItemCooldownManager().isCoolingDown(this)
+						&& playerentity.getMainHandStack().getItem() instanceof SwordCrucibleItem) {
+					playerentity.getItemCooldownManager().set(this, 200);
+					final Box aabb = new Box(playerentity.getBlockPos().up()).expand(4D, 1D, 4D);
+					playerentity.getEntityWorld().getOtherEntities(playerentity, aabb)
+							.forEach(e -> doDamage(playerentity, e));
+					stack.damage(1, playerentity, p -> p.sendToolBreakStatus(playerentity.getActiveHand()));
+				}
 			}
 		}
 		return true;
