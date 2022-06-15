@@ -20,6 +20,7 @@ import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.entity.projectiles.entity.DroneBoltEntity;
 import mod.azure.doom.entity.projectiles.entity.EnergyCellMobEntity;
+import mod.azure.doom.entity.projectiles.entity.FireProjectile;
 import mod.azure.doom.entity.projectiles.entity.GladiatorMaceEntity;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
@@ -58,6 +59,7 @@ public class ProjectilesEntityRegister {
 	public static EntityType<GrenadeEntity> GRENADE = projectile(GrenadeEntity::new, "doomed_grenade");
 
 	public static EntityType<ChaingunMobEntity> CHAINGUN_MOB = projectile(ChaingunMobEntity::new, "chaingun_mob");
+	public static EntityType<FireProjectile> FIRE_MOB = projectile(FireProjectile::new, "fire_projectile");
 
 	public static final EntityType<MeatHookEntity> MEATHOOOK_ENTITY = projectile(MeatHookEntity::new, "meathook");
 
