@@ -76,19 +76,21 @@ public class SentinelHammerItem extends Item implements IAnimatable, ISyncable {
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity miner) {
 		if (miner instanceof Player) {
 			Player playerentity = (Player) miner;
-			if (!playerentity.getCooldowns().isOnCooldown(this)
-					&& playerentity.getMainHandItem().getItem() instanceof SentinelHammerItem) {
-				playerentity.getCooldowns().addCooldown(this, 200);
-				final AABB aabb = new AABB(miner.blockPosition().above()).inflate(5D, 5D, 5D);
-				miner.getCommandSenderWorld().getEntities(miner, aabb).forEach(e -> doDamage(playerentity, e));
-				stack.hurtAndBreak(1, miner, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
-				AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(miner.level, miner.getX(),
-						playerentity.getY(), playerentity.getZ());
-				areaeffectcloudentity.setParticle(ParticleTypes.CRIT);
-				areaeffectcloudentity.setRadius(5.0F);
-				areaeffectcloudentity.setDuration(20);
-				areaeffectcloudentity.setPos(playerentity.getX(), playerentity.getY(), playerentity.getZ());
-				playerentity.level.addFreshEntity(areaeffectcloudentity);
+			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
+				if (!playerentity.getCooldowns().isOnCooldown(this)
+						&& playerentity.getMainHandItem().getItem() instanceof SentinelHammerItem) {
+					playerentity.getCooldowns().addCooldown(this, 200);
+					final AABB aabb = new AABB(miner.blockPosition().above()).inflate(5D, 5D, 5D);
+					miner.getCommandSenderWorld().getEntities(miner, aabb).forEach(e -> doDamage(playerentity, e));
+					stack.hurtAndBreak(1, miner, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
+					AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(miner.level, miner.getX(),
+							playerentity.getY(), playerentity.getZ());
+					areaeffectcloudentity.setParticle(ParticleTypes.CRIT);
+					areaeffectcloudentity.setRadius(5.0F);
+					areaeffectcloudentity.setDuration(20);
+					areaeffectcloudentity.setPos(playerentity.getX(), playerentity.getY(), playerentity.getZ());
+					playerentity.level.addFreshEntity(areaeffectcloudentity);
+				}
 			}
 		}
 		return true;

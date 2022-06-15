@@ -5,7 +5,12 @@ import java.util.List;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.config.DoomConfig;
-import mod.azure.doom.util.enums.DoomTier;
+import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
+import mod.azure.doom.entity.tierboss.GladiatorEntity;
+import mod.azure.doom.entity.tierboss.IconofsinEntity;
+import mod.azure.doom.entity.tierboss.MotherDemonEntity;
+import mod.azure.doom.entity.tierboss.SpiderMastermind2016Entity;
+import mod.azure.doom.entity.tierboss.SpiderMastermindEntity;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.AxeMarauderLoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
@@ -14,20 +19,22 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 
-public class AxeMarauderItem extends AxeItem {
+public class AxeMarauderItem extends Item {
 
 	public AxeMarauderItem() {
-		super(DoomTier.DOOM_HIGHTEIR, 36, -2.4F, new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1)
+		super(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1)
 				.durability(DoomConfig.SERVER.marauder_axe_damage.get().intValue()));
 	}
 
@@ -40,6 +47,34 @@ public class AxeMarauderItem extends AxeItem {
 		tooltip.add(new TranslatableComponent("doom.marauder_axe3.text").withStyle(ChatFormatting.RED)
 				.withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
+	}
+
+	@Override
+	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity miner) {
+		if (miner instanceof Player) {
+			Player playerentity = (Player) miner;
+			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
+				if (!playerentity.getCooldowns().isOnCooldown(this)
+						&& playerentity.getMainHandItem().getItem() instanceof AxeMarauderItem) {
+					playerentity.getCooldowns().addCooldown(this, 200);
+					final AABB aabb = new AABB(miner.blockPosition().above()).inflate(4D, 1D, 4D);
+					miner.getCommandSenderWorld().getEntities(miner, aabb).forEach(e -> doDamage(playerentity, e));
+					stack.hurtAndBreak(1, miner, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
+				}
+			}
+		}
+		return true;
+	}
+
+	private void doDamage(LivingEntity user, final Entity target) {
+		if (target instanceof LivingEntity) {
+			target.invulnerableTime = 0;
+			target.hurt(DamageSource.playerAttack((Player) user),
+					!(target instanceof ArchMakyrEntity) || !(target instanceof GladiatorEntity)
+							|| !(target instanceof IconofsinEntity) || !(target instanceof MotherDemonEntity)
+							|| !(target instanceof SpiderMastermind2016Entity)
+							|| !(target instanceof SpiderMastermindEntity) ? 20F : 100F);
+		}
 	}
 
 	@Override

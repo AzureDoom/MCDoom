@@ -1,4 +1,4 @@
-v.4.2.16
+v.4.2.17
 
-- Fixes memory leak in config.
-- Readds PMMO Support, all exp values are editable via the Doom config.
+- Fixes Crucbiles and Sential Hammer not having their check for the durablity. 
+- Moves Maruader Axe to same system that Crucbiles use now.
