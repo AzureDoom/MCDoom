@@ -1,4 +1,4 @@
-v.4.2.2b
+v.4.2.3
 
-- Fixes REI on the server.
-- Fixes issue with depends.
+- Fixes Crucbiles and Sential Hammer not having their check for the durablity. 
+- Moves Maruader Axe to same system that Crucbiles use now.
