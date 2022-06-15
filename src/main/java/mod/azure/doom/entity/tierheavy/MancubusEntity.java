@@ -6,7 +6,6 @@ import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
-import mod.azure.doom.entity.projectiles.entity.FireProjectile;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -209,7 +208,6 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 				double g = livingEntity.getBodyY(0.5D) - (0.5D + this.parentEntity.getBodyY(0.5D));
 				double h = livingEntity.getZ() - (this.parentEntity.getZ() + vec3d.z * 2.0D);
 				BarenBlastEntity fireballEntity = new BarenBlastEntity(world, this.parentEntity, f, g, h, 6);
-				FireProjectile fireEntity = new FireProjectile(world, this.parentEntity, f, g, h, 6);
 				double d = Math.min(livingEntity.getY(), parentEntity.getY());
 				double e1 = Math.max(livingEntity.getY(), parentEntity.getY()) + 1.0D;
 				float f2 = (float) MathHelper.atan2(livingEntity.getZ() - parentEntity.getZ(),
@@ -226,9 +224,10 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 					} else if (parentEntity.distanceTo(livingEntity) < 13.0D
 							&& parentEntity.distanceTo(livingEntity) > 3.0D) {
 						for (j = 0; j < 16; ++j) {
-							fireEntity.updatePosition(this.parentEntity.getX() + vec3d.x * 2.0D,
-									this.parentEntity.getBodyY(0.5D) + 0.5D, parentEntity.getZ() + vec3d.z * 2.0D);
-							world.spawnEntity(fireEntity);
+							double l1 = 1.25D * (double) (j + 1);
+							int m = 1 * j;
+							parentEntity.spawnFlames(parentEntity.getX() + (double) MathHelper.cos(f2) * l1 + 0.5,
+									parentEntity.getZ() + (double) MathHelper.sin(f2) * l1, d, e1, f2, m);
 						}
 						this.parentEntity.setAttackingState(2);
 					} else {
@@ -248,9 +247,10 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 					} else if (parentEntity.distanceTo(livingEntity) < 13.0D
 							&& parentEntity.distanceTo(livingEntity) > 3.0D) {
 						for (j = 0; j < 16; ++j) {
-							fireEntity.updatePosition(this.parentEntity.getX() + vec3d.x * 2.0D,
-									this.parentEntity.getBodyY(0.5D) + 0.5D, parentEntity.getZ() + vec3d.z * 2.0D);
-							world.spawnEntity(fireEntity);
+							double l1 = 1.25D * (double) (j + 1);
+							int m = 1 * j;
+							parentEntity.spawnFlames(parentEntity.getX() + (double) MathHelper.cos(f2) * l1 + 0.5,
+									parentEntity.getZ() + (double) MathHelper.sin(f2) * l1, d, e1, f2, m);
 						}
 					} else {
 						fireballEntity.updatePosition(this.parentEntity.getX() + vec3d.x * 2.0D,
