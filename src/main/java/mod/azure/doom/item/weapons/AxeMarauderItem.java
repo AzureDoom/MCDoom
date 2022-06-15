@@ -8,13 +8,19 @@ import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.config.DoomConfig;
-import mod.azure.doom.util.enums.DoomTier;
+import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
+import mod.azure.doom.entity.tierboss.GladiatorEntity;
+import mod.azure.doom.entity.tierboss.IconofsinEntity;
+import mod.azure.doom.entity.tierboss.MotherDemonEntity;
+import mod.azure.doom.entity.tierboss.SpiderMastermind2016Entity;
+import mod.azure.doom.entity.tierboss.SpiderMastermindEntity;
 import mod.azure.doom.util.registry.DoomBlocks;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.AxeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -24,12 +30,13 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
-public class AxeMarauderItem extends AxeItem {
+public class AxeMarauderItem extends Item {
 
 	public AxeMarauderItem() {
-		super(DoomTier.DOOM_HIGHTEIR, 36, -2.4F, new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1)
+		super(new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1)
 				.maxDamage(DoomConfig.crucible_marauder_max_damage));
 	}
 
@@ -41,6 +48,36 @@ public class AxeMarauderItem extends AxeItem {
 	@Override
 	public boolean hasGlint(ItemStack stack) {
 		return false;
+	}
+
+	@Override
+	public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity miner) {
+		if (miner instanceof PlayerEntity) {
+			PlayerEntity playerentity = (PlayerEntity) miner;
+			if (stack.getDamage() < (stack.getMaxDamage() - 1)) {
+				if (!playerentity.getItemCooldownManager().isCoolingDown(this)
+						&& playerentity.getMainHandStack().getItem() instanceof AxeMarauderItem) {
+					playerentity.getItemCooldownManager().set(this, 200);
+					final Box aabb = new Box(playerentity.getBlockPos().up()).expand(4D, 1D, 4D);
+					playerentity.getWorld().getOtherEntities(playerentity, aabb)
+							.forEach(e -> doDamage(playerentity, e));
+					stack.damage(1, playerentity, p -> p.sendToolBreakStatus(playerentity.getActiveHand()));
+				}
+			}
+		}
+		return true;
+
+	}
+
+	private void doDamage(LivingEntity user, Entity target) {
+		if (target instanceof LivingEntity) {
+			target.timeUntilRegen = 0;
+			target.damage(DamageSource.player((PlayerEntity) user),
+					!(target instanceof ArchMakyrEntity) || !(target instanceof GladiatorEntity)
+							|| !(target instanceof IconofsinEntity) || !(target instanceof MotherDemonEntity)
+							|| !(target instanceof SpiderMastermind2016Entity)
+							|| !(target instanceof SpiderMastermindEntity) ? 20F : 100F);
+		}
 	}
 
 	@Override
