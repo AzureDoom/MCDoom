@@ -19,6 +19,6 @@ Adds Doom into Minecraft
 [[dependencies.forge]]
     modId="forge"
     mandatory=true 
-    versionRange="[41.0.0,)" 
+    versionRange="[41.0.21,)" 
     ordering="NONE"
     side="BOTH"

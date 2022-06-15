@@ -1,8 +1,5 @@
-v.4.2.2
+v.4.2.3
 
-- Readds PMMO Support, all exp values are editable via the Doom config.
-
-Currently loading a world with world generation datapacks requires a work around to get working. 
-	- When creating the world, simply select Datapacks and unload any random datapack such as Geckolibs.
-	- Simply reload the datapack now
-	- Save and it will properly load all datapacks, allowing you to create the world as normal and generate all stuctures and mob spawns.
+- Fixes Crucbiles and Sential Hammer not having their check for the durablity. 
+- Moves Maruader Axe to same system that Crucbiles use now.
+- Min Forge set to at least 41.0.21 for world gen fixes.
