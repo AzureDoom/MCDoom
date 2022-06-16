@@ -14,7 +14,6 @@ import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tierboss.MotherDemonEntity;
 import mod.azure.doom.entity.tierboss.SpiderMastermind2016Entity;
 import mod.azure.doom.entity.tierboss.SpiderMastermindEntity;
-import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomBlocks;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.Enchantments;
