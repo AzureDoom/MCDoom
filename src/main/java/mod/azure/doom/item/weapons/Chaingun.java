@@ -89,7 +89,7 @@ public class Chaingun extends DoomBaseItem {
 	}
 
 	public ChaingunBulletEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		float j = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
 		ChaingunBulletEntity arrowentity = new ChaingunBulletEntity(worldIn, shooter,
 				(DoomConfig.SERVER.chaingun_bullet_damage.get().floatValue() + (j * 2.0F)));
 		return arrowentity;

@@ -4,7 +4,6 @@ import java.util.List;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.compat.PMMOCompat;
-import mod.azure.doom.config.DoomConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -41,7 +40,7 @@ public class InmortalSphereItem extends Item {
 					}
 				}
 				if (ModList.get().isLoaded("pmmo")) {
-					PMMOCompat.awardMagicXp((Player) livingEntityIn, DoomConfig.SERVER.inmortal_consume_xp_pmmo.get());
+					PMMOCompat.awardMagicXp((Player) livingEntityIn, stack);
 				}
 			}
 		}

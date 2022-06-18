@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import mod.azure.doom.compat.PMMOCompat;
-import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -101,7 +100,7 @@ public class SoulCubeHandler {
 			livingEntity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 100, 4));
 			livingEntity.level.broadcastEntityEvent(livingEntity, (byte) 90);
 			if (soulcube.isEmpty() && ModList.get().isLoaded("pmmo")) {
-				PMMOCompat.awardMagicXp((Player) livingEntity, DoomConfig.SERVER.soul_consume_xp_pmmo.get());
+				PMMOCompat.awardMagicXp((Player) livingEntity, copy);
 			}
 		}
 	}

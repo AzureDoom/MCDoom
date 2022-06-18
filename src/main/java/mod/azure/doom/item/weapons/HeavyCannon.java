@@ -88,7 +88,7 @@ public class HeavyCannon extends DoomBaseItem {
 	}
 
 	public BulletEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		float j = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
 		BulletEntity arrowentity = new BulletEntity(worldIn, shooter,
 				(DoomConfig.SERVER.bullet_damage.get().floatValue() + (j * 2.0F)));
 		return arrowentity;

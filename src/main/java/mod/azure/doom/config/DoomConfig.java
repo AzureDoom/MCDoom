@@ -14,13 +14,7 @@ import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
 public class DoomConfig {
 	public static class Server {
-		public final ConfigValue<Integer> guntable_crafting_xp_pmmo;
-		public final ConfigValue<Integer> inmortal_consume_xp_pmmo;
-		public final ConfigValue<Integer> invisible_consume_xp_pmmo;
-		public final ConfigValue<Integer> mega_consume_xp_pmmo;
-		public final ConfigValue<Integer> power_consume_xp_pmmo;
-		public final ConfigValue<Integer> soul_consume_xp_pmmo;
-		
+
 		public final ConfigValue<Integer> crucible_marauder_max_damage;
 		public final ConfigValue<Boolean> enable_block_breaking;
 		public final ConfigValue<Boolean> enable_noncenter;
@@ -178,20 +172,6 @@ public class DoomConfig {
 		public final ConfigValue<List<? extends String>> icon_wave_entries;
 
 		public Server(ForgeConfigSpec.Builder builder) {
-			builder.push("PMMO Compat");
-			this.guntable_crafting_xp_pmmo = builder.translation("text.doom.config.guntable_crafting_xp_pmmo")
-					.defineInRange("XP Value of crafting exp given for crafting", 50, 1, Integer.MAX_VALUE);
-			this.inmortal_consume_xp_pmmo = builder.translation("text.doom.config.inmortal_consume_xp_pmmo")
-					.defineInRange("XP Value of Inmortal Sphere Use", 90, 1, Integer.MAX_VALUE);
-			this.invisible_consume_xp_pmmo = builder.translation("text.doom.config.invisible_consume_xp_pmmo")
-					.defineInRange("XP Value of Invisible Sphere Use", 35, 1, Integer.MAX_VALUE);
-			this.mega_consume_xp_pmmo = builder.translation("text.doom.config.mega_consume_xp_pmmo")
-					.defineInRange("XP Value of Mega Sphere Use", 105, 1, Integer.MAX_VALUE);
-			this.power_consume_xp_pmmo = builder.translation("text.doom.config.power_consume_xp_pmmo")
-					.defineInRange("XP Value of Power Sphere Use", 60, 1, Integer.MAX_VALUE);
-			this.soul_consume_xp_pmmo = builder.translation("text.doom.config.soul_consume_xp_pmmo")
-					.defineInRange("XP Value of Soul Cube Final Use", 50, 1, Integer.MAX_VALUE);
-			builder.pop();
 			builder.push("Misc");
 			this.enable_all_villager_trades = builder.translation("text.doom.config.enable_all_villager_trades")
 					.define("Villager Trades Toggle", true);

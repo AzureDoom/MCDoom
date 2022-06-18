@@ -1,5 +1,4 @@
-v.4.2.3
+v.4.2.4
 
-- Fixes Crucbiles and Sential Hammer not having their check for the durablity. 
-- Moves Maruader Axe to same system that Crucbiles use now.
-- Min Forge set to at least 41.0.21 for world gen fixes.
+- Tweaks Plasma Guns to fire faster.
+- PMMO support now moved to a datapack to support things easier. 

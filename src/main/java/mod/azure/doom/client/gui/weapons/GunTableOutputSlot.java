@@ -2,15 +2,14 @@ package mod.azure.doom.client.gui.weapons;
 
 import java.util.Optional;
 
-import mod.azure.doom.compat.PMMOCompat;
-import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.recipes.GunTableRecipe;
 import mod.azure.doom.recipes.GunTableRecipe.Type;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.ModList;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerEvent.ItemCraftedEvent;
 
 public class GunTableOutputSlot extends Slot {
 	private final DoomGunInventory gunTableInventory;
@@ -79,12 +78,7 @@ public class GunTableOutputSlot extends Slot {
 				}
 			}
 		}
-		/*
-		 * Awards crafting xp if Project MMO is installed, configurable via config.
-		 */
-		if (ModList.get().isLoaded("pmmo")) {
-			PMMOCompat.awardCrafting(player, DoomConfig.SERVER.guntable_crafting_xp_pmmo.get());
-		}
+		MinecraftForge.EVENT_BUS.post(new ItemCraftedEvent(player, stack, this.container));
 		this.setChanged();
 	}
 }

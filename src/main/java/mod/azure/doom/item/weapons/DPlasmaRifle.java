@@ -63,7 +63,7 @@ public class DPlasmaRifle extends DoomBaseItem {
 			Player playerentity = (Player) entityLiving;
 			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
 				if (!playerentity.getCooldowns().isOnCooldown(this)) {
-					playerentity.getCooldowns().addCooldown(this, 5);
+					playerentity.getCooldowns().addCooldown(this, 2);
 					if (!worldIn.isClientSide) {
 						EnergyCellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
 						abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(),
@@ -79,7 +79,7 @@ public class DPlasmaRifle extends DoomBaseItem {
 							final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
 							final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
 									.with(() -> playerentity);
-							GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
+							GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN_FASTER);
 						}
 						boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
 						spawnLightSource(entityLiving, isInsideWaterBlock);
@@ -93,7 +93,7 @@ public class DPlasmaRifle extends DoomBaseItem {
 	}
 
 	public EnergyCellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		float j = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
 		EnergyCellEntity arrowentity = new EnergyCellEntity(worldIn, shooter,
 				(DoomConfig.SERVER.energycell_damage.get().floatValue() + (j * 2.0F)));
 		return arrowentity;

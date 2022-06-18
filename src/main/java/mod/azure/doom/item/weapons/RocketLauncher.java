@@ -87,7 +87,7 @@ public class RocketLauncher extends DoomBaseItem {
 	}
 
 	public RocketEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		float j = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
 		RocketEntity arrowentity = new RocketEntity(worldIn, shooter,
 				(DoomConfig.SERVER.rocket_damage.get().floatValue() + (j * 2.0F)));
 		return arrowentity;
