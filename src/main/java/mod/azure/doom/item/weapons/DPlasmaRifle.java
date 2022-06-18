@@ -48,7 +48,7 @@ public class DPlasmaRifle extends DoomBaseItem {
 			PlayerEntity playerentity = (PlayerEntity) livingEntityIn;
 			if (stack.getDamage() < (stack.getMaxDamage() - 1)) {
 				if (!playerentity.getItemCooldownManager().isCoolingDown(this)) {
-					playerentity.getItemCooldownManager().set(this, 5);
+					playerentity.getItemCooldownManager().set(this, 2);
 					if (!worldIn.isClient) {
 						EnergyCellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
 						abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(),
@@ -62,9 +62,9 @@ public class DPlasmaRifle extends DoomBaseItem {
 								1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
 						if (!worldIn.isClient) {
 							final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);
-							GeckoLibNetwork.syncAnimation(playerentity, this, id, ANIM_OPEN);
+							GeckoLibNetwork.syncAnimation(playerentity, this, id, ANIM_OPEN_FASTER);
 							for (PlayerEntity otherPlayer : PlayerLookup.tracking(playerentity)) {
-								GeckoLibNetwork.syncAnimation(otherPlayer, this, id, ANIM_OPEN);
+								GeckoLibNetwork.syncAnimation(otherPlayer, this, id, ANIM_OPEN_FASTER);
 							}
 						}
 						boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
