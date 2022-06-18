@@ -34,6 +34,7 @@ public class DoomBaseItem extends Item implements IAnimatable, ISyncable {
 	public AnimationFactory factory = new AnimationFactory(this);
 	public String controllerName = "controller";
 	public static final int ANIM_OPEN = 0;
+	public static final int ANIM_OPEN_FASTER = 2;
 	public static final int ANIM_HOOK = 1;
 	private BlockPos lightBlockPos = null;
 
@@ -58,6 +59,14 @@ public class DoomBaseItem extends Item implements IAnimatable, ISyncable {
 			final AnimationController<?> controller = GeckoLibUtil.getControllerForID(this.factory, id, controllerName);
 			if (controller.getAnimationState() == AnimationState.Stopped) {
 				controller.markNeedsReload();
+				controller.setAnimation(new AnimationBuilder().addAnimation("firing", false));
+			}
+		}
+		if (state == ANIM_OPEN_FASTER) {
+			final AnimationController<?> controller = GeckoLibUtil.getControllerForID(this.factory, id, controllerName);
+			if (controller.getAnimationState() == AnimationState.Stopped) {
+				controller.markNeedsReload();
+				controller.setAnimationSpeed(2);
 				controller.setAnimation(new AnimationBuilder().addAnimation("firing", false));
 			}
 		}
