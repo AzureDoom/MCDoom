@@ -1,6 +1,7 @@
 package mod.azure.doom.entity.tierheavy;
 
 import java.util.EnumSet;
+import java.util.SplittableRandom;
 import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
@@ -13,14 +14,24 @@ import mod.azure.doom.entity.attack.FireballAttack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -34,6 +45,7 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
@@ -47,6 +59,9 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
+
+	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(ProwlerEntity.class,
+			EntityDataSerializers.INT);
 
 	private AnimationFactory factory = new AnimationFactory(this);
 	private int targetChangeTime;
@@ -402,10 +417,18 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 	@Override
 	public void aiStep() {
 		if (this.level.isClientSide) {
-			for (int i = 0; i < 2; ++i) {
-				this.level.addParticle(ParticleTypes.PORTAL, this.getRandomX(0.5D), this.getRandomY() - 0.25D,
-						this.getRandomZ(0.5D), (this.random.nextDouble() - 0.5D) * 2.0D, -this.random.nextDouble(),
-						(this.random.nextDouble() - 0.5D) * 2.0D);
+			if (this.getVariant() == 1) {
+				for (int i = 0; i < 2; ++i) {
+					this.level.addParticle(ParticleTypes.PORTAL, this.getRandomX(0.5D), this.getRandomY() - 0.25D,
+							this.getRandomZ(0.5D), (this.random.nextDouble() - 0.5D) * 2.0D, -this.random.nextDouble(),
+							(this.random.nextDouble() - 0.5D) * 2.0D);
+				}
+			} else {
+				for (int i = 0; i < 2; ++i) {
+					this.level.addParticle(ParticleTypes.COMPOSTER, this.getRandomX(0.5D), this.getRandomY() - 0.25D,
+							this.getRandomZ(0.5D), (this.random.nextDouble() - 0.5D) * 2.0D, -this.random.nextDouble(),
+							(this.random.nextDouble() - 0.5D) * 2.0D);
+				}
 			}
 		}
 
@@ -501,6 +524,54 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 	@Override
 	public int tickTimer() {
 		return tickCount;
+	}
+
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(VARIANT, 0);
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundTag tag) {
+		super.readAdditionalSaveData(tag);
+		this.setVariant(tag.getInt("Variant"));
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putInt("Variant", this.getVariant());
+	}
+
+	public int getVariant() {
+		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 2);
+	}
+
+	public void setVariant(int variant) {
+		this.entityData.set(VARIANT, variant);
+	}
+
+	public int getVariants() {
+		return 2;
+	}
+
+	@Override
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
+			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
+		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+		SplittableRandom random = new SplittableRandom();
+		int var = random.nextInt(0, 3);
+		this.setVariant(var);
+		return spawnDataIn;
+	}
+
+	@Override
+	public boolean doHurtTarget(Entity target) {
+		if (this.getVariant() == 2 && target instanceof LivingEntity) {
+			((LivingEntity) target).addEffect(new MobEffectInstance(MobEffects.POISON, 100, 0), this);
+		}
+		return super.doHurtTarget(target);
 	}
 
 }
