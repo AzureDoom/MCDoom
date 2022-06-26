@@ -17,7 +17,8 @@ public class ProwlerModel extends AnimatedTickingGeoModel<ProwlerEntity> {
 
 	@Override
 	public ResourceLocation getTextureResource(ProwlerEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/entity/prowler.png");
+		return new ResourceLocation(DoomMod.MODID,
+				"textures/entity/" + (object.getVariant() == 2 ? "prowler_cursed" : "prowler") + ".png");
 	}
 
 	@Override
