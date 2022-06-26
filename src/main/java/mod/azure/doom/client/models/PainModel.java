@@ -11,29 +11,27 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class PainModel extends AnimatedTickingGeoModel<PainEntity> {
 
-	public Identifier classic_model = new Identifier(DoomMod.MODID, "geo/pain.geo.json");
-	public Identifier doom64_model = new Identifier(DoomMod.MODID, "geo/pain64.geo.json");
-	public Identifier classic_texture = new Identifier(DoomMod.MODID, "textures/entity/painelemental-normal.png");
-	public Identifier classic_texture_attacking = new Identifier(DoomMod.MODID,
-			"textures/entity/painelemental-attacking.png");
-	public Identifier doom64_texture = new Identifier(DoomMod.MODID, "textures/entity/painelemental64-normal.png");
-	public Identifier doom64_texture_attacking = new Identifier(DoomMod.MODID,
-			"textures/entity/painelemental64-attacking.png");
-
 	@Override
 	public Identifier getModelResource(PainEntity object) {
-		return object.getVariant() == 1 ? classic_model : doom64_model;
+		return new Identifier(DoomMod.MODID,
+				"geo/" + (object.getVariant() == 2 ? "pain64" : object.getVariant() == 3 ? "paineternal" : "pain")
+						+ ".geo.json");
 	}
 
 	@Override
 	public Identifier getTextureResource(PainEntity object) {
-		return object.getVariant() == 1 ? (object.getAttckingState() == 1 ? classic_texture_attacking : classic_texture)
-				: (object.getAttckingState() == 1 ? doom64_texture_attacking : doom64_texture);
+		return new Identifier(DoomMod.MODID, "textures/entity/"
+				+ (object.getVariant() == 2
+						? (object.getAttckingState() == 2 ? "painelemental64-attacking" : "painelemental64-normal")
+						: object.getVariant() == 3 ? "paineternal"
+								: (object.getAttckingState() == 1 ? "painelemental-attacking" : "painelemental-normal"))
+				+ ".png");
 	}
 
 	@Override
 	public Identifier getAnimationResource(PainEntity object) {
-		return new Identifier(DoomMod.MODID, "animations/pain_animation.json");
+		return new Identifier(DoomMod.MODID,
+				"animations/" + (object.getVariant() == 3 ? "paineternal." : "pain_") + "animation.json");
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
