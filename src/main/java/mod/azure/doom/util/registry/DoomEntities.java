@@ -18,6 +18,7 @@ import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.entity.projectiles.entity.DroneBoltEntity;
 import mod.azure.doom.entity.projectiles.entity.EnergyCellMobEntity;
+import mod.azure.doom.entity.projectiles.entity.FireProjectile;
 import mod.azure.doom.entity.projectiles.entity.GladiatorMaceEntity;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import mod.azure.doom.entity.tierambient.CueBallEntity;
@@ -100,6 +101,10 @@ public class DoomEntities {
 	public static final RegistryObject<EntityType<DoomFireEntity>> FIRING = ENTITY_TYPES.register("archvile_firing",
 			() -> EntityType.Builder.<DoomFireEntity>of(DoomFireEntity::new, MobCategory.MISC).sized(0.5F, 0.8F)
 					.clientTrackingRange(10).build(new ResourceLocation(DoomMod.MODID, "archvile_firing").toString()));
+
+	public static final RegistryObject<EntityType<FireProjectile>> FIRE_MOB = ENTITY_TYPES.register("fire_projectile",
+			() -> EntityType.Builder.<FireProjectile>of(FireProjectile::new, MobCategory.MISC).sized(0.5F, 0.8F)
+					.clientTrackingRange(10).build(new ResourceLocation(DoomMod.MODID, "fire_projectile").toString()));
 
 	public static final RegistryObject<EntityType<BarrelEntity>> BARREL = ENTITY_TYPES.register("barrel",
 			() -> EntityType.Builder.<BarrelEntity>of(BarrelEntity::new, MobCategory.MISC).sized(0.98F, 0.98F)
