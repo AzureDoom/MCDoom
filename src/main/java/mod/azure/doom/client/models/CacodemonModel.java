@@ -11,24 +11,22 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class CacodemonModel extends AnimatedTickingGeoModel<CacodemonEntity> {
 
-	public Identifier classic_model = new Identifier(DoomMod.MODID, "geo/cacodemon.geo.json");
-	public Identifier doom64_model = new Identifier(DoomMod.MODID, "geo/cacodemon64.geo.json");
-	public Identifier classic_texture = new Identifier(DoomMod.MODID, "textures/entity/cacodemon.png");
-	public Identifier doom64_texture = new Identifier(DoomMod.MODID, "textures/entity/cacodemon64.png");
-
 	@Override
 	public Identifier getModelResource(CacodemonEntity object) {
-		return object.getVariant() == 1 ? classic_model : doom64_model;
+		return new Identifier(DoomMod.MODID, "geo/" + (object.getVariant() == 1 ? "cacodemon64"
+				: object.getVariant() == 3 ? "cacodemoneternal" : "cacodemon") + ".geo.json");
 	}
 
 	@Override
 	public Identifier getTextureResource(CacodemonEntity object) {
-		return object.getVariant() == 1 ? classic_texture : doom64_texture;
+		return new Identifier(DoomMod.MODID, "textures/entity/" + (object.getVariant() == 1 ? "cacodemon64"
+				: object.getVariant() == 3 ? "cacodemoneternal" : "cacodemon") + ".png");
 	}
 
 	@Override
 	public Identifier getAnimationResource(CacodemonEntity object) {
-		return new Identifier(DoomMod.MODID, "animations/cacodemon_animation.json");
+		return new Identifier(DoomMod.MODID,
+				"animations/" + (object.getVariant() == 3 ? "cacodemoneternal." : "cacodemon_") + "animation.json");
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
