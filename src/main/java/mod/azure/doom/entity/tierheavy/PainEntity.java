@@ -4,6 +4,7 @@ import java.util.EnumSet;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.ai.goal.PainAttackGoal;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
 import mod.azure.doom.util.registry.DoomEntities;
@@ -115,7 +116,7 @@ public class PainEntity extends DemonEntity implements Enemy, IAnimatable, IAnim
 	}
 
 	public int getVariant() {
-		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 2);
+		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 3);
 	}
 
 	public void setVariant(int variant) {
@@ -123,7 +124,7 @@ public class PainEntity extends DemonEntity implements Enemy, IAnimatable, IAnim
 	}
 
 	public int getVariants() {
-		return 2;
+		return 3;
 	}
 
 	@Override
@@ -141,6 +142,7 @@ public class PainEntity extends DemonEntity implements Enemy, IAnimatable, IAnim
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.lost_soul_melee_damage.get())
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.pain_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
 				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
@@ -150,7 +152,7 @@ public class PainEntity extends DemonEntity implements Enemy, IAnimatable, IAnim
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.addGoal(7, new PainEntity.LookAroundGoal(this));
-		this.goalSelector.addGoal(7, new PainEntity.FireballAttackGoal(this, 1));
+		this.goalSelector.addGoal(4, new PainAttackGoal(this));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
@@ -222,67 +224,6 @@ public class PainEntity extends DemonEntity implements Enemy, IAnimatable, IAnim
 
 	public boolean onClimbable() {
 		return false;
-	}
-
-	static class FireballAttackGoal extends Goal {
-		private final PainEntity parentEntity;
-		public int attackTimer;
-		private int statecheck;
-
-		public FireballAttackGoal(PainEntity ghast, int state) {
-			this.parentEntity = ghast;
-			this.statecheck = state;
-		}
-
-		public boolean canUse() {
-			return this.parentEntity.getTarget() != null;
-		}
-
-		public void start() {
-			this.attackTimer = 0;
-		}
-
-		public void stop() {
-			this.parentEntity.setAttackingState(0);
-		}
-
-		public void tick() {
-			LivingEntity livingentity = this.parentEntity.getTarget();
-			if (livingentity.distanceToSqr(this.parentEntity) < 4096.0D
-					&& this.parentEntity.hasLineOfSight(livingentity)) {
-				this.parentEntity.getLookControl().setLookAt(livingentity, 90.0F, 30.0F);
-				Level world = this.parentEntity.level;
-				++this.attackTimer;
-				if (this.attackTimer == 20) {
-					if (this.parentEntity.getVariant() == 1) {
-						LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.get().create(world);
-						lost_soul.moveTo(this.parentEntity.getX(), this.parentEntity.getY(), this.parentEntity.getZ(),
-								0, 0);
-						lost_soul.push(1.0D, 0.0D, 0.0D);
-						world.addFreshEntity(lost_soul);
-					} else {
-						LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.get().create(world);
-						lost_soul.moveTo(this.parentEntity.getX(), this.parentEntity.getY(), this.parentEntity.getZ(),
-								0, 0);
-						lost_soul.push(1.0D, 0.0D, 0.0D);
-						world.addFreshEntity(lost_soul);
-						LostSoulEntity lost_soul1 = DoomEntities.LOST_SOUL.get().create(world);
-						lost_soul1.moveTo(this.parentEntity.getX(), this.parentEntity.getY(), this.parentEntity.getZ(),
-								0, 0);
-						lost_soul1.push(1.0D, 0.0D, 0.0D);
-						world.addFreshEntity(lost_soul1);
-					}
-					this.parentEntity.setAttackingState(1);
-				}
-				if (this.attackTimer == 35) {
-					this.parentEntity.setAttackingState(0);
-					this.attackTimer = -45;
-				}
-			} else if (this.attackTimer > 0) {
-				--this.attackTimer;
-			}
-			this.parentEntity.setAttackingState(attackTimer >= 10 ? this.statecheck : 0);
-		}
 	}
 
 	static class LookAroundGoal extends Goal {
