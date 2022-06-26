@@ -98,13 +98,14 @@ import mod.azure.doom.client.render.projectiles.entity.BloodBoltRender;
 import mod.azure.doom.client.render.projectiles.entity.ChaingunMobRender;
 import mod.azure.doom.client.render.projectiles.entity.DroneBoltRender;
 import mod.azure.doom.client.render.projectiles.entity.EnergyCellMobRender;
+import mod.azure.doom.client.render.projectiles.entity.FireProjectileRender;
 import mod.azure.doom.client.render.projectiles.entity.GladiatorMaceRender;
 import mod.azure.doom.client.render.projectiles.entity.RocketMobRender;
 import mod.azure.doom.client.render.tile.GunCraftingRender;
 import mod.azure.doom.client.render.tile.TotemRender;
 import mod.azure.doom.util.registry.DoomBlocks;
-import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
@@ -249,6 +250,7 @@ public class DoomRenderRegistry {
 				(ctx) -> new GladiatorMaceRender(ctx));
 		EntityRendererRegistry.register(ProjectilesEntityRegister.DRONEBOLT_MOB, (ctx) -> new DroneBoltRender(ctx));
 		EntityRendererRegistry.register(ProjectilesEntityRegister.BLOODBOLT_MOB, (ctx) -> new BloodBoltRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.FIRE_MOB, (ctx) -> new FireProjectileRender(ctx));
 
 		BlockEntityRendererRegistry.register(DoomMod.TOTEM,
 				(BlockEntityRendererFactory.Context rendererDispatcherIn) -> new TotemRender());
