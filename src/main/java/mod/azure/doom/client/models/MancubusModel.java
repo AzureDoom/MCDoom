@@ -21,7 +21,8 @@ public class MancubusModel extends AnimatedTickingGeoModel<MancubusEntity> {
 
 	@Override
 	public Identifier getTextureResource(MancubusEntity object) {
-		return new Identifier(DoomMod.MODID, "textures/entity/mancubus.png");
+		return new Identifier(DoomMod.MODID,
+				"textures/entity/" + (object.getVariant() == 2 ? "cyber_mancubus" : "mancubus") + ".png");
 	}
 
 	@Override
