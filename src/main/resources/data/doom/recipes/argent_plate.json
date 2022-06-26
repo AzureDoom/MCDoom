@@ -4,7 +4,7 @@
         "item": "doom:argent_energy"
     },
     "addition": {
-        "item": "minecraft:iron_ingot"
+        "item": "minecraft:netherite_scrap"
     },
     "result": {
         "item": "doom:argent_plate"
