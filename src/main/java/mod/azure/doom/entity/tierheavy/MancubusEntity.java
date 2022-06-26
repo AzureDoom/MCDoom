@@ -1,6 +1,7 @@
 package mod.azure.doom.entity.tierheavy;
 
 import java.util.Random;
+import java.util.SplittableRandom;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
@@ -9,6 +10,7 @@ import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
@@ -23,9 +25,13 @@ import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -35,6 +41,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
@@ -47,6 +55,9 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
+
+	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(MancubusEntity.class,
+			TrackedDataHandlerRegistry.INTEGER);
 
 	private AnimationFactory factory = new AnimationFactory(this);
 
@@ -329,5 +340,49 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 	@Override
 	protected SoundEvent getDeathSound() {
 		return DoomSounds.MANCUBUS_DEATH;
+	}
+
+	protected void initDataTracker() {
+		super.initDataTracker();
+		this.dataTracker.startTracking(VARIANT, 0);
+	}
+
+	@Override
+	public void writeCustomDataToNbt(NbtCompound tag) {
+		super.writeCustomDataToNbt(tag);
+		tag.putInt("Variant", this.getVariant());
+	}
+
+	@Override
+	public void readCustomDataFromNbt(NbtCompound tag) {
+		super.readCustomDataFromNbt(tag);
+		this.setVariant(tag.getInt("Variant"));
+	}
+
+	public int getVariant() {
+		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 2);
+	}
+
+	public void setVariant(int variant) {
+		this.dataTracker.set(VARIANT, variant);
+	}
+
+	public int getVariants() {
+		return 2;
+	}
+
+	@Override
+	public EntityData initialize(ServerWorldAccess serverWorldAccess, LocalDifficulty difficulty,
+			SpawnReason spawnReason, EntityData entityData, NbtCompound entityTag) {
+		entityData = super.initialize(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
+		SplittableRandom random = new SplittableRandom();
+		int var = random.nextInt(0, 3);
+		this.setVariant(var);
+		return entityData;
+	}
+
+	@Override
+	public int getArmor() {
+		return this.getVariant() == 2 ? 6 : 0;
 	}
 }
