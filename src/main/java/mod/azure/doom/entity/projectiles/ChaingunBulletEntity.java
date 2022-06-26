@@ -1,7 +1,7 @@
 package mod.azure.doom.entity.projectiles;
 
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import mod.azure.doom.network.EntityPacket;
+import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -93,7 +93,7 @@ public class ChaingunBulletEntity extends PersistentProjectileEntity implements 
 
 	@Override
 	public Packet<?> createSpawnPacket() {
-		return EntityPacket.createPacket(this);
+		return DoomEntityPacket.createPacket(this);
 	}
 
 	@Override

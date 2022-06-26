@@ -4,7 +4,7 @@ import java.util.List;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tierheavy.CacodemonEntity;
-import mod.azure.doom.network.EntityPacket;
+import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomSounds;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
@@ -111,7 +111,7 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 
 	@Override
 	public Packet<?> createSpawnPacket() {
-		return EntityPacket.createPacket(this);
+		return DoomEntityPacket.createPacket(this);
 	}
 
 	@Override

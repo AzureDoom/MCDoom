@@ -30,7 +30,7 @@ import mod.azure.doom.client.render.weapons.SSGRender;
 import mod.azure.doom.client.render.weapons.SentinelHammerRender;
 import mod.azure.doom.client.render.weapons.SwordCrucibleRender;
 import mod.azure.doom.client.render.weapons.UnmaykrRender;
-import mod.azure.doom.network.EntityPacket;
+import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.network.EntityPacketOnClient;
 import mod.azure.doom.particles.PlasmaParticle;
 import mod.azure.doom.util.registry.DoomBlocks;
@@ -78,7 +78,7 @@ public class ClientInit implements ClientModInitializer {
 		GeoItemRenderer.registerItemRenderer(DoomItems.DPLASMARIFLE, new DPlamsaRifleRender());
 		GeoItemRenderer.registerItemRenderer(DoomItems.DGAUSS, new DGaussRender());
 		GeoItemRenderer.registerItemRenderer(DoomItems.GRENADE, new GrenadeItemRender());
-		ClientPlayNetworking.registerGlobalReceiver(EntityPacket.ID, (client, handler, buf, responseSender) -> {
+		ClientPlayNetworking.registerGlobalReceiver(DoomEntityPacket.ID, (client, handler, buf, responseSender) -> {
 			EntityPacketOnClient.onPacket(client, buf);
 		});
 		KeyBindingHelper.registerKeyBinding(reload);

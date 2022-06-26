@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
 
-import mod.azure.doom.network.EntityPacket;
+import mod.azure.doom.network.DoomEntityPacket;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
@@ -46,7 +46,7 @@ public class DemonEntity extends HostileEntity implements Angerable {
 
 	@Override
 	public Packet<?> createSpawnPacket() {
-		return EntityPacket.createPacket(this);
+		return DoomEntityPacket.createPacket(this);
 	}
 
 	@Override

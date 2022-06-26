@@ -11,7 +11,7 @@ import mod.azure.doom.entity.tierheavy.MancubusEntity;
 import mod.azure.doom.entity.tiersuperheavy.ArchvileEntity;
 import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
 import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
-import mod.azure.doom.network.EntityPacket;
+import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.entity.Entity;
@@ -160,7 +160,7 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 
 	@Override
 	public Packet<?> createSpawnPacket() {
-		return EntityPacket.createPacket(this);
+		return DoomEntityPacket.createPacket(this);
 	}
 
 }
