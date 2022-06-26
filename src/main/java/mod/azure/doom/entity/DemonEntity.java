@@ -37,7 +37,6 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 
 	protected DemonEntity(EntityType<? extends PathfinderMob> type, Level worldIn) {
 		super(type, worldIn);
-		this.noCulling = true;
 		this.xpReward = (int) (this.getMaxHealth());
 	}
 
