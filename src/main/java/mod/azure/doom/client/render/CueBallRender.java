@@ -8,8 +8,8 @@ import mod.azure.doom.entity.tierambient.CueBallEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public class CueBallRender extends GeoEntityRenderer<CueBallEntity> {
@@ -33,5 +33,10 @@ public class CueBallRender extends GeoEntityRenderer<CueBallEntity> {
 	@Override
 	protected float getDeathMaxRotation(CueBallEntity entityLivingBaseIn) {
 		return 0.0F;
+	}
+
+	@Override
+	public boolean shouldShowName(CueBallEntity entity) {
+		return false;
 	}
 }
