@@ -5,6 +5,7 @@ import java.util.Random;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.ai.goal.PainAttackGoal;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
 import mod.azure.doom.network.DoomEntityPacket;
@@ -205,7 +206,7 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable, IAn
 	}
 
 	public int getVariant() {
-		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 2);
+		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 3);
 	}
 
 	public void setVariant(int variant) {
@@ -213,7 +214,7 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable, IAn
 	}
 
 	public int getVariants() {
-		return 2;
+		return 3;
 	}
 
 	@Override
@@ -231,6 +232,7 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable, IAn
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.lost_soul_melee_damage)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D).add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.pain_health)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
@@ -239,7 +241,7 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable, IAn
 	@Override
 	protected void initGoals() {
 		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(4, new PainEntity.ShootFireballGoal(this));
+		this.goalSelector.add(4, new PainAttackGoal(this));
 		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.targetSelector.add(2, new TargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new TargetGoal<>(this, MerchantEntity.class, true));
@@ -259,71 +261,6 @@ public class PainEntity extends DemonEntity implements Monster, IAnimatable, IAn
 	@Override
 	protected boolean isDisallowedInPeaceful() {
 		return true;
-	}
-
-	static class ShootFireballGoal extends Goal {
-		private final PainEntity ghast;
-		public int cooldown;
-
-		public ShootFireballGoal(PainEntity ghast) {
-			this.ghast = ghast;
-		}
-
-		public boolean canStart() {
-			return this.ghast.getTarget() != null;
-		}
-
-		public void start() {
-			this.cooldown = 0;
-		}
-
-		public void stop() {
-			this.ghast.setAttackingState(0);
-			ghast.setNoGravity(false);
-			ghast.addVelocity(0, 0, 0);
-		}
-
-		public void tick() {
-			LivingEntity livingEntity = this.ghast.getTarget();
-			if (livingEntity.squaredDistanceTo(this.ghast) < 4096.0D && this.ghast.canSee(livingEntity)) {
-				this.ghast.getLookControl().lookAt(livingEntity, 90.0F, 30.0F);
-				World world = this.ghast.world;
-				++this.cooldown;
-				if (this.cooldown == 10) {
-					ghast.setNoGravity(true);
-					ghast.addVelocity(0, (double) 0.2F * 1.3D, 0);
-				}
-				if (this.cooldown == 20) {
-					if (this.ghast.getVariant() == 1) {
-						LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.create(world);
-						lost_soul.refreshPositionAndAngles(this.ghast.getX(), this.ghast.getY(), this.ghast.getZ(), 0,
-								0);
-						lost_soul.addVelocity(1.0D, 0.0D, 0.0D);
-						world.spawnEntity(lost_soul);
-					} else {
-						LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.create(world);
-						lost_soul.refreshPositionAndAngles(this.ghast.getX(), this.ghast.getY(), this.ghast.getZ(), 0,
-								0);
-						lost_soul.addVelocity(1.0D, 0.0D, 0.0D);
-						world.spawnEntity(lost_soul);
-
-						LostSoulEntity lost_soul1 = DoomEntities.LOST_SOUL.create(world);
-						lost_soul1.refreshPositionAndAngles(this.ghast.getX(), this.ghast.getY(), this.ghast.getZ(), 0,
-								0);
-						lost_soul1.addVelocity(1.0D, 0.0D, 0.0D);
-						world.spawnEntity(lost_soul1);
-					}
-					this.ghast.setAttackingState(1);
-				}
-				if (this.cooldown == 35) {
-					this.ghast.setAttackingState(0);
-					this.cooldown = -45;
-				}
-			} else if (this.cooldown > 0) {
-				--this.cooldown;
-			}
-			this.ghast.setAttackingState(cooldown >= 10 ? 1 : 0);
-		}
 	}
 
 	static class GhastMoveControl extends MoveControl {
