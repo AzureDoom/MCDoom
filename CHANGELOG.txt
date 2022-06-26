@@ -1,3 +1,14 @@
-v.4.2.18
+v.4.2.19
 
-- Tweaks Plasma Guns to fire faster.
+- Reenable culling (was disabled as a test and totally forgot to reenable, will improve FPS).
+- Argent Plate reciepe updated, no longer uses Iron. Now requires Netherite scrap. 
+- Cyber Mancubus Variant added to Mancubus. - Model tweak/Texture by MangoDragon21
+  - Mancubus mid range attack now shoots fire at you instead summoning fire from the ground.
+- Screecher Variant added to Cueball. - Model/Texture by MangoDragon21
+  - Buffs all nearby demons upon death, same stats a Cueball and doesn't move.
+- Cursed Prowler Variant added to Prowler. - Model/Texture by MangoDragon21
+  - Applies posion on hits.
+  - Normal Prowler eyes updated. - Texture tweak by MangoDragon21
+- Cacodemon Eternal Variant added to Cacodemon. - Model/Texture by Wolverbyte
+- Pain Elemental Eternal Variant added to Pain Elemental - Modle/Texture by MangoDragon21/Wolverbyte
+  - Pain Elemental now melees if in range.
