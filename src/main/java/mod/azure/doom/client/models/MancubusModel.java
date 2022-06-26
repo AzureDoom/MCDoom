@@ -20,7 +20,8 @@ public class MancubusModel extends AnimatedTickingGeoModel<MancubusEntity> {
 
 	@Override
 	public ResourceLocation getTextureResource(MancubusEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/entity/mancubus.png");
+		return new ResourceLocation(DoomMod.MODID,
+				"textures/entity/" + (object.getVariant() == 2 ? "cyber_mancubus" : "mancubus") + ".png");
 	}
 
 	@Override
