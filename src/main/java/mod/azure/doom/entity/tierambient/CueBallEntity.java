@@ -1,18 +1,34 @@
 package mod.azure.doom.entity.tierambient;
 
+import java.util.List;
 import java.util.Random;
+import java.util.SplittableRandom;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierfodder.PossessedScientistEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -26,6 +42,9 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class CueBallEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
+	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(CueBallEntity.class,
+			TrackedDataHandlerRegistry.INTEGER);
+
 	private AnimationFactory factory = new AnimationFactory(this);
 	public int flameTimer;
 
@@ -34,6 +53,10 @@ public class CueBallEntity extends DemonEntity implements IAnimatable, IAnimatio
 	}
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
+			return PlayState.CONTINUE;
+		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
 	}
@@ -54,8 +77,26 @@ public class CueBallEntity extends DemonEntity implements IAnimatable, IAnimatio
 		if (this.deathTime == 30) {
 			this.remove(Entity.RemovalReason.KILLED);
 			this.dropXp();
-			if (!world.isClient) {
+			if (!this.world.isClient && this.getVariant() == 1) {
 				this.explode();
+			}
+			if (!this.world.isClient && this.getVariant() == 2) {
+				float q = 200.0F;
+				int k = MathHelper.floor(this.getX() - (double) q - 1.0D);
+				int l = MathHelper.floor(this.getX() + (double) q + 1.0D);
+				int t = MathHelper.floor(this.getY() - (double) q - 1.0D);
+				int u = MathHelper.floor(this.getY() + (double) q + 1.0D);
+				int v = MathHelper.floor(this.getZ() - (double) q - 1.0D);
+				int w = MathHelper.floor(this.getZ() + (double) q + 1.0D);
+				List<Entity> list = this.world.getOtherEntities(this,
+						new Box((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
+				for (int k2 = 0; k2 < list.size(); ++k2) {
+					Entity entity = list.get(k2);
+					if (entity.isAlive() && entity instanceof DemonEntity) {
+						((DemonEntity) entity)
+								.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 1000, 1));
+					}
+				}
 			}
 		}
 	}
@@ -64,6 +105,15 @@ public class CueBallEntity extends DemonEntity implements IAnimatable, IAnimatio
 	public void tick() {
 		super.tick();
 		flameTimer = (flameTimer + 1) % 2;
+		if (this.world.isClient()) {
+			if (this.getVariant() == 2) {
+				for (int i = 0; i < 2; ++i) {
+					this.world.addParticle(ParticleTypes.PORTAL, this.getParticleX(0.5D), this.getRandomBodyY() - 0.25D,
+							this.getParticleZ(0.5D), (this.random.nextDouble() - 0.5D) * 2.0D,
+							-this.random.nextDouble(), (this.random.nextDouble() - 0.5D) * 2.0D);
+				}
+			}
+		}
 	}
 
 	public int getFlameTimer() {
@@ -108,6 +158,50 @@ public class CueBallEntity extends DemonEntity implements IAnimatable, IAnimatio
 	@Override
 	public int tickTimer() {
 		return age;
+	}
+
+	@Override
+	public Text getCustomName() {
+		return this.getVariant() == 2 ? new TranslatableText("entity.doom.screecher") : super.getCustomName();
+	}
+
+	protected void initDataTracker() {
+		super.initDataTracker();
+		this.dataTracker.startTracking(VARIANT, 0);
+	}
+
+	@Override
+	public void writeCustomDataToNbt(NbtCompound tag) {
+		super.writeCustomDataToNbt(tag);
+		tag.putInt("Variant", this.getVariant());
+	}
+
+	@Override
+	public void readCustomDataFromNbt(NbtCompound tag) {
+		super.readCustomDataFromNbt(tag);
+		this.setVariant(tag.getInt("Variant"));
+	}
+
+	public int getVariant() {
+		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 2);
+	}
+
+	public void setVariant(int variant) {
+		this.dataTracker.set(VARIANT, variant);
+	}
+
+	public int getVariants() {
+		return 2;
+	}
+
+	@Override
+	public EntityData initialize(ServerWorldAccess serverWorldAccess, LocalDifficulty difficulty,
+			SpawnReason spawnReason, EntityData entityData, NbtCompound entityTag) {
+		entityData = super.initialize(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
+		SplittableRandom random = new SplittableRandom();
+		int var = random.nextInt(0, 3);
+		this.setVariant(var);
+		return entityData;
 	}
 
 }

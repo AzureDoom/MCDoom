@@ -33,4 +33,9 @@ public class CueBallRender extends GeoEntityRenderer<CueBallEntity> {
 	protected float getDeathMaxRotation(CueBallEntity entityLivingBaseIn) {
 		return 0.0F;
 	}
+
+	@Override
+	protected boolean hasLabel(CueBallEntity entity) {
+		return false;
+	}
 }
