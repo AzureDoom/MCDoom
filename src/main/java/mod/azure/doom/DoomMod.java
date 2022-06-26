@@ -17,12 +17,14 @@ import mod.azure.doom.util.DoomVillagerTrades;
 import mod.azure.doom.util.MobAttributes;
 import mod.azure.doom.util.recipes.GunTableRecipe;
 import mod.azure.doom.util.registry.DoomBlocks;
+import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.DoomItems;
+import mod.azure.doom.util.registry.DoomLoot;
+import mod.azure.doom.util.registry.DoomSounds;
 import mod.azure.doom.util.registry.DoomStructures;
 import mod.azure.doom.util.registry.MobSpawn;
-import mod.azure.doom.util.registry.DoomEntities;
-import mod.azure.doom.util.registry.DoomSounds;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
+import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.block.entity.BlockEntityType;
@@ -32,6 +34,9 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandlerType;
@@ -111,6 +116,21 @@ public class DoomMod implements ModInitializer {
 		if (DoomConfig.enable_all_villager_trades) {
 			ServerLifecycleEvents.READY.register(minecraftServer -> DoomVillagerTrades.addTrades());
 		}
+		LootTableEvents.MODIFY.register((resourceManager, lootManager, id, supplier, setter) -> {
+			if (DoomLoot.BASTION_BRIDGE.equals(id) || DoomLoot.BASTION_HOGLIN_STABLE.equals(id)
+					|| DoomLoot.BASTION_OTHER.equals(id) || DoomLoot.BASTION_TREASURE.equals(id)
+					|| DoomLoot.NETHER_BRIDGE.equals(id) || DoomLoot.RUINED_PORTAL.equals(id)
+					|| DoomLoot.SPAWN_BONUS_CHEST.equals(id)) {
+				LootPool poolBuilder = LootPool.builder().rolls(ConstantLootNumberProvider.create(1))
+						.with(ItemEntry.builder(DoomItems.INMORTAL).build())
+						.with(ItemEntry.builder(DoomItems.INVISIBLE).build())
+						.with(ItemEntry.builder(DoomItems.MEGA).build())
+						.with(ItemEntry.builder(DoomItems.POWER).build())
+						.with(ItemEntry.builder(DoomItems.SOULCUBE).build())
+						.with(ItemEntry.builder(DoomItems.DAISY).build()).build();
+				supplier.pool(poolBuilder);
+			}
+		});
 		MobAttributes.init();
 		GeckoLib.initialize();
 		PacketHandler.registerMessages();
