@@ -18,7 +18,8 @@ public class ProwlerModel extends AnimatedTickingGeoModel<ProwlerEntity> {
 
 	@Override
 	public Identifier getTextureResource(ProwlerEntity object) {
-		return new Identifier(DoomMod.MODID, "textures/entity/prowler.png");
+		return new Identifier(DoomMod.MODID,
+				"textures/entity/" + (object.getVariant() == 2 ? "prowler_cursed" : "prowler") + ".png");
 	}
 
 	@Override
@@ -34,11 +35,10 @@ public class ProwlerModel extends AnimatedTickingGeoModel<ProwlerEntity> {
 
 		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
 		if (head != null) {
-			head.setRotationX(
-					Vec3f.POSITIVE_X
-							.getRadialQuaternion(Vec3f.POSITIVE_X
-									.getRadialQuaternion(extraData.headPitch * ((float) Math.PI / 180F)).getX())
-							.getX());
+			head.setRotationX(Vec3f.POSITIVE_X
+					.getRadialQuaternion(
+							Vec3f.POSITIVE_X.getRadialQuaternion(extraData.headPitch * ((float) Math.PI / 180F)).getX())
+					.getX());
 			head.setRotationY(
 					Vec3f.POSITIVE_Y
 							.getRadialQuaternion(Vec3f.POSITIVE_Y
