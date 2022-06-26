@@ -1,12 +1,14 @@
 package mod.azure.doom.entity.tierheavy;
 
-import java.util.EnumSet;
 import java.util.SplittableRandom;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
+import mod.azure.doom.entity.ai.goal.MancubusFireAttackGoal;
+import mod.azure.doom.entity.attack.AbstractRangedAttack;
+import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
+import mod.azure.doom.entity.projectiles.entity.FireProjectile;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,17 +34,16 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.MoveTowardsTargetGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -161,16 +162,40 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, IronGolem.class, 8.0F));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		this.goalSelector.addGoal(2, new MoveTowardsTargetGoal(this, 0.9D, 32.0F));
 		this.applyEntityAI();
 	}
 
 	protected void applyEntityAI() {
-		this.goalSelector.addGoal(1, new MancubusEntity.FireballAttackGoal(this));
+		this.goalSelector.addGoal(4,
+				new MancubusFireAttackGoal(this, new FireballAttack(this).setProjectileOriginOffset(0.1, 0.5, 0.1)
+						.setDamage(DoomConfig.SERVER.mancubus_ranged_damage.get().floatValue())));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
 		this.targetSelector.addGoal(3, (new HurtByTargetGoal(this).setAlertOthers()));
+	}
+
+	public class FireballAttack extends AbstractRangedAttack {
+
+		public FireballAttack(MancubusEntity parentEntity, double xOffSetModifier, double entityHeightFraction,
+				double zOffSetModifier, float damage) {
+			super(parentEntity, xOffSetModifier, entityHeightFraction, zOffSetModifier, damage);
+		}
+
+		public FireballAttack(MancubusEntity parentEntity) {
+			super(parentEntity);
+		}
+
+		@Override
+		public AttackSound getDefaultAttackSound() {
+			return new AttackSound(SoundEvents.CAMPFIRE_CRACKLE, 1, 1);
+		}
+
+		@Override
+		public Projectile getProjectile(Level world, double d2, double d3, double d4) {
+			return new FireProjectile(world, this.parentEntity, d2, d3, d4, damage);
+
+		}
 	}
 
 	@Override
@@ -178,105 +203,6 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 		boolean flag = this.getTarget() != null && this.hasLineOfSight(this.getTarget());
 		this.goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
 		super.updateControlFlags();
-	}
-
-	static class FireballAttackGoal extends Goal {
-		private final MancubusEntity parentEntity;
-		protected int attackTimer = 0;
-
-		public FireballAttackGoal(MancubusEntity ghast) {
-			this.parentEntity = ghast;
-			this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
-		}
-
-		public boolean canUse() {
-			return this.parentEntity.getTarget() != null;
-		}
-
-		public void start() {
-			super.start();
-			this.parentEntity.setAggressive(true);
-		}
-
-		@Override
-		public void stop() {
-			super.stop();
-			this.parentEntity.setAggressive(false);
-			this.parentEntity.setAttackingState(0);
-			this.attackTimer = -1;
-		}
-
-		public void tick() {
-			LivingEntity livingentity = this.parentEntity.getTarget();
-			if (this.parentEntity.hasLineOfSight(livingentity)) {
-				Level world = this.parentEntity.level;
-				++this.attackTimer;
-				Vec3 vector3d = this.parentEntity.getViewVector(1.0F);
-				double d0 = Math.min(livingentity.getY(), livingentity.getY());
-				double d1 = Math.max(livingentity.getY(), livingentity.getY()) + 1.0D;
-				double d2 = livingentity.getX() - (this.parentEntity.getX() + vector3d.x * 2.0D);
-				double d3 = livingentity.getY(0.5D) - (0.5D + this.parentEntity.getY(0.5D));
-				double d4 = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * 2.0D);
-				float f = (float) Mth.atan2(livingentity.getZ() - parentEntity.getZ(),
-						livingentity.getX() - parentEntity.getX());
-				BarenBlastEntity fireballentity = new BarenBlastEntity(world, this.parentEntity, d2, d3, d4,
-						DoomConfig.SERVER.mancubus_ranged_damage.get().floatValue());
-				if (this.attackTimer == 15) {
-					if (parentEntity.distanceTo(livingentity) < 3.0D) {
-						for (int i = 0; i < 5; ++i) {
-							float f1 = f + (float) i * (float) Math.PI * 0.4F;
-							parentEntity.spawnFlames(parentEntity.getX() + (double) Mth.cos(f1) * 1.5D,
-									parentEntity.getZ() + (double) Mth.sin(f1) * 1.5D, d0, d1, f1, 0);
-						}
-						this.parentEntity.setAttackingState(3);
-					} else if (parentEntity.distanceTo(livingentity) < 13.0D
-							&& parentEntity.distanceTo(livingentity) > 3.0D) {
-						for (int l = 0; l < 16; ++l) {
-							double d5 = 1.25D * (double) (l + 1);
-							int j = 1 * l;
-							parentEntity.spawnFlames(parentEntity.getX() + (double) Mth.cos(f) * d5,
-									parentEntity.getZ() + (double) Mth.sin(f) * d5, d0, d1, f, j);
-						}
-						this.parentEntity.setAttackingState(2);
-					} else {
-						fireballentity.setPos(this.parentEntity.getX() + vector3d.x * 2.0D,
-								this.parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z * 2.0D);
-						world.addFreshEntity(fireballentity);
-						this.parentEntity.setAttackingState(1);
-					}
-				}
-				if (this.attackTimer == 20) {
-					if (parentEntity.distanceTo(livingentity) <= 3.0D) {
-						for (int k = 0; k < 8; ++k) {
-							float f2 = f + (float) k * (float) Math.PI * 2.0F / 8.0F + 1.2566371F;
-							parentEntity.spawnFlames(parentEntity.getX() + (double) Mth.cos(f2) * 2.5D,
-									parentEntity.getZ() + (double) Mth.sin(f2) * 2.5D, d0, d1, f2, 3);
-						}
-					} else if (parentEntity.distanceTo(livingentity) <= 13.0D
-							&& parentEntity.distanceTo(livingentity) > 4.0D) {
-						for (int l = 0; l < 16; ++l) {
-							double d5 = 1.25D * (double) (l + 1);
-							int j = 1 * l;
-							parentEntity.spawnFlames(parentEntity.getX() + (double) Mth.cos(f) * d5,
-									parentEntity.getZ() + (double) Mth.sin(f) * d5, d0, d1, f, j);
-						}
-					} else {
-						fireballentity.setPos(this.parentEntity.getX() + vector3d.x * 2.0D,
-								this.parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z * 2.0D);
-						world.addFreshEntity(fireballentity);
-					}
-				}
-				if (this.attackTimer == 25) {
-					this.parentEntity.setAttackingState(0);
-					this.attackTimer = -15;
-				}
-			} else if (this.attackTimer > 0) {
-				this.parentEntity.setAttackingState(0);
-				--this.attackTimer;
-			}
-			this.parentEntity.lookAt(livingentity, 30.0F, 30.0F);
-		}
-
 	}
 
 	public void spawnFlames(double x, double z, double maxY, double y, float yaw, int warmup) {
