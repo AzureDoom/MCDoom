@@ -2,6 +2,7 @@ package mod.azure.doom.entity.tierheavy;
 
 import java.util.EnumSet;
 import java.util.Random;
+import java.util.SplittableRandom;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
@@ -13,6 +14,7 @@ import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.FireballAttack;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
@@ -26,16 +28,25 @@ import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.UniversalAngerGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
@@ -47,6 +58,9 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
+
+	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(ProwlerEntity.class,
+			TrackedDataHandlerRegistry.INTEGER);
 
 	private AnimationFactory factory = new AnimationFactory(this);
 	private int ageWhenTargetSet;
@@ -421,10 +435,19 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 	@Override
 	public void tickMovement() {
 		if (this.world.isClient) {
-			for (int i = 0; i < 2; ++i) {
-				this.world.addParticle(ParticleTypes.PORTAL, this.getParticleX(0.5D), this.getRandomBodyY() - 0.25D,
-						this.getParticleZ(0.5D), (this.random.nextDouble() - 0.5D) * 2.0D, -this.random.nextDouble(),
-						(this.random.nextDouble() - 0.5D) * 2.0D);
+			if (this.getVariant() == 1) {
+				for (int i = 0; i < 2; ++i) {
+					this.world.addParticle(ParticleTypes.PORTAL, this.getParticleX(0.5D), this.getRandomBodyY() - 0.25D,
+							this.getParticleZ(0.5D), (this.random.nextDouble() - 0.5D) * 2.0D,
+							-this.random.nextDouble(), (this.random.nextDouble() - 0.5D) * 2.0D);
+				}
+			} else {
+				for (int i = 0; i < 2; ++i) {
+					this.world.addParticle(ParticleTypes.COMPOSTER, this.getParticleX(0.5D),
+							this.getRandomBodyY() - 0.25D, this.getParticleZ(0.5D),
+							(this.random.nextDouble() - 0.5D) * 2.0D, -this.random.nextDouble(),
+							(this.random.nextDouble() - 0.5D) * 2.0D);
+				}
 			}
 		}
 
@@ -488,6 +511,53 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 		} else {
 			return false;
 		}
+	}
+
+	protected void initDataTracker() {
+		super.initDataTracker();
+		this.dataTracker.startTracking(VARIANT, 0);
+	}
+
+	@Override
+	public void writeCustomDataToNbt(NbtCompound tag) {
+		super.writeCustomDataToNbt(tag);
+		tag.putInt("Variant", this.getVariant());
+	}
+
+	@Override
+	public void readCustomDataFromNbt(NbtCompound tag) {
+		super.readCustomDataFromNbt(tag);
+		this.setVariant(tag.getInt("Variant"));
+	}
+
+	public int getVariant() {
+		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 2);
+	}
+
+	public void setVariant(int variant) {
+		this.dataTracker.set(VARIANT, variant);
+	}
+
+	public int getVariants() {
+		return 2;
+	}
+
+	@Override
+	public EntityData initialize(ServerWorldAccess serverWorldAccess, LocalDifficulty difficulty,
+			SpawnReason spawnReason, EntityData entityData, NbtCompound entityTag) {
+		entityData = super.initialize(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
+		SplittableRandom random = new SplittableRandom();
+		int var = random.nextInt(0, 3);
+		this.setVariant(var);
+		return entityData;
+	}
+
+	@Override
+	public boolean tryAttack(Entity target) {
+		if (this.getVariant() == 2 && target instanceof LivingEntity) {
+			((LivingEntity) target).setStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 100, 0), this);
+		}
+		return super.tryAttack(target);
 	}
 
 }
