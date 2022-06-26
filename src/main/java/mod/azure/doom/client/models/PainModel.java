@@ -10,31 +10,27 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class PainModel extends AnimatedTickingGeoModel<PainEntity> {
 
-	public ResourceLocation classic_model = new ResourceLocation(DoomMod.MODID, "geo/pain.geo.json");
-	public ResourceLocation doom64_model = new ResourceLocation(DoomMod.MODID, "geo/pain64.geo.json");
-	public ResourceLocation classic_texture = new ResourceLocation(DoomMod.MODID,
-			"textures/entity/painelemental-normal.png");
-	public ResourceLocation classic_texture_attacking = new ResourceLocation(DoomMod.MODID,
-			"textures/entity/painelemental-attacking.png");
-	public ResourceLocation doom64_texture = new ResourceLocation(DoomMod.MODID,
-			"textures/entity/painelemental64-normal.png");
-	public ResourceLocation doom64_texture_attacking = new ResourceLocation(DoomMod.MODID,
-			"textures/entity/painelemental64-attacking.png");
-
 	@Override
 	public ResourceLocation getModelResource(PainEntity object) {
-		return object.getVariant() == 1 ? classic_model : doom64_model;
+		return new ResourceLocation(DoomMod.MODID,
+				"geo/" + (object.getVariant() == 2 ? "pain64" : object.getVariant() == 3 ? "paineternal" : "pain")
+						+ ".geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(PainEntity object) {
-		return object.getVariant() == 1 ? (object.getAttckingState() == 1 ? classic_texture_attacking : classic_texture)
-				: (object.getAttckingState() == 1 ? doom64_texture_attacking : doom64_texture);
+		return new ResourceLocation(DoomMod.MODID, "textures/entity/"
+				+ (object.getVariant() == 2
+						? (object.getAttckingState() == 2 ? "painelemental64-attacking" : "painelemental64-normal")
+						: object.getVariant() == 3 ? "paineternal"
+								: (object.getAttckingState() == 1 ? "painelemental-attacking" : "painelemental-normal"))
+				+ ".png");
 	}
 
 	@Override
 	public ResourceLocation getAnimationResource(PainEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "animations/pain_animation.json");
+		return new ResourceLocation(DoomMod.MODID,
+				"animations/" + (object.getVariant() == 3 ? "paineternal." : "pain_") + "animation.json");
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
