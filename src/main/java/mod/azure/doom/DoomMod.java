@@ -12,15 +12,18 @@ import mod.azure.doom.util.DoomVillagerTrades;
 import mod.azure.doom.util.MobAttributes;
 import mod.azure.doom.util.recipes.GunTableRecipe;
 import mod.azure.doom.util.registry.DoomBlocks;
+import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.DoomItems;
+import mod.azure.doom.util.registry.DoomLoot;
+import mod.azure.doom.util.registry.DoomSounds;
 import mod.azure.doom.util.registry.DoomStructures;
 import mod.azure.doom.util.registry.MobSpawn;
-import mod.azure.doom.util.registry.DoomEntities;
-import mod.azure.doom.util.registry.DoomSounds;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
+import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.block.entity.BlockEntityType;
@@ -30,6 +33,8 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandlerType;
@@ -109,6 +114,22 @@ public class DoomMod implements ModInitializer {
 		if (DoomConfig.enable_all_villager_trades) {
 			ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> DoomVillagerTrades.addTrades());
 		}
+		LootTableLoadingCallback.EVENT.register((resourceManager, lootManager, id, supplier, setter) -> {
+			if (DoomLoot.BASTION_BRIDGE.equals(id) || DoomLoot.BASTION_HOGLIN_STABLE.equals(id)
+					|| DoomLoot.BASTION_OTHER.equals(id) || DoomLoot.BASTION_TREASURE.equals(id)
+					|| DoomLoot.NETHER_BRIDGE.equals(id) || DoomLoot.RUINED_PORTAL.equals(id)
+					|| DoomLoot.SPAWN_BONUS_CHEST.equals(id)) {
+				FabricLootPoolBuilder poolBuilder = FabricLootPoolBuilder.builder()
+						.rolls(ConstantLootNumberProvider.create(1))
+						.withEntry(ItemEntry.builder(DoomItems.INMORTAL).build())
+						.withEntry(ItemEntry.builder(DoomItems.INVISIBLE).build())
+						.withEntry(ItemEntry.builder(DoomItems.MEGA).build())
+						.withEntry(ItemEntry.builder(DoomItems.POWER).build())
+						.withEntry(ItemEntry.builder(DoomItems.SOULCUBE).build())
+						.withEntry(ItemEntry.builder(DoomItems.DAISY).build());
+				supplier.pool(poolBuilder);
+			}
+		});
 		MobAttributes.init();
 		GeckoLib.initialize();
 		PacketHandler.registerMessages();
