@@ -10,24 +10,22 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class CacodemonModel extends AnimatedTickingGeoModel<CacodemonEntity> {
 
-	public ResourceLocation classic_model = new ResourceLocation(DoomMod.MODID, "geo/cacodemon.geo.json");
-	public ResourceLocation doom64_model = new ResourceLocation(DoomMod.MODID, "geo/cacodemon64.geo.json");
-	public ResourceLocation classic_texture = new ResourceLocation(DoomMod.MODID, "textures/entity/cacodemon.png");
-	public ResourceLocation doom64_texture = new ResourceLocation(DoomMod.MODID, "textures/entity/cacodemon64.png");
-
 	@Override
 	public ResourceLocation getModelResource(CacodemonEntity object) {
-		return object.getVariant() == 1 ? classic_model : doom64_model;
+		return new ResourceLocation(DoomMod.MODID, "geo/" + (object.getVariant() == 1 ? "cacodemon64"
+				: object.getVariant() == 3 ? "cacodemoneternal" : "cacodemon") + ".geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(CacodemonEntity object) {
-		return object.getVariant() == 1 ? classic_texture : doom64_texture;
+		return new ResourceLocation(DoomMod.MODID, "textures/entity/" + (object.getVariant() == 1 ? "cacodemon64"
+				: object.getVariant() == 3 ? "cacodemoneternal" : "cacodemon") + ".png");
 	}
 
 	@Override
 	public ResourceLocation getAnimationResource(CacodemonEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "animations/cacodemon_animation.json");
+		return new ResourceLocation(DoomMod.MODID,
+				"animations/" + (object.getVariant() == 3 ? "cacodemoneternal." : "cacodemon_") + "animation.json");
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

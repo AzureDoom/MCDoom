@@ -126,7 +126,7 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable, 
 	}
 
 	public int getVariant() {
-		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 2);
+		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 3);
 	}
 
 	public void setVariant(int variant) {
@@ -134,7 +134,7 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable, 
 	}
 
 	public int getVariants() {
-		return 2;
+		return 3;
 	}
 
 	@Override
