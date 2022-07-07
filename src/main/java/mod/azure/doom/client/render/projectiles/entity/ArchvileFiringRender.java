@@ -26,7 +26,7 @@ public class ArchvileFiringRender extends GeoProjectilesRenderer<DoomFireEntity>
 	public RenderLayer getRenderType(DoomFireEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 
 }

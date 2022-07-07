@@ -31,7 +31,7 @@ public class ChaingunnerRender extends GeoEntityRenderer<ChaingunnerEntity> {
 	public RenderLayer getRenderType(ChaingunnerEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(this.getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(this.getTextureResource(animatable));
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class ChaingunnerRender extends GeoEntityRenderer<ChaingunnerEntity> {
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			int packedOverlayIn, float red, float green, float blue, float partialTicks) {
 		this.rtb = renderTypeBuffer;
-		this.whTexture = this.getTextureLocation(animatable);
+		this.whTexture = this.getTextureResource(animatable);
 		super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn,
 				red, green, blue, partialTicks);
 	}

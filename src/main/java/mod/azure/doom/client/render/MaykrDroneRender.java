@@ -21,7 +21,7 @@ public class MaykrDroneRender extends GeoEntityRenderer<MaykrDroneEntity> {
 	public RenderLayer getRenderType(MaykrDroneEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(this.getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(this.getTextureResource(animatable));
 	}
 
 	protected float getLyingAngle(MaykrDroneEntity entityLivingBaseIn) {

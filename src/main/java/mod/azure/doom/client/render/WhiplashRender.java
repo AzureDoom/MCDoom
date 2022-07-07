@@ -21,7 +21,7 @@ public class WhiplashRender extends GeoEntityRenderer<WhiplashEntity> {
 	public RenderLayer getRenderType(WhiplashEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(this.getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(this.getTextureResource(animatable));
 	}
 
 	@Override

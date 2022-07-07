@@ -21,7 +21,7 @@ public class GargoyleRender extends GeoEntityRenderer<GargoyleEntity> {
 	public RenderLayer getRenderType(GargoyleEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(this.getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(this.getTextureResource(animatable));
 	}
 
 	@Override

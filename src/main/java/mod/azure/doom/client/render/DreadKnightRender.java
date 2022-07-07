@@ -25,7 +25,7 @@ public class DreadKnightRender extends GeoEntityRenderer<Hellknight2016Entity> {
 	public RenderLayer getRenderType(Hellknight2016Entity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(this.getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(this.getTextureResource(animatable));
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class DreadKnightRender extends GeoEntityRenderer<Hellknight2016Entity> {
 		for (GeoCube cube : bone.childCubes) {
 			if (bone.getName().equals("leftblade") || bone.getName().equals("rightblade"))
 				renderCube(cube, stack,
-						this.rtb.getBuffer(RenderLayer.getEntityTranslucent(this.getTextureLocation(animatable))),
+						this.rtb.getBuffer(RenderLayer.getEntityTranslucent(this.getTextureResource(animatable))),
 						packedLightIn, packedOverlayIn, red, green, blue, 0.3F);
 		}
 		super.renderRecursively(bone, stack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);

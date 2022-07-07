@@ -22,7 +22,7 @@ public class DoomHunterRender extends GeoEntityRenderer<DoomHunterEntity> {
 	public RenderLayer getRenderType(DoomHunterEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityCutout(this.getTextureLocation(animatable));
+		return RenderLayer.getEntityCutout(this.getTextureResource(animatable));
 	}
 
 	@Override

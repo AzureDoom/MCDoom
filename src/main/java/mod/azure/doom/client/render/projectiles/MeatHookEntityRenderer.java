@@ -39,7 +39,7 @@ public class MeatHookEntityRenderer extends GeoProjectilesRenderer<MeatHookEntit
 	public RenderLayer getRenderType(MeatHookEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 
 	@Override

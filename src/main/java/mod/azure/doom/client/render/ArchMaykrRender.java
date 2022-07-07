@@ -22,7 +22,7 @@ public class ArchMaykrRender extends GeoEntityRenderer<ArchMakyrEntity> {
 	public RenderLayer getRenderType(ArchMakyrEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(this.getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(this.getTextureResource(animatable));
 	}
 
 	@Override

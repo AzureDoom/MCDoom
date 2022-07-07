@@ -21,7 +21,7 @@ public class PossessedSoldierRender extends GeoEntityRenderer<PossessedSoldierEn
 	public RenderLayer getRenderType(PossessedSoldierEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(this.getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(this.getTextureResource(animatable));
 	}
 
 	@Override
