@@ -1,3 +1,4 @@
-v.4.2.21b
+v.4.2.22
 
-- Fixes Icon of Sin 2nd Phase Damage Config using Mother Demons
+- Doom Armor moved to 1 material and is configurable in it's stats for helmet, chestplate, leggings and boots.
+- Config options to disable Daisy and Soul Cube effects added. 

@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import mod.azure.doom.DoomMod;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -51,14 +52,14 @@ public class DaisyItem extends Item {
 
 			@Override
 			public void onEquip(String identifier, int index, LivingEntity livingEntity) {
-				if (livingEntity instanceof Player) {
+				if (livingEntity instanceof Player && DoomConfig.SERVER.enable_daisy_effects.get()) {
 					startPowers((Player) livingEntity);
 				}
 			}
 
 			@Override
 			public void onUnequip(String identifier, int index, LivingEntity livingEntity) {
-				if (livingEntity instanceof Player) {
+				if (livingEntity instanceof Player && DoomConfig.SERVER.enable_daisy_effects.get()) {
 					stopPowers((Player) livingEntity);
 				}
 			}

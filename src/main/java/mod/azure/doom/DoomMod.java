@@ -8,14 +8,14 @@ import mod.azure.doom.util.LootHandler;
 import mod.azure.doom.util.SoulCubeHandler;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.registry.DoomBlocks;
+import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomParticles;
 import mod.azure.doom.util.registry.DoomRecipes;
 import mod.azure.doom.util.registry.DoomScreens;
+import mod.azure.doom.util.registry.DoomSounds;
 import mod.azure.doom.util.registry.DoomStructures;
 import mod.azure.doom.util.registry.ModEntitySpawn;
-import mod.azure.doom.util.registry.DoomEntities;
-import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -61,7 +61,9 @@ public class DoomMod {
 		DoomConfig.loadConfig(DoomConfig.SERVER_SPEC,
 				FMLPaths.CONFIGDIR.get().resolve("doom-newconfig.toml").toString());
 		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(new SoulCubeHandler());
+		if (DoomConfig.SERVER.enable_soulcube_effects.get()) {
+			MinecraftForge.EVENT_BUS.register(new SoulCubeHandler());
+		}
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::enqueueIMC);
 		if (DoomConfig.SERVER.enable_all_villager_trades.get()) {

@@ -21,6 +21,11 @@ public class DoomConfig {
 		public final ConfigValue<Integer> power_consume_xp_pmmo;
 		public final ConfigValue<Integer> soul_consume_xp_pmmo;
 
+		public final ConfigValue<Integer> doom_armor_head_stat;
+		public final ConfigValue<Integer> doom_armor_chestplate_stat;
+		public final ConfigValue<Integer> doom_armor_leggings_stat;
+		public final ConfigValue<Integer> doom_armor_boots_stat;
+
 		public final ConfigValue<Integer> crucible_marauder_max_damage;
 		public final ConfigValue<Boolean> enable_block_breaking;
 		public final ConfigValue<Boolean> enable_noncenter;
@@ -370,6 +375,8 @@ public class DoomConfig {
 		public final ConfigValue<Double> icon_health;
 		public final ConfigValue<Double> icon_melee_damage;
 		public final ConfigValue<Double> icon_phaseone_damage_boos;
+		public final ConfigValue<Boolean> enable_soulcube_effects;
+		public final ConfigValue<Boolean> enable_daisy_effects;
 		public final ConfigValue<Boolean> enable_all_villager_trades;
 		public final ConfigValue<Boolean> enable_weaponsmith_trades;
 		public final ConfigValue<Boolean> enable_toolsmith_trades;
@@ -392,7 +399,21 @@ public class DoomConfig {
 			this.soul_consume_xp_pmmo = builder.translation("text.doom.config.soul_consume_xp_pmmo")
 					.defineInRange("XP Value of Soul Cube Final Use", 50, 1, Integer.MAX_VALUE);
 			builder.pop();
+			builder.push("Armor Stats");
+			this.doom_armor_head_stat = builder.translation("text.doom.config.doom_armor_head_stat")
+					.defineInRange("Doom Armor Helmet Stat", 25, 1, Integer.MAX_VALUE);
+			this.doom_armor_chestplate_stat = builder.translation("text.doom.config.doom_armor_chestplate_stat")
+					.defineInRange("Doom Armor Chestplate Stat", 18, 1, Integer.MAX_VALUE);
+			this.doom_armor_leggings_stat = builder.translation("text.doom.config.doom_armor_leggings_stat")
+					.defineInRange("Doom Armor Leggings Stat", 20, 1, Integer.MAX_VALUE);
+			this.doom_armor_boots_stat = builder.translation("text.doom.config.doom_armor_boots_stat")
+					.defineInRange("Doom Armor Boots Stat", 15, 1, Integer.MAX_VALUE);
+			builder.pop();
 			builder.push("Misc");
+			this.enable_soulcube_effects = builder.translation("text.doom.config.enable_soulcube_effects")
+					.define("Soulcube Effect Toggle", true);
+			this.enable_daisy_effects = builder.translation("text.doom.config.enable_daisy_effects")
+					.define("Daisy Effect Toggle", true);
 			this.enable_all_villager_trades = builder.translation("text.doom.config.enable_all_villager_trades")
 					.define("Villager Trades Toggle", true);
 			this.enable_weaponsmith_trades = builder.translation("text.doom.config.enable_weaponsmith_trades")
