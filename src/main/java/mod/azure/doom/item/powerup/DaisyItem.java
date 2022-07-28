@@ -9,6 +9,7 @@ import dev.emi.trinkets.api.SlotAttributes;
 import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketItem;
 import mod.azure.doom.DoomMod;
+import mod.azure.doom.config.DoomConfig;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
@@ -42,9 +43,11 @@ public class DaisyItem extends TrinketItem {
 	public Multimap<EntityAttribute, EntityAttributeModifier> getModifiers(ItemStack stack, SlotReference slot,
 			LivingEntity entity, UUID uuid) {
 		var modifiers = super.getModifiers(stack, slot, entity, uuid);
-		modifiers.put(EntityAttributes.GENERIC_MOVEMENT_SPEED, new EntityAttributeModifier(uuid,
-				DoomMod.MODID + ":movement_speed", 2.0, EntityAttributeModifier.Operation.MULTIPLY_TOTAL));
-		SlotAttributes.addSlotModifier(modifiers, "legs/belt", uuid, 1, EntityAttributeModifier.Operation.ADDITION);
+		if (DoomConfig.enable_daisy_effects == true) {
+			modifiers.put(EntityAttributes.GENERIC_MOVEMENT_SPEED, new EntityAttributeModifier(uuid,
+					DoomMod.MODID + ":movement_speed", 2.0, EntityAttributeModifier.Operation.MULTIPLY_TOTAL));
+			SlotAttributes.addSlotModifier(modifiers, "legs/belt", uuid, 1, EntityAttributeModifier.Operation.ADDITION);
+		}
 		return modifiers;
 	}
 }

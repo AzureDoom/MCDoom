@@ -13,6 +13,19 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static boolean enable_toolsmith_trades = true;
 	@Entry
 	public static boolean enable_mason_trades = true;
+	@Entry
+	public static boolean enable_soulcube_effects = true;
+	@Entry
+	public static boolean enable_daisy_effects = true;
+
+	@Entry
+	public static int doom_armor_head_stat = 25;
+	@Entry
+	public static int doom_armor_chestplate_stat = 18;
+	@Entry
+	public static int doom_armor_leggings_stat = 20;
+	@Entry
+	public static int doom_armor_boots_stat = 15;
 
 	@Entry
 	public static int crucible_marauder_max_damage = 5;
