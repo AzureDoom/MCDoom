@@ -1,7 +1,5 @@
 package mod.azure.doom.entity.projectiles;
 
-import java.util.List;
-
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tierheavy.CacodemonEntity;
 import mod.azure.doom.network.DoomEntityPacket;
@@ -28,8 +26,6 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -123,6 +119,7 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 		areaeffectcloudentity.setDuration(1);
 		areaeffectcloudentity.updatePosition(this.getX(), this.getY(), this.getZ());
 		this.world.spawnEntity(areaeffectcloudentity);
+		this.explode();
 		world.playSound((PlayerEntity) null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_GENERIC_EXPLODE,
 				SoundCategory.PLAYERS, 1.0F, 1.5F);
 		super.remove(reason);
@@ -181,8 +178,6 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 		super.onBlockHit(blockHitResult);
 		if (!this.world.isClient) {
 			if (this.age >= 46) {
-				this.explode();
-				this.dataTracker.set(SPINNING, false);
 				this.remove(Entity.RemovalReason.DISCARDED);
 			}
 		}
@@ -205,23 +200,14 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 	}
 
 	protected void explode() {
-		double xn = MathHelper.floor(this.getX() - 5.0D);
-		double xp = MathHelper.floor(this.getX() + 7.0D);
-		double yn = MathHelper.floor(this.getY() - 5.0D);
-		double yp = MathHelper.floor(this.getY() + 7.0D);
-		double zn = MathHelper.floor(this.getZ() - 5.0D);
-		double zp = MathHelper.floor(this.getZ() + 7.0D);
-		List<Entity> list = this.world.getOtherEntities(this, new Box(xn, yn, zn, xp, yp, zp));
-		Vec3d vec3d = new Vec3d(this.getX(), this.getY(), this.getZ());
+		this.getWorld().getOtherEntities(this, new Box(this.getBlockPos().up()).expand(8))
+				.forEach(e -> doDamage(this, e));
+	}
 
-		for (int x = 0; x < list.size(); ++x) {
-			Entity entity = (Entity) list.get(x);
-			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d)) / 6);
-			if (entity instanceof LivingEntity) {
-				if (y <= 1.0D) {
-					entity.damage(DamageSource.player((PlayerEntity) this.shooter), DoomConfig.grenade_damage);
-				}
-			}
+	private void doDamage(Entity user, Entity target) {
+		if (target instanceof LivingEntity) {
+			target.timeUntilRegen = 0;
+			target.damage(DamageSource.magic(this, target), DoomConfig.grenade_damage);
 		}
 	}
 
