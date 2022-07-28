@@ -38,8 +38,8 @@ public class ClientPlayNetworkHandlerMixin {
 				entity.setOwner(owner);
 
 			int id = packet.getId();
-			entity.method_43391(x, y, z);
-			entity.refreshPositionAfterTeleport(x, y, z);
+			entity.updatePosition(x, y, z);
+			entity.syncPacketPositionCodec(x, y, z);
 			entity.setPitch((float) (packet.method_11171() * 360) / 256f);
 			entity.setYaw((float) (packet.method_11168() * 360) / 256f);
 			entity.setId(id);

@@ -24,8 +24,8 @@ public class EntityPacketOnClient {
 			ClientWorld world = MinecraftClient.getInstance().world;
 			Entity entity = type.create(world);
 			if (entity != null) {
-				entity.method_43391(x, y, z);
-				entity.refreshPositionAfterTeleport(x, y, z);
+				entity.updatePosition(x, y, z);
+				entity.syncPacketPositionCodec(x, y, z);
 				entity.setPitch(pitch);
 				entity.setYaw(yaw);
 				entity.setId(entityID);

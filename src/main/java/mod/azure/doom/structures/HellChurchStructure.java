@@ -59,7 +59,7 @@ public class HellChurchStructure extends StructureFeature {
 		ChunkPos chunkPos = context.chunkPos();
 		BlockPos blockpos = new BlockPos(chunkPos.getStartX(), startY, chunkPos.getStartZ());
 
-		Optional<GenerationStub> structurePiecesGenerator = StructurePoolBasedGenerator.method_30419(context,
+		Optional<GenerationStub> structurePiecesGenerator = StructurePoolBasedGenerator.m_drsiegyr(context,
 				this.startPool, this.startJigsawName, this.size, blockpos, false, this.projectStartToHeightmap,
 				this.maxDistanceFromCenter);
 		return structurePiecesGenerator;

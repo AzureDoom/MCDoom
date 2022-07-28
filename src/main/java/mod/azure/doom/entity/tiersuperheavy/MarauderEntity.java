@@ -278,7 +278,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 	@Override
 	protected void mobTick() {
 		if (this.world.isDay() && this.age >= this.ageWhenTargetSet + 600) {
-			float f = this.method_5718();
+			float f = this.getLightLevelDependentValue();
 			if (f > 0.5F && this.world.isSkyVisible(this.getBlockPos())
 					&& this.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
 				this.setTarget((LivingEntity) null);

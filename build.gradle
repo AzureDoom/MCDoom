@@ -38,8 +38,8 @@ dependencies {
 		// officialMojangMappings() // Uncomment if you want to use Mojang mappings as your primary mappings, falling back on QM for parameters and Javadocs
 	}
 	modImplementation libs.quilt.loader
-    modImplementation "software.bernie.geckolib:geckolib-quilt-1.19:3.1.6"
-	modImplementation ("com.terraformersmc:modmenu:4.0.0-beta.4") {
+    modImplementation "software.bernie.geckolib:geckolib-quilt-1.19:3.1.8"
+	modImplementation ("com.terraformersmc:modmenu:4.0.5") {
         exclude(group: "net.fabricmc.fabric-api")
   		exclude group: "net.fabricmc", module: "fabric-loader"
     }
@@ -47,19 +47,19 @@ dependencies {
   		exclude group: "net.fabricmc.fabric-api"
   		exclude group: "net.fabricmc", module: "fabric-loader"
 	}
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:9.0.466") {
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:9.1.518") {
         exclude(group: "net.fabricmc.fabric-api")
   		exclude group: "net.fabricmc", module: "fabric-loader"
     }
-    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:9.0.466") {
+    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:9.1.518") {
         exclude(group: "net.fabricmc.fabric-api")
   		exclude group: "net.fabricmc", module: "fabric-loader"
     }
-    modApi("dev.architectury:architectury-fabric:5.4.15") {
+    modApi("dev.architectury:architectury-fabric:6.0.34") {
         exclude(group: "net.fabricmc.fabric-api")
   		exclude group: "net.fabricmc", module: "fabric-loader"
     }
-    modApi("me.shedaniel.cloth:cloth-config-fabric:7.0.65") {
+    modApi("me.shedaniel.cloth:cloth-config-fabric:7.0.73") {
         exclude(group: "net.fabricmc.fabric-api")
   		exclude group: "net.fabricmc", module: "fabric-loader"
     }
@@ -121,7 +121,7 @@ if (file('key.properties').exists()) {
         	releaseType = "${curse_release}"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
-			addGameVersion("1.19")
+			addGameVersion("1.19.1")
 			addGameVersion("Quilt")
 			addGameVersion("Java 17")
 

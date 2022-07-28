@@ -44,7 +44,7 @@ public class GladiatorStructure extends StructureFeature {
 	public Optional<GenerationStub> findGenerationPos(GenerationContext context) {
 		BlockPos blockpos = new BlockPos(context.chunkPos().getStartX(), 32, context.chunkPos().getStartZ());
 
-		Optional<GenerationStub> structurePiecesGenerator = StructurePoolBasedGenerator.method_30419(context,
+		Optional<GenerationStub> structurePiecesGenerator = StructurePoolBasedGenerator.m_drsiegyr(context,
 				this.startPool, this.startJigsawName, this.size, blockpos, false, Optional.empty(),
 				this.maxDistanceFromCenter);
 		return structurePiecesGenerator;

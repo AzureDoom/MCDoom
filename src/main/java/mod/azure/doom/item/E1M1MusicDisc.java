@@ -11,7 +11,7 @@ public class E1M1MusicDisc extends MusicDiscItem {
 
 	public E1M1MusicDisc(SoundEvent soundSupplier) {
 		super(1, soundSupplier,
-				(new Item.Settings()).maxCount(1).group(DoomMod.DoomPowerUPItemGroup).rarity(Rarity.RARE));
+				(new Item.Settings()).maxCount(1).group(DoomMod.DoomPowerUPItemGroup).rarity(Rarity.RARE), 60);
 	}
 
 	@Override
