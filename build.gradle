@@ -44,7 +44,7 @@ dependencies {
     modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:9.1.518") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modApi("dev.architectury:architectury-fabric:5.10.33") {
+    modApi("dev.architectury:architectury-fabric:6.0.34") {
         exclude(group: "net.fabricmc.fabric-api")
     }
     modApi("me.shedaniel.cloth:cloth-config-fabric:7.0.73") {
