@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketsApi;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -31,7 +32,7 @@ public class LivingEntityMixin {
 				return res.size() > 0 ? res.get(0).getRight() : ItemStack.EMPTY;
 			}).orElse(ItemStack.EMPTY);
 
-			if (!stack.isEmpty()) {
+			if (!stack.isEmpty() && DoomConfig.enable_soulcube_effects == true) {
 				stack.damage(1, livingEntity, p -> p.sendToolBreakStatus(livingEntity.getActiveHand()));
 				livingEntity.setHealth(20.0F);
 				livingEntity.clearStatusEffects();
