@@ -147,8 +147,8 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -233,10 +233,16 @@ public class ClientModEventSubscriber {
 	}
 
 	@SubscribeEvent
+	public static void registerRenderers(final RegisterKeyMappingsEvent event) {
+		event.register(Keybindings.RELOAD);
+
+	}
+
+	@SuppressWarnings("removal")
+	@SubscribeEvent
 	public static void onClientSetup(final FMLClientSetupEvent event) {
 		Keybindings.RELOAD = new KeyMapping("key." + DoomMod.MODID + ".reload", GLFW.GLFW_KEY_R,
 				"key.categories." + DoomMod.MODID);
-		ClientRegistry.registerKeyBinding(Keybindings.RELOAD);
 		ItemBlockRenderTypes.setRenderLayer(DoomBlocks.JUMP_PAD.get(), RenderType.translucent());
 		MenuScreens.register(DoomScreens.SCREEN_HANDLER_TYPE.get(), GunTableScreen::new);
 		// Crucible

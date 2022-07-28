@@ -241,7 +241,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 		List<? extends String> whitelistEntries = DoomConfig.SERVER.bfg_damage_mob_whitelist.get();
 		int randomIndex = rand.nextInt(whitelistEntries.size());
 		ResourceLocation randomElement1 = new ResourceLocation(whitelistEntries.get(randomIndex));
-		EntityType<?> randomElement = ForgeRegistries.ENTITIES.getValue(randomElement1);
+		EntityType<?> randomElement = ForgeRegistries.ENTITY_TYPES.getValue(randomElement1);
 		for (int k2 = 0; k2 < list.size(); ++k2) {
 			Entity entity = list.get(k2);
 			Entity listEntity = randomElement.tryCast(entity);
@@ -400,7 +400,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 		List<? extends String> whitelistEntries = DoomConfig.SERVER.bfg_damage_mob_whitelist.get();
 		int randomIndex = rand.nextInt(whitelistEntries.size());
 		ResourceLocation randomElement1 = new ResourceLocation(whitelistEntries.get(randomIndex));
-		EntityType<?> randomElement = ForgeRegistries.ENTITIES.getValue(randomElement1);
+		EntityType<?> randomElement = ForgeRegistries.ENTITY_TYPES.getValue(randomElement1);
 		for (int k2 = 0; k2 < list.size(); ++k2) {
 			Entity entity = list.get(k2);
 			Entity listEntity = randomElement.tryCast(entity);

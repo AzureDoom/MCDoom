@@ -9,7 +9,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class DoomScreens {
 
-	public static final DeferredRegister<MenuType<?>> CONTAIN = DeferredRegister.create(ForgeRegistries.CONTAINERS,
+	public static final DeferredRegister<MenuType<?>> CONTAIN = DeferredRegister.create(ForgeRegistries.MENU_TYPES,
 			DoomMod.MODID);
 
 	public static final RegistryObject<MenuType<GunTableScreenHandler>> SCREEN_HANDLER_TYPE = CONTAIN

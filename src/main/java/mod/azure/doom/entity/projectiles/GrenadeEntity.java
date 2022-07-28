@@ -1,18 +1,15 @@
 package mod.azure.doom.entity.projectiles;
 
-import java.util.List;
-
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tierheavy.CacodemonEntity;
-import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
@@ -25,7 +22,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -82,6 +78,7 @@ public class GrenadeEntity extends AbstractArrow implements IAnimatable {
 		areaeffectcloudentity.setDuration(1);
 		areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
 		this.level.addFreshEntity(areaeffectcloudentity);
+		this.explode();
 		this.playSound(SoundEvents.GENERIC_EXPLODE, 1.0F, 1.0F);
 		super.remove(reason);
 	}
@@ -140,7 +137,6 @@ public class GrenadeEntity extends AbstractArrow implements IAnimatable {
 		this.setSoundEvent(SoundEvents.GENERIC_EXPLODE);
 		if (!this.level.isClientSide()) {
 			if (this.tickCount >= 46) {
-				this.explode();
 				this.remove(RemovalReason.DISCARDED);
 			}
 		}
@@ -161,24 +157,13 @@ public class GrenadeEntity extends AbstractArrow implements IAnimatable {
 	}
 
 	protected void explode() {
-		double xn = Mth.floor(this.getX() - 5.0D);
-		double xp = Mth.floor(this.getX() + 7.0D);
-		double yn = Mth.floor(this.getY() - 5.0D);
-		double yp = Mth.floor(this.getY() + 7.0D);
-		double zn = Mth.floor(this.getZ() - 5.0D);
-		double zp = Mth.floor(this.getZ() + 7.0D);
-		List<Entity> list = this.level.getEntities(this, new AABB(xn, yn, zn, xp, yp, zp));
-		Vec3 vec3d = new Vec3(this.getX(), this.getY(), this.getZ());
-		this.playSound(SoundEvents.GENERIC_EXPLODE, 1.0F, 1.0F);
-		for (int x = 0; x < list.size(); ++x) {
-			Entity entity = (Entity) list.get(x);
-			double y = (double) (Mth.sqrt((float) entity.distanceToSqr(vec3d)) / 6);
-			if (entity instanceof LivingEntity) {
-				if (y <= 1.0D) {
-					entity.hurt(DamageSource.playerAttack((Player) this.shooter),
-							DoomConfig.SERVER.grenade_damage.get().floatValue());
-				}
-			}
+		this.level.getEntities(this, new AABB(this.blockPosition().above()).inflate(8)).forEach(e -> doDamage(this, e));
+	}
+
+	private void doDamage(Entity user, Entity target) {
+		if (target instanceof LivingEntity) {
+			target.invulnerableTime = 0;
+			target.hurt(DamageSource.indirectMagic(this, target), DoomConfig.SERVER.grenade_damage.get().floatValue());
 		}
 	}
 

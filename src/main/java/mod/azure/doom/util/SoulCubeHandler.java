@@ -64,7 +64,7 @@ public class SoulCubeHandler {
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onLivingDeath(LivingDeathEvent evt) {
-		if (soulCube(evt.getEntityLiving(), evt.getSource())) {
+		if (soulCube(evt.getEntity(), evt.getSource())) {
 			evt.setCanceled(true);
 		}
 	}

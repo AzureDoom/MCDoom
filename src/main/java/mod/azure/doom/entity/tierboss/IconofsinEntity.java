@@ -263,7 +263,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 			for (int i = 0; i < 1; ++i) {
 				int randomIndex = rand.nextInt(waveEntries.size());
 				ResourceLocation randomElement1 = new ResourceLocation(waveEntries.get(randomIndex));
-				EntityType<?> randomElement = ForgeRegistries.ENTITIES.getValue(randomElement1);
+				EntityType<?> randomElement = ForgeRegistries.ENTITY_TYPES.getValue(randomElement1);
 				Entity waveentity = randomElement.create(level);
 				waveentity.setPos(entity.getX() + r, entity.getY() + 0.5D, entity.getZ() + r);
 				level.addFreshEntity(waveentity);
@@ -483,7 +483,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.level.broadcastEntityEvent(this, (byte) 4);
 		boolean bl = target.hurt(DamageSource.mobAttack(this),
 				DoomConfig.SERVER.icon_melee_damage.get().floatValue() + (this.entityData.get(DEATH_STATE) == 1
-						? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
+						? DoomConfig.SERVER.icon_phaseone_damage_boos.get().floatValue()
 						: 0));
 		if (bl) {
 			target.setDeltaMovement(target.getDeltaMovement().multiply(4.4f, 4.4f, 4.4f));

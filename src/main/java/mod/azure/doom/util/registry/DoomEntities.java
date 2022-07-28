@@ -79,7 +79,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class DoomEntities {
 
 	public static final DeferredRegister<BlockEntityType<?>> TILE_TYPES = DeferredRegister
-			.create(ForgeRegistries.BLOCK_ENTITIES, DoomMod.MODID);
+			.create(ForgeRegistries.BLOCK_ENTITY_TYPES, DoomMod.MODID);
 
 	public static final RegistryObject<BlockEntityType<IconBlockEntity>> ICON = TILE_TYPES.register("icon",
 			() -> BlockEntityType.Builder.<IconBlockEntity>of(IconBlockEntity::new, DoomBlocks.DOOM_WALL1.get())
@@ -95,7 +95,7 @@ public class DoomEntities {
 			.register("lightblock", () -> BlockEntityType.Builder
 					.of(TickingLightEntity::new, DoomBlocks.TICKING_LIGHT_BLOCK.get()).build(null));
 
-	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES,
+	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES,
 			DoomMod.MODID);
 
 	public static final RegistryObject<EntityType<DoomFireEntity>> FIRING = ENTITY_TYPES.register("archvile_firing",

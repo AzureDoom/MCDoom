@@ -97,16 +97,16 @@ repositories {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19-41.0.33'
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19-5.1.0.1")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19-5.1.0.1:api")
-	implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19:3.1.0')
+    minecraft 'net.minecraftforge:forge:1.19-41.1.0'
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19-5.1.0.4")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19-5.1.0.4:api")
+	implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19:3.1.10')
 	annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:9.0.491")
-    implementation fg.deobf("curse.maven:reiw-521393:3836159")
-    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:7.0.72")
-    implementation fg.deobf("dev.architectury:architectury-forge:5.7.27")
-    implementation fg.deobf("curse.maven:projectmmo-353935:3833912")
+    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:9.1.511")
+    implementation fg.deobf("curse.maven:reiw-521393:3870787")
+    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:7.0.73")
+    implementation fg.deobf("dev.architectury:architectury-forge:5.9.30")
+    implementation fg.deobf("curse.maven:projectmmo-353935:3862657")
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }

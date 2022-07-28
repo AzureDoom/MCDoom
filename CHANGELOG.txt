@@ -1,3 +1,5 @@
-v.4.2.6
+v.4.2.7
 
-- Fixes Tyrant model, no more double legs.
+- Grenades now properly deal damage when exploding if landed on ground.
+- Tweaked Dread Knight Render due to CCA issues, should resolve those. So much for the special blade rendering, not sure why CCA is breaking it but I'm tired of the headache.
+- Fixes Icon of Sin 2nd Phase Damage Config using Mother Demons.
