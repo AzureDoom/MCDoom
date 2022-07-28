@@ -321,7 +321,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 		if (flag) {
 			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this,
 					DoomConfig.SERVER.icon_melee_damage.get().floatValue() + (this.entityData.get(DEATH_STATE) == 1
-							? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
+							? DoomConfig.SERVER.icon_phaseone_damage_boos.get().floatValue()
 							: 0));
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
