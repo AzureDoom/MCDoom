@@ -59,7 +59,9 @@ public class DoomMod {
 		DoomConfig.loadConfig(DoomConfig.SERVER_SPEC,
 				FMLPaths.CONFIGDIR.get().resolve("doom-newconfig.toml").toString());
 		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(new SoulCubeHandler());
+		if (DoomConfig.SERVER.enable_soulcube_effects.get()) {
+			MinecraftForge.EVENT_BUS.register(new SoulCubeHandler());
+		}
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::enqueueIMC);
 		if (DoomConfig.SERVER.enable_all_villager_trades.get()) {
