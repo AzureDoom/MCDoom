@@ -26,6 +26,10 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int doom_armor_leggings_stat = 20;
 	@Entry
 	public static int doom_armor_boots_stat = 15;
+	@Entry
+	public static float doom_armor_toughness = 24;
+	@Entry
+	public static float doom_armor_knockbackResistance = 4;
 
 	@Entry
 	public static int crucible_marauder_max_damage = 5;
@@ -61,6 +65,9 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static double max_meathook_distance = 32;
 
 	@Entry
+	public static List<String> imp_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
+	@Entry
 	public static int imp_spawn_weight = 15;
 	@Entry
 	public static int imp_min_group = 1;
@@ -68,12 +75,18 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int imp_max_group = 4;
 
 	@Entry
+	public static List<String> pinky_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
+	@Entry
 	public static int pinky_spawn_weight = 15;
 	@Entry
 	public static int pinky_min_group = 2;
 	@Entry
 	public static int pinky_max_group = 4;
-	
+
+	@Entry
+	public static List<String> spectre_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
 	@Entry
 	public static int spectre_spawn_weight = 15;
 	@Entry
@@ -82,12 +95,18 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int spectre_max_group = 4;
 
 	@Entry
+	public static List<String> lost_soul_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
+	@Entry
 	public static int lost_soul_spawn_weight = 25;
 	@Entry
 	public static int lost_soul_min_group = 1;
 	@Entry
 	public static int lost_soul_max_group = 3;
 
+	@Entry
+	public static List<String> cacodemon_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
 	@Entry
 	public static int cacodemon_spawn_weight = 4;
 	@Entry
@@ -96,12 +115,18 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int cacodemon_max_group = 2;
 
 	@Entry
+	public static List<String> archvile_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
+	@Entry
 	public static int archvile_spawn_weight = 4;
 	@Entry
 	public static int archvile_min_group = 1;
 	@Entry
 	public static int archvile_max_group = 2;
 
+	@Entry
+	public static List<String> baron_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
 	@Entry
 	public static int baron_spawn_weight = 4;
 	@Entry
@@ -110,12 +135,18 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int baron_max_group = 1;
 
 	@Entry
+	public static List<String> mancubus_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
+	@Entry
 	public static int mancubus_spawn_weight = 4;
 	@Entry
 	public static int mancubus_min_group = 1;
 	@Entry
 	public static int mancubus_max_group = 1;
 
+	@Entry
+	public static List<String> revenant_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
 	@Entry
 	public static int revenant_spawn_weight = 4;
 	@Entry
@@ -124,12 +155,19 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int revenant_max_group = 4;
 
 	@Entry
+	public static List<String> zombieman_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
+	@Entry
 	public static int zombieman_spawn_weight = 15;
 	@Entry
 	public static int zombieman_min_group = 1;
 	@Entry
 	public static int zombieman_max_group = 4;
 
+	@Entry
+	public static List<String> arachnotron_biomes = Arrays.asList("minecraft:nether_wastes",
+			"minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest",
+			"minecraft:basalt_deltas");
 	@Entry
 	public static int arachnotron_spawn_weight = 15;
 	@Entry
@@ -138,12 +176,19 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int arachnotron_max_group = 4;
 
 	@Entry
+	public static List<String> gargoyle_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
+	@Entry
 	public static int gargoyle_spawn_weight = 15;
 	@Entry
 	public static int gargoyle_min_group = 1;
 	@Entry
 	public static int gargoyle_max_group = 4;
 
+	@Entry
+	public static List<String> chaingunner_biomes = Arrays.asList("minecraft:nether_wastes",
+			"minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest",
+			"minecraft:basalt_deltas");
 	@Entry
 	public static int chaingunner_spawn_weight = 15;
 	@Entry
@@ -152,12 +197,19 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int chaingunner_max_group = 4;
 
 	@Entry
+	public static List<String> shotgunguy_biomes = Arrays.asList("minecraft:nether_wastes",
+			"minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest",
+			"minecraft:basalt_deltas");
+	@Entry
 	public static int shotgunguy_spawn_weight = 15;
 	@Entry
 	public static int shotgunguy_min_group = 1;
 	@Entry
 	public static int shotgunguy_max_group = 4;
-	
+
+	@Entry
+	public static List<String> marauder_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
 	@Entry
 	public static int marauder_spawn_weight = 3;
 	@Entry
@@ -166,6 +218,9 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int marauder_max_group = 1;
 
 	@Entry
+	public static List<String> pain_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
+	@Entry
 	public static int pain_spawn_weight = 4;
 	@Entry
 	public static int pain_min_group = 1;
@@ -173,19 +228,31 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int pain_max_group = 2;
 
 	@Entry
+	public static List<String> hellknight_biomes = Arrays.asList("minecraft:nether_wastes",
+			"minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest",
+			"minecraft:basalt_deltas");
+	@Entry
 	public static int hellknight_spawn_weight = 4;
 	@Entry
 	public static int hellknight_min_group = 1;
 	@Entry
 	public static int hellknight_max_group = 2;
-	
+
+	@Entry
+	public static List<String> hellknight2016_biomes = Arrays.asList("minecraft:nether_wastes",
+			"minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest",
+			"minecraft:basalt_deltas");
 	@Entry
 	public static int hellknight2016_spawn_weight = 4;
 	@Entry
 	public static int hellknight2016_min_group = 1;
 	@Entry
 	public static int hellknight2016_max_group = 2;
-	
+
+	@Entry
+	public static List<String> cyberdemon_biomes = Arrays.asList("minecraft:nether_wastes",
+			"minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest",
+			"minecraft:basalt_deltas");
 	@Entry
 	public static int cyberdemon_spawn_weight = 4;
 	@Entry
@@ -194,12 +261,19 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int cyberdemon_max_group = 2;
 
 	@Entry
+	public static List<String> unwilling_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
+	@Entry
 	public static int unwilling_spawn_weight = 15;
 	@Entry
 	public static int unwilling_min_group = 1;
 	@Entry
 	public static int unwilling_max_group = 4;
-	
+
+	@Entry
+	public static List<String> possessed_scientist_biomes = Arrays.asList("minecraft:nether_wastes",
+			"minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest",
+			"minecraft:basalt_deltas");
 	@Entry
 	public static int possessed_scientist_spawn_weight = 15;
 	@Entry
@@ -208,12 +282,20 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int possessed_scientist_max_group = 4;
 
 	@Entry
+	public static List<String> possessed_soldier_biomes = Arrays.asList("minecraft:nether_wastes",
+			"minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest",
+			"minecraft:basalt_deltas");
+	@Entry
 	public static int possessed_soldier_spawn_weight = 15;
 	@Entry
 	public static int possessed_soldier_min_group = 1;
 	@Entry
 	public static int possessed_soldier_max_group = 4;
 
+	@Entry
+	public static List<String> mechazombie_biomes = Arrays.asList("minecraft:nether_wastes",
+			"minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest",
+			"minecraft:basalt_deltas");
 	@Entry
 	public static int mechazombie_spawn_weight = 15;
 	@Entry
@@ -222,12 +304,18 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int mechazombie_max_group = 4;
 
 	@Entry
+	public static List<String> cueball_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
+	@Entry
 	public static int cueball_spawn_weight = 15;
 	@Entry
 	public static int cueball_min_group = 1;
 	@Entry
 	public static int cueball_max_group = 2;
 
+	@Entry
+	public static List<String> prowler_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
 	@Entry
 	public static int prowler_spawn_weight = 15;
 	@Entry
@@ -236,12 +324,18 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int prowler_max_group = 2;
 
 	@Entry
+	public static List<String> impstone_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
+	@Entry
 	public static int impstone_spawn_weight = 15;
 	@Entry
 	public static int impstone_min_group = 1;
 	@Entry
 	public static int impstone_max_group = 2;
 
+	@Entry
+	public static List<String> gorenest_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
 	@Entry
 	public static int gorenest_spawn_weight = 4;
 	@Entry
@@ -250,12 +344,18 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int gorenest_max_group = 1;
 
 	@Entry
+	public static List<String> tentacle_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
+	@Entry
 	public static int tentacle_spawn_weight = 4;
 	@Entry
 	public static int tentacle_min_group = 1;
 	@Entry
-	public static int tentacle_max_group = 4;
+	public static int tentacle_max_group = 1;
 
+	@Entry
+	public static List<String> turret_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
 	@Entry
 	public static int turret_spawn_weight = 4;
 	@Entry
@@ -264,12 +364,19 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int turret_max_group = 4;
 
 	@Entry
+	public static List<String> spider_mastermind_biomes = Arrays.asList("minecraft:nether_wastes",
+			"minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest",
+			"minecraft:basalt_deltas");
+	@Entry
 	public static int spider_mastermind_spawn_weight = 4;
 	@Entry
 	public static int spider_mastermind_min_group = 1;
 	@Entry
 	public static int spider_mastermind_max_group = 1;
 
+	@Entry
+	public static List<String> whiplash_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
 	@Entry
 	public static int whiplash_spawn_weight = 4;
 	@Entry
@@ -278,12 +385,20 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int whiplash_max_group = 1;
 
 	@Entry
+	public static List<String> doomhunter_biomes = Arrays.asList("minecraft:nether_wastes",
+			"minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest",
+			"minecraft:basalt_deltas");
+	@Entry
 	public static int doomhunter_spawn_weight = 4;
 	@Entry
 	public static int doomhunter_min_group = 1;
 	@Entry
 	public static int doomhunter_max_group = 1;
 
+	@Entry
+	public static List<String> possessed_worker_biomes = Arrays.asList("minecraft:nether_wastes",
+			"minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest",
+			"minecraft:basalt_deltas");
 	@Entry
 	public static int possessed_worker_spawn_weight = 15;
 	@Entry
@@ -292,6 +407,10 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int possessed_worker_max_group = 4;
 
 	@Entry
+	public static List<String> armoredbaron_biomes = Arrays.asList("minecraft:nether_wastes",
+			"minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest",
+			"minecraft:basalt_deltas");
+	@Entry
 	public static int armoredbaron_spawn_weight = 4;
 	@Entry
 	public static int armoredbaron_min_group = 1;
@@ -299,12 +418,17 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int armoredbaron_max_group = 1;
 
 	@Entry
+	public static List<String> summoner_biomes = Arrays.asList("minecraft:nether_wastes", "minecraft:soul_sand_valley",
+			"minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas");
+	@Entry
 	public static int summoner_spawn_weight = 4;
 	@Entry
 	public static int summoner_min_group = 1;
 	@Entry
 	public static int summoner_max_group = 2;
-	
+
+	@Entry
+	public static List<String> motherdemon_biomes = Arrays.asList("");
 	@Entry
 	public static int motherdemon_spawn_weight = 1;
 	@Entry
@@ -313,12 +437,18 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int motherdemon_max_group = 1;
 
 	@Entry
+	public static List<String> maykrdrone_biomes = Arrays.asList("minecraft:small_end_islands",
+			"minecraft:end_midlands", "minecraft:end_barrens", "minecraft:end_highlands");
+	@Entry
 	public static int maykrdrone_spawn_weight = 15;
 	@Entry
 	public static int maykrdrone_min_group = 1;
 	@Entry
 	public static int maykrdrone_max_group = 2;
-	
+
+	@Entry
+	public static List<String> bloodmaykr_biomes = Arrays.asList("minecraft:small_end_islands",
+			"minecraft:end_midlands", "minecraft:end_barrens", "minecraft:end_highlands");
 	@Entry
 	public static int bloodmaykr_spawn_weight = 6;
 	@Entry
@@ -327,12 +457,16 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int bloodmaykr_max_group = 2;
 
 	@Entry
+	public static List<String> archmaykr_biomes = Arrays.asList("");
+	@Entry
 	public static int archmaykr_spawn_weight = 1;
 	@Entry
 	public static int archmaykr_min_group = 1;
 	@Entry
 	public static int archmaykr_max_group = 1;
 
+	@Entry
+	public static List<String> gladiator_biomes = Arrays.asList("");
 	@Entry
 	public static int gladiator_spawn_weight = 1;
 	@Entry

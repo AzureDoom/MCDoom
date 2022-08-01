@@ -10,7 +10,7 @@ import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class PinkyModel extends AnimatedTickingGeoModel<PinkyEntity> {
-	
+
 	@Override
 	public Identifier getModelResource(PinkyEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/" + (object.getVariant() == 3 ? "pinky2016" : "pinky") + ".geo.json");
@@ -36,8 +36,10 @@ public class PinkyModel extends AnimatedTickingGeoModel<PinkyEntity> {
 
 		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
 		if (head != null) {
-			head.setRotationX(
-					Vec3f.POSITIVE_X.getRadialQuaternion((extraData.headPitch + 30) * ((float) Math.PI / 360F)).getX());
+			head.setRotationX(Vec3f.POSITIVE_X
+					.getRadialQuaternion(
+							(extraData.headPitch + (entity.getVariant() == 3 ? 180 : 30)) * ((float) Math.PI / 360F))
+					.getX());
 			head.setRotationY(
 					Vec3f.POSITIVE_Y.getRadialQuaternion(extraData.netHeadYaw * ((float) Math.PI / 500F)).getY());
 		}
