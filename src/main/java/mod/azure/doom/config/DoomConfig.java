@@ -25,6 +25,8 @@ public class DoomConfig {
 		public final ConfigValue<Integer> doom_armor_chestplate_stat;
 		public final ConfigValue<Integer> doom_armor_leggings_stat;
 		public final ConfigValue<Integer> doom_armor_boots_stat;
+		public final ConfigValue<Integer> doom_armor_toughness;
+		public final ConfigValue<Integer> doom_armor_knockbackResistance;
 
 		public final ConfigValue<Integer> crucible_marauder_max_damage;
 		public final ConfigValue<Boolean> enable_block_breaking;
@@ -408,6 +410,10 @@ public class DoomConfig {
 					.defineInRange("Doom Armor Leggings Stat", 20, 1, Integer.MAX_VALUE);
 			this.doom_armor_boots_stat = builder.translation("text.doom.config.doom_armor_boots_stat")
 					.defineInRange("Doom Armor Boots Stat", 15, 1, Integer.MAX_VALUE);
+			this.doom_armor_toughness = builder.translation("text.doom.config.doom_armor_toughness")
+					.defineInRange("Doom Armor Toughness", 24, 1, Integer.MAX_VALUE);
+			this.doom_armor_knockbackResistance = builder.translation("text.doom.config.doom_armor_knockbackResistance")
+					.defineInRange("Doom Armor Knockback Res", 4, 1, Integer.MAX_VALUE);
 			builder.pop();
 			builder.push("Misc");
 			this.enable_soulcube_effects = builder.translation("text.doom.config.enable_soulcube_effects")
