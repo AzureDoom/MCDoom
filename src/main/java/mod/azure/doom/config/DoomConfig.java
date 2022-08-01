@@ -26,6 +26,10 @@ public class DoomConfig extends CustomMidnightConfig {
 	public static int doom_armor_leggings_stat = 20;
 	@Entry
 	public static int doom_armor_boots_stat = 15;
+	@Entry
+	public static float doom_armor_toughness = 24;
+	@Entry
+	public static float doom_armor_knockbackResistance = 4;
 
 	@Entry
 	public static int crucible_marauder_max_damage = 5;
