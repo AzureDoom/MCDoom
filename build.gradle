@@ -20,13 +20,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'com.matthewprenger.cursegradle'
 apply plugin: 'java'
 apply plugin: 'org.spongepowered.mixin'
-apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
-configurations.all {
-    resolutionStrategy {
-        force 'cpw.mods:securejarhandler:0.9.50'
-    }
-}
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
@@ -97,15 +91,15 @@ repositories {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.1-42.0.0'
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19-5.1.0.4")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19-5.1.0.4:api")
+    minecraft 'net.minecraftforge:forge:1.19.1-42.0.1'
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.1-5.1.0.5")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.1-5.1.0.5:api")
 	implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19:3.1.10')
 	annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:9.1.511")
-    implementation fg.deobf("curse.maven:reiw-521393:3900966")
-    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:7.0.73")
-    implementation fg.deobf("dev.architectury:architectury-forge:6.0.34")
+    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:9.1.520")
+    implementation fg.deobf("curse.maven:reiw-521393:3909553")
+    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:8.0.75")
+    implementation fg.deobf("dev.architectury:architectury-forge:6.0.35")
     implementation fg.deobf("curse.maven:projectmmo-353935:3902639")
 }
 

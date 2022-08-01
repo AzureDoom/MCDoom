@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[41,)"
+loaderVersion="[42,)"
 license="CC-BY-NC-4.0"
 [[mods]]
 modId="doom"
@@ -13,12 +13,12 @@ Adds Doom into Minecraft
 [[dependencies.geckolib3]]
     modId="geckolib3"
     mandatory=true
-    versionRange="[3.1.8,)"
+    versionRange="[3.1.10,)"
     ordering="BEFORE"
     side="BOTH"
 [[dependencies.forge]]
     modId="forge"
     mandatory=true 
-    versionRange="[41.0.64,)" 
+    versionRange="[42.0.0,)" 
     ordering="NONE"
     side="BOTH"

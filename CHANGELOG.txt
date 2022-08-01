@@ -1,7 +1,5 @@
-v.4.2.8
+v.4.2.9
 
-- Grenades now properly deal damage when exploding if landed on ground.
-- Tweaked Dread Knight Render due to CCA issues, should resolve those. So much for the special blade rendering, not sure why CCA is breaking it but I'm tired of the headache.
-- Fixes Icon of Sin 2nd Phase Damage Config using Mother Demons.
-- Doom Armor moved to 1 material and is configurable in it's stats for helmet, chestplate, leggings and boots.
-- Config options to disable Daisy and Soul Cube effects added. 
+- Doom Armor Toughness and Knockback Res configs added.
+- Fixes Pinky 2016 head.
+- Fixes Keybinding issue.

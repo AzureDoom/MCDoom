@@ -233,16 +233,15 @@ public class ClientModEventSubscriber {
 	}
 
 	@SubscribeEvent
-	public static void registerRenderers(final RegisterKeyMappingsEvent event) {
+	public static void registerKeys(final RegisterKeyMappingsEvent event) {
+		Keybindings.RELOAD = new KeyMapping("key." + DoomMod.MODID + ".reload", GLFW.GLFW_KEY_R,
+				"key.category." + DoomMod.MODID);
 		event.register(Keybindings.RELOAD);
-
 	}
 
 	@SuppressWarnings("removal")
 	@SubscribeEvent
 	public static void onClientSetup(final FMLClientSetupEvent event) {
-		Keybindings.RELOAD = new KeyMapping("key." + DoomMod.MODID + ".reload", GLFW.GLFW_KEY_R,
-				"key.categories." + DoomMod.MODID);
 		ItemBlockRenderTypes.setRenderLayer(DoomBlocks.JUMP_PAD.get(), RenderType.translucent());
 		MenuScreens.register(DoomScreens.SCREEN_HANDLER_TYPE.get(), GunTableScreen::new);
 		// Crucible
