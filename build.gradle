@@ -39,7 +39,7 @@ mixin {
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
-    mappings channel: 'official', version: '1.19.1'
+    mappings channel: 'official', version: '1.19.2'
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
@@ -91,7 +91,7 @@ repositories {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.1-42.0.1'
+    minecraft 'net.minecraftforge:forge:1.19.2-43.0.0'
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.1-5.1.0.5")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.1-5.1.0.5:api")
 	implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19:3.1.10')
@@ -165,6 +165,7 @@ if (file('key.properties').exists()) {
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
         	addGameVersion("1.19.1")
+        	addGameVersion("1.19.2")
         	addGameVersion("Forge")
         	addGameVersion("Java 17")
 
