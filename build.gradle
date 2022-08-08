@@ -8,10 +8,12 @@ plugins {
 	id 'maven-publish'
 	alias(libs.plugins.quilt.loom)
     id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id "com.modrinth.minotaur" version "2.+"
 }
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
+import com.modrinth.minotaur.dependencies.ModDependency
 
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
@@ -117,6 +119,7 @@ if (file('key.properties').exists()) {
             	requiredDependency 'geckolib'  
             	requiredDependency 'trinkets' 
             	optionalDependency 'roughly-enough-items'  
+            	optionalDependency 'better-combat-by-daedelus' 
         	}
         	mainArtifact(remapJar)
 
@@ -129,4 +132,29 @@ if (file('key.properties').exists()) {
         	forgeGradleIntegration = false
     	}
     }
+}
+
+if (file('key.properties').exists()) {
+	modrinth {
+		def modrinthProp = new Properties()
+		File secretPropsFile = file("key.properties")
+		modrinthProp.load(secretPropsFile.newInputStream())
+		
+		token = modrinthProp.getProperty('modrinthKey')
+		projectId = '9ON3zv6e' 
+		versionNumber = project.mod_version 
+		versionName = 'Quilt 1.18.2'
+		uploadFile = jar 
+		changelog = rootProject.file("changelog.txt").text
+		gameVersions = ['1.18.2']
+		loaders = ['quilt']
+		dependencies { 
+        	required.project "geckolib3"
+        	required.project "trinkets"
+        	required.project "qsl"
+        	optional.project "better-combat"
+            optional.project "modmenu"
+            optional.project "roughly-enough-items"
+   		}
+	}
 }
