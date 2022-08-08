@@ -154,6 +154,11 @@ if (file('key.properties').exists()) {
 		loaders = ['fabric']
 		dependencies { 
         	required.project "geckolib3"
+        	required.project "trinkets"
+        	required.project "fabric-api"
+        	optional.project "better-combat"
+            optional.project "modmenu"
+            optional.project "roughly-enough-items"
    		}
 	}
 }
