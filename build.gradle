@@ -8,10 +8,12 @@ plugins {
     id 'fabric-loom' version '0.12-SNAPSHOT'
 	id 'maven-publish'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id "com.modrinth.minotaur" version "2.+"
 }
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
+import com.modrinth.minotaur.dependencies.ModDependency
 
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
@@ -27,7 +29,9 @@ repositories {
     maven { url 'https://maven.blamejared.com' }
     maven { url 'https://plugins.gradle.org/m2/' }
 	maven { url = "https://maven.terraformersmc.com/" }
-	maven {url = "https://ladysnake.jfrog.io/artifactory/mods" }
+	maven { url = "https://ladysnake.jfrog.io/artifactory/mods" }
+	maven { url = "https://maven.kosmx.dev/" }
+	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -35,21 +39,24 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation "software.bernie.geckolib:geckolib-fabric-1.19:3.1.11"
-	modImplementation ("com.terraformersmc:modmenu:4.0.5")
+    modImplementation "software.bernie.geckolib:geckolib-fabric-1.19:3.1.12"
+	modImplementation ("com.terraformersmc:modmenu:4.0.6")
     modImplementation "dev.emi:trinkets:3.4.0"
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:9.1.518") {
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:9.1.520") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:9.1.518") {
+    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:9.1.520") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modApi("dev.architectury:architectury-fabric:6.0.34") {
+    modApi("dev.architectury:architectury-fabric:6.0.37") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modApi("me.shedaniel.cloth:cloth-config-fabric:7.0.73") {
+    modApi("me.shedaniel.cloth:cloth-config-fabric:8.0.75") {
         exclude(group: "net.fabricmc.fabric-api")
     }
+	modCompileOnly "curse.maven:BetterC-639842:3921942"
+    modCompileOnly "dev.kosmx.player-anim:player-animation-lib-fabric:0.0.5"
+    modApi "com.github.ZsoltMolnarrr:TinyConfig:1.0.2"
 }
 
 processResources {
@@ -116,6 +123,7 @@ if (file('key.properties').exists()) {
             	requiredDependency 'geckolib'  
             	requiredDependency 'trinkets'  
             	optionalDependency 'roughly-enough-items' 
+            	optionalDependency 'better-combat-by-daedelus' 
         	}
         	mainArtifact(remapJar)
 
@@ -128,4 +136,24 @@ if (file('key.properties').exists()) {
         	forgeGradleIntegration = false
     	}
     }
+}
+
+if (file('key.properties').exists()) {
+	modrinth {
+		def modrinthProp = new Properties()
+		File secretPropsFile = file("key.properties")
+		modrinthProp.load(secretPropsFile.newInputStream())
+		
+		token = modrinthProp.getProperty('modrinthKey')
+		projectId = '9ON3zv6e' 
+		versionNumber = project.mod_version 
+		versionName = 'Fabric 1.19'
+		uploadFile = jar 
+		changelog = rootProject.file("changelog.txt").text
+		gameVersions = ['1.19.1', '1.19.2']
+		loaders = ['fabric']
+		dependencies { 
+        	required.project "geckolib3"
+   		}
+	}
 }
