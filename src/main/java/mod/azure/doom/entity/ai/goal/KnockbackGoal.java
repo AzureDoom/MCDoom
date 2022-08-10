@@ -45,7 +45,6 @@ public class KnockbackGoal extends Goal {
 			boolean inLineOfSight = this.entity.getVisibilityCache().canSee(livingentity);
 			this.attackTime++;
 			this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
-			this.entity.getNavigation().startMovingTo(livingentity, this.moveSpeedAmp);
 			if (inLineOfSight && this.entity.getAttckingState() != 1) {
 				if (this.attackTime == 1) {
 					this.entity.setAttackingState(0);
