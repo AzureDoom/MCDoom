@@ -154,7 +154,7 @@ if (file('key.properties').exists()) {
 		modrinthProp.load(secretPropsFile.newInputStream())
 		
 		token = modrinthProp.getProperty('modrinthKey')
-		projectId = '9ON3zv6e' 
+		projectId = 'Mfo4FiDF' 
 		versionNumber = project.mod_version 
 		versionName = 'Quilt 1.19'
 		uploadFile = jar 
