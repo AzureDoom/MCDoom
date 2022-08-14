@@ -202,8 +202,5 @@ if (file('key.properties').exists()) {
 		changelog = rootProject.file("changelog.txt").text
 		gameVersions = ['1.18.2']
 		loaders = ['forge']
-		dependencies { 
-        	required.project "geckolib3"
-   		}
 	}
 }
