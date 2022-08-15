@@ -13,6 +13,7 @@ import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tierboss.MotherDemonEntity;
 import mod.azure.doom.entity.tierboss.SpiderMastermind2016Entity;
 import mod.azure.doom.entity.tierboss.SpiderMastermindEntity;
+import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomBlocks;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
@@ -21,6 +22,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.SwordItem;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -39,14 +41,14 @@ import software.bernie.geckolib3.network.GeckoLibNetwork;
 import software.bernie.geckolib3.network.ISyncable;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
-public class DarkLordCrucibleItem extends Item implements IAnimatable, ISyncable {
+public class DarkLordCrucibleItem extends SwordItem implements IAnimatable, ISyncable {
 
 	public AnimationFactory factory = new AnimationFactory(this);
 	public String controllerName = "controller";
 	public static final int ANIM_OPEN = 0;
 
 	public DarkLordCrucibleItem() {
-		super(new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(5));
+		super(DoomTier.DOOM, 1, -2.5f, new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(5));
 		GeckoLibNetwork.registerSyncable(this);
 	}
 
@@ -60,8 +62,7 @@ public class DarkLordCrucibleItem extends Item implements IAnimatable, ISyncable
 		if (miner instanceof PlayerEntity) {
 			PlayerEntity playerentity = (PlayerEntity) miner;
 			if (stack.getDamage() < (stack.getMaxDamage() - 1)) {
-				if (!playerentity.getItemCooldownManager().isCoolingDown(this)
-						&& playerentity.getMainHandStack().getItem() instanceof DarkLordCrucibleItem) {
+				if (playerentity.getMainHandStack().getItem() instanceof DarkLordCrucibleItem) {
 					playerentity.getItemCooldownManager().set(this, 200);
 					final Box aabb = new Box(playerentity.getBlockPos().up()).expand(4D, 1D, 4D);
 					playerentity.getWorld().getOtherEntities(playerentity, aabb)
