@@ -7,6 +7,7 @@ import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
+import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.AreaEffectCloudEntity;
@@ -18,6 +19,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.SwordItem;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.Text;
@@ -38,14 +40,14 @@ import software.bernie.geckolib3q.network.GeckoLibNetwork;
 import software.bernie.geckolib3q.network.ISyncable;
 import software.bernie.geckolib3q.util.GeckoLibUtil;
 
-public class SentinelHammerItem extends Item implements IAnimatable, ISyncable {
+public class SentinelHammerItem extends SwordItem implements IAnimatable, ISyncable {
 
 	public AnimationFactory factory = new AnimationFactory(this);
 	public String controllerName = "controller";
 	public static final int ANIM_OPEN = 0;
 
 	public SentinelHammerItem() {
-		super(new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(5));
+		super(DoomTier.DOOM, 1, -2.5f, new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(5));
 		GeckoLibNetwork.registerSyncable(this);
 	}
 
@@ -62,9 +64,7 @@ public class SentinelHammerItem extends Item implements IAnimatable, ISyncable {
 		if (miner instanceof PlayerEntity) {
 			PlayerEntity playerentity = (PlayerEntity) miner;
 			if (stack.getDamage() < (stack.getMaxDamage() - 1)) {
-				if (!playerentity.getItemCooldownManager().isCoolingDown(this)
-						&& playerentity.getMainHandStack().getItem() instanceof SentinelHammerItem) {
-					playerentity.getItemCooldownManager().set(this, 200);
+				if (playerentity.getMainHandStack().getItem() instanceof SentinelHammerItem) {
 					final Box aabb = new Box(miner.getBlockPos().up()).expand(5D, 5D, 5D);
 					miner.getWorld().getOtherEntities(miner, aabb).forEach(e -> doDamage(playerentity, e));
 					stack.damage(1, miner, p -> p.sendToolBreakStatus(playerentity.getActiveHand()));
