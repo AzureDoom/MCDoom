@@ -7,3 +7,4 @@ pluginManagement {
 		mavenCentral()
     }
 }
+rootProject.name = 'mcdoom-quilt-1.19'
