@@ -41,6 +41,14 @@ public class DoomSounds {
 	public static SoundEvent LOADING_END = of("doom.loading_end");
 
 	public static SoundEvent QUICK1_1 = of("doom.quick1_1");
+	
+	public static SoundEvent CRUCIBLE_LEFT = of("crucible_left");
+	public static SoundEvent CRUCIBLE_RIGHT = of("crucible_right");
+	public static SoundEvent CRUCIBLE_STAB = of("crucible_stab");
+	
+	public static SoundEvent CRUCIBLE_HAMMER = of("crucible_hammer");
+	public static SoundEvent CRUCIBLE_AXE_RIGHT = of("crucible_axe_right");
+	public static SoundEvent CRUCIBLE_AXE_LEFT = of("crucible_axe_left");
 
 	public static SoundEvent E1M1 = of("doom.e1m1");
 	public static SoundEvent NETHERAMBIENT_GEOFFPLAYSGUITAR = of("doom.netherambient_geoffplaysguitar");

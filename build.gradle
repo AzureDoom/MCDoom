@@ -39,7 +39,7 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation "software.bernie.geckolib:geckolib-fabric-1.19:3.1.12"
+    modImplementation "software.bernie.geckolib:geckolib-fabric-1.19:3.1.14"
 	modImplementation ("com.terraformersmc:modmenu:4.0.6")
     modImplementation "dev.emi:trinkets:3.4.0"
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:9.1.520") {
@@ -54,7 +54,7 @@ dependencies {
     modApi("me.shedaniel.cloth:cloth-config-fabric:8.0.75") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-	modCompileOnly "curse.maven:BetterC-639842:3921942"
+	modCompileOnly "curse.maven:BetterC-639842:3928626"
     modCompileOnly "dev.kosmx.player-anim:player-animation-lib-fabric:0.0.5"
     modApi "com.github.ZsoltMolnarrr:TinyConfig:1.0.2"
 }
