@@ -1,3 +1,4 @@
-v.4.2.25
+v.4.2.26
 
-- Fixed Arch Maykr Crash
+- Removed cool down on Crucibles, Hammer, and Axe.
+- Tweak Better Combat animations and sounds.
