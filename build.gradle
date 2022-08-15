@@ -151,7 +151,7 @@ if (file('key.properties').exists()) {
 		gameVersions = ['1.18.2']
 		loaders = ['fabric']
 		dependencies { 
-        	required.project "geckolib3"
+        	required.project "geckolib"
         	required.project "trinkets"
         	required.project "fabric-api"
         	optional.project "better-combat"
