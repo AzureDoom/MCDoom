@@ -26,15 +26,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
-public class AxeMarauderItem extends Item {
+public class AxeMarauderItem extends SwordItem {
 
 	public AxeMarauderItem() {
-		super(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1)
+		super(DoomMod.ARGENT_TIER, 1, -2.5f, new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1)
 				.durability(DoomConfig.SERVER.marauder_axe_damage.get().intValue()));
 	}
 
@@ -54,9 +55,7 @@ public class AxeMarauderItem extends Item {
 		if (miner instanceof Player) {
 			Player playerentity = (Player) miner;
 			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
-				if (!playerentity.getCooldowns().isOnCooldown(this)
-						&& playerentity.getMainHandItem().getItem() instanceof AxeMarauderItem) {
-					playerentity.getCooldowns().addCooldown(this, 200);
+				if (playerentity.getMainHandItem().getItem() instanceof AxeMarauderItem) {
 					final AABB aabb = new AABB(miner.blockPosition().above()).inflate(4D, 1D, 4D);
 					miner.getCommandSenderWorld().getEntities(miner, aabb).forEach(e -> doDamage(playerentity, e));
 					stack.hurtAndBreak(1, miner, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));

@@ -69,6 +69,20 @@ public class DoomSounds {
 
 	public static final RegistryObject<SoundEvent> QUICK1_1 = MOD_SOUNDS.register("doom.quick1_1",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.quick1_1")));
+	
+	public static final RegistryObject<SoundEvent> CRUCIBLE_LEFT = MOD_SOUNDS.register("crucible_left",
+			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "crucible_left")));
+	public static final RegistryObject<SoundEvent> CRUCIBLE_RIGHT = MOD_SOUNDS.register("crucible_right",
+			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "crucible_right")));
+	public static final RegistryObject<SoundEvent> CRUCIBLE_STAB = MOD_SOUNDS.register("crucible_stab",
+			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "crucible_stab")));
+	
+	public static final RegistryObject<SoundEvent> CRUCIBLE_HAMMER = MOD_SOUNDS.register("crucible_hammer",
+			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "crucible_hammer")));
+	public static final RegistryObject<SoundEvent> CRUCIBLE_AXE_RIGHT = MOD_SOUNDS.register("crucible_axe_right",
+			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "crucible_axe_right")));
+	public static final RegistryObject<SoundEvent> CRUCIBLE_AXE_LEFT = MOD_SOUNDS.register("crucible_axe_left",
+			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "crucible_axe_left")));
 
 	public static final RegistryObject<SoundEvent> E1M1 = MOD_SOUNDS.register("doom.e1m1",
 			() -> new SoundEvent(new ResourceLocation(DoomMod.MODID, "doom.e1m1")));
