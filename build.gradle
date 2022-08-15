@@ -162,7 +162,7 @@ if (file('key.properties').exists()) {
 		gameVersions = ['1.19.1', '1.19.2']
 		loaders = ['quilt']
 		dependencies { 
-        	required.project "geckolib3"
+        	required.project "geckolib"
         	required.project "trinkets"
         	required.project "qsl"
         	optional.project "better-combat"
