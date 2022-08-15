@@ -25,6 +25,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -41,14 +42,15 @@ import software.bernie.geckolib3.network.GeckoLibNetwork;
 import software.bernie.geckolib3.network.ISyncable;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
-public class DarkLordCrucibleItem extends Item implements IAnimatable, ISyncable {
+public class DarkLordCrucibleItem extends SwordItem implements IAnimatable, ISyncable {
 
 	public AnimationFactory factory = new AnimationFactory(this);
 	public String controllerName = "controller";
 	public static final int ANIM_OPEN = 0;
 
 	public DarkLordCrucibleItem() {
-		super(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(5));
+		super(DoomMod.ARGENT_TIER, 1, -2.5f,
+				new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(5));
 		GeckoLibNetwork.registerSyncable(this);
 	}
 
@@ -75,9 +77,7 @@ public class DarkLordCrucibleItem extends Item implements IAnimatable, ISyncable
 		if (miner instanceof Player) {
 			Player playerentity = (Player) miner;
 			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
-				if (!playerentity.getCooldowns().isOnCooldown(this)
-						&& playerentity.getMainHandItem().getItem() instanceof DarkLordCrucibleItem) {
-					playerentity.getCooldowns().addCooldown(this, 200);
+				if (playerentity.getMainHandItem().getItem() instanceof DarkLordCrucibleItem) {
 					final AABB aabb = new AABB(miner.blockPosition().above()).inflate(4D, 1D, 4D);
 					miner.getCommandSenderWorld().getEntities(miner, aabb).forEach(e -> doDamage(playerentity, e));
 					stack.hurtAndBreak(1, miner, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));

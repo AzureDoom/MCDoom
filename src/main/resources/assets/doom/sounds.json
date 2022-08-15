@@ -3,7 +3,7 @@
 		"sounds": [{"name": "doom:loading_end"}]
 	},
 	"doom.e1m1": {
-		"sounds": [{"name": "doom:e1m1", "stream": true}]
+		"sounds": [{"name": "doom:e1m1"}]
 	},
 	"doom.netherambient_geoffplaysguitar": {
 		"sounds": [{"name": "doom:netherambient_geoffplaysguitar"}]
@@ -316,5 +316,23 @@
 	},
 	"doom.doomhunter_phasechange": {
 		"sounds": [{"name": "doom:doomhunter_phasechange"}]
+	},
+	"crucible_left": {
+		"sounds": [{"name": "doom:crucible_left"}]
+	},
+	"crucible_right": {
+		"sounds": [{"name": "doom:crucible_right"}]
+	},
+	"crucible_stab": {
+		"sounds": [{"name": "doom:crucible_stab"}]
+	},
+	"crucible_hammer": {
+		"sounds": [{"name": "doom:crucible_hammer"}]
+	},
+	"crucible_axe_right": {
+		"sounds": [{"name": "doom:crucible_axe_right"}]
+	},
+	"crucible_axe_left": {
+		"sounds": [{"name": "doom:crucible_axe_left"}]
 	}
 }
