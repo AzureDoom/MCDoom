@@ -123,7 +123,6 @@ if (file('key.properties').exists()) {
         	releaseType = "${curse_release}"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
-			addGameVersion("1.19.1")
 			addGameVersion("1.19.2")
 			addGameVersion("Quilt")
 			addGameVersion("Java 17")
@@ -156,10 +155,10 @@ if (file('key.properties').exists()) {
 		token = modrinthProp.getProperty('modrinthKey')
 		projectId = 'Mfo4FiDF' 
 		versionNumber = project.mod_version 
-		versionName = 'Quilt 1.19'
-		uploadFile = jar 
+		versionName = 'Quilt 1.19.2'
+		uploadFile = remapJar 
 		changelog = rootProject.file("changelog.txt").text
-		gameVersions = ['1.19.1', '1.19.2']
+		gameVersions = ['1.19.2']
 		loaders = ['quilt']
 		dependencies { 
         	required.project "geckolib"
