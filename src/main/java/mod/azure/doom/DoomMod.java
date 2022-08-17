@@ -2,6 +2,7 @@ package mod.azure.doom;
 
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
+import org.quiltmc.qsl.block.entity.api.QuiltBlockEntityTypeBuilder;
 import org.quiltmc.qsl.item.group.api.QuiltItemGroup;
 import org.quiltmc.qsl.lifecycle.api.event.ServerLifecycleEvents;
 
@@ -24,9 +25,7 @@ import mod.azure.doom.util.registry.DoomSounds;
 import mod.azure.doom.util.registry.DoomStructures;
 import mod.azure.doom.util.registry.MobSpawn;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
-import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
-import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.data.DataTracker;
@@ -35,6 +34,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootPool;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.recipe.RecipeSerializer;
@@ -104,31 +104,30 @@ public class DoomMod implements ModInitializer {
 		PROJECTILES = new ProjectilesEntityRegister();
 		FuelRegistry.INSTANCE.add(DoomItems.ARGENT_ENERGY, 32767);
 		ICON = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":icon",
-				FabricBlockEntityTypeBuilder.create(IconBlockEntity::new, DoomBlocks.ICON_WALL1).build(null));
+				QuiltBlockEntityTypeBuilder.create(IconBlockEntity::new, DoomBlocks.ICON_WALL1).build(null));
 		TOTEM = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":totem",
-				FabricBlockEntityTypeBuilder.create(TotemEntity::new, DoomBlocks.TOTEM).build(null));
+				QuiltBlockEntityTypeBuilder.create(TotemEntity::new, DoomBlocks.TOTEM).build(null));
 		GUN_TABLE_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":guntable",
-				FabricBlockEntityTypeBuilder.create(GunBlockEntity::new, DoomBlocks.GUN_TABLE).build(null));
+				QuiltBlockEntityTypeBuilder.create(GunBlockEntity::new, DoomBlocks.GUN_TABLE).build(null));
 		TICKING_LIGHT_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":lightblock",
-				FabricBlockEntityTypeBuilder.create(TickingLightEntity::new, DoomBlocks.TICKING_LIGHT_BLOCK)
+				QuiltBlockEntityTypeBuilder.create(TickingLightEntity::new, DoomBlocks.TICKING_LIGHT_BLOCK)
 						.build(null));
 		MobSpawn.addSpawnEntries();
 		if (DoomConfig.enable_all_villager_trades) {
 			ServerLifecycleEvents.READY.register(minecraftServer -> DoomVillagerTrades.addTrades());
 		}
-		LootTableLoadingCallback.EVENT.register((resourceManager, lootManager, id, supplier, setter) -> {
+		LootTableEvents.MODIFY.register((resourceManager, lootManager, id, supplier, setter) -> {
 			if (DoomLoot.BASTION_BRIDGE.equals(id) || DoomLoot.BASTION_HOGLIN_STABLE.equals(id)
 					|| DoomLoot.BASTION_OTHER.equals(id) || DoomLoot.BASTION_TREASURE.equals(id)
 					|| DoomLoot.NETHER_BRIDGE.equals(id) || DoomLoot.RUINED_PORTAL.equals(id)
 					|| DoomLoot.SPAWN_BONUS_CHEST.equals(id)) {
-				FabricLootPoolBuilder poolBuilder = FabricLootPoolBuilder.builder()
-						.rolls(ConstantLootNumberProvider.create(1))
-						.withEntry(ItemEntry.builder(DoomItems.INMORTAL).build())
-						.withEntry(ItemEntry.builder(DoomItems.INVISIBLE).build())
-						.withEntry(ItemEntry.builder(DoomItems.MEGA).build())
-						.withEntry(ItemEntry.builder(DoomItems.POWER).build())
-						.withEntry(ItemEntry.builder(DoomItems.SOULCUBE).build())
-						.withEntry(ItemEntry.builder(DoomItems.DAISY).build());
+				LootPool poolBuilder = LootPool.builder().rolls(ConstantLootNumberProvider.create(1))
+						.with(ItemEntry.builder(DoomItems.INMORTAL).build())
+						.with(ItemEntry.builder(DoomItems.INVISIBLE).build())
+						.with(ItemEntry.builder(DoomItems.MEGA).build())
+						.with(ItemEntry.builder(DoomItems.POWER).build())
+						.with(ItemEntry.builder(DoomItems.SOULCUBE).build())
+						.with(ItemEntry.builder(DoomItems.DAISY).build()).build();
 				supplier.pool(poolBuilder);
 			}
 		});
