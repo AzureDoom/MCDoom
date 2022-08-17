@@ -2,6 +2,7 @@ package mod.azure.doom;
 
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
+import org.quiltmc.qsl.block.entity.api.QuiltBlockEntityTypeBuilder;
 import org.quiltmc.qsl.item.group.api.QuiltItemGroup;
 import org.quiltmc.qsl.lifecycle.api.event.ServerLifecycleEvents;
 
@@ -25,7 +26,6 @@ import mod.azure.doom.util.registry.DoomStructures;
 import mod.azure.doom.util.registry.MobSpawn;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.data.DataTracker;
@@ -105,13 +105,13 @@ public class DoomMod implements ModInitializer {
 		PROJECTILES = new ProjectilesEntityRegister();
 		FuelRegistry.INSTANCE.add(DoomItems.ARGENT_ENERGY, 32767);
 		ICON = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":icon",
-				FabricBlockEntityTypeBuilder.create(IconBlockEntity::new, DoomBlocks.ICON_WALL1).build(null));
+				QuiltBlockEntityTypeBuilder.create(IconBlockEntity::new, DoomBlocks.ICON_WALL1).build(null));
 		TOTEM = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":totem",
-				FabricBlockEntityTypeBuilder.create(TotemEntity::new, DoomBlocks.TOTEM).build(null));
+				QuiltBlockEntityTypeBuilder.create(TotemEntity::new, DoomBlocks.TOTEM).build(null));
 		GUN_TABLE_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":guntable",
-				FabricBlockEntityTypeBuilder.create(GunBlockEntity::new, DoomBlocks.GUN_TABLE).build(null));
+				QuiltBlockEntityTypeBuilder.create(GunBlockEntity::new, DoomBlocks.GUN_TABLE).build(null));
 		TICKING_LIGHT_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":lightblock",
-				FabricBlockEntityTypeBuilder.create(TickingLightEntity::new, DoomBlocks.TICKING_LIGHT_BLOCK)
+				QuiltBlockEntityTypeBuilder.create(TickingLightEntity::new, DoomBlocks.TICKING_LIGHT_BLOCK)
 						.build(null));
 		MobSpawn.addSpawnEntries();
 		if (DoomConfig.enable_all_villager_trades) {
