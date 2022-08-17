@@ -146,7 +146,7 @@ if (file('key.properties').exists()) {
 		projectId = 'Mfo4FiDF' 
 		versionNumber = project.mod_version 
 		versionName = 'Fabric 1.18.2'
-		uploadFile = jar 
+		uploadFile = remapJar 
 		changelog = rootProject.file("changelog.txt").text
 		gameVersions = ['1.18.2']
 		loaders = ['fabric']
