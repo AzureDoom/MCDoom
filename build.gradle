@@ -36,7 +36,7 @@ import com.modrinth.minotaur.dependencies.ModDependency
 
 version = project.mod_version
 group = "mod.azure.doomweapon"
-archivesBaseName = "MCDoom-1.18.2"
+archivesBaseName = "MCDoom-Forge-1.18.2"
 
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
