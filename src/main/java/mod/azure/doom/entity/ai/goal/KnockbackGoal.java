@@ -10,7 +10,7 @@ import net.minecraft.util.math.MathHelper;
 
 public class KnockbackGoal extends Goal {
 	private final DemonEntity entity;
-	private double moveSpeedAmp = 1;
+	protected double moveSpeedAmp = 1;
 	private int attackTime = -1;
 
 	public KnockbackGoal(DemonEntity mob, double moveSpeedAmpIn) {
