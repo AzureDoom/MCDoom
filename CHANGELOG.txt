@@ -1,3 +1,3 @@
-v.4.2.26b
+v.4.2.27
 
-- Updated code to the latest Fabric API changes.
+- All audio is now mono.
