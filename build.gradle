@@ -184,6 +184,7 @@ if (file('key.properties').exists()) {
             	requiredDependency 'geckolib' 
             	optionalDependency 'project-mmo'
             	optionalDependency 'roughly-enough-items'
+            	optionalDependency 'better-combat-by-daedelus' 
         	}
     	}
     }
