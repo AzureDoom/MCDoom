@@ -10,8 +10,7 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class FireBaronModel extends AnimatedTickingGeoModel<FireBaronEntity> {
 
-	private static final ResourceLocation[] TEX = {
-			new ResourceLocation(DoomMod.MODID, "textures/entity/firebaron.png"),
+	private static final ResourceLocation[] TEX = { new ResourceLocation(DoomMod.MODID, "textures/entity/firebaron.png"),
 			new ResourceLocation(DoomMod.MODID, "textures/entity/firebaron_1.png"),
 			new ResourceLocation(DoomMod.MODID, "textures/entity/firebaron_2.png") };
 
@@ -30,14 +29,15 @@ public class FireBaronModel extends AnimatedTickingGeoModel<FireBaronEntity> {
 		return new ResourceLocation(DoomMod.MODID, "animations/baron2016.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(FireBaronEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);
 		IBone head = this.getAnimationProcessor().getBone("neck");
 
 		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
-		head.setRotationX((extraData.headPitch + 20) * ((float) Math.PI / 360F));
-		head.setRotationY((extraData.netHeadYaw) * ((float) Math.PI / 340F));
+		if (head != null) {
+			head.setRotationX((extraData.headPitch + 20) * ((float) Math.PI / 360F));
+			head.setRotationY((extraData.netHeadYaw) * ((float) Math.PI / 340F));
+		}
 	}
 }

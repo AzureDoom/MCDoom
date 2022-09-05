@@ -80,7 +80,6 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements IA
 		this.ticksInAir = compound.getShort("life");
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void tick() {
 		Entity entity = this.getOwner();

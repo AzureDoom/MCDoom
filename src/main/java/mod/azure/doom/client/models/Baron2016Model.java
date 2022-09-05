@@ -25,14 +25,15 @@ public class Baron2016Model extends AnimatedTickingGeoModel<BaronEntity> {
 		return new ResourceLocation(DoomMod.MODID, "animations/baron2016.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(BaronEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);
 		IBone head = this.getAnimationProcessor().getBone("neck");
 
 		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
-		head.setRotationX((extraData.headPitch + 20) * ((float) Math.PI / 360F));
-		head.setRotationY((extraData.netHeadYaw) * ((float) Math.PI / 340F));
+		if (head != null) {
+			head.setRotationX((extraData.headPitch + 20) * ((float) Math.PI / 360F));
+			head.setRotationY((extraData.netHeadYaw) * ((float) Math.PI / 340F));
+		}
 	}
 }

@@ -3,6 +3,7 @@ package mod.azure.doom.client.models;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierheavy.Revenant2016Entity;
 import net.minecraft.resources.ResourceLocation;
+import com.mojang.math.Vector3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
@@ -19,8 +20,7 @@ public class Revenant2016Model extends AnimatedTickingGeoModel<Revenant2016Entit
 			new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_6.png"),
 			new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_7.png") };
 
-	private static final ResourceLocation[] TEX2 = {
-			new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_golden.png"),
+	private static final ResourceLocation[] TEX2 = { new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_golden.png"),
 			new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_golden_1.png"),
 			new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_golden_2.png"),
 			new ResourceLocation(DoomMod.MODID, "textures/entity/revenant_golden_3.png"),
@@ -44,14 +44,17 @@ public class Revenant2016Model extends AnimatedTickingGeoModel<Revenant2016Entit
 		return new ResourceLocation(DoomMod.MODID, "animations/revenant.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(Revenant2016Entity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);
 		IBone head = this.getAnimationProcessor().getBone("head");
 
 		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
-		head.setRotationX(extraData.headPitch * ((float) Math.PI / 180F));
-		head.setRotationY(extraData.netHeadYaw * ((float) Math.PI / 180F));
+		if (head != null) {
+			head.setRotationX(
+					Vector3f.XP.rotation(extraData.headPitch * ((float) Math.PI / 180F)).i());
+			head.setRotationY(
+					Vector3f.YP.rotation(extraData.netHeadYaw * ((float) Math.PI / 180F)).j());
+		}
 	}
 }

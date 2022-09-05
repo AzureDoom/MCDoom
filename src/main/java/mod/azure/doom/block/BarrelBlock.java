@@ -92,7 +92,6 @@ public class BarrelBlock extends Block {
 		super.playerWillDestroy(worldIn, pos, state, player);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn,
 			BlockHitResult hit) {
@@ -143,7 +142,6 @@ public class BarrelBlock extends Block {
 		return state.setValue(direction, rot.rotate(state.getValue(direction)));
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public BlockState mirror(BlockState state, Mirror mirrorIn) {
 		return state.rotate(mirrorIn.getRotation(state.getValue(direction)));

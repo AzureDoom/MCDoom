@@ -3,6 +3,7 @@ package mod.azure.doom.client.models;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import net.minecraft.resources.ResourceLocation;
+import com.mojang.math.Vector3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
@@ -25,14 +26,16 @@ public class GladiatorModel extends AnimatedTickingGeoModel<GladiatorEntity> {
 	public ResourceLocation getAnimationFileLocation(GladiatorEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/gladiator.animation.json");
 	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	
 	@Override
 	public void setLivingAnimations(GladiatorEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);
 		IBone head = this.getAnimationProcessor().getBone("neck");
 
 		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
-		head.setRotationY((extraData.netHeadYaw) * ((float) Math.PI / 340F));
+		if (head != null) {
+			head.setRotationY(
+					Vector3f.YP.rotation(extraData.netHeadYaw * ((float) Math.PI / 340F)).j());
+		}
 	}
 }

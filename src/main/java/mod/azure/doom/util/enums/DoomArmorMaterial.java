@@ -13,7 +13,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SuppressWarnings("deprecation")
 public enum DoomArmorMaterial implements ArmorMaterial {
 	DOOM_ARMOR("doomweapon:doom_armor", 500,
 			new int[] { DoomConfig.SERVER.doom_armor_head_stat.get(),

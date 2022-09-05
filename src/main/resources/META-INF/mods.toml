@@ -22,3 +22,9 @@ Adds Doom into Minecraft
     versionRange="[37.0.59,)" 
     ordering="NONE"
     side="BOTH"
+[[dependencies.doom]]
+    modId="curios"
+    mandatory=true 
+    versionRange="[1.18.2-5.0.7.1,)" 
+    ordering="NONE"
+    side="BOTH"

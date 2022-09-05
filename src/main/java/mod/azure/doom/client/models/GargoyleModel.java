@@ -2,6 +2,7 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.GargoyleEntity;
+import com.mojang.math.Vector3f;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
@@ -28,13 +29,15 @@ public class GargoyleModel extends AnimatedTickingGeoModel<GargoyleEntity> {
 		return new ResourceLocation(DoomMod.MODID, "animations/gargoyleimp.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(GargoyleEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);
 		IBone head = this.getAnimationProcessor().getBone("neck");
 
 		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
-		head.setRotationY((extraData.netHeadYaw) * ((float) Math.PI / 340F));
+		if (head != null) {
+			head.setRotationY(
+					Vector3f.YP.rotation(extraData.netHeadYaw * ((float) Math.PI / 340F)).j());
+		}
 	}
 }

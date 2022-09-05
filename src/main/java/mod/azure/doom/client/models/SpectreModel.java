@@ -2,6 +2,7 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierheavy.SpectreEntity;
+import com.mojang.math.Vector3f;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
@@ -12,8 +13,7 @@ public class SpectreModel extends AnimatedTickingGeoModel<SpectreEntity> {
 
 	@Override
 	public ResourceLocation getModelLocation(SpectreEntity object) {
-		return new ResourceLocation(DoomMod.MODID,
-				"geo/" + (object.getVariant() > 1 ? "pinky" : "pinky2016") + ".geo.json");
+		return new ResourceLocation(DoomMod.MODID, "geo/" + (object.getVariant() > 1 ? "pinky" : "pinky2016") + ".geo.json");
 	}
 
 	@Override
@@ -27,15 +27,18 @@ public class SpectreModel extends AnimatedTickingGeoModel<SpectreEntity> {
 		return new ResourceLocation(DoomMod.MODID,
 				"animations/" + (object.getVariant() > 1 ? "pinky_" : "pinky2016.") + "animation.json");
 	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	
 	@Override
 	public void setLivingAnimations(SpectreEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);
 		IBone head = this.getAnimationProcessor().getBone("neck");
 
 		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
-		head.setRotationX((extraData.headPitch + (entity.getVariant() == 1 ? 90 : 30)) * ((float) Math.PI / 360F));
-		head.setRotationY((extraData.netHeadYaw) * ((float) Math.PI / 500F));
+		if (head != null) {
+			head.setRotationX(Vector3f.XP
+					.rotation((extraData.headPitch + (entity.getVariant() == 1 ? 270 : 30)) * ((float) Math.PI / 360F)).i());
+			head.setRotationY(
+					Vector3f.YP.rotation(extraData.netHeadYaw * ((float) Math.PI / 500F)).j());
+		}
 	}
 }

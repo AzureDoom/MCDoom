@@ -29,7 +29,6 @@ public class DoomParticles {
 	public static final RegistryObject<SimpleParticleType> UNMAYKR = PARTICLES.register("unmaykr",
 			() -> new SimpleParticleType(true));
 
-	@SuppressWarnings("resource")
 	@SubscribeEvent
 	public static void registry(ParticleFactoryRegisterEvent event) {
 		Minecraft.getInstance().particleEngine.register(PISTOL.get(), PlasmaParticle.Factory::new);
