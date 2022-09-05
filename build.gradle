@@ -11,7 +11,7 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.4.0'
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-        classpath "com.modrinth.minotaur:Minotaur:2.1.2"
+        classpath "com.modrinth.minotaur:Minotaur:2.+"
     }
 }
 
