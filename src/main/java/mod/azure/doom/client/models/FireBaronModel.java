@@ -29,7 +29,6 @@ public class FireBaronModel extends AnimatedTickingGeoModel<FireBaronEntity> {
 		return new Identifier(DoomMod.MODID, "animations/baron2016.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(FireBaronEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

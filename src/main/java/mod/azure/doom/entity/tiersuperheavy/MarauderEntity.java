@@ -109,8 +109,8 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(),
-						DoomSounds.SUPER_SHOTGUN_SHOOT, SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.SUPER_SHOTGUN_SHOOT,
+						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}
@@ -134,12 +134,10 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.goalSelector.add(4,
-				new RangedAttackGoal(this,
-						new RangedAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
-								.setDamage(DoomConfig.marauder_ssgdamage).setSound(DoomSounds.SUPER_SHOTGUN_SHOOT, 1.0F,
-										1.4F + this.getRandom().nextFloat() * 0.35F),
-						1.1D));
+		this.goalSelector.add(4, new RangedAttackGoal(this,
+				new RangedAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomConfig.marauder_ssgdamage)
+						.setSound(DoomSounds.SUPER_SHOTGUN_SHOOT, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
+				1.1D));
 		this.targetSelector.add(1, new MarauderEntity.TeleportTowardsPlayerGoal(this, this::shouldAngerAt));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
@@ -274,7 +272,6 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 		super.tickMovement();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void mobTick() {
 		if (this.world.isDay() && this.age >= this.ageWhenTargetSet + 600) {

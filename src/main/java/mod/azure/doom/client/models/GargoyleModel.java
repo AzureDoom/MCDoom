@@ -29,7 +29,6 @@ public class GargoyleModel extends AnimatedTickingGeoModel<GargoyleEntity> {
 		return new Identifier(DoomMod.MODID, "animations/gargoyleimp.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(GargoyleEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

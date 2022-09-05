@@ -83,7 +83,6 @@ public class BarrelBlock extends Block {
 		super.onBreak(world, pos, state, player);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
 			BlockHitResult hit) {

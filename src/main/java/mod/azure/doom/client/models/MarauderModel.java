@@ -11,9 +11,6 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class MarauderModel extends AnimatedTickingGeoModel<MarauderEntity> {
 
-	public MarauderModel() {
-	}
-
 	@Override
 	public Identifier getModelResource(MarauderEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/marauder.geo.json");
@@ -29,7 +26,6 @@ public class MarauderModel extends AnimatedTickingGeoModel<MarauderEntity> {
 		return new Identifier(DoomMod.MODID, "animations/marauder.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(MarauderEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

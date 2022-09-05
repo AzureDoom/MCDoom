@@ -179,8 +179,7 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 	public int getFlameTimer() {
 		return flameTimer;
 	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	
 	@Override
 	protected void initGoals() {
 		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));

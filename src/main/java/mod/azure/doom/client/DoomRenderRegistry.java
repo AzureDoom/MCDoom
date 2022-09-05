@@ -114,7 +114,6 @@ import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
 public class DoomRenderRegistry {
 
-	@SuppressWarnings("unchecked")
 	public static void init() {
 		EntityRendererRegistry.register(DoomEntities.ARCHVILE, (ctx) -> new ArchvileRender(ctx));
 

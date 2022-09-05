@@ -9,7 +9,6 @@ import net.minecraft.item.ToolMaterial;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Lazy;
 
-@SuppressWarnings("deprecation")
 public enum DoomTier implements ToolMaterial {
 	DOOM(18, 1561, 16.0F, 3.0F, 30, () -> {
 		return Ingredient.ofItems(DoomItems.ARGENT_ENERGY);

@@ -55,7 +55,6 @@ import net.minecraft.util.Formatting;
  * Based on https://github.com/Minenash/TinyConfig Credits to Minenash
  */
 
-@SuppressWarnings("unchecked")
 public abstract class CustomMidnightConfig {
 	private static final Pattern INTEGER_ONLY = Pattern.compile("(-?[0-9]*)");
 	private static final Pattern DECIMAL_ONLY = Pattern.compile("-?([\\d]+\\.?[\\d]*|[\\d]*\\.?[\\d]+|\\.)");

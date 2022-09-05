@@ -34,7 +34,6 @@ public class PainModel extends AnimatedTickingGeoModel<PainEntity> {
 				"animations/" + (object.getVariant() == 3 ? "paineternal." : "pain_") + "animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(PainEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);
