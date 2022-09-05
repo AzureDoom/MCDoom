@@ -35,7 +35,6 @@ public class DoomHunterModel extends AnimatedTickingGeoModel<DoomHunterEntity> {
 		return new Identifier(DoomMod.MODID, "animations/doomhunter.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(DoomHunterEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

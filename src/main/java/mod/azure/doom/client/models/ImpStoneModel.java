@@ -2,17 +2,14 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.ImpStoneEntity;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class ImpStoneModel extends AnimatedTickingGeoModel<ImpStoneEntity> {
-
-	public ImpStoneModel() {
-	}
 
 	@Override
 	public Identifier getModelResource(ImpStoneEntity object) {
@@ -29,7 +26,6 @@ public class ImpStoneModel extends AnimatedTickingGeoModel<ImpStoneEntity> {
 		return new Identifier(DoomMod.MODID, "animations/imp2016.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(ImpStoneEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

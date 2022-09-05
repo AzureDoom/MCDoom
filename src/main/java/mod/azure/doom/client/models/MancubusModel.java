@@ -10,10 +10,7 @@ import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class MancubusModel extends AnimatedTickingGeoModel<MancubusEntity> {
-
-	public MancubusModel() {
-	}
-
+	
 	@Override
 	public Identifier getModelResource(MancubusEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/mancubus.geo.json");
@@ -30,7 +27,6 @@ public class MancubusModel extends AnimatedTickingGeoModel<MancubusEntity> {
 		return new Identifier(DoomMod.MODID, "animations/mancubus_animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(MancubusEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

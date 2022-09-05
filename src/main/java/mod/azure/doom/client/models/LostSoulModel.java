@@ -48,7 +48,6 @@ public class LostSoulModel extends AnimatedTickingGeoModel<LostSoulEntity> {
 		return new Identifier(DoomMod.MODID, "animations/lostsoul_animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(LostSoulEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

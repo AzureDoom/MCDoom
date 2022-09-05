@@ -53,7 +53,6 @@ public class ArgentAxe extends MiningToolItem {
 		return 30;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ActionResult useOnBlock(ItemUsageContext context) {
 		World world = context.getWorld();
 		BlockPos blockPos = context.getBlockPos();

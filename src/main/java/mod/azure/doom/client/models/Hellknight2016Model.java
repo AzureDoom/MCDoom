@@ -2,17 +2,14 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierheavy.Hellknight2016Entity;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class Hellknight2016Model extends AnimatedTickingGeoModel<Hellknight2016Entity> {
-
-	public Hellknight2016Model() {
-	}
 
 	@Override
 	public Identifier getModelResource(Hellknight2016Entity object) {
@@ -29,7 +26,6 @@ public class Hellknight2016Model extends AnimatedTickingGeoModel<Hellknight2016E
 		return new Identifier(DoomMod.MODID, "animations/hellknight2016_animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(Hellknight2016Entity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

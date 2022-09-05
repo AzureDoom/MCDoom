@@ -99,7 +99,6 @@ public class GunTableBlock extends Block implements BlockEntityProvider {
 		return (NamedScreenHandlerFactory) world.getBlockEntity(pos);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
 		if (state.getBlock() != newState.getBlock()) {

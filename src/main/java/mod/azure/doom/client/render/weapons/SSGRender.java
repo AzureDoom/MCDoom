@@ -50,7 +50,6 @@ public class SSGRender extends GeoItemRenderer<SuperShotgun> {
 		return super.getUniqueID(animatable);
 	}
 
-	@SuppressWarnings("resource")
 	@Override
 	public void renderRecursively(GeoBone bone, MatrixStack stack, VertexConsumer bufferIn, int packedLightIn,
 			int packedOverlayIn, float red, float green, float blue, float alpha) {

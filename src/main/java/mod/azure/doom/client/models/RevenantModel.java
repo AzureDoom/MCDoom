@@ -2,18 +2,15 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierheavy.RevenantEntity;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class RevenantModel extends AnimatedTickingGeoModel<RevenantEntity> {
-
-	public RevenantModel() {
-	}
-
+	
 	@Override
 	public Identifier getModelResource(RevenantEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/revenant.geo.json");
@@ -29,7 +26,6 @@ public class RevenantModel extends AnimatedTickingGeoModel<RevenantEntity> {
 		return new Identifier(DoomMod.MODID, "animations/revenant.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(RevenantEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

@@ -1,3 +1,4 @@
-v.4.2.27
+v.4.2.28
 
-- All audio is now mono.
+- Code clean up
+- Now properly dep on Trinkets and Geckolib

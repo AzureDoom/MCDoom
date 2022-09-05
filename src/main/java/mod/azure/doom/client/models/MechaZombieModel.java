@@ -2,17 +2,14 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.MechaZombieEntity;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3q.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3q.model.provider.data.EntityModelData;
 
 public class MechaZombieModel extends AnimatedTickingGeoModel<MechaZombieEntity> {
-
-	public MechaZombieModel() {
-	}
 
 	@Override
 	public Identifier getModelResource(MechaZombieEntity object) {
@@ -29,7 +26,6 @@ public class MechaZombieModel extends AnimatedTickingGeoModel<MechaZombieEntity>
 		return new Identifier(DoomMod.MODID, "animations/mechazombie_animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(MechaZombieEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

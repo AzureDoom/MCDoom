@@ -38,7 +38,6 @@ public class PossessedSoldierModel extends AnimatedTickingGeoModel<PossessedSold
 		return new Identifier(DoomMod.MODID, "animations/possessedsoldier.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(PossessedSoldierEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);
