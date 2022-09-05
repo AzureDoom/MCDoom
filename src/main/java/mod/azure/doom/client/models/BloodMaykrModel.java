@@ -26,7 +26,6 @@ public class BloodMaykrModel extends AnimatedTickingGeoModel<BloodMaykrEntity> {
 		return new Identifier(DoomMod.MODID, "animations/bloodmaykr.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(BloodMaykrEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

@@ -11,9 +11,6 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class ZombiemanModel extends AnimatedTickingGeoModel<ZombiemanEntity> {
 
-	public ZombiemanModel() {
-	}
-
 	@Override
 	public Identifier getModelResource(ZombiemanEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/shotgunzombie.geo.json");
@@ -29,7 +26,6 @@ public class ZombiemanModel extends AnimatedTickingGeoModel<ZombiemanEntity> {
 		return new Identifier(DoomMod.MODID, "animations/shotgunzombie.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(ZombiemanEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

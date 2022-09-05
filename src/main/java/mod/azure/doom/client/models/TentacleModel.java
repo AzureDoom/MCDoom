@@ -26,7 +26,6 @@ public class TentacleModel extends AnimatedTickingGeoModel<TentacleEntity> {
 		return new Identifier(DoomMod.MODID, "animations/tentacle.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(TentacleEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

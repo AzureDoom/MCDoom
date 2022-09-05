@@ -27,7 +27,6 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 
 public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 
-	@SuppressWarnings("unchecked")
 	public SpiderMastermind2016Entity(EntityType<? extends DemonEntity> entityType, World worldIn) {
 		super((EntityType<SpiderMastermindEntity>) entityType, worldIn);
 	}

@@ -38,7 +38,15 @@
 			},
 			{
 				"id": "minecraft",
-				"versions": ">=1.19"
+				"versions": ">=1.19.2"
+			},
+			{
+				"id": "geckolib3",
+				"versions": ">=3.1.15"
+			},
+			{
+				"id": "trinkets",
+				"versions": ">=3.4.0"
 			}
 		]
 	},

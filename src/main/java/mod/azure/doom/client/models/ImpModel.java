@@ -36,7 +36,6 @@ public class ImpModel extends AnimatedTickingGeoModel<ImpEntity> {
 		return object.getVariant() == 3 ? imp2016_animation : imp_animation;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(ImpEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

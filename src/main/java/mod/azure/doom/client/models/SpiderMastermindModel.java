@@ -7,9 +7,6 @@ import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 
 public class SpiderMastermindModel extends AnimatedTickingGeoModel<SpiderMastermindEntity> {
 
-	public SpiderMastermindModel() {
-	}
-
 	@Override
 	public Identifier getModelResource(SpiderMastermindEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/spidermastermind.geo.json");
