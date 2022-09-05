@@ -38,7 +38,6 @@ public class LootHandler {
 		return LootPool.lootPool().add(getInjectEntry(entryName, 1)).name("doom_inject").build();
 	}
 
-	@SuppressWarnings("rawtypes")
 	private static LootItem.Builder getInjectEntry(String name, int weight) {
 		ResourceLocation table = new ResourceLocation(DoomMod.MODID, "chests/" + name);
 		return LootTableReference.lootTableReference(table).setWeight(weight);

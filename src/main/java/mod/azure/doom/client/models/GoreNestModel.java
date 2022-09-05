@@ -7,10 +7,6 @@ import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 
 public class GoreNestModel extends AnimatedTickingGeoModel<GoreNestEntity> {
 
-	public GoreNestModel() {
-		this.getAnimationProcessor().getBone("effect");
-	}
-
 	@Override
 	public ResourceLocation getModelResource(GoreNestEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/gorenest.geo.json");

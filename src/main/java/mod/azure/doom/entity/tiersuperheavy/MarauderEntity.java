@@ -269,7 +269,6 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 		super.aiStep();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void customServerAiStep() {
 		if (this.level.isDay() && this.tickCount >= this.targetChangeTime + 600) {

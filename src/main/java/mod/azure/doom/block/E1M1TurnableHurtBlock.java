@@ -41,7 +41,6 @@ public class E1M1TurnableHurtBlock extends Block {
 		return state.setValue(direction, rot.rotate(state.getValue(direction)));
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public BlockState mirror(BlockState state, Mirror mirrorIn) {
 		return state.rotate(mirrorIn.getRotation(state.getValue(direction)));

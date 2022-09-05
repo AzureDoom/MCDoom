@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 
 public class MotherDemonModel extends AnimatedTickingGeoModel<MotherDemonEntity> {
-	
+
 	@Override
 	public ResourceLocation getModelResource(MotherDemonEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/motherdemon.geo.json");

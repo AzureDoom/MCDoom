@@ -7,9 +7,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class E1M1StairsBlock extends StairBlock {
 
-	@SuppressWarnings("deprecation")
 	public E1M1StairsBlock(BlockState state, Properties properties) {
-		super(state, properties);
+		super(() -> state, properties);
 	}
 
 	@Override

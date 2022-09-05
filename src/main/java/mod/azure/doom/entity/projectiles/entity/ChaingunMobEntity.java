@@ -62,7 +62,6 @@ public class ChaingunMobEntity extends AbstractHurtingProjectile {
 		this.directHitDamage = directHitDamage;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void tick() {
 		Entity entity = this.getOwner();

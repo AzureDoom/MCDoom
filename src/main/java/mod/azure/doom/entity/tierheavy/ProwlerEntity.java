@@ -440,7 +440,6 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 		super.aiStep();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void customServerAiStep() {
 		if (this.level.isDay() && this.tickCount >= this.targetChangeTime + 600) {

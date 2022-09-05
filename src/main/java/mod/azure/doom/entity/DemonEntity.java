@@ -23,7 +23,7 @@ import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.network.NetworkHooks;
 
 public class DemonEntity extends PathfinderMob implements NeutralMob {
@@ -50,9 +50,9 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 		return !world.getBlockState(pos.below()).is(Blocks.NETHER_WART_BLOCK);
 	}
 
-	@SuppressWarnings("deprecation")
-	public boolean canStandOnFluid(Fluid p_230285_1_) {
-		return p_230285_1_.is(FluidTags.LAVA);
+	@Override
+	public boolean canStandOnFluid(FluidState state) {
+		return state.is(FluidTags.LAVA);
 	}
 
 	public int getAttckingState() {

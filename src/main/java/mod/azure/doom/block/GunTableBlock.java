@@ -73,7 +73,6 @@ public class GunTableBlock extends Block implements EntityBlock {
 		return (MenuProvider) world.getBlockEntity(pos);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
 		if (state.getBlock() != newState.getBlock()) {

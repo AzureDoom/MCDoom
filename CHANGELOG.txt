@@ -1,3 +1,4 @@
-v.4.2.13
+v.4.2.14
 
-- All audio is now mono.
+- Code clean up
+- Now properly dep on Curios API

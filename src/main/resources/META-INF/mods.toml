@@ -10,15 +10,21 @@ authors="AzureDoomC"
 description='''
 Adds Doom into Minecraft
 '''
-[[dependencies.geckolib3]]
+[[dependencies.doom]]
     modId="geckolib3"
     mandatory=true
     versionRange="[3.1.10,)"
     ordering="BEFORE"
     side="BOTH"
-[[dependencies.forge]]
+[[dependencies.doom]]
     modId="forge"
     mandatory=true 
     versionRange="[42.0.0,)" 
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.doom]]
+    modId="curios"
+    mandatory=true 
+    versionRange="[1.19.2-5.1.1.0,)" 
     ordering="NONE"
     side="BOTH"

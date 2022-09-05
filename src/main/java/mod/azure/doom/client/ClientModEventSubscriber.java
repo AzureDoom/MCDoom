@@ -239,7 +239,6 @@ public class ClientModEventSubscriber {
 		event.register(Keybindings.RELOAD);
 	}
 
-	@SuppressWarnings("removal")
 	@SubscribeEvent
 	public static void onClientSetup(final FMLClientSetupEvent event) {
 		ItemBlockRenderTypes.setRenderLayer(DoomBlocks.JUMP_PAD.get(), RenderType.translucent());

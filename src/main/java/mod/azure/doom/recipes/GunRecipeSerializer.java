@@ -75,7 +75,6 @@ public class GunRecipeSerializer implements RecipeSerializer<GunTableRecipe> {
 		return map;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public GunTableRecipe fromJson(ResourceLocation ResourceLocation, JsonObject jsonObject) {
 
@@ -108,7 +107,6 @@ public class GunRecipeSerializer implements RecipeSerializer<GunTableRecipe> {
 
 	@Override
 	public GunTableRecipe fromNetwork(ResourceLocation resourceLocation, FriendlyByteBuf packetbuffer) {
-		@SuppressWarnings("unchecked")
 		Pair<Ingredient, Integer>[] pairs = new Pair[5];
 		for (int j = 0; j < 5; ++j) {
 			Ingredient ingredient = Ingredient.fromNetwork(packetbuffer);

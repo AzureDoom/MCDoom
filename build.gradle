@@ -95,8 +95,8 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.19.2-43.0.0'
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.1-5.1.0.5")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.1-5.1.0.5:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.2-5.1.1.0")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.2-5.1.1.0:api")
 	implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19:3.1.10')
 	annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
     implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:9.1.520")
@@ -197,5 +197,10 @@ if (file('key.properties').exists()) {
 		changelog = rootProject.file("changelog.txt").text
 		gameVersions = ['1.19.1', '1.19.2']
 		loaders = ['forge']
+		dependencies { 
+        	required.project "geckolib"
+        	optional.project "better-combat"
+            optional.project "roughly-enough-items"
+   		}
 	}
 }

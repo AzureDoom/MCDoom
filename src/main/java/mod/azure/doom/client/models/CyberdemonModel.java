@@ -10,14 +10,11 @@ public class CyberdemonModel extends AnimatedTickingGeoModel<CyberdemonEntity> {
 	public ResourceLocation classic_model = new ResourceLocation(DoomMod.MODID, "geo/cyberdemon.geo.json");
 	public ResourceLocation c2016_model = new ResourceLocation(DoomMod.MODID, "geo/cyberdemon2016.geo.json");
 	public ResourceLocation tyrant_model = new ResourceLocation(DoomMod.MODID, "geo/tyrant.geo.json");
-	public ResourceLocation classic_texture = new ResourceLocation(DoomMod.MODID,
-			"textures/entity/cyberdemon-texturemap.png");
+	public ResourceLocation classic_texture = new ResourceLocation(DoomMod.MODID, "textures/entity/cyberdemon-texturemap.png");
 	public ResourceLocation c2016_texture = new ResourceLocation(DoomMod.MODID, "textures/entity/cyberdemon2016.png");
 	public ResourceLocation tyrant_texture = new ResourceLocation(DoomMod.MODID, "textures/entity/tyrant.png");
-	public ResourceLocation classic_animation = new ResourceLocation(DoomMod.MODID,
-			"animations/cyberdemon_animation.json");
-	public ResourceLocation c2016_animation = new ResourceLocation(DoomMod.MODID,
-			"animations/cyberdemon2016.animation.json");
+	public ResourceLocation classic_animation = new ResourceLocation(DoomMod.MODID, "animations/cyberdemon_animation.json");
+	public ResourceLocation c2016_animation = new ResourceLocation(DoomMod.MODID, "animations/cyberdemon2016.animation.json");
 	public ResourceLocation tyrant_animation = new ResourceLocation(DoomMod.MODID, "animations/tyrant.animation.json");
 
 	@Override
