@@ -11,9 +11,6 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class UnwillingModel extends AnimatedTickingGeoModel<UnwillingEntity> {
 
-	public UnwillingModel() {
-	}
-
 	@Override
 	public Identifier getModelLocation(UnwillingEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/unwilling.geo.json");
@@ -29,7 +26,6 @@ public class UnwillingModel extends AnimatedTickingGeoModel<UnwillingEntity> {
 		return new Identifier(DoomMod.MODID, "animations/possessed_scientist_animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(UnwillingEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

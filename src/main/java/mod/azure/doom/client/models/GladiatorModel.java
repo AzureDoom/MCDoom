@@ -26,8 +26,7 @@ public class GladiatorModel extends AnimatedTickingGeoModel<GladiatorEntity> {
 	public Identifier getAnimationFileLocation(GladiatorEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/gladiator.animation.json");
 	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	
 	@Override
 	public void setLivingAnimations(GladiatorEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

@@ -10,10 +10,7 @@ import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class IconofsinModel extends AnimatedTickingGeoModel<IconofsinEntity> {
-
-	public IconofsinModel() {
-	}
-
+	
 	@Override
 	public Identifier getModelLocation(IconofsinEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/icon.geo.json");
@@ -29,7 +26,6 @@ public class IconofsinModel extends AnimatedTickingGeoModel<IconofsinEntity> {
 		return new Identifier(DoomMod.MODID, "animations/icon.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(IconofsinEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

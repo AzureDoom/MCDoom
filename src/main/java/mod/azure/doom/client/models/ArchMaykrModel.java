@@ -26,7 +26,6 @@ public class ArchMaykrModel extends AnimatedTickingGeoModel<ArchMakyrEntity> {
 		return new Identifier(DoomMod.MODID, "animations/archmaykr_" + object.getVariant() + ".animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(ArchMakyrEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

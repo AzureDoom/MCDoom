@@ -27,7 +27,6 @@ public class ProwlerModel extends AnimatedTickingGeoModel<ProwlerEntity> {
 		return new Identifier(DoomMod.MODID, "animations/imp2016.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(ProwlerEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

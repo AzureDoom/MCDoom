@@ -102,7 +102,6 @@ public class MechaZombieEntity extends DemonEntity implements IAnimatable, IAnim
 		return p_223337_1_.getDifficulty() != Difficulty.PEACEFUL;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected void initGoals() {
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));

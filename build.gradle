@@ -44,7 +44,7 @@ dependencies {
 	modImplementation("curse.maven:modmenu-308702:3472549") {
     	exclude(group: "net.fabricmc.fabric-api")
     }
-    modImplementation "dev.emi:trinkets:3.3.0"
+    modImplementation "dev.emi:trinkets:3.3.1"
 	modCompileOnly "curse.maven:RoughlyEnoughItems-310111:3768212"
 	modApi("me.shedaniel.cloth:cloth-config-fabric:6.2.57") {
     	exclude(group: "net.fabricmc.fabric-api")

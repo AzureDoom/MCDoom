@@ -30,7 +30,6 @@ public class BaronModel extends AnimatedTickingGeoModel<BaronEntity> {
 		return new Identifier(DoomMod.MODID, "animations/baron_hell_animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(BaronEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

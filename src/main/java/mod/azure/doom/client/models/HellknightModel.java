@@ -11,9 +11,6 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class HellknightModel extends AnimatedTickingGeoModel<HellknightEntity> {
 
-	public HellknightModel() {
-	}
-
 	@Override
 	public Identifier getModelLocation(HellknightEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/hellknight.geo.json");
@@ -29,7 +26,6 @@ public class HellknightModel extends AnimatedTickingGeoModel<HellknightEntity> {
 		return new Identifier(DoomMod.MODID, "animations/baron_hell_animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(HellknightEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

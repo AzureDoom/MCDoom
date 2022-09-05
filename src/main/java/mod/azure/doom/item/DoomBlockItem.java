@@ -22,7 +22,6 @@ public class DoomBlockItem extends BlockItem implements IAnimatable {
 		return PlayState.CONTINUE;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController(this, controllerName, 1, this::predicate));

@@ -11,9 +11,6 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class ShotgunguyModel extends AnimatedTickingGeoModel<ShotgunguyEntity> {
 
-	public ShotgunguyModel() {
-	}
-
 	@Override
 	public Identifier getModelLocation(ShotgunguyEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/shotgunzombie.geo.json");
@@ -29,7 +26,6 @@ public class ShotgunguyModel extends AnimatedTickingGeoModel<ShotgunguyEntity> {
 		return new Identifier(DoomMod.MODID, "animations/shotgunzombie.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(ShotgunguyEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

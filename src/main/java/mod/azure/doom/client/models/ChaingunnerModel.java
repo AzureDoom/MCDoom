@@ -29,7 +29,6 @@ public class ChaingunnerModel extends AnimatedTickingGeoModel<ChaingunnerEntity>
 		return new Identifier(DoomMod.MODID, "animations/chaingunner.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(ChaingunnerEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

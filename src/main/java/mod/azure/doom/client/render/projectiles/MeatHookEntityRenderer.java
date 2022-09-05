@@ -46,7 +46,6 @@ public class MeatHookEntityRenderer extends GeoProjectilesRenderer<MeatHookEntit
 			VertexConsumerProvider provider, int light) {
 		super.render(hookshot, yaw, tickDelta, stack, provider, light);
 		if (hookshot.getOwner()instanceof PlayerEntity player) {
-			@SuppressWarnings("resource")
 			Arm mainArm = MinecraftClient.getInstance().options.mainArm;
 			Hand activeHand = player.getActiveHand();
 

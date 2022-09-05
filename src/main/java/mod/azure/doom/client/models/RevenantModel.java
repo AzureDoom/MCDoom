@@ -10,10 +10,7 @@ import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class RevenantModel extends AnimatedTickingGeoModel<RevenantEntity> {
-
-	public RevenantModel() {
-	}
-
+	
 	@Override
 	public Identifier getModelLocation(RevenantEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/revenant.geo.json");
@@ -29,7 +26,6 @@ public class RevenantModel extends AnimatedTickingGeoModel<RevenantEntity> {
 		return new Identifier(DoomMod.MODID, "animations/revenant.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(RevenantEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

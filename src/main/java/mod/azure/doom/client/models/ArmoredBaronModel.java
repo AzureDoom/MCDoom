@@ -25,7 +25,6 @@ public class ArmoredBaronModel extends AnimatedTickingGeoModel<ArmoredBaronEntit
 		return new Identifier(DoomMod.MODID, "animations/baron2016.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(ArmoredBaronEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

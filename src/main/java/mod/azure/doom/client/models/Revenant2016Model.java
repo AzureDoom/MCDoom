@@ -44,7 +44,6 @@ public class Revenant2016Model extends AnimatedTickingGeoModel<Revenant2016Entit
 		return new Identifier(DoomMod.MODID, "animations/revenant.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(Revenant2016Entity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

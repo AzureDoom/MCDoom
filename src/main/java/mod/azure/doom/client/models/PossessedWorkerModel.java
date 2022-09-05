@@ -11,9 +11,6 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class PossessedWorkerModel extends AnimatedTickingGeoModel<PossessedScientistEntity> {
 
-	public PossessedWorkerModel() {
-	}
-
 	@Override
 	public Identifier getModelLocation(PossessedScientistEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/possessedworker.geo.json");
@@ -29,7 +26,6 @@ public class PossessedWorkerModel extends AnimatedTickingGeoModel<PossessedScien
 		return new Identifier(DoomMod.MODID, "animations/possessed_scientist_animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(PossessedScientistEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

@@ -11,9 +11,6 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class ImpStoneModel extends AnimatedTickingGeoModel<ImpStoneEntity> {
 
-	public ImpStoneModel() {
-	}
-
 	@Override
 	public Identifier getModelLocation(ImpStoneEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/imp2016.geo.json");
@@ -29,7 +26,6 @@ public class ImpStoneModel extends AnimatedTickingGeoModel<ImpStoneEntity> {
 		return new Identifier(DoomMod.MODID, "animations/imp2016.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(ImpStoneEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

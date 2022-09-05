@@ -27,8 +27,7 @@ public class SpectreModel extends AnimatedTickingGeoModel<SpectreEntity> {
 		return new Identifier(DoomMod.MODID,
 				"animations/" + (object.getVariant() > 1 ? "pinky_" : "pinky2016.") + "animation.json");
 	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	
 	@Override
 	public void setLivingAnimations(SpectreEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

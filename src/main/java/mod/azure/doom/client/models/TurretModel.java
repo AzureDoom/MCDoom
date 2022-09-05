@@ -26,7 +26,6 @@ public class TurretModel extends AnimatedTickingGeoModel<TurretEntity> {
 		return new Identifier(DoomMod.MODID, "animations/turret.animation.json");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void setLivingAnimations(TurretEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);

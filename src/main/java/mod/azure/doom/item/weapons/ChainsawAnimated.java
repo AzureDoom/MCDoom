@@ -51,7 +51,6 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 		return false;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController(this, controllerName, 1, this::predicate));

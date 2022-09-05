@@ -37,7 +37,8 @@
 		"fabric": "*",
 		"minecraft": "1.18.2",
 		"java": ">=17",
-		"geckolib3": ">=3.0.35"
+		"geckolib3": ">=3.0.35",
+		"trinkets": ">=3.3.1"
 	},
 	"accessWidener": "doom.accesswidener"
 }
