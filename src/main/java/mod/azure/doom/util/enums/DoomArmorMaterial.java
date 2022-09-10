@@ -13,8 +13,8 @@ import net.minecraft.util.Lazy;
 
 public enum DoomArmorMaterial implements ArmorMaterial {
 	DOOM_ARMOR("doom_armor", 500,
-			new int[] { DoomConfig.doom_armor_head_stat, DoomConfig.doom_armor_chestplate_stat,
-					DoomConfig.doom_armor_leggings_stat, DoomConfig.doom_armor_boots_stat },
+			new int[] { DoomConfig.doom_armor_head_stat, DoomConfig.doom_armor_leggings_stat,
+					DoomConfig.doom_armor_chestplate_stat, DoomConfig.doom_armor_boots_stat },
 			40, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, DoomConfig.doom_armor_toughness,
 			DoomConfig.doom_armor_knockbackResistance, () -> {
 				return Ingredient.ofItems(DoomItems.ARGENT_ENERGY);
