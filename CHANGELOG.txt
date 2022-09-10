@@ -1,4 +1,5 @@
-v.4.2.14
+v.4.2.15
 
-- Code clean up
-- Now properly dep on Trinkets and Geckolib
+
+- Fixed Legs and Chestplate Armor configs.
+- Fixed tracking registering, fixing entity animation glitching.
