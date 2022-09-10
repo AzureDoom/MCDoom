@@ -50,7 +50,7 @@ minecraft {
             property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
             arg "-mixin.config=doom.mixins.json"
             workingDirectory project.file('run')
-            taskName 'doomforge1.18_client'
+            taskName 'doomforge1.19_client'
             mods {
                 doomweapon {
                     source sourceSets.main
@@ -62,7 +62,7 @@ minecraft {
             property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
             arg "-mixin.config=doom.mixins.json"
             workingDirectory project.file('run')
-            taskName 'doomforge1.18_server'
+            taskName 'doomforge1.19_server'
             mods {
                 doomweapon {
                     source sourceSets.main
