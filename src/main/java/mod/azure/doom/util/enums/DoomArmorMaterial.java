@@ -15,9 +15,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public enum DoomArmorMaterial implements ArmorMaterial {
 	DOOM_ARMOR("doomweapon:doom_armor", 500,
-			new int[] { DoomConfig.SERVER.doom_armor_head_stat.get(),
-					DoomConfig.SERVER.doom_armor_chestplate_stat.get(),
-					DoomConfig.SERVER.doom_armor_leggings_stat.get(), DoomConfig.SERVER.doom_armor_boots_stat.get() },
+			new int[] { DoomConfig.SERVER.doom_armor_head_stat.get(), DoomConfig.SERVER.doom_armor_leggings_stat.get(),
+					DoomConfig.SERVER.doom_armor_chestplate_stat
+							.get(), DoomConfig.SERVER.doom_armor_boots_stat.get() },
 			40, SoundEvents.ARMOR_EQUIP_GENERIC, DoomConfig.SERVER.doom_armor_toughness.get().floatValue(),
 			DoomConfig.SERVER.doom_armor_knockbackResistance.get().floatValue(), () -> {
 				return Ingredient.of(DoomItems.ARGENT_ENERGY.get());
