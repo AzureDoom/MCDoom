@@ -93,7 +93,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.18.2-40.1.19'
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18.2-5.0.7.1")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18.2-5.0.7.1:api")
-	implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.18:3.0.24')
+	implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.18:3.0.39')
 	annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
     implementation fg.deobf("curse.maven:projectmmo-353935:3809102")
     implementation fg.deobf("curse.maven:stfu-407174:3759881")
