@@ -42,7 +42,7 @@ dependencies {
 	modImplementation "org.quiltmc:quilt-loader:$loader_version"
 	modImplementation "org.quiltmc:qsl:$qsl_version"
 	modImplementation "org.quiltmc.quilted-fabric-api:quilted-fabric-api:$quilted_fapi_version-$minecraft_version"
-    modImplementation 'software.bernie.geckolib:geckolib-quilt-1.18:3.0.23'
+    modImplementation 'software.bernie.geckolib:geckolib-quilt-1.18:3.0.26'
     modImplementation 'curse.maven:cloth-348521:3761416'
     modImplementation ("dev.emi:trinkets:3.3.1") {
   		exclude group: "net.fabricmc.fabric-api"
