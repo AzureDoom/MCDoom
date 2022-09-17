@@ -9,6 +9,7 @@ import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
@@ -82,8 +83,8 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 	public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
 		LivingEntity user = (LivingEntity) entityIn;
 		PlayerEntity player = (PlayerEntity) entityIn;
-		if (player.getMainHandStack().isItemEqualIgnoreDamage(stack)
-				&& stack.getDamage() < (stack.getMaxDamage() - 1)) {
+		if (player.getMainHandStack().isItemEqualIgnoreDamage(stack) && stack.getDamage() < (stack.getMaxDamage() - 1)
+				&& !player.getItemCooldownManager().isCoolingDown(this)) {
 			final Box aabb = new Box(entityIn.getBlockPos().up()).expand(1D, 1D, 1D);
 			entityIn.getWorld().getOtherEntities(user, aabb).forEach(e -> doDamage(user, e));
 			entityIn.getWorld().getOtherEntities(user, aabb).forEach(e -> doDeathCheck(user, e, stack));
@@ -140,7 +141,7 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 	private void doDamage(LivingEntity user, Entity target) {
 		if (target instanceof LivingEntity) {
 			target.timeUntilRegen = 0;
-			target.damage(DamageSource.player((PlayerEntity) user), 2F);
+			target.damage(DamageSource.player((PlayerEntity) user), DoomConfig.chainsaw_damage);
 			user.world.playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
 					DoomSounds.CHAINSAW_ATTACKING, SoundCategory.PLAYERS, 0.05F,
 					1.0F / (target.world.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
@@ -157,11 +158,9 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 					PlayerEntity playerentity = (PlayerEntity) user;
 					if (stack.getDamage() < (stack.getMaxDamage() - 1)
 							&& !playerentity.getItemCooldownManager().isCoolingDown(this)) {
-						playerentity.getItemCooldownManager().set(this, 18);
 						for (int i = 0; i < 5;) {
 							int randomIndex = rand.nextInt(givenList.size());
 							Item randomElement = givenList.get(randomIndex);
-							target.dropItem(randomElement);
 							target.dropItem(randomElement);
 							break;
 						}
@@ -176,6 +175,7 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 		if (!player.getAbilities().creativeMode) {
 			stack.setDamage(stack.getDamage() + 1);
 		}
+		player.getItemCooldownManager().set(this, 10);
 	}
 
 	private void addParticle(Entity target) {

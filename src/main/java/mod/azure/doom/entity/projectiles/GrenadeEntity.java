@@ -17,6 +17,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.particle.ParticleTypes;
@@ -64,9 +65,8 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 		this.setOwner(owner);
 		this.shooter = owner;
 		if (owner instanceof PlayerEntity) {
-			this.pickupType = PersistentProjectileEntity.PickupPermission.ALLOWED;
+			this.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
 		}
-
 	}
 
 	public GrenadeEntity(World world, LivingEntity user, boolean spinning) {
@@ -91,7 +91,8 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 	private AnimationFactory factory = new AnimationFactory(this);
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("spin", true));
+		if (this.isSpinning() == true)
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("spin", true));
 		return PlayState.CONTINUE;
 	}
 
@@ -213,7 +214,7 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 
 	@Override
 	public ItemStack asItemStack() {
-		return new ItemStack(DoomItems.GRENADE);
+		return new ItemStack(Items.AIR);
 	}
 
 	@Override
