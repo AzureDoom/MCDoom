@@ -1,4 +1,5 @@
-v.4.2.15
+v.4.2.16
 
-- Fixed Legs and Chestplate Armor configs.
-- Fixed tracking registering, fixing entity animation glitching.
+- Tweaked Grenade.
+- Rebalanced Chainsaw and added config for it's damage.
+- Added missing lang entries for configs.
