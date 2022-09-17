@@ -3,7 +3,6 @@ package mod.azure.doom.entity.projectiles;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tierheavy.CacodemonEntity;
 import mod.azure.doom.util.registry.DoomEntities;
-import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -41,11 +41,13 @@ public class GrenadeEntity extends AbstractArrow implements IAnimatable {
 
 	public GrenadeEntity(EntityType<? extends GrenadeEntity> entityType, Level world) {
 		super(entityType, world);
+		this.pickup = AbstractArrow.Pickup.DISALLOWED;
 	}
 
 	public GrenadeEntity(Level world, LivingEntity user) {
 		super(DoomEntities.GRENADE.get(), user, world);
 		this.shooter = user;
+		this.pickup = AbstractArrow.Pickup.DISALLOWED;
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -116,7 +118,7 @@ public class GrenadeEntity extends AbstractArrow implements IAnimatable {
 
 	@Override
 	public ItemStack getPickupItem() {
-		return new ItemStack(DoomItems.GRENADE.get());
+		return new ItemStack(Items.AIR);
 	}
 
 	public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();

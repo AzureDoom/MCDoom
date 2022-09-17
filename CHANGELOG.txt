@@ -1,3 +1,4 @@
-v.4.2.29
+v.4.2.30
 
-- Fixed Legs and Chestplate Armor configs.
+- Tweaked Grenade.
+- Rebalanced Chainsaw and added config for it's damage.

@@ -43,6 +43,7 @@ public class DoomConfig {
 		public final ConfigValue<Double> shotgun_damage;
 		public final ConfigValue<Double> unmaykr_damage;
 		public final ConfigValue<Double> grenade_damage;
+		public final ConfigValue<Double> chainsaw_damage;
 		public final ConfigValue<Double> max_meathook_distance;
 
 		public final ConfigValue<List<? extends String>> imp_biomes;
@@ -462,6 +463,8 @@ public class DoomConfig {
 					2.5, 1, Double.MAX_VALUE);
 			this.grenade_damage = builder.translation("text.doom.config.grenade_damage").defineInRange("Grenade Damage",
 					30, 1, Double.MAX_VALUE);
+			this.chainsaw_damage = builder.translation("text.doom.config.chainsaw_damage").defineInRange("Chainsaw Damage",
+					2, 1, Double.MAX_VALUE);
 			this.max_meathook_distance = builder.translation("text.doom.config.max_meathook_distance")
 					.defineInRange("Max Meathook Distance", 32, 1, Double.MAX_VALUE);
 			builder.pop();
