@@ -62,6 +62,8 @@ public class DoomConfig extends CustomMidnightConfig {
 	@Entry
 	public static float grenade_damage = 30F;
 	@Entry
+	public static float chainsaw_damage = 2F;
+	@Entry
 	public static double max_meathook_distance = 32;
 
 	@Entry

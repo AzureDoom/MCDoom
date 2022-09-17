@@ -19,6 +19,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.particle.ParticleTypes;
@@ -55,19 +56,19 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 	public GrenadeEntity(World world, LivingEntity owner) {
 		super(ProjectilesEntityRegister.GRENADE, owner, world);
 		this.shooter = owner;
+		this.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
 	}
 
 	protected GrenadeEntity(EntityType<? extends GrenadeEntity> type, double x, double y, double z, World world) {
 		this(type, world);
+		this.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
 	}
 
 	protected GrenadeEntity(EntityType<? extends GrenadeEntity> type, LivingEntity owner, World world) {
 		this(type, owner.getX(), owner.getEyeY() - 0.10000000149011612D, owner.getZ(), world);
 		this.setOwner(owner);
 		this.shooter = owner;
-		if (owner instanceof PlayerEntity) {
-			this.pickupType = PersistentProjectileEntity.PickupPermission.ALLOWED;
-		}
+		this.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
 
 	}
 
@@ -215,7 +216,7 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 
 	@Override
 	public ItemStack asItemStack() {
-		return new ItemStack(DoomItems.GRENADE);
+		return new ItemStack(Items.AIR);
 	}
 
 	@Override
