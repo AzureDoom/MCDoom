@@ -47,10 +47,10 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -272,29 +272,15 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	public void doDamage() {
-		float f2 = 150.0F;
-		int k1 = Mth.floor(this.getX() - (double) f2 - 1.0D);
-		int l1 = Mth.floor(this.getX() + (double) f2 + 1.0D);
-		int i2 = Mth.floor(this.getY() - (double) f2 - 1.0D);
-		int i1 = Mth.floor(this.getY() + (double) f2 + 1.0D);
-		int j2 = Mth.floor(this.getZ() - (double) f2 - 1.0D);
-		int j1 = Mth.floor(this.getZ() + (double) f2 + 1.0D);
-		List<Entity> list = this.level.getEntities(this,
-				new AABB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
-		Vec3 vector3d = new Vec3(this.getX(), this.getY(), this.getZ());
-		for (int k2 = 0; k2 < list.size(); ++k2) {
-			Entity entity = list.get(k2);
-			double d12 = (double) (Mth.sqrt((float) entity.distanceToSqr(vector3d)) / f2);
-			if (d12 <= 1.0D) {
-				if (entity instanceof LivingEntity) {
-					entity.hurt(DamageSource.indirectMobAttack(this, this.getTarget()),
-							DoomConfig.SERVER.icon_melee_damage.get().floatValue()
-									+ (this.entityData.get(DEATH_STATE) == 1
-											? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
-											: 0));
-				}
+		final AABB aabb = new AABB(this.blockPosition().above()).inflate(64D, 64D, 64D);
+		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
+			if (e instanceof LivingEntity) {
+				e.hurt(DamageSource.indirectMobAttack(this, this.getTarget()),
+						DoomConfig.SERVER.icon_melee_damage.get().floatValue() + (this.entityData.get(DEATH_STATE) == 1
+								? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
+								: 0));
 			}
-		}
+		});
 	}
 
 	public void spawnFlames(double x, double z, double maxY, double y, float yaw, int warmup) {
@@ -461,21 +447,12 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		float f2 = 300.0F;
-		int k1 = Mth.floor(this.getX() - (double) f2 - 1.0D);
-		int l1 = Mth.floor(this.getX() + (double) f2 + 1.0D);
-		int i2 = Mth.floor(this.getY() - (double) f2 - 1.0D);
-		int i1 = Mth.floor(this.getY() + (double) f2 + 1.0D);
-		int j2 = Mth.floor(this.getZ() - (double) f2 - 1.0D);
-		int j1 = Mth.floor(this.getZ() + (double) f2 + 1.0D);
-		List<Entity> list = this.level.getEntities(this,
-				new AABB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
-		for (int k2 = 0; k2 < list.size(); ++k2) {
-			Entity entity = list.get(k2);
-			if (entity.isAddedToWorld() && entity instanceof IconofsinEntity && entity.tickCount < 1) {
-				entity.remove(RemovalReason.KILLED);
+		final AABB aabb = new AABB(this.blockPosition().above()).inflate(64D, 64D, 64D);
+		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
+			if (e.isAddedToWorld() && e instanceof IconofsinEntity && e.tickCount < 1) {
+				e.remove(RemovalReason.KILLED);
 			}
-		}
+		});
 	}
 
 	@Override
@@ -486,7 +463,8 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 						? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
 						: 0));
 		if (bl) {
-			target.setDeltaMovement(target.getDeltaMovement().multiply(4.4f, 4.4f, 4.4f));
+			this.level.explode(this, target.getX(), target.getY(), target.getZ(), 3.0F, false,
+					Explosion.BlockInteraction.BREAK);
 			this.doEnchantDamageEffects(this, target);
 			target.invulnerableTime = 0;
 		}
@@ -495,7 +473,9 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		return source == DamageSource.IN_WALL ? false : super.hurt(source, amount);
+		return source == DamageSource.IN_WALL || source == DamageSource.ON_FIRE || source == DamageSource.IN_FIRE
+				? false
+				: super.hurt(source, amount);
 	}
 
 	@Override
@@ -510,6 +490,16 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	@Override
 	public void checkDespawn() {
+	}
+
+	@Override
+	public boolean ignoreExplosion() {
+		return true;
+	}
+
+	@Override
+	public boolean fireImmune() {
+		return true;
 	}
 
 }
