@@ -8,6 +8,7 @@ import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.explosion.Explosion;
 
 public class IconAttackGoal extends Goal {
 	private final IconofsinEntity entity;
@@ -50,8 +51,7 @@ public class IconAttackGoal extends Goal {
 			this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
 			this.entity.getNavigation().startMovingTo(livingentity, this.moveSpeedAmp);
 			SplittableRandom random = new SplittableRandom();
-			double d2 = this.entity.squaredDistanceTo(livingentity.getX(), livingentity.getY(), livingentity.getZ());
-			double d3 = this.getAttackReachSqr(livingentity);
+			int randomAttack = random.nextInt(0, 4);
 			if (this.attackTime == 1) {
 				this.entity.setAttackingState(0);
 				this.summonTime++;
@@ -61,33 +61,31 @@ public class IconAttackGoal extends Goal {
 					entity.spawnWave(random.nextInt(0, 11), livingentity); // Summons roughly 2 minutes
 					this.summonTime = -300;
 				}
-				if (d2 > d3) { // distance check
-					if (livingentity.getMovementSpeed() <= 0) { // Summon Fire on target
-						for (int i = 1; i < 5; ++i) {
-							float f1 = (float) MathHelper.atan2(livingentity.getZ() - entity.getZ(),
-									livingentity.getX() - entity.getX()) + (float) i * (float) Math.PI * 0.4F;
-							for (int y = 0; y < 5; ++y) {
-								entity.spawnFlames(
-										livingentity.getX() + (double) MathHelper.cos(f1)
-												* livingentity.getRandom().nextDouble() * 1.5D,
-										livingentity.getZ() + (double) MathHelper.sin(f1)
-												* livingentity.getRandom().nextDouble() * 1.5D,
-										Math.min(livingentity.getY(), livingentity.getY()),
-										Math.max(livingentity.getY(), livingentity.getY()) + 1.0D, f1, 0);
-							}
+				if (randomAttack == 1) {// Summon Fire on target
+					for (int i = 1; i < 5; ++i) {
+						float f1 = (float) MathHelper.atan2(livingentity.getZ() - entity.getZ(),
+								livingentity.getX() - entity.getX()) + (float) i * (float) Math.PI * 0.4F;
+						for (int y = 0; y < 5; ++y) {
+							entity.spawnFlames(
+									livingentity.getX() + (double) MathHelper.cos(f1)
+											* livingentity.getRandom().nextDouble() * 1.5D,
+									livingentity.getZ() + (double) MathHelper.sin(f1)
+											* livingentity.getRandom().nextDouble() * 1.5D,
+									Math.min(livingentity.getY(), livingentity.getY()),
+									Math.max(livingentity.getY(), livingentity.getY()) + 1.0D, f1, 0);
 						}
-						if (entity.getHealth() < (entity.getMaxHealth() * 0.50)) {
-							this.entity.setAttackingState(6); // no armor
-						} else {
-							this.entity.setAttackingState(5); // armor
-						}
-					} else if (livingentity.getMovementSpeed() >= 1) { // shoots fireball
-						this.attack.shoot();
-						if (entity.getHealth() < (entity.getMaxHealth() * 0.50)) {
-							this.entity.setAttackingState(2); // no armor
-						} else {
-							this.entity.setAttackingState(1); // armor
-						}
+					}
+					if (entity.getHealth() < (entity.getMaxHealth() * 0.50)) {
+						this.entity.setAttackingState(6); // no armor
+					} else {
+						this.entity.setAttackingState(5); // armor
+					}
+				} else if (randomAttack == 2) { // shoots fireball
+					this.attack.shoot();
+					if (entity.getHealth() < (entity.getMaxHealth() * 0.50)) {
+						this.entity.setAttackingState(2); // no armor
+					} else {
+						this.entity.setAttackingState(1); // armor
 					}
 				} else { // melee if in range to melee
 					if (entity.getHealth() < (entity.getMaxHealth() * 0.50)) {
@@ -95,9 +93,9 @@ public class IconAttackGoal extends Goal {
 					} else {
 						this.entity.setAttackingState(3); // armor
 					}
-					if (d2 <= d3) {
-						this.entity.tryAttack(livingentity);
-					}
+					this.entity.tryAttack(livingentity);
+					this.entity.world.createExplosion(this.entity, livingentity.getX(), livingentity.getY(),
+							livingentity.getZ(), 3.0F, false, Explosion.DestructionType.BREAK);
 					livingentity.timeUntilRegen = 0;
 				}
 			}

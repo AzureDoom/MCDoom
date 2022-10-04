@@ -1,30 +1,28 @@
 package mod.azure.doom.entity.projectiles.entity;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
 
-import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import mod.azure.doom.entity.tierboss.MotherDemonEntity;
-import mod.azure.doom.entity.tierheavy.MancubusEntity;
-import mod.azure.doom.entity.tiersuperheavy.ArchvileEntity;
-import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
-import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
+import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.AbstractFireBlock;
+import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -96,6 +94,35 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 
 	}
 
+	@Override
+	public void remove(RemovalReason reason) {
+		AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(this.world, this.getX(), this.getY(),
+				this.getZ());
+		areaeffectcloudentity.setParticleType(ParticleTypes.FLAME);
+		areaeffectcloudentity.setRadius(6);
+		areaeffectcloudentity.setDuration(1);
+		areaeffectcloudentity.updatePosition(this.getX(), this.getY(), this.getZ());
+		this.world.spawnEntity(areaeffectcloudentity);
+		this.explode();
+		world.playSound((PlayerEntity) null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_GENERIC_EXPLODE,
+				SoundCategory.PLAYERS, 1.0F, 1.5F);
+		super.remove(reason);
+	}
+
+	protected void explode() {
+		this.getEntityWorld().getOtherEntities(this, new Box(this.getBlockPos().up()).expand(8))
+				.forEach(e -> doDamage(this, e));
+	}
+
+	private void doDamage(Entity user, Entity target) {
+		if (target instanceof LivingEntity) {
+			if (!(target instanceof DemonEntity)) {
+				target.timeUntilRegen = 0;
+				target.damage(DamageSource.magic(this, target), damage);
+			}
+		}
+	}
+
 	public void tick() {
 		super.tick();
 		if (--this.warmup < 0) {
@@ -110,21 +137,12 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 		if (this.isAlive() && world.getBlockState(this.getBlockPos().up()).isAir()) {
 			world.setBlockState(this.getBlockPos().up(), AbstractFireBlock.getState(world, this.getBlockPos().up()));
 		}
-		List<Entity> list = this.world.getOtherEntities(this, new Box(this.getBlockPos().up()).expand(1D, 1D, 1D));
-		for (int x = 0; x < list.size(); ++x) {
-			Entity entity = (Entity) list.get(x);
-			if (!(entity instanceof MancubusEntity) && !(entity instanceof ArchvileEntity)
-					&& !(entity instanceof IconofsinEntity) && !(entity instanceof DoomHunterEntity)
-					&& !(entity instanceof SummonerEntity) && !(entity instanceof MotherDemonEntity)) {
-				double y = (double) (MathHelper.sqrt(entity.distanceTo(this)));
-				if (y <= 1.0D) {
-					if (entity.isAlive()) {
-						entity.damage(DamageSource.mobProjectile(entity, this.getOwner()), damage);
-						entity.setFireTicks(60);
-					}
-				}
+		this.getEntityWorld().getOtherEntities(this, new Box(this.getBlockPos().up()).expand(1)).forEach(e -> {
+			if (e.isAlive()) {
+				e.damage(DamageSource.mobProjectile(e, this.getOwner()), damage);
+				e.setFireTicks(60);
 			}
-		}
+		});
 	}
 
 	@Environment(EnvType.CLIENT)
