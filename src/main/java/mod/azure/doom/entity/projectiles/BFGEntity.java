@@ -6,6 +6,7 @@ import java.util.Random;
 import org.jetbrains.annotations.Nullable;
 
 import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierambient.GoreNestEntity;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
@@ -44,8 +45,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
@@ -68,6 +67,11 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 	private LivingEntity shooter;
 	private BlockPos lightBlockPos = null;
 	private int idleTicks = 0;
+	Random rand = new Random();
+	List<? extends String> whitelistEntries = DoomConfig.bfg_damage_mob_whitelist;
+	int randomIndex = rand.nextInt(whitelistEntries.size());
+	Identifier randomElement1 = new Identifier(whitelistEntries.get(randomIndex));
+	EntityType<?> randomElement = Registry.ENTITY_TYPE.get(randomElement1);
 
 	public BFGEntity(EntityType<? extends BFGEntity> entityType, World world) {
 		super(entityType, world);
@@ -160,58 +164,37 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 			super.tick();
 		boolean isInsideWaterBlock = world.isWater(getBlockPos());
 		spawnLightSource(isInsideWaterBlock);
-		if (this.age >= 100) {
+		if (this.age >= 80) {
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
-		float q = 24.0F;
-		int k = MathHelper.floor(this.getX() - (double) q - 1.0D);
-		int l = MathHelper.floor(this.getX() + (double) q + 1.0D);
-		int t = MathHelper.floor(this.getY() - (double) q - 1.0D);
-		int u = MathHelper.floor(this.getY() + (double) q + 1.0D);
-		int v = MathHelper.floor(this.getZ() - (double) q - 1.0D);
-		int w = MathHelper.floor(this.getZ() + (double) q + 1.0D);
-		List<Entity> list = this.world.getOtherEntities(this,
-				new Box((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
-		Vec3d vec3d1 = new Vec3d(this.getX(), this.getY(), this.getZ());
-		Random rand = new Random();
-		List<? extends String> whitelistEntries = DoomConfig.bfg_damage_mob_whitelist;
-		int randomIndex = rand.nextInt(whitelistEntries.size());
-		Identifier randomElement1 = new Identifier(whitelistEntries.get(randomIndex));
-		EntityType<?> randomElement = Registry.ENTITY_TYPE.get(randomElement1);
-
-		for (int x = 0; x < list.size(); ++x) {
-			Entity entity = (Entity) list.get(x);
-			Entity listEntity = randomElement.downcast(entity);
-			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d1)) / q);
-			if (!(entity instanceof PlayerEntity || entity instanceof EnderDragonEntity
-					|| entity instanceof GoreNestEntity || entity instanceof IconofsinEntity
-					|| entity instanceof ArchMakyrEntity || entity instanceof GladiatorEntity
-					|| entity instanceof MotherDemonEntity)
-					&& (entity instanceof HostileEntity || entity instanceof SlimeEntity
-							|| entity instanceof PhantomEntity || entity instanceof ShulkerEntity
-							|| entity instanceof HoglinEntity || (entity == listEntity))) {
-				if (y <= 1.0D) {
-					if (entity.isAlive()) {
-						entity.damage(DamageSource.explosion(this.shooter), DoomConfig.bfgball_damage_aoe);
-						setBeamTarget(entity.getId());
-					}
+		final Box aabb = new Box(this.getBlockPos().up()).expand(24D, 24D, 24D);
+		this.getCommandSenderWorld().getOtherEntities(this, aabb).forEach(e -> {
+			Entity listEntity = randomElement.downcast(e);
+			if (!(e instanceof PlayerEntity || e instanceof EnderDragonEntity || e instanceof GoreNestEntity
+					|| e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity
+					|| e instanceof MotherDemonEntity)
+					&& (e instanceof HostileEntity || e instanceof SlimeEntity || e instanceof PhantomEntity || e instanceof DemonEntity
+							|| e instanceof ShulkerEntity || e instanceof HoglinEntity || (e == listEntity))) {
+				if (e.isAlive()) {
+					e.damage(DamageSource.explosion(shooter), DoomConfig.bfgball_damage_aoe);
+					this.setBeamTarget(e.getId());
 				}
 			}
-			if (entity instanceof IconofsinEntity || entity instanceof ArchMakyrEntity
-					|| entity instanceof GladiatorEntity || entity instanceof MotherDemonEntity) {
-				if (entity.isAlive()) {
-					entity.damage(DamageSource.player((PlayerEntity) this.shooter),
+			if (e instanceof EnderDragonEntity) {
+				if (e.isAlive()) {
+					((EnderDragonEntity) e).head.damage(DamageSource.player((PlayerEntity) this.shooter),
+							DoomConfig.bfgball_damage_dragon * 0.3F);
+					this.setBeamTarget(e.getId());
+				}
+			}
+			if (e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity
+					|| e instanceof MotherDemonEntity) {
+				if (e.isAlive()) {
+					e.damage(DamageSource.player((PlayerEntity) this.shooter),
 							DoomConfig.bfgball_damage_aoe * 0.1F);
 				}
 			}
-			if (!(entity instanceof PlayerEntity) && entity instanceof EnderDragonEntity) {
-				if (entity.isAlive()) {
-					((EnderDragonEntity) entity).head.damage(DamageSource.player((PlayerEntity) this.shooter),
-							DoomConfig.bfgball_damage_aoe * 0.3F);
-					setBeamTarget(entity.getId());
-				}
-			}
-		}
+		});
 	}
 
 	private void spawnLightSource(boolean isInWaterBlock) {
@@ -303,71 +286,49 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 	}
 
 	public void doDamage() {
-		float q = 24.0F;
-		int k = MathHelper.floor(this.getX() - (double) q - 1.0D);
-		int l = MathHelper.floor(this.getX() + (double) q + 1.0D);
-		int t = MathHelper.floor(this.getY() - (double) q - 1.0D);
-		int u = MathHelper.floor(this.getY() + (double) q + 1.0D);
-		int v = MathHelper.floor(this.getZ() - (double) q - 1.0D);
-		int w = MathHelper.floor(this.getZ() + (double) q + 1.0D);
-		List<Entity> list = this.world.getOtherEntities(this,
-				new Box((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
-		Vec3d vec3d = new Vec3d(this.getX(), this.getY(), this.getZ());
-		Random rand = new Random();
-		List<? extends String> whitelistEntries = DoomConfig.bfg_damage_mob_whitelist;
-		int randomIndex = rand.nextInt(whitelistEntries.size());
-		Identifier randomElement1 = new Identifier(whitelistEntries.get(randomIndex));
-		EntityType<?> randomElement = Registry.ENTITY_TYPE.get(randomElement1);
-
-		for (int x = 0; x < list.size(); ++x) {
-			Entity entity = (Entity) list.get(x);
-			Entity listEntity = randomElement.downcast(entity);
-			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d)) / q);
-			if (!(entity instanceof PlayerEntity || entity instanceof EnderDragonEntity
-					|| entity instanceof GoreNestEntity || entity instanceof IconofsinEntity
-					|| entity instanceof ArchMakyrEntity || entity instanceof GladiatorEntity
-					|| entity instanceof MotherDemonEntity)
-					&& (entity instanceof HostileEntity || entity instanceof SlimeEntity
-							|| entity instanceof PhantomEntity || entity instanceof ShulkerEntity
-							|| entity instanceof HoglinEntity || (entity == listEntity))) {
-				if (y <= 1.0D) {
-					entity.damage(DamageSource.player((PlayerEntity) this.shooter), DoomConfig.bfgball_damage);
-					if (!this.world.isClient) {
-						List<LivingEntity> list1 = this.world.getNonSpectatingEntities(LivingEntity.class,
-								this.getBoundingBox().expand(4.0D, 2.0D, 4.0D));
-						AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(entity.world,
-								entity.getX(), entity.getY(), entity.getZ());
-						areaeffectcloudentity.setParticleType(ParticleTypes.TOTEM_OF_UNDYING);
-						areaeffectcloudentity.setRadius(3.0F);
-						areaeffectcloudentity.setDuration(10);
-						if (!list1.isEmpty()) {
-							for (LivingEntity livingentity : list1) {
-								double d0 = this.squaredDistanceTo(livingentity);
-								if (d0 < 16.0D) {
-									areaeffectcloudentity.updatePosition(entity.getX(), entity.getEyeY(),
-											entity.getZ());
-									break;
-								}
+		final Box aabb = new Box(this.getBlockPos().up()).expand(24D, 24D, 24D);
+		this.getCommandSenderWorld().getOtherEntities(this, aabb).forEach(e -> {
+			Entity listEntity = randomElement.downcast(e);
+			if (!(e instanceof PlayerEntity || e instanceof EnderDragonEntity || e instanceof GoreNestEntity
+					|| e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity
+					|| e instanceof MotherDemonEntity)
+					&& (e instanceof HostileEntity || e instanceof SlimeEntity || e instanceof PhantomEntity
+							|| e instanceof DemonEntity || e instanceof ShulkerEntity || e instanceof HoglinEntity
+							|| (e == listEntity))) {
+				e.damage(DamageSource.player((PlayerEntity) this.shooter), DoomConfig.bfgball_damage);
+				this.setBeamTarget(e.getId());
+				if (!this.world.isClient()) {
+					List<LivingEntity> list1 = this.world.getNonSpectatingEntities(LivingEntity.class,
+							this.getBoundingBox().expand(4.0D, 2.0D, 4.0D));
+					AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(e.world, e.getX(), e.getY(),
+							e.getZ());
+					areaeffectcloudentity.setParticleType(ParticleTypes.TOTEM_OF_UNDYING);
+					areaeffectcloudentity.setRadius(3.0F);
+					areaeffectcloudentity.setDuration(10);
+					if (!list1.isEmpty()) {
+						for (LivingEntity livingentity : list1) {
+							double d0 = this.squaredDistanceTo(livingentity);
+							if (d0 < 16.0D) {
+								areaeffectcloudentity.setPos(e.getX(), e.getEyeY(), e.getZ());
 							}
 						}
-						this.world.spawnEntity(areaeffectcloudentity);
 					}
+					e.world.spawnEntity(areaeffectcloudentity);
 				}
 			}
-			if (entity instanceof EnderDragonEntity) {
-				if (entity.isAlive()) {
-					((EnderDragonEntity) entity).head.damage(DamageSource.player((PlayerEntity) this.shooter),
+			if (e instanceof EnderDragonEntity) {
+				if (e.isAlive()) {
+					((EnderDragonEntity) e).head.damage(DamageSource.player((PlayerEntity) this.shooter),
 							DoomConfig.bfgball_damage_dragon * 0.3F);
 				}
 			}
-			if (entity instanceof IconofsinEntity || entity instanceof ArchMakyrEntity
-					|| entity instanceof GladiatorEntity || entity instanceof MotherDemonEntity) {
-				if (entity.isAlive()) {
-					entity.damage(DamageSource.player((PlayerEntity) this.shooter), DoomConfig.bfgball_damage * 0.1F);
+			if (e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity
+					|| e instanceof MotherDemonEntity) {
+				if (e.isAlive()) {
+					e.damage(DamageSource.player((PlayerEntity) this.shooter), DoomConfig.bfgball_damage * 0.1F);
 				}
 			}
-		}
-
+		});
 	}
 
 	@Override

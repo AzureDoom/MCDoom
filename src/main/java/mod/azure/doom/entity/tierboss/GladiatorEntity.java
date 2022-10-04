@@ -1,6 +1,5 @@
 package mod.azure.doom.entity.tierboss;
 
-import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Nullable;
@@ -47,7 +46,6 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
@@ -417,21 +415,12 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		float q = 300.0F;
-		int k = MathHelper.floor(this.getX() - (double) q - 1.0D);
-		int l = MathHelper.floor(this.getX() + (double) q + 1.0D);
-		int t = MathHelper.floor(this.getY() - (double) q - 1.0D);
-		int u = MathHelper.floor(this.getY() + (double) q + 1.0D);
-		int v = MathHelper.floor(this.getZ() - (double) q - 1.0D);
-		int w = MathHelper.floor(this.getZ() + (double) q + 1.0D);
-		List<Entity> list = this.world.getOtherEntities(this,
-				new Box((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
-		for (int x = 0; x < list.size(); ++x) {
-			Entity entity = (Entity) list.get(x);
-			if (entity instanceof GladiatorEntity && entity.age < 1) {
-				entity.remove(Entity.RemovalReason.DISCARDED);
+		final Box aabb = new Box(this.getBlockPos().up()).expand(64D, 64D, 64D);
+		this.getCommandSenderWorld().getOtherEntities(this, aabb).forEach(e -> {
+			if (e instanceof GladiatorEntity && e.age < 1) {
+				e.remove(RemovalReason.KILLED);
 			}
-		}
+		});
 	}
 
 	@Override
