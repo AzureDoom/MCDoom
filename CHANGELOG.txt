@@ -1,4 +1,6 @@
-v.4.2.16
+v.4.2.17
 
-- Tweaked Grenade.
-- Rebalanced Chainsaw and added config for it's damage.
+- Tweaked Arch Makyr, Gladiator, Icon of Sin, and Mother Demon anti duplicate code to be more efficient.
+- BFG tweaked for efficient and faster damage searching.
+- Fire summoned by Archvile, Summoner, Arch Maykr, Mother Demon, Mancubus, Doom Hunter and Icon of Sin have better effects and more efficient entity checking.
+- Anti Cheesing added to Icon of Sin, will now cause an explosion on the player when slamming and will always target players in it's radius, even if it can see it so no more building a hut to hide.

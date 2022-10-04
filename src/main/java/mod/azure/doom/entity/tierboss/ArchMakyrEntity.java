@@ -1,7 +1,6 @@
 package mod.azure.doom.entity.tierboss;
 
 import java.util.EnumSet;
-import java.util.List;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
@@ -452,21 +451,12 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		float f2 = 300.0F;
-		int k1 = Mth.floor(this.getX() - (double) f2 - 1.0D);
-		int l1 = Mth.floor(this.getX() + (double) f2 + 1.0D);
-		int i2 = Mth.floor(this.getY() - (double) f2 - 1.0D);
-		int i1 = Mth.floor(this.getY() + (double) f2 + 1.0D);
-		int j2 = Mth.floor(this.getZ() - (double) f2 - 1.0D);
-		int j1 = Mth.floor(this.getZ() + (double) f2 + 1.0D);
-		List<Entity> list = this.level.getEntities(this,
-				new AABB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
-		for (int k2 = 0; k2 < list.size(); ++k2) {
-			Entity entity = list.get(k2);
-			if (entity.isAddedToWorld() && entity instanceof ArchMakyrEntity && entity.tickCount < 1) {
-				entity.remove(RemovalReason.KILLED);
+		final AABB aabb = new AABB(this.blockPosition().above()).inflate(64D, 64D, 64D);
+		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
+			if (e.isAddedToWorld() && e instanceof ArchMakyrEntity && e.tickCount < 1) {
+				e.remove(RemovalReason.KILLED);
 			}
-		}
+		});
 	}
 
 	@Override

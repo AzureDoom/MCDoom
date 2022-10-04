@@ -1,22 +1,18 @@
 package mod.azure.doom.entity.projectiles.entity;
 
-import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import mod.azure.doom.entity.tierboss.MotherDemonEntity;
-import mod.azure.doom.entity.tierheavy.MancubusEntity;
-import mod.azure.doom.entity.tiersuperheavy.ArchvileEntity;
-import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
-import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
+import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.registry.DoomEntities;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -102,6 +98,33 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 		}
 	}
 
+	@Override
+	public void remove(RemovalReason reason) {
+		AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
+		areaeffectcloudentity.setParticle(ParticleTypes.FLAME);
+		areaeffectcloudentity.setRadius(6);
+		areaeffectcloudentity.setDuration(1);
+		areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
+		this.level.addFreshEntity(areaeffectcloudentity);
+		this.explode();
+		this.playSound(SoundEvents.GENERIC_EXPLODE, 1.0F, 1.0F);
+		super.remove(reason);
+	}
+
+	protected void explode() {
+		this.level.getEntities(this, new AABB(this.blockPosition().above()).inflate(8))
+				.forEach(e -> doDamage(this, e));
+	}
+
+	private void doDamage(Entity user, Entity target) {
+		if (target instanceof LivingEntity) {
+			if (!(target instanceof DemonEntity)) {
+				target.invulnerableTime = 0;
+				target.hurt(DamageSource.indirectMagic(this, target), damage);
+			}
+		}
+	}
+
 	public void tick() {
 		super.tick();
 		if (--this.warmupDelayTicks < 0) {
@@ -117,21 +140,12 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 		if (this.isAlive() && level.getBlockState(this.blockPosition().above()).isAir()) {
 			level.setBlockAndUpdate(this.blockPosition().above(), BaseFireBlock.getState(level, this.blockPosition().above()));
 		}
-		List<Entity> list = this.level.getEntities(this, new AABB(this.blockPosition().above()).inflate(1D, 1D, 1D));
-		for (int k2 = 0; k2 < list.size(); ++k2) {
-			Entity entity = list.get(k2);
-			if (!(entity instanceof MancubusEntity) && !(entity instanceof ArchvileEntity)
-					&& !(entity instanceof IconofsinEntity) && !(entity instanceof DoomHunterEntity)
-					&& !(entity instanceof SummonerEntity) && !(entity instanceof MotherDemonEntity)) {
-				double d12 = (double) (Mth.sqrt((float) entity.distanceTo(this)));
-				if (d12 <= 1.0D) {
-					if (entity.isAlive()) {
-						entity.hurt(DamageSource.indirectMobAttack(entity, this.getCaster()), damage);
-						entity.setRemainingFireTicks(60);
-					}
-				}
+		this.level.getEntities(this, new AABB(this.blockPosition().above()).inflate(1)).forEach(e -> {
+			if (e.isAlive()) {
+				e.hurt(DamageSource.indirectMobAttack(e, this.getCaster()), damage);
+				e.setRemainingFireTicks(60);
 			}
-		}
+		});
 	}
 
 	@OnlyIn(Dist.CLIENT)
