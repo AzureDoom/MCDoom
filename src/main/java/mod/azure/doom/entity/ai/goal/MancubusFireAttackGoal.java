@@ -81,6 +81,9 @@ public class MancubusFireAttackGoal extends Goal {
 							entity.spawnFlames(entity.getX() + (double) MathHelper.cos(h2) * 1.5D,
 									entity.getZ() + (double) MathHelper.sin(h2) * 1.5D, d, e1, h2, 0);
 						}
+
+						boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
+						entity.spawnLightSource(this.entity, isInsideWaterBlock);
 						this.entity.setAttackingState(3);
 					}
 					if (this.attackTime == 8) {
@@ -97,6 +100,9 @@ public class MancubusFireAttackGoal extends Goal {
 					if (this.attackTime == 4) {
 						entity.playSound(SoundEvents.BLOCK_FIRE_AMBIENT, 1.0F, 1.0F);
 						this.attack.shoot();
+
+						boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
+						entity.spawnLightSource(this.entity, isInsideWaterBlock);
 						this.entity.setAttackingState(2);
 					}
 					if (this.attackTime == 8) {
@@ -114,6 +120,9 @@ public class MancubusFireAttackGoal extends Goal {
 						fireballEntity.updatePosition(this.entity.getX() + vec3d.x * 2.0D,
 								this.entity.getBodyY(0.5D) + 0.5D, entity.getZ() + vec3d.z * 2.0D);
 						world.spawnEntity(fireballEntity);
+
+						boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
+						entity.spawnLightSource(this.entity, isInsideWaterBlock);
 						this.entity.setAttackingState(1);
 					}
 					if (this.attackTime == 8) {

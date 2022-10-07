@@ -67,6 +67,9 @@ public class RangedAttackGoal extends Goal {
 					}
 					if (this.attackTime == 4) {
 						this.attack.shoot();
+
+						boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
+						entity.spawnLightSource(this.entity, isInsideWaterBlock);
 					}
 					if (this.attackTime == 6 && this.multiShot) {
 						this.attack.shoot();

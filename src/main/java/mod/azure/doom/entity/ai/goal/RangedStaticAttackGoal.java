@@ -65,6 +65,9 @@ public class RangedStaticAttackGoal extends Goal {
 				if (this.attackTimer == this.attackCooldown) {
 					this.parentEntity.setAttackingState(statecheck);
 					attack.shoot();
+
+					boolean isInsideWaterBlock = parentEntity.world.isWater(parentEntity.getBlockPos());
+					parentEntity.spawnLightSource(this.parentEntity, isInsideWaterBlock);
 					this.attackTimer = 0;
 				}
 			} else if (this.attackTimer > 0) {

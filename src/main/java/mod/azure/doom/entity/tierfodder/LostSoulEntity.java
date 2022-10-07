@@ -70,7 +70,7 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 	public int flameTimer;
 	@Nullable
 	private BlockPos bounds;
-
+	
 	public LostSoulEntity(EntityType<? extends LostSoulEntity> type, World worldIn) {
 		super(type, worldIn);
 		this.moveControl = new GhastMoveControl(this);
@@ -352,6 +352,9 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 	public void tick() {
 		super.tick();
 		flameTimer = (flameTimer + 1) % 8;
+
+		boolean isInsideWaterBlock = this.world.isWater(this.getBlockPos());
+		spawnLightSource(this, isInsideWaterBlock);
 	}
 
 	protected void explode() {
