@@ -79,6 +79,9 @@ public class PainAttackGoal extends Goal {
 									this.entity.getZ(), 0, 0);
 							entity.world.spawnEntity(lost_soul1);
 						}
+
+						boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
+						entity.spawnLightSource(this.entity, isInsideWaterBlock);
 					}
 					if (this.attackTime == 20) {
 						this.attackTime = 0;
