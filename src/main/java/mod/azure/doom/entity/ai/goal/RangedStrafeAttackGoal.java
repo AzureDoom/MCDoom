@@ -190,8 +190,14 @@ public class RangedStrafeAttackGoal extends Goal {
 			if (this.attackTime == 4) {
 				if (tickMultiShot()) {
 					this.attack.shoot();
+
+					boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
+					entity.spawnLightSource(this.entity, isInsideWaterBlock);
 				} else {
 					this.attack.shoot();
+
+					boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
+					entity.spawnLightSource(this.entity, isInsideWaterBlock);
 				}
 			}
 			if (this.attackTime == 8) {

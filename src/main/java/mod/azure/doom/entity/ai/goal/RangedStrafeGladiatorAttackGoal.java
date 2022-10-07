@@ -101,6 +101,9 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 								areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
 								entity.level.addFreshEntity(areaeffectcloudentity);
 								this.attack.shoot();
+
+								boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
+								entity.spawnLightSource(this.entity, isInsideWaterBlock);
 								this.entity.setTextureState(0);
 								this.summonTime = -300;
 							}
@@ -124,6 +127,9 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 						}
 						if (this.attackTime == 8) {
 							this.attack.shoot2();
+
+							boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
+							entity.spawnLightSource(this.entity, isInsideWaterBlock);
 							this.summonTime = -8;
 						}
 						if (this.attackTime == 13) {

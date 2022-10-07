@@ -302,6 +302,9 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 	public void aiStep() {
 		super.aiStep();
 		flameTimer = (flameTimer + 1) % 8;
+
+		boolean isInsideWaterBlock = this.level.isWaterAt(this.blockPosition());
+		spawnLightSource(this, isInsideWaterBlock);
 	}
 
 	@Override
