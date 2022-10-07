@@ -75,6 +75,9 @@ public class IconAttackGoal extends Goal {
 									Math.max(livingentity.getY(), livingentity.getY()) + 1.0D, f1, 0);
 						}
 					}
+
+					boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
+					entity.spawnLightSource(this.entity, isInsideWaterBlock);
 					if (entity.getHealth() < (entity.getMaxHealth() * 0.50)) {
 						this.entity.setAttackingState(6); // no armor
 					} else {
@@ -82,6 +85,9 @@ public class IconAttackGoal extends Goal {
 					}
 				} else if (randomAttack == 2) { // shoots fireball
 					this.attack.shoot();
+
+					boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
+					entity.spawnLightSource(this.entity, isInsideWaterBlock);
 					if (entity.getHealth() < (entity.getMaxHealth() * 0.50)) {
 						this.entity.setAttackingState(2); // no armor
 					} else {
