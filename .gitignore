@@ -32,3 +32,6 @@ build.bat
 key.properties
 update_mappings.bat
 *.bat
+
+# macOS
+.DS_Store
