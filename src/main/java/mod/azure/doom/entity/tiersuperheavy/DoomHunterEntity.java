@@ -245,7 +245,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.doomhunter_health.get())
 				.add(Attributes.FLYING_SPEED, 2.25D)
 				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.doomhunter_melee_damage.get())

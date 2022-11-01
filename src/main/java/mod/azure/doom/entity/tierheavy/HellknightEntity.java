@@ -135,7 +135,7 @@ public class HellknightEntity extends DemonEntity implements IAnimatable, IAnima
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.hellknight_health.get())
 				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f)
 				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.hellknight_melee_damage.get())
