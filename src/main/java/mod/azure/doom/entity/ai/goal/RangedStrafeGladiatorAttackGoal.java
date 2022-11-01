@@ -1,13 +1,14 @@
 package mod.azure.doom.entity.ai.goal;
 
 import java.util.EnumSet;
-import java.util.SplittableRandom;
 
 import mod.azure.doom.entity.attack.AbstractDoubleRangedAttack;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.explosion.Explosion;
@@ -47,8 +48,8 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 		this.entity.setAttacking(true);
 		this.entity.setSilent(false);
 		this.entity.setTextureState(0);
-		this.entity.world.createExplosion(this.entity, this.entity.getX(), this.entity.getY() + 5D, this.entity.getZ(), 3.0F, false,
-				Explosion.DestructionType.BREAK);
+		this.entity.world.createExplosion(this.entity, this.entity.getX(), this.entity.getY() + 5D, this.entity.getZ(),
+				3.0F, false, Explosion.DestructionType.BREAK);
 	}
 
 	/**
@@ -63,8 +64,8 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 		this.attackTime = -1;
 		this.entity.stopUsingItem();
 		this.entity.setSilent(false);
-		this.entity.world.createExplosion(this.entity, this.entity.getX(), this.entity.getY() + 5D, this.entity.getZ(), 3.0F, false,
-				Explosion.DestructionType.BREAK);
+		this.entity.world.createExplosion(this.entity, this.entity.getX(), this.entity.getY() + 5D, this.entity.getZ(),
+				3.0F, false, Explosion.DestructionType.BREAK);
 	}
 
 	/**
@@ -75,70 +76,70 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 		if (livingentity != null) {
 			boolean inLineOfSight = this.entity.getVisibilityCache().canSee(livingentity);
 			this.attackTime++;
+			this.summonTime++;
 			this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
-			SplittableRandom random = new SplittableRandom();
-			int randomRangedPhaseOne = random.nextInt(0, 5);
-			double d0 = this.entity.squaredDistanceTo(livingentity.getX(), livingentity.getY(), livingentity.getZ());
-			double d1 = this.getAttackReachSqr(livingentity);
 			if (inLineOfSight) {
 				if (this.entity.distanceTo(livingentity) >= 3.0D) {
 					if (this.entity.getDeathState() == 0 && this.summonTime > 10) {
-						if (randomRangedPhaseOne <= 3) {
+						this.entity.getNavigation().stop();
+						if (this.attackTime == 1) {
+							this.entity.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 80, -20));
+							this.entity.setAttackingState(1);
+							this.entity.setTextureState(1);
+						}
+						if (this.attackTime == 20) {
+							this.entity.setTextureState(2);
+						}
+						if (this.attackTime == 23) {
+							AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(entity.world,
+									entity.getX(), entity.getY(), entity.getZ());
+							areaeffectcloudentity.setParticleType(ParticleTypes.SOUL_FIRE_FLAME);
+							areaeffectcloudentity.setRadius(3.0F);
+							areaeffectcloudentity.setDuration(10);
+							areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
+							entity.world.spawnEntity(areaeffectcloudentity);
+							this.attack.shoot();
+
+							boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
+							entity.spawnLightSource(this.entity, isInsideWaterBlock);
+							this.entity.setTextureState(0);
+							this.entity.getNavigation().startMovingTo(livingentity, 1.0);
+							this.summonTime = -40;
+						}
+						if (this.attackTime == 48) {
+							this.entity.setAttackingState(0);
+							this.entity.setTextureState(0);
+						}
+						if (this.attackTime == 83) {
+							this.attackTime = -5;
+							this.entity.setTextureState(0);
+							this.entity.setAttackingState(0);
+							this.entity.getNavigation().startMovingTo(livingentity, 1.0);
+						}
+					} else if (this.entity.getDeathState() == 1 && this.summonTime > 10) {
+						if (this.attackTime == 1) {
+							this.entity.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 13, -20));
 							this.entity.getNavigation().stop();
-							if (this.attackTime == 1) {
-								this.entity.setAttackingState(1);
-								this.entity.setTextureState(1);
-							}
-							if (this.attackTime == 20) {
-								this.entity.setTextureState(2);
-							}
-							if (this.attackTime == 23) {
-								AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(entity.world,
-										entity.getX(), entity.getY(), entity.getZ());
-								areaeffectcloudentity.setParticleType(ParticleTypes.SOUL_FIRE_FLAME);
-								areaeffectcloudentity.setRadius(3.0F);
-								areaeffectcloudentity.setDuration(10);
-								areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
-								entity.world.spawnEntity(areaeffectcloudentity);
-								this.attack.shoot();
+							this.entity.setTextureState(0);
+							this.entity.setAttackingState(0);
+						}
+						if (this.attackTime == 5) {
+							this.entity.setAttackingState(4);
+						}
+						if (this.attackTime == 8) {
+							this.attack.shoot2();
 
-								boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
-								entity.spawnLightSource(this.entity, isInsideWaterBlock);
-								this.entity.setTextureState(0);
-								this.entity.getNavigation().startMovingTo(livingentity, 1.0);
-								this.summonTime = -300;
-							}
-							if (this.attackTime == 48) {
-								this.entity.setAttackingState(0);
-								this.entity.setTextureState(0);
-							}
-							if (this.attackTime == 83) {
-								this.attackTime = -5;
-								this.entity.setTextureState(0);
-								this.entity.setAttackingState(0);
-								this.entity.getNavigation().startMovingTo(livingentity, 1.0);
-							}
-						} else {
-							if (this.attackTime == 1) {
-								this.entity.getNavigation().stop();
-							}
-							if (this.attackTime == 5) {
-								this.entity.setAttackingState(4);
-							}
-							if (this.attackTime == 8) {
-								this.attack.shoot2();
-
-								boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
-								entity.spawnLightSource(this.entity, isInsideWaterBlock);
-								this.summonTime = -8;
-							}
-							if (this.attackTime == 13) {
-								this.entity.getNavigation().startMovingTo(livingentity, 1.0);
-								this.attackTime = -5;
-							}
+							boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
+							entity.spawnLightSource(this.entity, isInsideWaterBlock);
+							this.summonTime = -8;
+						}
+						if (this.attackTime == 13) {
+							this.entity.getNavigation().startMovingTo(livingentity, 1.0);
+							this.entity.setTextureState(0);
+							this.entity.setAttackingState(0);
+							this.attackTime = -5;
 						}
 					} else {
-						this.summonTime++;
 						this.attackTime = -25;
 						this.entity.setTextureState(0);
 						this.entity.setAttackingState(0);
@@ -165,26 +166,24 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 						areaeffectcloudentity.setDuration(55);
 						areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
 						entity.world.spawnEntity(areaeffectcloudentity);
-						if (d0 <= d1) {
-							this.entity.tryAttack(livingentity);
-						}
+						this.entity.tryAttack(livingentity);
 						livingentity.timeUntilRegen = 0;
 					}
 					if (this.attackTime == 19) {
 						if (this.entity.getDeathState() == 1) {
-							if (d0 <= d1) {
-								this.entity.tryAttack1(livingentity);
-							}
+							this.entity.tryAttack1(livingentity);
 							livingentity.timeUntilRegen = 0;
 						}
 					}
 					if (this.attackTime == 25) {
 						this.attackTime = -5;
+						this.entity.setTextureState(0);
 						this.entity.setAttackingState(0);
 					}
 				}
 			}
 		}
+
 	}
 
 	protected double getAttackReachSqr(LivingEntity attackTarget) {
