@@ -141,7 +141,7 @@ public class PainEntity extends DemonEntity implements Enemy, IAnimatable, IAnim
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
 				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.lost_soul_melee_damage.get())
 				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.pain_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
