@@ -223,6 +223,11 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 			if (e instanceof MotherDemonEntity && e.age < 1) {
 				e.remove(RemovalReason.KILLED);
 			}
+			if (e instanceof PlayerEntity) {
+				if (!((PlayerEntity) e).isCreative())
+					if (!((PlayerEntity) e).isSpectator())
+						this.setTarget((LivingEntity) e);
+			}
 		});
 	}
 
