@@ -5,7 +5,6 @@ import java.util.List;
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
-import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
@@ -36,8 +35,8 @@ import net.minecraft.world.World;
 public class AxeMarauderItem extends SwordItem {
 
 	public AxeMarauderItem() {
-		super(DoomTier.DOOM, 1, -2.5f, new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1)
-				.maxDamage(DoomConfig.crucible_marauder_max_damage));
+		super(DoomTier.DOOM_HIGHTEIR, 1, -2.5f,
+				new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(24));
 	}
 
 	@Override
@@ -74,7 +73,7 @@ public class AxeMarauderItem extends SwordItem {
 				}
 			}
 		}
-		return true;
+		return stack.getDamage() < (stack.getMaxDamage() - 1) ? true : false;
 	}
 
 	private void doDamage(LivingEntity user, Entity target) {
@@ -84,7 +83,7 @@ public class AxeMarauderItem extends SwordItem {
 					!(target instanceof ArchMakyrEntity) || !(target instanceof GladiatorEntity)
 							|| !(target instanceof IconofsinEntity) || !(target instanceof MotherDemonEntity)
 							|| !(target instanceof SpiderMastermind2016Entity)
-							|| !(target instanceof SpiderMastermindEntity) ? 20F : 100F);
+							|| !(target instanceof SpiderMastermindEntity) ? 20F : 200F);
 		}
 	}
 
