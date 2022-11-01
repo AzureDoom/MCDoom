@@ -378,7 +378,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.motherdemon_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1000.0D);
+				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.9f);
 	}
 
 	@Override

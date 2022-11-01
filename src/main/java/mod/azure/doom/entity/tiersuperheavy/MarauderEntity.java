@@ -329,6 +329,7 @@ public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimati
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.marauder_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.marauder_axe_damage)
+				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.6f)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 

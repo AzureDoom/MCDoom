@@ -112,8 +112,8 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnima
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
 		this.goalSelector.add(4,
 				new RangedStrafeAttackGoal(this, new BloodMaykrEntity.FireballAttack(this)
-						.setProjectileOriginOffset(0.8, 0.5, 0.8).setDamage(DoomConfig.bloodmaykr_ranged_damage), 1.0D, 10,
-						30, 15, 15F, 1));
+						.setProjectileOriginOffset(0.8, 0.5, 0.8).setDamage(DoomConfig.bloodmaykr_ranged_damage), 1.0D,
+						10, 30, 15, 15F, 1));
 		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
@@ -243,6 +243,7 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnima
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
+				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.6f)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D).add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.bloodmaykr_health)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);

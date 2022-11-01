@@ -151,7 +151,7 @@ public class TurretEntity extends DemonEntity implements IAnimatable, IAnimation
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, 7.0D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 50D)
+				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1.0f)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D);
 	}
 

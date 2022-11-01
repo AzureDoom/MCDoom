@@ -116,6 +116,7 @@ public class WhiplashEntity extends DemonEntity implements IAnimatable, IAnimati
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.whiplash_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.whiplash_melee_damage)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.45D)
+				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.6f)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 

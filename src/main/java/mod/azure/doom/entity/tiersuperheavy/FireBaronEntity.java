@@ -180,7 +180,7 @@ public class FireBaronEntity extends DemonEntity implements IAnimatable, IAnimat
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.baron_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.baron_melee_damage)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 50D)
+				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.6f)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 

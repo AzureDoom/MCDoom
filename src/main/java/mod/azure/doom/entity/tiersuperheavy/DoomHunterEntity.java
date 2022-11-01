@@ -254,7 +254,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 		if (bl) {
 			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
 					DoomConfig.doomhunter_ranged_damage
-							+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.doomhunter_extra_phase_two_damage : 0));
+							+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.doomhunter_extra_phase_two_damage
+									: 0));
 			fang.setFireTicks(age);
 			fang.isInvisible();
 			this.world.spawnEntity(fang);
@@ -267,7 +268,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.doomhunter_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.doomhunter_melee_damage)
 				.add(EntityAttributes.GENERIC_FLYING_SPEED, 2.25D)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 50D)
+				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.6f)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 

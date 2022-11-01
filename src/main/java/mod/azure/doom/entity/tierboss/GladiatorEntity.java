@@ -374,7 +374,7 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.gladiator_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.gladiator_melee_damage)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 50D)
+				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.9f)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 
