@@ -49,8 +49,8 @@ public class SwordCrucibleItem extends SwordItem implements IAnimatable, ISyncab
 	public static final int ANIM_OPEN = 0;
 
 	public SwordCrucibleItem() {
-		super(DoomMod.ARGENT_TIER, 1, -2.5f,
-				new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(5));
+		super(DoomMod.DOOM_HIGHTEIR, 1, -2.5f,
+				new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(24));
 		GeckoLibNetwork.registerSyncable(this);
 	}
 
@@ -79,7 +79,7 @@ public class SwordCrucibleItem extends SwordItem implements IAnimatable, ISyncab
 				}
 			}
 		}
-		return true;
+		return stack.getDamageValue() < (stack.getMaxDamage() - 1) ? true : false;
 	}
 
 	private void doDamage(LivingEntity user, final Entity target) {
