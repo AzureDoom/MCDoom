@@ -249,7 +249,8 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.doomhunter_health.get())
 				.add(Attributes.FLYING_SPEED, 2.25D)
 				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.doomhunter_melee_damage.get())
-				.add(Attributes.MOVEMENT_SPEED, 0.55D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MOVEMENT_SPEED, 0.55D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	public boolean causeFallDamage(float distance, float damageMultiplier) {

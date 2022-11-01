@@ -154,7 +154,7 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable, 
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.FLYING_SPEED, 0.25D)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.FLYING_SPEED, 0.25D)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.cacodemon_health.get())
 				.add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
 				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
@@ -274,7 +274,7 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable, 
 					vector3d = vector3d.normalize();
 					if (this.canReach(vector3d, Mth.ceil(d0))) {
 						this.parentEntity
-								.setDeltaMovement(this.parentEntity.getDeltaMovement().add(vector3d.scale(0.1D))); 
+								.setDeltaMovement(this.parentEntity.getDeltaMovement().add(vector3d.scale(0.1D)));
 					} else {
 						this.operation = MoveControl.Operation.WAIT;
 					}

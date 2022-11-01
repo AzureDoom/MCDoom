@@ -150,8 +150,8 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 	public static AttributeSupplier.Builder createAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.revenant_health.get()).add(Attributes.ATTACK_DAMAGE, 3.0D)
-				.add(Attributes.FLYING_SPEED, 0.25D).add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.FLYING_SPEED, 0.25D)
+				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -187,8 +187,9 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 
 		@Override
 		public AttackSound getDefaultAttackSound() {
-			return new AttackSound((actor.getVariant() == 10 ? DoomSounds.REVENANT_DOOT.get()
-					: DoomSounds.REVENANT_ATTACK.get()), 1, 1);
+			return new AttackSound(
+					(actor.getVariant() == 10 ? DoomSounds.REVENANT_DOOT.get() : DoomSounds.REVENANT_ATTACK.get()), 1,
+					1);
 		}
 
 		@Override

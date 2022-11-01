@@ -243,13 +243,15 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(4, new RangedStrafeGladiatorAttackGoal(this,
-				new FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
-						.setDamage(DoomConfig.SERVER.gladiator_ranged_damage.get().floatValue()
-								+ (this.entityData.get(DEATH_STATE) == 1
-										? DoomConfig.SERVER.gladiator_phaseone_damage_boost.get().floatValue()
-										: 0))
-						.setSound(SoundEvents.FIRECHARGE_USE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F)));
+		this.goalSelector.addGoal(4,
+				new RangedStrafeGladiatorAttackGoal(this,
+						new FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
+								.setDamage(DoomConfig.SERVER.gladiator_ranged_damage.get().floatValue()
+										+ (this.entityData.get(DEATH_STATE) == 1
+												? DoomConfig.SERVER.gladiator_phaseone_damage_boost.get().floatValue()
+												: 0))
+								.setSound(SoundEvents.FIRECHARGE_USE, 1.0F,
+										1.4F + this.getRandom().nextFloat() * 0.35F)));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
 		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, LivingEntity.class, 8.0F));
 		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
@@ -323,7 +325,8 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.gladiator_health.get())
 				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.gladiator_melee_damage.get())
-				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.9f).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override

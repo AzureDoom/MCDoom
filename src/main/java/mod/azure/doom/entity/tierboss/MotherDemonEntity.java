@@ -288,8 +288,8 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 										f1, 0);
 							}
 							parentEntity.level.playLocalSound(this.parentEntity.getX(), this.parentEntity.getY(),
-									this.parentEntity.getZ(), DoomSounds.MOTHER_ATTACK.get(), SoundSource.HOSTILE,
-									1.0F, 1.0F, true);
+									this.parentEntity.getZ(), DoomSounds.MOTHER_ATTACK.get(), SoundSource.HOSTILE, 1.0F,
+									1.0F, true);
 							this.parentEntity.setAttackingState(2);
 						}
 						livingentity.setDeltaMovement(livingentity.getDeltaMovement().multiply(0.4f, 1.4f, 0.4f));
@@ -364,7 +364,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.motherdemon_health.get())
 				.add(Attributes.ATTACK_DAMAGE, 12.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.9f).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
