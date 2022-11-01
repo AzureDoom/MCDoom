@@ -42,7 +42,7 @@
 			},
 			{
 				"id": "geckolib3q",
-				"versions": ">=3.0.20"
+				"versions": ">=3.0.39"
 			},
 			{
 				"id": "trinkets",
