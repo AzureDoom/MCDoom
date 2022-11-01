@@ -49,7 +49,7 @@ public class DarkLordCrucibleItem extends SwordItem implements IAnimatable, ISyn
 	public static final int ANIM_OPEN = 0;
 
 	public DarkLordCrucibleItem() {
-		super(DoomTier.DOOM, 1, -2.5f, new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(5));
+		super(DoomTier.DOOM, 1, -2.5f, new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(24));
 		GeckoLibNetwork.registerSyncable(this);
 	}
 
@@ -71,7 +71,7 @@ public class DarkLordCrucibleItem extends SwordItem implements IAnimatable, ISyn
 				}
 			}
 		}
-		return true;
+		return stack.getDamage() < (stack.getMaxDamage() - 1) ? true : false;
 
 	}
 
