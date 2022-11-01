@@ -261,7 +261,7 @@ public class GargoyleEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
+		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.gargoyle_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.gargoyle_melee_damage)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D).add(EntityAttributes.GENERIC_FLYING_SPEED, 2.25D)
