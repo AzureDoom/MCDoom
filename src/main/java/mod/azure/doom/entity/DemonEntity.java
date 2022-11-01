@@ -18,6 +18,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.SpiderNavigation;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
@@ -116,7 +117,7 @@ public class DemonEntity extends HostileEntity implements Angerable {
 	@Override
 	protected void updatePostDeath() {
 		++this.deathTime;
-		if (this.deathTime == 40) {
+		if (this.deathTime == 35) {
 			this.remove(Entity.RemovalReason.KILLED);
 			this.dropXp();
 		}
@@ -185,6 +186,13 @@ public class DemonEntity extends HostileEntity implements Angerable {
 				}
 
 		return null;
+	}
+
+	@Override
+	public boolean damage(DamageSource source, float amount) {
+		return source == DamageSource.IN_WALL || source == DamageSource.ON_FIRE || source == DamageSource.IN_FIRE
+				? false
+				: super.damage(source, amount);
 	}
 
 }
