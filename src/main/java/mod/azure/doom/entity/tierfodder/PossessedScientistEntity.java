@@ -139,7 +139,7 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 	}
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
+		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.possessed_scientist_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.possessed_scientist_melee_damage)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.15D)

@@ -129,7 +129,7 @@ public class SpectreEntity extends DemonEntity implements IAnimatable, IAnimatio
 	}
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
+		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.spectre_health)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.6f)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.spectre_melee_damage)

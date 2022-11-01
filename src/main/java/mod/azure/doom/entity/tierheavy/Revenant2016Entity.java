@@ -122,7 +122,7 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 	}
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
+		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D).add(EntityAttributes.GENERIC_FLYING_SPEED, 2.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.revenant_health)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.6f)

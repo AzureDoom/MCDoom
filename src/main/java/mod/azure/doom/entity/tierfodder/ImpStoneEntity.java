@@ -114,7 +114,7 @@ public class ImpStoneEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
+		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.impstone_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.impstone_melee_damage)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.75D)
