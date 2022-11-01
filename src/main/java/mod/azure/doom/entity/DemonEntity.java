@@ -15,6 +15,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -174,6 +175,22 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 				}
 
 		return null;
+	}
+
+	@Override
+	protected void tickDeath() {
+		++this.deathTime;
+		if (this.deathTime == 35) {
+			this.remove(Entity.RemovalReason.KILLED);
+			this.dropExperience();
+		}
+	}
+
+	@Override
+	public boolean hurt(DamageSource source, float amount) {
+		return source == DamageSource.IN_WALL || source == DamageSource.ON_FIRE || source == DamageSource.IN_FIRE
+				? false
+				: super.hurt(source, amount);
 	}
 
 }
