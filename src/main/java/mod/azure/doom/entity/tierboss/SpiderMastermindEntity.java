@@ -164,6 +164,7 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.spider_mastermind_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.spider_mastermind_melee_damage)
+				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.8f)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 
