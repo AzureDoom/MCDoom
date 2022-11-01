@@ -422,6 +422,11 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 			if (e instanceof ArchMakyrEntity && e.age < 1) {
 				e.remove(RemovalReason.KILLED);
 			}
+			if (e instanceof PlayerEntity) {
+				if (!((PlayerEntity) e).isCreative())
+					if (!((PlayerEntity) e).isSpectator())
+						this.setTarget((LivingEntity) e);
+			}
 		});
 	}
 
