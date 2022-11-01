@@ -69,6 +69,7 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (this.entityData.get(DEATH_STATE) == 0 && event.isMoving() && this.entityData.get(STATE) < 1) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_phaseone", true));
+			event.getController().setAnimationSpeed(1.5);
 			return PlayState.CONTINUE;
 		}
 		if (this.entityData.get(DEATH_STATE) == 0 && (this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
@@ -82,6 +83,7 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 		}
 		if (this.entityData.get(DEATH_STATE) == 1 && event.isMoving()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_phasetwo", true));
+			event.getController().setAnimationSpeed(1.5);
 			event.getController().setAnimationSpeed(1);
 			return PlayState.CONTINUE;
 		}
@@ -112,7 +114,7 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 		}
 		if (this.entityData.get(DEATH_STATE) == 0 && this.entityData.get(STATE) == 4
 				&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phase3", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phaseone3", true));
 			return PlayState.CONTINUE;
 		}
 		if (this.entityData.get(DEATH_STATE) == 1 && this.entityData.get(STATE) == 2
@@ -301,7 +303,7 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 					Explosion.BlockInteraction.BREAK);
 			target.invulnerableTime = 0;
 		}
-		return bl;
+		return true;
 	}
 
 	public boolean doHurtTarget1(Entity target) {
@@ -314,7 +316,7 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 					Explosion.BlockInteraction.BREAK);
 			target.invulnerableTime = 0;
 		}
-		return bl;
+		return true;
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -384,6 +386,11 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 			if (e.isAddedToWorld() && e instanceof GladiatorEntity && e.tickCount < 1) {
 				e.remove(RemovalReason.KILLED);
 			}
+			if (e instanceof Player) {
+				if (!((Player) e).isCreative())
+					if (!((Player) e).isSpectator())
+						this.setTarget((LivingEntity) e);
+			}
 		});
 	}
 
@@ -399,6 +406,11 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	@Override
 	public void knockback(double p_147241_, double p_147242_, double p_147243_) {
 		super.knockback(0, 0, 0);
+	}
+
+	@Override
+	public boolean hurt(DamageSource source, float amount) {
+		return this.getAttckingState() == 1 || this.getAttckingState() == 4 ? false : super.hurt(source, amount);
 	}
 
 }
