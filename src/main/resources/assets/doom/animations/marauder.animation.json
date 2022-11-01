@@ -144,15 +144,15 @@
 			}
 		},
 		"attacking": {
-			"loop": "hold_on_last_frame",
-			"animation_length": 0.32,
+			"loop": true,
+			"animation_length": 0.56,
 			"bones": {
 				"rArm": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.32": {
+						"0.56": {
 							"vector": [-82.5, 0, 0],
 							"easing": "easeInOutSine"
 						}
@@ -239,14 +239,14 @@
 		},
 		"attack": {
 			"loop": "hold_on_last_frame",
-			"animation_length": 0.32,
+			"animation_length": 0.56,
 			"bones": {
 				"rArm": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.32": {
+						"0.56": {
 							"vector": [-82.5, 0, 0],
 							"easing": "easeInOutSine"
 						}
