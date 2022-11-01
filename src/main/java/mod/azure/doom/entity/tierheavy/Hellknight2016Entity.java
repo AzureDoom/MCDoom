@@ -216,7 +216,7 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 	}
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
+		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.hellknight2016_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.hellknight2016_melee_damage)

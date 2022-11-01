@@ -125,7 +125,7 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 	}
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
+		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.prowler_health)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.6f)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.prowler_melee_damage)

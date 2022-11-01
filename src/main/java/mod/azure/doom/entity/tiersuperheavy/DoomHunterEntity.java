@@ -264,7 +264,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 	}
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
+		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.55D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.doomhunter_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.doomhunter_melee_damage)
