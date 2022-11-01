@@ -109,7 +109,7 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 	@Override
 	protected void tickDeath() {
 		++this.deathTime;
-		if (this.deathTime == 60) {
+		if (this.deathTime == 40) {
 			this.remove(RemovalReason.KILLED);
 			this.dropExperience();
 		}
