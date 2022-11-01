@@ -6,7 +6,7 @@ import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.KnockbackGoal;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
-import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
+import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.util.registry.DoomSounds;
@@ -280,7 +280,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, IronGolem.class, 8.0F));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.goalSelector.addGoal(7, new ArchMakyrEntity.LookAroundGoal(this));
-		this.goalSelector.addGoal(4, new RangedAttackGoal(this, new FireballAttack(this, true)
+		this.goalSelector.addGoal(4, new RangedStrafeAttackGoal(this, new FireballAttack(this, true)
 				.setProjectileOriginOffset(0.8, 0.4, 0.8)
 				.setDamage(DoomConfig.SERVER.archmaykr_ranged_damage.get().floatValue()
 						+ (this.entityData.get(DEATH_STATE) == 1

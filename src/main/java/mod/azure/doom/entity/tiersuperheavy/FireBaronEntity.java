@@ -2,7 +2,7 @@ package mod.azure.doom.entity.tiersuperheavy;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
+import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
@@ -131,7 +131,7 @@ public class FireBaronEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.goalSelector.addGoal(4,
-				new RangedAttackGoal(this,
+				new RangedStrafeAttackGoal(this,
 						new FireBaronEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
 								.setDamage(DoomConfig.SERVER.baron_ranged_damage.get().floatValue()),
 						1.1));
