@@ -116,7 +116,7 @@ public class PossessedScientistEntity extends DemonEntity implements IAnimatable
 	@Override
 	protected void updatePostDeath() {
 		++this.deathTime;
-		if (this.deathTime == 80) {
+		if (this.deathTime == 40) {
 			this.remove(Entity.RemovalReason.KILLED);
 			this.dropXp();
 		}
