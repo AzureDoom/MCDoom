@@ -452,6 +452,11 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 			if (e.isAddedToWorld() && e instanceof IconofsinEntity && e.tickCount < 1) {
 				e.remove(RemovalReason.KILLED);
 			}
+			if (e instanceof Player) {
+				if (!((Player) e).isCreative())
+					if (!((Player) e).isSpectator())
+						this.setTarget((LivingEntity) e);
+			}
 		});
 	}
 

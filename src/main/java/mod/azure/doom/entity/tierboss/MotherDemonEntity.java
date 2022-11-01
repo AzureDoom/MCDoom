@@ -428,6 +428,11 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 			if (e.isAddedToWorld() && e instanceof MotherDemonEntity && e.tickCount < 1) {
 				e.remove(RemovalReason.KILLED);
 			}
+			if (e instanceof Player) {
+				if (!((Player) e).isCreative())
+					if (!((Player) e).isSpectator())
+						this.setTarget((LivingEntity) e);
+			}
 		});
 	}
 
