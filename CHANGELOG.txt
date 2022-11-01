@@ -1,5 +1,13 @@
-v.4.2.18
+v.4.2.19
 
-- Argent Tools now require Argent Plate to craft instead of Argen Engery. 
-- Lost Souls now produce light.
-- All mob attacks now produce light.
+- Arch Maykr, Classic Highknight, Baron, Fireborne Baron, Cyberdemons now Strafe Attack
+- Fixes Tyrant legs AGAIN, seriously when did this revert???
+- Tweaked Axe, Crucibles, and Hammer for damage, max uses, and base damage.
+- Increase Follow Range on all demons.
+- Added knockback resistance to all heavy and higher tier demons
+- Lost Soul speed buff
+- Fixes Possessed Death Timer
+- Fixes player check on bosses
+- Update death timer/No more fire damage on demons
+- Update Gladiator attacks
+- Updated to latest Geckolib
