@@ -46,7 +46,7 @@ public class SentinelHammerItem extends SwordItem implements IAnimatable, ISynca
 	public static final int ANIM_OPEN = 0;
 
 	public SentinelHammerItem() {
-		super(DoomTier.DOOM, 1, -2.5f, new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(5));
+		super(DoomTier.DOOM_HIGHTEIR, 1, -2.5f, new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(24));
 		GeckoLibNetwork.registerSyncable(this);
 	}
 
@@ -78,7 +78,7 @@ public class SentinelHammerItem extends SwordItem implements IAnimatable, ISynca
 				}
 			}
 		}
-		return true;
+		return stack.getDamage() < (stack.getMaxDamage() - 1) ? true : false;
 	}
 
 	private void doDamage(LivingEntity user, Entity target) {
