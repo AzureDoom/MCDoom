@@ -168,6 +168,7 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.pinky_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.pinky_melee_damage)
+				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.6f)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}

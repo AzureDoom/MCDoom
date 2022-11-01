@@ -99,8 +99,8 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 		}
 		if (event.sound.matches("attack")) {
 			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_PLAYER_ATTACK_CRIT,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(),
+						SoundEvents.ENTITY_PLAYER_ATTACK_CRIT, SoundCategory.HOSTILE, 0.25F, 1.0F, true);
 			}
 		}
 	}
@@ -220,7 +220,7 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.hellknight2016_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.hellknight2016_melee_damage)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 50D)
+				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.6f)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 

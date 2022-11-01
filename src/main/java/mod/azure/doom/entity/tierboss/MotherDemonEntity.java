@@ -302,8 +302,8 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 										d, e1, h2, 0);
 							}
 							parentEntity.world.playSound(this.parentEntity.getX(), this.parentEntity.getY(),
-									this.parentEntity.getZ(), DoomSounds.MOTHER_ATTACK, SoundCategory.HOSTILE,
-									0.25F, 1.0F, true);
+									this.parentEntity.getZ(), DoomSounds.MOTHER_ATTACK, SoundCategory.HOSTILE, 0.25F,
+									1.0F, true);
 							this.parentEntity.setAttackingState(2);
 						}
 						livingEntity.setVelocity(livingEntity.getVelocity().add(0.4f, 1.4f, 0.4f));
@@ -323,8 +323,8 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 								this.parentEntity.getBodyY(0.5D) + 0.5D, parentEntity.getZ() + vec3d.z * 1.0D);
 						world.spawnEntity(fireballEntity2);
 						parentEntity.world.playSound(this.parentEntity.getX(), this.parentEntity.getY(),
-								this.parentEntity.getZ(), DoomSounds.MOTHER_ATTACK, SoundCategory.HOSTILE, 0.25F,
-								1.0F, true);
+								this.parentEntity.getZ(), DoomSounds.MOTHER_ATTACK, SoundCategory.HOSTILE, 0.25F, 1.0F,
+								true);
 						TentacleEntity lost_soul = DoomEntities.TENTACLE.create(world);
 						lost_soul.refreshPositionAndAngles(livingEntity.getX(), livingEntity.getY(),
 								livingEntity.getZ(), 0, 0);
@@ -366,7 +366,8 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 		if (bl) {
 			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
 					DoomConfig.motherdemon_ranged_damage
-							+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0));
+							+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.motherdemon_phaseone_damage_boos
+									: 0));
 			fang.setFireTicks(age);
 			fang.isInvisible();
 			this.world.spawnEntity(fang);
@@ -377,8 +378,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.motherdemon_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1000.0D);
+				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.9f);
 	}
 
 	@Override

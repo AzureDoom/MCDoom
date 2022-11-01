@@ -367,6 +367,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 150.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.55D).add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.archmaykr_health)
+				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.6f)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
 	}
 
