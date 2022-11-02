@@ -208,7 +208,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 										: this.dataTracker.get(DEATH_STATE) == 4
 												? DoomConfig.archmaykr_phasefour_damage_boost
 												: 0)),
-				1.0D));
+				1.0D, 1));
 		this.targetSelector.add(4, new KnockbackGoal(this, 1.0D));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
