@@ -1,6 +1,5 @@
 package mod.azure.doom.entity.tierfodder;
 
-import java.util.EnumSet;
 import java.util.Random;
 
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +19,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.RevengeGoal;
 import net.minecraft.entity.ai.goal.TargetGoal;
@@ -72,6 +70,7 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 	public LostSoulEntity(EntityType<? extends LostSoulEntity> type, World worldIn) {
 		super(type, worldIn);
 		this.moveControl = new GhastMoveControl(this);
+		this.stepHeight = 4.0F;
 	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -279,7 +278,7 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 					double d = vec3d.length();
 					vec3d = vec3d.normalize();
 					if (this.willCollide(vec3d, MathHelper.ceil(d))) {
-						this.ghast.setVelocity(this.ghast.getVelocity().add(vec3d.multiply(0.1D)));
+						this.ghast.setVelocity(this.ghast.getVelocity().add(vec3d.multiply(0.2D)));
 					} else {
 						this.state = MoveControl.State.WAIT;
 					}
@@ -299,50 +298,6 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 			}
 
 			return true;
-		}
-	}
-
-	class ChargeTargetGoal extends Goal {
-		public int attackTimer;
-		private final LostSoulEntity parentEntity;
-
-		public ChargeTargetGoal(LostSoulEntity ghast) {
-			this.setControls(EnumSet.of(Goal.Control.MOVE));
-			this.parentEntity = ghast;
-		}
-
-		public boolean canStart() {
-			return parentEntity.getTarget() != null;
-		}
-
-		public boolean shouldContinue() {
-			return parentEntity.getTarget() != null && parentEntity.getTarget().isAlive();
-		}
-
-		public void start() {
-			LivingEntity livingEntity = LostSoulEntity.this.getTarget();
-			Vec3d vec3d = livingEntity.getCameraPosVec(1.0F);
-			LostSoulEntity.this.moveControl.moveTo(vec3d.x, vec3d.y, vec3d.z, 4.0D);
-			LostSoulEntity.this.setCharging(true);
-			LostSoulEntity.this.playSound(DoomSounds.LOST_SOUL_AMBIENT, 1.0F, 1.0F);
-			this.attackTimer = 0;
-		}
-
-		public void stop() {
-			LostSoulEntity.this.setCharging(false);
-		}
-
-		public void tick() {
-			LivingEntity livingentity = parentEntity.getTarget();
-			++this.attackTimer;
-			parentEntity.setCharging(false);
-			Vec3d vec3d = livingentity.getCameraPosVec(1.0F);
-			parentEntity.moveControl.moveTo(vec3d.x, vec3d.y, vec3d.z, 1.0D);
-			if (this.parentEntity.getBoundingBox().expand(0.20000000298023224D)
-					.intersects(livingentity.getBoundingBox())) {
-				this.parentEntity.tryAttack(livingentity);
-			}
-			this.attackTimer = Math.max(this.attackTimer - 0, 0);
 		}
 	}
 
