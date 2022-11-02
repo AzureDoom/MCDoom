@@ -101,7 +101,7 @@ public class HellknightEntity extends DemonEntity implements IAnimatable, IAnima
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
 		this.goalSelector.add(4, new RangedStrafeAttackGoal(this, new HellknightEntity.FireballAttack(this)
-				.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomConfig.hellknight_ranged_damage), 1.1));
+				.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomConfig.hellknight_ranged_damage), 1.1, 1));
 		this.targetSelector.add(2, new TargetGoal<>(this, PlayerEntity.class, true));
 		this.targetSelector.add(2, new TargetGoal<>(this, MerchantEntity.class, true));
 		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
