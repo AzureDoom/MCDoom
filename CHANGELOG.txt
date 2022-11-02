@@ -1,6 +1,4 @@
-v.4.2.34
+v.4.2.35
 
-- Fixes Armor Pivot points
-- Updates Geckolib
-- Pinky/Spectre Speed Buffed when attacking
-- Fixes broken attack animations on Arch Makyr, Classic Hellknight, Baron, Cyberdemon, and Fireborne Baron
+- Doom Fire doesn't hurt itself with fire.
+- Fixes Gladiator Mace crashing due to null data.
