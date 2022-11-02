@@ -67,6 +67,11 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 		super(type, world);
 		this.moveControl = new LostSoulEntity.MoveHelperController(this);
 	}
+	
+	@Override
+	public float getStepHeight() {
+		return 4.0F;
+	}
 
 	private AnimationFactory factory = new AnimationFactory(this);
 
@@ -255,49 +260,6 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 		super.updateControlFlags();
 	}
 
-	class ChargeAttackGoal extends Goal {
-		public int attackTimer;
-		private final LostSoulEntity parentEntity;
-
-		public ChargeAttackGoal(LostSoulEntity ghast) {
-			this.setFlags(EnumSet.of(Goal.Flag.MOVE));
-			this.parentEntity = ghast;
-		}
-
-		public boolean canUse() {
-			return parentEntity.getTarget() != null;
-		}
-
-		public boolean canContinueToUse() {
-			return parentEntity.getTarget() != null && parentEntity.getTarget().isAlive();
-		}
-
-		public void start() {
-			LivingEntity livingentity = parentEntity.getTarget();
-			Vec3 vec3d = livingentity.getEyePosition(1.0F);
-			parentEntity.moveControl.setWantedPosition(vec3d.x, vec3d.y, vec3d.z, 4.0D);
-			parentEntity.setCharging(true);
-			parentEntity.playSound(DoomSounds.LOST_SOUL_AMBIENT.get(), 1.0F, 1.0F);
-			this.attackTimer = 0;
-		}
-
-		public void stop() {
-			parentEntity.setCharging(false);
-		}
-
-		public void tick() {
-			LivingEntity livingentity = parentEntity.getTarget();
-			++this.attackTimer;
-			parentEntity.setCharging(false);
-			Vec3 vec3d = livingentity.getEyePosition(1.0F);
-			parentEntity.moveControl.setWantedPosition(vec3d.x, vec3d.y, vec3d.z, 5.0D);
-			if (this.parentEntity.getBoundingBox().inflate((double) 0.2F).intersects(livingentity.getBoundingBox())) {
-				this.parentEntity.doHurtTarget(livingentity);
-			}
-			this.attackTimer = Math.max(this.attackTimer - 0, 0);
-		}
-	}
-
 	@Override
 	public void aiStep() {
 		super.aiStep();
@@ -331,11 +293,7 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 					vector3d = vector3d.normalize();
 					if (this.canReach(vector3d, Mth.ceil(d0))) {
 						this.parentEntity
-								.setDeltaMovement(this.parentEntity.getDeltaMovement().add(vector3d.scale(0.1D))); // TODO
-						// test
-						// fly
-						// speed
-						// here
+								.setDeltaMovement(this.parentEntity.getDeltaMovement().add(vector3d.scale(0.2D))); 
 					} else {
 						this.operation = MoveControl.Operation.WAIT;
 					}
