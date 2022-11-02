@@ -131,7 +131,7 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable, IAnima
 						new RangedStrafeAttackGoal(this,
 								new CyberdemonEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.4, 0.8)
 										.setDamage(DoomConfig.SERVER.cyberdemon_ranged_damage.get().floatValue()),
-								1.1));
+								1.1, 1));
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));

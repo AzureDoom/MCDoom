@@ -168,7 +168,7 @@ public class BaronEntity extends DemonEntity implements IAnimatable, IAnimationT
 				new RangedStrafeAttackGoal(this,
 						new BaronEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.4, 0.8)
 								.setDamage(DoomConfig.SERVER.baron_ranged_damage.get().floatValue()),
-						1.2));
+						1.2, 2));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
