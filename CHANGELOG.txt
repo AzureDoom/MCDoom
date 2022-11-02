@@ -1,13 +1,6 @@
-v.4.2.19
+v.4.2.20
 
-- Arch Maykr, Classic Highknight, Baron, Fireborne Baron, Cyberdemons now Strafe Attack
-- Fixes Tyrant legs AGAIN, seriously when did this revert???
-- Tweaked Axe, Crucibles, and Hammer for damage, max uses, and base damage.
-- Increase Follow Range on all demons.
-- Added knockback resistance to all heavy and higher tier demons
-- Lost Soul speed buff
-- Fixes Possessed Death Timer
-- Fixes player check on bosses
-- Update death timer/No more fire damage on demons
-- Update Gladiator attacks
-- Updated to latest Geckolib
+- Fixes Armor Pivot points
+- Updates Geckolib
+- Pinky/Spectre Speed Buffed when attacking
+- Fixes broken attack animations on Arch Makyr, Classic Hellknight, Baron, Cyberdemon, and Fireborne Baron
