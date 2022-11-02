@@ -150,7 +150,7 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements IA
 			if (!(entity instanceof DemonEntity))
 				entity.hurt(DamageSource.mobAttack((LivingEntity) entity1),
 						DoomConfig.SERVER.gladiator_ranged_damage.get().floatValue()
-								+ (this.entityData.get(GladiatorEntity.DEATH_STATE) == 1
+								+ (shooter.getEntityData().get(GladiatorEntity.DEATH_STATE) == 1
 										? DoomConfig.SERVER.gladiator_phaseone_damage_boost.get().floatValue()
 										: 0));
 			if (entity1 instanceof LivingEntity) {
