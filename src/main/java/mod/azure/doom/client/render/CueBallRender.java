@@ -35,7 +35,7 @@ public class CueBallRender extends GeoEntityRenderer<CueBallEntity> {
 	}
 
 	@Override
-	protected boolean hasLabel(CueBallEntity entity) {
+	public boolean hasLabel(CueBallEntity entity) {
 		return false;
 	}
 }
