@@ -44,11 +44,12 @@ public class RangedStrafeAttackGoal extends Goal {
 		this.attack = attack;
 	}
 
-	public RangedStrafeAttackGoal(DemonEntity mob, AbstractRangedAttack attack, double moveSpeedAmpIn) {
+	public RangedStrafeAttackGoal(DemonEntity mob, AbstractRangedAttack attack, double moveSpeedAmpIn, int state) {
 		this.entity = mob;
 		this.moveSpeedAmp = moveSpeedAmpIn;
 		this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
 		this.attack = attack;
+		this.statecheck = state;
 	}
 
 	private boolean multiShot = false;
