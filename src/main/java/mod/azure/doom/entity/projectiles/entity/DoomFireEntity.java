@@ -181,4 +181,11 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 		return DoomEntityPacket.createPacket(this);
 	}
 
+	@Override
+	public boolean damage(DamageSource source, float amount) {
+		return source == DamageSource.IN_WALL || source == DamageSource.ON_FIRE || source == DamageSource.IN_FIRE
+				? false
+				: super.damage(source, amount);
+	}
+
 }
