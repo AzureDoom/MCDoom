@@ -293,7 +293,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 														? DoomConfig.SERVER.archmaykr_phasefour_damage_boost.get()
 																.floatValue()
 														: 0)),
-				1.0D));
+				1.0D, 1));
 		this.targetSelector.addGoal(4, new KnockbackGoal(this, 1.0D));
 		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.goalSelector.addGoal(2, new MoveTowardsTargetGoal(this, 0.9D, 32.0F));
