@@ -28,6 +28,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -247,102 +248,135 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	static class AttackGoal extends Goal {
-		private final ArchvileEntity parentEntity;
-		public int attackTimer;
+		private final ArchvileEntity entity;
+		public int cooldown;
+		private int seeTime;
+		private boolean strafingClockwise;
+		private boolean strafingBackwards;
+		private int strafingTime = -1;
+		private float maxAttackDistance = 20;
+		private int strafeTicks = 20;
 
 		public AttackGoal(ArchvileEntity ghast) {
-			this.parentEntity = ghast;
+			this.entity = ghast;
 		}
 
 		public boolean canUse() {
-			return this.parentEntity.getTarget() != null;
+			return this.entity.getTarget() != null;
 		}
 
 		public void start() {
 			super.start();
-			this.parentEntity.setAggressive(true);
+			this.entity.setAggressive(true);
+			this.cooldown = 0;
+			this.entity.setAttackingState(0);
 		}
 
 		@Override
 		public void stop() {
 			super.stop();
-			this.parentEntity.setAggressive(false);
-			this.parentEntity.setAttackingState(0);
-			this.attackTimer = -1;
+			this.entity.setAggressive(false);
+			this.entity.setAttackingState(0);
+			this.seeTime = 0;
 		}
 
 		public void tick() {
-			LivingEntity livingentity = this.parentEntity.getTarget();
-			if (this.parentEntity.hasLineOfSight(livingentity)) {
-				++this.attackTimer;
-				if (this.attackTimer == 20) {
-					if (!this.parentEntity.level.isClientSide) {
-						float f2 = 24.0F;
-						int k1 = Mth.floor(this.parentEntity.getX() - (double) f2 - 1.0D);
-						int l1 = Mth.floor(this.parentEntity.getX() + (double) f2 + 1.0D);
-						int i2 = Mth.floor(this.parentEntity.getY() - (double) f2 - 1.0D);
-						int i1 = Mth.floor(this.parentEntity.getY() + (double) f2 + 1.0D);
-						int j2 = Mth.floor(this.parentEntity.getZ() - (double) f2 - 1.0D);
-						int j1 = Mth.floor(this.parentEntity.getZ() + (double) f2 + 1.0D);
-						List<Entity> list = this.parentEntity.level.getEntities(this.parentEntity,
-								new AABB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
-						Vec3 vector3d1 = new Vec3(this.parentEntity.getX(), this.parentEntity.getY(),
-								this.parentEntity.getZ());
-						for (int k2 = 0; k2 < list.size(); ++k2) {
-							Entity entity = list.get(k2);
-
-							if ((entity instanceof DemonEntity)) {
-								double d12 = (double) (Mth.sqrt((float) entity.distanceToSqr(vector3d1)) / f2);
-								if (d12 <= 1.0D) {
-									if (entity.isAlive()) {
-										((DemonEntity) entity)
-												.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000, 1));
-										entity.setGlowingTag(true);
-									}
-								}
-							}
-						}
-						double d0 = Math.min(livingentity.getY(), livingentity.getY());
-						double d1 = Math.max(livingentity.getY(), livingentity.getY()) + 1.0D;
-						float f = (float) Mth.atan2(livingentity.getZ() - parentEntity.getZ(),
-								livingentity.getX() - parentEntity.getX());
-						if (parentEntity.distanceToSqr(livingentity) < 9.0D
-								&& parentEntity.getTarget().hasLineOfSight(livingentity)) {
-							for (int i = 0; i < 15; ++i) {
-								float f1 = f + (float) i * (float) Math.PI * 0.4F;
-								parentEntity.spawnFangs(parentEntity.getX() + (double) Mth.cos(f1) * 1.5D,
-										parentEntity.getZ() + (double) Mth.sin(f1) * 1.5D, d0, d1, f1, 0);
-							}
-
-							for (int k = 0; k < 18; ++k) {
-								float f21 = f + (float) k * (float) Math.PI * 2.0F / 8.0F + 1.2566371F;
-								parentEntity.spawnFangs(parentEntity.getX() + (double) Mth.cos(f21) * 2.5D,
-										parentEntity.getZ() + (double) Mth.sin(f21) * 2.5D, d0, d1, f21, 3);
-							}
-						} else {
-							for (int l = 0; l < 26; ++l) {
-								double d2 = 1.25D * (double) (l + 1);
-								parentEntity.spawnFangs(parentEntity.getX() + (double) Mth.cos(f) * d2,
-										parentEntity.getZ() + (double) Mth.sin(f) * d2, d0, d1, f, 32);
-							}
-						}
-					}
-					if (!(this.parentEntity.level.isClientSide)) {
-						this.parentEntity.playSound(DoomSounds.ARCHVILE_SCREAM.get(), 1.0F,
-								1.2F / (this.parentEntity.random.nextFloat() * 0.2F + 0.9F));
-					}
-					this.parentEntity.setAttackingState(1);
-				}
-				if (this.attackTimer == 40) {
-					this.parentEntity.setAttackingState(0);
-					this.attackTimer = -5;
-				}
-			} else if (this.attackTimer > 0) {
-				--this.attackTimer;
+			LivingEntity livingentity = this.entity.getTarget();
+			++this.cooldown;
+			double distanceToTargetSq = this.entity.distanceToSqr(livingentity.getX(), livingentity.getY(),
+					livingentity.getZ());
+			boolean inLineOfSight = this.entity.getSensing().hasLineOfSight(livingentity);
+			if (inLineOfSight != this.seeTime > 0) {
+				this.seeTime = 0;
 			}
-			this.parentEntity.lookAt(livingentity, 30.0F, 30.0F);
-		}
 
+			if (inLineOfSight) {
+				++this.seeTime;
+			} else {
+				--this.seeTime;
+			}
+
+			if (distanceToTargetSq <= (double) this.maxAttackDistance && this.seeTime >= 20) {
+				this.entity.getNavigation().stop();
+				++this.strafingTime;
+			} else {
+				this.entity.getNavigation().moveTo(livingentity, 0.95F);
+				this.entity.getMoveControl().strafe(this.strafingBackwards ? -0.5F : 0.5F,
+						this.strafingClockwise ? 0.5F : -0.5F);
+				this.strafingTime = -1;
+			}
+
+			if (this.strafingTime >= strafeTicks) {
+				if ((double) this.entity.getRandom().nextFloat() < 0.3D) {
+					this.strafingClockwise = !this.strafingClockwise;
+				}
+
+				if ((double) this.entity.getRandom().nextFloat() < 0.3D) {
+					this.strafingBackwards = !this.strafingBackwards;
+				}
+
+				this.strafingTime = 0;
+			}
+
+			if (this.strafingTime > -1) {
+				if (distanceToTargetSq > (double) (this.maxAttackDistance * 0.75F)) {
+					this.strafingBackwards = false;
+				} else if (distanceToTargetSq < (double) (this.maxAttackDistance * 0.25F)) {
+					this.strafingBackwards = true;
+				}
+
+				this.entity.getMoveControl().strafe(this.strafingBackwards ? -0.5F : 0.5F,
+						this.strafingClockwise ? 0.5F : -0.5F);
+				this.entity.lookAt(livingentity, 30.0F, 30.0F);
+			} else {
+				this.entity.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
+			}
+			if (this.cooldown == 20) {
+				if (!this.entity.level.isClientSide) {
+					final AABB aabb = new AABB(this.entity.blockPosition().above()).inflate(24D, 24D, 24D);
+					this.entity.getCommandSenderWorld().getEntities(this.entity, aabb).forEach(e -> {
+						if ((e instanceof Mob)) {
+							((Mob) e).addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000, 1));
+						}
+					});
+					double d = Math.min(livingentity.getY(), this.entity.getY());
+					double e = Math.max(livingentity.getY(), this.entity.getY()) + 1.0D;
+					float f = (float) Mth.atan2(livingentity.getZ() - this.entity.getZ(),
+							livingentity.getX() - this.entity.getX());
+					int j;
+					if (this.entity.distanceToSqr(livingentity) < 9.0D) {
+						float h;
+						for (j = 0; j < 15; ++j) {
+							h = f + (float) j * 3.1415927F * 0.4F;
+							this.entity.spawnFangs(this.entity.getX() + (double) Mth.cos(h) * 1.5D,
+									this.entity.getZ() + (double) Mth.sin(h) * 1.5D, d, e, h, 0);
+						}
+
+						for (j = 0; j < 18; ++j) {
+							h = f + (float) j * 3.1415927F * 2.0F / 8.0F + 1.2566371F;
+							this.entity.spawnFangs(this.entity.getX() + (double) Mth.cos(h) * 2.5D,
+									this.entity.getZ() + (double) Mth.sin(h) * 2.5D, d, e, h, 3);
+						}
+					} else {
+						for (j = 0; j < 26; ++j) {
+							double l1 = 1.25D * (double) (j + 1);
+							this.entity.spawnFangs(this.entity.getX() + (double) Mth.cos(f) * l1,
+									this.entity.getZ() + (double) Mth.sin(f) * l1, d, e, f, 32);
+						}
+					}
+				}
+				if (!(this.entity.level.isClientSide)) {
+					this.entity.playSound(DoomSounds.ARCHVILE_SCREAM.get(), 1.0F,
+							1.2F / (this.entity.random.nextFloat() * 0.2F + 0.9F));
+				}
+				this.entity.setAttackingState(1);
+			}
+			if (this.cooldown == 40) {
+				this.entity.setAttackingState(0);
+				this.cooldown = -5;
+			}
+			this.entity.lookAt(livingentity, 30.0F, 30.0F);
+		}
 	}
 
 	static class FindPlayerGoal extends NearestAttackableTargetGoal<Player> {
