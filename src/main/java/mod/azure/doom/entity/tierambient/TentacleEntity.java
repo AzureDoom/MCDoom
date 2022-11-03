@@ -1,13 +1,9 @@
 package mod.azure.doom.entity.tierambient;
 
-import java.util.List;
-
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
@@ -21,7 +17,6 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
@@ -107,89 +102,64 @@ public class TentacleEntity extends DemonEntity implements IAnimatable, IAnimati
 	protected void registerGoals() {
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
-		this.goalSelector.addGoal(9, new TentacleEntity.AttackGoal(this, 15));
+		this.goalSelector.addGoal(9, new TentacleEntity.AttackGoal(this));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
 
 	static class AttackGoal extends Goal {
-		private final TentacleEntity parentEntity;
-		public int attackTimer;
+		private final TentacleEntity entity;
+		public int cooldown;
 
-		public AttackGoal(TentacleEntity ghast, int attackCooldownIn) {
-			this.parentEntity = ghast;
+		public AttackGoal(TentacleEntity parentEntity) {
+			this.entity = parentEntity;
 		}
 
 		public boolean canUse() {
-			return this.parentEntity.getTarget() != null;
+			return this.entity.getTarget() != null;
 		}
 
 		public void start() {
-			this.attackTimer = 0;
-			this.parentEntity.setAttackingState(0);
+			this.cooldown = 0;
+			this.entity.setAttackingState(0);
 		}
 
 		@Override
 		public void stop() {
 			super.stop();
-			this.parentEntity.setAttackingState(0);
+			this.entity.setAttackingState(0);
 		}
 
 		public void tick() {
-			LivingEntity livingEntity = this.parentEntity.getTarget();
-			if (livingEntity != null) {
-				if (this.parentEntity.hasLineOfSight(livingEntity) && parentEntity.distanceTo(livingEntity) <= 3.0D) {
-					++this.attackTimer;
-					if (this.attackTimer == 15) {
-						float f2 = 3.0F;
-						int k1 = Mth.floor(parentEntity.getX() - (double) f2 - 1.0D);
-						int l1 = Mth.floor(parentEntity.getX() + (double) f2 + 1.0D);
-						int i2 = Mth.floor(parentEntity.getY() - (double) f2 - 1.0D);
-						int i1 = Mth.floor(parentEntity.getY() + (double) f2 + 1.0D);
-						int j2 = Mth.floor(parentEntity.getZ() - (double) f2 - 1.0D);
-						int j1 = Mth.floor(parentEntity.getZ() + (double) f2 + 1.0D);
-						List<Entity> list = parentEntity.level.getEntities(parentEntity,
-								new AABB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
-						for (int k2 = 0; k2 < list.size(); ++k2) {
-							Entity entity = list.get(k2);
-							if (entity.isAlive()) {
-								this.parentEntity.doDamage();
-							}
+			LivingEntity livingentity = this.entity.getTarget();
+			if (livingentity != null) {
+				this.entity.lookAt(livingentity, 30.0F, 90.0F);
+				final AABB aabb2 = new AABB(this.entity.blockPosition()).inflate(2D);
+				if (this.entity.hasLineOfSight(livingentity)) {
+					++this.cooldown;
+					if (this.entity.getCommandSenderWorld().getEntities(this.entity, aabb2).contains(livingentity)) {
+						if (this.cooldown == 2) {
+							this.entity.getCommandSenderWorld().getEntities(this.entity, aabb2).forEach(e -> {
+								if ((e instanceof LivingEntity)) {
+									e.hurt(DamageSource.indirectMagic(this.entity, livingentity),
+											DoomConfig.SERVER.tentacle_melee_damage.get().floatValue());
+									livingentity.invulnerableTime = 0;
+								}
+							});
+							this.entity.setAttackingState(1);
 						}
-						this.parentEntity.setAttackingState(1);
+						if (this.cooldown >= 10) {
+							this.entity.setAttackingState(0);
+							this.cooldown = -5;
+						}
+					} else {
+						--this.cooldown;
+						this.entity.setAttackingState(0);
 					}
-					if (this.attackTimer == 40) {
-						this.parentEntity.setAttackingState(0);
-						this.attackTimer = -45;
-					}
-				} else if (this.attackTimer > 0) {
-					--this.attackTimer;
-					this.parentEntity.setAttackingState(0);
-				}
-			}
-		}
-
-	}
-
-	public void doDamage() {
-		float f2 = 4.0F;
-		int k1 = Mth.floor(this.getX() - (double) f2 - 1.0D);
-		int l1 = Mth.floor(this.getX() + (double) f2 + 1.0D);
-		int i2 = Mth.floor(this.getY() - (double) f2 - 1.0D);
-		int i1 = Mth.floor(this.getY() + (double) f2 + 1.0D);
-		int j2 = Mth.floor(this.getZ() - (double) f2 - 1.0D);
-		int j1 = Mth.floor(this.getZ() + (double) f2 + 1.0D);
-		List<Entity> list = this.level.getEntities(this,
-				new AABB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
-		Vec3 vector3d = new Vec3(this.getX(), this.getY(), this.getZ());
-		for (int k2 = 0; k2 < list.size(); ++k2) {
-			Entity entity = list.get(k2);
-			double d12 = (double) (Mth.sqrt((float) entity.distanceToSqr(vector3d)) / f2);
-			if (d12 <= 2.0D) {
-				if (entity instanceof LivingEntity) {
-					entity.hurt(DamageSource.indirectMagic(this, this.getTarget()),
-							DoomConfig.SERVER.tentacle_melee_damage.get().floatValue());
+				} else if (this.cooldown > 0) {
+					--this.cooldown;
+					this.entity.setAttackingState(0);
 				}
 			}
 		}
