@@ -1,8 +1,8 @@
 package mod.azure.doom.entity.tierambient;
 
-import java.util.List;
 import java.util.Random;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierfodder.PossessedScientistEntity;
 import net.minecraft.entity.Entity;
@@ -20,8 +20,6 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -113,81 +111,56 @@ public class TentacleEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	static class AttackGoal extends Goal {
-		private final TentacleEntity parentEntity;
+		private final TentacleEntity entity;
 		public int cooldown;
 
 		public AttackGoal(TentacleEntity parentEntity) {
-			this.parentEntity = parentEntity;
+			this.entity = parentEntity;
 		}
 
 		public boolean canStart() {
-			return this.parentEntity.getTarget() != null;
+			return this.entity.getTarget() != null;
 		}
 
 		public void start() {
 			this.cooldown = 0;
-			this.parentEntity.setAttackingState(0);
+			this.entity.setAttackingState(0);
 		}
 
 		@Override
 		public void stop() {
 			super.stop();
-			this.parentEntity.setAttackingState(0);
+			this.entity.setAttackingState(0);
 		}
 
 		public void tick() {
-			LivingEntity livingEntity = this.parentEntity.getTarget();
-			if (livingEntity != null) {
-				if (this.parentEntity.canSee(livingEntity) && parentEntity.distanceTo(livingEntity) <= 3.0D) {
+			LivingEntity livingentity = this.entity.getTarget();
+			if (livingentity != null) {
+				this.entity.lookAtEntity(livingentity, 30.0F, 90.0F);
+				final Box aabb2 = new Box(this.entity.getBlockPos()).expand(2D);
+				if (this.entity.canSee(livingentity)) {
 					++this.cooldown;
-					if (this.cooldown == 15) {
-						float f2 = 3.0F;
-						int k1 = MathHelper.floor(parentEntity.getX() - (double) f2 - 1.0D);
-						int l1 = MathHelper.floor(parentEntity.getX() + (double) f2 + 1.0D);
-						int i2 = MathHelper.floor(parentEntity.getY() - (double) f2 - 1.0D);
-						int i1 = MathHelper.floor(parentEntity.getY() + (double) f2 + 1.0D);
-						int j2 = MathHelper.floor(parentEntity.getZ() - (double) f2 - 1.0D);
-						int j1 = MathHelper.floor(parentEntity.getZ() + (double) f2 + 1.0D);
-						List<Entity> list = parentEntity.world.getOtherEntities(parentEntity,
-								new Box((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
-						for (int k2 = 0; k2 < list.size(); ++k2) {
-							Entity entity = list.get(k2);
-							if (entity.isAlive()) {
-								this.parentEntity.doDamage();
-							}
+					if (this.entity.getCommandSenderWorld().getOtherEntities(this.entity, aabb2).contains(livingentity)) {
+						if (this.cooldown == 2) {
+							this.entity.getCommandSenderWorld().getOtherEntities(this.entity, aabb2).forEach(e -> {
+								if ((e instanceof LivingEntity)) {
+									e.damage(DamageSource.magic(this.entity, livingentity), DoomConfig.tentacle_melee_damage);
+									livingentity.timeUntilRegen = 0;
+								}
+							});
+							this.entity.setAttackingState(1);
 						}
-						this.parentEntity.setAttackingState(1);
-					}
-					if (this.cooldown == 40) {
-						this.parentEntity.setAttackingState(0);
-						this.cooldown = -45;
+						if (this.cooldown >= 10) {
+							this.entity.setAttackingState(0);
+							this.cooldown = -5;
+						}
+					} else {
+						--this.cooldown;
+						this.entity.setAttackingState(0);
 					}
 				} else if (this.cooldown > 0) {
 					--this.cooldown;
-					this.parentEntity.setAttackingState(0);
-				}
-			}
-		}
-
-	}
-
-	public void doDamage() {
-		float q = 4.0F;
-		int k = MathHelper.floor(this.getX() - (double) q - 1.0D);
-		int l = MathHelper.floor(this.getX() + (double) q + 1.0D);
-		int t = MathHelper.floor(this.getY() - (double) q - 1.0D);
-		int u = MathHelper.floor(this.getY() + (double) q + 1.0D);
-		int v = MathHelper.floor(this.getZ() - (double) q - 1.0D);
-		int w = MathHelper.floor(this.getZ() + (double) q + 1.0D);
-		List<Entity> list = this.world.getOtherEntities(this,
-				new Box((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
-		Vec3d vec3d = new Vec3d(this.getX(), this.getY(), this.getZ());
-		for (int x = 0; x < list.size(); ++x) {
-			Entity entity = (Entity) list.get(x);
-			double y = (double) (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d)) / q);
-			if (y <= 2.0D) {
-				if (entity instanceof LivingEntity) {
-					entity.damage(DamageSource.magic(this, this.getTarget()), 1);
+					this.entity.setAttackingState(0);
 				}
 			}
 		}
