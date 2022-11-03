@@ -500,4 +500,9 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	public void checkDespawn() {
 	}
 
+	@Override
+	public boolean isImmuneToExplosion() {
+		return true;
+	}
+
 }
