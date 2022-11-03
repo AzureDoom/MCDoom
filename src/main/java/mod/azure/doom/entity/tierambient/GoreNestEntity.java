@@ -3,7 +3,6 @@ package mod.azure.doom.entity.tierambient;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.SplittableRandom;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
@@ -22,7 +21,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -37,7 +38,6 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
-
 	private AnimationFactory factory = new AnimationFactory(this);
 	public int spawnTimer = 0;
 
@@ -109,28 +109,6 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 		}
 	}
 
-	public void spawnWave() {
-		Random rand = new Random();
-		List<EntityType<?>> givenList = Arrays.asList(DoomEntities.HELLKNIGHT, DoomEntities.POSSESSEDSCIENTIST,
-				DoomEntities.IMP, DoomEntities.PINKY, DoomEntities.CACODEMON, DoomEntities.CHAINGUNNER,
-				DoomEntities.GARGOYLE, DoomEntities.HELLKNIGHT2016, DoomEntities.LOST_SOUL,
-				DoomEntities.POSSESSEDSOLDIER, DoomEntities.SHOTGUNGUY, DoomEntities.UNWILLING, DoomEntities.ZOMBIEMAN,
-				DoomEntities.ARACHNOTRON, DoomEntities.ARCHVILE, DoomEntities.MECHAZOMBIE, DoomEntities.PAIN,
-				DoomEntities.MANCUBUS);
-
-		SplittableRandom random = new SplittableRandom();
-		int r = random.nextInt(-3, 3);
-		for (int k = 1; k < 5; ++k) {
-			for (int i = 0; i < 1; i++) {
-				int randomIndex = rand.nextInt(givenList.size());
-				EntityType<?> randomElement = givenList.get(randomIndex);
-				Entity fireballentity = randomElement.create(world);
-				fireballentity.refreshPositionAndAngles(this.getX() + r, this.getY() + 0.5D, this.getZ() + r, 0, 0);
-				world.spawnEntity(fireballentity);
-			}
-		}
-	}
-
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
@@ -154,17 +132,35 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 			this.world.addParticle(ParticleTypes.SOUL, this.getParticleX(0.2D), this.getRandomBodyY(),
 					this.getParticleZ(0.5D), 0.0D, 0D, 0D);
 		}
-		spawnTimer = (spawnTimer + 1) % 8;
-		++this.age;
-		if (this.age == 150) {
+		++this.spawnTimer;
+		final Box aabb = new Box(this.getBlockPos()).expand(64D);
+		int i = this.world.getEntitiesByType(TypeFilter.instanceOf(DemonEntity.class), aabb, Entity::isAlive).size();
+		if (this.spawnTimer == 800 && i <= 15) {
 			this.spawnWave();
-			this.remove(RemovalReason.KILLED);
 		}
+		if (this.spawnTimer >= 810)
+			this.spawnTimer = 0;
 		super.tickMovement();
 	}
 
-	public int getSpawnTimer() {
-		return spawnTimer;
+	public void spawnWave() {
+		List<EntityType<?>> givenList = Arrays.asList(DoomEntities.HELLKNIGHT, DoomEntities.POSSESSEDSCIENTIST,
+				DoomEntities.IMP, DoomEntities.PINKY, DoomEntities.CACODEMON, DoomEntities.CHAINGUNNER,
+				DoomEntities.GARGOYLE, DoomEntities.HELLKNIGHT2016, DoomEntities.LOST_SOUL,
+				DoomEntities.POSSESSEDSOLDIER, DoomEntities.SHOTGUNGUY, DoomEntities.UNWILLING, DoomEntities.ZOMBIEMAN,
+				DoomEntities.ARACHNOTRON, DoomEntities.ARCHVILE, DoomEntities.MECHAZOMBIE, DoomEntities.PAIN,
+				DoomEntities.MANCUBUS);
+		int r = this.random.nextInt(-3, 3);
+
+		for (int k = 1; k < 5; ++k) {
+			for (int i = 0; i < 1; i++) {
+				int randomIndex = this.random.nextInt(givenList.size());
+				EntityType<?> randomElement = givenList.get(randomIndex);
+				Entity fireballentity = randomElement.create(world);
+				fireballentity.refreshPositionAndAngles(this.getX() + r, this.getY() + 0.5D, this.getZ() + r, 0, 0);
+				world.spawnEntity(fireballentity);
+			}
+		}
 	}
 
 	protected boolean shouldDrown() {
