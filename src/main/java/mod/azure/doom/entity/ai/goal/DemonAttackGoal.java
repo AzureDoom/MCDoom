@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import mod.azure.doom.entity.DemonEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.phys.AABB;
 
 public class DemonAttackGoal extends Goal {
 	private int statecheck;
@@ -45,32 +46,26 @@ public class DemonAttackGoal extends Goal {
 			boolean inLineOfSight = this.entity.getSensing().hasLineOfSight(livingentity);
 			this.attackTime++;
 			this.entity.lookAt(livingentity, 30.0F, 30.0F);
-			double d0 = this.entity.distanceToSqr(livingentity.getX(), livingentity.getY(),
-					livingentity.getZ());
-			double d1 = this.getAttackReachSqr(livingentity);
+			final AABB aabb2 = new AABB(this.entity.blockPosition()).inflate(2D);
 			if (inLineOfSight) {
-				if (this.entity.distanceTo(livingentity) >= 3.0D) {
-					this.entity.getNavigation().moveTo(livingentity, this.moveSpeedAmp);
-					this.attackTime = -5;
-				} else {
-					if (this.attackTime == 4) {
-						this.entity.getNavigation().moveTo(livingentity, this.moveSpeedAmp);
-						if (d0 <= d1) {
+				this.entity.getNavigation().moveTo(livingentity, this.moveSpeedAmp);
+				if (this.attackTime == 1) {
+					this.entity.setAttackingState(statecheck);
+				}
+				if (this.attackTime == 4) {
+					this.entity.getCommandSenderWorld().getEntities(this.entity, aabb2).forEach(e -> {
+						if ((e instanceof LivingEntity)) {
 							this.entity.doHurtTarget(livingentity);
-							this.entity.setAttackingState(statecheck);
+							livingentity.invulnerableTime = 0;
 						}
-						livingentity.invulnerableTime = 0;
-					}
-					if (this.attackTime == 8) {
-						this.attackTime = -5;
-						this.entity.setAttackingState(0);
-					}
+					});
+				}
+				if (this.attackTime >= 8) {
+					this.attackTime = -5;
+					this.entity.setAttackingState(0);
 				}
 			}
 		}
 	}
 
-	protected double getAttackReachSqr(LivingEntity attackTarget) {
-		return (double) (this.entity.getBbWidth() * 1.0F * this.entity.getBbWidth() * 1.0F + attackTarget.getBbWidth());
-	}
 }
