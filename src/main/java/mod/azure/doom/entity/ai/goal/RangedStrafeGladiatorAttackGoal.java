@@ -110,7 +110,7 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 							this.entity.setAttackingState(0);
 							this.entity.setTextureState(0);
 						}
-						if (this.attackTime == 83) {
+						if (this.attackTime >= 83) {
 							this.attackTime = -5;
 							this.entity.setTextureState(0);
 							this.entity.setAttackingState(0);
@@ -133,7 +133,7 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 							entity.spawnLightSource(this.entity, isInsideWaterBlock);
 							this.summonTime = -8;
 						}
-						if (this.attackTime == 13) {
+						if (this.attackTime >= 13) {
 							this.entity.getNavigation().startMovingTo(livingentity, 1.0);
 							this.entity.setTextureState(0);
 							this.entity.setAttackingState(0);
@@ -175,7 +175,7 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 							livingentity.timeUntilRegen = 0;
 						}
 					}
-					if (this.attackTime == 25) {
+					if (this.attackTime >= 25) {
 						this.attackTime = -5;
 						this.entity.setTextureState(0);
 						this.entity.setAttackingState(0);

@@ -75,7 +75,7 @@ public class ThrowItemGoal extends Goal {
 						this.rangedAttackMob.attack(this.target, f1);
 						livingentity.timeUntilRegen = 0;
 					}
-					if (this.updateCountdownTicks == 8) {
+					if (this.updateCountdownTicks >= 8) {
 						this.updateCountdownTicks = -15;
 						this.rangedAttackMob.setAttackingState(0);
 					}
@@ -89,7 +89,7 @@ public class ThrowItemGoal extends Goal {
 						}
 						livingentity.timeUntilRegen = 0;
 					}
-					if (this.updateCountdownTicks == 8) {
+					if (this.updateCountdownTicks >= 8) {
 						this.updateCountdownTicks = -15;
 						this.rangedAttackMob.setAttackingState(0);
 					}

@@ -108,7 +108,7 @@ public class IconAttackGoal extends Goal {
 			if (this.attackTime == 8) {
 				this.entity.setAttackingState(0);
 			}
-			if (this.attackTime == 25) {
+			if (this.attackTime >= 25) {
 				this.attackTime = -15;
 			}
 		}

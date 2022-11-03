@@ -74,7 +74,7 @@ public class RangedAttackGoal extends Goal {
 					if (this.attackTime == 6 && this.multiShot) {
 						this.attack.shoot();
 					}
-					if (this.attackTime == 8) {
+					if (this.attackTime >= 8) {
 						this.entity.setAttackingState(0);
 						this.attackTime = -15;
 						this.entity.getNavigation().startMovingTo(livingentity, this.moveSpeedAmp);
@@ -89,7 +89,7 @@ public class RangedAttackGoal extends Goal {
 						}
 						livingentity.timeUntilRegen = 0;
 					}
-					if (this.attackTime == 8) {
+					if (this.attackTime >= 8) {
 						this.attackTime = -15;
 						this.entity.setAttackingState(0);
 					}
