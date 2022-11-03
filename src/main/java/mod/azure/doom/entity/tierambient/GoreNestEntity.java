@@ -152,17 +152,35 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 			this.world.addParticle(ParticleTypes.SOUL, this.getParticleX(0.2D), this.getRandomBodyY(),
 					this.getParticleZ(0.5D), 0.0D, 0D, 0D);
 		}
-		spawnTimer = (spawnTimer + 1) % 8;
-		++this.age;
-		if (this.age == 150) {
+		++this.spawnTimer;
+		final Box aabb = new Box(this.getBlockPos()).expand(64D);
+		int i = this.world.getEntitiesByType(TypeFilter.instanceOf(DemonEntity.class), aabb, Entity::isAlive).size();
+		if (this.spawnTimer == 800 && i <= 15) {
 			this.spawnWave();
-			this.remove(RemovalReason.KILLED);
 		}
+		if (this.spawnTimer >= 810)
+			this.spawnTimer = 0;
 		super.tickMovement();
 	}
 
-	public int getSpawnTimer() {
-		return spawnTimer;
+	public void spawnWave() {
+		List<EntityType<?>> givenList = Arrays.asList(DoomEntities.HELLKNIGHT, DoomEntities.POSSESSEDSCIENTIST,
+				DoomEntities.IMP, DoomEntities.PINKY, DoomEntities.CACODEMON, DoomEntities.CHAINGUNNER,
+				DoomEntities.GARGOYLE, DoomEntities.HELLKNIGHT2016, DoomEntities.LOST_SOUL,
+				DoomEntities.POSSESSEDSOLDIER, DoomEntities.SHOTGUNGUY, DoomEntities.UNWILLING,
+				DoomEntities.ZOMBIEMAN, DoomEntities.ARACHNOTRON, DoomEntities.ARCHVILE,
+				DoomEntities.MECHAZOMBIE, DoomEntities.PAIN, DoomEntities.MANCUBUS);
+		int r = this.random.range(-3, 3);
+		
+		for (int k = 1; k < 5; ++k) {
+			for (int i = 0; i < 1; i++) {
+				int randomIndex = this.random.nextInt(givenList.size());
+				EntityType<?> randomElement = givenList.get(randomIndex);
+				Entity fireballentity = randomElement.create(world);
+				fireballentity.refreshPositionAndAngles(this.getX() + r, this.getY() + 0.5D, this.getZ() + r, 0, 0);
+				world.spawnEntity(fireballentity);
+			}
+		}
 	}
 
 	protected boolean shouldDrown() {
