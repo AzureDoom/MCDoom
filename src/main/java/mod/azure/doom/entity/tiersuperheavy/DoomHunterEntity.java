@@ -220,7 +220,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 						this.parentEntity.tryAttack(livingEntity);
 					}
 				}
-				if (this.cooldown == 35) {
+				if (this.cooldown >= 35) {
 					this.parentEntity.setAttackingState(0);
 					this.cooldown = -15;
 				}

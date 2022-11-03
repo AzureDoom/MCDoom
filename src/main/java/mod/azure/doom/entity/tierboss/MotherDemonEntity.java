@@ -331,7 +331,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 						parentEntity.world.spawnEntity(lost_soul);
 					}
 				}
-				if (this.cooldown == 30) {
+				if (this.cooldown >= 30) {
 					this.parentEntity.setAttackingState(0);
 					this.cooldown = -5;
 				}
