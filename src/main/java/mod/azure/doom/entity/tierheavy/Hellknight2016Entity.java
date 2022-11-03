@@ -28,6 +28,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
@@ -178,11 +179,11 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 				boolean inLineOfSight = this.entity.getVisibilityCache().canSee(livingentity);
 				this.attackTime++;
 				this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
+				final Box aabb = new Box(this.entity.getBlockPos()).expand(5D);
+				final Box aabb2 = new Box(this.entity.getBlockPos()).expand(3D);
 				if (inLineOfSight) {
-					if (this.entity.distanceTo(livingentity) >= 3.0D) {
-						this.entity.getNavigation().startMovingTo(livingentity, this.speedModifier);
-						this.attackTime = -5;
-					} else {
+					this.entity.getNavigation().startMovingTo(livingentity, this.speedModifier);
+					if (this.entity.getEntityWorld().getOtherEntities(this.entity, aabb).contains(livingentity)) {
 						if (this.attackTime == 1) {
 							this.entity.setAttackingState(1);
 						}
@@ -192,6 +193,7 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 									livingentity.getZ() - this.entity.getZ());
 							vec3d2 = vec3d2.normalize().multiply(0.4).add(vec3d.multiply(0.4));
 							this.entity.setVelocity(vec3d2.x, 0.5F, vec3d2.z);
+							this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
 						}
 						if (this.attackTime == 9) {
 							AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(entity.world,
@@ -200,16 +202,23 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 							areaeffectcloudentity.setRadius(3.0F);
 							areaeffectcloudentity.setDuration(5);
 							areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
-							entity.world.spawnEntity(areaeffectcloudentity);
-							this.entity.tryAttack(livingentity);
+							this.entity.getEntityWorld().getOtherEntities(this.entity, aabb2).forEach(e -> {
+								if ((e instanceof LivingEntity)) {
+									e.damage(DamageSource.mob(this.entity),
+											(float) DoomConfig.hellknight2016_melee_damage);
+									entity.world.spawnEntity(areaeffectcloudentity);
+								}
+							});
 							livingentity.timeUntilRegen = 0;
 						}
-						if (this.attackTime == 13) {
+						if (this.attackTime >= 13) {
 							this.attackTime = -5;
 							this.entity.setAttackingState(0);
 							this.entity.getNavigation().startMovingTo(livingentity, this.speedModifier);
 						}
 					}
+				} else {
+					--this.attackTime;
 				}
 			}
 		}
