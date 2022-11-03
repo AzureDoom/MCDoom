@@ -8,18 +8,13 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.block.AbstractFireBlock;
-import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -94,16 +89,7 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 
 	@Override
 	public void remove(RemovalReason reason) {
-		AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(this.world, this.getX(), this.getY(),
-				this.getZ());
-		areaeffectcloudentity.setParticleType(ParticleTypes.FLAME);
-		areaeffectcloudentity.setRadius(6);
-		areaeffectcloudentity.setDuration(1);
-		areaeffectcloudentity.updatePosition(this.getX(), this.getY(), this.getZ());
-		this.world.spawnEntity(areaeffectcloudentity);
 		this.explode();
-		world.playSound((PlayerEntity) null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_GENERIC_EXPLODE,
-				SoundCategory.PLAYERS, 1.0F, 1.5F);
 		super.remove(reason);
 	}
 
@@ -114,10 +100,11 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 
 	private void doDamage(Entity user, Entity target) {
 		if (target instanceof LivingEntity) {
-			if (!(target instanceof DemonEntity)) {
-				target.timeUntilRegen = 0;
-				target.damage(DamageSource.magic(this, target), damage);
-			}
+			if (target instanceof DemonEntity)
+				return;
+
+			target.timeUntilRegen = 0;
+			target.damage(DamageSource.magic(this, target), damage);
 		}
 	}
 
@@ -136,7 +123,7 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 			world.setBlockState(this.getBlockPos().up(), AbstractFireBlock.getState(world, this.getBlockPos().up()));
 		}
 		this.getWorld().getOtherEntities(this, new Box(this.getBlockPos().up()).expand(1)).forEach(e -> {
-			if (e.isAlive()) {
+			if (e.isAlive() && !(e instanceof DemonEntity)) {
 				e.damage(DamageSource.mobProjectile(e, this.getOwner()), damage);
 				e.setFireTicks(60);
 			}
