@@ -28,6 +28,7 @@ import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -153,11 +154,11 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 	}
 
 	public class AttackGoal extends Goal {
-		private final DemonEntity entity;
+		private final Hellknight2016Entity entity;
 		private final double speedModifier;
 		private int attackTime;
 
-		public AttackGoal(DemonEntity zombieIn, double speedIn) {
+		public AttackGoal(Hellknight2016Entity zombieIn, double speedIn) {
 			this.entity = zombieIn;
 			this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Goal.Flag.JUMP));
 			this.speedModifier = speedIn;
@@ -189,36 +190,46 @@ public class Hellknight2016Entity extends DemonEntity implements IAnimatable, IA
 				boolean inLineOfSight = this.entity.getSensing().hasLineOfSight(livingentity);
 				this.attackTime++;
 				this.entity.lookAt(livingentity, 30.0F, 30.0F);
-				if (inLineOfSight && livingentity.distanceTo(entity) >= 3.0D) {
+				final AABB aabb = new AABB(this.entity.blockPosition()).inflate(5D);
+				final AABB aabb2 = new AABB(this.entity.blockPosition()).inflate(3D);
+				if (inLineOfSight) {
 					this.entity.getNavigation().moveTo(livingentity, this.speedModifier);
-					this.attackTime = -5;
+					if (this.entity.getCommandSenderWorld().getEntities(this.entity, aabb).contains(livingentity)) {
+						if (this.attackTime == 1) {
+							this.entity.setAttackingState(1);
+						}
+						if (this.attackTime == 4) {
+							Vec3 vec3d = this.entity.getDeltaMovement();
+							Vec3 vec3d2 = new Vec3(livingentity.getX() - this.entity.getX(), 0.0,
+									livingentity.getZ() - this.entity.getZ());
+							vec3d2 = vec3d2.normalize().scale(0.4).add(vec3d.scale(0.4));
+							this.entity.setDeltaMovement(vec3d2.x, 0.5F, vec3d2.z);
+							this.entity.lookAt(livingentity, 30.0F, 30.0F);
+						}
+						if (this.attackTime == 9) {
+							AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(entity.level,
+									entity.getX(), entity.getY(), entity.getZ());
+							areaeffectcloudentity.setParticle(ParticleTypes.CRIMSON_SPORE);
+							areaeffectcloudentity.setRadius(3.0F);
+							areaeffectcloudentity.setDuration(5);
+							areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
+							this.entity.getCommandSenderWorld().getEntities(this.entity, aabb2).forEach(e -> {
+								if ((e instanceof LivingEntity)) {
+									e.hurt(DamageSource.mobAttack(this.entity),
+											DoomConfig.SERVER.hellknight2016_melee_damage.get().floatValue());
+									entity.level.addFreshEntity(areaeffectcloudentity);
+								}
+							});
+							livingentity.invulnerableTime = 0;
+						}
+						if (this.attackTime >= 13) {
+							this.attackTime = -5;
+							this.entity.setAttackingState(0);
+							this.entity.getNavigation().moveTo(livingentity, this.speedModifier);
+						}
+					}
 				} else {
-					if (this.attackTime == 1) {
-						this.entity.setAttackingState(1);
-					}
-					if (this.attackTime == 4) {
-						Vec3 vec3d = this.entity.getDeltaMovement();
-						Vec3 vec3d2 = new Vec3(livingentity.getX() - this.entity.getX(), 0.0,
-								livingentity.getZ() - this.entity.getZ());
-						vec3d2 = vec3d2.normalize().scale(0.4).add(vec3d.scale(0.4));
-						this.entity.setDeltaMovement(vec3d2.x, 0.5F, vec3d2.z);
-					}
-					if (this.attackTime == 9) {
-						AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(entity.level, entity.getX(),
-								entity.getY(), entity.getZ());
-						areaeffectcloudentity.setParticle(ParticleTypes.CRIMSON_SPORE);
-						areaeffectcloudentity.setRadius(3.0F);
-						areaeffectcloudentity.setDuration(5);
-						areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
-						entity.level.addFreshEntity(areaeffectcloudentity);
-						this.entity.doHurtTarget(livingentity);
-						livingentity.invulnerableTime = 0;
-					}
-					if (this.attackTime == 13) {
-						this.attackTime = -5;
-						this.entity.setAttackingState(0);
-						this.entity.getNavigation().moveTo(livingentity, this.speedModifier);
-					}
+					--this.attackTime;
 				}
 			}
 		}
