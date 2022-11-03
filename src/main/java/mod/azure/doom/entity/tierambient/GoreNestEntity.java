@@ -102,11 +102,13 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	@Override
 	protected void applyDamage(DamageSource source, float amount) {
-		if (!(source.getSource() instanceof PlayerEntity)) {
-			this.setHealth(5.0F);
-		} else {
+		if (source == DamageSource.OUT_OF_WORLD)
 			this.remove(Entity.RemovalReason.KILLED);
-		}
+		
+		if (!(source.getSource() instanceof PlayerEntity))
+			this.setHealth(5.0F);
+		
+		this.remove(Entity.RemovalReason.KILLED);
 	}
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
