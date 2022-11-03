@@ -254,4 +254,9 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable, IAnima
 		return tickCount;
 	}
 
+	@Override
+	public boolean ignoreExplosion() {
+		return true;
+	}
+
 }

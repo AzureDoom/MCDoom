@@ -488,4 +488,9 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 		super.knockback(0, 0, 0);
 	}
 
+	@Override
+	public boolean ignoreExplosion() {
+		return true;
+	}
+
 }
