@@ -9,7 +9,7 @@ import net.minecraft.entity.ai.goal.Goal;
 
 public class RangedStrafeAttackGoal extends Goal {
 	private final DemonEntity entity;
-	private double moveSpeedAmp = 1;
+	public double moveSpeedAmp = 1;
 	public int attackCooldown;
 	public int visibleTicksDelay;
 	private float maxAttackDistance = 20;
@@ -137,6 +137,7 @@ public class RangedStrafeAttackGoal extends Goal {
 	public void tick() {
 		LivingEntity livingentity = this.entity.getTarget();
 		if (livingentity != null) {
+			this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
 			double distanceToTargetSq = this.entity.squaredDistanceTo(livingentity.getX(), livingentity.getY(),
 					livingentity.getZ());
 			boolean inLineOfSight = this.entity.getVisibilityCache().canSee(livingentity);
@@ -156,7 +157,9 @@ public class RangedStrafeAttackGoal extends Goal {
 				this.entity.getNavigation().stop();
 				++this.strafingTime;
 			} else {
-				this.entity.getNavigation().startMovingTo(livingentity, this.moveSpeedAmp);
+				this.entity.getNavigation().startMovingTo(livingentity, 0.95F);
+				this.entity.getMoveControl().strafeTo(this.strafingBackwards ? -0.5F : 0.5F,
+						this.strafingClockwise ? 0.5F : -0.5F);
 				this.strafingTime = -1;
 			}
 
