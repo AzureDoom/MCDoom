@@ -3,7 +3,6 @@ package mod.azure.doom.entity.tierambient;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.SplittableRandom;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
@@ -20,7 +19,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -100,33 +101,13 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	@Override
 	protected void applyDamage(DamageSource source, float amount) {
-		if (!(source.getSource() instanceof PlayerEntity)) {
-			this.setHealth(5.0F);
-		} else {
+		if (source == DamageSource.OUT_OF_WORLD)
 			this.remove(Entity.RemovalReason.KILLED);
-		}
-	}
-
-	public void spawnWave() {
-		Random rand = new Random();
-		List<EntityType<?>> givenList = Arrays.asList(DoomEntities.HELLKNIGHT, DoomEntities.POSSESSEDSCIENTIST,
-				DoomEntities.IMP, DoomEntities.PINKY, DoomEntities.CACODEMON, DoomEntities.CHAINGUNNER,
-				DoomEntities.GARGOYLE, DoomEntities.HELLKNIGHT2016, DoomEntities.LOST_SOUL,
-				DoomEntities.POSSESSEDSOLDIER, DoomEntities.SHOTGUNGUY, DoomEntities.UNWILLING,
-				DoomEntities.ZOMBIEMAN, DoomEntities.ARACHNOTRON, DoomEntities.ARCHVILE,
-				DoomEntities.MECHAZOMBIE, DoomEntities.PAIN, DoomEntities.MANCUBUS);
-
-		SplittableRandom random = new SplittableRandom();
-		int r = random.nextInt(-3, 3);
-		for (int k = 1; k < 5; ++k) {
-			for (int i = 0; i < 1; i++) {
-				int randomIndex = rand.nextInt(givenList.size());
-				EntityType<?> randomElement = givenList.get(randomIndex);
-				Entity fireballentity = randomElement.create(world);
-				fireballentity.refreshPositionAndAngles(this.getX() + r, this.getY() + 0.5D, this.getZ() + r, 0, 0);
-				world.spawnEntity(fireballentity);
-			}
-		}
+		
+		if (!(source.getSource() instanceof PlayerEntity))
+			this.setHealth(5.0F);
+		
+		this.remove(Entity.RemovalReason.KILLED);
 	}
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
