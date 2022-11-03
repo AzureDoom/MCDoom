@@ -403,4 +403,9 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 	public void checkDespawn() {
 	}
 
+	@Override
+	public boolean isImmuneToExplosion() {
+		return true;
+	}
+
 }

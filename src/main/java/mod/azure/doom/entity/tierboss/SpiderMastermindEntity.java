@@ -199,4 +199,9 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 	protected SoundEvent getDeathSound() {
 		return DoomSounds.SPIDERDEMON_DEATH;
 	}
+
+	@Override
+	public boolean isImmuneToExplosion() {
+		return true;
+	}
 }
