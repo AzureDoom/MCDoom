@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.FireballAttack;
 import net.minecraft.core.BlockPos;
@@ -95,7 +94,7 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 
 	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
 		if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("attack", true));
 			return PlayState.CONTINUE;
 		}
 		return PlayState.STOP;
@@ -125,11 +124,10 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 		this.goalSelector.addGoal(0, new FloatGoal(this));
 		this.goalSelector.addGoal(4,
 				new ProwlerEntity.RangedStrafeAttackGoal(this,
-						new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8)
+						new FireballAttack(this, false).setProjectileOriginOffset(0.4, 0.4, 0.4)
 								.setDamage(DoomConfig.SERVER.prowler_ranged_damage.get().floatValue())
 								.setSound(SoundEvents.BLAZE_SHOOT, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
-						1.0D, 50, 30, 15, 15F, 1).setMultiShot(5, 3));
-		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.25D, 2));
+						1.0D, 50, 30, 15, 15F));
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
 		this.targetSelector.addGoal(1, new ProwlerEntity.FindPlayerGoal(this, this::isAngryAt));
@@ -141,9 +139,6 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 
 	public class RangedStrafeAttackGoal extends Goal {
 		private final ProwlerEntity entity;
-		private double moveSpeedAmp = 1;
-		private int attackCooldown;
-		private int visibleTicksDelay = 20;
 		private float maxAttackDistance = 20;
 		private int strafeTicks = 20;
 		private int attackTime = -1;
@@ -151,71 +146,16 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 		private boolean strafingClockwise;
 		private boolean strafingBackwards;
 		private int strafingTime = -1;
-		private int statecheck;
 
 		private AbstractRangedAttack attack;
 
 		public RangedStrafeAttackGoal(ProwlerEntity mob, AbstractRangedAttack attack, double moveSpeedAmpIn,
-				int attackCooldownIn, int visibleTicksDelay, int strafeTicks, float maxAttackDistanceIn, int state) {
+				int attackCooldownIn, int visibleTicksDelay, int strafeTicks, float maxAttackDistanceIn) {
 			this.entity = mob;
-			this.moveSpeedAmp = moveSpeedAmpIn;
-			this.attackCooldown = attackCooldownIn;
 			this.maxAttackDistance = maxAttackDistanceIn * maxAttackDistanceIn;
 			this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 			this.attack = attack;
-			this.visibleTicksDelay = visibleTicksDelay;
 			this.strafeTicks = strafeTicks;
-			this.statecheck = state;
-		}
-
-		// use defaults
-		public RangedStrafeAttackGoal(ProwlerEntity mob, AbstractRangedAttack attack, int attackCooldownIn) {
-			this.entity = mob;
-			this.attackCooldown = attackCooldownIn;
-			this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
-			this.attack = attack;
-		}
-
-		private boolean multiShot = false;
-		private int multiShotCount = 0;
-		private int multiShotTickDelay = 0;
-
-		private boolean multiShooting = false;
-		private int multiShotsLeft = 0;
-		private int multiShotTicker = 0;
-
-		public RangedStrafeAttackGoal setMultiShot(int count, int tickDelay) {
-			multiShot = true;
-			multiShotCount = count;
-			multiShotTickDelay = tickDelay;
-			return this;
-		}
-
-		public boolean tickMultiShot() {
-			if (multiShotsLeft > 0 && multiShotTicker == 0) {
-				multiShotsLeft--;
-				if (multiShotsLeft == 0)
-					finishMultiShot();
-				multiShotTicker = multiShotTickDelay;
-				return true;
-			}
-			multiShotTicker--;
-			return false;
-		}
-
-		public void beginMultiShooting() {
-			multiShooting = true;
-			multiShotsLeft = multiShotCount - 1;
-			multiShotTicker = multiShotTickDelay;
-		}
-
-		public void finishMultiShot() {
-			multiShooting = false;
-			multiShotsLeft = 0;
-		}
-
-		public void setAttackCooldown(int attackCooldownIn) {
-			this.attackCooldown = attackCooldownIn;
 		}
 
 		/**
@@ -239,6 +179,7 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 		public void start() {
 			super.start();
 			this.entity.setAggressive(true);
+			this.entity.setAttackingState(0);
 		}
 
 		/**
@@ -260,6 +201,7 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 		public void tick() {
 			LivingEntity livingentity = this.entity.getTarget();
 			if (livingentity != null) {
+				this.entity.lookAt(livingentity, 30.0F, 30.0F);
 				double distanceToTargetSq = this.entity.distanceToSqr(livingentity.getX(), livingentity.getY(),
 						livingentity.getZ());
 				boolean inLineOfSight = this.entity.getSensing().hasLineOfSight(livingentity);
@@ -270,8 +212,6 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 				if (inLineOfSight) {
 					++this.seeTime;
 				} else {
-					if (multiShot)
-						finishMultiShot();
 					--this.seeTime;
 				}
 
@@ -279,7 +219,9 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 					this.entity.getNavigation().stop();
 					++this.strafingTime;
 				} else {
-					this.entity.getNavigation().moveTo(livingentity, this.moveSpeedAmp);
+					this.entity.getNavigation().moveTo(livingentity, 0.65F);
+					this.entity.getMoveControl().strafe(this.strafingBackwards ? -0.5F : 0.5F,
+							this.strafingClockwise ? 0.5F : -0.5F);
 					this.strafingTime = -1;
 				}
 
@@ -310,22 +252,20 @@ public class ProwlerEntity extends DemonEntity implements IAnimatable, IAnimatio
 				}
 
 				// attack
-				if (multiShooting) {
-					if (tickMultiShot())
-						this.attack.shoot();
+				this.attackTime++;
+				if (this.attackTime == 1) {
+					this.entity.setAttackingState(1);
+				}
+				if (this.attackTime == 4) {
+					this.attack.shoot();
 					this.entity.teleport();
-					return;
+					boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
+					entity.spawnLightSource(this.entity, isInsideWaterBlock);
 				}
-
-				if (this.seeTime >= this.visibleTicksDelay) {
-					if (this.attackTime >= this.attackCooldown) {
-						this.attack.shoot();
-						this.entity.teleport();
-						this.attackTime = 0;
-					} else
-						this.attackTime++;
+				if (this.attackTime >= 8) {
+					this.entity.setAttackingState(0);
+					this.attackTime = -5;
 				}
-				this.entity.setAttackingState(attackTime >= attackCooldown * 0.25 ? this.statecheck : 0);
 			}
 		}
 	}
