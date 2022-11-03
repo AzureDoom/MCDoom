@@ -1,4 +1,20 @@
-v.4.2.35
+v.4.2.36
 
-- Doom Fire doesn't hurt itself with fire.
-- Fixes Gladiator Mace not increasing in damage.
+- Lost Soul Speed Buff and Pathing tweak.
+- Archvile and Summoner now strafe.
+- Arch Makyr, Mother Demon, Spider Masterminds, Cyberdemons, and Doom Hunters don't take explosion damage.
+- Fixed demons not looking at targets when attacking.
+- Hellknight 2016 slam is tweaked to properly do damage when playing animation. 
+- Imp speed buff when strafing.
+- Gore Nests no longer die when spawning a wave.
+	- Gore Nests now check the area for a max of 15 Demons. If under 15, it will spawn a wave every 40 seconds until max is reached.
+- Gore Nests now properly die with the /kill command.
+- Pain Elementals now spawn up to 16 Lost Souls in an area. If 16 or more is detected in an area, it will stop spawning.
+- Summoners now spawn waves using the same rules as Gore Nests.
+- Pinky and Spectre Speed/Knockback buff
+- Cooldowns on attacking goals fixed.
+- Demon Melee now properly does damage when close enough.
+- Tentacles now properly play animation only when doing damage.
+- Prowler now teleports more often when attacking and is faster.
+- Fire summoned by demons no longer damage demons.
+- Screecher death buff rewritten to be faster/cleaner.
