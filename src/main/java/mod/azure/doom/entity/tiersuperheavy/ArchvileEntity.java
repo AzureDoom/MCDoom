@@ -371,7 +371,7 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable, IAnimati
 				}
 				this.entity.setAttackingState(1);
 			}
-			if (this.cooldown == 40) {
+			if (this.cooldown >= 40) {
 				this.entity.setAttackingState(0);
 				this.cooldown = -5;
 			}

@@ -70,7 +70,7 @@ public class ThrowItemGoal extends Goal {
 						this.rangedAttackMob.performRangedAttack(this.target, f1);
 						livingentity.invulnerableTime = 0;
 					}
-					if (this.attackTime == 8) {
+					if (this.attackTime >= 8) {
 						this.attackTime = -15;
 						this.rangedAttackMob.setAttackingState(0);
 					}
@@ -85,7 +85,7 @@ public class ThrowItemGoal extends Goal {
 						}
 						livingentity.invulnerableTime = 0;
 					}
-					if (this.attackTime == 8) {
+					if (this.attackTime >= 8) {
 						this.attackTime = -15;
 						this.rangedAttackMob.setAttackingState(0);
 					}

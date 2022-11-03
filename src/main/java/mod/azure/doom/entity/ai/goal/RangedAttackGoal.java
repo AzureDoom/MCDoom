@@ -77,7 +77,7 @@ public class RangedAttackGoal extends Goal {
 						boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
 						entity.spawnLightSource(this.entity, isInsideWaterBlock);
 					}
-					if (this.attackTime == 8) {
+					if (this.attackTime >= 8) {
 						this.entity.setAttackingState(0);
 						this.attackTime = -15;
 						this.entity.getNavigation().moveTo(livingentity, this.moveSpeedAmp);
@@ -93,7 +93,7 @@ public class RangedAttackGoal extends Goal {
 						}
 						livingentity.invulnerableTime = 0;
 					}
-					if (this.attackTime == 8) {
+					if (this.attackTime >= 8) {
 						this.attackTime = -15;
 						this.entity.setAttackingState(0);
 					}

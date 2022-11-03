@@ -79,7 +79,7 @@ public class MancubusFireAttackGoal extends Goal {
 						entity.spawnLightSource(this.entity, isInsideWaterBlock);
 						this.entity.setAttackingState(3);
 					}
-					if (this.attackTime == 8) {
+					if (this.attackTime >= 8) {
 						this.attackTime = -15;
 						this.entity.setAttackingState(0);
 					}
@@ -98,7 +98,7 @@ public class MancubusFireAttackGoal extends Goal {
 						entity.spawnLightSource(this.entity, isInsideWaterBlock);
 						this.entity.setAttackingState(2);
 					}
-					if (this.attackTime == 8) {
+					if (this.attackTime >= 8) {
 						this.attackTime = -15;
 						this.entity.setAttackingState(0);
 					}
@@ -118,7 +118,7 @@ public class MancubusFireAttackGoal extends Goal {
 						entity.spawnLightSource(this.entity, isInsideWaterBlock);
 						this.entity.setAttackingState(1);
 					}
-					if (this.attackTime == 8) {
+					if (this.attackTime >= 8) {
 						this.attackTime = -15;
 						this.entity.setAttackingState(0);
 						this.entity.getNavigation().moveTo(livingentity, 1.0);

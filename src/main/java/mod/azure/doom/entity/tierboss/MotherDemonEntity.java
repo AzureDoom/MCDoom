@@ -315,7 +315,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 						this.parentEntity.setAttackingState(1);
 					}
 				}
-				if (this.attackTimer == 30) {
+				if (this.attackTimer >= 30) {
 					this.parentEntity.setAttackingState(0);
 					this.attackTimer = -5;
 				}
