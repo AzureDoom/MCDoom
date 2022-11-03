@@ -6,13 +6,10 @@ import javax.annotation.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.registry.DoomEntities;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -100,14 +97,7 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 
 	@Override
 	public void remove(RemovalReason reason) {
-		AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
-		areaeffectcloudentity.setParticle(ParticleTypes.FLAME);
-		areaeffectcloudentity.setRadius(6);
-		areaeffectcloudentity.setDuration(1);
-		areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
-		this.level.addFreshEntity(areaeffectcloudentity);
 		this.explode();
-		this.playSound(SoundEvents.GENERIC_EXPLODE, 1.0F, 1.0F);
 		super.remove(reason);
 	}
 
@@ -118,10 +108,11 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 
 	private void doDamage(Entity user, Entity target) {
 		if (target instanceof LivingEntity) {
-			if (!(target instanceof DemonEntity)) {
-				target.invulnerableTime = 0;
-				target.hurt(DamageSource.indirectMagic(this, target), damage);
-			}
+			if (target instanceof DemonEntity)
+				return;
+
+			target.invulnerableTime = 0;
+			target.hurt(DamageSource.indirectMagic(this, target), damage);
 		}
 	}
 
@@ -141,7 +132,7 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 			level.setBlockAndUpdate(this.blockPosition().above(), BaseFireBlock.getState(level, this.blockPosition().above()));
 		}
 		this.level.getEntities(this, new AABB(this.blockPosition().above()).inflate(1)).forEach(e -> {
-			if (e.isAlive()) {
+			if (e.isAlive() && !(e instanceof DemonEntity)) {
 				e.hurt(DamageSource.indirectMobAttack(e, this.getCaster()), damage);
 				e.setRemainingFireTicks(60);
 			}
