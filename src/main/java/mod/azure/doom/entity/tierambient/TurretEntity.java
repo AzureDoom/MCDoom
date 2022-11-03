@@ -129,7 +129,7 @@ public class TurretEntity extends DemonEntity implements IAnimatable, IAnimation
 							fireballentity.getZ() + vector3d.z);
 					world.addFreshEntity(fireballentity);
 				}
-				if (this.attackTimer == 30) {
+				if (this.attackTimer >= 30) {
 					this.parentEntity.setAttackingState(0);
 					this.attackTimer = -40;
 				}
