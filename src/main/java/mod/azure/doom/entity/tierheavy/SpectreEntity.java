@@ -154,7 +154,7 @@ public class SpectreEntity extends DemonEntity implements IAnimatable, IAnimatio
 				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.spectre_health.get())
 				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.spectre_melee_damage.get())
-				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 10.0D);
 	}
 
 	@Override
