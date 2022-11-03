@@ -2,7 +2,6 @@ package mod.azure.doom.entity.tiersuperheavy;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.SplittableRandom;
 import java.util.function.Predicate;
 
@@ -47,6 +46,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.entity.EntityTypeTest;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
@@ -231,65 +232,50 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 			}
 			if (this.cooldown == 40) {
 				if (!this.entity.level.isClientSide) {
+					final AABB aabb = new AABB(this.entity.blockPosition()).inflate(64D);
+					int i = this.entity.level
+							.getEntities(EntityTypeTest.forClass(DemonEntity.class), aabb, Entity::isAlive).size();
 					double d = Math.min(livingentity.getY(), this.entity.getY());
 					double e = Math.max(livingentity.getY(), this.entity.getY()) + 1.0D;
 					float f = (float) Mth.atan2(livingentity.getZ() - this.entity.getZ(),
 							livingentity.getX() - this.entity.getX());
 					int j;
 					SplittableRandom random = new SplittableRandom();
-					int r = random.nextInt(0, 2);
-					if (r == 1) {
+					int r = random.nextInt(0, 40);
+					if (r >= 17) {
 						for (j = 0; j < 16; ++j) {
 							double l1 = 1.25D * (double) (j + 1);
 							this.entity.spawnFangs(this.entity.getX() + (double) Mth.cos(f) * l1,
 									this.entity.getZ() + (double) Mth.sin(f) * l1, d, e, f, 32);
 						}
 					} else {
-						this.entity.spawnWave();
+						if (i <= 15)
+							this.entity.spawnWave();
 					}
 				}
 				this.entity.setAttackingState(1);
 			}
 			if (this.cooldown == 60) {
 				this.entity.setAttackingState(0);
-				this.cooldown = -800;
+				this.cooldown = -5;
 			}
 			this.entity.lookAt(livingentity, 30.0F, 30.0F);
 		}
 	}
 
 	public void spawnWave() {
-		Random rand = new Random();
 		List<EntityType<?>> givenList = Arrays.asList(DoomEntities.IMP.get(), DoomEntities.LOST_SOUL.get(),
 				DoomEntities.IMP_STONE.get());
+		int r = this.random.nextInt(-3, 3);
 
-		for (int i = 0; i < 1; i++) {
-			int randomIndex = rand.nextInt(givenList.size());
-			EntityType<?> randomElement = givenList.get(randomIndex);
-			Entity fireballentity = randomElement.create(level);
-			fireballentity.setPos(this.getX() + 2.0D, this.getY() + 1.5D, this.getZ() + 2.0D);
-			level.addFreshEntity(fireballentity);
-		}
-		for (int i = 0; i < 1; i++) {
-			int randomIndex = rand.nextInt(givenList.size());
-			EntityType<?> randomElement = givenList.get(randomIndex);
-			Entity fireballentity1 = randomElement.create(level);
-			fireballentity1.setPos(this.getX() + -2.0D, this.getY() + 1.5D, this.getZ() + -2.0D);
-			level.addFreshEntity(fireballentity1);
-		}
-		for (int i = 0; i < 1; i++) {
-			int randomIndex = rand.nextInt(givenList.size());
-			EntityType<?> randomElement = givenList.get(randomIndex);
-			Entity fireballentity11 = randomElement.create(level);
-			fireballentity11.setPos(this.getX() + 1.0D, this.getY() + 1.5D, this.getZ() + 1.0D);
-			level.addFreshEntity(fireballentity11);
-		}
-		for (int i = 0; i < 1; i++) {
-			int randomIndex = rand.nextInt(givenList.size());
-			EntityType<?> randomElement = givenList.get(randomIndex);
-			Entity fireballentity111 = randomElement.create(level);
-			fireballentity111.setPos(this.getX() + -1.0D, this.getY() + 1.5D, this.getZ() + -1.0D);
-			level.addFreshEntity(fireballentity111);
+		for (int k = 1; k < 5; ++k) {
+			for (int i = 0; i < 1; i++) {
+				int randomIndex = this.random.nextInt(givenList.size());
+				EntityType<?> randomElement = givenList.get(randomIndex);
+				Entity fireballentity = randomElement.create(level);
+				fireballentity.moveTo(this.getX() + r, this.getY() + 0.5D, this.getZ() + r, 0, 0);
+				level.addFreshEntity(fireballentity);
+			}
 		}
 	}
 
