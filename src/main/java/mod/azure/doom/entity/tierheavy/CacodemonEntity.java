@@ -170,7 +170,7 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable, 
 						.setProjectileOriginOffset(1.5, 0.3, 1.5)
 						.setSound(DoomSounds.CACODEMON_AFFECTIONATE_SCREAM.get(), 1.0F,
 								1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
-				60, 20, 30F, 1));
+				1));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));

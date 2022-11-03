@@ -10,19 +10,12 @@ public class RangedStaticAttackGoal extends Goal {
 	private final DemonEntity parentEntity;
 	public int attackTimer;
 	private AbstractRangedAttack attack;
-	private int attackCooldown;
-	private int visibleTicksDelay = 20;
-	private float maxAttackDistance = 20;
 	private int seeTime = -1;
 	private int statecheck;
 
-	public RangedStaticAttackGoal(DemonEntity mob, AbstractRangedAttack attack, int attackCooldownIn,
-			int visibleTicksDelay, float maxAttackDistanceIn, int state) {
+	public RangedStaticAttackGoal(DemonEntity mob, AbstractRangedAttack attack, int state) {
 		this.parentEntity = mob;
-		this.attackCooldown = attackCooldownIn;
-		this.maxAttackDistance = maxAttackDistanceIn * maxAttackDistanceIn;
 		this.attack = attack;
-		this.visibleTicksDelay = visibleTicksDelay;
 		this.statecheck = state;
 	}
 
@@ -41,6 +34,7 @@ public class RangedStaticAttackGoal extends Goal {
 	public void tick() {
 		if (this.parentEntity.getTarget() != null) {
 			LivingEntity livingentity = this.parentEntity.getTarget();
+			this.parentEntity.lookAt(livingentity, 30.0F, 30.0F);
 			boolean inLineOfSight = this.parentEntity.getSensing().hasLineOfSight(livingentity);
 			if (inLineOfSight != this.seeTime > 0) {
 				this.seeTime = 0;
@@ -50,24 +44,22 @@ public class RangedStaticAttackGoal extends Goal {
 			} else {
 				--this.seeTime;
 			}
-			if (livingentity.distanceToSqr(this.parentEntity) < this.maxAttackDistance
-					&& this.seeTime >= this.visibleTicksDelay) {
-				this.parentEntity.getLookControl().setLookAt(livingentity, 90.0F, 30.0F);
-				++this.attackTimer;
-
-				if (this.attackTimer == this.attackCooldown) {
-					attack.shoot();
+			this.parentEntity.getNavigation().moveTo(livingentity, 0.95F);
+			this.parentEntity.getMoveControl().strafe(0.5F, -0.5F);
+			this.attackTimer++;
+			if (this.attackTimer == 1) {
+				this.parentEntity.setAttackingState(statecheck);
+			}
+			if (this.attackTimer == 4) {
+					this.attack.shoot();
 
 					boolean isInsideWaterBlock = parentEntity.level.isWaterAt(parentEntity.blockPosition());
 					parentEntity.spawnLightSource(this.parentEntity, isInsideWaterBlock);
-					this.parentEntity.setAttackingState(this.statecheck);
-					this.attackTimer = 0;
-				}
-			} else if (this.attackTimer > 0) {
-				--this.attackTimer;
-				this.parentEntity.setAttackingState(0);
 			}
-			this.parentEntity.getNavigation().moveTo(livingentity, 1.4);
+			if (this.attackTimer >= 8) {
+				this.parentEntity.setAttackingState(0);
+				this.attackTimer = -5;
+			}
 		}
 	}
 
