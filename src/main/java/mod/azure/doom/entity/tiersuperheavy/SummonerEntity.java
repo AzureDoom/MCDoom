@@ -146,64 +146,115 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	static class AttackGoal extends Goal {
-		private final SummonerEntity ghast;
+		private final SummonerEntity entity;
 		public int cooldown;
+		private int seeTime;
+		private boolean strafingClockwise;
+		private boolean strafingBackwards;
+		private int strafingTime = -1;
+		private float maxAttackDistance = 20;
+		private int strafeTicks = 20;
 
 		public AttackGoal(SummonerEntity ghast) {
-			this.ghast = ghast;
+			this.entity = ghast;
 		}
 
 		public boolean canUse() {
-			return this.ghast.getTarget() != null;
+			return this.entity.getTarget() != null;
 		}
 
 		public void start() {
 			super.start();
-			this.ghast.setAggressive(true);
+			this.entity.setAggressive(true);
 			this.cooldown = 0;
-			this.ghast.setAttackingState(0);
+			this.entity.setAttackingState(0);
 		}
 
 		@Override
 		public void stop() {
 			super.stop();
-			this.ghast.setAggressive(false);
-			this.ghast.setAttackingState(0);
+			this.entity.setAggressive(false);
+			this.entity.setAttackingState(0);
+			this.seeTime = 0;
 		}
 
 		public void tick() {
-			LivingEntity livingEntity = this.ghast.getTarget();
-			if (this.ghast.hasLineOfSight(livingEntity)) {
-				++this.cooldown;
-				if (this.cooldown == 40) {
-					if (!this.ghast.level.isClientSide) {
-						double d = Math.min(livingEntity.getY(), ghast.getY());
-						double e = Math.max(livingEntity.getY(), ghast.getY()) + 1.0D;
-						float f = (float) Mth.atan2(livingEntity.getZ() - ghast.getZ(),
-								livingEntity.getX() - ghast.getX());
-						int j;
-						SplittableRandom random = new SplittableRandom();
-						int r = random.nextInt(0, 2);
-						if (r == 1) {
-							for (j = 0; j < 16; ++j) {
-								double l1 = 1.25D * (double) (j + 1);
-								ghast.spawnFangs(ghast.getX() + (double) Mth.cos(f) * l1,
-										ghast.getZ() + (double) Mth.sin(f) * l1, d, e, f, 32);
-							}
-						} else {
-							ghast.spawnWave();
-						}
-					}
-					this.ghast.setAttackingState(1);
-				}
-				if (this.cooldown == 60) {
-					this.ghast.setAttackingState(0);
-					this.cooldown = -800;
-				}
-			} else if (this.cooldown > 0) {
-				--this.cooldown;
+			LivingEntity livingentity = this.entity.getTarget();
+			++this.cooldown;
+			double distanceToTargetSq = this.entity.distanceToSqr(livingentity.getX(), livingentity.getY(),
+					livingentity.getZ());
+			boolean inLineOfSight = this.entity.getSensing().hasLineOfSight(livingentity);
+			if (inLineOfSight != this.seeTime > 0) {
+				this.seeTime = 0;
 			}
-			this.ghast.lookAt(livingEntity, 30.0F, 30.0F);
+
+			if (inLineOfSight) {
+				++this.seeTime;
+			} else {
+				--this.seeTime;
+			}
+
+			if (distanceToTargetSq <= (double) this.maxAttackDistance && this.seeTime >= 20) {
+				this.entity.getNavigation().stop();
+				++this.strafingTime;
+			} else {
+				this.entity.getNavigation().moveTo(livingentity, 0.95F);
+				this.entity.getMoveControl().strafe(this.strafingBackwards ? -0.5F : 0.5F,
+						this.strafingClockwise ? 0.5F : -0.5F);
+				this.strafingTime = -1;
+			}
+
+			if (this.strafingTime >= strafeTicks) {
+				if ((double) this.entity.getRandom().nextFloat() < 0.3D) {
+					this.strafingClockwise = !this.strafingClockwise;
+				}
+
+				if ((double) this.entity.getRandom().nextFloat() < 0.3D) {
+					this.strafingBackwards = !this.strafingBackwards;
+				}
+
+				this.strafingTime = 0;
+			}
+
+			if (this.strafingTime > -1) {
+				if (distanceToTargetSq > (double) (this.maxAttackDistance * 0.75F)) {
+					this.strafingBackwards = false;
+				} else if (distanceToTargetSq < (double) (this.maxAttackDistance * 0.25F)) {
+					this.strafingBackwards = true;
+				}
+
+				this.entity.getMoveControl().strafe(this.strafingBackwards ? -0.5F : 0.5F,
+						this.strafingClockwise ? 0.5F : -0.5F);
+				this.entity.lookAt(livingentity, 30.0F, 30.0F);
+			} else {
+				this.entity.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
+			}
+			if (this.cooldown == 40) {
+				if (!this.entity.level.isClientSide) {
+					double d = Math.min(livingentity.getY(), this.entity.getY());
+					double e = Math.max(livingentity.getY(), this.entity.getY()) + 1.0D;
+					float f = (float) Mth.atan2(livingentity.getZ() - this.entity.getZ(),
+							livingentity.getX() - this.entity.getX());
+					int j;
+					SplittableRandom random = new SplittableRandom();
+					int r = random.nextInt(0, 2);
+					if (r == 1) {
+						for (j = 0; j < 16; ++j) {
+							double l1 = 1.25D * (double) (j + 1);
+							this.entity.spawnFangs(this.entity.getX() + (double) Mth.cos(f) * l1,
+									this.entity.getZ() + (double) Mth.sin(f) * l1, d, e, f, 32);
+						}
+					} else {
+						this.entity.spawnWave();
+					}
+				}
+				this.entity.setAttackingState(1);
+			}
+			if (this.cooldown == 60) {
+				this.entity.setAttackingState(0);
+				this.cooldown = -800;
+			}
+			this.entity.lookAt(livingentity, 30.0F, 30.0F);
 		}
 	}
 
