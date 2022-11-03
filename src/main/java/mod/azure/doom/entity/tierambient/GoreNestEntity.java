@@ -122,21 +122,18 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 			this.level.addParticle(ParticleTypes.SOUL, this.getRandomX(0.2D), this.getRandomY(), this.getRandomZ(0.5D),
 					0.0D, 0D, 0D);
 		}
-		spawnTimer = (spawnTimer + 1) % 8;
-		++this.tickCount;
-		if (this.tickCount == 150) {
+		++this.spawnTimer;
+		final AABB aabb = new AABB(this.blockPosition()).inflate(64D);
+		int i = this.level.getEntities(EntityTypeTest.forClass(DemonEntity.class), aabb, Entity::isAlive).size();
+		if (this.spawnTimer == 800 && i <= 15) {
 			this.spawnWave();
-			this.remove(RemovalReason.KILLED);
 		}
+		if (this.spawnTimer >= 810)
+			this.spawnTimer = 0;
 		super.aiStep();
 	}
 
-	public int getSpawnTimer() {
-		return spawnTimer;
-	}
-
 	public void spawnWave() {
-		Random rand = new Random();
 		List<EntityType<?>> givenList = Arrays.asList(DoomEntities.HELLKNIGHT.get(),
 				DoomEntities.POSSESSEDSCIENTIST.get(), DoomEntities.IMP.get(), DoomEntities.PINKY.get(),
 				DoomEntities.CACODEMON.get(), DoomEntities.CHAINGUNNER.get(), DoomEntities.GARGOYLE.get(),
@@ -144,12 +141,11 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 				DoomEntities.POSSESSEDSOLDIER.get(), DoomEntities.SHOTGUNGUY.get(), DoomEntities.UNWILLING.get(),
 				DoomEntities.ZOMBIEMAN.get(), DoomEntities.ARACHNOTRON.get(), DoomEntities.ARCHVILE.get(),
 				DoomEntities.MECHAZOMBIE.get(), DoomEntities.PAIN.get(), DoomEntities.MANCUBUS.get());
-
-		SplittableRandom random = new SplittableRandom();
-		int r = random.nextInt(-3, 3);
+		int r = this.random.nextInt(-3, 3);
+		
 		for (int k = 1; k < 5; ++k) {
 			for (int i = 0; i < 1; i++) {
-				int randomIndex = rand.nextInt(givenList.size());
+				int randomIndex = this.random.nextInt(givenList.size());
 				EntityType<?> randomElement = givenList.get(randomIndex);
 				Entity waveentity = randomElement.create(level);
 				waveentity.setPos(this.getX() + r, this.getY() + 0.5D, this.getZ() + r);
