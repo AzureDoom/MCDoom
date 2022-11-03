@@ -247,99 +247,134 @@ public class ArchvileEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	static class AttackGoal extends Goal {
-		private final ArchvileEntity ghast;
+		private final ArchvileEntity entity;
 		public int cooldown;
+		private int seeTime;
+		private boolean strafingClockwise;
+		private boolean strafingBackwards;
+		private int strafingTime = -1;
+		private float maxAttackDistance = 20;
+		private int strafeTicks = 20;
 
 		public AttackGoal(ArchvileEntity ghast) {
-			this.ghast = ghast;
+			this.entity = ghast;
 		}
 
 		public boolean canStart() {
-			return this.ghast.getTarget() != null;
+			return this.entity.getTarget() != null;
 		}
 
 		public void start() {
 			super.start();
-			this.ghast.setAttacking(true);
+			this.entity.setAttacking(true);
 			this.cooldown = 0;
-			this.ghast.setAttackingState(0);
+			this.entity.setAttackingState(0);
 		}
 
 		@Override
 		public void stop() {
 			super.stop();
-			this.ghast.setAttacking(false);
-			this.ghast.setAttackingState(0);
+			this.entity.setAttacking(false);
+			this.entity.setAttackingState(0);
+			this.seeTime = 0;
 		}
 
 		public void tick() {
-			LivingEntity livingEntity = this.ghast.getTarget();
-			if (this.ghast.canSee(livingEntity)) {
-				++this.cooldown;
-				if (this.cooldown == 20) {
-					if (!this.ghast.world.isClient) {
-						float q = 24.0F;
-						int k = MathHelper.floor(this.ghast.getX() - (double) q - 1.0D);
-						int l = MathHelper.floor(this.ghast.getX() + (double) q + 1.0D);
-						int t = MathHelper.floor(this.ghast.getY() - (double) q - 1.0D);
-						int u = MathHelper.floor(this.ghast.getY() + (double) q + 1.0D);
-						int v = MathHelper.floor(this.ghast.getZ() - (double) q - 1.0D);
-						int w = MathHelper.floor(this.ghast.getZ() + (double) q + 1.0D);
-						List<Entity> list = this.ghast.world.getOtherEntities(this.ghast,
-								new Box((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
-						Vec3d vec3d1 = new Vec3d(this.ghast.getX(), this.ghast.getY(), this.ghast.getZ());
-
-						for (int x = 0; x < list.size(); ++x) {
-							Entity entity = (Entity) list.get(x);
-							if ((entity instanceof MobEntity)) {
-								float y = (MathHelper.sqrt((float) entity.squaredDistanceTo(vec3d1)) / q);
-								if (y <= 1.0D) {
-									((MobEntity) entity)
-											.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 1000, 1));
-									entity.setGlowing(true);
-								}
-							}
-						}
-						double d = Math.min(livingEntity.getY(), ghast.getY());
-						double e = Math.max(livingEntity.getY(), ghast.getY()) + 1.0D;
-						float f = (float) MathHelper.atan2(livingEntity.getZ() - ghast.getZ(),
-								livingEntity.getX() - ghast.getX());
-						int j;
-						if (ghast.squaredDistanceTo(livingEntity) < 9.0D) {
-							float h;
-							for (j = 0; j < 15; ++j) {
-								h = f + (float) j * 3.1415927F * 0.4F;
-								ghast.conjureFangs(ghast.getX() + (double) MathHelper.cos(h) * 1.5D,
-										ghast.getZ() + (double) MathHelper.sin(h) * 1.5D, d, e, h, 0);
-							}
-
-							for (j = 0; j < 18; ++j) {
-								h = f + (float) j * 3.1415927F * 2.0F / 8.0F + 1.2566371F;
-								ghast.conjureFangs(ghast.getX() + (double) MathHelper.cos(h) * 2.5D,
-										ghast.getZ() + (double) MathHelper.sin(h) * 2.5D, d, e, h, 3);
-							}
-						} else {
-							for (j = 0; j < 26; ++j) {
-								double l1 = 1.25D * (double) (j + 1);
-								ghast.conjureFangs(ghast.getX() + (double) MathHelper.cos(f) * l1,
-										ghast.getZ() + (double) MathHelper.sin(f) * l1, d, e, f, 32);
-							}
-						}
-					}
-					if (!(this.ghast.world.isClient)) {
-						this.ghast.playSound(DoomSounds.ARCHVILE_SCREAM, 1.0F,
-								1.2F / (this.ghast.random.nextFloat() * 0.2F + 0.9F));
-					}
-					this.ghast.setAttackingState(1);
-				}
-				if (this.cooldown == 40) {
-					this.ghast.setAttackingState(0);
-					this.cooldown = -5;
-				}
-			} else if (this.cooldown > 0) {
-				--this.cooldown;
+			LivingEntity livingentity = this.entity.getTarget();
+			++this.cooldown;
+			double distanceToTargetSq = this.entity.squaredDistanceTo(livingentity.getX(), livingentity.getY(),
+					livingentity.getZ());
+			boolean inLineOfSight = this.entity.getVisibilityCache().canSee(livingentity);
+			if (inLineOfSight != this.seeTime > 0) {
+				this.seeTime = 0;
 			}
-			this.ghast.lookAtEntity(livingEntity, 30.0F, 30.0F);
+
+			if (inLineOfSight) {
+				++this.seeTime;
+			} else {
+				--this.seeTime;
+			}
+
+			if (distanceToTargetSq <= (double) this.maxAttackDistance && this.seeTime >= 20) {
+				this.entity.getNavigation().stop();
+				++this.strafingTime;
+			} else {
+				this.entity.getNavigation().startMovingTo(livingentity, 0.95F);
+				this.entity.getMoveControl().strafeTo(this.strafingBackwards ? -0.5F : 0.5F,
+						this.strafingClockwise ? 0.5F : -0.5F);
+				this.strafingTime = -1;
+			}
+
+			if (this.strafingTime >= strafeTicks) {
+				if ((double) this.entity.getRandom().nextFloat() < 0.3D) {
+					this.strafingClockwise = !this.strafingClockwise;
+				}
+
+				if ((double) this.entity.getRandom().nextFloat() < 0.3D) {
+					this.strafingBackwards = !this.strafingBackwards;
+				}
+
+				this.strafingTime = 0;
+			}
+
+			if (this.strafingTime > -1) {
+				if (distanceToTargetSq > (double) (this.maxAttackDistance * 0.75F)) {
+					this.strafingBackwards = false;
+				} else if (distanceToTargetSq < (double) (this.maxAttackDistance * 0.25F)) {
+					this.strafingBackwards = true;
+				}
+
+				this.entity.getMoveControl().strafeTo(this.strafingBackwards ? -0.5F : 0.5F,
+						this.strafingClockwise ? 0.5F : -0.5F);
+				this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
+			} else {
+				this.entity.getLookControl().lookAt(livingentity, 30.0F, 30.0F);
+			}
+			if (this.cooldown == 20) {
+				if (!this.entity.world.isClient) {
+					final Box aabb = new Box(this.entity.getBlockPos().up()).expand(24D, 24D, 24D);
+					this.entity.getCommandSenderWorld().getOtherEntities(this.entity, aabb).forEach(e -> {
+						if ((e instanceof MobEntity)) {
+							((MobEntity) e).addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 1000, 1));
+						}
+					});
+					double d = Math.min(livingentity.getY(), this.entity.getY());
+					double e = Math.max(livingentity.getY(), this.entity.getY()) + 1.0D;
+					float f = (float) MathHelper.atan2(livingentity.getZ() - this.entity.getZ(),
+							livingentity.getX() - this.entity.getX());
+					int j;
+					if (this.entity.squaredDistanceTo(livingentity) < 9.0D) {
+						float h;
+						for (j = 0; j < 15; ++j) {
+							h = f + (float) j * 3.1415927F * 0.4F;
+							this.entity.conjureFangs(this.entity.getX() + (double) MathHelper.cos(h) * 1.5D,
+									this.entity.getZ() + (double) MathHelper.sin(h) * 1.5D, d, e, h, 0);
+						}
+
+						for (j = 0; j < 18; ++j) {
+							h = f + (float) j * 3.1415927F * 2.0F / 8.0F + 1.2566371F;
+							this.entity.conjureFangs(this.entity.getX() + (double) MathHelper.cos(h) * 2.5D,
+									this.entity.getZ() + (double) MathHelper.sin(h) * 2.5D, d, e, h, 3);
+						}
+					} else {
+						for (j = 0; j < 26; ++j) {
+							double l1 = 1.25D * (double) (j + 1);
+							this.entity.conjureFangs(this.entity.getX() + (double) MathHelper.cos(f) * l1,
+									this.entity.getZ() + (double) MathHelper.sin(f) * l1, d, e, f, 32);
+						}
+					}
+				}
+				if (!(this.entity.world.isClient)) {
+					this.entity.playSound(DoomSounds.ARCHVILE_SCREAM, 1.0F,
+							1.2F / (this.entity.random.nextFloat() * 0.2F + 0.9F));
+				}
+				this.entity.setAttackingState(1);
+			}
+			if (this.cooldown == 40) {
+				this.entity.setAttackingState(0);
+				this.cooldown = -5;
+			}
+			this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
 		}
 	}
 
