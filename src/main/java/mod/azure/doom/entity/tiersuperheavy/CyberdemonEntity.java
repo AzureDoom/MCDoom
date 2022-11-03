@@ -249,4 +249,9 @@ public class CyberdemonEntity extends DemonEntity implements IAnimatable, IAnima
 		return DoomSounds.CYBERDEMON_DEATH;
 	}
 
+	@Override
+	public boolean isImmuneToExplosion() {
+		return true;
+	}
+
 }

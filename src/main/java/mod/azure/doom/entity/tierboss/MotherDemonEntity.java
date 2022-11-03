@@ -446,4 +446,9 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 	public void checkDespawn() {
 	}
 
+	@Override
+	public boolean isImmuneToExplosion() {
+		return true;
+	}
+
 }
