@@ -212,7 +212,7 @@ public class RangedStrafeAttackGoal extends Goal {
 					entity.spawnLightSource(this.entity, isInsideWaterBlock);
 				}
 			}
-			if (this.attackTime == 8) {
+			if (this.attackTime >= 8) {
 				this.entity.setAttackingState(0);
 				this.attackTime = -5;
 			}

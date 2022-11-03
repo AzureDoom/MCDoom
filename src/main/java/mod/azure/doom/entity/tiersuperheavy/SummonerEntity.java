@@ -255,7 +255,7 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 				}
 				this.entity.setAttackingState(1);
 			}
-			if (this.cooldown == 60) {
+			if (this.cooldown >= 60) {
 				this.entity.setAttackingState(0);
 				this.cooldown = -5;
 			}

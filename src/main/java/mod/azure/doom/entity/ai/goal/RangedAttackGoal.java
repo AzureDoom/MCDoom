@@ -89,7 +89,7 @@ public class RangedAttackGoal extends Goal {
 						}
 						livingentity.timeUntilRegen = 0;
 					}
-					if (this.attackTime == 8) {
+					if (this.attackTime >= 8) {
 						this.attackTime = -15;
 						this.entity.setAttackingState(0);
 					}
