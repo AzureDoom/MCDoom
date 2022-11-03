@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import mod.azure.doom.entity.DemonEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.util.math.Box;
 
 public class DemonAttackGoal extends Goal {
 	private int statecheck;
@@ -45,33 +46,26 @@ public class DemonAttackGoal extends Goal {
 			boolean inLineOfSight = this.entity.getVisibilityCache().canSee(livingentity);
 			this.attackTime++;
 			this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
-			double d0 = this.entity.squaredDistanceTo(livingentity.getX(), livingentity.getY(),
-					livingentity.getZ());
-			double d1 = this.getAttackReachSqr(livingentity);
+			final Box aabb2 = new Box(this.entity.getBlockPos()).expand(2D);
 			if (inLineOfSight) {
-				if (this.entity.distanceTo(livingentity) >= 3.0D) {
-					this.entity.getNavigation().startMovingTo(livingentity, this.moveSpeedAmp);
-					this.attackTime = -5;
-				} else {
-					if (this.attackTime == 4) {
-						this.entity.getNavigation().startMovingTo(livingentity, this.moveSpeedAmp);
-						if (d0 <= d1) {
+				this.entity.getNavigation().startMovingTo(livingentity, this.moveSpeedAmp);
+				if (this.attackTime == 1) {
+					this.entity.setAttackingState(statecheck);
+				}
+				if (this.attackTime == 4) {
+					this.entity.getCommandSenderWorld().getOtherEntities(this.entity, aabb2).forEach(e -> {
+						if ((e instanceof LivingEntity)) {
 							this.entity.tryAttack(livingentity);
-							this.entity.setAttackingState(statecheck);
+							livingentity.timeUntilRegen = 0;
 						}
-						livingentity.timeUntilRegen = 0;
-					}
-					if (this.attackTime == 8) {
-						this.attackTime = -5;
-						this.entity.setAttackingState(0);
-					}
+					});
+				}
+				if (this.attackTime >= 8) {
+					this.attackTime = -5;
+					this.entity.setAttackingState(0);
 				}
 			}
 		}
-	}
-
-	protected double getAttackReachSqr(LivingEntity attackTarget) {
-		return (double) (this.entity.getWidth() * 2.5F * this.entity.getWidth() * 2.5F + entity.getWidth());
 	}
 
 }
