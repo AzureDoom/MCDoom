@@ -2,8 +2,6 @@ package mod.azure.doom.entity.tierambient;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
-import java.util.SplittableRandom;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
@@ -21,6 +19,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.entity.EntityTypeTest;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
@@ -105,12 +105,14 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	@Override
-	protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
-		if (!(damageSrc.getEntity() instanceof Player)) {
+	protected void actuallyHurt(DamageSource source, float damageAmount) {
+		if (source == DamageSource.OUT_OF_WORLD)
+			this.remove(Entity.RemovalReason.KILLED);
+		
+		if (!(source.getEntity() instanceof Player))
 			this.setHealth(5.0F);
-		} else {
-			this.remove(RemovalReason.KILLED);
-		}
+		
+		this.remove(Entity.RemovalReason.KILLED);
 	}
 
 	@Override
