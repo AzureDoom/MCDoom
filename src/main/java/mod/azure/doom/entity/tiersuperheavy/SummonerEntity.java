@@ -41,7 +41,9 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.tag.FluidTags;
+import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -230,67 +232,49 @@ public class SummonerEntity extends DemonEntity implements IAnimatable, IAnimati
 			}
 			if (this.cooldown == 40) {
 				if (!this.entity.world.isClient) {
+					final Box aabb = new Box(this.entity.getBlockPos()).expand(64D);
+					int i = this.entity.world
+							.getEntitiesByType(TypeFilter.instanceOf(DemonEntity.class), aabb, Entity::isAlive).size();
 					double d = Math.min(livingentity.getY(), this.entity.getY());
 					double e = Math.max(livingentity.getY(), this.entity.getY()) + 1.0D;
 					float f = (float) MathHelper.atan2(livingentity.getZ() - this.entity.getZ(),
 							livingentity.getX() - this.entity.getX());
 					int j;
 					SplittableRandom random = new SplittableRandom();
-					int r = random.nextInt(0, 2);
-					if (r == 1) {
+					int r = random.nextInt(0, 40);
+					if (r >= 17) {
 						for (j = 0; j < 16; ++j) {
 							double l1 = 1.25D * (double) (j + 1);
 							this.entity.conjureFangs(this.entity.getX() + (double) MathHelper.cos(f) * l1,
 									this.entity.getZ() + (double) MathHelper.sin(f) * l1, d, e, f, 32);
 						}
 					} else {
-						this.entity.spawnWave();
+						if (i <= 15)
+							this.entity.spawnWave();
 					}
 				}
 				this.entity.setAttackingState(1);
 			}
 			if (this.cooldown == 60) {
 				this.entity.setAttackingState(0);
-				this.cooldown = -800;
+				this.cooldown = -5;
 			}
 			this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
 		}
 	}
 
 	public void spawnWave() {
-		Random rand = new Random();
-		List<EntityType<?>> givenList = Arrays.asList(DoomEntities.IMP, DoomEntities.LOST_SOUL,
-				DoomEntities.IMP_STONE);
+		List<EntityType<?>> givenList = Arrays.asList(DoomEntities.IMP, DoomEntities.LOST_SOUL, DoomEntities.IMP_STONE);
+		int r = this.random.nextInt(-3, 3);
 
-		for (int i = 0; i < 1; i++) {
-			int randomIndex = rand.nextInt(givenList.size());
-			EntityType<?> randomElement = givenList.get(randomIndex);
-			Entity fireballentity = randomElement.create(world);
-			fireballentity.refreshPositionAndAngles(this.getX() + 2.0D, this.getY() + 0.5D, this.getZ() + 2.0D, 0, 0);
-			world.spawnEntity(fireballentity);
-		}
-		for (int i = 0; i < 1; i++) {
-			int randomIndex = rand.nextInt(givenList.size());
-			EntityType<?> randomElement = givenList.get(randomIndex);
-			Entity fireballentity1 = randomElement.create(world);
-			fireballentity1.refreshPositionAndAngles(this.getX() + -2.0D, this.getY() + 0.5D, this.getZ() + -2.0D, 0,
-					0);
-			world.spawnEntity(fireballentity1);
-		}
-		for (int i = 0; i < 1; i++) {
-			int randomIndex = rand.nextInt(givenList.size());
-			EntityType<?> randomElement = givenList.get(randomIndex);
-			Entity fireballentity11 = randomElement.create(world);
-			fireballentity11.refreshPositionAndAngles(this.getX() + 1.0D, this.getY() + 0.5D, this.getZ() + 1.0D, 0, 0);
-			world.spawnEntity(fireballentity11);
-		}
-		for (int i = 0; i < 1; i++) {
-			int randomIndex = rand.nextInt(givenList.size());
-			EntityType<?> randomElement = givenList.get(randomIndex);
-			Entity fireballentity111 = randomElement.create(world);
-			fireballentity111.refreshPositionAndAngles(this.getX() + -1.0D, this.getY() + 0.5D, this.getZ() + -1.0D, 0,
-					0);
-			world.spawnEntity(fireballentity111);
+		for (int k = 1; k < 5; ++k) {
+			for (int i = 0; i < 1; i++) {
+				int randomIndex = this.random.nextInt(givenList.size());
+				EntityType<?> randomElement = givenList.get(randomIndex);
+				Entity fireballentity = randomElement.create(world);
+				fireballentity.refreshPositionAndAngles(this.getX() + r, this.getY() + 0.5D, this.getZ() + r, 0, 0);
+				world.spawnEntity(fireballentity);
+			}
 		}
 	}
 
