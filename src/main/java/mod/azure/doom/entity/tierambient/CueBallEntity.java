@@ -1,6 +1,5 @@
 package mod.azure.doom.entity.tierambient;
 
-import java.util.List;
 import java.util.SplittableRandom;
 
 import mod.azure.doom.config.DoomConfig;
@@ -17,7 +16,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
@@ -75,21 +73,12 @@ public class CueBallEntity extends DemonEntity implements IAnimatable, IAnimatio
 				this.explode();
 			}
 			if (!this.level.isClientSide && this.getVariant() == 2) {
-				float f2 = 200.0F;
-				int k1 = Mth.floor(this.getX() - (double) f2 - 1.0D);
-				int l1 = Mth.floor(this.getX() + (double) f2 + 1.0D);
-				int i2 = Mth.floor(this.getY() - (double) f2 - 1.0D);
-				int i1 = Mth.floor(this.getY() + (double) f2 + 1.0D);
-				int j2 = Mth.floor(this.getZ() - (double) f2 - 1.0D);
-				int j1 = Mth.floor(this.getZ() + (double) f2 + 1.0D);
-				List<Entity> list = this.level.getEntities(this,
-						new AABB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
-				for (int k2 = 0; k2 < list.size(); ++k2) {
-					Entity entity = list.get(k2);
-					if (entity.isAlive() && entity instanceof DemonEntity) {
-						((DemonEntity) entity).addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000, 1));
+				final AABB aabb = new AABB(this.blockPosition().above()).inflate(24D, 24D, 24D);
+				this.getLevel().getEntities(this, aabb).forEach(e -> {
+					if (e.isAlive() && e instanceof DemonEntity) {
+						((LivingEntity) e).addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000, 1));
 					}
-				}
+				});
 			}
 		}
 	}
