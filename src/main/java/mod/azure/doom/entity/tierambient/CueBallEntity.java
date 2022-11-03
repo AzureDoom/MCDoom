@@ -1,6 +1,5 @@
 package mod.azure.doom.entity.tierambient;
 
-import java.util.List;
 import java.util.Random;
 import java.util.SplittableRandom;
 
@@ -80,22 +79,12 @@ public class CueBallEntity extends DemonEntity implements IAnimatable, IAnimatio
 				this.explode();
 			}
 			if (!this.world.isClient && this.getVariant() == 2) {
-				float q = 200.0F;
-				int k = MathHelper.floor(this.getX() - (double) q - 1.0D);
-				int l = MathHelper.floor(this.getX() + (double) q + 1.0D);
-				int t = MathHelper.floor(this.getY() - (double) q - 1.0D);
-				int u = MathHelper.floor(this.getY() + (double) q + 1.0D);
-				int v = MathHelper.floor(this.getZ() - (double) q - 1.0D);
-				int w = MathHelper.floor(this.getZ() + (double) q + 1.0D);
-				List<Entity> list = this.world.getOtherEntities(this,
-						new Box((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
-				for (int k2 = 0; k2 < list.size(); ++k2) {
-					Entity entity = list.get(k2);
-					if (entity.isAlive() && entity instanceof DemonEntity) {
-						((DemonEntity) entity)
-								.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 1000, 1));
+				final Box aabb = new Box(this.getBlockPos().up()).expand(24D, 24D, 24D);
+				this.getWorld().getOtherEntities(this, aabb).forEach(e -> {
+					if (e.isAlive() && e instanceof DemonEntity) {
+						((LivingEntity) e).addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 1000, 1));
 					}
-				}
+				});
 			}
 		}
 	}
