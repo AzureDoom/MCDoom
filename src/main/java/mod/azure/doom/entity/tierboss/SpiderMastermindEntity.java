@@ -212,4 +212,9 @@ public class SpiderMastermindEntity extends DemonEntity implements IAnimatable, 
 		return tickCount;
 	}
 
+	@Override
+	public boolean ignoreExplosion() {
+		return true;
+	}
+
 }

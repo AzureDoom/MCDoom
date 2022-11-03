@@ -549,4 +549,9 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		super.knockback(0, 0, 0);
 	}
 
+	@Override
+	public boolean ignoreExplosion() {
+		return true;
+	}
+
 }
