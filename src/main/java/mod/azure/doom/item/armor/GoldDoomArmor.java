@@ -18,15 +18,17 @@ import net.minecraftforge.common.extensions.IForgeItem;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.item.GeoArmorItem;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class GoldDoomArmor extends GeoArmorItem implements IAnimatable, IForgeItem {
 
-	private AnimationFactory factory = new AnimationFactory(this);
+	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
 	@Override
 	public void registerControllers(AnimationData data) {
@@ -34,7 +36,7 @@ public class GoldDoomArmor extends GeoArmorItem implements IAnimatable, IForgeIt
 	}
 
 	private <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
 		return PlayState.CONTINUE;
 	}
 

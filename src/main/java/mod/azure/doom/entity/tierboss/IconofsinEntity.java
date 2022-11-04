@@ -58,10 +58,12 @@ import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
@@ -70,7 +72,7 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 	private final ServerBossEvent bossInfo = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(),
 			BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true)
 					.setCreateWorldFog(true);
-	private AnimationFactory factory = new AnimationFactory(this);
+	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
 	public IconofsinEntity(EntityType<IconofsinEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
@@ -78,66 +80,66 @@ public class IconofsinEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (event.isMoving() && this.entityData.get(DEATH_STATE) == 0) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 0) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_phaseone", false));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_phaseone", EDefaultLoopTypes.PLAY_ONCE));
 			return PlayState.CONTINUE;
 		}
 		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 1) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
 			return PlayState.CONTINUE;
 		}
 		if (event.isMoving() && this.entityData.get(DEATH_STATE) == 1) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_nohelmet", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_nohelmet", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (this.entityData.get(DEATH_STATE) == 1) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_nohelmet", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_nohelmet", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (!event.isMoving() && this.hurtMarked && this.entityData.get(DEATH_STATE) == 1) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_nohelmet", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle_nohelmet", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (!event.isMoving() && this.hurtMarked) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
 		return PlayState.CONTINUE;
 	}
 
 	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
 		if (this.entityData.get(STATE) == 1 && this.entityData.get(DEATH_STATE) == 0
 				&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("summoned", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("summoned", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (this.entityData.get(STATE) == 2 && this.entityData.get(DEATH_STATE) == 1
 				&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("summoned_nohelmet", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("summoned_nohelmet", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (this.entityData.get(STATE) == 3 && this.entityData.get(DEATH_STATE) == 0
 				&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("slam", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("slam", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (this.entityData.get(STATE) == 4 && this.entityData.get(DEATH_STATE) == 1
 				&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("slam_nohelmet", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("slam_nohelmet", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (this.entityData.get(STATE) == 5 && this.entityData.get(DEATH_STATE) == 0
 				&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("stomp", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("stomp", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (this.entityData.get(STATE) == 6 && this.entityData.get(DEATH_STATE) == 1
 				&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("stomp_nohelmet", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("stomp_nohelmet", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		return PlayState.STOP;

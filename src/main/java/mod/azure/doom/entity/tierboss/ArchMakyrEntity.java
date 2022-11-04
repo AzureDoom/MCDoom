@@ -61,16 +61,18 @@ import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
 	public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(ArchMakyrEntity.class,
 			EntityDataSerializers.INT);
-	private AnimationFactory factory = new AnimationFactory(this);
+	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(ArchMakyrEntity.class,
 			EntityDataSerializers.INT);
 	private final ServerBossEvent bossInfo = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(),
@@ -84,28 +86,28 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) < 5) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_phaseone", false));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_phaseone", EDefaultLoopTypes.PLAY_ONCE));
 			return PlayState.CONTINUE;
 		}
 		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 5) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
 			return PlayState.CONTINUE;
 		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("flying", true));
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("flying", EDefaultLoopTypes.LOOP));
 		return PlayState.CONTINUE;
 	}
 
 	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
 		if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking_ranged", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking_ranged", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (this.entityData.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking_aoe", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking_aoe", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (this.entityData.get(STATE) == 3 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("flying_up", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("flying_up", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		return PlayState.STOP;
