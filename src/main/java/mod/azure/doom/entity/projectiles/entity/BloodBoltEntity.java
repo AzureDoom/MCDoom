@@ -18,10 +18,12 @@ import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class BloodBoltEntity extends ExplosiveProjectileEntity implements IAnimatable {
 
@@ -29,6 +31,7 @@ public class BloodBoltEntity extends ExplosiveProjectileEntity implements IAnima
 	protected boolean inAir;
 	private int ticksInAir;
 	private float directHitDamage = 2;
+	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
 	public BloodBoltEntity(EntityType<BloodBoltEntity> p_i50160_1_, World p_i50160_2_) {
 		super(p_i50160_1_, p_i50160_2_);
@@ -39,10 +42,8 @@ public class BloodBoltEntity extends ExplosiveProjectileEntity implements IAnima
 		return false;
 	}
 
-	private AnimationFactory factory = new AnimationFactory(this);
-
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
 		return PlayState.CONTINUE;
 	}
 

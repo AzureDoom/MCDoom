@@ -53,11 +53,13 @@ import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
@@ -68,7 +70,7 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 	private final ServerBossBar bossBar = (ServerBossBar) (new ServerBossBar(this.getDisplayName(), BossBar.Color.RED,
 			BossBar.Style.NOTCHED_20)).setDarkenSky(false).setThickenFog(false);
 
-	private AnimationFactory factory = new AnimationFactory(this);
+	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
 	public GladiatorEntity(EntityType<? extends HostileEntity> type, World worldIn) {
 		super(type, worldIn);
@@ -76,67 +78,67 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (this.dataTracker.get(DEATH_STATE) == 0 && event.isMoving() && this.dataTracker.get(STATE) < 1) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_phaseone", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_phaseone", EDefaultLoopTypes.LOOP));
 			event.getController().setAnimationSpeed(1.5);
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(DEATH_STATE) == 0 && (this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_phaseone", false));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_phaseone", EDefaultLoopTypes.PLAY_ONCE));
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(DEATH_STATE) == 0 && this.dataTracker.get(STATE) == 1
 				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("shield_plant", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("shield_plant", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(DEATH_STATE) == 1 && event.isMoving()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_phasetwo", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_phasetwo", EDefaultLoopTypes.LOOP));
 			event.getController().setAnimationSpeed(1.5);
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(DEATH_STATE) == 1 && (this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_phasetwo", false));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_phasetwo", EDefaultLoopTypes.PLAY_ONCE));
 			return PlayState.CONTINUE;
 		}
 		if (!event.isMoving() && this.velocityModified) {
 			event.getController().setAnimation(new AnimationBuilder()
-					.addAnimation((this.dataTracker.get(DEATH_STATE) == 0 ? "idle_phaseone" : "idle_phasetwo"), true));
+					.addAnimation((this.dataTracker.get(DEATH_STATE) == 0 ? "idle_phaseone" : "idle_phasetwo"), EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		event.getController().setAnimation(new AnimationBuilder()
-				.addAnimation((this.dataTracker.get(DEATH_STATE) == 0 ? "idle_phaseone" : "idle_phasetwo"), true));
+				.addAnimation((this.dataTracker.get(DEATH_STATE) == 0 ? "idle_phaseone" : "idle_phasetwo"), EDefaultLoopTypes.LOOP));
 		return PlayState.CONTINUE;
 	}
 
 	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
 		if (this.dataTracker.get(DEATH_STATE) == 0 && this.dataTracker.get(STATE) == 2
 				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phaseone", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phaseone", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(DEATH_STATE) == 0 && this.dataTracker.get(STATE) == 3
 				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phaseone2", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phaseone2", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(DEATH_STATE) == 0 && this.dataTracker.get(STATE) == 4
 				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phaseone3", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phaseone3", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(DEATH_STATE) == 1 && this.dataTracker.get(STATE) == 2
 				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phasetwo", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phasetwo", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(DEATH_STATE) == 1 && this.dataTracker.get(STATE) == 3
 				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phasetwo2", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phasetwo2", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(DEATH_STATE) == 1 && this.dataTracker.get(STATE) == 4
 				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phasetwo2", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phasetwo2", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		return PlayState.STOP;

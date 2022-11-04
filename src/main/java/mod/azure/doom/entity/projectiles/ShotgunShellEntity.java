@@ -26,16 +26,19 @@ import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class ShotgunShellEntity extends PersistentProjectileEntity implements IAnimatable {
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
 	public float shelldamage;
+	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
 	public ShotgunShellEntity(EntityType<? extends ShotgunShellEntity> type, World world) {
 		super(type, world);
@@ -47,10 +50,8 @@ public class ShotgunShellEntity extends PersistentProjectileEntity implements IA
 		this.shelldamage = damage;
 	}
 
-	private AnimationFactory factory = new AnimationFactory(this);
-
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
 		return PlayState.CONTINUE;
 	}
 

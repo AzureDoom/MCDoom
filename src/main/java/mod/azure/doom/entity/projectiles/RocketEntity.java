@@ -36,10 +36,12 @@ import net.minecraft.world.explosion.Explosion;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class RocketEntity extends PersistentProjectileEntity implements IAnimatable {
 
@@ -50,6 +52,7 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 	private float projectiledamage;
 	private BlockPos lightBlockPos = null;
 	private int idleTicks = 0;
+	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
 	public RocketEntity(EntityType<? extends RocketEntity> entityType, World world) {
 		super(entityType, world);
@@ -67,10 +70,8 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 		this.projectiledamage = damage;
 	}
 
-	private AnimationFactory factory = new AnimationFactory(this);
-
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
 		return PlayState.CONTINUE;
 	}
 
