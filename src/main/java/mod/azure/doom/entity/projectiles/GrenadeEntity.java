@@ -33,10 +33,12 @@ import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class GrenadeEntity extends PersistentProjectileEntity implements IAnimatable {
 
@@ -47,6 +49,7 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 	private static final TrackedData<Boolean> SPINNING = DataTracker.registerData(GrenadeEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
 	private LivingEntity shooter;
+	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
 	public GrenadeEntity(EntityType<? extends GrenadeEntity> entityType, World world) {
 		super(entityType, world);
@@ -91,10 +94,8 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 		this.dataTracker.set(SPINNING, spin);
 	}
 
-	private AnimationFactory factory = new AnimationFactory(this);
-
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("spin", true));
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("spin", EDefaultLoopTypes.LOOP));
 		return PlayState.CONTINUE;
 	}
 

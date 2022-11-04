@@ -32,6 +32,7 @@ import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
@@ -42,7 +43,7 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class SwordCrucibleItem extends SwordItem implements IAnimatable, ISyncable {
 
-	public AnimationFactory factory = new AnimationFactory(this);
+	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 	public String controllerName = "controller";
 	public static final int ANIM_OPEN = 0;
 
@@ -103,7 +104,7 @@ public class SwordCrucibleItem extends SwordItem implements IAnimatable, ISyncab
 			final AnimationController<?> controller = GeckoLibUtil.getControllerForID(this.factory, id, controllerName);
 			if (controller.getAnimationState() == AnimationState.Stopped) {
 				controller.markNeedsReload();
-				controller.setAnimation(new AnimationBuilder().addAnimation("using", false));
+				controller.setAnimation(new AnimationBuilder().addAnimation("using", EDefaultLoopTypes.PLAY_ONCE));
 			}
 		}
 	}

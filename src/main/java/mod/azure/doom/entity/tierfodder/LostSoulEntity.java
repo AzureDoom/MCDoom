@@ -48,13 +48,16 @@ import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable, IAnimationTickable {
 
+	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 	protected static final TrackedData<Byte> VEX_FLAGS = DataTracker.registerData(LostSoulEntity.class,
 			TrackedDataHandlerRegistry.BYTE);
 	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(LostSoulEntity.class,
@@ -70,14 +73,12 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 		this.stepHeight = 4.0F;
 	}
 
-	private AnimationFactory factory = new AnimationFactory(this);
-
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (!(lastLimbDistance > -0.15F && lastLimbDistance < 0.15F)) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
 		return PlayState.CONTINUE;
 	}
 
