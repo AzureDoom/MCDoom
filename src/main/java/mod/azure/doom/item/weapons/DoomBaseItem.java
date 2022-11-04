@@ -22,6 +22,7 @@ import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
@@ -32,7 +33,7 @@ import software.bernie.geckolib3q.util.GeckoLibUtil;
 
 public class DoomBaseItem extends Item implements IAnimatable, ISyncable {
 
-	public AnimationFactory factory = new AnimationFactory(this);
+	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 	public String controllerName = "controller";
 	public static final int ANIM_OPEN = 0;
 	public static final int ANIM_OPEN_FASTER = 2;
@@ -59,7 +60,7 @@ public class DoomBaseItem extends Item implements IAnimatable, ISyncable {
 			final AnimationController<?> controller = GeckoLibUtil.getControllerForID(this.factory, id, controllerName);
 			if (controller.getAnimationState() == AnimationState.Stopped) {
 				controller.markNeedsReload();
-				controller.setAnimation(new AnimationBuilder().addAnimation("firing", false));
+				controller.setAnimation(new AnimationBuilder().addAnimation("firing", EDefaultLoopTypes.PLAY_ONCE));
 			}
 		}
 		if (state == ANIM_OPEN_FASTER) {
@@ -67,14 +68,14 @@ public class DoomBaseItem extends Item implements IAnimatable, ISyncable {
 			if (controller.getAnimationState() == AnimationState.Stopped) {
 				controller.markNeedsReload();
 				controller.setAnimationSpeed(2);
-				controller.setAnimation(new AnimationBuilder().addAnimation("firing", false));
+				controller.setAnimation(new AnimationBuilder().addAnimation("firing", EDefaultLoopTypes.PLAY_ONCE));
 			}
 		}
 		if (state == ANIM_HOOK) {
 			final AnimationController<?> controller = GeckoLibUtil.getControllerForID(this.factory, id, controllerName);
 			if (controller.getAnimationState() == AnimationState.Stopped) {
 				controller.markNeedsReload();
-				controller.setAnimation(new AnimationBuilder().addAnimation("hook", false));
+				controller.setAnimation(new AnimationBuilder().addAnimation("hook", EDefaultLoopTypes.PLAY_ONCE));
 			}
 		}
 	}

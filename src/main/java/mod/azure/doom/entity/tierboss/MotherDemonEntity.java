@@ -54,10 +54,12 @@ import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3q.util.GeckoLibUtil;
 
 public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
 
@@ -70,32 +72,32 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 		super(entityType, worldIn);
 	}
 
-	private AnimationFactory factory = new AnimationFactory(this);
+	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (event.isMoving()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("moving", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("moving", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if ((this.dead || this.getHealth() < 0.01 || this.isDead()) && this.dataTracker.get(DEATH_STATE) == 0) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_phaseone", false));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_phaseone", EDefaultLoopTypes.PLAY_ONCE));
 			return PlayState.CONTINUE;
 		}
 		if ((this.dead || this.getHealth() < 0.01 || this.isDead()) && this.dataTracker.get(DEATH_STATE) == 1) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
 			return PlayState.CONTINUE;
 		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("moving", true));
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("moving", EDefaultLoopTypes.LOOP));
 		return PlayState.CONTINUE;
 	}
 
 	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
 		if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("shooting", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("shooting", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("fire", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("fire", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		return PlayState.STOP;

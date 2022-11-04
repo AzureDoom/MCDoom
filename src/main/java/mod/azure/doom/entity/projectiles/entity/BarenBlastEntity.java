@@ -18,10 +18,12 @@ import net.minecraft.world.explosion.Explosion;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3q.util.GeckoLibUtil;
 
 public class BarenBlastEntity extends ExplosiveProjectileEntity implements IAnimatable {
 
@@ -31,6 +33,7 @@ public class BarenBlastEntity extends ExplosiveProjectileEntity implements IAnim
 	private int ticksInAir;
 	private float directHitDamage = 0F;
 	private LivingEntity shooter;
+	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
 	public BarenBlastEntity(EntityType<? extends BarenBlastEntity> p_i50160_1_, World p_i50160_2_) {
 		super(p_i50160_1_, p_i50160_2_);
@@ -46,11 +49,8 @@ public class BarenBlastEntity extends ExplosiveProjectileEntity implements IAnim
 		this.shooter = shooter;
 		this.directHitDamage = directHitDamage;
 	}
-
-	private AnimationFactory factory = new AnimationFactory(this);
-
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
 		return PlayState.CONTINUE;
 	}
 
