@@ -1,6 +1,7 @@
 package mod.azure.doom.entity.tierfodder;
 
 import java.util.Random;
+import java.util.SplittableRandom;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -132,7 +133,7 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 	}
 
 	public int getVariant() {
-		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 2);
+		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 3);
 	}
 
 	public void setVariant(int variant) {
@@ -140,14 +141,16 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 	}
 
 	public int getVariants() {
-		return 2;
+		return 3;
 	}
 
 	@Override
 	public EntityData initialize(ServerWorldAccess serverWorldAccess, LocalDifficulty difficulty,
 			SpawnReason spawnReason, EntityData entityData, NbtCompound entityTag) {
 		entityData = super.initialize(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
-		this.setVariant(this.random.nextInt());
+		SplittableRandom random = new SplittableRandom();
+		int var = random.nextInt(0, 4);
+		this.setVariant(var);
 		return entityData;
 	}
 
