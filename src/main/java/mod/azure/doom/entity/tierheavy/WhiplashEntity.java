@@ -38,16 +38,19 @@ public class WhiplashEntity extends DemonEntity implements IAnimatable, IAnimati
 	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (event.isMoving() && this.hurtDuration == 0) {
+		if (event.isMoving() && this.hurtTime == 0 && !this.isAggressive()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
-		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
+		if (event.isMoving() && this.hurtTime == 0 && this.isAggressive()) {
+			event.getController()
+					.setAnimation(new AnimationBuilder().addAnimation("attacking_moving", EDefaultLoopTypes.LOOP));
+			event.getController().setAnimationSpeed(2.0);
 			return PlayState.CONTINUE;
 		}
-		if (!event.isMoving() && this.hurtMarked) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
+		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
+			event.getController()
+					.setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
 			return PlayState.CONTINUE;
 		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
@@ -55,14 +58,9 @@ public class WhiplashEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
-		if (!event.isMoving() && this.entityData.get(STATE) == 1
-				&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (event.isMoving() && this.entityData.get(STATE) == 1
-				&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking_moving", EDefaultLoopTypes.LOOP));
+		if (this.entityData.get(STATE) == 1) {
+			event.getController()
+					.setAnimation(new AnimationBuilder().addAnimation("attacking", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		return PlayState.STOP;
