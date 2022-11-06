@@ -18,7 +18,8 @@ public class ZombiemanModel extends AnimatedTickingGeoModel<ZombiemanEntity> {
 
 	@Override
 	public Identifier getTextureLocation(ZombiemanEntity object) {
-		return new Identifier(DoomMod.MODID, "textures/entity/eternalzombiemen.png");
+		return new Identifier(DoomMod.MODID,
+				"textures/entity/" + (object.getVariant() == 2 ? "zombieman64" : "eternalzombiemen") + ".png");
 	}
 
 	@Override
