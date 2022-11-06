@@ -1,6 +1,7 @@
 package mod.azure.doom.entity.tierfodder;
 
 import java.util.EnumSet;
+import java.util.SplittableRandom;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
@@ -116,7 +117,7 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 	}
 
 	public int getVariant() {
-		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 2);
+		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 3);
 	}
 
 	public void setVariant(int variant) {
@@ -124,14 +125,16 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 	}
 
 	public int getVariants() {
-		return 2;
+		return 3;
 	}
 
 	@Override
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
 			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-		this.setVariant(this.random.nextInt());
+		SplittableRandom random = new SplittableRandom();
+		int var = random.nextInt(0, 4);
+		this.setVariant(var);
 		return spawnDataIn;
 	}
 
