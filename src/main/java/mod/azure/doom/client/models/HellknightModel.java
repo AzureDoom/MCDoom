@@ -1,8 +1,9 @@
 package mod.azure.doom.client.models;
 
+import com.mojang.math.Vector3f;
+
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierheavy.HellknightEntity;
-import com.mojang.math.Vector3f;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
@@ -18,7 +19,8 @@ public class HellknightModel extends AnimatedTickingGeoModel<HellknightEntity> {
 
 	@Override
 	public ResourceLocation getTextureResource(HellknightEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/entity/hellknight-texturemap.png");
+		return new ResourceLocation(DoomMod.MODID,
+				"textures/entity/hellknight-" + (object.getVariant() == 2 ? "64" : "texturemap") + ".png");
 	}
 
 	@Override
@@ -33,10 +35,8 @@ public class HellknightModel extends AnimatedTickingGeoModel<HellknightEntity> {
 
 		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
 		if (head != null) {
-			head.setRotationX(Vector3f.XP
-					.rotation((extraData.headPitch + 20) * ((float) Math.PI / 360F)).i());
-			head.setRotationY(
-					Vector3f.YP.rotation(extraData.netHeadYaw * ((float) Math.PI / 340F)).j());
+			head.setRotationX(Vector3f.XP.rotation((extraData.headPitch + 20) * ((float) Math.PI / 360F)).i());
+			head.setRotationY(Vector3f.YP.rotation(extraData.netHeadYaw * ((float) Math.PI / 340F)).j());
 		}
 	}
 }
