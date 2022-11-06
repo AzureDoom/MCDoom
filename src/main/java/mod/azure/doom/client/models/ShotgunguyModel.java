@@ -18,7 +18,8 @@ public class ShotgunguyModel extends AnimatedTickingGeoModel<ShotgunguyEntity> {
 
 	@Override
 	public Identifier getTextureResource(ShotgunguyEntity object) {
-		return new Identifier(DoomMod.MODID, "textures/entity/shotgunguy.png");
+		return new Identifier(DoomMod.MODID,
+				"textures/entity/" + (object.getVariant() == 2 ? "shotgunguy64" : "shotgunguy") + ".png");
 	}
 
 	@Override
