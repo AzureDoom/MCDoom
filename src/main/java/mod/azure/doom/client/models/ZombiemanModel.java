@@ -1,8 +1,9 @@
 package mod.azure.doom.client.models;
 
+import com.mojang.math.Vector3f;
+
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.ZombiemanEntity;
-import com.mojang.math.Vector3f;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
@@ -18,7 +19,8 @@ public class ZombiemanModel extends AnimatedTickingGeoModel<ZombiemanEntity> {
 
 	@Override
 	public ResourceLocation getTextureResource(ZombiemanEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/entity/eternalzombiemen.png");
+		return new ResourceLocation(DoomMod.MODID,
+				"textures/entity/" + (object.getVariant() == 2 ? "zombieman64" : "eternalzombiemen") + ".png");
 	}
 
 	@Override
@@ -33,10 +35,8 @@ public class ZombiemanModel extends AnimatedTickingGeoModel<ZombiemanEntity> {
 
 		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
 		if (head != null) {
-			head.setRotationX(
-					Vector3f.XP.rotation(extraData.headPitch * ((float) Math.PI / 180F)).i());
-			head.setRotationY(
-					Vector3f.YP.rotation(extraData.netHeadYaw * ((float) Math.PI / 180F)).j());
+			head.setRotationX(Vector3f.XP.rotation(extraData.headPitch * ((float) Math.PI / 180F)).i());
+			head.setRotationY(Vector3f.YP.rotation(extraData.netHeadYaw * ((float) Math.PI / 180F)).j());
 		}
 	}
 }
