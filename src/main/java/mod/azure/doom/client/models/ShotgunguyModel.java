@@ -1,8 +1,9 @@
 package mod.azure.doom.client.models;
 
+import com.mojang.math.Vector3f;
+
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.ShotgunguyEntity;
-import com.mojang.math.Vector3f;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
@@ -18,7 +19,8 @@ public class ShotgunguyModel extends AnimatedTickingGeoModel<ShotgunguyEntity> {
 
 	@Override
 	public ResourceLocation getTextureLocation(ShotgunguyEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/entity/shotgunguy.png");
+		return new ResourceLocation(DoomMod.MODID,
+				"textures/entity/" + (object.getVariant() == 2 ? "shotgunguy64" : "shotgunguy") + ".png");
 	}
 
 	@Override
