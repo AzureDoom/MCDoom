@@ -138,10 +138,11 @@ public class BaronEntity extends DemonEntity implements IAnimatable, IAnimationT
 	@Override
 	public void writeCustomDataToNbt(NbtCompound tag) {
 		super.writeCustomDataToNbt(tag);
+		tag.putInt("Variant", this.getVariant());
 	}
 
 	public int getVariant() {
-		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 2);
+		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 3);
 	}
 
 	public void setVariant(int variant) {
@@ -149,7 +150,7 @@ public class BaronEntity extends DemonEntity implements IAnimatable, IAnimationT
 	}
 
 	public int getVariants() {
-		return 2;
+		return 3;
 	}
 
 	@Override
