@@ -33,6 +33,16 @@ public class LostSoulModel extends AnimatedTickingGeoModel<LostSoulEntity> {
 			new Identifier(DoomMod.MODID, "textures/entity/lost_soul_green_fire_7.png"),
 			new Identifier(DoomMod.MODID, "textures/entity/lost_soul_green_fire_8.png") };
 
+	private static final Identifier[] TEX64 = {
+			new Identifier(DoomMod.MODID, "textures/entity/lost_soul_64_fire_1.png"),
+			new Identifier(DoomMod.MODID, "textures/entity/lost_soul_64_fire_2.png"),
+			new Identifier(DoomMod.MODID, "textures/entity/lost_soul_64_fire_3.png"),
+			new Identifier(DoomMod.MODID, "textures/entity/lost_soul_64_fire_4.png"),
+			new Identifier(DoomMod.MODID, "textures/entity/lost_soul_64_fire_5.png"),
+			new Identifier(DoomMod.MODID, "textures/entity/lost_soul_64_fire_6.png"),
+			new Identifier(DoomMod.MODID, "textures/entity/lost_soul_64_fire_7.png"),
+			new Identifier(DoomMod.MODID, "textures/entity/lost_soul_64_fire_8.png") };
+
 	@Override
 	public Identifier getModelResource(LostSoulEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/lostsoul.geo.json");
@@ -40,7 +50,8 @@ public class LostSoulModel extends AnimatedTickingGeoModel<LostSoulEntity> {
 
 	@Override
 	public Identifier getTextureResource(LostSoulEntity object) {
-		return object.getVariant() == 2 ? TEX1[(object.getFlameTimer())] : TEX[(object.getFlameTimer())];
+		return object.getVariant() == 2 ? TEX1[(object.getFlameTimer())]
+				: object.getVariant() == 3 ? TEX64[(object.getFlameTimer())] : TEX[(object.getFlameTimer())];
 	}
 
 	@Override
