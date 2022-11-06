@@ -21,8 +21,8 @@ public class BaronModel extends AnimatedTickingGeoModel<BaronEntity> {
 
 	@Override
 	public ResourceLocation getTextureLocation(BaronEntity object) {
-		return new ResourceLocation(DoomMod.MODID,
-				"textures/entity/baronofhell-" + (object.getVariant() == 2 ? "green" : "texturemap") + ".png");
+		return new ResourceLocation(DoomMod.MODID, "textures/entity/baronofhell-"
+				+ (object.getVariant() == 2 ? "green" : object.getVariant() == 3 ? "64" : "texturemap") + ".png");
 	}
 
 	@Override

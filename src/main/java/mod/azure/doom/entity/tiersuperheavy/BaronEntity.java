@@ -137,7 +137,7 @@ public class BaronEntity extends DemonEntity implements IAnimatable, IAnimationT
 	}
 
 	public int getVariant() {
-		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 2);
+		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 3);
 	}
 
 	public void setVariant(int variant) {
@@ -145,7 +145,7 @@ public class BaronEntity extends DemonEntity implements IAnimatable, IAnimationT
 	}
 
 	public int getVariants() {
-		return 2;
+		return 3;
 	}
 
 	@Override
