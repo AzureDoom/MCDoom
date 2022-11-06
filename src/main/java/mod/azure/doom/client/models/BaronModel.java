@@ -1,9 +1,10 @@
 package mod.azure.doom.client.models;
 
+import com.mojang.math.Vector3f;
+
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
 import net.minecraft.resources.ResourceLocation;
-import com.mojang.math.Vector3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
@@ -21,8 +22,8 @@ public class BaronModel extends AnimatedTickingGeoModel<BaronEntity> {
 
 	@Override
 	public ResourceLocation getTextureResource(BaronEntity object) {
-		return new ResourceLocation(DoomMod.MODID,
-				"textures/entity/baronofhell-" + (object.getVariant() == 2 ? "green" : "texturemap") + ".png");
+		return new ResourceLocation(DoomMod.MODID, "textures/entity/baronofhell-"
+				+ (object.getVariant() == 2 ? "green" : object.getVariant() == 3 ? "64" : "texturemap") + ".png");
 	}
 
 	@Override
