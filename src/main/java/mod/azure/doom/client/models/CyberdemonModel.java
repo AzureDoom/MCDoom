@@ -11,6 +11,7 @@ public class CyberdemonModel extends AnimatedTickingGeoModel<CyberdemonEntity> {
 	public Identifier c2016_model = new Identifier(DoomMod.MODID, "geo/cyberdemon2016.geo.json");
 	public Identifier tyrant_model = new Identifier(DoomMod.MODID, "geo/tyrant.geo.json");
 	public Identifier classic_texture = new Identifier(DoomMod.MODID, "textures/entity/cyberdemon-texturemap.png");
+	public Identifier d64_texture = new Identifier(DoomMod.MODID, "textures/entity/cyberdemon-64.png");
 	public Identifier c2016_texture = new Identifier(DoomMod.MODID, "textures/entity/cyberdemon2016.png");
 	public Identifier tyrant_texture = new Identifier(DoomMod.MODID, "textures/entity/tyrant.png");
 	public Identifier classic_animation = new Identifier(DoomMod.MODID, "animations/cyberdemon_animation.json");
@@ -24,7 +25,8 @@ public class CyberdemonModel extends AnimatedTickingGeoModel<CyberdemonEntity> {
 
 	@Override
 	public Identifier getTextureLocation(CyberdemonEntity object) {
-		return object.getVariant() == 2 ? c2016_texture : object.getVariant() == 3 ? tyrant_texture : classic_texture;
+		return object.getVariant() == 2 ? c2016_texture
+				: object.getVariant() == 3 ? tyrant_texture : object.getVariant() == 4 ? d64_texture : classic_texture;
 	}
 
 	@Override
