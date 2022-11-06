@@ -24,6 +24,7 @@ import mod.azure.doom.client.render.weapons.SGRender;
 import mod.azure.doom.client.render.weapons.SSGRender;
 import mod.azure.doom.client.render.weapons.SentinelHammerRender;
 import mod.azure.doom.client.render.weapons.SwordCrucibleRender;
+import mod.azure.doom.client.render.weapons.UnmakerRender;
 import mod.azure.doom.client.render.weapons.UnmaykrRender;
 import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.network.EntityPacketOnClient;
@@ -72,6 +73,7 @@ public class ClientInit implements ClientModInitializer {
 		GeoItemRenderer.registerItemRenderer(DoomItems.PISTOL, new PistolRender());
 		GeoItemRenderer.registerItemRenderer(DoomItems.ROCKETLAUNCHER, new RocketLauncherRender());
 		GeoItemRenderer.registerItemRenderer(DoomItems.UNMAYKR, new UnmaykrRender());
+		GeoItemRenderer.registerItemRenderer(DoomItems.UNMAKER, new UnmakerRender());
 		GeoItemRenderer.registerItemRenderer(DoomItems.SENTINELHAMMER, new SentinelHammerRender());
 		GeoItemRenderer.registerItemRenderer(DoomItems.CRUCIBLESWORD, new SwordCrucibleRender());
 		GeoItemRenderer.registerItemRenderer(DoomItems.DARKLORDCRUCIBLE, new DarkLordCrucibleRender());

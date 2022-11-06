@@ -93,7 +93,6 @@ public class DoomItems {
 	public static BFG BFG_ETERNAL = item(new BFG(), "bfg_eternal");
 	public static DaisyItem DAISY = item(new DaisyItem(), "daisy");
 	public static Rocket ROCKET = item(new Rocket(), "rocket");
-	public static Unmaykr UNMAYKR = item(new Unmaykr(), "unmaykr");
 	public static DGauss DGAUSS = item(new DGauss(), "doomed_gauss");
 	public static Ballista BALLISTA = item(new Ballista(), "ballista");
 	public static Chaingun CHAINGUN = item(new Chaingun(), "chaingun");
@@ -102,6 +101,8 @@ public class DoomItems {
 	public static DShotgun DSG = item(new DShotgun(), "doomed_shotgun");
 	public static ClipAmmo BULLETS = item(new ClipAmmo(), "bullets");
 	public static BFGCell BFG_CELL = item(new BFGCell(), "bfg_cell");
+	public static Unmaykr UNMAYKR = item(new Unmaykr("white"), "unmaykr");
+	public static Unmaykr UNMAKER = item(new Unmaykr("demon"), "unmaker");
 	public static Chainsaw CHAINSAW64 = item(new Chainsaw(), "chainsaw64");
 	public static PlasmaGun PLASMAGUN = item(new PlasmaGun(), "plasmagun");
 	public static ArgentAxe ARGENT_AXE = item(new ArgentAxe(), "argent_axe");
