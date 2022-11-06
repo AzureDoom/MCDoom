@@ -28,8 +28,17 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class Unmaykr extends DoomBaseItem {
 
-	public Unmaykr() {
+	public final String itemID;
+
+	public Unmaykr(String id) {
 		super(new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(9000));
+		this.itemID = id;
+		GeckoLibNetwork.registerSyncable(this);
+	}
+
+	@Override
+	public String getSyncKey() {
+		return super.getSyncKey() + "_" + itemID;
 	}
 
 	@Override

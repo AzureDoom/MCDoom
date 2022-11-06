@@ -81,7 +81,8 @@ public class DoomBaseItem extends Item implements IAnimatable, ISyncable {
 
 	public DoomBaseItem(Settings properties) {
 		super(properties);
-		GeckoLibNetwork.registerSyncable(this);
+		if (!(this instanceof Unmaykr))
+			GeckoLibNetwork.registerSyncable(this);
 	}
 
 	public void removeAmmo(Item ammo, PlayerEntity playerEntity) {
