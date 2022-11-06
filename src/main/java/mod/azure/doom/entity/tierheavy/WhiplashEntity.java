@@ -46,12 +46,19 @@ public class WhiplashEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (event.isMoving() && this.hurtTime == 0) {
+		if (event.isMoving() && this.hurtTime == 0 && !this.isAttacking()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
+		if (event.isMoving() && this.hurtTime == 0 && this.isAttacking()) {
+			event.getController()
+					.setAnimation(new AnimationBuilder().addAnimation("attacking_moving", EDefaultLoopTypes.LOOP));
+			event.getController().setAnimationSpeed(2.0);
+			return PlayState.CONTINUE;
+		}
 		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
+			event.getController()
+					.setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
 			return PlayState.CONTINUE;
 		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
@@ -59,14 +66,9 @@ public class WhiplashEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
-		if (!event.isMoving() && this.dataTracker.get(STATE) == 1
-				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (event.isMoving() && this.dataTracker.get(STATE) == 1
-				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking_moving", EDefaultLoopTypes.LOOP));
+		if (this.dataTracker.get(STATE) == 1) {
+			event.getController()
+					.setAnimation(new AnimationBuilder().addAnimation("attacking", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
 		}
 		return PlayState.STOP;
@@ -74,7 +76,7 @@ public class WhiplashEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<WhiplashEntity>(this, "controller", 2, this::predicate));
+		data.addAnimationController(new AnimationController<WhiplashEntity>(this, "controller", 10, this::predicate));
 		data.addAnimationController(new AnimationController<WhiplashEntity>(this, "controller1", 2, this::predicate1));
 	}
 
