@@ -40,6 +40,10 @@ public class ModelProviderinit {
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
+		ModelPredicateProviderRegistry.register(DoomItems.UNMAKER, new Identifier("nocenter"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return nonCentered(itemStack) ? 1.0F : 0.0F;
+				});
 		ModelPredicateProviderRegistry.register(DoomItems.CHAINGUN, new Identifier("nocenter"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
