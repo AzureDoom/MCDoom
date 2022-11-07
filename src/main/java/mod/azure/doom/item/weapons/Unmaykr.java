@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
+import mod.azure.doom.client.render.weapons.UnmakerRender;
 import mod.azure.doom.client.render.weapons.UnmaykrRender;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.UnmaykrBoltEntity;
@@ -31,8 +32,17 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class Unmaykr extends DoomBaseItem {
 
-	public Unmaykr() {
+	public final String itemID;
+
+	public Unmaykr(String id) {
 		super(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(9000));
+		this.itemID = id;
+		GeckoLibNetwork.registerSyncable(this);
+	}
+
+	@Override
+	public String getSyncKey() {
+		return super.getSyncKey() + "_" + itemID;
 	}
 
 	@Override
@@ -40,10 +50,11 @@ public class Unmaykr extends DoomBaseItem {
 		super.initializeClient(consumer);
 		consumer.accept(new IClientItemExtensions() {
 			private final BlockEntityWithoutLevelRenderer renderer = new UnmaykrRender();
+			private final BlockEntityWithoutLevelRenderer renderer2 = new UnmakerRender();
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return renderer;
+				return Unmaykr.this.itemID.equalsIgnoreCase("demon") ? renderer2 : renderer;
 			}
 		});
 	}

@@ -270,6 +270,10 @@ public class ClientModEventSubscriber {
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
+		ItemProperties.register(DoomItems.UNMAKER.get(), new ResourceLocation("nocenter"),
+				(itemStack, clientWorld, livingEntity, seed) -> {
+					return nonCentered(itemStack) ? 1.0F : 0.0F;
+				});
 		ItemProperties.register(DoomItems.UNMAYKR.get(), new ResourceLocation("nocenter"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
