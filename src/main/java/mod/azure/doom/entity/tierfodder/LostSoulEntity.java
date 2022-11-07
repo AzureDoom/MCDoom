@@ -18,11 +18,13 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -255,6 +257,9 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 			this.move(MoverType.SELF, this.getDeltaMovement());
 			this.setDeltaMovement(this.getDeltaMovement().scale((double) f));
 		}
+		if (this.tickCount % 10 == 0) {
+			this.refreshDimensions();
+		}
 		this.calculateEntityAnimation(this, false);
 	}
 
@@ -387,6 +392,11 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 	@Override
 	public int tickTimer() {
 		return tickCount;
+	}
+
+	@Override
+	public EntityDimensions getDimensions(Pose pose) {
+		return this.getVariant() == 3 ? EntityDimensions.scalable(1.0F, 1.5F) : super.getDimensions(pose);
 	}
 
 }
