@@ -83,7 +83,8 @@ public class DoomBaseItem extends Item implements IAnimatable, ISyncable {
 
 	public DoomBaseItem(Properties properties) {
 		super(properties);
-		GeckoLibNetwork.registerSyncable(this);
+		if (!(this instanceof Unmaykr))
+			GeckoLibNetwork.registerSyncable(this);
 	}
 
 	@Override

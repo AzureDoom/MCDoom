@@ -351,7 +351,8 @@ public class DoomItems {
 	public static final RegistryObject<Item> PLASMAGUN = ITEMS.register("plasmagun", () -> new PlasmaGun());
 	public static final RegistryObject<Item> ROCKETLAUNCHER = ITEMS.register("rocketlauncher",
 			() -> new RocketLauncher());
-	public static final RegistryObject<Item> UNMAYKR = ITEMS.register("unmaykr", () -> new Unmaykr());
+	public static final RegistryObject<Item> UNMAYKR = ITEMS.register("unmaykr", () -> new Unmaykr("white"));
+	public static final RegistryObject<Item> UNMAKER = ITEMS.register("unmaker", () -> new Unmaykr("demon"));
 	public static final RegistryObject<Item> BALLISTA = ITEMS.register("ballista", () -> new Ballista());
 	public static final RegistryObject<Item> CHAINGUN = ITEMS.register("chaingun", () -> new Chaingun());
 	public static final RegistryObject<Item> PISTOL = ITEMS.register("pistol", () -> new PistolItem());
