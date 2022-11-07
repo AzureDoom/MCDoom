@@ -1,9 +1,10 @@
 package mod.azure.doom.client.models;
 
+import com.mojang.math.Vector3f;
+
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierheavy.PinkyEntity;
 import net.minecraft.resources.ResourceLocation;
-import com.mojang.math.Vector3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
@@ -18,8 +19,9 @@ public class PinkyModel extends AnimatedTickingGeoModel<PinkyEntity> {
 
 	@Override
 	public ResourceLocation getTextureResource(PinkyEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/entity/" + (object.getVariant() == 1 ? "pinky-texturemap"
-				: object.getVariant() == 3 ? "pinky2016" : "pinky_green") + ".png");
+		return new ResourceLocation(DoomMod.MODID, "textures/entity/" + (object.getVariant() == 4 ? "pinky_green"
+				: object.getVariant() == 2 ? "pinky-64" : object.getVariant() == 3 ? "pinky2016" : "pinky-texturemap")
+				+ ".png");
 	}
 
 	@Override
