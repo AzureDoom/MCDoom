@@ -15,16 +15,19 @@ public class ArachnotronModel extends AnimatedTickingGeoModel<ArachnotronEntity>
 
 	@Override
 	public Identifier getModelLocation(ArachnotronEntity object) {
-		return new Identifier(DoomMod.MODID, "geo/arachnotron.geo.json");
+		return new Identifier(DoomMod.MODID,
+				"geo/" + (object.getVariant() == 2 ? "arachnotron64" : "arachnotron") + ".geo.json");
 	}
 
 	@Override
 	public Identifier getTextureLocation(ArachnotronEntity object) {
-		return new Identifier(DoomMod.MODID, "textures/entity/arachnotron-texturemap.png");
+		return new Identifier(DoomMod.MODID,
+				"textures/entity/arachnotron-" + (object.getVariant() == 2 ? "64" : "texturemap") + ".png");
 	}
 
 	@Override
 	public Identifier getAnimationFileLocation(ArachnotronEntity object) {
-		return new Identifier(DoomMod.MODID, "animations/arachnotron_walking.json");
+		return new Identifier(DoomMod.MODID,
+				"animations/" + (object.getVariant() == 2 ? "arachnotron64.animation" : "arachnotron_walking") + ".json");
 	}
 }
