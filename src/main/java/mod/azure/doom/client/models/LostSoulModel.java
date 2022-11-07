@@ -1,9 +1,10 @@
 package mod.azure.doom.client.models;
 
+import com.mojang.math.Vector3f;
+
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
 import net.minecraft.resources.ResourceLocation;
-import com.mojang.math.Vector3f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
@@ -45,7 +46,8 @@ public class LostSoulModel extends AnimatedTickingGeoModel<LostSoulEntity> {
 
 	@Override
 	public ResourceLocation getModelLocation(LostSoulEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/lostsoul.geo.json");
+		return object.getVariant() == 3 ? new ResourceLocation(DoomMod.MODID, "geo/lostsoul64.geo.json")
+				: new ResourceLocation(DoomMod.MODID, "geo/lostsoul.geo.json");
 	}
 
 	@Override
