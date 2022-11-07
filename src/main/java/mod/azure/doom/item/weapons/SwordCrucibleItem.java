@@ -16,6 +16,7 @@ import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.CrucibleLoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -95,7 +96,14 @@ public class SwordCrucibleItem extends SwordItem implements IAnimatable, ISyncab
 	}
 
 	public <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-		return PlayState.CONTINUE;
+		if (Minecraft.getInstance().player.getInventory().getSelected().getItem() instanceof SwordCrucibleItem) {
+			event.getController().setAnimation(new AnimationBuilder()
+					.addAnimation("opening", EDefaultLoopTypes.PLAY_ONCE).addAnimation("open", EDefaultLoopTypes.LOOP));
+			return PlayState.CONTINUE;
+		} else {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("closed", EDefaultLoopTypes.LOOP));
+			return PlayState.CONTINUE;
+		}
 	}
 
 	@Override
