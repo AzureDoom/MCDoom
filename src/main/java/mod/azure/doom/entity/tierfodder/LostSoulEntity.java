@@ -16,7 +16,9 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityData;
+import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityGroup;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
@@ -201,6 +203,9 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 			this.setVelocity(this.getVelocity().multiply((double) f));
 		}
 
+		if (this.age % 10 == 0) {
+			this.calculateDimensions();
+		}
 		this.updateLimbs(this, false);
 	}
 
@@ -349,6 +354,11 @@ public class LostSoulEntity extends DemonEntity implements Monster, IAnimatable,
 
 	public int getFlameTimer() {
 		return flameTimer;
+	}
+
+	@Override
+	public EntityDimensions getDimensions(EntityPose pose) {
+		return this.getVariant() == 3 ? EntityDimensions.changing(1.0F, 1.5F) : super.getDimensions(pose);
 	}
 
 }
