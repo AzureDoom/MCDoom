@@ -134,7 +134,7 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 	}
 
 	public int getVariant() {
-		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 3);
+		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 4);
 	}
 
 	public void setVariant(int variant) {
@@ -142,7 +142,7 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 	}
 
 	public int getVariants() {
-		return 3;
+		return 4;
 	}
 
 	@Override
@@ -150,7 +150,7 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 			SpawnReason spawnReason, EntityData entityData, NbtCompound entityTag) {
 		entityData = super.initialize(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
 		SplittableRandom random = new SplittableRandom();
-		int var = random.nextInt(0, 4);
+		int var = random.nextInt(0, 5);
 		this.setVariant(var);
 		return entityData;
 	}
