@@ -18,8 +18,9 @@ public class PinkyModel extends AnimatedTickingGeoModel<PinkyEntity> {
 
 	@Override
 	public Identifier getTextureLocation(PinkyEntity object) {
-		return new Identifier(DoomMod.MODID, "textures/entity/" + (object.getVariant() == 1 ? "pinky-texturemap"
-				: object.getVariant() == 3 ? "pinky2016" : "pinky_green") + ".png");
+		return new Identifier(DoomMod.MODID, "textures/entity/" + (object.getVariant() == 4 ? "pinky_green"
+				: object.getVariant() == 2 ? "pinky-64"
+						:object.getVariant() == 3 ? "pinky2016" : "pinky-texturemap") + ".png");
 	}
 
 	@Override
