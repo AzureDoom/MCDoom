@@ -15,6 +15,7 @@ import mod.azure.doom.entity.tierboss.SpiderMastermind2016Entity;
 import mod.azure.doom.entity.tierboss.SpiderMastermindEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomBlocks;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -86,7 +87,15 @@ public class SwordCrucibleItem extends SwordItem implements IAnimatable, ISyncab
 	}
 
 	public <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-		return PlayState.CONTINUE;
+		if (MinecraftClient.getInstance().player.getInventory().getMainHandStack()
+				.getItem() instanceof SwordCrucibleItem) {
+			event.getController().setAnimation(new AnimationBuilder()
+					.addAnimation("opening", EDefaultLoopTypes.PLAY_ONCE).addAnimation("open", EDefaultLoopTypes.LOOP));
+			return PlayState.CONTINUE;
+		} else {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("closed", EDefaultLoopTypes.LOOP));
+			return PlayState.CONTINUE;
+		}
 	}
 
 	@Override
