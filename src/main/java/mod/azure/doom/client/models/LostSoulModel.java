@@ -45,7 +45,8 @@ public class LostSoulModel extends AnimatedTickingGeoModel<LostSoulEntity> {
 
 	@Override
 	public Identifier getModelResource(LostSoulEntity object) {
-		return new Identifier(DoomMod.MODID, "geo/lostsoul.geo.json");
+		return object.getVariant() == 3 ? new Identifier(DoomMod.MODID, "geo/lostsoul64.geo.json")
+				: new Identifier(DoomMod.MODID, "geo/lostsoul.geo.json");
 	}
 
 	@Override
