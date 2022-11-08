@@ -88,7 +88,7 @@ public class DarkLordCrucibleItem extends SwordItem implements IAnimatable, ISyn
 
 	public <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
 		if (MinecraftClient.getInstance().player.getInventory().getMainHandStack()
-				.getItem() instanceof SwordCrucibleItem) {
+				.getItem() instanceof DarkLordCrucibleItem) {
 			event.getController().setAnimation(new AnimationBuilder()
 					.addAnimation("opening", EDefaultLoopTypes.PLAY_ONCE).addAnimation("open", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
