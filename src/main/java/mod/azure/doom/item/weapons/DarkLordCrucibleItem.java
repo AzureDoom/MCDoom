@@ -50,7 +50,8 @@ public class DarkLordCrucibleItem extends SwordItem implements IAnimatable, ISyn
 	public static final int ANIM_OPEN = 0;
 
 	public DarkLordCrucibleItem() {
-		super(DoomTier.DOOM, 1, -2.5f, new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(24));
+		super(DoomTier.DOOM, 1, -2.5f,
+				new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(24));
 		GeckoLibNetwork.registerSyncable(this);
 	}
 
@@ -89,7 +90,7 @@ public class DarkLordCrucibleItem extends SwordItem implements IAnimatable, ISyn
 
 	public <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
 		if (MinecraftClient.getInstance().player.getInventory().getMainHandStack()
-				.getItem() instanceof SwordCrucibleItem) {
+				.getItem() instanceof DarkLordCrucibleItem) {
 			event.getController().setAnimation(new AnimationBuilder()
 					.addAnimation("opening", EDefaultLoopTypes.PLAY_ONCE).addAnimation("open", EDefaultLoopTypes.LOOP));
 			return PlayState.CONTINUE;
