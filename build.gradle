@@ -52,10 +52,10 @@ dependencies {
 	modCompileOnly "curse.maven:arch-419699:3784130"
 	modCompileOnly "curse.maven:stfu-401978:3677546"
     modCompileOnly ("me.shedaniel.cloth:basic-math:0.6.1")
-	modCompileOnly "curse.maven:BetterC-639842:3921814"
+	modCompileOnly "curse.maven:BetterC-639842:4046669"
 	modCompileOnly "curse.maven:CConfig-381257:3773665"
     modApi "com.github.ZsoltMolnarrr:TinyConfig:1.0.1"
-    modCompileOnly "dev.kosmx.player-anim:player-animation-lib-fabric:0.0.5"
+    modCompileOnly "dev.kosmx.player-anim:player-animation-lib-fabric:0.3.5"
 }
 
 processResources {
