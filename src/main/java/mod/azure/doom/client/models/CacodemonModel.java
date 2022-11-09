@@ -19,8 +19,11 @@ public class CacodemonModel extends AnimatedTickingGeoModel<CacodemonEntity> {
 
 	@Override
 	public Identifier getTextureLocation(CacodemonEntity object) {
-		return new Identifier(DoomMod.MODID, "textures/entity/" + (object.getVariant() == 1 ? "cacodemon64"
-				: object.getVariant() == 3 ? "cacodemoneternal" : "cacodemon") + ".png");
+		return new Identifier(DoomMod.MODID,
+				"textures/entity/" + (object.getVariant() == 1 ? "cacodemon64"
+						: object.getVariant() == 3 ? "cacodemoneternal"
+								: object.getVariant() == 4 ? "cacodemon2016" : "cacodemon")
+						+ ".png");
 	}
 
 	@Override
