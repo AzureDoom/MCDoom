@@ -189,7 +189,7 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 	}
 
 	public int getVariant() {
-		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 3);
+		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 4);
 	}
 
 	public void setVariant(int variant) {
@@ -197,7 +197,7 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 	}
 
 	public int getVariants() {
-		return 3;
+		return 4;
 	}
 
 	@Override
