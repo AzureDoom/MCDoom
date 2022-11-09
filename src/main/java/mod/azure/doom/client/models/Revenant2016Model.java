@@ -29,6 +29,15 @@ public class Revenant2016Model extends AnimatedTickingGeoModel<Revenant2016Entit
 			new Identifier(DoomMod.MODID, "textures/entity/revenant_golden_6.png"),
 			new Identifier(DoomMod.MODID, "textures/entity/revenant_golden_7.png") };
 
+	private static final Identifier[] TEX3 = { new Identifier(DoomMod.MODID, "textures/entity/revenant2016.png"),
+			new Identifier(DoomMod.MODID, "textures/entity/revenant2016_1.png"),
+			new Identifier(DoomMod.MODID, "textures/entity/revenant2016_2.png"),
+			new Identifier(DoomMod.MODID, "textures/entity/revenant2016_3.png"),
+			new Identifier(DoomMod.MODID, "textures/entity/revenant2016_4.png"),
+			new Identifier(DoomMod.MODID, "textures/entity/revenant2016_5.png"),
+			new Identifier(DoomMod.MODID, "textures/entity/revenant2016_6.png"),
+			new Identifier(DoomMod.MODID, "textures/entity/revenant2016_7.png") };
+
 	@Override
 	public Identifier getModelResource(Revenant2016Entity object) {
 		return new Identifier(DoomMod.MODID, "geo/revenant.geo.json");
@@ -36,7 +45,8 @@ public class Revenant2016Model extends AnimatedTickingGeoModel<Revenant2016Entit
 
 	@Override
 	public Identifier getTextureResource(Revenant2016Entity object) {
-		return (object.getVariant() == 10 ? TEX2[(object.getFlameTimer())] : TEX[(object.getFlameTimer())]);
+		return (object.getVariant() == 11 ? TEX2[(object.getFlameTimer())]
+				: object.getVariant() == 2 ? TEX3[(object.getFlameTimer())] : TEX[(object.getFlameTimer())]);
 	}
 
 	@Override
