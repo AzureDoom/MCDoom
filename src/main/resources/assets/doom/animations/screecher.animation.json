@@ -195,6 +195,111 @@
 					}
 				}
 			}
+		},
+		"walk": {
+			"loop": true,
+			"animation_length": 2,
+			"bones": {
+				"thighs": {
+					"rotation": {
+						"vector": [0, "Math.cos(query.anim_time*180)* 5.0 ", 0]
+					},
+					"position": {
+						"vector": [0, "Math.cos(query.anim_time * 360) * -0.5", 0]
+					}
+				},
+				"lowJaw2": {
+					"rotation": {
+						"vector": ["Math.cos(query.anim_time * 360 ) * 5 ", 0, 0]
+					}
+				},
+				"rShoulder": {
+					"rotation": {
+						"vector": ["Math.cos(query.anim_time * 180) * -15", 0, -5]
+					}
+				},
+				"rShoulder2": {
+					"rotation": {
+						"vector": ["Math.cos(query.anim_time * 180) * 15", 0, 5]
+					}
+				},
+				"rLeg1": {
+					"rotation": {
+						"0.0": {
+							"vector": [-11.56409, 3.38737, -1.33728]
+						},
+						"0.52": {
+							"vector": [33.15479, -7.86733, -7.77728]
+						},
+						"1.0": {
+							"vector": [5.82852, 17.11701, -4.69079]
+						},
+						"1.52": {
+							"vector": [-22.5, -10, 0]
+						},
+						"2.0": {
+							"vector": [-11.56409, 3.38737, -1.33728]
+						}
+					}
+				},
+				"rLeg2": {
+					"rotation": {
+						"0.0": {
+							"vector": [2.5, 0, 0]
+						},
+						"0.48": {
+							"vector": [5, 0, 0]
+						},
+						"1.0": {
+							"vector": [12.5, 0, 0]
+						},
+						"1.52": {
+							"vector": [12.5, 0, 0]
+						},
+						"2.0": {
+							"vector": [2.5, 0, 0]
+						}
+					}
+				},
+				"lLeg1": {
+					"rotation": {
+						"0.0": {
+							"vector": [10, 10, 0]
+						},
+						"0.52": {
+							"vector": [-19.42, 10, 0]
+						},
+						"1.0": {
+							"vector": [-15, 10, 0]
+						},
+						"1.52": {
+							"vector": [15, 10, 0]
+						},
+						"2.0": {
+							"vector": [10, 10, 0]
+						}
+					}
+				},
+				"lLeg2": {
+					"rotation": {
+						"0.0": {
+							"vector": [25, 0, 0]
+						},
+						"0.52": {
+							"vector": [29.42, 0, 0]
+						},
+						"1.0": {
+							"vector": [2.5, 0, 0]
+						},
+						"1.52": {
+							"vector": [15, 0, 0]
+						},
+						"2.0": {
+							"vector": [25, 0, 0]
+						}
+					}
+				}
+			}
 		}
 	},
 	"geckolib_format_version": 2
