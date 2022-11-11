@@ -210,6 +210,7 @@
 	"block.doom.e1m1_block26": "E1M1 Block 26",
 	"block.doom.gun_table": "Gun Crafter",
 	"block.doom.totem": "Totem",
+	"entity.doom.possessedengineer": "Possessed Engineer",
 	"entity.doom.screecher": "Screecher",
 	"entity.doom.imp": "Imp",
 	"entity.doom.nightmare_imp": "Nightmare Imp",
