@@ -293,7 +293,7 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	public int getVariant() {
-		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 2);
+		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 5);
 	}
 
 	public void setVariant(int variant) {
@@ -301,7 +301,7 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 	}
 
 	public int getVariants() {
-		return 2;
+		return 5;
 	}
 
 	@Override
@@ -309,13 +309,13 @@ public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimati
 			SpawnReason spawnReason, EntityData entityData, NbtCompound entityTag) {
 		entityData = super.initialize(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
 		SplittableRandom random = new SplittableRandom();
-		int var = random.nextInt(0, 3);
+		int var = random.nextInt(0, 6);
 		this.setVariant(var);
 		return entityData;
 	}
 
 	@Override
 	public int getArmor() {
-		return this.getVariant() == 2 ? 6 : 0;
+		return this.getVariant() >= 4 ? 6 : 0;
 	}
 }
