@@ -1,20 +1,27 @@
-v.4.2.22
+v.4.2.23
 
-- Lost Soul Speed Buff and Pathing tweak.
-- Archvile and Summoner now strafe.
-- Arch Makyr, Mother Demon, Spider Masterminds, Cyberdemons, and Doom Hunters don't take explosion damage.
-- Fixed demons not looking at targets when attacking.
-- Hellknight 2016 slam is tweaked to properly do damage when playing animation. 
-- Imp speed buff when strafing.
-- Gore Nests no longer die when spawning a wave.
-	- Gore Nests now check the area for a max of 15 Demons. If under 15, it will spawn a wave every 40 seconds until max is reached.
-- Gore Nests now properly die with the /kill command.
-- Pain Elementals now spawn up to 16 Lost Souls in an area. If 16 or more is detected in an area, it will stop spawning.
-- Summoners now spawn waves using the same rules as Gore Nests.
-- Pinky and Spectre Speed/Knockback buff
-- Cooldowns on attacking goals fixed.
-- Demon Melee now properly does damage when close enough.
-- Tentacles now properly play animation only when doing damage.
-- Prowler now teleports more often when attacking and is faster.
-- Fire summoned by demons no longer damage demons.
-- Screecher death buff rewritten to be faster/cleaner.
+- Doom 64 Baron of Hell Variant added.
+- Doom 64 Hellknight Variant added.
+- Doom 64 Imp Variant added.
+- Doom 64 Cyberdemon Variant added.
+- Doom 64 Lost Soul Variant added.
+- Doom 64 Shotgun Guy Variant added.
+- Doom 64 Zombieman Variant added.
+- Doom 64 Arachnotron Variant added.
+- Doom 64 Pinky Variant added.
+- Doom 64 Mancubus Variant added.
+- Doom 64 Unmaker added as new item.
+- Doom 2016 Lost Soul Variant added to Lost Soul Eternal.
+- Doom 2016 Revenant Variant added.
+- Doom 2016 Cacodemon Variant added.
+- Doom 2016 Possessed Engineer Variant added.
+- Doom 2016 Mancubus Variant added.
+- Doom 2016 Cyber Mancubus Variant added.
+- Nightmare Imp model tweaked to add second set of spikes to the back. (Applies to new Doom 64 Imp Variant as they share a model)
+- Updated to all new Geckolib methods.
+- Whiplash reanimated.
+- Hell Church moved to Badlands and updated with better placement and new mobs thanks to Tyrius#0842
+- Crucible Sword and Dark Lord Crucible now open from closed when equipping, doesn't sync on servers currently.
+- Classic Cyberdemon model (Same for Doom 64 Variant) resized to buff up the demon.
+- Cueballs (also Possessed Engineer) now move towards the player and will explode similar to creepers. 
+- Screechers now wonder as well.
