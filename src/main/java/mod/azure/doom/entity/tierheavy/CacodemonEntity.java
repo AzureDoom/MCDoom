@@ -1,6 +1,7 @@
 package mod.azure.doom.entity.tierheavy;
 
 import java.util.EnumSet;
+import java.util.SplittableRandom;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
@@ -143,7 +144,9 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable, 
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
 			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-		this.setVariant(this.random.nextInt());
+		SplittableRandom random = new SplittableRandom();
+		int var = random.nextInt(0, 6);
+		this.setVariant(var);
 		return spawnDataIn;
 	}
 
