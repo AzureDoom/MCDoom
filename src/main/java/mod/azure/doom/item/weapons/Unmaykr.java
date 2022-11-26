@@ -84,9 +84,9 @@ public class Unmaykr extends DoomBaseItem {
 							GeckoLibNetwork.syncAnimation(otherPlayer, this, id, ANIM_OPEN);
 						}
 					}
-					boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
-					spawnLightSource(entityLiving, isInsideWaterBlock);
 				}
+				boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
+				spawnLightSource(entityLiving, isInsideWaterBlock);
 			}
 		}
 	}

@@ -64,9 +64,9 @@ public class DShotgun extends DoomBaseItem {
 							GeckoLibNetwork.syncAnimation(otherPlayer, this, id, ANIM_OPEN);
 						}
 					}
-					boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
-					spawnLightSource(entityLiving, isInsideWaterBlock);
 				}
+				boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
+				spawnLightSource(entityLiving, isInsideWaterBlock);
 			} else {
 				worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
 						DoomSounds.EMPTY, SoundCategory.PLAYERS, 1.0F, 1.5F);
