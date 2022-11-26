@@ -42,9 +42,9 @@ public class DPlasmaRifle extends DoomBaseItem {
 	}
 
 	@Override
-	public void usageTick(World worldIn, LivingEntity livingEntityIn, ItemStack stack, int count) {
-		if (livingEntityIn instanceof PlayerEntity) {
-			PlayerEntity playerentity = (PlayerEntity) livingEntityIn;
+	public void usageTick(World worldIn, LivingEntity entityLiving, ItemStack stack, int count) {
+		if (entityLiving instanceof PlayerEntity) {
+			PlayerEntity playerentity = (PlayerEntity) entityLiving;
 			if (stack.getDamage() < (stack.getMaxDamage() - 1)) {
 				if (!playerentity.getItemCooldownManager().isCoolingDown(this)) {
 					playerentity.getItemCooldownManager().set(this, 2);
@@ -54,7 +54,7 @@ public class DPlasmaRifle extends DoomBaseItem {
 								0.0F, 0.15F * 3.0F, 1.0F);
 						abstractarrowentity.hasNoGravity();
 
-						stack.damage(1, livingEntityIn, p -> p.sendToolBreakStatus(livingEntityIn.getActiveHand()));
+						stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
 						worldIn.spawnEntity(abstractarrowentity);
 						worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
 								playerentity.getZ(), DoomSounds.PLASMA_FIRING, SoundCategory.PLAYERS, 1.0F,
@@ -66,9 +66,9 @@ public class DPlasmaRifle extends DoomBaseItem {
 								GeckoLibNetwork.syncAnimation(otherPlayer, this, id, ANIM_OPEN_FASTER);
 							}
 						}
-						boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
-						spawnLightSource(livingEntityIn, isInsideWaterBlock);
 					}
+					boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
+					spawnLightSource(entityLiving, isInsideWaterBlock);
 				}
 			} else {
 				worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
