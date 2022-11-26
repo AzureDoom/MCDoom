@@ -69,9 +69,9 @@ public class SuperShotgun extends DoomBaseItem {
 						for (PlayerEntity otherPlayer : PlayerLookup.tracking(playerentity)) {
 							GeckoLibNetwork.syncAnimation(otherPlayer, this, id, ANIM_OPEN);
 						}
-						boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
-						spawnLightSource(entityLiving, isInsideWaterBlock);
 					}
+					boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
+					spawnLightSource(entityLiving, isInsideWaterBlock);
 				}
 			} else {
 				worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),

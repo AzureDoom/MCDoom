@@ -16,15 +16,18 @@ public class TickingLightEntity extends BlockEntity {
 	}
 
 	public void refresh(int lifeExtension) {
-		lifespan = -lifeExtension;
+		lifespan = 3;
 	}
 
 	private void tick() {
 		if (lifespan++ >= 5) {
-			if (world.getBlockState(getPos()).getBlock() instanceof TickingLightBlock)
+			if (world.getBlockState(getPos()).getBlock() instanceof TickingLightBlock) {
 				world.setBlockState(getPos(), Blocks.AIR.getDefaultState());
-			else
 				markRemoved();
+			} else {
+				world.setBlockState(getPos(), Blocks.AIR.getDefaultState());
+				markRemoved();
+			}
 		}
 	}
 
