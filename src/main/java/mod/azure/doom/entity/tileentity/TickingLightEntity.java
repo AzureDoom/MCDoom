@@ -9,22 +9,25 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TickingLightEntity extends BlockEntity {
-	private int lifespan = 0;
+	private static int lifespan = 0;
 
 	public TickingLightEntity(BlockPos blockPos, BlockState blockState) {
 		super(DoomEntities.TICKING_LIGHT_ENTITY.get(), blockPos, blockState);
 	}
 
 	public void refresh(int lifeExtension) {
-		lifespan = -lifeExtension;
+		lifespan = 3;
 	}
 
 	public static void tick(Level level, BlockPos pos, BlockState state, TickingLightEntity blockEntity) {
-		if (blockEntity.lifespan++ >= 5) {
-			if (level.getBlockState(blockEntity.getBlockPos()).getBlock() instanceof TickingLightBlock)
+		if (lifespan++ >= 5) {
+			if (level.getBlockState(blockEntity.getBlockPos()).getBlock() instanceof TickingLightBlock) {
 				level.setBlockAndUpdate(blockEntity.getBlockPos(), Blocks.AIR.defaultBlockState());
-			else
 				blockEntity.setRemoved();
+			} else {
+				level.setBlockAndUpdate(blockEntity.getBlockPos(), Blocks.AIR.defaultBlockState());
+				blockEntity.setRemoved();
+			}
 		}
 	}
 }

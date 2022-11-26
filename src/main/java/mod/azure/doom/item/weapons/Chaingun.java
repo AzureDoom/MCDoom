@@ -77,9 +77,9 @@ public class Chaingun extends DoomBaseItem {
 									.with(() -> playerentity);
 							GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
 						}
-						boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
-						spawnLightSource(entityLiving, isInsideWaterBlock);
 					}
+					boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
+					spawnLightSource(entityLiving, isInsideWaterBlock);
 				}
 			} else {
 				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
