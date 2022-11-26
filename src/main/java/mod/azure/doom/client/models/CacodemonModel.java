@@ -14,7 +14,7 @@ public class CacodemonModel extends AnimatedTickingGeoModel<CacodemonEntity> {
 	@Override
 	public Identifier getModelResource(CacodemonEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/" + (object.getVariant() == 1 ? "cacodemon64"
-				: object.getVariant() == 3 ? "cacodemoneternal" : "cacodemon") + ".geo.json");
+				: object.getVariant() >= 3 ? "cacodemoneternal" : "cacodemon") + ".geo.json");
 	}
 
 	@Override
