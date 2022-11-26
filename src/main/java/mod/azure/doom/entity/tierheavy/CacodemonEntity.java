@@ -1,6 +1,7 @@
 package mod.azure.doom.entity.tierheavy;
 
 import java.util.Random;
+import java.util.SplittableRandom;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
@@ -204,7 +205,9 @@ public class CacodemonEntity extends DemonEntity implements Monster, IAnimatable
 	public EntityData initialize(ServerWorldAccess serverWorldAccess, LocalDifficulty difficulty,
 			SpawnReason spawnReason, EntityData entityData, NbtCompound entityTag) {
 		entityData = super.initialize(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
-		this.setVariant(this.random.nextInt());
+		SplittableRandom random = new SplittableRandom();
+		int var = random.nextInt(0, 6);
+		this.setVariant(var);
 		return entityData;
 	}
 
