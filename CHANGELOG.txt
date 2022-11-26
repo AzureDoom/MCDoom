@@ -1,27 +1,5 @@
-v.4.2.23
+v.4.2.24
 
-- Doom 64 Baron of Hell Variant added.
-- Doom 64 Hellknight Variant added.
-- Doom 64 Imp Variant added.
-- Doom 64 Cyberdemon Variant added.
-- Doom 64 Lost Soul Variant added.
-- Doom 64 Shotgun Guy Variant added.
-- Doom 64 Zombieman Variant added.
-- Doom 64 Arachnotron Variant added.
-- Doom 64 Pinky Variant added.
-- Doom 64 Mancubus Variant added.
-- Doom 64 Unmaker added as new item.
-- Doom 2016 Lost Soul Variant added to Lost Soul Eternal.
-- Doom 2016 Revenant Variant added.
-- Doom 2016 Cacodemon Variant added.
-- Doom 2016 Possessed Engineer Variant added.
-- Doom 2016 Mancubus Variant added.
-- Doom 2016 Cyber Mancubus Variant added.
-- Nightmare Imp model tweaked to add second set of spikes to the back. (Applies to new Doom 64 Imp Variant as they share a model)
-- Updated to all new Geckolib methods.
-- Whiplash reanimated.
-- Hell Church moved to Badlands and updated with better placement and new mobs thanks to Tyrius#0842
-- Crucible Sword and Dark Lord Crucible now open from closed when equipping, doesn't sync on servers currently.
-- Classic Cyberdemon model (Same for Doom 64 Variant) resized to buff up the demon.
-- Cueballs (also Possessed Engineer) now move towards the player and will explode similar to creepers. 
-- Screechers now wonder as well.
+- Fixed Cacodemon Variants 2 and 3 not showing up.
+- Fixed Cacodemon Variant 4 not working correctly.
+- Tweaked light source placement. 
