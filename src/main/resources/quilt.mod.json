@@ -56,5 +56,5 @@
 	"minecraft": {
 		"environment": "*"
 	},
-	"accessWidener": "doom.accesswidener"
+	"access_widener": "doom.accesswidener"
 }
