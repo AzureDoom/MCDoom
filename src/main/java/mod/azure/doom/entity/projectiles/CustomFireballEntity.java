@@ -27,7 +27,7 @@ public class CustomFireballEntity extends LargeFireball {
 			Entity entity = p_213868_1_.getEntity();
 			Entity entity1 = this.getOwner();
 			if (!(entity instanceof DemonEntity))
-				entity.hurt(DamageSource.indirectMagic(this, entity1), directHitDamage);
+				entity.hurt(DamageSource.fireball(this, entity1), directHitDamage);
 			if (entity1 instanceof LivingEntity) {
 				if (!(entity instanceof DemonEntity))
 					this.doEnchantDamageEffects((LivingEntity) entity1, entity);

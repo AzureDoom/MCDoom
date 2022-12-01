@@ -112,7 +112,7 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 				return;
 
 			target.invulnerableTime = 0;
-			target.hurt(DamageSource.indirectMagic(this, target), damage);
+			target.hurt(DamageSource.indirectMobAttack(this, (LivingEntity) target), damage);
 		}
 	}
 
