@@ -106,7 +106,7 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 				return;
 
 			target.timeUntilRegen = 0;
-			target.damage(DamageSource.magic(this, target), damage);
+			target.damage(DamageSource.mobProjectile(user, this.getOwner()), damage);
 		}
 	}
 

@@ -26,7 +26,7 @@ public class CustomSmallFireballEntity extends SmallFireballEntity {
 				Entity entity2 = this.getOwner();
 				entity.setOnFireFor(5);
 				if (!(entity2 instanceof DemonEntity))
-					entity.damage(DamageSource.magic(this, entity2), directHitDamage);
+					entity.damage(DamageSource.fireball(this, entity2), directHitDamage);
 				if (entity2 instanceof LivingEntity) {
 					if (!(entity2 instanceof DemonEntity))
 						this.applyDamageEffects((LivingEntity) entity2, entity);
