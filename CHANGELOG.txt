@@ -1,3 +1,3 @@
-v.4.2.25
+v.4.2.26
 
-- Tweak fire damage
+- Fixes #77
