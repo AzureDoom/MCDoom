@@ -139,26 +139,14 @@ public class DoomBaseItem extends Item implements IAnimatable, ISyncable {
 			if (lightBlockPos == null)
 				return;
 			entity.level.setBlockAndUpdate(lightBlockPos, DoomBlocks.TICKING_LIGHT_BLOCK.get().defaultBlockState());
-			BlockEntity blockEntity1 = entity.level.getBlockEntity(lightBlockPos);
-			if (blockEntity1 instanceof TickingLightEntity)
-				((TickingLightEntity) blockEntity1).refresh(isInWaterBlock ? 1 : 1);
 		} else if (checkDistance(lightBlockPos, entity.blockPosition(), 2)) {
 			BlockEntity blockEntity = entity.level.getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity) {
-				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 1 : 1);
-				entity.level.setBlockAndUpdate(lightBlockPos, DoomBlocks.TICKING_LIGHT_BLOCK.get().defaultBlockState());
-			} else {
-				BlockEntity blockEntity1 = entity.level.getBlockEntity(lightBlockPos);
-				if (blockEntity1 instanceof TickingLightEntity)
-					((TickingLightEntity) blockEntity1).refresh(isInWaterBlock ? 1 : 1);
+				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
+			} else
 				lightBlockPos = null;
-			}
-		} else {
-			BlockEntity blockEntity1 = entity.level.getBlockEntity(lightBlockPos);
-			if (blockEntity1 instanceof TickingLightEntity)
-				((TickingLightEntity) blockEntity1).refresh(isInWaterBlock ? 1 : 1);
+		} else
 			lightBlockPos = null;
-		}
 	}
 
 	private boolean checkDistance(BlockPos blockPosA, BlockPos blockPosB, int distance) {
