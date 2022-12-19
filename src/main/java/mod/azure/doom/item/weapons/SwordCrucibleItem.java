@@ -1,10 +1,13 @@
 package mod.azure.doom.item.weapons;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
+import mod.azure.doom.client.render.weapons.SwordCrucibleRender;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
@@ -14,8 +17,8 @@ import mod.azure.doom.entity.tierboss.SpiderMastermindEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomBlocks;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -29,28 +32,23 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.AnimationState;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.network.ISyncable;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
+import software.bernie.geckolib.animatable.client.RenderProvider;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class SwordCrucibleItem extends SwordItem implements IAnimatable, ISyncable {
+public class SwordCrucibleItem extends SwordItem implements GeoItem {
 
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
-	public String controllerName = "controller";
-	public static final int ANIM_OPEN = 0;
+	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public SwordCrucibleItem() {
-		super(DoomTier.DOOM_HIGHTEIR, 1, -2.5f, new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(24));
-		GeckoLibNetwork.registerSyncable(this);
+		super(DoomTier.DOOM_HIGHTEIR, 1, -2.5f, new Item.Settings().maxCount(1).maxDamage(24));
+		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
 	@Override
@@ -85,37 +83,19 @@ public class SwordCrucibleItem extends SwordItem implements IAnimatable, ISyncab
 		}
 	}
 
-	public <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-		if (MinecraftClient.getInstance().player.getInventory().getMainHandStack()
-				.getItem() instanceof SwordCrucibleItem) {
-			event.getController().setAnimation(new AnimationBuilder()
-					.addAnimation("opening", EDefaultLoopTypes.PLAY_ONCE).addAnimation("open", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		} else {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("closed", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "shoot_controller", event -> {
+//			if (MinecraftClient.getInstance().player.getMainHandStack() == event.getData(DataTickets.ITEMSTACK))
+//				return event.setAndContinue(RawAnimation.begin().thenPlay("opening").thenLoop("open"));
+//			return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("closed"));
+			return PlayState.STOP;
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController(this, controllerName, 1, this::predicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
-
-	@Override
-	public void onAnimationSync(int id, int state) {
-		if (state == ANIM_OPEN) {
-			final AnimationController<?> controller = GeckoLibUtil.getControllerForID(this.factory, id, controllerName);
-			if (controller.getAnimationState() == AnimationState.Stopped) {
-				controller.markNeedsReload();
-				controller.setAnimation(new AnimationBuilder().addAnimation("using", EDefaultLoopTypes.PLAY_ONCE));
-			}
-		}
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
@@ -178,5 +158,22 @@ public class SwordCrucibleItem extends SwordItem implements IAnimatable, ISyncab
 	@Override
 	public int getMaxUseTime(ItemStack stack) {
 		return 72000;
+	}
+
+	@Override
+	public void createRenderer(Consumer<Object> consumer) {
+		consumer.accept(new RenderProvider() {
+			private final SwordCrucibleRender renderer = new SwordCrucibleRender();
+
+			@Override
+			public BuiltinModelItemRenderer getCustomRenderer() {
+				return this.renderer;
+			}
+		});
+	}
+
+	@Override
+	public Supplier<Object> getRenderProvider() {
+		return this.renderProvider;
 	}
 }

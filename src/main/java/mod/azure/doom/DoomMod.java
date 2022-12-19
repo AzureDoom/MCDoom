@@ -20,8 +20,8 @@ import mod.azure.doom.util.registry.DoomStructures;
 import mod.azure.doom.util.registry.MobSpawn;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
@@ -37,10 +37,11 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import software.bernie.geckolib3.GeckoLib;
+import software.bernie.geckolib.GeckoLib;
 
 public class DoomMod implements ModInitializer {
 
@@ -77,19 +78,271 @@ public class DoomMod implements ModInitializer {
 	public static final Identifier DSG = new Identifier(MODID, "doomed_shotgun");
 	public static final Identifier DGAUSS = new Identifier(MODID, "doomed_gauss");
 	public static final Identifier DPLASMARIFLE = new Identifier(MODID, "doomed_plasma_rifle");
-	public static final ItemGroup DoomEggItemGroup = FabricItemGroupBuilder.create(new Identifier(MODID, "eggs"))
-			.icon(() -> new ItemStack(DoomItems.IMP_SPAWN_EGG)).build();
-	public static final ItemGroup DoomArmorItemGroup = FabricItemGroupBuilder.create(new Identifier(MODID, "armor"))
-			.icon(() -> new ItemStack(DoomItems.DOOM_HELMET)).build();
-	public static final ItemGroup DoomBlockItemGroup = FabricItemGroupBuilder.create(new Identifier(MODID, "blocks"))
-			.icon(() -> new ItemStack(DoomBlocks.BARREL_BLOCK)).build();
-	public static final ItemGroup DoomWeaponItemGroup = FabricItemGroupBuilder.create(new Identifier(MODID, "weapons"))
-			.icon(() -> new ItemStack(DoomItems.BFG_ETERNAL)).build();
-	public static final ItemGroup DoomPowerUPItemGroup = FabricItemGroupBuilder.create(new Identifier(MODID, "powerup"))
-			.icon(() -> new ItemStack(DoomItems.INMORTAL)).build();
+	public static final ItemGroup DoomEggItemGroup = FabricItemGroup.builder(new Identifier(MODID, "eggs"))
+			.icon(() -> new ItemStack(DoomItems.IMP_SPAWN_EGG)).entries((enabledFeatures, entries, operatorEnabled) -> {
+				entries.add(DoomItems.GORE_NEST_SPAWN_EGG);
+				entries.add(DoomItems.CUEBALL_SPAWN_EGG);
+				entries.add(DoomItems.TENTACLE_SPAWN_EGG);
+				entries.add(DoomItems.TURRET_SPAWN_EGG);
+				entries.add(DoomItems.CHAINGUNNER_SPAWN_EGG);
+				entries.add(DoomItems.GARGOYLE_SPAWN_EGG);
+				entries.add(DoomItems.IMP_SPAWN_EGG);
+				entries.add(DoomItems.STONEIMP_SPAWN_EGG);
+				entries.add(DoomItems.LOST_SOUL_SPAWN_EGG);
+				entries.add(DoomItems.LOST_SOUL_ETERNAL_SPAWN_EGG);
+				entries.add(DoomItems.MAYKR_DRONE_SPAWN_EGG);
+				entries.add(DoomItems.MECH_ZOMBIE_SPAWN_EGG);
+				entries.add(DoomItems.POSSESSED_SCIENTIST_SPAWN_EGG);
+				entries.add(DoomItems.POSSESSED_WORKER_SPAWN_EGG);
+				entries.add(DoomItems.POSSESSED_SOLDIER_SPAWN_EGG);
+				entries.add(DoomItems.SHOTGUNGUY_SPAWN_EGG);
+				entries.add(DoomItems.UNWILLING_SPAWN_EGG);
+				entries.add(DoomItems.ZOMBIEMAN_SPAWN_EGG);
+				entries.add(DoomItems.ARACHNOTRON_SPAWN_EGG);
+				entries.add(DoomItems.ARACHNOTRONETERNAL_SPAWN_EGG);
+				entries.add(DoomItems.BLOOD_MAYKR_SPAWN_EGG);
+				entries.add(DoomItems.CACODEMON_SPAWN_EGG);
+				entries.add(DoomItems.HELLKNIGHT_SPAWN_EGG);
+				entries.add(DoomItems.HELLKNIGHT2016_SPAWN_EGG);
+				entries.add(DoomItems.MANCUBUS_SPAWN_EGG);
+				entries.add(DoomItems.PAIN_SPAWN_EGG);
+				entries.add(DoomItems.PINKY_SPAWN_EGG);
+				entries.add(DoomItems.SPECTRE_SPAWN_EGG);
+				entries.add(DoomItems.PROWLER_SPAWN_EGG);
+				entries.add(DoomItems.REVENANT_SPAWN_EGG);
+				entries.add(DoomItems.REVENANT2016_SPAWN_EGG);
+				entries.add(DoomItems.WHIPLASH_SPAWN_EGG);
+				entries.add(DoomItems.ARCHVILE_SPAWN_EGG);
+				entries.add(DoomItems.BARON_SPAWN_EGG);
+				entries.add(DoomItems.BARON2016_SPAWN_EGG);
+				entries.add(DoomItems.FIREBORNE_BARON_SPAWN_EGG);
+				entries.add(DoomItems.ARMORED_BARON_SPAWN_EGG);
+				entries.add(DoomItems.CYBERDEMON_SPAWN_EGG);
+				entries.add(DoomItems.DOOMHUNTER_SPAWN_EGG);
+				entries.add(DoomItems.MARAUDER_SPAWN_EGG);
+				entries.add(DoomItems.SUMMONER_SPAWN_EGG);
+				entries.add(DoomItems.SPIDERMASTERMIND_SPAWN_EGG);
+				entries.add(DoomItems.SPIDERMASTERMIND2016_SPAWN_EGG);
+				entries.add(DoomItems.ICON_SPAWN_EGG);
+				entries.add(DoomItems.MOTHERDEMON_SPAWN_EGG);
+				entries.add(DoomItems.GLADIATOR_SPAWN_EGG);
+				entries.add(DoomItems.ARCH_MAKYR_SPAWN_EGG);
+			}).build();
+	public static final ItemGroup DoomArmorItemGroup = FabricItemGroup.builder(new Identifier(MODID, "armor"))
+			.icon(() -> new ItemStack(DoomItems.DOOM_HELMET)).entries((enabledFeatures, entries, operatorEnabled) -> {
+				entries.add(DoomItems.DOOM_HELMET);
+				entries.add(DoomItems.DOOM_CHESTPLATE);
+				entries.add(DoomItems.DOOM_LEGGINGS);
+				entries.add(DoomItems.DOOM_BOOTS);
+				entries.add(DoomItems.PRAETOR_DOOM_HELMET);
+				entries.add(DoomItems.PRAETOR_DOOM_CHESTPLATE);
+				entries.add(DoomItems.PRAETOR_DOOM_LEGGINGS);
+				entries.add(DoomItems.PRAETOR_DOOM_BOOTS );
+				entries.add(DoomItems.ASTRO_DOOM_CHESTPLATE);
+				entries.add(DoomItems.ASTRO_DOOM_LEGGINGS);
+				entries.add(DoomItems.ASTRO_DOOM_BOOTS);
+				entries.add(DoomItems.CRIMSON_DOOM_HELMET);
+				entries.add(DoomItems.CRIMSON_DOOM_CHESTPLATE);
+				entries.add(DoomItems.CRIMSON_DOOM_LEGGINGS);
+				entries.add(DoomItems.CRIMSON_DOOM_BOOTS);
+				entries.add(DoomItems.MIDNIGHT_DOOM_HELMET);
+				entries.add(DoomItems.MIDNIGHT_DOOM_CHESTPLATE);
+				entries.add(DoomItems.MIDNIGHT_DOOM_LEGGINGS);
+				entries.add(DoomItems.MIDNIGHT_DOOM_BOOTS);
+				entries.add(DoomItems.DEMONIC_DOOM_HELMET);
+				entries.add(DoomItems.DEMONIC_DOOM_CHESTPLATE);
+				entries.add(DoomItems.DEMONIC_DOOM_LEGGINGS);
+				entries.add(DoomItems.DEMONIC_DOOM_BOOTS);
+				entries.add(DoomItems.DEMONCIDE_DOOM_HELMET);
+				entries.add(DoomItems.DEMONCIDE_DOOM_CHESTPLATE);
+				entries.add(DoomItems.DEMONCIDE_DOOM_LEGGINGS);
+				entries.add(DoomItems.DEMONCIDE_DOOM_BOOTS);
+				entries.add(DoomItems.SENTINEL_DOOM_HELMET);
+				entries.add(DoomItems.SENTINEL_DOOM_CHESTPLATE);
+				entries.add(DoomItems.SENTINEL_DOOM_LEGGINGS);
+				entries.add(DoomItems.SENTINEL_DOOM_BOOTS);
+				entries.add(DoomItems.EMBER_DOOM_HELMET);
+				entries.add(DoomItems.EMBER_DOOM_CHESTPLATE);
+				entries.add(DoomItems.EMBER_DOOM_LEGGINGS);
+				entries.add(DoomItems.EMBER_DOOM_BOOTS);
+				entries.add(DoomItems.ZOMBIE_DOOM_HELMET);
+				entries.add(DoomItems.ZOMBIE_DOOM_CHESTPLATE);
+				entries.add(DoomItems.ZOMBIE_DOOM_LEGGINGS);
+				entries.add(DoomItems.ZOMBIE_DOOM_BOOTS);
+				entries.add(DoomItems.PHOBOS_DOOM_HELMET);
+				entries.add(DoomItems.PHOBOS_DOOM_CHESTPLATE);
+				entries.add(DoomItems.PHOBOS_DOOM_LEGGINGS);
+				entries.add(DoomItems.PHOBOS_DOOM_BOOTS);
+				entries.add(DoomItems.NIGHTMARE_DOOM_HELMET);
+				entries.add(DoomItems.NIGHTMARE_DOOM_CHESTPLATE);
+				entries.add(DoomItems.NIGHTMARE_DOOM_LEGGINGS);
+				entries.add(DoomItems.NIGHTMARE_DOOM_BOOTS);
+				entries.add(DoomItems.PURPLEPONY_DOOM_HELMET);
+				entries.add(DoomItems.PURPLEPONY_DOOM_CHESTPLATE);
+				entries.add(DoomItems.PURPLEPONY_DOOM_LEGGINGS);
+				entries.add(DoomItems.PURPLEPONY_DOOM_BOOTS);
+				entries.add(DoomItems.DOOMICORN_DOOM_HELMET);
+				entries.add(DoomItems.DOOMICORN_DOOM_CHESTPLATE);
+				entries.add(DoomItems.DOOMICORN_DOOM_LEGGINGS);
+				entries.add(DoomItems.DOOMICORN_DOOM_BOOTS);
+				entries.add(DoomItems.GOLD_DOOM_HELMET);
+				entries.add(DoomItems.GOLD_DOOM_CHESTPLATE);
+				entries.add(DoomItems.GOLD_DOOM_LEGGINGS);
+				entries.add(DoomItems.GOLD_DOOM_BOOTS);
+				entries.add(DoomItems.TWENTY_FIVE_DOOM_HELMET);
+				entries.add(DoomItems.TWENTY_FIVE_DOOM_CHESTPLATE);
+				entries.add(DoomItems.TWENTY_FIVE_DOOM_LEGGINGS);
+				entries.add(DoomItems.TWENTY_FIVE_DOOM_BOOTS);
+				entries.add(DoomItems.BRONZE_DOOM_HELMET);
+				entries.add(DoomItems.BRONZE_DOOM_CHESTPLATE);
+				entries.add(DoomItems.BRONZE_DOOM_LEGGINGS);
+				entries.add(DoomItems.BRONZE_DOOM_BOOTS);
+				entries.add(DoomItems.CULTIST_DOOM_HELMET);
+				entries.add(DoomItems.CULTIST_DOOM_CHESTPLATE);
+				entries.add(DoomItems.CULTIST_DOOM_LEGGINGS);
+				entries.add(DoomItems.CULTIST_DOOM_BOOTS);
+				entries.add(DoomItems.MAYKR_DOOM_HELMET);
+				entries.add(DoomItems.MAYKR_DOOM_CHESTPLATE);
+				entries.add(DoomItems.MAYKR_DOOM_LEGGINGS);
+				entries.add(DoomItems.MAYKR_DOOM_BOOTS);
+				entries.add(DoomItems.PAINTER_DOOM_HELMET);
+				entries.add(DoomItems.PAINTER_DOOM_CHESTPLATE);
+				entries.add(DoomItems.CLASSIC_DOOM_HELMET);
+				entries.add(DoomItems.CLASSIC_DOOM_CHESTPLATE);
+				entries.add(DoomItems.CLASSIC_DOOM_LEGGINGS);
+				entries.add(DoomItems.CLASSIC_RED_DOOM_CHESTPLATE);
+				entries.add(DoomItems.CLASSIC_RED_DOOM_LEGGINGS);
+				entries.add(DoomItems.CLASSIC_INDIGO_DOOM_CHESTPLATE);
+				entries.add(DoomItems.CLASSIC_INDIGO_DOOM_LEGGINGS);
+				entries.add(DoomItems.CLASSIC_BRONZE_DOOM_CHESTPLATE);
+				entries.add(DoomItems.CLASSIC_BRONZE_DOOM_LEGGINGS);
+				entries.add(DoomItems.CLASSIC_DOOM_BOOTS);
+				entries.add(DoomItems.MULLET_DOOM_HELMET1);
+				entries.add(DoomItems.MULLET_DOOM_CHESTPLATE1);
+				entries.add(DoomItems.MULLET_DOOM_CHESTPLATE2);
+				entries.add(DoomItems.MULLET_DOOM_CHESTPLATE3);
+				entries.add(DoomItems.MULLET_DOOM_LEGGINGS1);
+				entries.add(DoomItems.MULLET_DOOM_BOOTS1);
+				entries.add(DoomItems.HOTROD_HELMET);
+				entries.add(DoomItems.HOTROD_CHESTPLATE);
+				entries.add(DoomItems.HOTROD_LEGGINGS);
+				entries.add(DoomItems.HOTROD_BOOTS);
+				entries.add(DoomItems.SANTA_HELMET);
+				entries.add(DoomItems.DARKLORD_HELMET);
+				entries.add(DoomItems.DARKLORD_CHESTPLATE);
+				entries.add(DoomItems.DARKLORD_LEGGINGS);
+				entries.add(DoomItems.DARKLORD_BOOTS);
+			}).build();
+	public static final ItemGroup DoomBlockItemGroup = FabricItemGroup.builder(new Identifier(MODID, "blocks"))
+			.icon(() -> new ItemStack(DoomBlocks.BARREL_BLOCK)).entries((enabledFeatures, entries, operatorEnabled) -> {
+				entries.add(DoomBlocks.BARREL_BLOCK);
+				entries.add(DoomBlocks.JUMP_PAD);
+				entries.add(DoomBlocks.DOOM_SAND);
+				entries.add(DoomBlocks.ARGENT_BLOCK);
+				entries.add(DoomBlocks.ARGENT_LAMP_BLOCK);
+				entries.add(DoomBlocks.TOTEM);
+				entries.add(DoomBlocks.GUN_TABLE);
+				entries.add(DoomBlocks.E1M1_1);
+				entries.add(DoomBlocks.E1M1_2);
+				entries.add(DoomBlocks.E1M1_3);
+				entries.add(DoomBlocks.E1M1_4);
+				entries.add(DoomBlocks.E1M1_5);
+				entries.add(DoomBlocks.E1M1_6);
+				entries.add(DoomBlocks.E1M1_7);
+				entries.add(DoomBlocks.E1M1_8);
+				entries.add(DoomBlocks.E1M1_9);
+				entries.add(DoomBlocks.E1M1_10);
+				entries.add(DoomBlocks.E1M1_11);
+				entries.add(DoomBlocks.E1M1_12);
+				entries.add(DoomBlocks.E1M1_13);
+				entries.add(DoomBlocks.E1M1_14);
+				entries.add(DoomBlocks.E1M1_15);
+				entries.add(DoomBlocks.E1M1_16);
+				entries.add(DoomBlocks.E1M1_17);
+				entries.add(DoomBlocks.E1M1_18);
+				entries.add(DoomBlocks.E1M1_19);
+				entries.add(DoomBlocks.E1M1_20);
+				entries.add(DoomBlocks.E1M1_21);
+				entries.add(DoomBlocks.E1M1_22);
+				entries.add(DoomBlocks.E1M1_23);
+				entries.add(DoomBlocks.E1M1_24);
+				entries.add(DoomBlocks.E1M1_25);
+				entries.add(DoomBlocks.E1M1_26);
+				entries.add(DoomBlocks.ICON_WALL1);
+				entries.add(DoomBlocks.ICON_WALL2);
+				entries.add(DoomBlocks.ICON_WALL3);
+				entries.add(DoomBlocks.ICON_WALL4);
+				entries.add(DoomBlocks.ICON_WALL5);
+				entries.add(DoomBlocks.ICON_WALL6);
+				entries.add(DoomBlocks.ICON_WALL7);
+				entries.add(DoomBlocks.ICON_WALL8);
+				entries.add(DoomBlocks.ICON_WALL9);
+				entries.add(DoomBlocks.ICON_WALL10);
+				entries.add(DoomBlocks.ICON_WALL11);
+				entries.add(DoomBlocks.ICON_WALL12);
+				entries.add(DoomBlocks.ICON_WALL13);
+				entries.add(DoomBlocks.ICON_WALL14);
+				entries.add(DoomBlocks.ICON_WALL15);
+				entries.add(DoomBlocks.ICON_WALL16);
+			}).build();
+	public static final ItemGroup DoomWeaponItemGroup = FabricItemGroup.builder(new Identifier(MODID, "weapons"))
+			.icon(() -> new ItemStack(DoomItems.BFG_ETERNAL)).entries((enabledFeatures, entries, operatorEnabled) -> {
+				entries.add(DoomItems.ARGENT_AXE);
+				entries.add(DoomItems.ARGENT_HOE);
+				entries.add(DoomItems.ARGENT_SHOVEL);
+				entries.add(DoomItems.ARGENT_PICKAXE);
+				entries.add(DoomItems.ARGENT_SWORD);
+				entries.add(DoomItems.ARGENT_PAXEL);
+				entries.add(DoomItems.CHAINSAW);
+				entries.add(DoomItems.CHAINSAW64);
+				entries.add(DoomItems.CHAINSAW_ETERNAL);
+				entries.add(DoomItems.PISTOL);
+				entries.add(DoomItems.HEAVYCANNON);
+				entries.add(DoomItems.CHAINGUN);
+				entries.add(DoomItems.SG);
+				entries.add(DoomItems.DSG);
+				entries.add(DoomItems.SSG);
+				entries.add(DoomItems.DPLASMARIFLE);
+				entries.add(DoomItems.PLASMAGUN);
+				entries.add(DoomItems.ROCKETLAUNCHER);
+				entries.add(DoomItems.DGAUSS);
+				entries.add(DoomItems.BALLISTA);
+				entries.add(DoomItems.UNMAKER);
+				entries.add(DoomItems.UNMAYKR);
+				entries.add(DoomItems.BFG);
+				entries.add(DoomItems.BFG_ETERNAL);
+				entries.add(DoomItems.SWORD_CLOSED);
+				entries.add(DoomItems.CRUCIBLESWORD);
+				entries.add(DoomItems.AXE_CLOSED);
+				entries.add(DoomItems.AXE_OPEN);
+				entries.add(DoomItems.DARKLORDCRUCIBLE);
+				entries.add(DoomItems.SENTINELHAMMER);
+				entries.add(DoomItems.GRENADE);
+				entries.add(DoomItems.GAS_BARREL);
+				entries.add(DoomItems.BULLETS);
+				entries.add(DoomItems.SHOTGUN_SHELLS);
+				entries.add(DoomItems.CHAINGUN_BULLETS);
+				entries.add(DoomItems.ROCKET);
+				entries.add(DoomItems.ARGENT_BOLT);
+				entries.add(DoomItems.ENERGY_CELLS);
+				entries.add(DoomItems.BFG_CELL);
+			}).build();
+	public static final ItemGroup DoomPowerUPItemGroup = FabricItemGroup.builder(new Identifier(MODID, "powerup"))
+			.icon(() -> new ItemStack(DoomItems.SOULCUBE)).entries((enabledFeatures, entries, operatorEnabled) -> {
+				entries.add(DoomItems.ARGENT_ENERGY);
+				entries.add(DoomItems.ARGENT_PLATE);
+				entries.add(DoomItems.SOULCUBE);
+				entries.add(DoomItems.INMORTAL);
+				entries.add(DoomItems.INVISIBLE);
+				entries.add(DoomItems.MEGA);
+				entries.add(DoomItems.POWER);
+				entries.add(DoomItems.DAISY);
+				entries.add(DoomItems.E1M1_MUSIC_DISC);
+				entries.add(DoomItems.GEOF_MUSIC_DISC);
+			}).build();
 	public static ScreenHandlerType<GunTableScreenHandler> SCREEN_HANDLER_TYPE;
-	public static final RecipeSerializer<GunTableRecipe> GUN_TABLE_RECIPE_SERIALIZER = Registry
-			.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "gun_table"), new GunTableRecipe.Serializer());
+	public static final RecipeSerializer<GunTableRecipe> GUN_TABLE_RECIPE_SERIALIZER = Registry.register(
+			Registries.RECIPE_SERIALIZER, new Identifier(MODID, "gun_table"), new GunTableRecipe.Serializer());
 
 	@Override
 	public void onInitialize() {
@@ -101,13 +354,13 @@ public class DoomMod implements ModInitializer {
 		MOBS = new DoomEntities();
 		PROJECTILES = new ProjectilesEntityRegister();
 		FuelRegistry.INSTANCE.add(DoomItems.ARGENT_ENERGY, 32767);
-		ICON = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":icon",
+		ICON = Registry.register(Registries.BLOCK_ENTITY_TYPE, MODID + ":icon",
 				FabricBlockEntityTypeBuilder.create(IconBlockEntity::new, DoomBlocks.ICON_WALL1).build(null));
-		TOTEM = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":totem",
+		TOTEM = Registry.register(Registries.BLOCK_ENTITY_TYPE, MODID + ":totem",
 				FabricBlockEntityTypeBuilder.create(TotemEntity::new, DoomBlocks.TOTEM).build(null));
-		GUN_TABLE_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":guntable",
+		GUN_TABLE_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, MODID + ":guntable",
 				FabricBlockEntityTypeBuilder.create(GunBlockEntity::new, DoomBlocks.GUN_TABLE).build(null));
-		TICKING_LIGHT_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":lightblock",
+		TICKING_LIGHT_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, MODID + ":lightblock",
 				FabricBlockEntityTypeBuilder.create(TickingLightEntity::new, DoomBlocks.TICKING_LIGHT_BLOCK)
 						.build(null));
 		MobSpawn.addSpawnEntries();
@@ -134,7 +387,8 @@ public class DoomMod implements ModInitializer {
 		PacketHandler.registerMessages();
 		DoomStructures.registerStructureFeatures();
 		SCREEN_HANDLER_TYPE = new ScreenHandlerType<>(GunTableScreenHandler::new);
-		Registry.register(Registry.SCREEN_HANDLER, new Identifier(MODID, "guntable_screen_type"), SCREEN_HANDLER_TYPE);
+		Registry.register(Registries.SCREEN_HANDLER, new Identifier(MODID, "guntable_screen_type"),
+				SCREEN_HANDLER_TYPE);
 	}
 
 	public static class DataTrackers {

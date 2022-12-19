@@ -38,65 +38,41 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class MechaZombieEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
+public class MechaZombieEntity extends DemonEntity implements GeoEntity {
 
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public MechaZombieEntity(EntityType<MechaZombieEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
 	}
 
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (event.isMoving()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		if (!event.isMoving() && this.velocityModified) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
-	}
-
-	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
-		if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("attack", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		return PlayState.STOP;
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+			if (event.isMoving())
+				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
+			if ((this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
+			if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().then("attack", LoopType.PLAY_ONCE));
+			return PlayState.STOP;
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<MechaZombieEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(
-				new AnimationController<MechaZombieEntity>(this, "controller1", 0, this::predicate1));
-	}
-
-	@Override
-	public int tickTimer() {
-		return age;
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	public static boolean spawning(EntityType<MechaZombieEntity> p_223337_0_, World p_223337_1_, SpawnReason reason,
@@ -110,11 +86,11 @@ public class MechaZombieEntity extends DemonEntity implements IAnimatable, IAnim
 		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.add(6, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.goalSelector.add(4, new RangedStrafeAttackGoal(this,
-				new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8)
-						.setDamage(DoomConfig.mechazombie_ranged_damage)
+		this.goalSelector.add(4,
+				new RangedStrafeAttackGoal(this, new FireballAttack(this, false)
+						.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomConfig.mechazombie_ranged_damage)
 						.setSound(SoundEvents.ENTITY_BLAZE_SHOOT, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
-				1.0D, 50, 30, 15, 15F, 1).setMultiShot(4, 3));
+						1.0D, 50, 30, 15, 15F, 1).setMultiShot(4, 3));
 		this.goalSelector.add(4, new DemonAttackGoal(this, 1.25D, 2));
 		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
 		this.targetSelector.add(2, new ActiveTargetGoal(this, PlayerEntity.class, true));

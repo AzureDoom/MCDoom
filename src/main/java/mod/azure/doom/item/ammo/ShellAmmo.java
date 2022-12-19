@@ -2,7 +2,6 @@ package mod.azure.doom.item.ammo;
 
 import java.util.List;
 
-import mod.azure.doom.DoomMod;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -13,7 +12,7 @@ import net.minecraft.world.World;
 public class ShellAmmo extends Item {
 
 	public ShellAmmo() {
-		super(new Item.Settings().group(DoomMod.DoomWeaponItemGroup));
+		super(new Item.Settings());
 	}
 
 	@Override

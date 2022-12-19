@@ -3,9 +3,9 @@ package mod.azure.doom.client.models.weapons;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.SwordCrucibleItem;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class SwordCrucibleModel extends AnimatedGeoModel<SwordCrucibleItem> {
+public class SwordCrucibleModel extends GeoModel<SwordCrucibleItem> {
 	@Override
 	public Identifier getModelResource(SwordCrucibleItem object) {
 		return new Identifier(DoomMod.MODID, "geo/cruciblesword.geo.json");
@@ -13,7 +13,7 @@ public class SwordCrucibleModel extends AnimatedGeoModel<SwordCrucibleItem> {
 
 	@Override
 	public Identifier getTextureResource(SwordCrucibleItem object) {
-		return new Identifier(DoomMod.MODID, "textures/items/crucible.png");
+		return new Identifier(DoomMod.MODID, "textures/item/crucible.png");
 	}
 
 	@Override

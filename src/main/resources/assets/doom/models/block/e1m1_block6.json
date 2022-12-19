@@ -1,11 +1,11 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"particle": "doom:blocks/comptileright",
-		"comptileright": "doom:blocks/comptileright",
-		"e1m1_reddotceiling": "doom:blocks/e1m1_reddotceiling",
-		"e1m1_blue_floor": "doom:blocks/e1m1_blue_floor",
-		"comptileleft": "doom:blocks/comptileleft"
+		"particle": "doom:block/comptileright",
+		"comptileright": "doom:block/comptileright",
+		"e1m1_reddotceiling": "doom:block/e1m1_reddotceiling",
+		"e1m1_blue_floor": "doom:block/e1m1_blue_floor",
+		"comptileleft": "doom:block/comptileleft"
 	},
 	"elements": [
 		{

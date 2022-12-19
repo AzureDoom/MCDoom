@@ -2,15 +2,16 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.data.EntityModelData;
 
-public class IconofsinModel extends AnimatedTickingGeoModel<IconofsinEntity> {
-	
+public class IconofsinModel extends GeoModel<IconofsinEntity> {
+
 	@Override
 	public Identifier getModelResource(IconofsinEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/icon.geo.json");
@@ -27,16 +28,21 @@ public class IconofsinModel extends AnimatedTickingGeoModel<IconofsinEntity> {
 	}
 
 	@Override
-	public void setLivingAnimations(IconofsinEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
-		super.setLivingAnimations(entity, uniqueID, customPredicate);
-		IBone head = this.getAnimationProcessor().getBone("neck");
+	public void setCustomAnimations(IconofsinEntity animatable, long instanceId,
+			AnimationState<IconofsinEntity> animationState) {
+		super.setCustomAnimations(animatable, instanceId, animationState);
 
-		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
+		CoreGeoBone head = getAnimationProcessor().getBone("head");
+		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+
 		if (head != null) {
-			head.setRotationX(Vec3f.POSITIVE_X
-					.getRadialQuaternion((extraData.headPitch - 20) * ((float) Math.PI / 360F)).getX());
-			head.setRotationY(
-					Vec3f.POSITIVE_Y.getRadialQuaternion(extraData.netHeadYaw * ((float) Math.PI / 360F)).getY());
+			head.setRotX((entityData.headPitch() - 20) * ((float) Math.PI / 360F));
+			head.setRotY(entityData.netHeadYaw() * ((float) Math.PI / 360F));
 		}
+	}
+
+	@Override
+	public RenderLayer getRenderType(IconofsinEntity animatable, Identifier texture) {
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 }

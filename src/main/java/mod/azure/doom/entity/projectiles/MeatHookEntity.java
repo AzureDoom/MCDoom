@@ -20,19 +20,19 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class MeatHookEntity extends PersistentProjectileEntity implements IAnimatable {
+public class MeatHookEntity extends PersistentProjectileEntity implements GeoEntity {
 	private static final TrackedData<Integer> HOOKED_ENTITY_ID = DataTracker.registerData(MeatHookEntity.class,
 			TrackedDataHandlerRegistry.INTEGER);
 	public static final TrackedData<Float> FORCED_YAW = DataTracker.registerData(MeatHookEntity.class,
 			TrackedDataHandlerRegistry.FLOAT);
-	private AnimationFactory factory = new AnimationFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	private double maxRange = 0D;
 	private double maxSpeed = 0D;
 	private boolean isPulling = false;
@@ -68,18 +68,16 @@ public class MeatHookEntity extends PersistentProjectileEntity implements IAnima
 		this.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
 	}
 
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		return PlayState.CONTINUE;
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
+			return PlayState.CONTINUE;
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<MeatHookEntity>(this, "controller", 0, this::predicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
@@ -200,11 +198,6 @@ public class MeatHookEntity extends PersistentProjectileEntity implements IAnima
 		}
 	}
 
-//	@Override
-//	public Packet<?> createSpawnPacket() {
-//		return EntityPacket.createPacket(this);
-//	}
-
 	@Override
 	public void readCustomDataFromNbt(NbtCompound tag) {
 		super.readCustomDataFromNbt(tag);
@@ -213,7 +206,6 @@ public class MeatHookEntity extends PersistentProjectileEntity implements IAnima
 		maxRange = tag.getDouble("maxRange");
 		maxSpeed = tag.getDouble("maxSpeed");
 		isPulling = tag.getBoolean("isPulling");
-		// stack = ItemStack.fromNbt(tag.getCompound("hookshotItem"));
 
 		if (world.getEntityById(tag.getInt("owner"))instanceof PlayerEntity owner)
 			setOwner(owner);
@@ -226,7 +218,6 @@ public class MeatHookEntity extends PersistentProjectileEntity implements IAnima
 		tag.putDouble("maxRange", maxRange);
 		tag.putDouble("maxSpeed", maxSpeed);
 		tag.putBoolean("isPulling", isPulling);
-		// tag.put("hookshotItem", stack.writeNbt(new NbtCompound()));
 
 		if (getOwner()instanceof PlayerEntity owner)
 			tag.putInt("owner", owner.getId());

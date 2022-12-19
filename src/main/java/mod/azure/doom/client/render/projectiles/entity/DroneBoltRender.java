@@ -1,5 +1,8 @@
 package mod.azure.doom.client.render.projectiles.entity;
 
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.projectiles.entity.DroneBoltEntity;
 import net.minecraft.client.render.OverlayTexture;
@@ -12,9 +15,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Matrix3f;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
 
 public class DroneBoltRender extends EntityRenderer<DroneBoltEntity> {
 
@@ -38,12 +39,12 @@ public class DroneBoltRender extends EntityRenderer<DroneBoltEntity> {
 	public void render(DroneBoltEntity persistentProjectileEntity, float f, float g, MatrixStack matrixStack,
 			VertexConsumerProvider vertexConsumerProvider, int i) {
 		matrixStack.push();
-		matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(
+		matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(
 				MathHelper.lerp(g, persistentProjectileEntity.prevYaw, persistentProjectileEntity.getYaw()) - 90.0F));
-		matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(
+		matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(
 				MathHelper.lerp(g, persistentProjectileEntity.prevPitch, persistentProjectileEntity.getPitch())));
 
-		matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(45.0F));
+		matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(45.0F));
 		matrixStack.scale(0.05625F, 0.05625F, 0.05625F);
 		matrixStack.translate(-4.0D, 0.0D, 0.0D);
 		VertexConsumer vertexConsumer = vertexConsumerProvider
@@ -61,7 +62,7 @@ public class DroneBoltRender extends EntityRenderer<DroneBoltEntity> {
 		this.method_23153(matrix4f, matrix3f, vertexConsumer, -7, -2, -2, 0.0F, 0.3125F, 1, 0, 0, i);
 
 		for (int u = 0; u < 4; ++u) {
-			matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90.0F));
+			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90.0F));
 			this.method_23153(matrix4f, matrix3f, vertexConsumer, -8, -2, 0, 0.0F, 0.0F, 0, 1, 0, i);
 			this.method_23153(matrix4f, matrix3f, vertexConsumer, 8, -2, 0, 0.5F, 0.0F, 0, 1, 0, i);
 			this.method_23153(matrix4f, matrix3f, vertexConsumer, 8, 2, 0, 0.5F, 0.15625F, 0, 1, 0, i);

@@ -2,10 +2,11 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tiersuperheavy.ArchvileEntity;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class ArchvileModel extends AnimatedTickingGeoModel<ArchvileEntity> {
+public class ArchvileModel extends GeoModel<ArchvileEntity> {
 
 	private static final Identifier[] TEX = {
 			new Identifier(DoomMod.MODID, "textures/entity/archvile_flame_1.png"),
@@ -35,5 +36,10 @@ public class ArchvileModel extends AnimatedTickingGeoModel<ArchvileEntity> {
 	public Identifier getAnimationResource(ArchvileEntity object) {
 		return new Identifier(DoomMod.MODID,
 				"animations/" + (object.getVariant() == 1 ? "archvile_" : "archvileeternal.") + "animation.json");
+	}
+
+	@Override
+	public RenderLayer getRenderType(ArchvileEntity animatable, Identifier texture) {
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 }

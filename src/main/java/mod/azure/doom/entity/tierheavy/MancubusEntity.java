@@ -47,106 +47,65 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class MancubusEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
+public class MancubusEntity extends DemonEntity implements GeoEntity {
 
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(MancubusEntity.class,
 			TrackedDataHandlerRegistry.INTEGER);
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
 	public MancubusEntity(EntityType<MancubusEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
 	}
 
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (event.isMoving()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		if (!event.isMoving() && this.velocityModified) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
-	}
-
-	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
-		if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("firing", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(STATE) == 3 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("ground", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		return PlayState.STOP;
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+			if (event.isMoving())
+				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
+			if ((this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("walk"))
+				if (this.world.isClient)
+					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
+							SoundCategory.HOSTILE, 0.25F, 1.0F, false);
+			if (event.getKeyframeData().getSound().matches("talk"))
+				if (this.world.isClient)
+					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.MANCUBUS_STEP,
+							SoundCategory.HOSTILE, 0.25F, 1.0F, false);
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
+			if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
+			if (this.dataTracker.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().then("firing", LoopType.PLAY_ONCE));
+			if (this.dataTracker.get(STATE) == 3 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().then("ground", LoopType.PLAY_ONCE));
+			return PlayState.STOP;
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("attack"))
+				if (this.world.isClient)
+					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.ROCKET_FIRING,
+							SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+			if (event.getKeyframeData().getSound().matches("flames"))
+				if (this.world.isClient)
+					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ITEM_FIRECHARGE_USE,
+							SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-
-		AnimationController<MancubusEntity> controller = new AnimationController<MancubusEntity>(this, "controller", 0,
-				this::predicate);
-		AnimationController<MancubusEntity> controller1 = new AnimationController<MancubusEntity>(this, "controller1",
-				0, this::predicate1);
-		controller.registerSoundListener(this::soundListener);
-		controller1.registerSoundListener(this::soundListener1);
-		data.addAnimationController(controller);
-		data.addAnimationController(controller1);
-	}
-
-	private <ENTITY extends IAnimatable> void soundListener1(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("attack") && this.dataTracker.get(STATE) == 1) {
-			this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.ROCKET_FIRING,
-					SoundCategory.HOSTILE, 0.25F, 1.0F, true);
-		}
-		if (event.sound.matches("flames") && this.dataTracker.get(STATE) > 1) {
-			this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ITEM_FIRECHARGE_USE,
-					SoundCategory.HOSTILE, 0.25F, 1.0F, true);
-		}
-	}
-
-	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
-		if (this.world.isClient) {
-			if (event.sound.matches("walk")) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
-			}
-			if (event.sound.matches("talk")) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.MANCUBUS_STEP,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
-			}
-		}
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
-
-	@Override
-	public int tickTimer() {
-		return age;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override

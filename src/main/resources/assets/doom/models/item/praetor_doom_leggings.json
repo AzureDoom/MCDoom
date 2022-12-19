@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "doom:items/praetor_leggings"
+        "layer0": "doom:item/praetor_leggings"
     }
 }

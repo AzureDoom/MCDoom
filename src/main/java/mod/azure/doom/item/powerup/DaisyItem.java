@@ -24,7 +24,7 @@ import net.minecraft.world.World;
 public class DaisyItem extends TrinketItem {
 
 	public DaisyItem() {
-		super(new Item.Settings().group(DoomMod.DoomPowerUPItemGroup).maxCount(1));
+		super(new Item.Settings().maxCount(1));
 	}
 
 	@Override

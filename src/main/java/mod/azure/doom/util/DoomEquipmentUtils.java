@@ -11,9 +11,9 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class DoomEquipmentUtils {
 	public static String TAG = "doomguntag";
@@ -33,7 +33,7 @@ public class DoomEquipmentUtils {
 	}
 
 	public static int compareItemsById(Item i1, Item i2) {
-		return Registry.ITEM.getId(i1).compareTo(Registry.ITEM.getId(i2));
+		return Registries.ITEM.getId(i1).compareTo(Registries.ITEM.getId(i2));
 	}
 
 	public static int generateRepairLevelCost(ItemStack repaired, int maxLevel) {
@@ -72,7 +72,7 @@ public class DoomEquipmentUtils {
 			String[] enchantItem = encodedEnchant.split(">");
 			String[] enchantKey = enchantItem[0].split(":");
 			int enchantLevel = Integer.parseInt(enchantItem[1]);
-			enchants.put(Registry.ENCHANTMENT.get(new Identifier(enchantKey[0], enchantKey[1])), enchantLevel);
+			enchants.put(Registries.ENCHANTMENT.get(new Identifier(enchantKey[0], enchantKey[1])), enchantLevel);
 		}
 		return enchants.isEmpty() ? null : enchants;
 	}
@@ -103,7 +103,7 @@ public class DoomEquipmentUtils {
 	public static NbtCompound getNbtForEnchantments(ItemStack breakingStack, ItemStack ruinedStack) {
 		Set<String> enchantmentStrings = new HashSet<>();
 		for (Map.Entry<Enchantment, Integer> ench : EnchantmentHelper.get(breakingStack).entrySet()) {
-			String enchantString = Registry.ENCHANTMENT.getId(ench.getKey()) + ">" + ench.getValue();
+			String enchantString = Registries.ENCHANTMENT.getId(ench.getKey()) + ">" + ench.getValue();
 			enchantmentStrings.add(enchantString);
 		}
 		if (!enchantmentStrings.isEmpty()) {
@@ -117,7 +117,7 @@ public class DoomEquipmentUtils {
 	}
 
 	public static boolean isVanillaItemStackBreaking(ItemStack breakingStack, Item vanillaItem) {
-		return breakingStack.isItemEqualIgnoreDamage(new ItemStack(vanillaItem))
+		return breakingStack.isItemEqual(new ItemStack(vanillaItem))
 				&& breakingStack.getMaxDamage() - breakingStack.getDamage() <= 0;
 	}
 }

@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "doom:items/laser_war_axe",
-		"particle": "doom:items/laser_war_axe"
+		"0": "doom:item/laser_war_axe",
+		"particle": "doom:item/laser_war_axe"
 	},
 	"elements": [
 		{

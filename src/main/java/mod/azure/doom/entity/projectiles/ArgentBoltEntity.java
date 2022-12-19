@@ -27,6 +27,7 @@ import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.GameStateChangeS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -41,7 +42,6 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
 
 public class ArgentBoltEntity extends PersistentProjectileEntity {
 
@@ -101,7 +101,7 @@ public class ArgentBoltEntity extends PersistentProjectileEntity {
 	}
 
 	@Override
-	public Packet<?> createSpawnPacket() {
+	public Packet<ClientPlayPacketListener> createSpawnPacket() {
 		return DoomEntityPacket.createPacket(this);
 	}
 
@@ -233,7 +233,7 @@ public class ArgentBoltEntity extends PersistentProjectileEntity {
 				}
 			} else {
 				this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.5F,
-						Explosion.DestructionType.NONE);
+						World.ExplosionSourceType.NONE);
 				this.remove(Entity.RemovalReason.DISCARDED);
 			}
 		}
@@ -304,7 +304,7 @@ public class ArgentBoltEntity extends PersistentProjectileEntity {
 					EnchantmentHelper.onUserDamaged(livingEntity, entity2);
 					EnchantmentHelper.onTargetDamaged((LivingEntity) entity2, livingEntity);
 					this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.5F,
-							Explosion.DestructionType.NONE);
+							World.ExplosionSourceType.NONE);
 				}
 				this.remove(Entity.RemovalReason.DISCARDED);
 

@@ -2,10 +2,11 @@ package mod.azure.doom.client.models.projectiles;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class BarenBlastModel extends AnimatedGeoModel<BarenBlastEntity> {
+public class BarenBlastModel extends GeoModel<BarenBlastEntity> {
 	@Override
 	public Identifier getModelResource(BarenBlastEntity object) {
 		return new Identifier(DoomMod.MODID, "geo/smallprojectile.geo.json");
@@ -19,5 +20,10 @@ public class BarenBlastModel extends AnimatedGeoModel<BarenBlastEntity> {
 	@Override
 	public Identifier getAnimationResource(BarenBlastEntity animatable) {
 		return new Identifier(DoomMod.MODID, "animations/smallprojectile.animation.json");
+	}
+	
+	@Override
+	public RenderLayer getRenderType(BarenBlastEntity animatable, Identifier texture) {
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 }

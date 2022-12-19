@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "doom:items/soulcube"
+    "layer0": "doom:item/soulcube"
   },
   "display": {
     "thirdperson_righthand": {

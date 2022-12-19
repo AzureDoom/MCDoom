@@ -26,59 +26,37 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class ImpStoneEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
+public class ImpStoneEntity extends DemonEntity implements GeoEntity {
 
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public ImpStoneEntity(EntityType<ImpStoneEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
 	}
 
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (event.isMoving()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("spinning", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.isAttacking() && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("spinning", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		if (!event.isMoving() && this.velocityModified) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+			if (event.isMoving())
+				return event.setAndContinue(RawAnimation.begin().thenLoop("spinning"));
+			if (this.isAttacking() && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().thenLoop("spinning"));
+			if ((this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<ImpStoneEntity>(this, "controller", 0, this::predicate));
-	}
-
-	@Override
-	public int tickTimer() {
-		return age;
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override

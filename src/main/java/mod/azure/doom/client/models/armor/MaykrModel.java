@@ -3,9 +3,9 @@ package mod.azure.doom.client.models.armor;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.armor.MaykrDoomArmor;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class MaykrModel extends AnimatedGeoModel<MaykrDoomArmor> {
+public class MaykrModel extends GeoModel<MaykrDoomArmor> {
 	@Override
 	public Identifier getModelResource(MaykrDoomArmor object) {
 		return new Identifier(DoomMod.MODID, "geo/maykrarmor.geo.json");

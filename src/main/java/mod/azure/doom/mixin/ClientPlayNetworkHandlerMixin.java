@@ -22,7 +22,7 @@ public class ClientPlayNetworkHandlerMixin {
 
 	@Inject(method = "onEntitySpawn", at = @At("TAIL"))
 	private void onEntitySpawn(EntitySpawnS2CPacket packet, CallbackInfo callbackInfo) {
-		EntityType<?> type = packet.getEntityTypeId();
+		EntityType<?> type = packet.getEntityType();
 		double x = packet.getX();
 		double y = packet.getY();
 		double z = packet.getZ();

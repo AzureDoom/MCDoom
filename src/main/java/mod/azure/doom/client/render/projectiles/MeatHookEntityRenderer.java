@@ -1,5 +1,8 @@
 package mod.azure.doom.client.render.projectiles;
 
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.models.projectiles.MeatHookEntityModel;
 import mod.azure.doom.entity.projectiles.MeatHookEntity;
@@ -16,12 +19,12 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Matrix3f;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3f;
-import software.bernie.geckolib3.renderers.geo.GeoProjectilesRenderer;
+import net.minecraft.util.math.RotationAxis;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.util.RenderUtils;
 
-public class MeatHookEntityRenderer extends GeoProjectilesRenderer<MeatHookEntity> {
+public class MeatHookEntityRenderer extends GeoEntityRenderer<MeatHookEntity> {
 
 	private static final Identifier CHAIN_TEXTURE = new Identifier(DoomMod.MODID, "textures/entity/chain.png");
 	private static final RenderLayer CHAIN_LAYER = RenderLayer.getEntitySmoothCutout(CHAIN_TEXTURE);
@@ -35,10 +38,14 @@ public class MeatHookEntityRenderer extends GeoProjectilesRenderer<MeatHookEntit
 	}
 
 	@Override
-	public RenderLayer getRenderType(MeatHookEntity animatable, float partialTicks, MatrixStack stack,
-			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
-			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
+	public void preRender(MatrixStack poseStack, MeatHookEntity animatable, BakedGeoModel model,
+			VertexConsumerProvider bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
+			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		RenderUtils.faceRotation(poseStack, animatable, partialTick);
+		poseStack.scale(animatable.age > 2 ? 0.5F : 0.0F, animatable.age > 2 ? 0.5F : 0.0F,
+				animatable.age > 2 ? 0.5F : 0.0F);
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
+				packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override
@@ -73,9 +80,9 @@ public class MeatHookEntityRenderer extends GeoProjectilesRenderer<MeatHookEntit
 		float length = MathHelper.sqrt(squaredLength);
 
 		stack.push();
-		stack.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion((float) (-Math.atan2(z, x)) - 1.5707964F));
-		stack.multiply(Vec3f.POSITIVE_X.getRadialQuaternion((float) (-Math.atan2(lengthXY, y)) - 1.5707964F));
-		stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(25));
+		stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) (-Math.atan2(z, x)) - 1.5707964F));
+		stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees((float) (-Math.atan2(lengthXY, y)) - 1.5707964F));
+		stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(25));
 		stack.push();
 		stack.translate(0.015, -0.2, 0);
 
@@ -102,7 +109,7 @@ public class MeatHookEntityRenderer extends GeoProjectilesRenderer<MeatHookEntit
 				.overlay(OverlayTexture.DEFAULT_UV).light(light).normal(matrix3f, 0.0F, -1.0F, 0.0F).next();
 
 		stack.pop();
-		stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
+		stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(90));
 		stack.translate(-0.015, -0.2, 0);
 
 		entry = stack.peek();

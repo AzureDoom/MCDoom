@@ -8,8 +8,9 @@ import mod.azure.doom.structures.GladiatorStructure;
 import mod.azure.doom.structures.HellChurchStructure;
 import mod.azure.doom.structures.IconStructure;
 import mod.azure.doom.structures.MotherdemonStructure;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.gen.structure.StructureType;
 
@@ -30,7 +31,7 @@ public class DoomStructures {
 	}
 
 	private static <S extends Structure> StructureType<S> register(Identifier id, Codec<S> codec) {
-		return Registry.register(Registry.STRUCTURE_TYPE, id, () -> codec);
+		return Registry.register(Registries.STRUCTURE_TYPE, id, () -> codec);
 	}
 
 }

@@ -21,6 +21,7 @@ import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.GameStateChangeS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
@@ -65,11 +66,10 @@ public class UnmaykrBoltEntity extends PersistentProjectileEntity {
 		if (owner instanceof PlayerEntity) {
 			this.pickupType = PersistentProjectileEntity.PickupPermission.ALLOWED;
 		}
-
 	}
 
 	@Override
-	public Packet<?> createSpawnPacket() {
+	public Packet<ClientPlayPacketListener> createSpawnPacket() {
 		return DoomEntityPacket.createPacket(this);
 	}
 

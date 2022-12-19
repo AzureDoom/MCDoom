@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "doom:blocks/argent_block"
+    "all": "doom:block/argent_block"
   }
 }

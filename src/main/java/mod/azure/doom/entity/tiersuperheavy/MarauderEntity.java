@@ -30,100 +30,63 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class MarauderEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
+public class MarauderEntity extends DemonEntity implements GeoEntity {
 
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	private int ageWhenTargetSet;
-
-	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
-		if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("ranged", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		return PlayState.STOP;
-	}
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (event.isMoving()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		if (!event.isMoving() && this.velocityModified) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
-	}
-
-	@Override
-	public int tickTimer() {
-		return age;
-	}
-
-	@Override
-	public void registerControllers(AnimationData data) {
-		AnimationController<MarauderEntity> controller = new AnimationController<MarauderEntity>(this, "controller", 0,
-				this::predicate);
-		AnimationController<MarauderEntity> controller1 = new AnimationController<MarauderEntity>(this, "controller1",
-				0, this::predicate1);
-		controller.registerSoundListener(this::soundListener);
-		controller1.registerSoundListener(this::soundListener);
-		data.addAnimationController(controller);
-		data.addAnimationController(controller1);
-	}
-
-	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("walk")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
-			}
-		}
-		if (event.sound.matches("attack")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.SUPER_SHOTGUN_SHOOT,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
-			}
-		}
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
 
 	public MarauderEntity(EntityType<MarauderEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
+	}
+
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+			if (event.isMoving())
+				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
+			if ((this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("walk"))
+				if (this.world.isClient)
+					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
+							SoundCategory.HOSTILE, 0.25F, 1.0F, false);
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
+			if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
+			if (this.dataTracker.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().then("ranged", LoopType.PLAY_ONCE));
+			return PlayState.STOP;
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("attack"))
+				if (this.world.isClient)
+					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.SUPER_SHOTGUN_SHOOT,
+							SoundCategory.HOSTILE, 0.25F, 1.0F, false);
+		}));
+	}
+
+	@Override
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	public static boolean spawning(EntityType<MarauderEntity> p_223337_0_, World p_223337_1_, SpawnReason reason,

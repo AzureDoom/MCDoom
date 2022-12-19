@@ -25,9 +25,9 @@ import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.ShapedRecipe;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 public class GunTableRecipe implements Recipe<GunTableInventory>, Comparable<GunTableRecipe> {
@@ -105,7 +105,7 @@ public class GunTableRecipe implements Recipe<GunTableInventory>, Comparable<Gun
 	public int compareTo(@NotNull GunTableRecipe o) {
 		Item outputThis = getOutput().getItem();
 		Item outputOther = o.getOutput().getItem();
-		return Registry.ITEM.getId(outputThis).compareTo(Registry.ITEM.getId(outputOther));
+		return Registries.ITEM.getId(outputThis).compareTo(Registries.ITEM.getId(outputOther));
 	}
 
 	public static class Serializer implements RecipeSerializer<GunTableRecipe> {

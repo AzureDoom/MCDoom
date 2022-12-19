@@ -11,6 +11,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
 
@@ -52,7 +53,7 @@ public class DroneBoltEntity extends ExplosiveProjectileEntity {
 	}
 
 	@Override
-	public Packet<?> createSpawnPacket() {
+	public Packet<ClientPlayPacketListener> createSpawnPacket() {
 		return DoomEntityPacket.createPacket(this);
 	}
 

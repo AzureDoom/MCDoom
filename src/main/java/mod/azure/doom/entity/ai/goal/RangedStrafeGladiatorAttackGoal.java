@@ -11,7 +11,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.explosion.Explosion;
+import net.minecraft.world.World;
 
 public class RangedStrafeGladiatorAttackGoal extends Goal {
 	private final GladiatorEntity entity;
@@ -49,7 +49,7 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 		this.entity.setSilent(false);
 		this.entity.setTextureState(0);
 		this.entity.world.createExplosion(this.entity, this.entity.getX(), this.entity.getY() + 5D, this.entity.getZ(),
-				3.0F, false, Explosion.DestructionType.BREAK);
+				3.0F, false, World.ExplosionSourceType.BLOCK);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 		this.entity.stopUsingItem();
 		this.entity.setSilent(false);
 		this.entity.world.createExplosion(this.entity, this.entity.getX(), this.entity.getY() + 5D, this.entity.getZ(),
-				3.0F, false, Explosion.DestructionType.BREAK);
+				3.0F, false, World.ExplosionSourceType.BLOCK);
 	}
 
 	/**

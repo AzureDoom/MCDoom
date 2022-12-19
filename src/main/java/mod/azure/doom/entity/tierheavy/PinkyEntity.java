@@ -34,21 +34,16 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
+public class PinkyEntity extends DemonEntity implements GeoEntity {
 
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(PinkyEntity.class,
 			TrackedDataHandlerRegistry.INTEGER);
 
@@ -56,58 +51,31 @@ public class PinkyEntity extends DemonEntity implements IAnimatable, IAnimationT
 		super(entityType, worldIn);
 	}
 
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (event.isMoving() && !this.isAttacking()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		if (this.isAttacking() && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (!event.isMoving() && this.velocityModified) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+			if (event.isMoving() && !this.isAttacking())
+				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
+			if (this.isAttacking() && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().thenLoop("attacking"));
+			if ((this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("walk"))
+				if (this.world.isClient)
+					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
+							SoundCategory.HOSTILE, 0.25F, 1.0F, false);
+			if (event.getKeyframeData().getSound().matches("yell"))
+				if (this.world.isClient)
+					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_YELL,
+							SoundCategory.HOSTILE, 0.25F, 1.0F, false);
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		AnimationController<PinkyEntity> controller = new AnimationController<PinkyEntity>(this, "controller", 0,
-				this::predicate);
-		controller.registerSoundListener(this::soundListener);
-		data.addAnimationController(controller);
-	}
-
-	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("walk")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
-			}
-		}
-		if (event.sound.matches("yell")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_YELL,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
-			}
-		}
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
-
-	@Override
-	public int tickTimer() {
-		return age;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	public static boolean spawning(EntityType<PinkyEntity> p_223337_0_, World p_223337_1_, SpawnReason reason,

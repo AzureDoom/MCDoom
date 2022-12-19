@@ -1,15 +1,19 @@
 package mod.azure.doom.item.weapons;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
+import mod.azure.doom.client.render.weapons.HeavyCannonRender;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.BulletEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
@@ -22,13 +26,17 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
+import software.bernie.geckolib.animatable.client.RenderProvider;
 
 public class HeavyCannon extends DoomBaseItem {
 
+	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
+
 	public HeavyCannon() {
-		super(new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(201));
+		super(new Item.Settings().maxCount(1).maxDamage(201));
+		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
 	@Override
@@ -54,13 +62,8 @@ public class HeavyCannon extends DoomBaseItem {
 					worldIn.spawnEntity(abstractarrowentity);
 					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
 							playerentity.getZ(), DoomSounds.HEAVY_CANNON, SoundCategory.PLAYERS, 1.0F, 1.0F);
-					if (!worldIn.isClient) {
-						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);
-						GeckoLibNetwork.syncAnimation(playerentity, this, id, ANIM_OPEN);
-						for (PlayerEntity otherPlayer : PlayerLookup.tracking(playerentity)) {
-							GeckoLibNetwork.syncAnimation(otherPlayer, this, id, ANIM_OPEN);
-						}
-					}
+					triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerWorld) worldIn), "shoot_controller",
+							"firing");
 				}
 				boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
 				spawnLightSource(entityLiving, isInsideWaterBlock);
@@ -98,8 +101,7 @@ public class HeavyCannon extends DoomBaseItem {
 
 	public BulletEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
 		float j = EnchantmentHelper.getLevel(Enchantments.POWER, stack);
-		BulletEntity arrowentity = new BulletEntity(worldIn, shooter,
-				(DoomConfig.bullet_damage + (j * 2.0F)));
+		BulletEntity arrowentity = new BulletEntity(worldIn, shooter, (DoomConfig.bullet_damage + (j * 2.0F)));
 		return arrowentity;
 	}
 
@@ -121,5 +123,22 @@ public class HeavyCannon extends DoomBaseItem {
 		}
 
 		return f;
+	}
+
+	@Override
+	public void createRenderer(Consumer<Object> consumer) {
+		consumer.accept(new RenderProvider() {
+			private final HeavyCannonRender renderer = new HeavyCannonRender();
+
+			@Override
+			public BuiltinModelItemRenderer getCustomRenderer() {
+				return this.renderer;
+			}
+		});
+	}
+
+	@Override
+	public Supplier<Object> getRenderProvider() {
+		return this.renderProvider;
 	}
 }

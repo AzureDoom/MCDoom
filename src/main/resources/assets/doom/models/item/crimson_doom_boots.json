@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "doom:items/crimson_boots"
+        "layer0": "doom:item/crimson_boots"
     }
 }

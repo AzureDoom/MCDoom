@@ -3,9 +3,9 @@ package mod.azure.doom.client.models.weapons;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.Shotgun;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class SGModel extends AnimatedGeoModel<Shotgun> {
+public class SGModel extends GeoModel<Shotgun> {
 	@Override
 	public Identifier getModelResource(Shotgun object) {
 		return new Identifier(DoomMod.MODID, "geo/shotgun.geo.json");
@@ -13,7 +13,7 @@ public class SGModel extends AnimatedGeoModel<Shotgun> {
 
 	@Override
 	public Identifier getTextureResource(Shotgun object) {
-		return new Identifier(DoomMod.MODID, "textures/items/shotgun.png");
+		return new Identifier(DoomMod.MODID, "textures/item/shotgun.png");
 	}
 
 	@Override

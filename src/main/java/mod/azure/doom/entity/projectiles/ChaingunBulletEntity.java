@@ -16,6 +16,7 @@ import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.GameStateChangeS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -25,19 +26,20 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class ChaingunBulletEntity extends PersistentProjectileEntity implements IAnimatable {
+public class ChaingunBulletEntity extends PersistentProjectileEntity implements GeoEntity {
 
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
 	private float projectiledamage;
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public ChaingunBulletEntity(EntityType<? extends ChaingunBulletEntity> entityType, World world) {
 		super(entityType, world);
@@ -48,24 +50,7 @@ public class ChaingunBulletEntity extends PersistentProjectileEntity implements 
 		super(ProjectilesEntityRegister.CHAINGUN_BULLET, owner, world);
 		this.projectiledamage = damage;
 	}
-
-	private AnimationFactory factory = new AnimationFactory(this);
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		return PlayState.CONTINUE;
-	}
-
-	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(
-				new AnimationController<ChaingunBulletEntity>(this, "controller", 0, this::predicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
-
+	
 	public ChaingunBulletEntity(World world, LivingEntity owner) {
 		super(ProjectilesEntityRegister.CHAINGUN_BULLET, owner, world);
 	}
@@ -81,7 +66,18 @@ public class ChaingunBulletEntity extends PersistentProjectileEntity implements 
 		if (owner instanceof PlayerEntity) {
 			this.pickupType = PersistentProjectileEntity.PickupPermission.ALLOWED;
 		}
+	}
 
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
+			return PlayState.CONTINUE;
+		}));
+	}
+
+	@Override
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
@@ -94,7 +90,7 @@ public class ChaingunBulletEntity extends PersistentProjectileEntity implements 
 	}
 
 	@Override
-	public Packet<?> createSpawnPacket() {
+	public Packet<ClientPlayPacketListener> createSpawnPacket() {
 		return DoomEntityPacket.createPacket(this);
 	}
 

@@ -21,22 +21,19 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
 public class AxeMarauderItem extends SwordItem {
 
 	public AxeMarauderItem() {
-		super(DoomTier.DOOM_HIGHTEIR, 1, -2.5f,
-				new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(24));
+		super(DoomTier.DOOM_HIGHTEIR, 1, -2.5f, new Item.Settings().maxCount(1).maxDamage(24));
 	}
 
 	@Override
@@ -125,19 +122,6 @@ public class AxeMarauderItem extends SwordItem {
 					}
 				}
 			}
-		}
-	}
-
-	@Override
-	public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks) {
-		ItemStack stack = new ItemStack(this);
-		stack.hasNbt();
-		stack.addEnchantment(Enchantments.SMITE, 10);
-		stack.addEnchantment(Enchantments.LOOTING, 10);
-		stack.addEnchantment(Enchantments.SHARPNESS, 10);
-		stack.addEnchantment(Enchantments.SWEEPING, 10);
-		if ((group == DoomMod.DoomWeaponItemGroup) || (group == ItemGroup.SEARCH)) {
-			stacks.add(stack);
 		}
 	}
 

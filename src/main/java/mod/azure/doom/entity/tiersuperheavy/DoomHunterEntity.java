@@ -43,21 +43,16 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
+public class DoomHunterEntity extends DemonEntity implements GeoEntity {
 
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	public int flameTimer;
 	public static final TrackedData<Integer> DEATH_STATE = DataTracker.registerData(DoomHunterEntity.class,
 			TrackedDataHandlerRegistry.INTEGER);
@@ -66,61 +61,34 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 		super(entityType, worldIn);
 	}
 
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if ((this.dead || this.getHealth() < 0.01 || this.isDead()) && this.dataTracker.get(DEATH_STATE) == 1) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("sled_death", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		if (event.isMoving() && this.maxHurtTime < 0) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("rockets", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("flamethrower", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(STATE) == 3 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("chainsaw", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		event.getController().setAnimationSpeed(0.5);
-		return PlayState.CONTINUE;
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+			if ((this.dead || this.getHealth() < 0.01 || this.isDead()) && this.dataTracker.get(DEATH_STATE) == 1) 
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
+			if ((this.dead || this.getHealth() < 0.01 || this.isDead())) 
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("sled_death"));
+			if (event.isMoving() && this.maxHurtTime < 0) 
+				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
+			if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) 
+				return event.setAndContinue(RawAnimation.begin().thenLoop("rockets"));
+			if (this.dataTracker.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) 
+				return event.setAndContinue(RawAnimation.begin().thenLoop("flamethrower"));
+			if (this.dataTracker.get(STATE) == 3 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) 
+				return event.setAndContinue(RawAnimation.begin().thenLoop("chainsaw"));
+			event.getController().setAnimationSpeed(0.5);
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("phasechange"))
+				if (this.world.isClient)
+					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.DOOMHUNTER_PHASECHANGE,
+							SoundCategory.HOSTILE, 0.25F, 1.0F, false);
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		AnimationController<DoomHunterEntity> controller = new AnimationController<DoomHunterEntity>(this, "controller",
-				0, this::predicate);
-		controller.registerSoundListener(this::soundListener);
-		data.addAnimationController(controller);
-	}
-
-	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("phasechange")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(),
-						DoomSounds.DOOMHUNTER_PHASECHANGE, SoundCategory.HOSTILE, 0.25F, 1.0F, true);
-			}
-		}
-	}
-
-	@Override
-	public int tickTimer() {
-		return age;
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	public static boolean spawning(EntityType<BaronEntity> p_223337_0_, World p_223337_1_, SpawnReason reason,

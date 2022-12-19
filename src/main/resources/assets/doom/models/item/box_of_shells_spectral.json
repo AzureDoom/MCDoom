@@ -1,8 +1,8 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "shell": "doom:items/shell_spectral",
-        "shell_box": "doom:items/shell_box_spectral"
+        "shell": "doom:item/shell_spectral",
+        "shell_box": "doom:item/shell_box_spectral"
     },
     "display": {
         "gui": {

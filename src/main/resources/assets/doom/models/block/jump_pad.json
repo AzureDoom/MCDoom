@@ -2,9 +2,9 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [64, 64],
 	"textures": {
-		"1": "doom:blocks/jump_flame",
-		"2": "doom:blocks/jump_boost",
-		"particle": "doom:blocks/jump_flame"
+		"1": "doom:block/jump_flame",
+		"2": "doom:block/jump_boost",
+		"particle": "doom:block/jump_flame"
 	},
 	"elements": [
 		{

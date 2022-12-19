@@ -23,6 +23,7 @@ import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -34,18 +35,14 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class RocketEntity extends PersistentProjectileEntity implements IAnimatable {
+public class RocketEntity extends PersistentProjectileEntity implements GeoEntity {
 
 	protected int timeInAir;
 	protected boolean inAir;
@@ -54,7 +51,7 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 	private float projectiledamage;
 	private BlockPos lightBlockPos = null;
 	private int idleTicks = 0;
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public RocketEntity(EntityType<? extends RocketEntity> entityType, World world) {
 		super(entityType, world);
@@ -72,21 +69,6 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 		this.projectiledamage = damage;
 	}
 
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
-	}
-
-	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<RocketEntity>(this, "controller", 0, this::predicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
-
 	protected RocketEntity(EntityType<? extends RocketEntity> type, double x, double y, double z, World world) {
 		this(type, world);
 	}
@@ -97,11 +79,22 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 		if (owner instanceof PlayerEntity) {
 			this.pickupType = PersistentProjectileEntity.PickupPermission.ALLOWED;
 		}
-
 	}
 
 	@Override
-	public Packet<?> createSpawnPacket() {
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
+			return PlayState.CONTINUE;
+		}));
+	}
+
+	@Override
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
+	}
+
+	@Override
+	public Packet<ClientPlayPacketListener> createSpawnPacket() {
 		return DoomEntityPacket.createPacket(this);
 	}
 
@@ -294,7 +287,7 @@ public class RocketEntity extends PersistentProjectileEntity implements IAnimata
 					entity.damage(DamageSource.player((PlayerEntity) this.shooter), projectiledamage);
 				}
 				this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 0.0F,
-						Explosion.DestructionType.NONE);
+						World.ExplosionSourceType.NONE);
 			}
 		}
 	}

@@ -1,14 +1,18 @@
 package mod.azure.doom.item.weapons;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
+import mod.azure.doom.client.render.weapons.BallistaRender;
 import mod.azure.doom.entity.projectiles.ArgentBoltEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,13 +24,17 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
+import software.bernie.geckolib.animatable.client.RenderProvider;
 
 public class Ballista extends DoomBaseItem {
 
+	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
+
 	public Ballista() {
-		super(new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(11));
+		super(new Item.Settings().maxCount(1).maxDamage(11));
+		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
 	@Override
@@ -51,13 +59,8 @@ public class Ballista extends DoomBaseItem {
 					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
 							playerentity.getZ(), DoomSounds.BALLISTA_FIRING, SoundCategory.PLAYERS, 1.0F,
 							1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
-					if (!worldIn.isClient) {
-						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);
-						GeckoLibNetwork.syncAnimation(playerentity, this, id, ANIM_OPEN);
-						for (PlayerEntity otherPlayer : PlayerLookup.tracking(playerentity)) {
-							GeckoLibNetwork.syncAnimation(otherPlayer, this, id, ANIM_OPEN);
-						}
-					}
+					triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerWorld) worldIn), "shoot_controller",
+							"firing");
 				}
 				boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
 				spawnLightSource(entityLiving, isInsideWaterBlock);
@@ -111,5 +114,22 @@ public class Ballista extends DoomBaseItem {
 	public ArgentBoltEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
 		ArgentBoltEntity arrowentity = new ArgentBoltEntity(worldIn, shooter);
 		return arrowentity;
+	}
+
+	@Override
+	public void createRenderer(Consumer<Object> consumer) {
+		consumer.accept(new RenderProvider() {
+			private final BallistaRender renderer = new BallistaRender();
+
+			@Override
+			public BuiltinModelItemRenderer getCustomRenderer() {
+				return this.renderer;
+			}
+		});
+	}
+
+	@Override
+	public Supplier<Object> getRenderProvider() {
+		return this.renderProvider;
 	}
 }

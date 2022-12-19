@@ -50,36 +50,6 @@ import mod.azure.doom.client.render.TurretRender;
 import mod.azure.doom.client.render.UnwillingRender;
 import mod.azure.doom.client.render.WhiplashRender;
 import mod.azure.doom.client.render.ZombiemanRender;
-import mod.azure.doom.client.render.armors.AstroRender;
-import mod.azure.doom.client.render.armors.BronzeRender;
-import mod.azure.doom.client.render.armors.ClassicBronzeRender;
-import mod.azure.doom.client.render.armors.ClassicIndigoRender;
-import mod.azure.doom.client.render.armors.ClassicRedRender;
-import mod.azure.doom.client.render.armors.ClassicRender;
-import mod.azure.doom.client.render.armors.CrimsonRender;
-import mod.azure.doom.client.render.armors.CultistRender;
-import mod.azure.doom.client.render.armors.DarkLordArmorRender;
-import mod.azure.doom.client.render.armors.DemoncideRender;
-import mod.azure.doom.client.render.armors.DemonicRender;
-import mod.azure.doom.client.render.armors.DoomRender;
-import mod.azure.doom.client.render.armors.DoomicornRender;
-import mod.azure.doom.client.render.armors.EmberRender;
-import mod.azure.doom.client.render.armors.GoldRender;
-import mod.azure.doom.client.render.armors.HotrodRender;
-import mod.azure.doom.client.render.armors.MaykrRender;
-import mod.azure.doom.client.render.armors.MidnightRender;
-import mod.azure.doom.client.render.armors.Mullet1Render;
-import mod.azure.doom.client.render.armors.Mullet2Render;
-import mod.azure.doom.client.render.armors.Mullet3Render;
-import mod.azure.doom.client.render.armors.NightmareRender;
-import mod.azure.doom.client.render.armors.PainterRender;
-import mod.azure.doom.client.render.armors.PhobosRender;
-import mod.azure.doom.client.render.armors.PraetorRender;
-import mod.azure.doom.client.render.armors.PurplePonyRender;
-import mod.azure.doom.client.render.armors.SantaRender;
-import mod.azure.doom.client.render.armors.SentinelRender;
-import mod.azure.doom.client.render.armors.TwentyFiveRender;
-import mod.azure.doom.client.render.armors.ZombieRender;
 import mod.azure.doom.client.render.projectiles.ArgentBoltRender;
 import mod.azure.doom.client.render.projectiles.BFGCellRender;
 import mod.azure.doom.client.render.projectiles.BarenBlastRender;
@@ -103,14 +73,12 @@ import mod.azure.doom.client.render.tile.GunCraftingRender;
 import mod.azure.doom.client.render.tile.TotemRender;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomEntities;
-import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
 public class DoomRenderRegistry {
 
@@ -254,69 +222,6 @@ public class DoomRenderRegistry {
 				(BlockEntityRendererFactory.Context rendererDispatcherIn) -> new TotemRender());
 		BlockEntityRendererRegistry.register(DoomMod.GUN_TABLE_ENTITY,
 				(BlockEntityRendererFactory.Context rendererDispatcherIn) -> new GunCraftingRender());
-
-		GeoArmorRenderer.registerArmorRenderer(new DoomicornRender(), DoomItems.DOOMICORN_DOOM_BOOTS,
-				DoomItems.DOOMICORN_DOOM_CHESTPLATE, DoomItems.DOOMICORN_DOOM_HELMET,
-				DoomItems.DOOMICORN_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new NightmareRender(), DoomItems.NIGHTMARE_DOOM_BOOTS,
-				DoomItems.NIGHTMARE_DOOM_CHESTPLATE, DoomItems.NIGHTMARE_DOOM_HELMET,
-				DoomItems.NIGHTMARE_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new PurplePonyRender(), DoomItems.PURPLEPONY_DOOM_BOOTS,
-				DoomItems.PURPLEPONY_DOOM_CHESTPLATE, DoomItems.PURPLEPONY_DOOM_HELMET,
-				DoomItems.PURPLEPONY_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new DoomRender(), DoomItems.DOOM_BOOTS, DoomItems.DOOM_CHESTPLATE,
-				DoomItems.DOOM_HELMET, DoomItems.DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new AstroRender(), DoomItems.ASTRO_DOOM_BOOTS,
-				DoomItems.ASTRO_DOOM_CHESTPLATE, DoomItems.ASTRO_DOOM_HELMET, DoomItems.ASTRO_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new BronzeRender(), DoomItems.BRONZE_DOOM_BOOTS,
-				DoomItems.BRONZE_DOOM_CHESTPLATE, DoomItems.BRONZE_DOOM_HELMET, DoomItems.BRONZE_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new CrimsonRender(), DoomItems.CRIMSON_DOOM_BOOTS,
-				DoomItems.CRIMSON_DOOM_CHESTPLATE, DoomItems.CRIMSON_DOOM_HELMET, DoomItems.CRIMSON_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new DemoncideRender(), DoomItems.DEMONCIDE_DOOM_BOOTS,
-				DoomItems.DEMONCIDE_DOOM_CHESTPLATE, DoomItems.DEMONCIDE_DOOM_HELMET,
-				DoomItems.DEMONCIDE_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new DemonicRender(), DoomItems.DEMONIC_DOOM_BOOTS,
-				DoomItems.DEMONIC_DOOM_CHESTPLATE, DoomItems.DEMONIC_DOOM_HELMET, DoomItems.DEMONIC_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new EmberRender(), DoomItems.EMBER_DOOM_BOOTS,
-				DoomItems.EMBER_DOOM_CHESTPLATE, DoomItems.EMBER_DOOM_HELMET, DoomItems.EMBER_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new GoldRender(), DoomItems.GOLD_DOOM_BOOTS,
-				DoomItems.GOLD_DOOM_CHESTPLATE, DoomItems.GOLD_DOOM_HELMET, DoomItems.GOLD_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new HotrodRender(), DoomItems.HOTROD_BOOTS, DoomItems.HOTROD_CHESTPLATE,
-				DoomItems.HOTROD_HELMET, DoomItems.HOTROD_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new MidnightRender(), DoomItems.MIDNIGHT_DOOM_BOOTS,
-				DoomItems.MIDNIGHT_DOOM_CHESTPLATE, DoomItems.MIDNIGHT_DOOM_HELMET, DoomItems.MIDNIGHT_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new PhobosRender(), DoomItems.PHOBOS_DOOM_BOOTS,
-				DoomItems.PHOBOS_DOOM_CHESTPLATE, DoomItems.PHOBOS_DOOM_HELMET, DoomItems.PHOBOS_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new PraetorRender(), DoomItems.PRAETOR_DOOM_BOOTS,
-				DoomItems.PRAETOR_DOOM_CHESTPLATE, DoomItems.PRAETOR_DOOM_HELMET, DoomItems.PRAETOR_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new TwentyFiveRender(), DoomItems.TWENTY_FIVE_DOOM_BOOTS,
-				DoomItems.TWENTY_FIVE_DOOM_CHESTPLATE, DoomItems.TWENTY_FIVE_DOOM_HELMET,
-				DoomItems.TWENTY_FIVE_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new ClassicBronzeRender(), DoomItems.CLASSIC_BRONZE_DOOM_CHESTPLATE,
-				DoomItems.CLASSIC_BRONZE_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new ClassicRender(), DoomItems.CLASSIC_DOOM_BOOTS,
-				DoomItems.CLASSIC_DOOM_CHESTPLATE, DoomItems.CLASSIC_DOOM_HELMET, DoomItems.CLASSIC_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new ClassicIndigoRender(), DoomItems.CLASSIC_INDIGO_DOOM_CHESTPLATE,
-				DoomItems.CLASSIC_INDIGO_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new ClassicRedRender(), DoomItems.CLASSIC_RED_DOOM_CHESTPLATE,
-				DoomItems.CLASSIC_RED_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new Mullet1Render(), DoomItems.MULLET_DOOM_BOOTS1,
-				DoomItems.MULLET_DOOM_CHESTPLATE1, DoomItems.MULLET_DOOM_HELMET1, DoomItems.MULLET_DOOM_LEGGINGS1);
-		GeoArmorRenderer.registerArmorRenderer(new Mullet2Render(), DoomItems.MULLET_DOOM_CHESTPLATE2);
-		GeoArmorRenderer.registerArmorRenderer(new Mullet3Render(), DoomItems.MULLET_DOOM_CHESTPLATE3);
-		GeoArmorRenderer.registerArmorRenderer(new PainterRender(), DoomItems.PAINTER_DOOM_CHESTPLATE,
-				DoomItems.PAINTER_DOOM_HELMET);
-		GeoArmorRenderer.registerArmorRenderer(new CultistRender(), DoomItems.CULTIST_DOOM_BOOTS,
-				DoomItems.CULTIST_DOOM_CHESTPLATE, DoomItems.CULTIST_DOOM_HELMET, DoomItems.CULTIST_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new MaykrRender(), DoomItems.MAYKR_DOOM_BOOTS,
-				DoomItems.MAYKR_DOOM_CHESTPLATE, DoomItems.MAYKR_DOOM_HELMET, DoomItems.MAYKR_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new SentinelRender(), DoomItems.SENTINEL_DOOM_BOOTS,
-				DoomItems.SENTINEL_DOOM_CHESTPLATE, DoomItems.SENTINEL_DOOM_HELMET, DoomItems.SENTINEL_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new ZombieRender(), DoomItems.ZOMBIE_DOOM_BOOTS,
-				DoomItems.ZOMBIE_DOOM_CHESTPLATE, DoomItems.ZOMBIE_DOOM_HELMET, DoomItems.ZOMBIE_DOOM_LEGGINGS);
-		GeoArmorRenderer.registerArmorRenderer(new SantaRender(), DoomItems.SANTA_HELMET);
-		GeoArmorRenderer.registerArmorRenderer(new DarkLordArmorRender(), DoomItems.DARKLORD_BOOTS,
-				DoomItems.DARKLORD_CHESTPLATE, DoomItems.DARKLORD_HELMET, DoomItems.DARKLORD_LEGGINGS);
 
 		BlockRenderLayerMap.INSTANCE.putBlock(DoomBlocks.JUMP_PAD, RenderLayer.getTranslucent());
 

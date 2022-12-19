@@ -7,7 +7,7 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
 
 public class BarrelRender extends EntityRenderer<BarrelEntity> {
 
@@ -23,9 +23,9 @@ public class BarrelRender extends EntityRenderer<BarrelEntity> {
 			VertexConsumerProvider bufferIn, int packedLightIn) {
 		matrixStackIn.push();
 		matrixStackIn.translate(0.0D, 0.5D, 0.0D);
-		matrixStackIn.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-90.0F));
+		matrixStackIn.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90.0F));
 		matrixStackIn.translate(-0.5D, -0.5D, 0.5D);
-		matrixStackIn.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(90.0F));
+		matrixStackIn.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90.0F));
 		matrixStackIn.pop();
 		super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 	}

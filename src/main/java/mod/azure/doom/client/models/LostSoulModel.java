@@ -2,17 +2,19 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3f;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import net.minecraft.util.math.MathHelper;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.data.EntityModelData;
 
 /**
  * LostSoul - __Botmon__
  */
-public class LostSoulModel extends AnimatedTickingGeoModel<LostSoulEntity> {
+public class LostSoulModel extends GeoModel<LostSoulEntity> {
 
 	private static final Identifier[] TEX = { new Identifier(DoomMod.MODID, "textures/entity/lost_soul_fire_1.png"),
 			new Identifier(DoomMod.MODID, "textures/entity/lost_soul_fire_2.png"),
@@ -61,16 +63,21 @@ public class LostSoulModel extends AnimatedTickingGeoModel<LostSoulEntity> {
 	}
 
 	@Override
-	public void setLivingAnimations(LostSoulEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
-		super.setLivingAnimations(entity, uniqueID, customPredicate);
-		IBone head = this.getAnimationProcessor().getBone("head");
+	public void setCustomAnimations(LostSoulEntity animatable, long instanceId,
+			AnimationState<LostSoulEntity> animationState) {
+		super.setCustomAnimations(animatable, instanceId, animationState);
 
-		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
+		CoreGeoBone head = getAnimationProcessor().getBone("head");
+		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+
 		if (head != null) {
-			head.setRotationX(
-					Vec3f.POSITIVE_X.getRadialQuaternion(extraData.headPitch * ((float) Math.PI / 180F)).getX());
-			head.setRotationY(
-					Vec3f.POSITIVE_Y.getRadialQuaternion(extraData.netHeadYaw * ((float) Math.PI / 180F)).getY());
+			head.setRotX(entityData.headPitch() * MathHelper.RADIANS_PER_DEGREE);
+			head.setRotY(entityData.netHeadYaw() * MathHelper.RADIANS_PER_DEGREE);
 		}
+	}
+
+	@Override
+	public RenderLayer getRenderType(LostSoulEntity animatable, Identifier texture) {
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 }

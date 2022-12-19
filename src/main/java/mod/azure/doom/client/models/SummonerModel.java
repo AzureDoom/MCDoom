@@ -2,10 +2,11 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class SummonerModel extends AnimatedTickingGeoModel<SummonerEntity> {
+public class SummonerModel extends GeoModel<SummonerEntity> {
 
 	@Override
 	public Identifier getModelResource(SummonerEntity object) {
@@ -21,6 +22,11 @@ public class SummonerModel extends AnimatedTickingGeoModel<SummonerEntity> {
 	@Override
 	public Identifier getAnimationResource(SummonerEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/summoner.animation.json");
+	}
+
+	@Override
+	public RenderLayer getRenderType(SummonerEntity animatable, Identifier texture) {
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 
 }

@@ -11,27 +11,25 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class BloodBoltEntity extends ExplosiveProjectileEntity implements IAnimatable {
+public class BloodBoltEntity extends ExplosiveProjectileEntity implements GeoEntity {
 
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
 	private float directHitDamage = 2;
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public BloodBoltEntity(EntityType<BloodBoltEntity> p_i50160_1_, World p_i50160_2_) {
 		super(p_i50160_1_, p_i50160_2_);
@@ -42,21 +40,6 @@ public class BloodBoltEntity extends ExplosiveProjectileEntity implements IAnima
 		return false;
 	}
 
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
-	}
-
-	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<BloodBoltEntity>(this, "controller", 0, this::predicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
-
 	public BloodBoltEntity(World worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
 			float directHitDamage) {
 		super(ProjectilesEntityRegister.BLOODBOLT_MOB, shooter, accelX, accelY, accelZ, worldIn);
@@ -65,6 +48,18 @@ public class BloodBoltEntity extends ExplosiveProjectileEntity implements IAnima
 
 	public BloodBoltEntity(World worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
 		super(ProjectilesEntityRegister.BLOODBOLT_MOB, x, y, z, accelX, accelY, accelZ, worldIn);
+	}
+
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
+			return PlayState.CONTINUE;
+		}));
+	}
+
+	@Override
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
@@ -89,7 +84,7 @@ public class BloodBoltEntity extends ExplosiveProjectileEntity implements IAnima
 	}
 
 	@Override
-	public Packet<?> createSpawnPacket() {
+	public Packet<ClientPlayPacketListener> createSpawnPacket() {
 		return DoomEntityPacket.createPacket(this);
 	}
 

@@ -1,23 +1,23 @@
 package mod.azure.doom.client.models.items;
 
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.item.DoomBlockItem;
+import mod.azure.doom.item.TotemBlockItem;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class TotemItemModel extends AnimatedGeoModel<DoomBlockItem> {
+public class TotemItemModel extends GeoModel<TotemBlockItem> {
 	@Override
-	public Identifier getAnimationResource(DoomBlockItem entity) {
+	public Identifier getAnimationResource(TotemBlockItem entity) {
 		return new Identifier(DoomMod.MODID, "animations/totem.animation.json");
 	}
 
 	@Override
-	public Identifier getModelResource(DoomBlockItem animatable) {
+	public Identifier getModelResource(TotemBlockItem animatable) {
 		return new Identifier(DoomMod.MODID, "geo/totem.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(DoomBlockItem entity) {
-		return new Identifier(DoomMod.MODID, "textures/blocks/totem.png");
+	public Identifier getTextureResource(TotemBlockItem entity) {
+		return new Identifier(DoomMod.MODID, "textures/block/totem.png");
 	}
 }

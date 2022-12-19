@@ -79,12 +79,14 @@ import mod.azure.doom.item.weapons.SentinelHammerItem;
 import mod.azure.doom.item.weapons.Shotgun;
 import mod.azure.doom.item.weapons.SuperShotgun;
 import mod.azure.doom.item.weapons.SwordCrucibleItem;
+import mod.azure.doom.item.weapons.Unmaker;
 import mod.azure.doom.item.weapons.Unmaykr;
 import mod.azure.doom.util.enums.DoomArmorMaterial;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class DoomItems {
 
@@ -102,7 +104,7 @@ public class DoomItems {
 	public static ClipAmmo BULLETS = item(new ClipAmmo(), "bullets");
 	public static BFGCell BFG_CELL = item(new BFGCell(), "bfg_cell");
 	public static Unmaykr UNMAYKR = item(new Unmaykr("white"), "unmaykr");
-	public static Unmaykr UNMAKER = item(new Unmaykr("demon"), "unmaker");
+	public static Unmaker UNMAKER = item(new Unmaker("demon"), "unmaker");
 	public static Chainsaw CHAINSAW64 = item(new Chainsaw(), "chainsaw64");
 	public static PlasmaGun PLASMAGUN = item(new PlasmaGun(), "plasmagun");
 	public static ArgentAxe ARGENT_AXE = item(new ArgentAxe(), "argent_axe");
@@ -117,6 +119,7 @@ public class DoomItems {
 	public static ArgentPaxel ARGENT_PAXEL = item(new ArgentPaxel(), "argent_paxel");
 	public static ArgentSword ARGENT_SWORD = item(new ArgentSword(), "argent_sword");
 	public static PowerSphereItem POWER = item(new PowerSphereItem(), "powersphere");
+	public static Item GAS_BARREL = item(new Item(new Item.Settings()), "gas_barrel");
 	public static EnergyCell ENERGY_CELLS = item(new EnergyCell(), "energy_cells");
 	public static ArgentShovel ARGENT_SHOVEL = item(new ArgentShovel(), "argent_shovel");
 	public static ShellAmmo SHOTGUN_SHELLS = item(new ShellAmmo(), "shotgun_shells");
@@ -137,8 +140,6 @@ public class DoomItems {
 	public static SentinelHammerItem SENTINELHAMMER = item(new SentinelHammerItem(), "sentinelhammer");
 	public static DarkLordCrucibleItem DARKLORDCRUCIBLE = item(new DarkLordCrucibleItem(), "darklordcrucible");
 	public static E1M1MusicDisc E1M1_MUSIC_DISC = item(new E1M1MusicDisc(DoomSounds.E1M1), "e1m1_music_disc");
-	public static Item GAS_BARREL = item(new Item(new Item.Settings().group(DoomMod.DoomWeaponItemGroup)),
-			"gas_barrel");
 	public static E1M1MusicDisc GEOF_MUSIC_DISC = item(new E1M1MusicDisc(DoomSounds.NETHERAMBIENT_GEOFFPLAYSGUITAR),
 			"netherambient_geoffplaysguitar_music_disc");
 
@@ -148,7 +149,8 @@ public class DoomItems {
 	public static Map<Item, Item> getItemMap() {
 		Map<Item, Item> vanillaItemMap = new HashMap<>();
 		for (Item i : DoomItems.ITEMS) {
-			vanillaItemMap.put(Registry.ITEM.get(new Identifier(DoomMod.MODID, Registry.ITEM.getId(i).getPath())), i);
+			vanillaItemMap.put(Registries.ITEM.get(new Identifier(DoomMod.MODID, Registries.ITEM.getId(i).getPath())),
+					i);
 		}
 		return vanillaItemMap;
 	}
@@ -443,12 +445,12 @@ public class DoomItems {
 			new DarkLordArmor(DoomArmorMaterial.DOOM_ARMOR, EquipmentSlot.FEET));
 
 	static <T extends Item> T item(T c, String id) {
-		Registry.register(Registry.ITEM, new Identifier(DoomMod.MODID, id), c);
+		Registry.register(Registries.ITEM, new Identifier(DoomMod.MODID, id), c);
 		return c;
 	}
 
 	static <T extends Item> T item(String id, T c) {
-		Registry.register(Registry.ITEM, new Identifier(DoomMod.MODID, id), c);
+		Registry.register(Registries.ITEM, new Identifier(DoomMod.MODID, id), c);
 		return c;
 	}
 }

@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"3": "doom:blocks/compspan",
-		"e1m1_ceiling": "doom:blocks/e1m1_floor"
+		"3": "doom:block/compspan",
+		"e1m1_ceiling": "doom:block/e1m1_floor"
 	},
 	"elements": [
 		{

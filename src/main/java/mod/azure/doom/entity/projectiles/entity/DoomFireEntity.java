@@ -16,17 +16,18 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class DoomFireEntity extends Entity implements IAnimatable {
+public class DoomFireEntity extends Entity implements GeoEntity {
 
 	private int warmup;
 	private boolean startedAttack;
@@ -35,6 +36,7 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 	private LivingEntity owner;
 	private UUID ownerUuid;
 	private float damage;
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public DoomFireEntity(EntityType<DoomFireEntity> entityType, World world) {
 		super(entityType, world);
@@ -48,6 +50,18 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 		this.setOwner(owner);
 		this.updatePosition(x, y, z);
 		this.damage = damage;
+	}
+
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
+			return PlayState.CONTINUE;
+		}));
+	}
+
+	@Override
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
@@ -151,24 +165,8 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 		}
 	}
 
-	private AnimationFactory factory = new AnimationFactory(this);
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		return PlayState.STOP;
-	}
-
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<DoomFireEntity>(this, "controller", 0, this::predicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
-
-	@Override
-	public Packet<?> createSpawnPacket() {
+	public Packet<ClientPlayPacketListener> createSpawnPacket() {
 		return DoomEntityPacket.createPacket(this);
 	}
 

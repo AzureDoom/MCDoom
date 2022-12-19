@@ -23,10 +23,12 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.Angerable;
 import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.Monster;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
@@ -35,7 +37,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 
-public class DemonEntity extends HostileEntity implements Angerable {
+public class DemonEntity extends HostileEntity implements Angerable, Monster {
 
 	private static final TrackedData<Integer> ANGER_TIME = DataTracker.registerData(DemonEntity.class,
 			TrackedDataHandlerRegistry.INTEGER);
@@ -52,7 +54,7 @@ public class DemonEntity extends HostileEntity implements Angerable {
 	}
 
 	@Override
-	public Packet<?> createSpawnPacket() {
+	public Packet<ClientPlayPacketListener> createSpawnPacket() {
 		return DoomEntityPacket.createPacket(this);
 	}
 

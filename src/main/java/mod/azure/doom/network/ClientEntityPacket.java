@@ -9,12 +9,12 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 
 public class ClientEntityPacket {
 	@Environment(EnvType.CLIENT)
 	public static void onPacket(MinecraftClient context, PacketByteBuf byteBuf) {
-		EntityType<?> type = Registry.ENTITY_TYPE.get(byteBuf.readVarInt());
+		EntityType<?> type = Registries.ENTITY_TYPE.get(byteBuf.readVarInt());
 		UUID entityUUID = byteBuf.readUuid();
 		int entityID = byteBuf.readVarInt();
 		double x = byteBuf.readDouble();

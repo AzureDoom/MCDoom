@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "doom:items/santa_helmet"
+        "layer0": "doom:item/santa_helmet"
     }
 }

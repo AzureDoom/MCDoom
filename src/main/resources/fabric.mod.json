@@ -33,12 +33,12 @@
 		"doom.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.14.9",
+		"fabricloader": ">=0.14.1",
 		"fabric": "*",
-		"minecraft": ">=1.19.2",
+		"minecraft": ">=1.19.3",
 		"java": ">=17",
-		"geckolib3": ">=3.1.33",
-		"trinkets": ">=3.4.0"
+		"geckolib": ">=4.0.2",
+		"trinkets": ">=3.5.0"
 	},
 	"accessWidener": "doom.accesswidener"
 }

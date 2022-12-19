@@ -3,9 +3,9 @@ package mod.azure.doom.client.models.weapons;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.SentinelHammerItem;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class SentinelHammerModel extends AnimatedGeoModel<SentinelHammerItem> {
+public class SentinelHammerModel extends GeoModel<SentinelHammerItem> {
 	@Override
 	public Identifier getModelResource(SentinelHammerItem object) {
 		return new Identifier(DoomMod.MODID, "geo/sentinelhammer.geo.json");
@@ -13,7 +13,7 @@ public class SentinelHammerModel extends AnimatedGeoModel<SentinelHammerItem> {
 
 	@Override
 	public Identifier getTextureResource(SentinelHammerItem object) {
-		return new Identifier(DoomMod.MODID, "textures/items/sentinel_hammer.png");
+		return new Identifier(DoomMod.MODID, "textures/item/sentinel_hammer.png");
 	}
 
 	@Override

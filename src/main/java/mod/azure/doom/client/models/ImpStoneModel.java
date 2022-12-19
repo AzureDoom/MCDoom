@@ -2,14 +2,16 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.ImpStoneEntity;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import net.minecraft.util.math.MathHelper;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.data.EntityModelData;
 
-public class ImpStoneModel extends AnimatedTickingGeoModel<ImpStoneEntity> {
+public class ImpStoneModel extends GeoModel<ImpStoneEntity> {
 
 	@Override
 	public Identifier getModelResource(ImpStoneEntity object) {
@@ -27,22 +29,21 @@ public class ImpStoneModel extends AnimatedTickingGeoModel<ImpStoneEntity> {
 	}
 
 	@Override
-	public void setLivingAnimations(ImpStoneEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
-		super.setLivingAnimations(entity, uniqueID, customPredicate);
-		IBone head = this.getAnimationProcessor().getBone("neck");
+	public void setCustomAnimations(ImpStoneEntity animatable, long instanceId,
+			AnimationState<ImpStoneEntity> animationState) {
+		super.setCustomAnimations(animatable, instanceId, animationState);
 
-		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
+		CoreGeoBone head = getAnimationProcessor().getBone("neck");
+		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+
 		if (head != null) {
-			head.setRotationX(
-					Vec3f.POSITIVE_X
-							.getRadialQuaternion(Vec3f.POSITIVE_X
-									.getRadialQuaternion(extraData.headPitch * ((float) Math.PI / 180F)).getX())
-							.getX());
-			head.setRotationY(
-					Vec3f.POSITIVE_Y
-							.getRadialQuaternion(Vec3f.POSITIVE_Y
-									.getRadialQuaternion(extraData.netHeadYaw * ((float) Math.PI / 340F)).getY())
-							.getY());
+			head.setRotX(entityData.headPitch() * MathHelper.RADIANS_PER_DEGREE);
+			head.setRotY(entityData.netHeadYaw() * ((float) Math.PI / 340F));
 		}
+	}
+
+	@Override
+	public RenderLayer getRenderType(ImpStoneEntity animatable, Identifier texture) {
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 }

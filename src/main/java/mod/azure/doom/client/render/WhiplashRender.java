@@ -2,25 +2,13 @@ package mod.azure.doom.client.render;
 
 import mod.azure.doom.client.models.WhiplashModel;
 import mod.azure.doom.entity.tierheavy.WhiplashEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class WhiplashRender extends GeoEntityRenderer<WhiplashEntity> {
 
 	public WhiplashRender(EntityRendererFactory.Context renderManagerIn) {
 		super(renderManagerIn, new WhiplashModel());
-	}
-
-	@Override
-	public RenderLayer getRenderType(WhiplashEntity animatable, float partialTicks, MatrixStack stack,
-			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
-			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 
 	@Override

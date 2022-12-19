@@ -7,9 +7,8 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.geo.render.built.GeoModel;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class SpectreRender extends GeoEntityRenderer<SpectreEntity> {
 
@@ -18,22 +17,15 @@ public class SpectreRender extends GeoEntityRenderer<SpectreEntity> {
 	}
 
 	@Override
-	public RenderLayer getRenderType(SpectreEntity animatable, float partialTicks, MatrixStack stack,
-			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
-			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
-	}
-
-	@Override
 	protected float getDeathMaxRotation(SpectreEntity entityLivingBaseIn) {
 		return 0.0F;
 	}
 
 	@Override
-	public void render(GeoModel model, SpectreEntity animatable, float partialTicks, RenderLayer type,
-			MatrixStack matrixStackIn, VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder,
-			int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		super.render(model, animatable, partialTicks, type, matrixStackIn, renderTypeBuffer, vertexBuilder,
-				packedLightIn, packedOverlayIn, red, green, blue, 0.1F);
+	public void actuallyRender(MatrixStack poseStack, SpectreEntity animatable, BakedGeoModel model,
+			RenderLayer renderType, VertexConsumerProvider bufferSource, VertexConsumer buffer, boolean isReRender,
+			float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick,
+				packedLight, packedOverlay, red, green, blue, 0.1F);
 	}
 }

@@ -28,41 +28,35 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
+public class GoreNestEntity extends DemonEntity implements GeoEntity {
 
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	public int spawnTimer = 0;
 
 	public GoreNestEntity(EntityType<? extends GoreNestEntity> entityType, World worldIn) {
 		super(entityType, worldIn);
 	}
 
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			if (world.isClient) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.LOOP));
-				return PlayState.CONTINUE;
-			}
-		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		event.getController().setAnimationSpeed(0.25);
-		return PlayState.CONTINUE;
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
+			if (this.dead || this.getHealth() < 0.01 || this.isDead())
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
+			event.getController().setAnimationSpeed(0.25);
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+		}));
 	}
 
 	@Override
-	public int tickTimer() {
-		return age;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
@@ -77,16 +71,6 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 
 	@Override
 	protected void tickCramming() {
-	}
-
-	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<GoreNestEntity>(this, "controller", 0, this::predicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
 	}
 
 	public static boolean spawning(EntityType<GoreNestEntity> p_223337_0_, World p_223337_1_, SpawnReason reason,
@@ -107,10 +91,10 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 	protected void applyDamage(DamageSource source, float amount) {
 		if (source == DamageSource.OUT_OF_WORLD)
 			this.remove(Entity.RemovalReason.KILLED);
-		
+
 		if (!(source.getSource() instanceof PlayerEntity))
 			this.setHealth(5.0F);
-		
+
 		this.remove(Entity.RemovalReason.KILLED);
 	}
 
@@ -152,11 +136,11 @@ public class GoreNestEntity extends DemonEntity implements IAnimatable, IAnimati
 		List<EntityType<?>> givenList = Arrays.asList(DoomEntities.HELLKNIGHT, DoomEntities.POSSESSEDSCIENTIST,
 				DoomEntities.IMP, DoomEntities.PINKY, DoomEntities.CACODEMON, DoomEntities.CHAINGUNNER,
 				DoomEntities.GARGOYLE, DoomEntities.HELLKNIGHT2016, DoomEntities.LOST_SOUL,
-				DoomEntities.POSSESSEDSOLDIER, DoomEntities.SHOTGUNGUY, DoomEntities.UNWILLING,
-				DoomEntities.ZOMBIEMAN, DoomEntities.ARACHNOTRON, DoomEntities.ARCHVILE,
-				DoomEntities.MECHAZOMBIE, DoomEntities.PAIN, DoomEntities.MANCUBUS);
+				DoomEntities.POSSESSEDSOLDIER, DoomEntities.SHOTGUNGUY, DoomEntities.UNWILLING, DoomEntities.ZOMBIEMAN,
+				DoomEntities.ARACHNOTRON, DoomEntities.ARCHVILE, DoomEntities.MECHAZOMBIE, DoomEntities.PAIN,
+				DoomEntities.MANCUBUS);
 		int r = this.random.nextBetween(-3, 3);
-		
+
 		for (int k = 1; k < 5; ++k) {
 			for (int i = 0; i < 1; i++) {
 				int randomIndex = this.random.nextInt(givenList.size());

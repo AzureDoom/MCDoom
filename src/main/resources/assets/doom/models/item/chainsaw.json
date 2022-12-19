@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "doom:items/chainsaw",
-		"particle": "doom:items/chainsaw"
+		"0": "doom:item/chainsaw",
+		"particle": "doom:item/chainsaw"
 	},
 	"overrides": [
 		{

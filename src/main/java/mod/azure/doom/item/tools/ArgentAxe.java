@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 
 import com.google.common.collect.ImmutableMap.Builder;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.util.enums.DoomTier;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -19,9 +18,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.MiningToolItem;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
@@ -43,8 +42,7 @@ public class ArgentAxe extends MiningToolItem {
 			.put(Blocks.CRIMSON_HYPHAE, Blocks.STRIPPED_CRIMSON_HYPHAE).build();
 
 	public ArgentAxe() {
-		super(8, -2.4F, DoomTier.DOOM, BlockTags.AXE_MINEABLE,
-				new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1));
+		super(8, -2.4F, DoomTier.DOOM, BlockTags.AXE_MINEABLE, new Item.Settings().maxCount(1));
 	}
 
 	@Override

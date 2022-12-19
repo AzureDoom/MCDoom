@@ -8,9 +8,9 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
 
 public class BarrelEntity extends Entity {
 
@@ -23,7 +23,7 @@ public class BarrelEntity extends Entity {
 
 	protected void explode() {
 		this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 4.0F, true,
-				Explosion.DestructionType.NONE);
+				World.ExplosionSourceType.NONE);
 	}
 
 	public BarrelEntity(World worldIn, double x, double y, double z, LivingEntity igniter) {
@@ -53,7 +53,7 @@ public class BarrelEntity extends Entity {
 	}
 
 	@Override
-	public Packet<?> createSpawnPacket() {
+	public Packet<ClientPlayPacketListener> createSpawnPacket() {
 		return new EntitySpawnS2CPacket(this);
 	}
 

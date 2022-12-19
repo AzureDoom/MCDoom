@@ -3,9 +3,9 @@ package mod.azure.doom.client.models.armor;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.armor.EmberDoomArmor;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class EmberModel extends AnimatedGeoModel<EmberDoomArmor> {
+public class EmberModel extends GeoModel<EmberDoomArmor> {
 	@Override
 	public Identifier getModelResource(EmberDoomArmor object) {
 		return new Identifier(DoomMod.MODID, "geo/doom1armor.geo.json");

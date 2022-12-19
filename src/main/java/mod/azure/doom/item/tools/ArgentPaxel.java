@@ -8,7 +8,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Maps;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.util.enums.DoomTier;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -23,10 +22,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.MiningToolItem;
+import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.TagKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
@@ -60,8 +59,7 @@ public class ArgentPaxel extends MiningToolItem {
 			BlockTags.PICKAXE_MINEABLE, BlockTags.SHOVEL_MINEABLE);
 
 	public ArgentPaxel() {
-		super(9, -2.4F, DoomTier.DOOM, BlockTags.AXE_MINEABLE,
-				new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1));
+		super(9, -2.4F, DoomTier.DOOM, BlockTags.AXE_MINEABLE, new Item.Settings().maxCount(1));
 	}
 
 	@Override

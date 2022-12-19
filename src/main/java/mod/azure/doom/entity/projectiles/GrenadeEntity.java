@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -30,17 +31,15 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class GrenadeEntity extends PersistentProjectileEntity implements IAnimatable {
+public class GrenadeEntity extends PersistentProjectileEntity implements GeoEntity {
 
 	protected int timeInAir;
 	protected boolean inAir;
@@ -49,7 +48,7 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 	private static final TrackedData<Boolean> SPINNING = DataTracker.registerData(GrenadeEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
 	private LivingEntity shooter;
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public GrenadeEntity(EntityType<? extends GrenadeEntity> entityType, World world) {
 		super(entityType, world);
@@ -72,7 +71,20 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 		if (owner instanceof PlayerEntity) {
 			this.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
 		}
+	}
 
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
+			if (this.inGroundTime == 0)
+				return event.setAndContinue(RawAnimation.begin().thenLoop("spin"));
+			return PlayState.STOP;
+		}));
+	}
+
+	@Override
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	public GrenadeEntity(World world, LivingEntity user, boolean spinning) {
@@ -94,23 +106,8 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 		this.dataTracker.set(SPINNING, spin);
 	}
 
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("spin", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
-	}
-
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<GrenadeEntity>(this, "controller", 0, this::predicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
-
-	@Override
-	public Packet<?> createSpawnPacket() {
+	public Packet<ClientPlayPacketListener> createSpawnPacket() {
 		return DoomEntityPacket.createPacket(this);
 	}
 
@@ -147,17 +144,23 @@ public class GrenadeEntity extends PersistentProjectileEntity implements IAnimat
 	public void writeCustomDataToNbt(NbtCompound tag) {
 		super.writeCustomDataToNbt(tag);
 		tag.putShort("life", (short) this.ticksInAir);
+		tag.putBoolean("State", this.isSpinning());
 	}
 
 	@Override
 	public void readCustomDataFromNbt(NbtCompound tag) {
 		super.readCustomDataFromNbt(tag);
 		this.ticksInAir = tag.getShort("life");
+		this.setSpinning(tag.getBoolean("State"));
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
+		if (this.getVelocity().x == 0)
+			this.setSpinning(false);
+		if (!this.isOnGround())
+			this.setSpinning(true);
 	}
 
 	public void initFromStack(ItemStack stack) {

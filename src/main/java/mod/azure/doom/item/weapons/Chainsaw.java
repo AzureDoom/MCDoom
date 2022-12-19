@@ -32,7 +32,7 @@ import net.minecraft.world.World;
 public class Chainsaw extends Item {
 
 	public Chainsaw() {
-		super(new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1).maxDamage(601));
+		super(new Item.Settings().maxCount(1).maxDamage(601));
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class Chainsaw extends Item {
 	public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
 		LivingEntity user = (LivingEntity) entityIn;
 		PlayerEntity player = (PlayerEntity) entityIn;
-		if (player.getMainHandStack().isItemEqualIgnoreDamage(stack) && stack.getDamage() < (stack.getMaxDamage() - 1)
+		if (player.getMainHandStack().isItemEqual(stack) && stack.getDamage() < (stack.getMaxDamage() - 1)
 				&& !player.getItemCooldownManager().isCoolingDown(this)) {
 			final Box aabb = new Box(entityIn.getBlockPos().up()).expand(1D, 1D, 1D);
 			entityIn.getEntityWorld().getOtherEntities(user, aabb).forEach(e -> doDamage(user, e));

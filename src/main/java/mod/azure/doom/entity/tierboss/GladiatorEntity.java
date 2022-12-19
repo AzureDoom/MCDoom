@@ -40,7 +40,6 @@ import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -48,20 +47,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
+public class GladiatorEntity extends DemonEntity implements GeoEntity {
 
 	public static final TrackedData<Integer> DEATH_STATE = DataTracker.registerData(GladiatorEntity.class,
 			TrackedDataHandlerRegistry.INTEGER);
@@ -69,127 +64,58 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 			TrackedDataHandlerRegistry.INTEGER);
 	private final ServerBossBar bossBar = (ServerBossBar) (new ServerBossBar(this.getDisplayName(), BossBar.Color.RED,
 			BossBar.Style.NOTCHED_20)).setDarkenSky(false).setThickenFog(false);
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public GladiatorEntity(EntityType<? extends HostileEntity> type, World worldIn) {
 		super(type, worldIn);
 	}
 
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (this.dataTracker.get(DEATH_STATE) == 0 && event.isMoving() && this.dataTracker.get(STATE) < 1) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_phaseone", EDefaultLoopTypes.LOOP));
-			event.getController().setAnimationSpeed(1.5);
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(DEATH_STATE) == 0 && (this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_phaseone", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(DEATH_STATE) == 0 && this.dataTracker.get(STATE) == 1
-				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("shield_plant", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(DEATH_STATE) == 1 && event.isMoving()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking_phasetwo", EDefaultLoopTypes.LOOP));
-			event.getController().setAnimationSpeed(1.5);
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(DEATH_STATE) == 1 && (this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_phasetwo", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		if (!event.isMoving() && this.velocityModified) {
-			event.getController().setAnimation(new AnimationBuilder()
-					.addAnimation((this.dataTracker.get(DEATH_STATE) == 0 ? "idle_phaseone" : "idle_phasetwo"), EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		event.getController().setAnimation(new AnimationBuilder()
-				.addAnimation((this.dataTracker.get(DEATH_STATE) == 0 ? "idle_phaseone" : "idle_phasetwo"), EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
-	}
-
-	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
-		if (this.dataTracker.get(DEATH_STATE) == 0 && this.dataTracker.get(STATE) == 2
-				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phaseone", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(DEATH_STATE) == 0 && this.dataTracker.get(STATE) == 3
-				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phaseone2", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(DEATH_STATE) == 0 && this.dataTracker.get(STATE) == 4
-				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phaseone3", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(DEATH_STATE) == 1 && this.dataTracker.get(STATE) == 2
-				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phasetwo", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(DEATH_STATE) == 1 && this.dataTracker.get(STATE) == 3
-				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phasetwo2", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(DEATH_STATE) == 1 && this.dataTracker.get(STATE) == 4
-				&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("melee_phasetwo2", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		return PlayState.STOP;
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+			if (this.dataTracker.get(DEATH_STATE) == 0 && event.isMoving() && this.dataTracker.get(STATE) < 1) {
+				event.getController().setAnimationSpeed(1.5);
+				return event.setAndContinue(RawAnimation.begin().thenLoop("walking_phaseone"));
+			}
+			if (this.dataTracker.get(DEATH_STATE) == 0 && (this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death_phaseone"));
+			if (this.dataTracker.get(DEATH_STATE) == 1 && (this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death_phasetwo"));
+			if (this.dataTracker.get(DEATH_STATE) == 0 && this.dataTracker.get(STATE) == 1
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().thenLoop("shield_plant"));
+			if (this.dataTracker.get(DEATH_STATE) == 1 && event.isMoving()) {
+				event.getController().setAnimationSpeed(1.5);
+				return event.setAndContinue(RawAnimation.begin().thenLoop("walking_phasetwo"));
+			}
+			return event.setAndContinue(RawAnimation.begin()
+					.thenLoop((this.dataTracker.get(DEATH_STATE) == 0 ? "idle_phaseone" : "idle_phasetwo")));
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
+			if (this.dataTracker.get(DEATH_STATE) == 0 && this.dataTracker.get(STATE) == 2
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().then("melee_phaseone", LoopType.PLAY_ONCE));
+			if (this.dataTracker.get(DEATH_STATE) == 0 && this.dataTracker.get(STATE) == 3
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().then("melee_phaseone2", LoopType.PLAY_ONCE));
+			if (this.dataTracker.get(DEATH_STATE) == 0 && this.dataTracker.get(STATE) == 4
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().then("melee_phaseone3", LoopType.PLAY_ONCE));
+			if (this.dataTracker.get(DEATH_STATE) == 1 && this.dataTracker.get(STATE) == 2
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().then("melee_phasetwo", LoopType.PLAY_ONCE));
+			if (this.dataTracker.get(DEATH_STATE) == 1 && this.dataTracker.get(STATE) == 3
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().then("melee_phasetwo2", LoopType.PLAY_ONCE));
+			if (this.dataTracker.get(DEATH_STATE) == 1 && this.dataTracker.get(STATE) == 4
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().then("melee_phasetwo2", LoopType.PLAY_ONCE));
+			return PlayState.STOP;
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		AnimationController<GladiatorEntity> controller = new AnimationController<GladiatorEntity>(this, "controller",
-				0, this::predicate);
-		AnimationController<GladiatorEntity> controller1 = new AnimationController<GladiatorEntity>(this, "controller1",
-				0, this::predicate1);
-		controller.registerSoundListener(this::soundListener);
-		controller1.registerSoundListener(this::soundListener);
-		data.addAnimationController(controller);
-		data.addAnimationController(controller1);
-	}
-
-	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("walk")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
-			}
-		}
-		if (event.sound.matches("plantshield")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.BLOCK_METAL_PLACE,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
-			}
-		}
-		if (event.sound.matches("shieldtalk")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.BARON_AMBIENT,
-						SoundCategory.HOSTILE, 0.25F, 1.0F, true);
-			}
-		}
-		if (event.sound.matches("fireball")) {
-			if (this.world.isClient) {
-				this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(),
-						SoundEvents.ENTITY_DRAGON_FIREBALL_EXPLODE, SoundCategory.HOSTILE, 0.25F, 1.0F, true);
-			}
-		}
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
-
-	@Override
-	public int tickTimer() {
-		return age;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
@@ -290,12 +216,11 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	@Override
 	protected void initGoals() {
-		this.goalSelector.add(4, new RangedStrafeGladiatorAttackGoal(this,
-				new FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8)
-						.setDamage(DoomConfig.gladiator_ranged_damage + (this.dataTracker.get(DEATH_STATE) == 1
-								? DoomConfig.gladiator_phaseone_damage_boost
-								: 0))
-						.setSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F)));
+		this.goalSelector.add(4, new RangedStrafeGladiatorAttackGoal(this, new FireballAttack(this)
+				.setProjectileOriginOffset(0.8, 0.8, 0.8)
+				.setDamage(DoomConfig.gladiator_ranged_damage
+						+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0))
+				.setSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F)));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));
 		this.goalSelector.add(6, new LookAtEntityGoal(this, LivingEntity.class, 8.0F));
 		this.goalSelector.add(6, new LookAroundGoal(this));
@@ -346,7 +271,7 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 			target.setVelocity(target.getVelocity().add(0.4f, 0.4f, 0.4f));
 			this.applyDamageEffects(this, target);
 			this.world.createExplosion(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false,
-					Explosion.DestructionType.BREAK);
+					World.ExplosionSourceType.BLOCK);
 			target.timeUntilRegen = 0;
 		}
 		return true;
@@ -359,7 +284,7 @@ public class GladiatorEntity extends DemonEntity implements IAnimatable, IAnimat
 		if (bl) {
 			this.applyDamageEffects(this, target);
 			this.world.createExplosion(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false,
-					Explosion.DestructionType.BREAK);
+					World.ExplosionSourceType.BLOCK);
 			target.timeUntilRegen = 0;
 		}
 		return true;

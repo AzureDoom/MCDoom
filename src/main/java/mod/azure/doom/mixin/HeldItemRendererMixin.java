@@ -38,12 +38,12 @@ public abstract class HeldItemRendererMixin {
 		ItemStack itemStack = clientPlayerEntity.getMainHandStack();
 		ItemStack itemStack2 = clientPlayerEntity.getOffHandStack();
 		if ((this.mainHand.getItem() instanceof DoomBaseItem) && (itemStack.getItem() instanceof DoomBaseItem)
-				&& ItemStack.areItemsEqualIgnoreDamage(mainHand, itemStack)) {
+				&& ItemStack.areItemsEqual(mainHand, itemStack)) {
 			this.equipProgressMainHand = 1;
 			this.mainHand = itemStack;
 		}
 		if ((this.offHand.getItem() instanceof DoomBaseItem) && (itemStack2.getItem() instanceof DoomBaseItem)
-				&& ItemStack.areItemsEqualIgnoreDamage(offHand, itemStack2)) {
+				&& ItemStack.areItemsEqual(offHand, itemStack2)) {
 			this.equipProgressOffHand = 1;
 			this.offHand = itemStack2;
 		}

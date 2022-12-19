@@ -2,7 +2,6 @@ package mod.azure.doom.item.powerup;
 
 import java.util.List;
 
-import mod.azure.doom.DoomMod;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -21,7 +20,7 @@ import net.minecraft.world.World;
 public class InmortalSphereItem extends Item {
 
 	public InmortalSphereItem() {
-		super(new Item.Settings().group(DoomMod.DoomPowerUPItemGroup).maxCount(1));
+		super(new Item.Settings().maxCount(1));
 	}
 
 	@Override

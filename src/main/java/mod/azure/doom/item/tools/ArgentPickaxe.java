@@ -2,7 +2,6 @@ package mod.azure.doom.item.tools;
 
 import java.util.List;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.util.enums.DoomTier;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
@@ -15,7 +14,7 @@ import net.minecraft.world.World;
 public class ArgentPickaxe extends PickaxeItem {
 
 	public ArgentPickaxe() {
-		super(DoomTier.DOOM, 1, -2.4F, new Item.Settings().group(DoomMod.DoomWeaponItemGroup).maxCount(1));
+		super(DoomTier.DOOM, 1, -2.4F, new Item.Settings().maxCount(1));
 	}
 
 	@Override

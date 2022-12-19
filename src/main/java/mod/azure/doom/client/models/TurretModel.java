@@ -2,14 +2,15 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierambient.TurretEntity;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3f;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.data.EntityModelData;
 
-public class TurretModel extends AnimatedTickingGeoModel<TurretEntity> {
+public class TurretModel extends GeoModel<TurretEntity> {
 
 	@Override
 	public Identifier getModelResource(TurretEntity object) {
@@ -27,16 +28,21 @@ public class TurretModel extends AnimatedTickingGeoModel<TurretEntity> {
 	}
 
 	@Override
-	public void setLivingAnimations(TurretEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
-		super.setLivingAnimations(entity, uniqueID, customPredicate);
-		IBone head = this.getAnimationProcessor().getBone("eye");
+	public void setCustomAnimations(TurretEntity animatable, long instanceId,
+			AnimationState<TurretEntity> animationState) {
+		super.setCustomAnimations(animatable, instanceId, animationState);
 
-		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
+		CoreGeoBone head = getAnimationProcessor().getBone("eye");
+		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+
 		if (head != null) {
-			head.setRotationX(
-					Vec3f.POSITIVE_X.getRadialQuaternion((extraData.headPitch) * ((float) Math.PI / 360F)).getX());
-			head.setRotationY(
-					Vec3f.POSITIVE_Y.getRadialQuaternion(extraData.netHeadYaw * ((float) Math.PI / 360F)).getY());
+			head.setRotX(entityData.headPitch() * ((float) Math.PI / 360F));
+			head.setRotY(entityData.netHeadYaw() * ((float) Math.PI / 360F));
 		}
+	}
+
+	@Override
+	public RenderLayer getRenderType(TurretEntity animatable, Identifier texture) {
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 }

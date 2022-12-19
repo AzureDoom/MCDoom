@@ -9,7 +9,6 @@ import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
 
 public class CustomFireballEntity extends FireballEntity {
 
@@ -43,7 +42,7 @@ public class CustomFireballEntity extends FireballEntity {
 		if (!this.world.isClient) {
 			boolean bl = DoomConfig.enable_block_breaking;
 			this.world.createExplosion(null, this.getX(), this.getY(), this.getZ(), 1, true,
-					bl ? Explosion.DestructionType.DESTROY : Explosion.DestructionType.NONE);
+					bl ? World.ExplosionSourceType.BLOCK : World.ExplosionSourceType.NONE);
 			this.discard();
 		}
 	}

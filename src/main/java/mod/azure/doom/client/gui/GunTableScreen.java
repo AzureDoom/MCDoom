@@ -63,7 +63,7 @@ public class GunTableScreen extends HandledScreen<GunTableScreenHandler> {
 	}
 
 	protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		int i = ((this.width - this.backgroundWidth) / 2) - 5;
@@ -99,7 +99,7 @@ public class GunTableScreen extends HandledScreen<GunTableScreenHandler> {
 			int j = (this.height - this.backgroundHeight) / 2;
 			int yPos = j + 17;
 			int xPos = i + 3;
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+			RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 			RenderSystem.setShaderTexture(0, TEXTURE);
 			this.renderScrollbar(matrices, i, j, tradeOfferList);
 			int m = 0;
@@ -141,7 +141,7 @@ public class GunTableScreen extends HandledScreen<GunTableScreenHandler> {
 
 	private void renderArrow(MatrixStack matrices, GunTableRecipe tradeOffer, int x, int y) {
 		RenderSystem.enableBlend();
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		drawTexture(matrices, x + 5 + 35 + 20, y + 3, this.getZOffset(), 15.0F, 171.0F, 10, 9, 512, 256);
 
@@ -206,10 +206,11 @@ public class GunTableScreen extends HandledScreen<GunTableScreenHandler> {
 
 	@Environment(EnvType.CLIENT)
 	class WidgetButtonPage extends ButtonWidget {
+
 		final int index;
 
 		public WidgetButtonPage(int x, int y, int index, ButtonWidget.PressAction onPress) {
-			super(x, y, 112, 20, ScreenTexts.EMPTY, onPress);
+			super(x, y, 112, 20, ScreenTexts.EMPTY, onPress, DEFAULT_NARRATION_SUPPLIER);
 			this.index = index;
 			this.visible = false;
 		}
@@ -221,17 +222,17 @@ public class GunTableScreen extends HandledScreen<GunTableScreenHandler> {
 		public void renderToolTip(MatrixStack matrices, int mouseX, int mouseY) {
 			if (this.hovered && handler.getRecipes().size() > this.index + indexStartOffset) {
 				ItemStack stack;
-				if (mouseX < this.x + 20) {
+				if (mouseX < this.getX() + 20) {
 					stack = handler.getRecipes().get(this.index + indexStartOffset).getOutput();
-					renderTooltip(matrices, mouseX, mouseY);
-				} else if (mouseX < this.x + 50 && mouseX > this.x + 30) {
+					drawMouseoverTooltip(matrices, mouseX, mouseY);
+				} else if (mouseX < this.getX() + 50 && mouseX > this.getX() + 30) {
 					stack = handler.getRecipes().get(this.index + indexStartOffset).getOutput();
 					if (!stack.isEmpty()) {
-						renderTooltip(matrices, mouseX, mouseY);
+						drawMouseoverTooltip(matrices, mouseX, mouseY);
 					}
-				} else if (mouseX > this.x + 65) {
+				} else if (mouseX > this.getX() + 65) {
 					stack = handler.getRecipes().get(this.index + indexStartOffset).getOutput();
-					renderTooltip(matrices, mouseX, mouseY);
+					drawMouseoverTooltip(matrices, mouseX, mouseY);
 				}
 			}
 		}

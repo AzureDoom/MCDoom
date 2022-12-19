@@ -3,9 +3,9 @@ package mod.azure.doom.client.models.weapons;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.DGauss;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class DGaussModel extends AnimatedGeoModel<DGauss> {
+public class DGaussModel extends GeoModel<DGauss> {
 	@Override
 	public Identifier getModelResource(DGauss object) {
 		return new Identifier(DoomMod.MODID, "geo/doomed_gauss_cannon.geo.json");
@@ -13,7 +13,7 @@ public class DGaussModel extends AnimatedGeoModel<DGauss> {
 
 	@Override
 	public Identifier getTextureResource(DGauss object) {
-		return new Identifier(DoomMod.MODID, "textures/items/doomed_gauss_cannon.png");
+		return new Identifier(DoomMod.MODID, "textures/item/doomed_gauss_cannon.png");
 	}
 
 	@Override

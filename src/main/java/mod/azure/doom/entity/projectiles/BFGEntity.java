@@ -41,26 +41,23 @@ import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class BFGEntity extends PersistentProjectileEntity implements IAnimatable {
+public class BFGEntity extends PersistentProjectileEntity implements GeoEntity {
 
 	protected int timeInAir;
 	protected boolean inAir;
@@ -71,12 +68,13 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 	private LivingEntity shooter;
 	private BlockPos lightBlockPos = null;
 	private int idleTicks = 0;
+    private int beamTicks;
 	Random rand = new Random();
 	List<? extends String> whitelistEntries = DoomConfig.bfg_damage_mob_whitelist;
 	int randomIndex = rand.nextInt(whitelistEntries.size());
 	Identifier randomElement1 = new Identifier(whitelistEntries.get(randomIndex));
-	EntityType<?> randomElement = Registry.ENTITY_TYPE.get(randomElement1);
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	EntityType<?> randomElement = Registries.ENTITY_TYPE.get(randomElement1);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public BFGEntity(EntityType<? extends BFGEntity> entityType, World world) {
 		super(entityType, world);
@@ -86,21 +84,6 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 	public BFGEntity(World world, LivingEntity owner) {
 		super(ProjectilesEntityRegister.BFG_CELL, owner, world);
 		this.shooter = owner;
-	}
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
-	}
-
-	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<BFGEntity>(this, "controller", 0, this::predicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
 	}
 
 	protected BFGEntity(EntityType<? extends BFGEntity> type, double x, double y, double z, World world) {
@@ -113,11 +96,22 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 		if (owner instanceof PlayerEntity) {
 			this.pickupType = PersistentProjectileEntity.PickupPermission.ALLOWED;
 		}
-
 	}
 
 	@Override
-	public Packet<?> createSpawnPacket() {
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+		}));
+	}
+
+	@Override
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
+	}
+
+	@Override
+	public Packet<ClientPlayPacketListener> createSpawnPacket() {
 		return DoomEntityPacket.createPacket(this);
 	}
 
@@ -179,7 +173,7 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 					&& (e instanceof HostileEntity || e instanceof SlimeEntity || e instanceof PhantomEntity || e instanceof DemonEntity
 							|| e instanceof ShulkerEntity || e instanceof HoglinEntity || (e == listEntity))) {
 				if (e.isAlive()) {
-					e.damage(DamageSource.explosion(shooter), DoomConfig.bfgball_damage_aoe);
+					e.damage(DamageSource.explosion(this, shooter), DoomConfig.bfgball_damage_aoe);
 					this.setBeamTarget(e.getId());
 				}
 			}
@@ -269,8 +263,8 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 		if (!this.world.isClient) {
 			this.doDamage();
 			this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.0F, false,
-					DoomConfig.enable_block_breaking ? Explosion.DestructionType.BREAK
-							: Explosion.DestructionType.NONE);
+					DoomConfig.enable_block_breaking ? World.ExplosionSourceType.BLOCK
+							: World.ExplosionSourceType.NONE);
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
 		this.playSound(DoomSounds.BFG_HIT, 1.0F, 1.0F);
@@ -281,8 +275,8 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 		if (!this.world.isClient) {
 			this.doDamage();
 			this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.0F, false,
-					DoomConfig.enable_block_breaking ? Explosion.DestructionType.BREAK
-							: Explosion.DestructionType.NONE);
+					DoomConfig.enable_block_breaking ? World.ExplosionSourceType.BLOCK
+							: World.ExplosionSourceType.NONE);
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
 		this.playSound(DoomSounds.BFG_HIT, 1.0F, 1.0F);
@@ -375,12 +369,21 @@ public class BFGEntity extends PersistentProjectileEntity implements IAnimatable
 		}
 	}
 
+    public float getBeamProgress(float tickDelta) {
+        return ((float)this.beamTicks + tickDelta) / (float)this.getWarmupTime();
+    }
+
+    public int getWarmupTime() {
+        return 80;
+    }
+
 	@Override
 	public void onTrackedDataSet(TrackedData<?> data) {
 		super.onTrackedDataSet(data);
-		if (BEAM_TARGET_ID.equals(data)) {
-			this.cachedBeamTarget = null;
-		}
+        if (BEAM_TARGET_ID.equals(data)) {
+            this.beamTicks = 0;
+            this.cachedBeamTarget = null;
+        }
 	}
 
 	@Nullable

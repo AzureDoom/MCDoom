@@ -17,72 +17,38 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.AnimationState;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.network.ISyncable;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class DoomBaseItem extends Item implements IAnimatable, ISyncable {
+public abstract class DoomBaseItem extends Item implements GeoItem {
 
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
-	public String controllerName = "controller";
-	public static final int ANIM_OPEN = 0;
-	public static final int ANIM_OPEN_FASTER = 2;
-	public static final int ANIM_HOOK = 1;
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	private BlockPos lightBlockPos = null;
-
-	public <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-		return PlayState.CONTINUE;
-	}
-
-	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController(this, controllerName, 1, this::predicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
-
-	@Override
-	public void onAnimationSync(int id, int state) {
-		if (state == ANIM_OPEN) {
-			final AnimationController<?> controller = GeckoLibUtil.getControllerForID(this.factory, id, controllerName);
-			if (controller.getAnimationState() == AnimationState.Stopped) {
-				controller.markNeedsReload();
-				controller.setAnimation(new AnimationBuilder().addAnimation("firing", EDefaultLoopTypes.PLAY_ONCE));
-			}
-		}
-		if (state == ANIM_OPEN_FASTER) {
-			final AnimationController<?> controller = GeckoLibUtil.getControllerForID(this.factory, id, controllerName);
-			if (controller.getAnimationState() == AnimationState.Stopped) {
-				controller.markNeedsReload();
-				controller.setAnimationSpeed(2);
-				controller.setAnimation(new AnimationBuilder().addAnimation("firing", EDefaultLoopTypes.PLAY_ONCE));
-			}
-		}
-		if (state == ANIM_HOOK) {
-			final AnimationController<?> controller = GeckoLibUtil.getControllerForID(this.factory, id, controllerName);
-			if (controller.getAnimationState() == AnimationState.Stopped) {
-				controller.markNeedsReload();
-				controller.setAnimation(new AnimationBuilder().addAnimation("hook", EDefaultLoopTypes.PLAY_ONCE));
-			}
-		}
-	}
 
 	public DoomBaseItem(Settings properties) {
 		super(properties);
 		if (!(this instanceof Unmaykr))
-			GeckoLibNetwork.registerSyncable(this);
+			SingletonGeoAnimatable.registerSyncedAnimatable(this);
+	}
+
+	@Override
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
+	}
+
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "shoot_controller", event -> PlayState.CONTINUE)
+				.triggerableAnim("firing", RawAnimation.begin().then("firing", LoopType.PLAY_ONCE))
+				.triggerableAnim("firing_faster", RawAnimation.begin().then("firing_faster", LoopType.PLAY_ONCE))
+				.triggerableAnim("hook", RawAnimation.begin().then("hook", LoopType.PLAY_ONCE)));
 	}
 
 	public void removeAmmo(Item ammo, PlayerEntity playerEntity) {
@@ -121,9 +87,10 @@ public class DoomBaseItem extends Item implements IAnimatable, ISyncable {
 
 	@Override
 	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(Text.translatable(
-				"Ammo: " + (stack.getMaxDamage() - stack.getDamage() - 1) + " / " + (stack.getMaxDamage() - 1))
-						.formatted(Formatting.ITALIC));
+		tooltip.add(Text
+				.translatable(
+						"Ammo: " + (stack.getMaxDamage() - stack.getDamage() - 1) + " / " + (stack.getMaxDamage() - 1))
+				.formatted(Formatting.ITALIC));
 	}
 
 	protected void spawnLightSource(Entity entity, boolean isInWaterBlock) {

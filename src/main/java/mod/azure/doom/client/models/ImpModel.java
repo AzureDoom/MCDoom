@@ -2,24 +2,26 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.ImpEntity;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3f;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import net.minecraft.util.math.MathHelper;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.data.EntityModelData;
 
-public class ImpModel extends AnimatedTickingGeoModel<ImpEntity> {
+public class ImpModel extends GeoModel<ImpEntity> {
 
 	public Identifier classic_model = new Identifier(DoomMod.MODID, "geo/imp.geo.json");
 	public Identifier nightmareimp_model = new Identifier(DoomMod.MODID, "geo/nightmareimp.geo.json");
 	public Identifier imp2016_model = new Identifier(DoomMod.MODID, "geo/imp2016.geo.json");
-	
+
 	public Identifier classic_texture = new Identifier(DoomMod.MODID, "textures/entity/imp-texturemap.png");
 	public Identifier d64_texture = new Identifier(DoomMod.MODID, "textures/entity/imp-64.png");
 	public Identifier nightmareimp_texture = new Identifier(DoomMod.MODID, "textures/entity/nightmareimp-texture.png");
 	public Identifier imp2016_texture = new Identifier(DoomMod.MODID, "textures/entity/imp2016.png");
-	
+
 	public Identifier imp2016_animation = new Identifier(DoomMod.MODID, "animations/imp2016.animation.json");
 	public Identifier imp_animation = new Identifier(DoomMod.MODID, "animations/imp_animation.json");
 
@@ -42,16 +44,20 @@ public class ImpModel extends AnimatedTickingGeoModel<ImpEntity> {
 	}
 
 	@Override
-	public void setLivingAnimations(ImpEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
-		super.setLivingAnimations(entity, uniqueID, customPredicate);
-		IBone head = this.getAnimationProcessor().getBone("neck");
+	public void setCustomAnimations(ImpEntity animatable, long instanceId, AnimationState<ImpEntity> animationState) {
+		super.setCustomAnimations(animatable, instanceId, animationState);
 
-		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
+		CoreGeoBone head = getAnimationProcessor().getBone("head");
+		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+
 		if (head != null) {
-			head.setRotationX(
-					Vec3f.POSITIVE_X.getRadialQuaternion((extraData.headPitch - 5) * ((float) Math.PI / 180F)).getX());
-			head.setRotationY(
-					Vec3f.POSITIVE_Y.getRadialQuaternion(extraData.netHeadYaw * ((float) Math.PI / 340F)).getY());
+			head.setRotX((entityData.headPitch() - 5) * MathHelper.RADIANS_PER_DEGREE);
+			head.setRotY(entityData.netHeadYaw() * ((float) Math.PI / 340F));
 		}
+	}
+
+	@Override
+	public RenderLayer getRenderType(ImpEntity animatable, Identifier texture) {
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 }

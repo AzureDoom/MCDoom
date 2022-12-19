@@ -2,7 +2,6 @@ package mod.azure.doom.item;
 
 import java.util.List;
 
-import mod.azure.doom.DoomMod;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -13,7 +12,7 @@ import net.minecraft.world.World;
 public class ArgentPlateItem extends Item {
 
 	public ArgentPlateItem() {
-		super(new Item.Settings().group(DoomMod.DoomPowerUPItemGroup).maxCount(64));
+		super(new Item.Settings().maxCount(64));
 	}
 
 	@Override

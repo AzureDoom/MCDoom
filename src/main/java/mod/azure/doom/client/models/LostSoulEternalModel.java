@@ -2,10 +2,11 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class LostSoulEternalModel extends AnimatedTickingGeoModel<LostSoulEntity> {
+public class LostSoulEternalModel extends GeoModel<LostSoulEntity> {
 
 	private static final Identifier[] TEX = { new Identifier(DoomMod.MODID, "textures/entity/lostsould_eternal_1.png"),
 			new Identifier(DoomMod.MODID, "textures/entity/lostsould_eternal_2.png"),
@@ -38,5 +39,10 @@ public class LostSoulEternalModel extends AnimatedTickingGeoModel<LostSoulEntity
 	@Override
 	public Identifier getAnimationResource(LostSoulEntity object) {
 		return new Identifier(DoomMod.MODID, "animations/lostsoul_animation.json");
+	}
+
+	@Override
+	public RenderLayer getRenderType(LostSoulEntity animatable, Identifier texture) {
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 }

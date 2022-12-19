@@ -9,7 +9,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
 
 public class FireProjectileRender extends EntityRenderer<FireProjectile> {
 
@@ -33,12 +33,12 @@ public class FireProjectileRender extends EntityRenderer<FireProjectile> {
 	public void render(FireProjectile persistentProjectileEntity, float f, float g, MatrixStack matrixStack,
 			VertexConsumerProvider vertexConsumerProvider, int i) {
 		matrixStack.push();
-		matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(
+		matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(
 				MathHelper.lerp(g, persistentProjectileEntity.prevYaw, persistentProjectileEntity.getYaw()) - 90.0F));
-		matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(
+		matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(
 				MathHelper.lerp(g, persistentProjectileEntity.prevPitch, persistentProjectileEntity.getPitch())));
 
-		matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(45.0F));
+		matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(45.0F));
 		matrixStack.scale(0.05625F, 0.05625F, 0.05625F);
 		matrixStack.translate(-4.0D, 0.0D, 0.0D);
 

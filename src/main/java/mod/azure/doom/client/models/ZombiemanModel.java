@@ -2,14 +2,16 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.ZombiemanEntity;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import net.minecraft.util.math.MathHelper;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.data.EntityModelData;
 
-public class ZombiemanModel extends AnimatedTickingGeoModel<ZombiemanEntity> {
+public class ZombiemanModel extends GeoModel<ZombiemanEntity> {
 
 	@Override
 	public Identifier getModelResource(ZombiemanEntity object) {
@@ -28,16 +30,21 @@ public class ZombiemanModel extends AnimatedTickingGeoModel<ZombiemanEntity> {
 	}
 
 	@Override
-	public void setLivingAnimations(ZombiemanEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
-		super.setLivingAnimations(entity, uniqueID, customPredicate);
-		IBone head = this.getAnimationProcessor().getBone("bipedHead");
+	public void setCustomAnimations(ZombiemanEntity animatable, long instanceId,
+			AnimationState<ZombiemanEntity> animationState) {
+		super.setCustomAnimations(animatable, instanceId, animationState);
 
-		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
+		CoreGeoBone head = getAnimationProcessor().getBone("bipedHead");
+		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+
 		if (head != null) {
-			head.setRotationX(
-					Vec3f.POSITIVE_X.getRadialQuaternion(extraData.headPitch * ((float) Math.PI / 180F)).getX());
-			head.setRotationY(
-					Vec3f.POSITIVE_Y.getRadialQuaternion(extraData.netHeadYaw * ((float) Math.PI / 180F)).getY());
+			head.setRotX(entityData.headPitch() * MathHelper.RADIANS_PER_DEGREE);
+			head.setRotY(entityData.netHeadYaw() * MathHelper.RADIANS_PER_DEGREE);
 		}
+	}
+
+	@Override
+	public RenderLayer getRenderType(ZombiemanEntity animatable, Identifier texture) {
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 }

@@ -3,9 +3,9 @@ package mod.azure.doom.client.models.weapons;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.PlasmaGun;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class PlasmagunModel extends AnimatedGeoModel<PlasmaGun> {
+public class PlasmagunModel extends GeoModel<PlasmaGun> {
 	@Override
 	public Identifier getModelResource(PlasmaGun object) {
 		return new Identifier(DoomMod.MODID, "geo/plasmagun.geo.json");
@@ -13,7 +13,7 @@ public class PlasmagunModel extends AnimatedGeoModel<PlasmaGun> {
 
 	@Override
 	public Identifier getTextureResource(PlasmaGun object) {
-		return new Identifier(DoomMod.MODID, "textures/items/rifle.png");
+		return new Identifier(DoomMod.MODID, "textures/item/rifle.png");
 	}
 
 	@Override
