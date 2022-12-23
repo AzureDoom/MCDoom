@@ -45,7 +45,7 @@ public class WhiplashEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+		controllers.add(new AnimationController<>(this, "livingController", 10, event -> {
 			if (event.isMoving() && this.hurtTime == 0 && !this.isAttacking())
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
 			if (event.isMoving() && this.hurtTime == 0 && this.isAttacking())
