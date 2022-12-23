@@ -73,15 +73,15 @@ public class Revenant2016Entity extends DemonEntity implements GeoEntity {
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving() && this.isOnGround())
-				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			if (!this.isOnGround() && !this.onGround && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
-				return event.setAndContinue(RawAnimation.begin().thenLoop("flying"));
-			if (!this.isOnGround() && !this.onGround && this.velocityModified)
-				return event.setAndContinue(RawAnimation.begin().thenLoop("flying"));
 			if ((this.dead || this.getHealth() < 0.01 || this.isDead()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+			if (!this.isAttacking() && event.isMoving() && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
+			if (this.isAttacking() && event.isMoving() && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().thenLoop("flying"));
+			if (!event.isCurrentAnimation(RawAnimation.begin().thenLoop("flying")) && !event.isCurrentAnimation(RawAnimation.begin().thenLoop("walking")))
+				return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+			return PlayState.CONTINUE;
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
 			if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
 				return event.setAndContinue(RawAnimation.begin().then("melee", LoopType.PLAY_ONCE));

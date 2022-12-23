@@ -58,16 +58,15 @@ public class GargoyleEntity extends DemonEntity implements GeoEntity {
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving())
-				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
 			if ((this.dead || this.getHealth() < 0.01 || this.isDead()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			if (event.isMoving() && this.isOnGround() && this.onGround
-					&& !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-				event.getController().setAnimationSpeed(1.05);
+			if (!this.isAttacking() && event.isMoving() && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			}
-			return event.setAndContinue(RawAnimation.begin().thenLoop("flying"));
+			if (this.isAttacking() && event.isMoving() && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+				return event.setAndContinue(RawAnimation.begin().thenLoop("flying"));
+			if (!event.isCurrentAnimation(RawAnimation.begin().thenLoop("flying")) && !event.isCurrentAnimation(RawAnimation.begin().thenLoop("walking")))
+				return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+			return PlayState.CONTINUE;
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
 			if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
 				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
