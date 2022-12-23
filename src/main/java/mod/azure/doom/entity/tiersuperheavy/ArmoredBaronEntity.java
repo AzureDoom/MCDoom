@@ -59,9 +59,9 @@ public class ArmoredBaronEntity extends DemonEntity implements GeoEntity {
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking_armor"));
 			if ((this.dead || this.getHealth() < 0.01 || this.isDead()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death_armor"));
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle_armor"));
 		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("idle_armor"))
+			if (event.getKeyframeData().getSound().matches("walk"))
 				if (this.world.isClient)
 					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.CYBERDEMON_STEP,
 							SoundCategory.HOSTILE, 0.25F, 1.0F, false);
