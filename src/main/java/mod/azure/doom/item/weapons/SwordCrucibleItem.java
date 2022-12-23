@@ -27,6 +27,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
@@ -38,6 +39,7 @@ import software.bernie.geckolib.animatable.client.RenderProvider;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -85,12 +87,9 @@ public class SwordCrucibleItem extends SwordItem implements GeoItem {
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, "shoot_controller", event -> {
-//			if (MinecraftClient.getInstance().player.getMainHandStack() == event.getData(DataTickets.ITEMSTACK))
-//				return event.setAndContinue(RawAnimation.begin().thenPlay("opening").thenLoop("open"));
-//			return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("closed"));
-			return PlayState.STOP;
-		}));
+		controllers.add(new AnimationController<>(this, "shoot_controller", event -> PlayState.CONTINUE)
+				.triggerableAnim("open", RawAnimation.begin().thenPlay("opening").thenLoop("open"))
+				.triggerableAnim("close", RawAnimation.begin().thenPlayAndHold("closed")));
 	}
 
 	@Override
@@ -123,14 +122,20 @@ public class SwordCrucibleItem extends SwordItem implements GeoItem {
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
 		PlayerEntity playerentity = (PlayerEntity) entity;
-		if (world.isClient) {
+		if (world.isClient)
 			if (playerentity.getMainHandStack().getItem() instanceof SwordCrucibleItem && ClientInit.reload.isPressed()
 					&& selected) {
 				PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.CRUCIBLE, passedData);
 			}
-		}
+		if (!world.isClient)
+			if (((PlayerEntity) entity).getMainHandStack().isOf(this) && selected)
+				triggerAnim((PlayerEntity) entity, GeoItem.getOrAssignId(stack, (ServerWorld) world),
+						"shoot_controller", "open");
+			else
+				triggerAnim((PlayerEntity) entity, GeoItem.getOrAssignId(stack, (ServerWorld) world),
+						"shoot_controller", "close");
 	}
 
 	public void removeAmmo(Item ammo, PlayerEntity playerEntity) {
