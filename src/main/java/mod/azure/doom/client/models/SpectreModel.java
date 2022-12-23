@@ -38,7 +38,7 @@ public class SpectreModel extends GeoModel<SpectreEntity> {
 		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
 
 		if (head != null) {
-			head.setRotX((entityData.headPitch() + (animatable.getVariant() == 1 ? 270 : 30)) * ((float) Math.PI / 360F));
+			head.setRotX((entityData.headPitch() + (animatable.getVariant() == 1 ? 90 : 30)) * ((float) Math.PI / 360F));
 			head.setRotY(entityData.netHeadYaw() * ((float) Math.PI / 500F));
 		}
 	}

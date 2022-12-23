@@ -39,7 +39,7 @@ public class PinkyModel extends GeoModel<PinkyEntity> {
 		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
 
 		if (head != null) {
-			head.setRotX((entityData.headPitch() + (animatable.getVariant() == 3 ? 180 : 30)) * ((float) Math.PI / 360F));
+			head.setRotX((entityData.headPitch() + (animatable.getVariant() == 3 ? 90 : 30)) * ((float) Math.PI / 360F));
 			head.setRotY(entityData.netHeadYaw() * ((float) Math.PI / 500F));
 		}
 	}
