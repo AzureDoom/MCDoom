@@ -1,5 +1,6 @@
 package mod.azure.doom.entity.projectiles.entity;
 
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.DoomSounds;
@@ -15,6 +16,7 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -95,6 +97,21 @@ public class BloodBoltEntity extends ExplosiveProjectileEntity implements GeoEnt
 		} else {
 			return true;
 		}
+	}
+
+	@Override
+	protected void onCollision(HitResult result) {
+		super.onCollision(result);
+		if (!this.world.isClient) {
+			this.explode();
+			this.remove(Entity.RemovalReason.DISCARDED);
+		}
+		this.playSound(DoomSounds.ROCKET_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+	}
+
+	protected void explode() {
+		this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.0F, false,
+				DoomConfig.enable_block_breaking ? World.ExplosionSourceType.BLOCK : World.ExplosionSourceType.NONE);
 	}
 
 	@Override
