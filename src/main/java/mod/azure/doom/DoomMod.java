@@ -61,6 +61,7 @@ public class DoomMod implements ModInitializer {
 	public static final ResourceLocation BFG9000 = new ResourceLocation(MODID, "bfg9000");
 	public static final ResourceLocation SHOTGUN = new ResourceLocation(MODID, "shotgun");
 	public static final ResourceLocation UNMAYKR = new ResourceLocation(MODID, "unmaykr");
+	public static final ResourceLocation UNMAKER = new ResourceLocation(MODID, "unmaykr");
 	public static final ResourceLocation BALLISTA = new ResourceLocation(MODID, "ballista");
 	public static final ResourceLocation CHAINGUN = new ResourceLocation(MODID, "chaingun");
 	public static final ResourceLocation CHAINSAW = new ResourceLocation(MODID, "chainsaw");

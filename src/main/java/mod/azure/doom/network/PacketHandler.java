@@ -20,6 +20,7 @@ import mod.azure.doom.item.weapons.SentinelHammerItem;
 import mod.azure.doom.item.weapons.Shotgun;
 import mod.azure.doom.item.weapons.SuperShotgun;
 import mod.azure.doom.item.weapons.SwordCrucibleItem;
+import mod.azure.doom.item.weapons.Unmaker;
 import mod.azure.doom.item.weapons.Unmaykr;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.ResourceLocation;
@@ -100,6 +101,11 @@ public class PacketHandler {
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
 					if (player.getMainHandItem().getItem() instanceof Unmaykr)
 						Unmaykr.reload(player, InteractionHand.MAIN_HAND);
+				});
+		ServerPlayNetworking.registerGlobalReceiver(DoomMod.UNMAKER,
+				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
+					if (player.getMainHandItem().getItem() instanceof Unmaker)
+						Unmaker.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.HEAVYCANNON,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {

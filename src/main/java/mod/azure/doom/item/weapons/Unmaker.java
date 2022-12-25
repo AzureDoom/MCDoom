@@ -102,7 +102,7 @@ public class Unmaker extends DoomBaseItem {
 					&& selected) {
 				FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
-				ClientPlayNetworking.send(DoomMod.UNMAYKR, passedData);
+				ClientPlayNetworking.send(DoomMod.UNMAKER, passedData);
 			}
 		}
 	}
