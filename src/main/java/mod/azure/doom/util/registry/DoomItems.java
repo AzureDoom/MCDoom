@@ -82,11 +82,11 @@ import mod.azure.doom.item.weapons.SwordCrucibleItem;
 import mod.azure.doom.item.weapons.Unmaker;
 import mod.azure.doom.item.weapons.Unmaykr;
 import mod.azure.doom.util.enums.DoomArmorMaterial;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
 
 public class DoomItems {
 
@@ -114,12 +114,12 @@ public class DoomItems {
 	public static MegaSphereItem MEGA = item(new MegaSphereItem(), "megasphere");
 	public static GrenadeItem GRENADE = item(new GrenadeItem(), "doomed_grenade");
 	public static HeavyCannon HEAVYCANNON = item(new HeavyCannon(), "heavycannon");
-	public static Item ICON_ICON = item(new Item(new Item.Settings()), "icon_icon");
+	public static Item ICON_ICON = item(new Item(new Item.Properties()), "icon_icon");
 	public static ArgentBolt ARGENT_BOLT = item(new ArgentBolt(), "argent_bolt");
 	public static ArgentPaxel ARGENT_PAXEL = item(new ArgentPaxel(), "argent_paxel");
 	public static ArgentSword ARGENT_SWORD = item(new ArgentSword(), "argent_sword");
 	public static PowerSphereItem POWER = item(new PowerSphereItem(), "powersphere");
-	public static Item GAS_BARREL = item(new Item(new Item.Settings()), "gas_barrel");
+	public static Item GAS_BARREL = item(new Item(new Item.Properties()), "gas_barrel");
 	public static EnergyCell ENERGY_CELLS = item(new EnergyCell(), "energy_cells");
 	public static ArgentShovel ARGENT_SHOVEL = item(new ArgentShovel(), "argent_shovel");
 	public static ShellAmmo SHOTGUN_SHELLS = item(new ShellAmmo(), "shotgun_shells");
@@ -149,8 +149,8 @@ public class DoomItems {
 	public static Map<Item, Item> getItemMap() {
 		Map<Item, Item> vanillaItemMap = new HashMap<>();
 		for (Item i : DoomItems.ITEMS) {
-			vanillaItemMap.put(Registries.ITEM.get(new Identifier(DoomMod.MODID, Registries.ITEM.getId(i).getPath())),
-					i);
+			vanillaItemMap.put(BuiltInRegistries.ITEM
+					.get(new ResourceLocation(DoomMod.MODID, BuiltInRegistries.ITEM.getKey(i).getPath())), i);
 		}
 		return vanillaItemMap;
 	}
@@ -445,12 +445,12 @@ public class DoomItems {
 			new DarkLordArmor(DoomArmorMaterial.DOOM_ARMOR, EquipmentSlot.FEET));
 
 	static <T extends Item> T item(T c, String id) {
-		Registry.register(Registries.ITEM, new Identifier(DoomMod.MODID, id), c);
+		Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(DoomMod.MODID, id), c);
 		return c;
 	}
 
 	static <T extends Item> T item(String id, T c) {
-		Registry.register(Registries.ITEM, new Identifier(DoomMod.MODID, id), c);
+		Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(DoomMod.MODID, id), c);
 		return c;
 	}
 }

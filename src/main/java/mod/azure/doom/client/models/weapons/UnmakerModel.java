@@ -2,22 +2,22 @@ package mod.azure.doom.client.models.weapons;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.Unmaker;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
 public class UnmakerModel extends GeoModel<Unmaker> {
 	@Override
-	public Identifier getModelResource(Unmaker object) {
-		return new Identifier(DoomMod.MODID, "geo/unmaykr.geo.json");
+	public ResourceLocation getModelResource(Unmaker object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/unmaykr.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(Unmaker object) {
-		return new Identifier(DoomMod.MODID, "textures/item/unmaker.png");
+	public ResourceLocation getTextureResource(Unmaker object) {
+		return new ResourceLocation(DoomMod.MODID, "textures/item/unmaker.png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(Unmaker animatable) {
-		return new Identifier(DoomMod.MODID, "animations/unmaykr.animation.json");
+	public ResourceLocation getAnimationResource(Unmaker animatable) {
+		return new ResourceLocation(DoomMod.MODID, "animations/unmaykr.animation.json");
 	}
 }

@@ -1,40 +1,26 @@
 package mod.azure.doom.entity.tiersuperheavy;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoField;
-import java.util.Random;
-
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.util.registry.DoomSounds;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -48,32 +34,31 @@ public class ArmoredBaronEntity extends DemonEntity implements GeoEntity {
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-	public ArmoredBaronEntity(EntityType<ArmoredBaronEntity> entityType, World worldIn) {
+	public ArmoredBaronEntity(EntityType<ArmoredBaronEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 	}
 
-	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			if (event.isMoving())
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking_armor"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death_armor"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle_armor"));
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (this.world.isClient)
-					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.CYBERDEMON_STEP,
-							SoundCategory.HOSTILE, 0.25F, 1.0F, false);
+				if (this.level.isClientSide())
+					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.CYBERDEMON_STEP,
+							SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("melee_armor", LoopType.PLAY_ONCE));
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("attack"))
-				if (this.world.isClient)
-					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.BARON_AMBIENT,
-							SoundCategory.HOSTILE, 0.25F, 1.0F, false);
+				if (this.level.isClientSide())
+					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.BARON_AMBIENT,
+							SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		}));
 	}
 
@@ -82,48 +67,47 @@ public class ArmoredBaronEntity extends DemonEntity implements GeoEntity {
 		return this.cache;
 	}
 
-	public static boolean spawning(EntityType<BaronEntity> p_223337_0_, World p_223337_1_, SpawnReason reason,
-			BlockPos p_223337_3_, Random p_223337_4_) {
-		return p_223337_1_.getDifficulty() != Difficulty.PEACEFUL;
+	@Override
+	protected void registerGoals() {
+		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
+		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.25D, 1));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
+		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
+	}
+
+	public static AttributeSupplier.Builder createMobAttributes() {
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
+				.add(Attributes.MAX_HEALTH, DoomConfig.armoredbaron_health).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f)
+				.add(Attributes.ATTACK_DAMAGE, DoomConfig.armoredbaron_melee_damage)
+				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
-	protected void initGoals() {
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));
-		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(6, new LookAroundGoal(this));
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.goalSelector.add(4, new DemonAttackGoal(this, 1.25D, 1));
-		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
-		this.targetSelector.add(2, new ActiveTargetGoal(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
-	}
-
-	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0D)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.armoredbaron_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.armoredbaron_melee_damage)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.6f)
-				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
+	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+		super.onSyncedDataUpdated(key);
 	}
 
 	@Override
-	public EntityData initialize(ServerWorldAccess serverWorldAccess, LocalDifficulty difficulty,
-			SpawnReason spawnReason, EntityData entityData, NbtCompound entityTag) {
-		entityData = super.initialize(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
-		if (this.getEquippedStack(EquipmentSlot.HEAD).isEmpty()) {
-			LocalDate localDate = LocalDate.now();
-			int i = localDate.get(ChronoField.DAY_OF_MONTH);
-			int j = localDate.get(ChronoField.MONTH_OF_YEAR);
-			if (j == 10 && i == 31 && this.random.nextFloat() < 0.25F) {
-				this.equipStack(EquipmentSlot.HEAD,
-						new ItemStack(this.random.nextFloat() < 0.1F ? Blocks.JACK_O_LANTERN : Blocks.CARVED_PUMPKIN));
-				this.armorDropChances[EquipmentSlot.HEAD.getEntitySlotId()] = 0.0F;
-			}
-		}
+	public void tick() {
+		super.tick();
+	}
 
-		return entityData;
+	@Override
+	public void aiStep() {
+		super.aiStep();
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag compound) {
+		super.addAdditionalSaveData(compound);
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
 	}
 
 	protected boolean shouldDrown() {
@@ -145,13 +129,12 @@ public class ArmoredBaronEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	@Environment(EnvType.CLIENT)
-	public boolean shouldRender(double distance) {
-		return true;
+	public int getMaxSpawnClusterSize() {
+		return 1;
 	}
 
 	@Override
-	public int getArmor() {
+	public int getArmorValue() {
 		return 9;
 	}
 }

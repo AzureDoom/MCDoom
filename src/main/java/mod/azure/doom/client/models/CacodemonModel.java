@@ -2,9 +2,9 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierheavy.CacodemonEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
@@ -14,14 +14,14 @@ import software.bernie.geckolib.model.data.EntityModelData;
 public class CacodemonModel extends GeoModel<CacodemonEntity> {
 
 	@Override
-	public Identifier getModelResource(CacodemonEntity object) {
-		return new Identifier(DoomMod.MODID, "geo/" + (object.getVariant() == 1 ? "cacodemon64"
+	public ResourceLocation getModelResource(CacodemonEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/" + (object.getVariant() == 1 ? "cacodemon64"
 				: object.getVariant() >= 3 ? "cacodemoneternal" : "cacodemon") + ".geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(CacodemonEntity object) {
-		return new Identifier(DoomMod.MODID,
+	public ResourceLocation getTextureResource(CacodemonEntity object) {
+		return new ResourceLocation(DoomMod.MODID,
 				"textures/entity/" + (object.getVariant() == 1 ? "cacodemon64"
 						: object.getVariant() == 3 ? "cacodemoneternal"
 								: object.getVariant() == 4 ? "cacodemon2016" : "cacodemon")
@@ -29,8 +29,8 @@ public class CacodemonModel extends GeoModel<CacodemonEntity> {
 	}
 
 	@Override
-	public Identifier getAnimationResource(CacodemonEntity object) {
-		return new Identifier(DoomMod.MODID,
+	public ResourceLocation getAnimationResource(CacodemonEntity object) {
+		return new ResourceLocation(DoomMod.MODID,
 				"animations/" + (object.getVariant() == 3 ? "cacodemoneternal." : "cacodemon_") + "animation.json");
 	}
 
@@ -42,13 +42,13 @@ public class CacodemonModel extends GeoModel<CacodemonEntity> {
 		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
 
 		if (head != null) {
-			head.setRotX(entityData.headPitch() * MathHelper.RADIANS_PER_DEGREE);
-			head.setRotY(entityData.netHeadYaw() * MathHelper.RADIANS_PER_DEGREE);
+			head.setRotX(entityData.headPitch() * Mth.DEG_TO_RAD);
+			head.setRotY(entityData.netHeadYaw() * Mth.DEG_TO_RAD);
 		}
 	}
 
 	@Override
-	public RenderLayer getRenderType(CacodemonEntity animatable, Identifier texture) {
-		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
+	public RenderType getRenderType(CacodemonEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

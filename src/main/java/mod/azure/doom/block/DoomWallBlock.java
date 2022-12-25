@@ -1,112 +1,116 @@
 package mod.azure.doom.block;
 
-import java.util.Iterator;
+import javax.annotation.Nullable;
 
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tileentity.IconBlockEntity;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomEntities;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.advancement.criterion.Criteria;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.Material;
-import net.minecraft.block.RedstoneTorchBlock;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.pattern.BlockPattern;
-import net.minecraft.block.pattern.BlockPatternBuilder;
-import net.minecraft.block.pattern.CachedBlockPosition;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.ItemStack;
-import net.minecraft.predicate.block.BlockStatePredicate;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.World;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RedstoneTorchBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
+import net.minecraft.world.level.block.state.pattern.BlockPattern;
+import net.minecraft.world.level.block.state.pattern.BlockPatternBuilder;
+import net.minecraft.world.level.block.state.predicate.BlockStatePredicate;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.Material;
 
-public class DoomWallBlock extends BlockWithEntity {
+public class DoomWallBlock extends BaseEntityBlock {
 
 	public static final BooleanProperty light = RedstoneTorchBlock.LIT;
+
+	@Nullable
 	private static BlockPattern iconPatternFull;
 
 	public DoomWallBlock() {
-		super(FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.BONE));
-		this.setDefaultState(this.stateManager.getDefaultState().with(light, Boolean.valueOf(true)));
+		super(FabricBlockSettings.of(Material.METAL).sounds(SoundType.BONE_BLOCK));
+		this.registerDefaultState(this.stateDefinition.any().setValue(light, Boolean.valueOf(true)));
 	}
 
 	@Override
-	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
 		builder.add(light);
 	}
 
 	@Override
-	public float getAmbientOcclusionLightLevel(BlockState state, BlockView world, BlockPos pos) {
+	public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
 		return 15;
 	}
 
 	@Override
-	public void onPlaced(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-		super.onPlaced(worldIn, pos, state, placer, stack);
+	public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+		super.setPlacedBy(worldIn, pos, state, placer, stack);
 		BlockEntity tileentity = worldIn.getBlockEntity(pos);
 		if (tileentity instanceof IconBlockEntity) {
 			checkIconSpawn(worldIn, pos, (IconBlockEntity) tileentity);
 		}
 	}
 
-	public static void checkIconSpawn(World world, BlockPos pos, IconBlockEntity blockEntity) {
-		if (!world.isClient()) {
-			BlockState block = blockEntity.getCachedState();
-			boolean flag = block.isOf(DoomBlocks.ICON_WALL1) || block.isOf(DoomBlocks.ICON_WALL2)
-					|| block.isOf(DoomBlocks.ICON_WALL3) || block.isOf(DoomBlocks.ICON_WALL4)
-					|| block.isOf(DoomBlocks.ICON_WALL5) || block.isOf(DoomBlocks.ICON_WALL6)
-					|| block.isOf(DoomBlocks.ICON_WALL7) || block.isOf(DoomBlocks.ICON_WALL8)
-					|| block.isOf(DoomBlocks.ICON_WALL9) || block.isOf(DoomBlocks.ICON_WALL10)
-					|| block.isOf(DoomBlocks.ICON_WALL11) || block.isOf(DoomBlocks.ICON_WALL12)
-					|| block.isOf(DoomBlocks.ICON_WALL13) || block.isOf(DoomBlocks.ICON_WALL14)
-					|| block.isOf(DoomBlocks.ICON_WALL15) || block.isOf(DoomBlocks.ICON_WALL16);
-			if (flag && pos.getY() >= 3 && world.getDifficulty() != Difficulty.PEACEFUL) {
-				BlockPattern blockPattern = getOrCreateIconFull();
-				BlockPattern.Result result = blockPattern.searchAround(world, pos);
-				if (result != null) {
-					for (int i = 0; i < blockPattern.getWidth(); ++i) {
-						for (int j = 0; j < blockPattern.getHeight(); ++j) {
-							CachedBlockPosition cachedBlockPosition = result.translate(i, j, 0);
-							world.setBlockState(cachedBlockPosition.getBlockPos(), Blocks.AIR.getDefaultState(), 2);
-							world.syncWorldEvent(2001, cachedBlockPosition.getBlockPos(),
-									Block.getRawIdFromState(cachedBlockPosition.getBlockState()));
+	public static void checkIconSpawn(Level worldIn, BlockPos pos, IconBlockEntity tileEntityIn) {
+		if (!worldIn.isClientSide) {
+			Block block = tileEntityIn.getBlockState().getBlock();
+			boolean flag = block == DoomBlocks.ICON_WALL1 || block == DoomBlocks.ICON_WALL2
+					|| block == DoomBlocks.ICON_WALL3 || block == DoomBlocks.ICON_WALL4
+					|| block == DoomBlocks.ICON_WALL5 || block == DoomBlocks.ICON_WALL6
+					|| block == DoomBlocks.ICON_WALL7 || block == DoomBlocks.ICON_WALL8
+					|| block == DoomBlocks.ICON_WALL9 || block == DoomBlocks.ICON_WALL10
+					|| block == DoomBlocks.ICON_WALL11 || block == DoomBlocks.ICON_WALL12
+					|| block == DoomBlocks.ICON_WALL13 || block == DoomBlocks.ICON_WALL14
+					|| block == DoomBlocks.ICON_WALL15 || block == DoomBlocks.ICON_WALL16;
+			if (flag && pos.getY() >= 3 && worldIn.getDifficulty() != Difficulty.PEACEFUL) {
+				BlockPattern blockpattern = getOrCreateIconFull();
+				BlockPattern.BlockPatternMatch blockpattern$patternhelper = blockpattern.find(worldIn, pos);
+				if (blockpattern$patternhelper != null) {
+					for (int i = 0; i < blockpattern.getWidth(); ++i) {
+						for (int j = 0; j < blockpattern.getHeight(); ++j) {
+							BlockInWorld cachedblockinfo = blockpattern$patternhelper.getBlock(i, j, 0);
+							worldIn.setBlock(cachedblockinfo.getPos(), Blocks.AIR.defaultBlockState(), 2);
+							worldIn.levelEvent(2001, cachedblockinfo.getPos(), Block.getId(cachedblockinfo.getState()));
 						}
 					}
 
-					IconofsinEntity witherentity = DoomEntities.ICONOFSIN.create(world);
-					BlockPos blockPos = result.translate(1, 2, 0).getBlockPos();
-					witherentity.refreshPositionAndAngles((double) blockPos.getX() + 0.5D,
-							(double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D,
-							result.getForwards().getAxis() == Direction.Axis.X ? 0.0F : 90.0F, 0.0F);
-					witherentity.bodyYaw = result.getForwards().getAxis() == Direction.Axis.X ? 0.0F : 90.0F;
-					witherentity.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 200, 4));
-					witherentity.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 200, 4));
-					world.spawnEntity(witherentity);
+					IconofsinEntity witherentity = DoomEntities.ICONOFSIN.create(worldIn);
+					BlockPos blockpos = blockpattern$patternhelper.getBlock(1, 2, 0).getPos();
+					witherentity.moveTo((double) blockpos.getX() + 0.5D, (double) blockpos.getY() + 0.55D,
+							(double) blockpos.getZ() + 0.5D,
+							blockpattern$patternhelper.getForwards().getAxis() == Direction.Axis.X ? 0.0F : 90.0F,
+							0.0F);
+					witherentity.yBodyRot = blockpattern$patternhelper.getForwards().getAxis() == Direction.Axis.X
+							? 0.0F
+							: 90.0F;
+					witherentity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 4));
+					witherentity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 200, 4));
+					worldIn.addFreshEntity(witherentity);
 
-					Iterator<ServerPlayerEntity> var13 = world.getNonSpectatingEntities(ServerPlayerEntity.class,
-							witherentity.getBoundingBox().expand(50.0D)).iterator();
-					while (var13.hasNext()) {
-						ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) var13.next();
-						Criteria.SUMMONED_ENTITY.trigger(serverPlayerEntity, witherentity);
+					for (ServerPlayer serverplayerentity : worldIn.getEntitiesOfClass(ServerPlayer.class,
+							witherentity.getBoundingBox().inflate(50.0D))) {
+						CriteriaTriggers.SUMMONED_ENTITY.trigger(serverplayerentity, witherentity);
 					}
 
-					for (int k = 0; k < blockPattern.getWidth(); ++k) {
-						for (int l = 0; l < blockPattern.getHeight(); ++l) {
-							world.updateNeighbors(result.translate(k, l, 0).getBlockPos(), Blocks.AIR);
+					for (int k = 0; k < blockpattern.getWidth(); ++k) {
+						for (int l = 0; l < blockpattern.getHeight(); ++l) {
+							worldIn.updateNeighborsAt(blockpattern$patternhelper.getBlock(k, l, 0).getPos(),
+									Blocks.AIR);
 						}
 					}
 
@@ -118,50 +122,34 @@ public class DoomWallBlock extends BlockWithEntity {
 	public static BlockPattern getOrCreateIconFull() {
 		if (iconPatternFull == null) {
 			iconPatternFull = BlockPatternBuilder.start().aisle("!@#$", "%^&*", "()-_", "+=12")
-					.where('!',
-							CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL1)))
-					.where('@',
-							CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL2)))
-					.where('#',
-							CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL3)))
-					.where('$',
-							CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL4)))
-					.where('%',
-							CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL5)))
-					.where('^',
-							CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL6)))
-					.where('&',
-							CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL7)))
-					.where('*',
-							CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL8)))
-					.where('(',
-							CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL9)))
-					.where(')',
-							CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL10)))
-					.where('-',
-							CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL11)))
-					.where('_',
-							CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL12)))
-					.where('+',
-							CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL13)))
-					.where('=',
-							CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL14)))
-					.where('1',
-							CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL15)))
-					.where('2',
-							CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL16)))
+					.where('!', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL1)))
+					.where('@', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL2)))
+					.where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL3)))
+					.where('$', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL4)))
+					.where('%', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL5)))
+					.where('^', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL6)))
+					.where('&', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL7)))
+					.where('*', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL8)))
+					.where('(', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL9)))
+					.where(')', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL10)))
+					.where('-', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL11)))
+					.where('_', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL12)))
+					.where('+', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL13)))
+					.where('=', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL14)))
+					.where('1', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL15)))
+					.where('2', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL16)))
 					.build();
 		}
 		return iconPatternFull;
 	}
 
 	@Override
-	public BlockRenderType getRenderType(BlockState state) {
-		return BlockRenderType.MODEL;
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return DoomMod.ICON.create(pos, state);
 	}
 
 	@Override
-	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-		return new IconBlockEntity(pos, state);
+	public RenderShape getRenderShape(BlockState p_49232_) {
+		return RenderShape.MODEL;
 	}
 }

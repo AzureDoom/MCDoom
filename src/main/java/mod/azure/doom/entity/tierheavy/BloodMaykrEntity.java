@@ -1,44 +1,41 @@
 package mod.azure.doom.entity.tierheavy;
 
-import java.util.Random;
+import java.util.EnumSet;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.ai.goal.DemonFlightMoveControl;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.BloodBoltEntity;
 import mod.azure.doom.util.registry.DoomSounds;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
-import net.minecraft.entity.ai.pathing.BirdNavigation;
-import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -51,20 +48,20 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 public class BloodMaykrEntity extends DemonEntity implements GeoEntity {
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
-	
-	public BloodMaykrEntity(EntityType<BloodMaykrEntity> type, World worldIn) {
+
+	public BloodMaykrEntity(EntityType<BloodMaykrEntity> type, Level worldIn) {
 		super(type, worldIn);
-		this.moveControl = new GhastMoveControl(this);
+		this.moveControl = new DemonFlightMoveControl(this, 90, false);
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if ((this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("attacking_weapon", LoopType.PLAY_ONCE));
 			return PlayState.STOP;
 		}));
@@ -76,125 +73,134 @@ public class BloodMaykrEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	protected void updatePostDeath() {
+	protected void tickDeath() {
 		++this.deathTime;
 		if (this.deathTime == 30) {
-			this.remove(Entity.RemovalReason.KILLED);
-			this.dropXp();
+			this.remove(RemovalReason.KILLED);
+			this.dropExperience();
 		}
 	}
 
-	public static boolean spawning(EntityType<BloodMaykrEntity> p_223337_0_, World p_223337_1_, SpawnReason reason,
-			BlockPos p_223337_3_, Random p_223337_4_) {
-		return p_223337_1_.getDifficulty() != Difficulty.PEACEFUL;
+	public static AttributeSupplier.Builder createMobAttributes() {
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
+				.add(Attributes.MAX_HEALTH, DoomConfig.bloodmaykr_health).add(Attributes.ATTACK_DAMAGE, 0.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f)
+				.add(Attributes.FLYING_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
-	protected void initGoals() {
-		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(8, new LookAroundGoal(this));
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.goalSelector.add(4,
+	protected void registerGoals() {
+		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
+		this.goalSelector.addGoal(4,
 				new RangedStrafeAttackGoal(this, new BloodMaykrEntity.FireballAttack(this)
 						.setProjectileOriginOffset(0.8, 0.5, 0.8).setDamage(DoomConfig.bloodmaykr_ranged_damage), 1.0D,
 						10, 30, 15, 15F, 1));
-		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
-		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
+		this.goalSelector.addGoal(7, new BloodMaykrEntity.LookAroundGoal(this));
+		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
+		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
 
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			this.setGlowing(true);
+		if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
+			this.setGlowingTag(true);
 		} else {
-			this.setGlowing(false);
+			this.setGlowingTag(false);
 		}
 	}
 
-	protected EntityNavigation createNavigation(World world) {
-		BirdNavigation birdNavigation = new BirdNavigation(this, world);
-		birdNavigation.setCanPathThroughDoors(false);
-		birdNavigation.setCanSwim(true);
-		birdNavigation.setCanEnterOpenDoors(true);
-		return birdNavigation;
+	protected PathNavigation createNavigation(Level worldIn) {
+		FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
+		flyingpathnavigator.setCanOpenDoors(false);
+		flyingpathnavigator.setCanFloat(true);
+		flyingpathnavigator.setCanPassDoors(true);
+		return flyingpathnavigator;
+	}
+
+	public boolean causeFallDamage(float distance, float damageMultiplier) {
+		return false;
 	}
 
 	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
 	}
 
-	public boolean handleFallDamage(float fallDistance, float damageMultiplier) {
+	/**
+	 * Returns true if this entity should move as if it were on a ladder (either
+	 * because it's actually on a ladder, or for AI reasons)
+	 */
+	public boolean onClimbable() {
 		return false;
 	}
 
-	protected void fall(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
-	}
+	static class LookAroundGoal extends Goal {
+		private final BloodMaykrEntity parentEntity;
 
-	public void travel(Vec3d movementInput) {
-		if (this.isTouchingWater()) {
-			this.updateVelocity(0.02F, movementInput);
-			this.move(MovementType.SELF, this.getVelocity());
-			this.setVelocity(this.getVelocity().multiply(0.800000011920929D));
-		} else if (this.isInLava()) {
-			this.updateVelocity(0.02F, movementInput);
-			this.move(MovementType.SELF, this.getVelocity());
-			this.setVelocity(this.getVelocity().multiply(0.5D));
-		} else {
-			float f = 0.91F;
-			if (this.onGround) {
-				f = this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getBlock()
-						.getSlipperiness() * 0.91F;
-			}
-
-			float g = 0.16277137F / (f * f * f);
-			f = 0.91F;
-			if (this.onGround) {
-				f = this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getBlock()
-						.getSlipperiness() * 0.91F;
-			}
-
-			this.updateVelocity(this.onGround ? 0.1F * g : 0.02F, movementInput);
-			this.move(MovementType.SELF, this.getVelocity());
-			this.setVelocity(this.getVelocity().multiply((double) f));
+		public LookAroundGoal(BloodMaykrEntity ghast) {
+			this.parentEntity = ghast;
+			this.setFlags(EnumSet.of(Goal.Flag.LOOK));
 		}
-		this.updateLimbs(this, false);
-	}
 
-	static class GhastMoveControl extends MoveControl {
-		private final BloodMaykrEntity ghast;
-		private int collisionCheckCooldown;
-
-		public GhastMoveControl(BloodMaykrEntity ghast) {
-			super(ghast);
-			this.ghast = ghast;
+		public boolean canUse() {
+			return true;
 		}
 
 		public void tick() {
-			if (this.state == MoveControl.State.MOVE_TO) {
-				if (this.collisionCheckCooldown-- <= 0) {
-					this.collisionCheckCooldown += this.ghast.getRandom().nextInt(5) + 2;
-					Vec3d vec3d = new Vec3d(this.targetX - this.ghast.getX(), this.targetY - this.ghast.getY(),
-							this.targetZ - this.ghast.getZ());
-					double d = vec3d.length();
-					vec3d = vec3d.normalize();
-					if (this.willCollide(vec3d, MathHelper.ceil(d))) {
-						this.ghast.setVelocity(this.ghast.getVelocity().add(vec3d.multiply(0.1D)));
+			if (this.parentEntity.getTarget() == null) {
+				Vec3 vec3d = this.parentEntity.getDeltaMovement();
+				this.parentEntity.yo = -((float) Mth.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
+				this.parentEntity.yBodyRot = this.parentEntity.getYRot();
+			} else {
+				LivingEntity livingentity = this.parentEntity.getTarget();
+				if (livingentity.distanceToSqr(this.parentEntity) < 4096.0D) {
+					double d1 = livingentity.getX() - this.parentEntity.getX();
+					double d2 = livingentity.getZ() - this.parentEntity.getZ();
+					this.parentEntity.yo = -((float) Mth.atan2(d1, d2)) * (180F / (float) Math.PI);
+					this.parentEntity.yBodyRot = this.parentEntity.getYRot();
+				}
+			}
+
+		}
+	}
+
+	static class MoveHelperController extends MoveControl {
+		private final BloodMaykrEntity parentEntity;
+		private int courseChangeCooldown;
+
+		public MoveHelperController(BloodMaykrEntity ghast) {
+			super(ghast);
+			this.parentEntity = ghast;
+		}
+
+		public void tick() {
+			if (this.operation == MoveControl.Operation.MOVE_TO) {
+				if (this.courseChangeCooldown-- <= 0) {
+					this.courseChangeCooldown += this.parentEntity.getRandom().nextInt(5) + 2;
+					Vec3 vector3d = new Vec3(this.wantedX - this.parentEntity.getX(),
+							this.wantedY - this.parentEntity.getY(), this.wantedZ - this.parentEntity.getZ());
+					double d0 = vector3d.length();
+					vector3d = vector3d.normalize();
+					if (this.canReach(vector3d, Mth.ceil(d0))) {
+						this.parentEntity
+								.setDeltaMovement(this.parentEntity.getDeltaMovement().add(vector3d.scale(0.1D)));
 					} else {
-						this.state = MoveControl.State.WAIT;
+						this.operation = MoveControl.Operation.WAIT;
 					}
 				}
 
 			}
 		}
 
-		private boolean willCollide(Vec3d direction, int steps) {
-			Box box = this.ghast.getBoundingBox();
+		private boolean canReach(Vec3 p_220673_1_, int p_220673_2_) {
+			AABB axisalignedbb = this.parentEntity.getBoundingBox();
 
-			for (int i = 1; i < steps; ++i) {
-				box = box.offset(direction);
-				if (!this.ghast.world.isSpaceEmpty(this.ghast, box)) {
+			for (int i = 1; i < p_220673_2_; ++i) {
+				axisalignedbb = axisalignedbb.move(p_220673_1_);
+				if (!this.parentEntity.level.noCollision(this.parentEntity, axisalignedbb)) {
 					return false;
 				}
 			}
@@ -216,27 +222,18 @@ public class BloodMaykrEntity extends DemonEntity implements GeoEntity {
 
 		@Override
 		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(DoomSounds.UNMAKYR_FIRE, 1, 1);
+			return new AttackSound(DoomSounds.UNMAKYR_FIRE, 0.7F, 1);
 		}
 
 		@Override
-		public ProjectileEntity getProjectile(World world, double d2, double d3, double d4) {
+		public Projectile getProjectile(Level world, double d2, double d3, double d4) {
 			return new BloodBoltEntity(world, this.parentEntity, d2, d3, d4, damage);
 		}
 	}
 
-	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0D)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.6f)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D).add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.bloodmaykr_health)
-				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
-	}
-
 	@Override
-	@Environment(EnvType.CLIENT)
-	public boolean shouldRender(double distance) {
-		return true;
+	public int getMaxSpawnClusterSize() {
+		return 3;
 	}
 
 	@Override
@@ -247,6 +244,34 @@ public class BloodMaykrEntity extends DemonEntity implements GeoEntity {
 	@Override
 	protected SoundEvent getDeathSound() {
 		return DoomSounds.MAKYR_DEATH;
+	}
+
+	@Override
+	public void travel(Vec3 movementInput) {
+		if (this.isInWater()) {
+			this.moveRelative(0.02F, movementInput);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale((double) 0.8F));
+		} else if (this.isInLava()) {
+			this.moveRelative(0.02F, movementInput);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale(0.5D));
+		} else {
+			BlockPos ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
+			float f = 0.91F;
+			if (this.onGround) {
+				f = this.level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+			}
+			float f1 = 0.16277137F / (f * f * f);
+			f = 0.91F;
+			if (this.onGround) {
+				f = this.level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+			}
+			this.moveRelative(this.onGround ? 0.1F * f1 : 0.02F, movementInput);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale((double) f));
+		}
+		this.calculateEntityAnimation(this, false);
 	}
 
 }

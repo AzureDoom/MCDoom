@@ -4,129 +4,121 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
 
+import mod.azure.doom.entity.ai.goal.DoomNavigation;
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
-import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.DoomBlocks;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityGroup;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.ai.pathing.SpiderNavigation;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.Angerable;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.Monster;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.network.Packet;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.TimeHelper;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.intprovider.UniformIntProvider;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.TimeUtil;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 
-public class DemonEntity extends HostileEntity implements Angerable, Monster {
+public class DemonEntity extends Monster implements NeutralMob, Enemy {
 
-	private static final TrackedData<Integer> ANGER_TIME = DataTracker.registerData(DemonEntity.class,
-			TrackedDataHandlerRegistry.INTEGER);
-	public static final TrackedData<Integer> STATE = DataTracker.registerData(DemonEntity.class,
-			TrackedDataHandlerRegistry.INTEGER);
-	private static final UniformIntProvider ANGER_TIME_RANGE = TimeHelper.betweenSeconds(20, 39);
+	private static final EntityDataAccessor<Integer> ANGER_TIME = SynchedEntityData.defineId(DemonEntity.class,
+			EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(DemonEntity.class,
+			EntityDataSerializers.INT);
+	private static final UniformInt ANGER_TIME_RANGE = TimeUtil.rangeOfSeconds(20, 39);
 	private UUID targetUuid;
 	private BlockPos lightBlockPos = null;
 
-	protected DemonEntity(EntityType<? extends HostileEntity> type, World worldIn) {
+	protected DemonEntity(EntityType<? extends Monster> type, Level worldIn) {
 		super(type, worldIn);
-		this.experiencePoints = (int) (this.getMaxHealth());
-		stepHeight = 1.5f;
+		this.xpReward = (int) (this.getMaxHealth());
+		maxUpStep = 1.5f;
 	}
 
 	@Override
-	public Packet<ClientPlayPacketListener> createSpawnPacket() {
-		return DoomEntityPacket.createPacket(this);
+	public MobType getMobType() {
+		return MobType.UNDEAD;
 	}
 
 	@Override
-	public EntityGroup getGroup() {
-		return EntityGroup.UNDEAD;
-	}
-
-	@Override
-	public boolean canWalkOnFluid(FluidState fluidState) {
-		return fluidState.isIn(FluidTags.LAVA);
+	public boolean canStandOnFluid(FluidState fluidState) {
+		return fluidState.is(FluidTags.LAVA);
 	}
 
 	public int getAttckingState() {
-		return this.dataTracker.get(STATE);
+		return this.entityData.get(STATE);
 	}
 
 	public void setAttackingState(int time) {
-		this.dataTracker.set(STATE, time);
+		this.entityData.set(STATE, time);
 	}
 
-	public static boolean canSpawnInDark(EntityType<? extends HostileEntity> type, ServerWorldAccess serverWorldAccess,
-			SpawnReason spawnReason, BlockPos pos, Random random) {
+	public static boolean canSpawnInDark(EntityType<? extends DemonEntity> type, LevelAccessor serverWorldAccess,
+			MobSpawnType spawnReason, BlockPos pos, RandomSource random) {
 		if (serverWorldAccess.getDifficulty() == Difficulty.PEACEFUL)
 			return false;
-		if ((spawnReason != SpawnReason.CHUNK_GENERATION && spawnReason != SpawnReason.NATURAL))
-			return !serverWorldAccess.getBlockState(pos.down()).isOf(Blocks.NETHER_WART_BLOCK);
-		return !serverWorldAccess.getBlockState(pos.down()).isOf(Blocks.NETHER_WART_BLOCK);
+		if ((spawnReason != MobSpawnType.CHUNK_GENERATION && spawnReason != MobSpawnType.NATURAL))
+			return !serverWorldAccess.getBlockState(pos.below()).is(Blocks.NETHER_WART_BLOCK);
+		return !serverWorldAccess.getBlockState(pos.below()).is(Blocks.NETHER_WART_BLOCK);
 	}
 
 	@Override
-	protected void initDataTracker() {
-		super.initDataTracker();
-		this.dataTracker.startTracking(ANGER_TIME, 0);
-		this.dataTracker.startTracking(STATE, 0);
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(ANGER_TIME, 0);
+		this.entityData.define(STATE, 0);
 	}
 
 	@Override
-	public int getAngerTime() {
-		return this.dataTracker.get(ANGER_TIME);
+	public int getRemainingPersistentAngerTime() {
+		return this.entityData.get(ANGER_TIME);
 	}
 
 	@Override
-	public void setAngerTime(int ticks) {
-		this.dataTracker.set(ANGER_TIME, ticks);
+	public void setRemainingPersistentAngerTime(int ticks) {
+		this.entityData.set(ANGER_TIME, ticks);
 	}
 
 	@Override
-	public UUID getAngryAt() {
+	public UUID getPersistentAngerTarget() {
 		return this.targetUuid;
 	}
 
 	@Override
-	public void setAngryAt(@Nullable UUID uuid) {
+	public void setPersistentAngerTarget(@Nullable UUID uuid) {
 		this.targetUuid = uuid;
 	}
 
 	@Override
-	public void chooseRandomAngerTime() {
-		this.setAngerTime(ANGER_TIME_RANGE.get(this.random));
+	public void startPersistentAngerTimer() {
+		this.setRemainingPersistentAngerTime(ANGER_TIME_RANGE.sample(this.random));
 	}
 
 	@Override
-	protected void updatePostDeath() {
+	protected void tickDeath() {
 		++this.deathTime;
 		if (this.deathTime == 35) {
 			this.remove(Entity.RemovalReason.KILLED);
-			this.dropXp();
+			this.dropExperience();
 		}
 	}
 
-	public void attack(LivingEntity target, float pullProgress) {
+	public void performRangedAttack(LivingEntity target, float pullProgress) {
 	}
 
 	@Override
@@ -135,26 +127,26 @@ public class DemonEntity extends HostileEntity implements Angerable, Monster {
 	}
 
 	@Override
-	protected EntityNavigation createNavigation(World world) {
-		return new SpiderNavigation(this, world);
+	protected PathNavigation createNavigation(Level world) {
+		return new DoomNavigation(this, world);
 	}
 
 	@Override
 	public void playAmbientSound() {
 		SoundEvent soundEvent = this.getAmbientSound();
 		if (soundEvent != null) {
-			this.playSound(soundEvent, 0.25F, this.getSoundPitch());
+			this.playSound(soundEvent, 0.25F, this.getVoicePitch());
 		}
 	}
 
 	public void spawnLightSource(Entity entity, boolean isInWaterBlock) {
 		if (lightBlockPos == null) {
-			lightBlockPos = findFreeSpace(entity.world, entity.getBlockPos(), 2);
+			lightBlockPos = findFreeSpace(entity.level, entity.blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			entity.world.setBlockState(lightBlockPos, DoomBlocks.TICKING_LIGHT_BLOCK.getDefaultState());
-		} else if (checkDistance(lightBlockPos, entity.getBlockPos(), 2)) {
-			BlockEntity blockEntity = entity.world.getBlockEntity(lightBlockPos);
+			entity.level.setBlockAndUpdate(lightBlockPos, DoomBlocks.TICKING_LIGHT_BLOCK.defaultBlockState());
+		} else if (checkDistance(lightBlockPos, entity.blockPosition(), 2)) {
+			BlockEntity blockEntity = entity.level.getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity) {
 				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
 			} else
@@ -169,7 +161,7 @@ public class DemonEntity extends HostileEntity implements Angerable, Monster {
 				&& Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
 	}
 
-	private BlockPos findFreeSpace(World world, BlockPos blockPos, int maxDistance) {
+	private BlockPos findFreeSpace(Level world, BlockPos blockPos, int maxDistance) {
 		if (blockPos == null)
 			return null;
 
@@ -182,7 +174,7 @@ public class DemonEntity extends HostileEntity implements Angerable, Monster {
 		for (int x : offsets)
 			for (int y : offsets)
 				for (int z : offsets) {
-					BlockPos offsetPos = blockPos.add(x, y, z);
+					BlockPos offsetPos = blockPos.offset(x, y, z);
 					BlockState state = world.getBlockState(offsetPos);
 					if (state.isAir() || state.getBlock().equals(DoomBlocks.TICKING_LIGHT_BLOCK))
 						return offsetPos;
@@ -192,10 +184,10 @@ public class DemonEntity extends HostileEntity implements Angerable, Monster {
 	}
 
 	@Override
-	public boolean damage(DamageSource source, float amount) {
+	public boolean hurt(DamageSource source, float amount) {
 		return source == DamageSource.IN_WALL || source == DamageSource.ON_FIRE || source == DamageSource.IN_FIRE
 				? false
-				: super.damage(source, amount);
+				: super.hurt(source, amount);
 	}
 
 }

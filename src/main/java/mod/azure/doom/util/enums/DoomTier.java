@@ -4,33 +4,33 @@ import java.util.function.Supplier;
 
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.Lazy;
+import net.minecraft.util.LazyLoadedValue;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.crafting.Ingredient;
 
-public enum DoomTier implements ToolMaterial {
+public enum DoomTier implements Tier {
 	DOOM(18, 1561, 16.0F, 3.0F, 30, () -> {
-		return Ingredient.ofItems(DoomItems.ARGENT_ENERGY);
+		return Ingredient.of(DoomItems.ARGENT_ENERGY);
 	}), DOOM_HIGHTEIR(6, 24, 16.0F, 85.0F, 30, () -> {
-		return Ingredient.ofItems(DoomBlocks.ARGENT_BLOCK);
+		return Ingredient.of(DoomBlocks.ARGENT_BLOCK);
 	}), CHAINSAW(6, 5, 16.0F, 0.0F, 30, () -> {
-		return Ingredient.ofItems(DoomItems.GAS_BARREL);
+		return Ingredient.of(DoomItems.GAS_BARREL);
 	}), PISTOL(6, 600, 16.0F, 0.0F, 30, () -> {
-		return Ingredient.ofItems(DoomItems.BULLETS);
+		return Ingredient.of(DoomItems.BULLETS);
 	}), BALLISTA(6, 600, 16.0F, 0.0F, 30, () -> {
-		return Ingredient.ofItems(DoomItems.ARGENT_BOLT);
+		return Ingredient.of(DoomItems.ARGENT_BOLT);
 	}), BFG(6, 600, 16.0F, 0.0F, 30, () -> {
-		return Ingredient.ofItems(DoomItems.BFG_CELL);
+		return Ingredient.of(DoomItems.BFG_CELL);
 	}), CHAINGUN(6, 600, 16.0F, 0.0F, 30, () -> {
-		return Ingredient.ofItems(DoomItems.CHAINGUN_BULLETS);
+		return Ingredient.of(DoomItems.CHAINGUN_BULLETS);
 	}), PLASMA(6, 600, 16.0F, 0.0F, 30, () -> {
-		return Ingredient.ofItems(DoomItems.ENERGY_CELLS);
+		return Ingredient.of(DoomItems.ENERGY_CELLS);
 	}), ROCKET(6, 600, 16.0F, 0.0F, 30, () -> {
-		return Ingredient.ofItems(DoomItems.ROCKET);
+		return Ingredient.of(DoomItems.ROCKET);
 	}), SHOTGUN(6, 600, 16.0F, 0.0F, 30, () -> {
-		return Ingredient.ofItems(DoomItems.SHOTGUN_SHELLS);
+		return Ingredient.of(DoomItems.SHOTGUN_SHELLS);
 	}), UNMAYKR(6, 600, 16.0F, 0.0F, 30, () -> {
-		return Ingredient.ofItems(DoomItems.UNMAKRY_BOLT);
+		return Ingredient.of(DoomItems.UNMAKRY_BOLT);
 	});
 
 	private final int miningLevel;
@@ -38,7 +38,7 @@ public enum DoomTier implements ToolMaterial {
 	private final float miningSpeed;
 	private final float attackDamage;
 	private final int enchantability;
-	private final Lazy<Ingredient> repairIngredient;
+	private final LazyLoadedValue<Ingredient> repairIngredient;
 
 	private DoomTier(int miningLevel, int itemDurability, float miningSpeed, float attackDamage, int enchantability,
 			Supplier<Ingredient> repairIngredient) {
@@ -48,29 +48,35 @@ public enum DoomTier implements ToolMaterial {
 		this.miningSpeed = miningSpeed;
 		this.attackDamage = attackDamage;
 		this.enchantability = enchantability;
-		this.repairIngredient = new Lazy<Ingredient>(repairIngredient);
+		this.repairIngredient = new LazyLoadedValue<Ingredient>(repairIngredient);
 	}
 
-	public int getDurability() {
+	@Override
+	public int getUses() {
 		return this.itemDurability;
 	}
 
-	public float getMiningSpeedMultiplier() {
+	@Override
+	public float getSpeed() {
 		return this.miningSpeed;
 	}
 
-	public float getAttackDamage() {
+	@Override
+	public float getAttackDamageBonus() {
 		return this.attackDamage;
 	}
 
-	public int getMiningLevel() {
+	@Override
+	public int getLevel() {
 		return this.miningLevel;
 	}
 
-	public int getEnchantability() {
+	@Override
+	public int getEnchantmentValue() {
 		return this.enchantability;
 	}
 
+	@Override
 	public Ingredient getRepairIngredient() {
 		return (Ingredient) this.repairIngredient.get();
 	}

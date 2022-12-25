@@ -3,9 +3,9 @@ package mod.azure.doom.entity.ai.goal;
 import java.util.EnumSet;
 
 import mod.azure.doom.entity.DemonEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.Box;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.phys.AABB;
 
 public class DemonAttackGoal extends Goal {
 	private int statecheck;
@@ -16,26 +16,26 @@ public class DemonAttackGoal extends Goal {
 	public DemonAttackGoal(DemonEntity mob, double moveSpeedAmpIn, int state) {
 		this.entity = mob;
 		this.moveSpeedAmp = moveSpeedAmpIn;
-		this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 		this.statecheck = state;
 	}
 
-	public boolean canStart() {
+	public boolean canUse() {
 		return this.entity.getTarget() != null;
 	}
 
-	public boolean shouldContinue() {
-		return this.canStart();
+	public boolean canContinueToUse() {
+		return this.canUse();
 	}
 
 	public void start() {
 		super.start();
-		this.entity.setAttacking(true);
+		this.entity.setAggressive(true);
 	}
 
 	public void stop() {
 		super.stop();
-		this.entity.setAttacking(false);
+		this.entity.setAggressive(false);
 		this.entity.setAttackingState(0);
 		this.attackTime = -1;
 	}
@@ -43,20 +43,20 @@ public class DemonAttackGoal extends Goal {
 	public void tick() {
 		LivingEntity livingentity = this.entity.getTarget();
 		if (livingentity != null) {
-			boolean inLineOfSight = this.entity.getVisibilityCache().canSee(livingentity);
+			boolean inLineOfSight = this.entity.getSensing().hasLineOfSight(livingentity);
 			this.attackTime++;
-			this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
-			final Box aabb2 = new Box(this.entity.getBlockPos()).expand(2D);
+			this.entity.lookAt(livingentity, 30.0F, 30.0F);
+			final AABB aabb2 = new AABB(this.entity.blockPosition()).inflate(2D);
 			if (inLineOfSight) {
-				this.entity.getNavigation().startMovingTo(livingentity, this.moveSpeedAmp);
+				this.entity.getNavigation().moveTo(livingentity, this.moveSpeedAmp);
 				if (this.attackTime == 1) {
 					this.entity.setAttackingState(statecheck);
 				}
 				if (this.attackTime == 4) {
-					this.entity.getEntityWorld().getOtherEntities(this.entity, aabb2).forEach(e -> {
+					this.entity.getCommandSenderWorld().getEntities(this.entity, aabb2).forEach(e -> {
 						if ((e instanceof LivingEntity)) {
-							this.entity.tryAttack(livingentity);
-							livingentity.timeUntilRegen = 0;
+							this.entity.doHurtTarget(livingentity);
+							livingentity.invulnerableTime = 0;
 						}
 					});
 				}

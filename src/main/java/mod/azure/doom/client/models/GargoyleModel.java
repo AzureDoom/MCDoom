@@ -2,8 +2,8 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.GargoyleEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
@@ -16,18 +16,18 @@ public class GargoyleModel extends GeoModel<GargoyleEntity> {
 	}
 
 	@Override
-	public Identifier getModelResource(GargoyleEntity object) {
-		return new Identifier(DoomMod.MODID, "geo/gargoyleimp.geo.json");
+	public ResourceLocation getModelResource(GargoyleEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/gargoyleimp.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(GargoyleEntity object) {
-		return new Identifier(DoomMod.MODID, "textures/entity/gargoyleimp.png");
+	public ResourceLocation getTextureResource(GargoyleEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "textures/entity/gargoyleimp.png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(GargoyleEntity object) {
-		return new Identifier(DoomMod.MODID, "animations/gargoyleimp.animation.json");
+	public ResourceLocation getAnimationResource(GargoyleEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "animations/gargoyleimp.animation.json");
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class GargoyleModel extends GeoModel<GargoyleEntity> {
 	}
 
 	@Override
-	public RenderLayer getRenderType(GargoyleEntity animatable, Identifier texture) {
-		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
+	public RenderType getRenderType(GargoyleEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

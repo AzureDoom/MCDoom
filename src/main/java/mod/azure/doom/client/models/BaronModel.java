@@ -2,9 +2,9 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
@@ -17,19 +17,19 @@ public class BaronModel extends GeoModel<BaronEntity> {
 	}
 
 	@Override
-	public Identifier getModelResource(BaronEntity object) {
-		return new Identifier(DoomMod.MODID, "geo/baron.geo.json");
+	public ResourceLocation getModelResource(BaronEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/baron.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(BaronEntity object) {
-		return new Identifier(DoomMod.MODID, "textures/entity/baronofhell-"
+	public ResourceLocation getTextureResource(BaronEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "textures/entity/baronofhell-"
 				+ (object.getVariant() == 2 ? "green" : object.getVariant() == 3 ? "64" : "texturemap") + ".png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(BaronEntity object) {
-		return new Identifier(DoomMod.MODID, "animations/baron_hell_animation.json");
+	public ResourceLocation getAnimationResource(BaronEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "animations/baron_hell_animation.json");
 	}
 
 	@Override
@@ -41,13 +41,13 @@ public class BaronModel extends GeoModel<BaronEntity> {
 		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
 
 		if (head != null) {
-			head.setRotX(entityData.headPitch() * MathHelper.RADIANS_PER_DEGREE);
-			head.setRotY(entityData.netHeadYaw() * MathHelper.RADIANS_PER_DEGREE);
+			head.setRotX(entityData.headPitch() * Mth.DEG_TO_RAD);
+			head.setRotY(entityData.netHeadYaw() * Mth.DEG_TO_RAD);
 		}
 	}
 
 	@Override
-	public RenderLayer getRenderType(BaronEntity animatable, Identifier texture) {
-		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
+	public RenderType getRenderType(BaronEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

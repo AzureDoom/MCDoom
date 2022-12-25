@@ -14,22 +14,22 @@ import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.render.item.BuiltinModelItemRenderer;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 import software.bernie.geckolib.animatable.client.RenderProvider;
@@ -39,85 +39,85 @@ public class DPlasmaRifle extends DoomBaseItem {
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
 	public DPlasmaRifle() {
-		super(new Item.Settings().maxCount(1).maxDamage(401));
+		super(new Item.Properties().stacksTo(1).durability(401));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
 	@Override
-	public boolean canRepair(ItemStack stack, ItemStack ingredient) {
-		return DoomTier.PLASMA.getRepairIngredient().test(ingredient) || super.canRepair(stack, ingredient);
+	public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
+		return DoomTier.PLASMA.getRepairIngredient().test(repair) || super.isValidRepairItem(toRepair, repair);
 	}
 
 	@Override
-	public void usageTick(World worldIn, LivingEntity entityLiving, ItemStack stack, int count) {
-		if (entityLiving instanceof PlayerEntity) {
-			PlayerEntity playerentity = (PlayerEntity) entityLiving;
-			if (stack.getDamage() < (stack.getMaxDamage() - 1)) {
-				if (!playerentity.getItemCooldownManager().isCoolingDown(this)) {
-					playerentity.getItemCooldownManager().set(this, 2);
-					if (!worldIn.isClient) {
+	public void onUseTick(Level worldIn, LivingEntity entityLiving, ItemStack stack, int count) {
+		if (entityLiving instanceof Player) {
+			Player playerentity = (Player) entityLiving;
+			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
+				if (!playerentity.getCooldowns().isOnCooldown(this)) {
+					playerentity.getCooldowns().addCooldown(this, 2);
+					if (!worldIn.isClientSide) {
 						EnergyCellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-						abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(),
-								0.0F, 0.15F * 3.0F, 1.0F);
-						abstractarrowentity.hasNoGravity();
+						abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(),
+								playerentity.getYRot(), 0.0F, 0.15F * 3.0F, 1.0F);
+						abstractarrowentity.isNoGravity();
 
-						stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
-						worldIn.spawnEntity(abstractarrowentity);
-						worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
-								playerentity.getZ(), DoomSounds.PLASMA_FIRING, SoundCategory.PLAYERS, 1.0F,
-								1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
-						triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerWorld) worldIn),
+						stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
+						worldIn.addFreshEntity(abstractarrowentity);
+						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
+								DoomSounds.PLASMA_FIRING, SoundSource.PLAYERS, 1.0F,
+								1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+						triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn),
 								"shoot_controller", "firing_faster");
 					}
-					boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
+					boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
 					spawnLightSource(entityLiving, isInsideWaterBlock);
 				}
 			} else {
-				worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-						DoomSounds.EMPTY, SoundCategory.PLAYERS, 1.0F, 1.5F);
+				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
+						DoomSounds.EMPTY, SoundSource.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}
 
-	public void reload(PlayerEntity user, Hand hand) {
-		if (user.getStackInHand(hand).getItem() instanceof DPlasmaRifle) {
-			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0
-					&& user.getInventory().count(DoomItems.ENERGY_CELLS) > 0) {
+	public static void reload(Player user, InteractionHand hand) {
+		if (user.getItemInHand(hand).getItem() instanceof DPlasmaRifle) {
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
+					&& user.getInventory().countItem(DoomItems.ENERGY_CELLS) > 0) {
 				removeAmmo(DoomItems.ENERGY_CELLS, user);
-				user.getStackInHand(hand).damage(-20, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setBobbingAnimationTime(3);
-				user.getEntityWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
-						DoomSounds.CLIPRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
+				user.getItemInHand(hand).hurtAndBreak(-20, user, s -> user.broadcastBreakEvent(hand));
+				user.getItemInHand(hand).setPopTime(3);
+				user.getCommandSenderWorld().playSound((Player) null, user.getX(), user.getY(), user.getZ(),
+						DoomSounds.CLIPRELOAD, SoundSource.PLAYERS, 1.00F, 1.0F);
 			}
 		}
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-		if (world.isClient) {
-			if (((PlayerEntity) entity).getMainHandStack().getItem() instanceof DPlasmaRifle
-					&& ClientInit.reload.isPressed() && selected) {
-				PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
+	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
+		if (world.isClientSide) {
+			if (((Player) entity).getMainHandItem().getItem() instanceof DPlasmaRifle
+					&& ClientInit.reload.consumeClick() && selected) {
+				FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.DPLASMARIFLE, passedData);
 			}
 		}
 	}
 
-	public EnergyCellEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
-		float j = EnchantmentHelper.getLevel(Enchantments.POWER, stack);
+	public EnergyCellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
+		float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
 		EnergyCellEntity arrowentity = new EnergyCellEntity(worldIn, shooter,
 				(DoomConfig.energycell_damage + (j * 2.0F)));
 		return arrowentity;
 	}
 
 	@Override
-	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		super.appendTooltip(stack, world, tooltip, context);
-		tooltip.add(
-				Text.translatable("doom.doomed_credit.text").formatted(Formatting.RED).formatted(Formatting.ITALIC));
-		tooltip.add(
-				Text.translatable("doom.doomed_credit1.text").formatted(Formatting.RED).formatted(Formatting.ITALIC));
+	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+		tooltip.add(Component.translatable("doom.doomed_credit.text").withStyle(ChatFormatting.RED)
+				.withStyle(ChatFormatting.ITALIC));
+		tooltip.add(Component.translatable("doom.doomed_credit1.text").withStyle(ChatFormatting.RED)
+				.withStyle(ChatFormatting.ITALIC));
+		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class DPlasmaRifle extends DoomBaseItem {
 			private final DPlamsaRifleRender renderer = new DPlamsaRifleRender();
 
 			@Override
-			public BuiltinModelItemRenderer getCustomRenderer() {
+			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
 				return this.renderer;
 			}
 		});

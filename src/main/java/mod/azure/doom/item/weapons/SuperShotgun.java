@@ -1,6 +1,5 @@
 package mod.azure.doom.item.weapons;
 
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -16,22 +15,20 @@ import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.render.item.BuiltinModelItemRenderer;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 import software.bernie.geckolib.animatable.client.RenderProvider;
@@ -41,72 +38,85 @@ public class SuperShotgun extends DoomBaseItem {
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
 	public SuperShotgun() {
-		super(new Item.Settings().maxCount(1).maxDamage(53));
+		super(new Item.Properties().stacksTo(1).durability(53));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
 	@Override
-	public boolean canRepair(ItemStack stack, ItemStack ingredient) {
-		return DoomTier.SHOTGUN.getRepairIngredient().test(ingredient) || super.canRepair(stack, ingredient);
+	public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
+		return DoomTier.SHOTGUN.getRepairIngredient().test(repair) || super.isValidRepairItem(toRepair, repair);
 	}
 
 	@Override
-	public void onStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int remainingUseTicks) {
-		if (entityLiving instanceof PlayerEntity) {
-			PlayerEntity playerentity = (PlayerEntity) entityLiving;
-			if (stack.getDamage() < (stack.getMaxDamage() - 2)) {
-				if (playerentity.getMainHandStack().getItem() instanceof SuperShotgun) {
-					playerentity.getItemCooldownManager().set(this, 24);
-					if (!worldIn.isClient) {
+	public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
+		if (entityLiving instanceof Player) {
+			Player playerentity = (Player) entityLiving;
+			if (stack.getDamageValue() < (stack.getMaxDamage() - 2)) {
+				if (playerentity.getMainHandItem().getItem() instanceof SuperShotgun) {
+					playerentity.getCooldowns().addCooldown(this, 24);
+					if (!worldIn.isClientSide) {
 						ShotgunShellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-						abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(),
-								playerentity.getYaw() + 1, 0.0F, 1.0F * 3.0F, 1.0F);
-						worldIn.spawnEntity(abstractarrowentity);
+						abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(),
+								playerentity.getYRot() + 1, 0.0F, 1.0F * 3.0F, 1.0F);
+						worldIn.addFreshEntity(abstractarrowentity);
 						ShotgunShellEntity abstractarrowentity1 = createArrow(worldIn, stack, playerentity);
-						abstractarrowentity1.setVelocity(playerentity, playerentity.getPitch(),
-								playerentity.getYaw() - 1, 0.0F, 1.0F * 3.0F, 1.0F);
-						worldIn.spawnEntity(abstractarrowentity1);
+						abstractarrowentity1.shootFromRotation(playerentity, playerentity.getXRot(),
+								playerentity.getYRot() - 1, 0.0F, 1.0F * 3.0F, 1.0F);
+						worldIn.addFreshEntity(abstractarrowentity1);
 
-						stack.damage(2, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
-						worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
-								playerentity.getZ(), DoomSounds.SUPER_SHOTGUN_SHOOT, SoundCategory.PLAYERS, 1.0F,
-								1.0F);
-						triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerWorld) worldIn), "shoot_controller",
-								"firing");
+						stack.hurtAndBreak(2, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
+						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
+								DoomSounds.SUPER_SHOTGUN_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F);
+						triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn),
+								"shoot_controller", "firing");
 					}
-					boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
+					boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
 					spawnLightSource(entityLiving, isInsideWaterBlock);
 				}
 			} else {
-				worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-						DoomSounds.EMPTY, SoundCategory.PLAYERS, 1.0F, 1.5F);
+				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
+						DoomSounds.EMPTY, SoundSource.PLAYERS, 1.0F, 1.5F);
 				((PlayerProperties) playerentity).setHasMeatHook(false);
 			}
 		}
 	}
 
 	@Override
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-		ItemStack stack = user.getOffHandStack();
-		if (stack.getDamage() < (stack.getMaxDamage() - 2)) {
-			if (!world.isClient && stack.getItem() instanceof SuperShotgun) {
-				if (!((PlayerProperties) user).hasMeatHook()) {
-					MeatHookEntity hookshot = new MeatHookEntity(world, user);
-					hookshot.setProperties(stack, DoomConfig.max_meathook_distance, 10, user.getPitch(),
-							user.getYaw(), 0f, 1.5f);
-					hookshot.getDataTracker().set(MeatHookEntity.FORCED_YAW, user.getYaw());
-					world.spawnEntity(hookshot);
-				}
-				((PlayerProperties) user).setHasMeatHook(!((PlayerProperties) user).hasMeatHook());
+	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
+		if (world.isClientSide)
+			if (ClientInit.reload.consumeClick() && selected) {
+				FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
+				passedData.writeBoolean(true);
+				ClientPlayNetworking.send(DoomMod.SUPERSHOTGUN, passedData);
 			}
-		}
-		return super.use(world, user, hand);
+		if (((Player) entity).getMainHandItem().getItem() instanceof SuperShotgun && selected
+				&& ((PlayerProperties) entity).hasMeatHook())
+			((PlayerProperties) entity).setHasMeatHook(false);
 	}
 
 	@Override
-	public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+		ItemStack stack = player.getOffhandItem();
+		if (stack.getDamageValue() < (stack.getMaxDamage() - 2)) {
+			if (!world.isClientSide() && stack.getItem() instanceof SuperShotgun) {
+				player.getCooldowns().addCooldown(this, 5);
+				if (!((PlayerProperties) player).hasMeatHook()) {
+					MeatHookEntity hookshot = new MeatHookEntity(world, player);
+					hookshot.setProperties(stack, DoomConfig.max_meathook_distance, 10, player.getXRot(),
+							player.getYRot(), 0f, 1.5f * (float) (10 / 10));
+					hookshot.getEntityData().set(MeatHookEntity.FORCED_YAW, player.getYRot());
+					world.addFreshEntity(hookshot);
+				}
+				((PlayerProperties) player).setHasMeatHook(!((PlayerProperties) player).hasMeatHook());
+			}
+		}
+		return super.use(world, player, hand);
+	}
+
+	@Override
+	public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity user) {
 		((PlayerProperties) user).setHasMeatHook(false);
-		return super.finishUsing(stack, world, user);
+		return super.finishUsingItem(stack, world, user);
 	}
 
 	public static float getArrowVelocity(int charge) {
@@ -119,35 +129,19 @@ public class SuperShotgun extends DoomBaseItem {
 		return f;
 	}
 
-	public void reload(PlayerEntity user, Hand hand) {
-		if (user.getStackInHand(hand).getItem() instanceof SuperShotgun) {
-			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0
-					&& user.getInventory().count(DoomItems.SHOTGUN_SHELLS) > 0) {
+	public static void reload(Player user, InteractionHand hand) {
+		if (user.getItemInHand(hand).getItem() instanceof SuperShotgun) {
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
+					&& user.getInventory().countItem(DoomItems.SHOTGUN_SHELLS) > 0) {
 				removeAmmo(DoomItems.SHOTGUN_SHELLS, user);
-				user.getStackInHand(hand).damage(-4, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setBobbingAnimationTime(3);
+				user.getItemInHand(hand).hurtAndBreak(-4, user, s -> user.broadcastBreakEvent(hand));
+				user.getItemInHand(hand).setPopTime(3);
 			}
 		}
 	}
 
-	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-		if (world.isClient) {
-			if (((PlayerEntity) entity).getMainHandStack().getItem() instanceof SuperShotgun
-					&& ClientInit.reload.isPressed() && selected) {
-				PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
-				passedData.writeBoolean(true);
-				ClientPlayNetworking.send(DoomMod.SUPERSHOTGUN, passedData);
-			}
-		}
-		if (((PlayerEntity) entity).getMainHandStack().getItem() instanceof SuperShotgun && selected
-				&& ((PlayerProperties) entity).hasMeatHook()) {
-			((PlayerProperties) entity).setHasMeatHook(false);
-		}
-	}
-
-	public ShotgunShellEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
-		float j = EnchantmentHelper.getLevel(Enchantments.POWER, stack);
+	public ShotgunShellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
+		float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
 		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter,
 				(DoomConfig.shotgun_damage + (j * 2.0F)));
 		return arrowentity;
@@ -164,17 +158,12 @@ public class SuperShotgun extends DoomBaseItem {
 	}
 
 	@Override
-	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		super.appendTooltip(stack, world, tooltip, context);
-	}
-
-	@Override
 	public void createRenderer(Consumer<Object> consumer) {
 		consumer.accept(new RenderProvider() {
 			private final SSGRender renderer = new SSGRender();
 
 			@Override
-			public BuiltinModelItemRenderer getCustomRenderer() {
+			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
 				return this.renderer;
 			}
 		});

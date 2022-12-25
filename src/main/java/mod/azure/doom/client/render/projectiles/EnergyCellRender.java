@@ -1,19 +1,20 @@
 package mod.azure.doom.client.render.projectiles;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import mod.azure.doom.client.models.projectiles.EnergyModel;
 import mod.azure.doom.entity.projectiles.EnergyCellEntity;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.core.BlockPos;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.util.RenderUtils;
 
 public class EnergyCellRender extends GeoEntityRenderer<EnergyCellEntity> {
 
-	public EnergyCellRender(EntityRendererFactory.Context renderManagerIn) {
+	public EnergyCellRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new EnergyModel());
 	}
 
@@ -22,8 +23,8 @@ public class EnergyCellRender extends GeoEntityRenderer<EnergyCellEntity> {
 	}
 
 	@Override
-	public void preRender(MatrixStack poseStack, EnergyCellEntity animatable, BakedGeoModel model,
-			VertexConsumerProvider bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
+	public void preRender(PoseStack poseStack, EnergyCellEntity animatable, BakedGeoModel model,
+			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
 			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		RenderUtils.faceRotation(poseStack, animatable, partialTick);
 		poseStack.scale(0.0F, 0.0F, 0.0F);

@@ -1,10 +1,10 @@
 package mod.azure.doom.util.recipes;
 
-import mod.azure.doom.client.gui.GunTableInventory;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeType;
+import mod.azure.doom.client.gui.DoomGunInventory;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 
-public interface GunRecipes extends Recipe<GunTableInventory> {
+public interface GunRecipes extends Recipe<DoomGunInventory> {
 	default RecipeType<?> getType() {
 		return RecipeType.CRAFTING;
 	}

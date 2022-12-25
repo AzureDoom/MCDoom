@@ -1,6 +1,5 @@
 package mod.azure.doom.entity.tierfodder;
 
-import java.util.Random;
 import java.util.SplittableRandom;
 
 import mod.azure.doom.config.DoomConfig;
@@ -10,47 +9,46 @@ import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
-import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
 import mod.azure.doom.util.registry.DoomSounds;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
-import net.minecraft.entity.ai.pathing.BirdNavigation;
-import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Mth;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -63,11 +61,11 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 public class PossessedSoldierEntity extends DemonEntity implements GeoEntity {
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
-	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(PossessedSoldierEntity.class,
-			TrackedDataHandlerRegistry.INTEGER);
+	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(PossessedSoldierEntity.class,
+			EntityDataSerializers.INT);
 	public int flameTimer;
 
-	public PossessedSoldierEntity(EntityType<PossessedSoldierEntity> entityType, World worldIn) {
+	public PossessedSoldierEntity(EntityType<PossessedSoldierEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 		this.moveControl = new SoldierMoveControl(this);
 	}
@@ -77,26 +75,26 @@ public class PossessedSoldierEntity extends DemonEntity implements GeoEntity {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			if (event.isMoving())
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			if (!this.isOnGround() && !this.onGround && this.getVariant() == 2
-					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("flying"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (this.world.isClient)
-					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
-							SoundCategory.HOSTILE, 0.25F, 1.0F, false);
+				if (this.level.isClientSide())
+					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
+							SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("attack"))
-				if (this.world.isClient)
-					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PISTOL_HIT,
-							SoundCategory.HOSTILE, 0.25F, 1.0F, false);
+				if (this.level.isClientSide())
+					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PISTOL_HIT,
+							SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		}));
 	}
 
@@ -105,26 +103,178 @@ public class PossessedSoldierEntity extends DemonEntity implements GeoEntity {
 		return this.cache;
 	}
 
-	public static boolean spawning(EntityType<BaronEntity> p_223337_0_, World p_223337_1_, SpawnReason reason,
-			BlockPos p_223337_3_, Random p_223337_4_) {
-		return p_223337_1_.getDifficulty() != Difficulty.PEACEFUL;
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(VARIANT, 0);
 	}
 
 	@Override
-	protected void initGoals() {
-		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(6, new LookAroundGoal(this));
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.goalSelector.add(4,
+	public void readAdditionalSaveData(CompoundTag tag) {
+		super.readAdditionalSaveData(tag);
+		this.setVariant(tag.getInt("Variant"));
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putInt("Variant", this.getVariant());
+	}
+
+	public int getVariant() {
+		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 3);
+	}
+
+	public void setVariant(int variant) {
+		this.entityData.set(VARIANT, variant);
+	}
+
+	public int getVariants() {
+		return 3;
+	}
+
+	@Override
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
+			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
+		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+		SplittableRandom random = new SplittableRandom();
+		int var = random.nextInt(0, 4);
+		this.setVariant(var);
+		return spawnDataIn;
+	}
+
+	@Override
+	protected void registerGoals() {
+		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
+		this.goalSelector.addGoal(4,
 				new RangedStrafeAttackGoal(this, new PossessedSoldierEntity.FireballAttack(this)
 						.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomConfig.possessed_soldier_ranged_damage),
 						1.0D, 5, 30, 15, 15F, 1));
 		if (this.getVariant() == 2) {
-			this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
+			this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		}
-		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
+		this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+	}
+
+	public void travel(Vec3 movementInput) {
+		if (this.isAggressive() && this.getVariant() == 2) {
+			if (this.isInWater()) {
+				this.moveRelative(0.02F, movementInput);
+				this.move(MoverType.SELF, this.getDeltaMovement());
+				this.setDeltaMovement(this.getDeltaMovement().scale((double) 0.8F));
+			} else if (this.isInLava()) {
+				this.moveRelative(0.02F, movementInput);
+				this.move(MoverType.SELF, this.getDeltaMovement());
+				this.setDeltaMovement(this.getDeltaMovement().scale(0.5D));
+			} else {
+				BlockPos ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
+				float f = 0.91F;
+				if (this.onGround) {
+					f = this.level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+				}
+				float f1 = 0.16277137F / (f * f * f);
+				f = 0.91F;
+				if (this.onGround) {
+					f = this.level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+				}
+				this.moveRelative(this.onGround ? 0.1F * f1 : 0.02F, movementInput);
+				this.move(MoverType.SELF, this.getDeltaMovement());
+				this.setDeltaMovement(this.getDeltaMovement().scale((double) f));
+			}
+			this.calculateEntityAnimation(this, false);
+		} else {
+			super.travel(movementInput);
+		}
+	}
+
+	static class SoldierMoveControl extends MoveControl {
+		protected final PossessedSoldierEntity entity;
+		private int courseChangeCooldown;
+
+		public SoldierMoveControl(PossessedSoldierEntity entity) {
+			super(entity);
+			this.entity = entity;
+		}
+
+		public void tick() {
+			if (entity.isAggressive() && this.entity.getVariant() == 2) {
+				if (this.operation == MoveControl.Operation.MOVE_TO) {
+					if (this.courseChangeCooldown-- <= 0) {
+						this.courseChangeCooldown += this.entity.getRandom().nextInt(5) + 2;
+						Vec3 vector3d = new Vec3(this.wantedX - this.entity.getX(), this.wantedY - this.entity.getY(),
+								this.wantedZ - this.entity.getZ());
+						double d0 = vector3d.length();
+						vector3d = vector3d.normalize();
+						if (this.canReach(vector3d, Mth.ceil(d0))) {
+							this.entity.setDeltaMovement(this.entity.getDeltaMovement().add(vector3d.scale(0.1D)));
+						} else {
+							this.operation = MoveControl.Operation.WAIT;
+						}
+					}
+				} else {
+					this.operation = MoveControl.Operation.WAIT;
+					this.entity.setZza(0.0F);
+				}
+			} else {
+				if (this.operation == MoveControl.Operation.MOVE_TO) {
+					this.operation = MoveControl.Operation.WAIT;
+					double d0 = this.wantedX - this.entity.getX();
+					double d1 = this.wantedZ - this.entity.getZ();
+					double d2 = this.wantedY - this.entity.getY();
+					double d3 = d0 * d0 + d2 * d2 + d1 * d1;
+					if (d3 < (double) 2.5000003E-7F) {
+						this.entity.setZza(0.0F);
+						return;
+					}
+					float f9 = (float) (Mth.atan2(d1, d0) * (double) (180F / (float) Math.PI)) - 90.0F;
+					this.entity.setYRot(this.rotlerp(this.mob.getYRot(), f9, 90.0F));
+					this.entity.setSpeed((float) (0.25D));
+					BlockPos blockpos = this.mob.blockPosition();
+					BlockState blockstate = this.mob.level.getBlockState(blockpos);
+					VoxelShape voxelshape = blockstate.getCollisionShape(this.mob.level, blockpos);
+					if (d2 > (double) this.mob.getEyeHeight()
+							&& d0 * d0 + d1 * d1 < (double) Math.max(1.0F, this.mob.getBbWidth())
+							|| !voxelshape.isEmpty()
+									&& this.mob.getY() < voxelshape.max(Direction.Axis.Y) + (double) blockpos.getY()
+									&& !blockstate.is(BlockTags.DOORS) && !blockstate.is(BlockTags.FENCES)) {
+						this.operation = MoveControl.Operation.JUMPING;
+					}
+				} else if (this.operation == MoveControl.Operation.JUMPING) {
+					this.mob.setSpeed((float) (0.25D));
+					if (this.mob.isOnGround()) {
+						this.operation = MoveControl.Operation.WAIT;
+					}
+				} else {
+					this.operation = MoveControl.Operation.WAIT;
+					this.entity.setZza(0.0F);
+				}
+			}
+		}
+
+		private boolean canReach(Vec3 direction, int steps) {
+			AABB axisalignedbb = this.mob.getBoundingBox();
+			for (int i = 1; i < steps; ++i) {
+				axisalignedbb = axisalignedbb.move(direction);
+				if (!this.mob.level.noCollision(this.entity, axisalignedbb)) {
+					return false;
+				}
+			}
+			return true;
+		}
+	}
+
+	protected PathNavigation createNavigation(Level worldIn) {
+		FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
+		flyingpathnavigator.setCanOpenDoors(false);
+		flyingpathnavigator.setCanFloat(true);
+		flyingpathnavigator.setCanPassDoors(true);
+		return flyingpathnavigator;
 	}
 
 	public class FireballAttack extends AbstractRangedAttack {
@@ -144,21 +294,19 @@ public class PossessedSoldierEntity extends DemonEntity implements GeoEntity {
 		}
 
 		@Override
-		public ProjectileEntity getProjectile(World world, double d2, double d3, double d4) {
+		public Projectile getProjectile(Level world, double d2, double d3, double d4) {
 			return new BarenBlastEntity(world, this.parentEntity, d2, d3, d4, damage);
-
 		}
 	}
 
-	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.possessed_soldier_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
+	public static AttributeSupplier.Builder createMobAttributes() {
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
+				.add(Attributes.MAX_HEALTH, DoomConfig.possessed_soldier_health).add(Attributes.ATTACK_DAMAGE, 0.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
-	protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
+	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
 		return 1.74F;
 	}
 
@@ -172,177 +320,19 @@ public class PossessedSoldierEntity extends DemonEntity implements GeoEntity {
 		return DoomSounds.PSOLDIER_DEATH;
 	}
 
-	protected void initDataTracker() {
-		super.initDataTracker();
-		this.dataTracker.startTracking(VARIANT, 0);
+	@Override
+	public int getMaxSpawnClusterSize() {
+		return 7;
 	}
 
 	@Override
-	public void readCustomDataFromNbt(NbtCompound tag) {
-		super.readCustomDataFromNbt(tag);
-		this.setVariant(tag.getInt("Variant"));
-	}
-
-	@Override
-	public void writeCustomDataToNbt(NbtCompound tag) {
-		super.writeCustomDataToNbt(tag);
-		tag.putInt("Variant", this.getVariant());
-	}
-
-	public int getVariant() {
-		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 3);
-	}
-
-	public void setVariant(int variant) {
-		this.dataTracker.set(VARIANT, variant);
-	}
-
-	public int getVariants() {
-		return 3;
-	}
-
-	@Override
-	public EntityData initialize(ServerWorldAccess serverWorldAccess, LocalDifficulty difficulty,
-			SpawnReason spawnReason, EntityData entityData, NbtCompound entityTag) {
-		entityData = super.initialize(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
-		SplittableRandom random = new SplittableRandom();
-		int var = random.nextInt(0, 4);
-		this.setVariant(var);
-		return entityData;
-	}
-
-	@Override
-	public int getArmor() {
-		return this.getVariant() == 3 ? 3 : 0;
-	}
-
-	public void travel(Vec3d movementInput) {
-		if (this.isAttacking() && this.getVariant() == 2) {
-			if (this.isTouchingWater()) {
-				this.updateVelocity(0.02F, movementInput);
-				this.move(MovementType.SELF, this.getVelocity());
-				this.setVelocity(this.getVelocity().multiply(0.800000011920929D));
-			} else if (this.isInLava()) {
-				this.updateVelocity(0.02F, movementInput);
-				this.move(MovementType.SELF, this.getVelocity());
-				this.setVelocity(this.getVelocity().multiply(0.5D));
-			} else {
-				float f = 0.91F;
-				if (this.onGround) {
-					f = this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getBlock()
-							.getSlipperiness() * 0.91F;
-				}
-
-				float g = 0.16277137F / (f * f * f);
-				f = 0.91F;
-				if (this.onGround) {
-					f = this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getBlock()
-							.getSlipperiness() * 0.91F;
-				}
-
-				this.updateVelocity(this.onGround ? 0.1F * g : 0.02F, movementInput);
-				this.move(MovementType.SELF, this.getVelocity());
-				this.setVelocity(this.getVelocity().multiply((double) f));
-			}
-			this.updateLimbs(this, false);
-		} else {
-			super.travel(movementInput);
-		}
-	}
-
-	static class SoldierMoveControl extends MoveControl {
-		private final PossessedSoldierEntity entity;
-		private int courseChangeCooldown;
-
-		public SoldierMoveControl(PossessedSoldierEntity entity) {
-			super(entity);
-			this.entity = entity;
-		}
-
-		public void tick() {
-			if (entity.isAttacking() && this.entity.getVariant() == 2) {
-				if (this.state == MoveControl.State.MOVE_TO) {
-					if (this.courseChangeCooldown-- <= 0) {
-						this.courseChangeCooldown += this.entity.getRandom().nextInt(5) + 2;
-						Vec3d vector3d = new Vec3d(this.targetX - this.entity.getX(), this.targetY - this.entity.getY(),
-								this.targetZ - this.entity.getZ());
-						double d0 = vector3d.length();
-						vector3d = vector3d.normalize();
-						if (this.canReach(vector3d, MathHelper.ceil(d0))) {
-							this.entity.setVelocity(this.entity.getVelocity().add(vector3d.multiply(0.1D)));
-						} else {
-							this.state = MoveControl.State.WAIT;
-						}
-					}
-				} else {
-					this.state = MoveControl.State.WAIT;
-					this.entity.setForwardSpeed(0.0F);
-				}
-			} else {
-				if (this.state == MoveControl.State.MOVE_TO) {
-					this.state = MoveControl.State.WAIT;
-					double d0 = this.targetX - this.entity.getX();
-					double d1 = this.targetY - this.entity.getZ();
-					double d2 = this.targetZ - this.entity.getY();
-					double d3 = d0 * d0 + d2 * d2 + d1 * d1;
-					if (d3 < (double) 2.5000003E-7F) {
-						this.entity.setForwardSpeed(0.0F);
-						return;
-					}
-					float f9 = (float) (Math.atan2(d1, d0) * (double) (180F / (float) Math.PI)) - 90.0F;
-					this.entity.setYaw(this.wrapDegrees(this.entity.getYaw(), f9, 90.0F));
-					this.entity.setMovementSpeed((float) (0.25D));
-					BlockPos blockpos = this.entity.getBlockPos();
-					BlockState blockstate = this.entity.world.getBlockState(blockpos);
-					VoxelShape voxelshape = blockstate.getCollisionShape(this.entity.world, blockpos);
-					if (d2 > (double) this.entity.stepHeight
-							&& d0 * d0 + d1 * d1 < (double) Math.max(1.0F, this.entity.getWidth())
-							|| !voxelshape.isEmpty()
-									&& this.entity.getY() < voxelshape.getMax(Direction.Axis.Y)
-											+ (double) blockpos.getY()
-									&& !blockstate.isIn(BlockTags.DOORS) && !blockstate.isIn(BlockTags.FENCES)) {
-						this.state = MoveControl.State.JUMPING;
-					}
-				} else if (this.state == MoveControl.State.JUMPING) {
-					this.entity.setMovementSpeed((float) (0.25D));
-					if (this.entity.isOnGround()) {
-						this.state = MoveControl.State.WAIT;
-					}
-				} else {
-					this.state = MoveControl.State.WAIT;
-					this.entity.setForwardSpeed(0.0F);
-				}
-			}
-		}
-
-		private boolean canReach(Vec3d direction, int steps) {
-			Box box = this.entity.getBoundingBox();
-			for (int i = 1; i < steps; ++i) {
-				box = box.offset(direction);
-				if (!this.entity.world.isSpaceEmpty(this.entity, box)) {
-					return false;
-				}
-			}
-
-			return true;
-		}
-	}
-
-	protected EntityNavigation createNavigation(World world) {
-		BirdNavigation birdNavigation = new BirdNavigation(this, world);
-		birdNavigation.setCanPathThroughDoors(false);
-		birdNavigation.setCanSwim(true);
-		birdNavigation.setCanEnterOpenDoors(true);
-		return birdNavigation;
-	}
-
-	@Override
-	public void tick() {
-		super.tick();
+	public void aiStep() {
+		super.aiStep();
 		flameTimer = (flameTimer + 1) % 2;
 	}
 
 	public int getFlameTimer() {
 		return flameTimer;
 	}
+
 }

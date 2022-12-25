@@ -2,28 +2,28 @@ package mod.azure.doom.item;
 
 import java.util.List;
 
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 public class UnopenedItem extends Item {
 
 	public UnopenedItem() {
-		super(new Item.Settings().maxCount(1));
+		super(new Item.Properties().stacksTo(1));
 	}
 
 	@Override
-	public boolean hasGlint(ItemStack stack) {
+	public boolean isFoil(ItemStack stack) {
 		return false;
 	}
 
 	@Override
-	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(Text.translatable("doom.expired.text").formatted(Formatting.ITALIC));
-		super.appendTooltip(stack, world, tooltip, context);
+	public void appendHoverText(ItemStack itemStack, Level level, List<Component> list, TooltipFlag tooltipFlag) {
+		list.add(Component.translatable("doom.expired.text").withStyle(ChatFormatting.ITALIC));
+		super.appendHoverText(itemStack, level, list, tooltipFlag);
 	}
 
 }

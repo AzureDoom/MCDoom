@@ -2,12 +2,12 @@ package mod.azure.doom.client.render;
 
 import mod.azure.doom.client.models.ImpStoneModel;
 import mod.azure.doom.entity.tierfodder.ImpStoneEntity;
-import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class ImpStoneRender extends GeoEntityRenderer<ImpStoneEntity> {
 
-	public ImpStoneRender(EntityRendererFactory.Context renderManagerIn) {
+	public ImpStoneRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new ImpStoneModel());
 	}
 

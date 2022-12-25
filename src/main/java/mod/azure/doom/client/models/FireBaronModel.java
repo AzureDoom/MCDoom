@@ -2,8 +2,8 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tiersuperheavy.FireBaronEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
@@ -12,23 +12,23 @@ import software.bernie.geckolib.model.data.EntityModelData;
 
 public class FireBaronModel extends GeoModel<FireBaronEntity> {
 
-	private static final Identifier[] TEX = { new Identifier(DoomMod.MODID, "textures/entity/firebaron.png"),
-			new Identifier(DoomMod.MODID, "textures/entity/firebaron_1.png"),
-			new Identifier(DoomMod.MODID, "textures/entity/firebaron_2.png") };
+	private static final ResourceLocation[] TEX = { new ResourceLocation(DoomMod.MODID, "textures/entity/firebaron.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/firebaron_1.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/firebaron_2.png") };
 
 	@Override
-	public Identifier getModelResource(FireBaronEntity object) {
-		return new Identifier(DoomMod.MODID, "geo/baron2016.geo.json");
+	public ResourceLocation getModelResource(FireBaronEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/baron2016.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(FireBaronEntity object) {
+	public ResourceLocation getTextureResource(FireBaronEntity object) {
 		return TEX[(object.getFlameTimer())];
 	}
 
 	@Override
-	public Identifier getAnimationResource(FireBaronEntity object) {
-		return new Identifier(DoomMod.MODID, "animations/baron2016.animation.json");
+	public ResourceLocation getAnimationResource(FireBaronEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "animations/baron2016.animation.json");
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class FireBaronModel extends GeoModel<FireBaronEntity> {
 	}
 
 	@Override
-	public RenderLayer getRenderType(FireBaronEntity animatable, Identifier texture) {
-		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
+	public RenderType getRenderType(FireBaronEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

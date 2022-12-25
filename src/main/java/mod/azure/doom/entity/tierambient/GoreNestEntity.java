@@ -2,32 +2,24 @@ package mod.azure.doom.entity.tierambient;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.registry.DoomEntities;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.DustParticleEffect;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.TypeFilter;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.entity.EntityTypeTest;
+import net.minecraft.world.phys.AABB;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -40,14 +32,14 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	public int spawnTimer = 0;
 
-	public GoreNestEntity(EntityType<? extends GoreNestEntity> entityType, World worldIn) {
+	public GoreNestEntity(EntityType<? extends GoreNestEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			if (this.dead || this.getHealth() < 0.01 || this.isDead())
+			if (this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			event.getController().setAnimationSpeed(0.25);
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
@@ -60,76 +52,73 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	public void takeKnockback(double strength, double x, double z) {
-		super.takeKnockback(0, 0, 0);
-	}
-
-	@Override
 	public boolean isPushable() {
 		return false;
 	}
 
 	@Override
-	protected void tickCramming() {
-	}
-
-	public static boolean spawning(EntityType<GoreNestEntity> p_223337_0_, World p_223337_1_, SpawnReason reason,
-			BlockPos p_223337_3_, Random p_223337_4_) {
-		return p_223337_1_.getDifficulty() != Difficulty.PEACEFUL;
+	protected void pushEntities() {
 	}
 
 	@Override
-	protected void updatePostDeath() {
+	public void knockback(double strength, double x, double z) {
+		super.knockback(0, 0, 0);
+	}
+
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+	}
+
+	@Override
+	protected void tickDeath() {
 		++this.deathTime;
-		if (this.deathTime == 80) {
-			this.remove(Entity.RemovalReason.KILLED);
-			this.dropXp();
+		if (this.deathTime == 60) {
+			this.remove(RemovalReason.KILLED);
+			this.dropExperience();
 		}
 	}
 
+	public static AttributeSupplier.Builder createMobAttributes() {
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+				.add(Attributes.MAX_HEALTH, DoomConfig.gorenest_health).add(Attributes.ATTACK_DAMAGE, 0.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+	}
+
 	@Override
-	protected void applyDamage(DamageSource source, float amount) {
+	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+		super.onSyncedDataUpdated(key);
+	}
+
+	@Override
+	protected void actuallyHurt(DamageSource source, float damageAmount) {
 		if (source == DamageSource.OUT_OF_WORLD)
 			this.remove(Entity.RemovalReason.KILLED);
 
-		if (!(source.getSource() instanceof PlayerEntity))
+		if (!(source.getEntity() instanceof Player))
 			this.setHealth(5.0F);
 
 		this.remove(Entity.RemovalReason.KILLED);
 	}
 
-	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.gorenest_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
-	}
-
 	@Override
-	public EntityData initialize(ServerWorldAccess serverWorldAccess, LocalDifficulty difficulty,
-			SpawnReason spawnReason, EntityData entityData, NbtCompound entityTag) {
-		entityData = super.initialize(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
-		return entityData;
-	}
-
-	@Override
-	public void tickMovement() {
-		if (this.world.isClient) {
-			this.world.addParticle(DustParticleEffect.DEFAULT, this.getParticleX(0.5D), this.getRandomBodyY() - 0.25D,
-					this.getParticleZ(0.5D), (this.random.nextDouble() - 0.5D) * 2.0D, -this.random.nextDouble(),
+	public void aiStep() {
+		if (this.level.isClientSide) {
+			this.level.addParticle(DustParticleOptions.REDSTONE, this.getRandomX(0.5D), this.getRandomY(),
+					this.getRandomZ(0.5D), (this.random.nextDouble() - 0.5D) * 2.0D, -this.random.nextDouble(),
 					(this.random.nextDouble() - 0.5D) * 2.0D);
-			this.world.addParticle(ParticleTypes.SOUL, this.getParticleX(0.2D), this.getRandomBodyY(),
-					this.getParticleZ(0.5D), 0.0D, 0D, 0D);
+			this.level.addParticle(ParticleTypes.SOUL, this.getRandomX(0.2D), this.getRandomY(), this.getRandomZ(0.5D),
+					0.0D, 0D, 0D);
 		}
 		++this.spawnTimer;
-		final Box aabb = new Box(this.getBlockPos()).expand(64D);
-		int i = this.world.getEntitiesByType(TypeFilter.instanceOf(DemonEntity.class), aabb, Entity::isAlive).size();
+		final AABB aabb = new AABB(this.blockPosition()).inflate(64D);
+		int i = this.level.getEntities(EntityTypeTest.forClass(DemonEntity.class), aabb, Entity::isAlive).size();
 		if (this.spawnTimer == 800 && i <= 15) {
 			this.spawnWave();
 		}
 		if (this.spawnTimer >= 810)
 			this.spawnTimer = 0;
-		super.tickMovement();
+		super.aiStep();
 	}
 
 	public void spawnWave() {
@@ -139,17 +128,27 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 				DoomEntities.POSSESSEDSOLDIER, DoomEntities.SHOTGUNGUY, DoomEntities.UNWILLING, DoomEntities.ZOMBIEMAN,
 				DoomEntities.ARACHNOTRON, DoomEntities.ARCHVILE, DoomEntities.MECHAZOMBIE, DoomEntities.PAIN,
 				DoomEntities.MANCUBUS);
-		int r = this.random.nextBetween(-3, 3);
+		int r = this.random.nextInt(-3, 3);
 
 		for (int k = 1; k < 5; ++k) {
 			for (int i = 0; i < 1; i++) {
 				int randomIndex = this.random.nextInt(givenList.size());
 				EntityType<?> randomElement = givenList.get(randomIndex);
-				Entity fireballentity = randomElement.create(world);
-				fireballentity.refreshPositionAndAngles(this.getX() + r, this.getY() + 0.5D, this.getZ() + r, 0, 0);
-				world.spawnEntity(fireballentity);
+				Entity waveentity = randomElement.create(level);
+				waveentity.setPos(this.getX() + r, this.getY() + 0.5D, this.getZ() + r);
+				level.addFreshEntity(waveentity);
 			}
 		}
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag compound) {
+		super.addAdditionalSaveData(compound);
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
 	}
 
 	protected boolean shouldDrown() {
@@ -160,9 +159,4 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 		return false;
 	}
 
-	@Override
-	@Environment(EnvType.CLIENT)
-	public boolean shouldRender(double distance) {
-		return true;
-	}
 }

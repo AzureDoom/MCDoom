@@ -1,7 +1,7 @@
 package mod.azure.doom.item;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.block.Block;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -13,7 +13,7 @@ public abstract class DoomBlockItem extends BlockItem implements GeoItem {
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-	public DoomBlockItem(Block p_i48527_1_, Settings p_i48527_2_) {
+	public DoomBlockItem(Block p_i48527_1_, Properties p_i48527_2_) {
 		super(p_i48527_1_, p_i48527_2_);
 	}
 

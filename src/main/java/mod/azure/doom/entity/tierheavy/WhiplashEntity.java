@@ -1,31 +1,24 @@
 package mod.azure.doom.entity.tierheavy;
 
-import java.util.Random;
-
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
 import mod.azure.doom.util.registry.DoomSounds;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -39,64 +32,66 @@ public class WhiplashEntity extends DemonEntity implements GeoEntity {
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-	public WhiplashEntity(EntityType<WhiplashEntity> entityType, World worldIn) {
+	public WhiplashEntity(EntityType<WhiplashEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 10, event -> {
-			if (event.isMoving() && this.hurtTime == 0 && !this.isAttacking())
+			if (event.isMoving() && this.hurtTime == 0 && !this.isAggressive())
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			if (event.isMoving() && this.hurtTime == 0 && this.isAttacking())
+			if (event.isMoving() && this.hurtTime == 0 && this.isAggressive())
 				return event.setAndContinue(RawAnimation.begin().thenLoop("attacking_moving"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
 			return PlayState.STOP;
 		}));
 	}
 
-	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
 		return this.cache;
 	}
 
 	@Override
-	protected void updatePostDeath() {
+	protected void tickDeath() {
 		++this.deathTime;
-		if (this.deathTime == 80) {
-			this.remove(Entity.RemovalReason.KILLED);
-			this.dropXp();
+		if (this.deathTime == 60) {
+			this.remove(RemovalReason.KILLED);
+			this.dropExperience();
 		}
 	}
 
-	public static boolean spawning(EntityType<WhiplashEntity> p_223337_0_, World p_223337_1_, SpawnReason reason,
-			BlockPos p_223337_3_, Random p_223337_4_) {
-		return p_223337_1_.getDifficulty() != Difficulty.PEACEFUL;
+	@Override
+	protected void registerGoals() {
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
+		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.25D, 2));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
+	}
+
+	public static AttributeSupplier.Builder createMobAttributes() {
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MAX_HEALTH, DoomConfig.whiplash_health)
+				.add(Attributes.ATTACK_DAMAGE, DoomConfig.whiplash_melee_damage).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
-	protected void initGoals() {
-		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(8, new LookAroundGoal(this));
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.goalSelector.add(4, new DemonAttackGoal(this, 1.25D, 1));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
-		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
 	}
 
-	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.whiplash_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.whiplash_melee_damage)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.45D)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.6f)
-				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
+	@Override
+	public boolean isBaby() {
+		return false;
 	}
 
 	protected boolean shouldDrown() {
@@ -108,12 +103,6 @@ public class WhiplashEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	@Environment(EnvType.CLIENT)
-	public boolean shouldRender(double distance) {
-		return true;
-	}
-
-	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return DoomSounds.WHIPLASH_HURT;
 	}
@@ -121,6 +110,11 @@ public class WhiplashEntity extends DemonEntity implements GeoEntity {
 	@Override
 	protected SoundEvent getDeathSound() {
 		return DoomSounds.WHIPLASH_DEATH;
+	}
+
+	@Override
+	public int getMaxSpawnClusterSize() {
+		return 7;
 	}
 
 }

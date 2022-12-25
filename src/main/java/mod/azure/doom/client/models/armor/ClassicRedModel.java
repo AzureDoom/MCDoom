@@ -2,22 +2,22 @@ package mod.azure.doom.client.models.armor;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.armor.ClassicRedDoomArmor;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
 public class ClassicRedModel extends GeoModel<ClassicRedDoomArmor> {
 	@Override
-	public Identifier getModelResource(ClassicRedDoomArmor object) {
-		return new Identifier(DoomMod.MODID, "geo/classicarmor.geo.json");
+	public ResourceLocation getModelResource(ClassicRedDoomArmor object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/classicarmor.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(ClassicRedDoomArmor object) {
-		return new Identifier(DoomMod.MODID, "textures/models/armor/classic_red_armor_layer_1.png");
+	public ResourceLocation getTextureResource(ClassicRedDoomArmor object) {
+		return new ResourceLocation(DoomMod.MODID, "textures/models/armor/classic_red_armor_layer_1.png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(ClassicRedDoomArmor animatable) {
-		return new Identifier(DoomMod.MODID, "animations/armor_animation.json");
+	public ResourceLocation getAnimationResource(ClassicRedDoomArmor animatable) {
+		return new ResourceLocation(DoomMod.MODID, "animations/armor_animation.json");
 	}
 }

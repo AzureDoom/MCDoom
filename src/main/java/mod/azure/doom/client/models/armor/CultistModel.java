@@ -2,22 +2,22 @@ package mod.azure.doom.client.models.armor;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.armor.CultistDoomArmor;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
 public class CultistModel extends GeoModel<CultistDoomArmor> {
 	@Override
-	public Identifier getModelResource(CultistDoomArmor object) {
-		return new Identifier(DoomMod.MODID, "geo/cultistarmor.geo.json");
+	public ResourceLocation getModelResource(CultistDoomArmor object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/cultistarmor.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(CultistDoomArmor object) {
-		return new Identifier(DoomMod.MODID, "textures/models/armor/cultist_armor_layer_1.png");
+	public ResourceLocation getTextureResource(CultistDoomArmor object) {
+		return new ResourceLocation(DoomMod.MODID, "textures/models/armor/cultist_armor_layer_1.png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(CultistDoomArmor animatable) {
-		return new Identifier(DoomMod.MODID, "animations/armor_animation.json");
+	public ResourceLocation getAnimationResource(CultistDoomArmor animatable) {
+		return new ResourceLocation(DoomMod.MODID, "animations/armor_animation.json");
 	}
 }

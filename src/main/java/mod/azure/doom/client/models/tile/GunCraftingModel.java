@@ -2,28 +2,28 @@ package mod.azure.doom.client.models.tile;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
 public class GunCraftingModel extends GeoModel<GunBlockEntity> {
 	@Override
-	public Identifier getAnimationResource(GunBlockEntity entity) {
-		return new Identifier(DoomMod.MODID, "animations/gun_table.animation.json");
+	public ResourceLocation getAnimationResource(GunBlockEntity entity) {
+		return new ResourceLocation(DoomMod.MODID, "animations/gun_table.animation.json");
 	}
 
 	@Override
-	public Identifier getModelResource(GunBlockEntity animatable) {
-		return new Identifier(DoomMod.MODID, "geo/gun_table.geo.json");
+	public ResourceLocation getModelResource(GunBlockEntity animatable) {
+		return new ResourceLocation(DoomMod.MODID, "geo/gun_table.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(GunBlockEntity entity) {
-		return new Identifier(DoomMod.MODID, "textures/block/gun_table.png");
+	public ResourceLocation getTextureResource(GunBlockEntity entity) {
+		return new ResourceLocation(DoomMod.MODID, "textures/block/gun_table.png");
 	}
 	
 	@Override
-	public RenderLayer getRenderType(GunBlockEntity animatable, Identifier texture) {
-		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
+	public RenderType getRenderType(GunBlockEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

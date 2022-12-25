@@ -10,42 +10,42 @@ import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketItem;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.config.DoomConfig;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 public class DaisyItem extends TrinketItem {
 
 	public DaisyItem() {
-		super(new Item.Settings().maxCount(1));
+		super(new Item.Properties().stacksTo(1));
 	}
 
 	@Override
-	public boolean hasGlint(ItemStack stack) {
+	public boolean isFoil(ItemStack stack) {
 		return false;
 	}
 
 	@Override
-	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(Text.translatable("doom.daisy1.text").formatted(Formatting.YELLOW).formatted(Formatting.ITALIC));
-		tooltip.add(Text.translatable("doom.daisy2.text").formatted(Formatting.ITALIC));
-		super.appendTooltip(stack, world, tooltip, context);
+	public void appendHoverText(ItemStack itemStack, Level level, List<Component> list, TooltipFlag tooltipFlag) {
+		list.add(Component.translatable("doom.daisy1.text").withStyle(ChatFormatting.YELLOW).withStyle(ChatFormatting.ITALIC));
+		list.add(Component.translatable("doom.daisy2.text").withStyle(ChatFormatting.ITALIC));
+		super.appendHoverText(itemStack, level, list, tooltipFlag);
 	}
 
-	public Multimap<EntityAttribute, EntityAttributeModifier> getModifiers(ItemStack stack, SlotReference slot,
+	public Multimap<Attribute, AttributeModifier> getModifiers(ItemStack stack, SlotReference slot,
 			LivingEntity entity, UUID uuid) {
 		var modifiers = super.getModifiers(stack, slot, entity, uuid);
 		if (DoomConfig.enable_daisy_effects == true) {
-			modifiers.put(EntityAttributes.GENERIC_MOVEMENT_SPEED, new EntityAttributeModifier(uuid,
-					DoomMod.MODID + ":movement_speed", 2.0, EntityAttributeModifier.Operation.MULTIPLY_TOTAL));
-			SlotAttributes.addSlotModifier(modifiers, "legs/belt", uuid, 1, EntityAttributeModifier.Operation.ADDITION);
+			modifiers.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(uuid,
+					DoomMod.MODID + ":movement_speed", 2.0, AttributeModifier.Operation.MULTIPLY_TOTAL));
+			SlotAttributes.addSlotModifier(modifiers, "legs/belt", uuid, 1, AttributeModifier.Operation.ADDITION);
 		}
 		return modifiers;
 	}

@@ -1,34 +1,35 @@
 package mod.azure.doom.client.render.projectiles;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.projectiles.ArgentBoltEntity;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.ProjectileEntityRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.ArrowRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 
-public class ArgentBoltRender extends ProjectileEntityRenderer<ArgentBoltEntity> {
+public class ArgentBoltRender extends ArrowRenderer<ArgentBoltEntity> {
 
-	private static final Identifier ARGENT_BOLT_TEXTURE = new Identifier(DoomMod.MODID,
+	private static final ResourceLocation ARGENT_BOLT_TEXTURE = new ResourceLocation(DoomMod.MODID,
 			"textures/entity/projectiles/argent_bolt.png");
 
-	public ArgentBoltRender(EntityRendererFactory.Context renderManagerIn) {
+	public ArgentBoltRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn);
 	}
 
 	@Override
-	public Identifier getTexture(ArgentBoltEntity entity) {
+	public ResourceLocation getTextureLocation(ArgentBoltEntity entity) {
 		return ARGENT_BOLT_TEXTURE;
 	}
-	
+
 	@Override
-	public void render(ArgentBoltEntity persistentProjectileEntity, float f, float g, MatrixStack matrixStack,
-			VertexConsumerProvider vertexConsumerProvider, int i) {
+	public void render(ArgentBoltEntity persistentProjectileEntity, float f, float g, PoseStack matrixStack,
+			MultiBufferSource vertexConsumerProvider, int i) {
 		super.render(persistentProjectileEntity, f, g, matrixStack, vertexConsumerProvider, i);
-		matrixStack.push();
+		matrixStack.pushPose();
 		matrixStack.scale(0, 0, 0);
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 
 }

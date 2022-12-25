@@ -2,28 +2,28 @@ package mod.azure.doom.client.models.projectiles;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.projectiles.MeatHookEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
 public class MeatHookEntityModel extends GeoModel<MeatHookEntity> {
 	@Override
-	public Identifier getModelResource(MeatHookEntity object) {
-		return new Identifier(DoomMod.MODID, "geo/archvilefiring.geo.json");
+	public ResourceLocation getModelResource(MeatHookEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/archvilefiring.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(MeatHookEntity object) {
-		return new Identifier(DoomMod.MODID, "textures/item/supershotgun.png");
+	public ResourceLocation getTextureResource(MeatHookEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "textures/item/supershotgun.png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(MeatHookEntity animatable) {
-		return new Identifier(DoomMod.MODID, "animations/chainblade.animation.json");
+	public ResourceLocation getAnimationResource(MeatHookEntity animatable) {
+		return new ResourceLocation(DoomMod.MODID, "animations/chainblade.animation.json");
 	}
 
 	@Override
-	public RenderLayer getRenderType(MeatHookEntity animatable, Identifier texture) {
-		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
+	public RenderType getRenderType(MeatHookEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

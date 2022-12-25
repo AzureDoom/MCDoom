@@ -16,37 +16,39 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.client.gui.GunTableInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.recipe.ShapedRecipe;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.world.World;
+import mod.azure.doom.client.gui.DoomGunInventory;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.level.Level;
 
-public class GunTableRecipe implements Recipe<GunTableInventory>, Comparable<GunTableRecipe> {
-	private final Identifier id;
+public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunTableRecipe> {
+
+	public static ResourceLocation RECIPE_TYPE_ID = new ResourceLocation(DoomMod.MODID, "guns");
+	public final ResourceLocation id;
 	public final Pair<Ingredient, Integer>[] ingredients;
 	public final ItemStack output;
 
-	public GunTableRecipe(Identifier id, Pair<Ingredient, Integer>[] ingredients, ItemStack output) {
+	public GunTableRecipe(ResourceLocation id, Pair<Ingredient, Integer>[] ingredients, ItemStack output) {
 		this.id = id;
 		this.ingredients = ingredients;
 		this.output = output;
 	}
 
 	@Override
-	public boolean matches(GunTableInventory inv, World world) {
+	public boolean matches(DoomGunInventory inv, Level world) {
 		for (int i = 0; i < 5; i++) {
-			ItemStack slotStack = inv.getStack(i);
+			ItemStack slotStack = inv.getItem(i);
 			Pair<Ingredient, Integer> pair = ingredients[i];
-			Ingredient ingredient = pair.getLeft();
+			Ingredient ingredient = pair.getKey();
 			int count = pair.getRight();
 			if (slotStack.getCount() < count || !(ingredient.test(slotStack))) {
 				return false;
@@ -64,22 +66,22 @@ public class GunTableRecipe implements Recipe<GunTableInventory>, Comparable<Gun
 	}
 
 	@Override
-	public ItemStack craft(GunTableInventory inv) {
-		return this.getOutput().copy();
+	public ItemStack assemble(DoomGunInventory inv) {
+		return this.getResultItem().copy();
 	}
 
 	@Override
-	public boolean fits(int width, int height) {
+	public boolean canCraftInDimensions(int width, int height) {
 		return true;
 	}
 
 	@Override
-	public ItemStack getOutput() {
+	public ItemStack getResultItem() {
 		return output;
 	}
 
 	@Override
-	public Identifier getId() {
+	public ResourceLocation getId() {
 		return id;
 	}
 
@@ -91,7 +93,7 @@ public class GunTableRecipe implements Recipe<GunTableInventory>, Comparable<Gun
 	public static class Type implements RecipeType<GunTableRecipe> {
 		private Type() {
 		}
-
+		
 		public static final Type INSTANCE = new Type();
 		public static final String ID = "gun_table";
 	}
@@ -103,17 +105,17 @@ public class GunTableRecipe implements Recipe<GunTableInventory>, Comparable<Gun
 
 	@Override
 	public int compareTo(@NotNull GunTableRecipe o) {
-		Item outputThis = getOutput().getItem();
-		Item outputOther = o.getOutput().getItem();
-		return Registries.ITEM.getId(outputThis).compareTo(Registries.ITEM.getId(outputOther));
+		Item outputThis = getResultItem().getItem();
+		Item outputOther = o.getResultItem().getItem();
+		return BuiltInRegistries.ITEM.getKey(outputThis).compareTo(BuiltInRegistries.ITEM.getKey(outputOther));
 	}
-
+	
 	public static class Serializer implements RecipeSerializer<GunTableRecipe> {
 
-		public GunTableRecipe read(Identifier identifier, JsonObject jsonObject) {
-
-			String pattern = JsonHelper.getString(jsonObject, "pattern");
-			Map<String, Pair<Ingredient, Integer>> map = getComponents(JsonHelper.getObject(jsonObject, "key"));
+		@Override
+		public GunTableRecipe fromJson(ResourceLocation identifier, JsonObject jsonObject) {
+			String pattern = GsonHelper.getAsString(jsonObject, "pattern");
+			Map<String, Pair<Ingredient, Integer>> map = getComponents(GsonHelper.getAsJsonObject(jsonObject, "key"));
 
 			List<Pair<Ingredient, Integer>> pairList = getIngredients(pattern, map, pattern.length());
 			if (pairList.isEmpty()) {
@@ -121,7 +123,7 @@ public class GunTableRecipe implements Recipe<GunTableInventory>, Comparable<Gun
 			} else if (pairList.size() > 5) {
 				throw new JsonParseException("Too many ingredients for gun table recipe");
 			} else {
-				ItemStack itemStack = ShapedRecipe.outputFromJson(JsonHelper.getObject(jsonObject, "result"));
+				ItemStack itemStack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(jsonObject, "result"));
 				return new GunTableRecipe(identifier, pairList.toArray(new Pair[0]), itemStack);
 			}
 		}
@@ -154,27 +156,29 @@ public class GunTableRecipe implements Recipe<GunTableInventory>, Comparable<Gun
 			}
 		}
 
-		public GunTableRecipe read(Identifier identifier, PacketByteBuf packetByteBuf) {
+		@Override
+		public GunTableRecipe fromNetwork(ResourceLocation identifier, FriendlyByteBuf packetByteBuf) {
 			Pair<Ingredient, Integer>[] pairs = new Pair[5];
 			for (int j = 0; j < 5; ++j) {
-				Ingredient ingredient = Ingredient.fromPacket(packetByteBuf);
+				Ingredient ingredient = Ingredient.fromNetwork(packetByteBuf);
 				int count = packetByteBuf.readInt();
 				pairs[j] = Pair.of(ingredient, count);
 			}
 
-			ItemStack output = packetByteBuf.readItemStack();
+			ItemStack output = packetByteBuf.readItem();
 			return new GunTableRecipe(identifier, pairs, output);
 		}
 
-		public void write(PacketByteBuf packetByteBuf, GunTableRecipe gunTableRecipe) {
+		@Override
+		public void toNetwork(FriendlyByteBuf packetByteBuf, GunTableRecipe gunTableRecipe) {
 			for (int i = 0; i < 5; i++) {
 				Pair<Ingredient, Integer> pair = gunTableRecipe.ingredients[i];
-				Ingredient ingredient = pair.getLeft();
+				Ingredient ingredient = pair.getKey();
 				int count = pair.getRight();
-				ingredient.write(packetByteBuf);
+				ingredient.toNetwork(packetByteBuf);
 				packetByteBuf.writeInt(count);
 			}
-			packetByteBuf.writeItemStack(gunTableRecipe.output);
+			packetByteBuf.writeItem(gunTableRecipe.output);
 		}
 
 		private static Map<String, Pair<Ingredient, Integer>> getComponents(JsonObject json) {
@@ -193,7 +197,7 @@ public class GunTableRecipe implements Recipe<GunTableInventory>, Comparable<Gun
 				}
 
 				map.put(key, Pair.of(Ingredient.fromJson(jsonElement),
-						JsonHelper.getInt(jsonElement.getAsJsonObject(), "count", 1)));
+						GsonHelper.getAsInt(jsonElement.getAsJsonObject(), "count", 1)));
 			}
 
 			map.put(" ", Pair.of(Ingredient.EMPTY, 0));

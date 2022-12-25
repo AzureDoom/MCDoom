@@ -2,12 +2,12 @@ package mod.azure.doom.client.render;
 
 import mod.azure.doom.client.models.SummonerModel;
 import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
-import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class SummonerRender extends GeoEntityRenderer<SummonerEntity> {
 
-	public SummonerRender(EntityRendererFactory.Context renderManagerIn) {
+	public SummonerRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new SummonerModel());
 	}
 

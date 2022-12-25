@@ -5,17 +5,17 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import mod.azure.doom.client.render.armors.ClassicBronzeRender;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.client.RenderProvider;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -30,7 +30,7 @@ public class ClassicBronzeDoomArmor extends ArmorItem implements GeoItem {
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
 	public ClassicBronzeDoomArmor(ArmorMaterial materialIn, EquipmentSlot slot) {
-		super(materialIn, slot, new Item.Settings().maxCount(1));
+		super(materialIn, slot, new Item.Properties().stacksTo(1));
 	}
 
 	// Create our armor model/renderer for Fabric and return it
@@ -40,8 +40,8 @@ public class ClassicBronzeDoomArmor extends ArmorItem implements GeoItem {
 			private ClassicBronzeRender renderer;
 
 			@Override
-			public BipedEntityModel<LivingEntity> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack,
-					EquipmentSlot equipmentSlot, BipedEntityModel<LivingEntity> original) {
+			public HumanoidModel<LivingEntity> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack,
+					EquipmentSlot equipmentSlot, HumanoidModel<LivingEntity> original) {
 				if (this.renderer == null)
 					this.renderer = new ClassicBronzeRender();
 
@@ -69,10 +69,10 @@ public class ClassicBronzeDoomArmor extends ArmorItem implements GeoItem {
 	}
 
 	@Override
-	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(
-				Text.translatable("doom.classicarmor.text").formatted(Formatting.YELLOW).formatted(Formatting.ITALIC));
-		super.appendTooltip(stack, world, tooltip, context);
+	public void appendHoverText(ItemStack itemStack, Level level, List<Component> list, TooltipFlag tooltipFlag) {
+		list.add(
+				Component.translatable("doom.classicarmor.text").withStyle(ChatFormatting.YELLOW).withStyle(ChatFormatting.ITALIC));
+		super.appendHoverText(itemStack, level, list, tooltipFlag);
 	}
 
 }

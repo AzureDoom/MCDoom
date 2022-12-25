@@ -14,19 +14,19 @@ import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.render.item.BuiltinModelItemRenderer;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 import software.bernie.geckolib.animatable.client.RenderProvider;
@@ -34,76 +34,75 @@ import software.bernie.geckolib.animatable.client.RenderProvider;
 public class PistolItem extends DoomBaseItem {
 
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
-
 	protected final Random random = new Random();
 
 	public PistolItem() {
-		super(new Item.Settings().maxCount(1).maxDamage(201));
+		super(new Item.Properties().stacksTo(1).durability(201));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
 	@Override
-	public boolean canRepair(ItemStack stack, ItemStack ingredient) {
-		return DoomTier.PISTOL.getRepairIngredient().test(ingredient) || super.canRepair(stack, ingredient);
+	public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
+		return DoomTier.PISTOL.getRepairIngredient().test(repair) || super.isValidRepairItem(toRepair, repair);
 	}
 
 	@Override
-	public void onStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int remainingUseTicks) {
-		if (entityLiving instanceof PlayerEntity) {
-			PlayerEntity playerentity = (PlayerEntity) entityLiving;
-			if (stack.getDamage() < (stack.getMaxDamage() - 1)) {
-				playerentity.getItemCooldownManager().set(this, 5);
-				if (!worldIn.isClient) {
+	public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
+		if (entityLiving instanceof Player) {
+			Player playerentity = (Player) entityLiving;
+			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
+				playerentity.getCooldowns().addCooldown(this, 5);
+				if (!worldIn.isClientSide) {
 					BulletEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
-							1.0F, 1.0F);
+					abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(),
+							0.0F, 1.0F * 3.0F, 1.0F);
 					abstractarrowentity.setParticle(1);
-					abstractarrowentity.hasNoGravity();
+					abstractarrowentity.isNoGravity();
 
-					stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
-					worldIn.spawnEntity(abstractarrowentity);
-					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
-							playerentity.getZ(), DoomSounds.PISTOL_HIT, SoundCategory.PLAYERS, 1.0F,
-							1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
-					triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerWorld) worldIn), "shoot_controller",
+					stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
+					worldIn.addFreshEntity(abstractarrowentity);
+					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
+							DoomSounds.PISTOL_HIT, SoundSource.PLAYERS, 1.0F,
+							1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+					triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn), "shoot_controller",
 							"firing");
 				}
-				boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
+				boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
 				spawnLightSource(entityLiving, isInsideWaterBlock);
 			} else {
-				worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-						DoomSounds.EMPTY, SoundCategory.PLAYERS, 1.0F, 1.5F);
+				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
+						DoomSounds.EMPTY, SoundSource.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}
 
-	public void reload(PlayerEntity user, Hand hand) {
-		if (user.getStackInHand(hand).getItem() instanceof PistolItem) {
-			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0
-					&& user.getInventory().count(DoomItems.BULLETS) > 0) {
+	public static void reload(Player user, InteractionHand hand) {
+		if (user.getMainHandItem().getItem() instanceof PistolItem) {
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
+					&& user.getInventory().countItem(DoomItems.BULLETS) > 0) {
 				removeAmmo(DoomItems.BULLETS, user);
-				user.getStackInHand(hand).damage(-10, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setBobbingAnimationTime(3);
-				user.getEntityWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
-						DoomSounds.CLIPRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
+				user.getMainHandItem().hurtAndBreak(-10, user, s -> user.broadcastBreakEvent(hand));
+				user.getMainHandItem().setPopTime(3);
+				user.getCommandSenderWorld().playSound((Player) null, user.getX(), user.getY(), user.getZ(),
+						DoomSounds.CLIPRELOAD, SoundSource.PLAYERS, 1.00F, 1.0F);
 			}
 		}
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-		if (world.isClient) {
-			if (((PlayerEntity) entity).getMainHandStack().getItem() instanceof PistolItem
-					&& ClientInit.reload.isPressed() && selected) {
-				PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
+	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
+		if (world.isClientSide) {
+			if (((Player) entity).getMainHandItem().getItem() instanceof PistolItem && ClientInit.reload.consumeClick()
+					&& selected) {
+				FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.PISTOL, passedData);
 			}
 		}
 	}
 
-	public BulletEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
-		float j = EnchantmentHelper.getLevel(Enchantments.POWER, stack);
+	public BulletEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
+		float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
 		BulletEntity arrowentity = new BulletEntity(worldIn, shooter, (DoomConfig.bullet_damage + (j * 2.0F)));
 		return arrowentity;
 	}
@@ -134,7 +133,7 @@ public class PistolItem extends DoomBaseItem {
 			private final PistolRender renderer = new PistolRender();
 
 			@Override
-			public BuiltinModelItemRenderer getCustomRenderer() {
+			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
 				return this.renderer;
 			}
 		});

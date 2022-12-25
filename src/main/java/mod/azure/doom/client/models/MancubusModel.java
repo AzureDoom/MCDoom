@@ -2,9 +2,9 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
@@ -20,8 +20,8 @@ public class MancubusModel extends GeoModel<MancubusEntity> {
 	public String d2016cyber = "cybermancubus2016";
 	
 	@Override
-	public Identifier getModelResource(MancubusEntity object) {
-		return new Identifier(DoomMod.MODID, "geo/"
+	public ResourceLocation getModelResource(MancubusEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/"
 				+ (object.getVariant() == 2 ? d64
 						: object.getVariant() == 3 ? d2016
 								: object.getVariant() == 4 ? classic : object.getVariant() == 5 ? d2016 : classic)
@@ -29,16 +29,16 @@ public class MancubusModel extends GeoModel<MancubusEntity> {
 	}
 
 	@Override
-	public Identifier getTextureResource(MancubusEntity object) {
-		return new Identifier(DoomMod.MODID, "textures/entity/" + (object.getVariant() == 2 ? d64
+	public ResourceLocation getTextureResource(MancubusEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "textures/entity/" + (object.getVariant() == 2 ? d64
 				: object.getVariant() == 3 ? d2016
 						: object.getVariant() == 4 ? classiccyber : object.getVariant() == 5 ? d2016cyber : classic)
 				+ ".png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(MancubusEntity object) {
-		return new Identifier(DoomMod.MODID, "animations/mancubus_animation.json");
+	public ResourceLocation getAnimationResource(MancubusEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "animations/mancubus_animation.json");
 	}
 
 	@Override
@@ -50,13 +50,13 @@ public class MancubusModel extends GeoModel<MancubusEntity> {
 		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
 
 		if (head != null) {
-			head.setRotX(entityData.headPitch() * MathHelper.RADIANS_PER_DEGREE);
-			head.setRotY(entityData.netHeadYaw() * MathHelper.RADIANS_PER_DEGREE);
+			head.setRotX(entityData.headPitch() * Mth.DEG_TO_RAD);
+			head.setRotY(entityData.netHeadYaw() * Mth.DEG_TO_RAD);
 		}
 	}
 
 	@Override
-	public RenderLayer getRenderType(MancubusEntity animatable, Identifier texture) {
-		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
+	public RenderType getRenderType(MancubusEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

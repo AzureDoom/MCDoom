@@ -9,45 +9,38 @@ import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
 import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.DoomSounds;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityGroup;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.pathing.BirdNavigation;
-import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -59,139 +52,58 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class PainEntity extends DemonEntity implements GeoEntity {
 
+	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(PainEntity.class,
+			EntityDataSerializers.INT);
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
-	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(PainEntity.class,
-			TrackedDataHandlerRegistry.INTEGER);
 
-	public PainEntity(EntityType<? extends PainEntity> type, World worldIn) {
+	public PainEntity(EntityType<? extends PainEntity> type, Level worldIn) {
 		super(type, worldIn);
-		this.moveControl = new GhastMoveControl(this);
+		this.moveControl = new PainEntity.GhastMoveControl(this);
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving() && this.hurtTime == 0 && !this.isAttacking())
+			if (event.isMoving() && this.hurtTime == 0 && !this.isAggressive())
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
 			return PlayState.STOP;
 		}));
 	}
 
-	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
 		return this.cache;
 	}
 
 	@Override
-	protected void updatePostDeath() {
-		++this.deathTime;
-		if (this.deathTime == 30) {
-			this.remove(Entity.RemovalReason.KILLED);
-			this.dropXp();
-			if (!this.world.isClient) {
-				LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.create(world);
-				lost_soul.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), 0, 0);
-				this.world.spawnEntity(lost_soul);
-				LostSoulEntity lost_soul1 = DoomEntities.LOST_SOUL.create(world);
-				lost_soul1.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), 0, 0);
-				this.world.spawnEntity(lost_soul1);
-				LostSoulEntity lost_soul2 = DoomEntities.LOST_SOUL.create(world);
-				lost_soul2.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), 0, 0);
-				this.world.spawnEntity(lost_soul2);
-			}
-		}
-	}
-
-	public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
-		return false;
-	}
-
-	protected void fall(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
-	}
-
-	public void travel(Vec3d movementInput) {
-		if (this.isTouchingWater()) {
-			this.updateVelocity(0.02F, movementInput);
-			this.move(MovementType.SELF, this.getVelocity());
-			this.setVelocity(this.getVelocity().multiply(0.800000011920929D));
-		} else if (this.isInLava()) {
-			this.updateVelocity(0.02F, movementInput);
-			this.move(MovementType.SELF, this.getVelocity());
-			this.setVelocity(this.getVelocity().multiply(0.5D));
-		} else {
-			float f = 0.91F;
-			if (this.onGround) {
-				f = this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getBlock()
-						.getSlipperiness() * 0.91F;
-			}
-
-			float g = 0.16277137F / (f * f * f);
-			f = 0.91F;
-			if (this.onGround) {
-				f = this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getBlock()
-						.getSlipperiness() * 0.91F;
-			}
-
-			this.updateVelocity(this.onGround ? 0.1F * g : 0.02F, movementInput);
-			this.move(MovementType.SELF, this.getVelocity());
-			this.setVelocity(this.getVelocity().multiply((double) f));
-		}
-
-		this.updateLimbs(this, false);
-	}
-
-	public boolean isClimbing() {
-		return false;
-	}
-
-	public boolean causeFallDamage(float distance, float damageMultiplier) {
-		return false;
-	}
-
-	public boolean handleFallDamage(float fallDistance, float damageMultiplier) {
-		return false;
-	}
-
-	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
-	}
-
-	protected EntityNavigation createNavigation(World world) {
-		BirdNavigation birdNavigation = new BirdNavigation(this, world);
-		birdNavigation.setCanPathThroughDoors(false);
-		birdNavigation.setCanSwim(true);
-		birdNavigation.setCanEnterOpenDoors(true);
-		return birdNavigation;
-	}
-
-	protected void initDataTracker() {
-		super.initDataTracker();
-		this.dataTracker.startTracking(VARIANT, 0);
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(VARIANT, 0);
 	}
 
 	@Override
-	public void writeCustomDataToNbt(NbtCompound tag) {
-		super.writeCustomDataToNbt(tag);
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
+		this.setVariant(compound.getInt("Variant"));
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
 		tag.putInt("Variant", this.getVariant());
 	}
 
-	@Override
-	public void readCustomDataFromNbt(NbtCompound tag) {
-		super.readCustomDataFromNbt(tag);
-		this.setVariant(tag.getInt("Variant"));
-	}
-
 	public int getVariant() {
-		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 3);
+		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 3);
 	}
 
 	public void setVariant(int variant) {
-		this.dataTracker.set(VARIANT, variant);
+		this.entityData.set(VARIANT, variant);
 	}
 
 	public int getVariants() {
@@ -199,36 +111,51 @@ public class PainEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	public EntityData initialize(ServerWorldAccess serverWorldAccess, LocalDifficulty difficulty,
-			SpawnReason spawnReason, EntityData entityData, NbtCompound entityTag) {
-		entityData = super.initialize(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
+			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
+		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 		this.setVariant(this.random.nextInt());
-		return entityData;
+		return spawnDataIn;
 	}
 
-	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0D)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.lost_soul_melee_damage)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D).add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.pain_health)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.6f)
-				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
+	public static AttributeSupplier.Builder createMobAttributes() {
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
+				.add(Attributes.ATTACK_DAMAGE, DoomConfig.lost_soul_melee_damage)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MAX_HEALTH, DoomConfig.pain_health)
+				.add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
-	protected void initGoals() {
-		this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(4, new PainAttackGoal(this));
-		this.goalSelector.add(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
-		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
+	protected void registerGoals() {
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
+		this.goalSelector.addGoal(7, new PainEntity.LookAroundGoal(this));
+		this.goalSelector.addGoal(4, new PainAttackGoal(this));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
 
-	public static boolean canSpawn(EntityType<PainEntity> type, WorldAccess world, SpawnReason spawnReason,
-			BlockPos pos, Random random) {
-		return world.getDifficulty() != Difficulty.PEACEFUL && random.nextInt(20) == 0
-				&& canMobSpawn(type, world, spawnReason, pos, random);
+	@Override
+	protected void tickDeath() {
+		++this.deathTime;
+		if (this.deathTime == 30) {
+			this.remove(RemovalReason.KILLED);
+			this.dropExperience();
+			if (!this.level.isClientSide()) {
+				LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.create(level);
+				lost_soul.moveTo(this.getX(), this.getY(), this.getZ(), 0, 0);
+				this.level.addFreshEntity(lost_soul);
+				LostSoulEntity lost_soul1 = DoomEntities.LOST_SOUL.create(level);
+				lost_soul1.moveTo(this.getX(), this.getY(), this.getZ(), 0, 0);
+				this.level.addFreshEntity(lost_soul1);
+				LostSoulEntity lost_soul2 = DoomEntities.LOST_SOUL.create(level);
+				lost_soul2.moveTo(this.getX(), this.getY(), this.getZ(), 0, 0);
+				this.level.addFreshEntity(lost_soul2);
+			}
+		}
 	}
 
 	public int getFireballStrength() {
@@ -236,43 +163,112 @@ public class PainEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	protected boolean isDisallowedInPeaceful() {
+	protected boolean shouldDespawnInPeaceful() {
 		return true;
 	}
 
-	static class GhastMoveControl extends MoveControl {
-		private final PainEntity ghast;
-		private int collisionCheckCooldown;
+	public boolean causeFallDamage(float distance, float damageMultiplier) {
+		return false;
+	}
 
-		public GhastMoveControl(PainEntity ghast) {
-			super(ghast);
-			this.ghast = ghast;
+	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
+	}
+
+	public void travel(Vec3 movementInput) {
+		if (this.isInWater()) {
+			this.moveRelative(0.02F, movementInput);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale((double) 0.8F));
+		} else if (this.isInLava()) {
+			this.moveRelative(0.02F, movementInput);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale(0.5D));
+		} else {
+			BlockPos ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
+			float f = 0.91F;
+			if (this.onGround) {
+				f = this.level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+			}
+			float f1 = 0.16277137F / (f * f * f);
+			f = 0.91F;
+			if (this.onGround) {
+				f = this.level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+			}
+			this.moveRelative(this.onGround ? 0.1F * f1 : 0.02F, movementInput);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale((double) f));
+		}
+		this.calculateEntityAnimation(this, false);
+	}
+
+	public boolean onClimbable() {
+		return false;
+	}
+
+	static class LookAroundGoal extends Goal {
+		private final PainEntity parentEntity;
+
+		public LookAroundGoal(PainEntity ghast) {
+			this.parentEntity = ghast;
+			this.setFlags(EnumSet.of(Goal.Flag.LOOK));
+		}
+
+		public boolean canUse() {
+			return true;
 		}
 
 		public void tick() {
-			if (this.state == MoveControl.State.MOVE_TO) {
-				if (this.collisionCheckCooldown-- <= 0) {
-					this.collisionCheckCooldown += this.ghast.getRandom().nextInt(5) + 2;
-					Vec3d vec3d = new Vec3d(this.targetX - this.ghast.getX(), this.targetY - this.ghast.getY(),
-							this.targetZ - this.ghast.getZ());
-					double d = vec3d.length();
-					vec3d = vec3d.normalize();
-					if (this.willCollide(vec3d, MathHelper.ceil(d))) {
-						this.ghast.setVelocity(this.ghast.getVelocity().add(vec3d.multiply(0.1D)));
+			if (this.parentEntity.getTarget() == null) {
+				Vec3 vec3d = this.parentEntity.getDeltaMovement();
+				this.parentEntity.yo = -((float) Mth.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
+				this.parentEntity.yBodyRot = this.parentEntity.getYRot();
+			} else {
+				LivingEntity livingentity = this.parentEntity.getTarget();
+				if (livingentity.distanceToSqr(this.parentEntity) < 4096.0D) {
+					double d1 = livingentity.getX() - this.parentEntity.getX();
+					double d2 = livingentity.getZ() - this.parentEntity.getZ();
+					this.parentEntity.yo = -((float) Mth.atan2(d1, d2)) * (180F / (float) Math.PI);
+					this.parentEntity.yBodyRot = this.parentEntity.getYRot();
+				}
+			}
+
+		}
+	}
+
+	static class GhastMoveControl extends MoveControl {
+		private final PainEntity parentEntity;
+		private int courseChangeCooldown;
+
+		public GhastMoveControl(PainEntity painEntity) {
+			super(painEntity);
+			this.parentEntity = painEntity;
+		}
+
+		public void tick() {
+			if (this.operation == MoveControl.Operation.MOVE_TO) {
+				if (this.courseChangeCooldown-- <= 0) {
+					this.courseChangeCooldown += this.parentEntity.getRandom().nextInt(5) + 2;
+					Vec3 vector3d = new Vec3(this.wantedX - this.parentEntity.getX(),
+							this.wantedY - this.parentEntity.getY(), this.wantedZ - this.parentEntity.getZ());
+					double d0 = vector3d.length();
+					vector3d = vector3d.normalize();
+					if (this.canReach(vector3d, Mth.ceil(d0))) {
+						this.parentEntity
+								.setDeltaMovement(this.parentEntity.getDeltaMovement().add(vector3d.scale(0.1D)));
 					} else {
-						this.state = MoveControl.State.WAIT;
+						this.operation = MoveControl.Operation.WAIT;
 					}
 				}
 
 			}
 		}
 
-		private boolean willCollide(Vec3d direction, int steps) {
-			Box box = this.ghast.getBoundingBox();
+		private boolean canReach(Vec3 p_220673_1_, int p_220673_2_) {
+			AABB axisalignedbb = this.parentEntity.getBoundingBox();
 
-			for (int i = 1; i < steps; ++i) {
-				box = box.offset(direction);
-				if (!this.ghast.world.isSpaceEmpty(this.ghast, box)) {
+			for (int i = 1; i < p_220673_2_; ++i) {
+				axisalignedbb = axisalignedbb.move(p_220673_1_);
+				if (!this.parentEntity.level.noCollision(this.parentEntity, axisalignedbb)) {
 					return false;
 				}
 			}
@@ -281,42 +277,12 @@ public class PainEntity extends DemonEntity implements GeoEntity {
 		}
 	}
 
-	static class FlyRandomlyGoal extends Goal {
-		private final PainEntity ghast;
-
-		public FlyRandomlyGoal(PainEntity ghast) {
-			this.ghast = ghast;
-			this.setControls(EnumSet.of(Goal.Control.MOVE));
-		}
-
-		public boolean canStart() {
-			MoveControl moveControl = this.ghast.getMoveControl();
-			if (!moveControl.isMoving()) {
-				return true;
-			} else {
-				double d = moveControl.getTargetX() - this.ghast.getX();
-				double e = moveControl.getTargetY() - this.ghast.getY();
-				double f = moveControl.getTargetZ() - this.ghast.getZ();
-				double g = d * d + e * e + f * f;
-				return g < 1.0D || g > 10.0D;
-			}
-		}
-
-		public boolean shouldContinue() {
-			return false;
-		}
-
-		public void start() {
-			Random random = this.ghast.getRandom();
-			double d = this.ghast.getX() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 2.0F);
-			double e = this.ghast.getY() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 2.0F);
-			double f = this.ghast.getZ() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 2.0F);
-			this.ghast.getMoveControl().moveTo(d, e, f, 1.0D);
-		}
+	protected boolean shouldBurnInDay() {
+		return false;
 	}
 
 	@Override
-	protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
+	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
 		return 1.0F;
 	}
 
@@ -336,8 +302,8 @@ public class PainEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	public EntityGroup getGroup() {
-		return EntityGroup.UNDEAD;
+	public MobType getMobType() {
+		return MobType.UNDEAD;
 	}
 
 	@Override
@@ -346,9 +312,8 @@ public class PainEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	@Environment(EnvType.CLIENT)
-	public boolean shouldRender(double distance) {
-		return true;
+	public int getMaxSpawnClusterSize() {
+		return 2;
 	}
 
 }

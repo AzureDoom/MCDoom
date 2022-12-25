@@ -1,10 +1,10 @@
 package mod.azure.doom.util.registry;
 
 import mod.azure.doom.DoomMod;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 
 public class DoomSounds {
 
@@ -158,8 +158,8 @@ public class DoomSounds {
 	public static SoundEvent MOTHER_HURT = of("doom.mother_pain");
 
 	static SoundEvent of(String id) {
-		SoundEvent sound = SoundEvent.of(new Identifier(DoomMod.MODID, id));
-		Registry.register(Registries.SOUND_EVENT, new Identifier(DoomMod.MODID, id), sound);
+		SoundEvent sound = SoundEvent.createVariableRangeEvent(new ResourceLocation(DoomMod.MODID, id));
+		Registry.register(BuiltInRegistries.SOUND_EVENT, new ResourceLocation(DoomMod.MODID, id), sound);
 		return sound;
 	}
 

@@ -14,6 +14,18 @@
 		"facing=west": {
 			"model": "doom:block/gun_table",
 			"y": 90
+		},
+		"facing=up,lit=false": {
+			"model": "doom:block/gun_table"
+		},
+		"facing=down,lit=false": {
+			"model": "doom:block/gun_table"
+		},
+		"facing=up,lit=true": {
+			"model": "doom:block/gun_table"
+		},
+		"facing=down,lit=true": {
+			"model": "doom:block/gun_table"
 		}
 	}
 }

@@ -2,12 +2,12 @@ package mod.azure.doom.client.render;
 
 import mod.azure.doom.client.models.ArmoredBaronModel;
 import mod.azure.doom.entity.tiersuperheavy.ArmoredBaronEntity;
-import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class ArmoredBaronRender extends GeoEntityRenderer<ArmoredBaronEntity> {
 
-	public ArmoredBaronRender(EntityRendererFactory.Context renderManagerIn) {
+	public ArmoredBaronRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new ArmoredBaronModel());
 	}
 

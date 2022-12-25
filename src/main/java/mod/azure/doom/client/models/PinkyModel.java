@@ -2,8 +2,8 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierheavy.PinkyEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
@@ -13,20 +13,20 @@ import software.bernie.geckolib.model.data.EntityModelData;
 public class PinkyModel extends GeoModel<PinkyEntity> {
 
 	@Override
-	public Identifier getModelResource(PinkyEntity object) {
-		return new Identifier(DoomMod.MODID, "geo/" + (object.getVariant() == 3 ? "pinky2016" : "pinky") + ".geo.json");
+	public ResourceLocation getModelResource(PinkyEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/" + (object.getVariant() == 3 ? "pinky2016" : "pinky") + ".geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(PinkyEntity object) {
-		return new Identifier(DoomMod.MODID, "textures/entity/" + (object.getVariant() == 4 ? "pinky_green"
+	public ResourceLocation getTextureResource(PinkyEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "textures/entity/" + (object.getVariant() == 4 ? "pinky_green"
 				: object.getVariant() == 2 ? "pinky-64"
 						:object.getVariant() == 3 ? "pinky2016" : "pinky-texturemap") + ".png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(PinkyEntity object) {
-		return new Identifier(DoomMod.MODID,
+	public ResourceLocation getAnimationResource(PinkyEntity object) {
+		return new ResourceLocation(DoomMod.MODID,
 				"animations/" + (object.getVariant() == 3 ? "pinky2016." : "pinky_") + "animation.json");
 	}
 
@@ -45,7 +45,7 @@ public class PinkyModel extends GeoModel<PinkyEntity> {
 	}
 
 	@Override
-	public RenderLayer getRenderType(PinkyEntity animatable, Identifier texture) {
-		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
+	public RenderType getRenderType(PinkyEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

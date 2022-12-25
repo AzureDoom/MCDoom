@@ -2,24 +2,24 @@ package mod.azure.doom.entity.projectiles;
 
 import mod.azure.doom.util.PlayerProperties;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.boss.dragon.EnderDragonPart;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.boss.EnderDragonPart;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -27,11 +27,11 @@ import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class MeatHookEntity extends PersistentProjectileEntity implements GeoEntity {
-	private static final TrackedData<Integer> HOOKED_ENTITY_ID = DataTracker.registerData(MeatHookEntity.class,
-			TrackedDataHandlerRegistry.INTEGER);
-	public static final TrackedData<Float> FORCED_YAW = DataTracker.registerData(MeatHookEntity.class,
-			TrackedDataHandlerRegistry.FLOAT);
+public class MeatHookEntity extends AbstractArrow implements GeoEntity {
+	private static final EntityDataAccessor<Integer> HOOKED_ENTITY_ID = SynchedEntityData.defineId(MeatHookEntity.class,
+			EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Float> FORCED_YAW = SynchedEntityData.defineId(MeatHookEntity.class,
+			EntityDataSerializers.FLOAT);
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	private double maxRange = 0D;
 	private double maxSpeed = 0D;
@@ -39,33 +39,33 @@ public class MeatHookEntity extends PersistentProjectileEntity implements GeoEnt
 	private Entity hookedEntity;
 	private ItemStack stack;
 
-	public MeatHookEntity(EntityType<? extends PersistentProjectileEntity> type, PlayerEntity owner, World world) {
+	public MeatHookEntity(EntityType<? extends AbstractArrow> type, Player owner, Level world) {
 		super(type, owner, world);
 		this.setNoGravity(true);
-		this.setDamage(0);
+		this.setBaseDamage(0);
 	}
 
-	public MeatHookEntity(World world, LivingEntity owner) {
+	public MeatHookEntity(Level world, LivingEntity owner) {
 		super(ProjectilesEntityRegister.MEATHOOOK_ENTITY, owner, world);
 		this.setNoGravity(true);
-		this.setDamage(0);
+		this.setBaseDamage(0);
 	}
 
-	public MeatHookEntity(World world, double x, double y, double z) {
+	public MeatHookEntity(Level world, double x, double y, double z) {
 		super(ProjectilesEntityRegister.MEATHOOOK_ENTITY, x, y, z, world);
 		this.setNoGravity(true);
-		this.setDamage(0);
+		this.setBaseDamage(0);
 	}
 
-	public MeatHookEntity(World world) {
+	public MeatHookEntity(Level world) {
 		super(ProjectilesEntityRegister.MEATHOOOK_ENTITY, world);
 		this.setNoGravity(true);
-		this.setDamage(0);
+		this.setBaseDamage(0);
 	}
 
-	public MeatHookEntity(EntityType<? extends PersistentProjectileEntity> entityType, World world) {
+	public MeatHookEntity(EntityType<? extends AbstractArrow> entityType, Level world) {
 		super(entityType, world);
-		this.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
+		this.pickup = AbstractArrow.Pickup.DISALLOWED;
 	}
 
 	@Override
@@ -81,61 +81,63 @@ public class MeatHookEntity extends PersistentProjectileEntity implements GeoEnt
 	}
 
 	@Override
-	protected void initDataTracker() {
-		super.initDataTracker();
-		this.getDataTracker().startTracking(HOOKED_ENTITY_ID, 0);
-		this.getDataTracker().startTracking(FORCED_YAW, 0f);
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(HOOKED_ENTITY_ID, 0);
+		this.entityData.define(FORCED_YAW, 0f);
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
-		if (getOwner()instanceof PlayerEntity owner) {
-			setYaw(dataTracker.get(FORCED_YAW));
+		if (getOwner()instanceof Player owner) {
+			setYRot(entityData.get(FORCED_YAW));
 
-			if (isPulling && age % 2 == 0)
-				world.playSound(null, getOwner().getBlockPos(), SoundEvents.BLOCK_CHAIN_PLACE, SoundCategory.PLAYERS,
-						1F, 1F);
+			if (isPulling && tickCount % 2 == 0)
+				level.playSound(null, getOwner().blockPosition(), SoundEvents.CHAIN_PLACE, SoundSource.PLAYERS, 1F, 1F);
 
-			if (!world.isClient) {
-				if (owner.isDead() || !((PlayerProperties) owner).hasMeatHook() || owner.distanceTo(this) > maxRange)
+			if (!level.isClientSide()) {
+				if (owner.isDeadOrDying() || !((PlayerProperties) owner).hasMeatHook()
+						|| owner.distanceTo(this) > maxRange)
 					kill();
 
 				if (this.hookedEntity != null) {
 					if (this.hookedEntity.isRemoved()) {
 						this.hookedEntity = null;
-						onRemoved();
+						onClientRemoval();
 					} else {
-						this.updatePosition(this.hookedEntity.getX(), this.hookedEntity.getBodyY(0.8D),
+						this.absMoveTo(this.hookedEntity.getX(), this.hookedEntity.getY(0.8D),
 								this.hookedEntity.getZ());
 					}
 				}
 
-				if (owner.getOffHandStack() == stack) {
+				if (owner.getOffhandItem() == stack) {
 					if (isPulling) {
 						Entity target = owner;
 						Entity origin = this;
 
-						if (owner.isSneaking() && hookedEntity != null) {
+						if (owner.isScoping() && hookedEntity != null) {
 							target = hookedEntity;
 							origin = owner;
 						}
 						double pullSpeed = 0.75D;
-						Vec3d distance = origin.getPos().subtract(target.getPos().add(0, target.getHeight() / 2, 0));
-						Vec3d motion = distance.normalize().multiply((pullSpeed * distance.length()) / 6D);
+						Vec3 distance = origin.position()
+								.subtract(target.position().add(0, target.getBbHeight() / 2, 0));
+						Vec3 motion = distance.normalize().scale((pullSpeed * distance.length()) / 6D);
 
-						if (Math.abs(distance.y) < 0.1D) {
-							motion = new Vec3d(motion.x, 0, motion.z);
+						if (Math.abs(distance.y) < 0.01D) {
+							motion = new Vec3(motion.x, 0, motion.z);
 							kill();
 						}
-						if (new Vec3d(distance.x, 0, distance.z)
-								.length() < new Vec3d(target.getWidth() / 2, 0, target.getWidth() / 2).length() / 1.4) {
-							motion = new Vec3d(0, motion.y, 0);
+						if (new Vec3(distance.x, 0, distance.z)
+								.length() < new Vec3(target.getBbWidth() / 2, 0, target.getBbWidth() / 2).length()
+										/ 1.4) {
+							motion = new Vec3(motion.x, motion.y, motion.z);
 							kill();
 						}
 						target.fallDistance = 0;
-						target.setVelocity(motion);
-						target.velocityModified = true;
+						target.setDeltaMovement(motion);
+						target.hurtMarked = true;
 					}
 				} else {
 					kill();
@@ -148,7 +150,7 @@ public class MeatHookEntity extends PersistentProjectileEntity implements GeoEnt
 
 	@Override
 	public void kill() {
-		if (!world.isClient && getOwner()instanceof PlayerEntity owner) {
+		if (!level.isClientSide() && getOwner()instanceof Player owner) {
 			((PlayerProperties) owner).setHasMeatHook(false);
 			owner.setNoGravity(false);
 		}
@@ -157,79 +159,81 @@ public class MeatHookEntity extends PersistentProjectileEntity implements GeoEnt
 	}
 
 	@Override
-	public boolean shouldRender(double distance) {
+	public boolean shouldRenderAtSqrDistance(double distance) {
 		return true;
 	}
 
 	@Override
-	protected float getDragInWater() {
-		return super.getDragInWater();
+	protected float getWaterInertia() {
+		return super.getWaterInertia();
 	}
 
 	@Override
-	public boolean canUsePortals() {
+	public boolean canChangeDimensions() {
 		return false;
 	}
 
 	@Override
-	protected ItemStack asItemStack() {
+	protected ItemStack getPickupItem() {
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	protected void onBlockHit(BlockHitResult blockHitResult) {
-		super.onBlockHit(blockHitResult);
+	protected void onHitBlock(BlockHitResult blockHitResult) {
+		super.onHitBlock(blockHitResult);
 		isPulling = true;
 
-		if (!world.isClient && getOwner()instanceof PlayerEntity owner && hookedEntity == null) {
+		if (!level.isClientSide() && getOwner()instanceof Player owner && hookedEntity == null) {
 			owner.setNoGravity(true);
 		}
 	}
 
 	@Override
-	protected void onEntityHit(EntityHitResult entityHitResult) {
-		if (!world.isClient && getOwner()instanceof PlayerEntity owner && entityHitResult.getEntity() != owner) {
+	protected void onHitEntity(EntityHitResult entityHitResult) {
+		if (!level.isClientSide() && getOwner()instanceof Player owner && entityHitResult.getEntity() != owner) {
 			if ((entityHitResult.getEntity() instanceof LivingEntity
 					|| entityHitResult.getEntity() instanceof EnderDragonPart) && hookedEntity == null) {
 				hookedEntity = entityHitResult.getEntity();
-				dataTracker.set(HOOKED_ENTITY_ID, hookedEntity.getId() + 1);
+				entityData.set(HOOKED_ENTITY_ID, hookedEntity.getId() + 1);
 				isPulling = true;
 			}
 		}
 	}
 
 	@Override
-	public void readCustomDataFromNbt(NbtCompound tag) {
-		super.readCustomDataFromNbt(tag);
-		dataTracker.set(FORCED_YAW, tag.getFloat("ForcedYaw"));
+	public void readAdditionalSaveData(CompoundTag tag) {
+		super.readAdditionalSaveData(tag);
+		entityData.set(FORCED_YAW, tag.getFloat("ForcedYaw"));
 
 		maxRange = tag.getDouble("maxRange");
 		maxSpeed = tag.getDouble("maxSpeed");
 		isPulling = tag.getBoolean("isPulling");
+		stack = ItemStack.of(tag.getCompound("hookshotItem"));
 
-		if (world.getEntityById(tag.getInt("owner"))instanceof PlayerEntity owner)
+		if (level.getEntity(tag.getInt("owner"))instanceof Player owner)
 			setOwner(owner);
 	}
 
 	@Override
-	public void writeCustomDataToNbt(NbtCompound tag) {
-		super.writeCustomDataToNbt(tag);
-		tag.putFloat("ForcedYaw", dataTracker.get(FORCED_YAW));
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putFloat("ForcedYaw", entityData.get(FORCED_YAW));
 		tag.putDouble("maxRange", maxRange);
 		tag.putDouble("maxSpeed", maxSpeed);
 		tag.putBoolean("isPulling", isPulling);
+		tag.put("hookshotItem", stack.save(new CompoundTag()));
 
-		if (getOwner()instanceof PlayerEntity owner)
+		if (getOwner()instanceof Player owner)
 			tag.putInt("owner", owner.getId());
 	}
 
 	public void setProperties(ItemStack stack, double maxRange, double maxVelocity, float pitch, float yaw, float roll,
 			float modifierZ) {
 		float f = 0.017453292F;
-		float x = -MathHelper.sin(yaw * f) * MathHelper.cos(pitch * f);
-		float y = -MathHelper.sin((pitch + roll) * f);
-		float z = MathHelper.cos(yaw * f) * MathHelper.cos(pitch * f);
-		this.setVelocity(x, y, z, modifierZ, 0);
+		float x = -Mth.sin(yaw * f) * Mth.cos(pitch * f);
+		float y = -Mth.sin((pitch + roll) * f);
+		float z = Mth.cos(yaw * f) * Mth.cos(pitch * f);
+		this.shoot(x, y, z, modifierZ, 0);
 
 		this.stack = stack;
 		this.maxRange = maxRange;

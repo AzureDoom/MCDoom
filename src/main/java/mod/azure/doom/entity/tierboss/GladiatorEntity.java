@@ -1,9 +1,5 @@
 package mod.azure.doom.entity.tierboss;
 
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedStrafeGladiatorAttackGoal;
@@ -12,41 +8,37 @@ import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.CustomFireballEntity;
 import mod.azure.doom.entity.projectiles.entity.GladiatorMaceEntity;
 import mod.azure.doom.util.registry.DoomSounds;
-import net.minecraft.entity.AreaEffectCloudEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.PrioritizedGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.boss.BossBar;
-import net.minecraft.entity.boss.ServerBossBar;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.BossEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -58,56 +50,57 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class GladiatorEntity extends DemonEntity implements GeoEntity {
 
-	public static final TrackedData<Integer> DEATH_STATE = DataTracker.registerData(GladiatorEntity.class,
-			TrackedDataHandlerRegistry.INTEGER);
-	public static final TrackedData<Integer> TEXTURE = DataTracker.registerData(GladiatorEntity.class,
-			TrackedDataHandlerRegistry.INTEGER);
-	private final ServerBossBar bossBar = (ServerBossBar) (new ServerBossBar(this.getDisplayName(), BossBar.Color.RED,
-			BossBar.Style.NOTCHED_20)).setDarkenSky(false).setThickenFog(false);
+	public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(GladiatorEntity.class,
+			EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Integer> TEXTURE = SynchedEntityData.defineId(GladiatorEntity.class,
+			EntityDataSerializers.INT);
+	private final ServerBossEvent bossInfo = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(),
+			BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.NOTCHED_20)).setDarkenScreen(false)
+					.setCreateWorldFog(false);
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-	public GladiatorEntity(EntityType<? extends HostileEntity> type, World worldIn) {
+	public GladiatorEntity(EntityType<? extends DemonEntity> type, Level worldIn) {
 		super(type, worldIn);
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (this.dataTracker.get(DEATH_STATE) == 0 && event.isMoving() && this.dataTracker.get(STATE) < 1) {
+			if (this.entityData.get(DEATH_STATE) == 0 && event.isMoving() && this.entityData.get(STATE) < 1) {
 				event.getController().setAnimationSpeed(1.5);
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking_phaseone"));
 			}
-			if (this.dataTracker.get(DEATH_STATE) == 0 && (this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(DEATH_STATE) == 0 && (this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death_phaseone"));
-			if (this.dataTracker.get(DEATH_STATE) == 1 && (this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(DEATH_STATE) == 1 && (this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death_phasetwo"));
-			if (this.dataTracker.get(DEATH_STATE) == 0 && this.dataTracker.get(STATE) == 1
-					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(DEATH_STATE) == 0 && this.entityData.get(STATE) == 1
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("shield_plant"));
-			if (this.dataTracker.get(DEATH_STATE) == 1 && event.isMoving()) {
+			if (this.entityData.get(DEATH_STATE) == 1 && event.isMoving()) {
 				event.getController().setAnimationSpeed(1.5);
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking_phasetwo"));
 			}
 			return event.setAndContinue(RawAnimation.begin()
-					.thenLoop((this.dataTracker.get(DEATH_STATE) == 0 ? "idle_phaseone" : "idle_phasetwo")));
+					.thenLoop((this.entityData.get(DEATH_STATE) == 0 ? "idle_phaseone" : "idle_phasetwo")));
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (this.dataTracker.get(DEATH_STATE) == 0 && this.dataTracker.get(STATE) == 2
-					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(DEATH_STATE) == 0 && this.entityData.get(STATE) == 2
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("melee_phaseone", LoopType.PLAY_ONCE));
-			if (this.dataTracker.get(DEATH_STATE) == 0 && this.dataTracker.get(STATE) == 3
-					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(DEATH_STATE) == 0 && this.entityData.get(STATE) == 3
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("melee_phaseone2", LoopType.PLAY_ONCE));
-			if (this.dataTracker.get(DEATH_STATE) == 0 && this.dataTracker.get(STATE) == 4
-					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(DEATH_STATE) == 0 && this.entityData.get(STATE) == 4
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("melee_phaseone3", LoopType.PLAY_ONCE));
-			if (this.dataTracker.get(DEATH_STATE) == 1 && this.dataTracker.get(STATE) == 2
-					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(DEATH_STATE) == 1 && this.entityData.get(STATE) == 2
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("melee_phasetwo", LoopType.PLAY_ONCE));
-			if (this.dataTracker.get(DEATH_STATE) == 1 && this.dataTracker.get(STATE) == 3
-					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(DEATH_STATE) == 1 && this.entityData.get(STATE) == 3
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("melee_phasetwo2", LoopType.PLAY_ONCE));
-			if (this.dataTracker.get(DEATH_STATE) == 1 && this.dataTracker.get(STATE) == 4
-					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(DEATH_STATE) == 1 && this.entityData.get(STATE) == 4
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("melee_phasetwo2", LoopType.PLAY_ONCE));
 			return PlayState.STOP;
 		}));
@@ -119,41 +112,39 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	public void onDeath(DamageSource source) {
-		if (!this.world.isClient) {
-			if (source == DamageSource.OUT_OF_WORLD) {
+	public void die(DamageSource source) {
+		if (!this.level.isClientSide) {
+			if (source == DamageSource.OUT_OF_WORLD)
 				this.setDeathState(1);
-			}
-			if (this.dataTracker.get(DEATH_STATE) == 0) {
-				AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(this.world, this.getX(),
-						this.getY(), this.getZ());
-				areaeffectcloudentity.setParticleType(ParticleTypes.EXPLOSION);
+			if (this.entityData.get(DEATH_STATE) == 0) {
+				AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(),
+						this.getZ());
+				areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
 				areaeffectcloudentity.setRadius(3.0F);
 				areaeffectcloudentity.setDuration(55);
 				areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
-				this.world.spawnEntity(areaeffectcloudentity);
-				this.goalSelector.getRunningGoals().forEach(PrioritizedGoal::stop);
-				this.onAttacking(this.getAttacker());
-				this.world.sendEntityStatus(this, (byte) 3);
+				this.level.addFreshEntity(areaeffectcloudentity);
+				this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
+				this.setLastHurtMob(this.getLastHurtByMob());
+				this.level.broadcastEntityEvent(this, (byte) 3);
 			}
-			if (this.dataTracker.get(DEATH_STATE) == 1) {
-				super.onDeath(source);
+			if (this.entityData.get(DEATH_STATE) == 1) {
+				super.die(source);
 			}
 		}
 	}
 
 	@Override
-	protected void updatePostDeath() {
+	protected void tickDeath() {
 		++this.deathTime;
-		if (this.deathTime == 80 && this.dataTracker.get(DEATH_STATE) == 0) {
+		if (this.deathTime == 80 && this.entityData.get(DEATH_STATE) == 0) {
 			this.setHealth(this.getMaxHealth());
 			this.setDeathState(1);
 			this.deathTime = 0;
 		}
-		if (this.deathTime == 40 && this.dataTracker.get(DEATH_STATE) == 1) {
-			this.world.sendEntityStatus(this, (byte) 60);
+		if (this.deathTime == 40 && this.entityData.get(DEATH_STATE) == 1) {
 			this.remove(Entity.RemovalReason.KILLED);
-			this.dropXp();
+			this.dropExperience();
 		}
 	}
 
@@ -163,70 +154,70 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 	}
 
 	public int getDeathState() {
-		return this.dataTracker.get(DEATH_STATE);
+		return this.entityData.get(DEATH_STATE);
 	}
 
 	public void setDeathState(int state) {
-		this.dataTracker.set(DEATH_STATE, state);
+		this.entityData.set(DEATH_STATE, state);
 	}
 
 	public int getTextureState() {
-		return this.dataTracker.get(TEXTURE);
+		return this.entityData.get(TEXTURE);
 	}
 
 	public void setTextureState(int state) {
-		this.dataTracker.set(TEXTURE, state);
+		this.entityData.set(TEXTURE, state);
 	}
 
 	@Override
-	public void writeCustomDataToNbt(NbtCompound tag) {
-		super.writeCustomDataToNbt(tag);
-		tag.putInt("Phase", this.getDeathState());
-		tag.putInt("Texture", this.getTextureState());
-	}
-
-	@Override
-	public void readCustomDataFromNbt(NbtCompound tag) {
-		super.readCustomDataFromNbt(tag);
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
 		if (this.hasCustomName()) {
-			this.bossBar.setName(this.getDisplayName());
+			this.bossInfo.setName(this.getDisplayName());
 		}
-		this.setDeathState(tag.getInt("Phase"));
-		this.setTextureState(tag.getInt("Texture"));
+		this.setTextureState(compound.getInt("Texture"));
+		this.setDeathState(compound.getInt("Phase"));
 	}
 
 	@Override
-	protected void initDataTracker() {
-		super.initDataTracker();
-		this.dataTracker.startTracking(DEATH_STATE, 0);
-		this.dataTracker.startTracking(TEXTURE, 0);
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putInt("Phase", this.getDeathState());
+		tag.putInt("Texture", this.getDeathState());
 	}
 
 	@Override
-	public void tickMovement() {
-		super.tickMovement();
-		if (!this.world.isClient) {
-			if (this.dataTracker.get(DEATH_STATE) == 0) {
-				this.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 1000000, 0, false, false));
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(DEATH_STATE, 0);
+		this.entityData.define(TEXTURE, 0);
+	}
+
+	@Override
+	public void aiStep() {
+		super.aiStep();
+		if (!this.level.isClientSide) {
+			if (this.entityData.get(DEATH_STATE) == 0) {
+				this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1000000, 0, false, false));
 			} else {
-				this.removeStatusEffect(StatusEffects.RESISTANCE);
+				this.removeEffect(MobEffects.DAMAGE_RESISTANCE);
 			}
 		}
 	}
 
 	@Override
-	protected void initGoals() {
-		this.goalSelector.add(4, new RangedStrafeGladiatorAttackGoal(this, new FireballAttack(this)
+	protected void registerGoals() {
+		this.goalSelector.addGoal(4, new RangedStrafeGladiatorAttackGoal(this, new FireballAttack(this)
 				.setProjectileOriginOffset(0.8, 0.8, 0.8)
 				.setDamage(DoomConfig.gladiator_ranged_damage
-						+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0))
-				.setSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F)));
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));
-		this.goalSelector.add(6, new LookAtEntityGoal(this, LivingEntity.class, 8.0F));
-		this.goalSelector.add(6, new LookAroundGoal(this));
-		this.targetSelector.add(1, new RevengeGoal(this, new Class[0]).setGroupRevenge());
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
+						+ (this.entityData.get(DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0))
+				.setSound(SoundEvents.FIRECHARGE_USE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F)));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, LivingEntity.class, 8.0F));
+		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
 	}
 
 	public class FireballAttack extends AbstractDoubleRangedAttack {
@@ -246,67 +237,56 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 		}
 
 		@Override
-		public ProjectileEntity getProjectile(World world, double d2, double d3, double d4) {
+		public Projectile getProjectile(Level world, double d2, double d3, double d4) {
 			return new CustomFireballEntity(world, this.parentEntity, d2, d3, d4, damage);
 
 		}
 
 		@Override
-		public ProjectileEntity getProjectile2(World world, double d2, double d3, double d4) {
+		public Projectile getProjectile2(Level world, double d2, double d3, double d4) {
 			return new GladiatorMaceEntity(world, this.parentEntity, d2, d3, d4);
 		}
 	}
 
 	@Override
-	public boolean isImmuneToExplosion() {
+	public boolean ignoreExplosion() {
 		return true;
 	}
 
 	@Override
-	public boolean tryAttack(Entity target) {
-		this.world.sendEntityStatus(this, (byte) 4);
-		boolean bl = target.damage(DamageSource.mob(this), (float) DoomConfig.gladiator_melee_damage
-				+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
+	public boolean doHurtTarget(Entity target) {
+		this.level.broadcastEntityEvent(this, (byte) 4);
+		boolean bl = target.hurt(DamageSource.mobAttack(this), (float) DoomConfig.gladiator_melee_damage
+				+ (this.entityData.get(DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
 		if (bl) {
-			target.setVelocity(target.getVelocity().add(0.4f, 0.4f, 0.4f));
-			this.applyDamageEffects(this, target);
-			this.world.createExplosion(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false,
-					World.ExplosionSourceType.BLOCK);
-			target.timeUntilRegen = 0;
+			target.setDeltaMovement(target.getDeltaMovement().multiply(1.4f, 1.4f, 1.4f));
+			this.doEnchantDamageEffects(this, target);
+			this.level.explode(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false,
+					Level.ExplosionInteraction.BLOCK);
+			target.invulnerableTime = 0;
 		}
 		return true;
 	}
 
 	public boolean tryAttack1(Entity target) {
-		this.world.sendEntityStatus(this, (byte) 4);
-		boolean bl = target.damage(DamageSource.mob(this), (float) DoomConfig.gladiator_melee_damage
-				+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
+		this.level.broadcastEntityEvent(this, (byte) 4);
+		boolean bl = target.hurt(DamageSource.mobAttack(this), (float) DoomConfig.gladiator_melee_damage
+				+ (this.entityData.get(DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
 		if (bl) {
-			this.applyDamageEffects(this, target);
-			this.world.createExplosion(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false,
-					World.ExplosionSourceType.BLOCK);
-			target.timeUntilRegen = 0;
+			target.setDeltaMovement(target.getDeltaMovement().multiply(1.4f, 1.4f, 1.4f));
+			this.doEnchantDamageEffects(this, target);
+			this.level.explode(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false,
+					Level.ExplosionInteraction.BLOCK);
+			target.invulnerableTime = 0;
 		}
 		return true;
 	}
 
-	public static boolean spawning(EntityType<GladiatorEntity> p_223337_0_, World p_223337_1_, SpawnReason reason,
-			BlockPos p_223337_3_, Random p_223337_4_) {
-		return p_223337_1_.getDifficulty() != Difficulty.PEACEFUL;
-	}
-
-	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0D)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.gladiator_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.gladiator_melee_damage)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.9f)
-				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
-	}
-
-	@Override
-	public void takeKnockback(double strength, double x, double z) {
-		super.takeKnockback(0, 0, 0);
+	public static AttributeSupplier.Builder createMobAttributes() {
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.MAX_HEALTH, DoomConfig.gladiator_health)
+				.add(Attributes.ATTACK_DAMAGE, DoomConfig.gladiator_melee_damage)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.9f).add(Attributes.ATTACK_KNOCKBACK, 1.0D);
 	}
 
 	@Override
@@ -319,46 +299,52 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 		return DoomSounds.BARON_DEATH;
 	}
 
-	public void onStartedTrackingBy(ServerPlayerEntity player) {
-		super.onStartedTrackingBy(player);
-		this.bossBar.addPlayer(player);
-	}
-
-	public void onStoppedTrackingBy(ServerPlayerEntity player) {
-		super.onStoppedTrackingBy(player);
-		this.bossBar.removePlayer(player);
+	public ServerBossEvent getBossInfo() {
+		return bossInfo;
 	}
 
 	@Override
-	public void setCustomName(@Nullable Text name) {
+	public void startSeenByPlayer(ServerPlayer player) {
+		super.startSeenByPlayer(player);
+		this.bossInfo.addPlayer(player);
+	}
+
+	@Override
+	public void stopSeenByPlayer(ServerPlayer player) {
+		super.stopSeenByPlayer(player);
+		this.bossInfo.removePlayer(player);
+	}
+
+	@Override
+	public void setCustomName(Component name) {
 		super.setCustomName(name);
-		this.bossBar.setName(this.getDisplayName());
+		this.bossInfo.setName(this.getDisplayName());
 	}
 
 	@Override
-	protected void mobTick() {
-		super.mobTick();
-		this.bossBar.setPercent(this.getHealth() / this.getMaxHealth());
+	protected void customServerAiStep() {
+		super.customServerAiStep();
+		this.bossInfo.setProgress(this.getHealth() / this.getMaxHealth());
 	}
 
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		final Box aabb = new Box(this.getBlockPos().up()).expand(64D, 64D, 64D);
-		this.getEntityWorld().getOtherEntities(this, aabb).forEach(e -> {
-			if (e instanceof GladiatorEntity && e.age < 1) {
+		final AABB aabb = new AABB(this.blockPosition().above()).inflate(64D, 64D, 64D);
+		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
+			if (e instanceof GladiatorEntity && e.tickCount < 1) {
 				e.remove(RemovalReason.KILLED);
 			}
-			if (e instanceof PlayerEntity) {
-				if (!((PlayerEntity) e).isCreative())
-					if (!((PlayerEntity) e).isSpectator())
+			if (e instanceof Player) {
+				if (!((Player) e).isCreative())
+					if (!((Player) e).isSpectator())
 						this.setTarget((LivingEntity) e);
 			}
 		});
 	}
 
 	@Override
-	public boolean cannotDespawn() {
+	public boolean requiresCustomPersistence() {
 		return true;
 	}
 
@@ -367,8 +353,13 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	public boolean damage(DamageSource source, float amount) {
-		return this.getAttckingState() == 1 || this.getAttckingState() == 4 ? false : super.damage(source, amount);
+	public void knockback(double p_147241_, double p_147242_, double p_147243_) {
+		super.knockback(0, 0, 0);
+	}
+
+	@Override
+	public boolean hurt(DamageSource source, float amount) {
+		return this.getAttckingState() == 1 || this.getAttckingState() == 4 ? false : super.hurt(source, amount);
 	}
 
 }

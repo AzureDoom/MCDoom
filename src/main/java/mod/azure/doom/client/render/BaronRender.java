@@ -2,12 +2,12 @@ package mod.azure.doom.client.render;
 
 import mod.azure.doom.client.models.BaronModel;
 import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
-import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class BaronRender extends GeoEntityRenderer<BaronEntity> {
 
-	public BaronRender(EntityRendererFactory.Context renderManagerIn) {
+	public BaronRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new BaronModel());
 	}
 

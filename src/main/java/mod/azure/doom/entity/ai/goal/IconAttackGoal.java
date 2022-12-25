@@ -5,10 +5,10 @@ import java.util.SplittableRandom;
 
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.Level;
 
 public class IconAttackGoal extends Goal {
 	private final IconofsinEntity entity;
@@ -20,26 +20,26 @@ public class IconAttackGoal extends Goal {
 	public IconAttackGoal(IconofsinEntity mob, AbstractRangedAttack attack, double moveSpeedAmpIn) {
 		this.entity = mob;
 		this.moveSpeedAmp = moveSpeedAmpIn;
-		this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 		this.attack = attack;
 	}
 
-	public boolean canStart() {
+	public boolean canUse() {
 		return this.entity.getTarget() != null;
 	}
 
-	public boolean shouldContinue() {
-		return this.canStart();
+	public boolean canContinueToUse() {
+		return this.canUse();
 	}
 
 	public void start() {
 		super.start();
-		this.entity.setAttacking(true);
+		this.entity.setAggressive(true);
 	}
 
 	public void stop() {
 		super.stop();
-		this.entity.setAttacking(false);
+		this.entity.setAggressive(false);
 		this.entity.setAttackingState(0);
 		this.attackTime = -1;
 	}
@@ -48,8 +48,8 @@ public class IconAttackGoal extends Goal {
 		LivingEntity livingentity = this.entity.getTarget();
 		if (livingentity != null) {
 			this.attackTime++;
-			this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
-			this.entity.getNavigation().startMovingTo(livingentity, this.moveSpeedAmp);
+			this.entity.lookAt(livingentity, 30.0F, 30.0F);
+			this.entity.getNavigation().moveTo(livingentity, this.moveSpeedAmp);
 			SplittableRandom random = new SplittableRandom();
 			int randomAttack = random.nextInt(0, 4);
 			if (this.attackTime == 1) {
@@ -63,20 +63,20 @@ public class IconAttackGoal extends Goal {
 				}
 				if (randomAttack == 1) {// Summon Fire on target
 					for (int i = 1; i < 5; ++i) {
-						float f1 = (float) MathHelper.atan2(livingentity.getZ() - entity.getZ(),
+						float f1 = (float) Mth.atan2(livingentity.getZ() - entity.getZ(),
 								livingentity.getX() - entity.getX()) + (float) i * (float) Math.PI * 0.4F;
 						for (int y = 0; y < 5; ++y) {
 							entity.spawnFlames(
-									livingentity.getX() + (double) MathHelper.cos(f1)
-											* livingentity.getRandom().nextDouble() * 1.5D,
-									livingentity.getZ() + (double) MathHelper.sin(f1)
-											* livingentity.getRandom().nextDouble() * 1.5D,
+									livingentity.getX()
+											+ (double) Mth.cos(f1) * livingentity.getRandom().nextDouble() * 1.5D,
+									livingentity.getZ()
+											+ (double) Mth.sin(f1) * livingentity.getRandom().nextDouble() * 1.5D,
 									Math.min(livingentity.getY(), livingentity.getY()),
 									Math.max(livingentity.getY(), livingentity.getY()) + 1.0D, f1, 0);
 						}
 					}
 
-					boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
+					boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
 					entity.spawnLightSource(this.entity, isInsideWaterBlock);
 					if (entity.getHealth() < (entity.getMaxHealth() * 0.50)) {
 						this.entity.setAttackingState(6); // no armor
@@ -86,7 +86,7 @@ public class IconAttackGoal extends Goal {
 				} else if (randomAttack == 2) { // shoots fireball
 					this.attack.shoot();
 
-					boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
+					boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
 					entity.spawnLightSource(this.entity, isInsideWaterBlock);
 					if (entity.getHealth() < (entity.getMaxHealth() * 0.50)) {
 						this.entity.setAttackingState(2); // no armor
@@ -99,10 +99,10 @@ public class IconAttackGoal extends Goal {
 					} else {
 						this.entity.setAttackingState(3); // armor
 					}
-					this.entity.tryAttack(livingentity);
-					this.entity.world.createExplosion(this.entity, livingentity.getX(), livingentity.getY(),
-							livingentity.getZ(), 3.0F, false, World.ExplosionSourceType.BLOCK);
-					livingentity.timeUntilRegen = 0;
+					this.entity.doHurtTarget(livingentity);
+					this.entity.level.explode(this.entity, livingentity.getX(), livingentity.getY(),
+							livingentity.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
+					livingentity.invulnerableTime = 0;
 				}
 			}
 			if (this.attackTime == 8) {
@@ -115,6 +115,6 @@ public class IconAttackGoal extends Goal {
 	}
 
 	protected double getAttackReachSqr(LivingEntity attackTarget) {
-		return (double) (this.entity.getWidth() * 2.0F * this.entity.getWidth() * 2.0F + attackTarget.getWidth());
+		return (double) (this.entity.getBbWidth() * 2.0F * this.entity.getBbWidth() * 2.0F + attackTarget.getBbWidth());
 	}
 }

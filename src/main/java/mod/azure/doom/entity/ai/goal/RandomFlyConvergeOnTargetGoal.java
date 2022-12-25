@@ -3,10 +3,10 @@ package mod.azure.doom.entity.ai.goal;
 import java.util.EnumSet;
 
 import mod.azure.doom.entity.DemonEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 public class RandomFlyConvergeOnTargetGoal extends Goal {
 	private final DemonEntity parentEntity;
@@ -30,34 +30,34 @@ public class RandomFlyConvergeOnTargetGoal extends Goal {
 		this.flySpeed = flySpeed;
 		this.convergeDistance = convergeDistance * convergeDistance;
 		this.convergenceAdherence = convergenceAdherence;
-		this.setControls(EnumSet.of(Goal.Control.MOVE));
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE));
 	}
 
-	public boolean canStart() {
+	public boolean canUse() {
 		MoveControl movementcontroller = this.parentEntity.getMoveControl();
-		if (!movementcontroller.isMoving()) {
+		if (!movementcontroller.hasWanted()) {
 			return true;
 		} else {
-			double d0 = movementcontroller.getTargetX() - this.parentEntity.getX();
-			double d1 = movementcontroller.getTargetY() - this.parentEntity.getY();
-			double d2 = movementcontroller.getTargetZ() - this.parentEntity.getZ();
+			double d0 = movementcontroller.getWantedX() - this.parentEntity.getX();
+			double d1 = movementcontroller.getWantedY() - this.parentEntity.getY();
+			double d2 = movementcontroller.getWantedZ() - this.parentEntity.getZ();
 			double d3 = d0 * d0 + d1 * d1 + d2 * d2;
 			return d3 < 1.0D || d3 > 10.0D;
 		}
 	}
 
-	public boolean shouldContinue() {
+	public boolean canContinueToUse() {
 		return false;
 	}
 
 	public boolean shouldConverge(LivingEntity target) {
-		return target != null && this.parentEntity.squaredDistanceTo(target) >= convergeDistance;
+		return target != null && this.parentEntity.distanceToSqr(target) >= convergeDistance;
 	}
 
 	public void start() {
 		LivingEntity target = this.parentEntity.getTarget();
 		boolean converge = shouldConverge(target);
-		Random random = this.parentEntity.getRandom();
+		RandomSource random = this.parentEntity.getRandom();
 		double d0 = this.parentEntity.getX() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 2.0F);
 		double d1 = this.parentEntity.getY() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 2.0F);
 		double d2 = this.parentEntity.getZ() + (double) ((random.nextFloat() * 2.0F - 1.0F) * 2.0F);
@@ -72,6 +72,6 @@ public class RandomFlyConvergeOnTargetGoal extends Goal {
 			d1 += 2 * yDifference / maxAbs * convergenceAdherence;
 			d2 += 2 * zDifference / maxAbs * convergenceAdherence;
 		}
-		this.parentEntity.getMoveControl().moveTo(d0, d1, d2, flySpeed);
+		this.parentEntity.getMoveControl().setWantedPosition(d0, d1, d2, flySpeed);
 	}
 }

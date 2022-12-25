@@ -2,22 +2,22 @@ package mod.azure.doom.client.models.weapons;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.Chaingun;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
 public class ChaingunModel extends GeoModel<Chaingun> {
 	@Override
-	public Identifier getModelResource(Chaingun object) {
-		return new Identifier(DoomMod.MODID, "geo/chaingun.geo.json");
+	public ResourceLocation getModelResource(Chaingun object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/chaingun.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(Chaingun object) {
-		return new Identifier(DoomMod.MODID, "textures/item/chainguneternal.png");
+	public ResourceLocation getTextureResource(Chaingun object) {
+		return new ResourceLocation(DoomMod.MODID, "textures/item/chainguneternal.png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(Chaingun animatable) {
-		return new Identifier(DoomMod.MODID, "animations/chaingun.animation.json");
+	public ResourceLocation getAnimationResource(Chaingun animatable) {
+		return new ResourceLocation(DoomMod.MODID, "animations/chaingun.animation.json");
 	}
 }

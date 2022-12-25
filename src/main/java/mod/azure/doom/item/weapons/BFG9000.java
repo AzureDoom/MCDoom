@@ -12,17 +12,17 @@ import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.render.item.BuiltinModelItemRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 import software.bernie.geckolib.animatable.client.RenderProvider;
@@ -32,36 +32,36 @@ public class BFG9000 extends DoomBaseItem {
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
 	public BFG9000() {
-		super(new Item.Settings().maxCount(1).maxDamage(401));
+		super(new Item.Properties().stacksTo(1).durability(401));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
 	@Override
-	public boolean canRepair(ItemStack stack, ItemStack ingredient) {
-		return DoomTier.BFG.getRepairIngredient().test(ingredient) || super.canRepair(stack, ingredient);
+	public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
+		return DoomTier.BFG.getRepairIngredient().test(repair) || super.isValidRepairItem(toRepair, repair);
 	}
 
 	@Override
-	public void onStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int remainingUseTicks) {
-		if (entityLiving instanceof PlayerEntity) {
-			PlayerEntity playerentity = (PlayerEntity) entityLiving;
-
-			if (stack.getDamage() < (stack.getMaxDamage() - 1)) {
-				playerentity.getItemCooldownManager().set(this, 20);
-				if (!worldIn.isClient) {
+	public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
+		if (entityLiving instanceof Player) {
+			Player playerentity = (Player) entityLiving;
+			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
+				playerentity.getCooldowns().addCooldown(this, 20);
+				if (!worldIn.isClientSide) {
 					BFGEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
-							0.25F * 3.0F, 1.0F);
+					abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(),
+							0.0F, 0.25F * 3.0F, 1.0F);
+					abstractarrowentity.isNoGravity();
 
-					stack.damage(20, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
-					worldIn.spawnEntity(abstractarrowentity);
-					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
-							playerentity.getZ(), DoomSounds.BFG_FIRING, SoundCategory.PLAYERS, 1.0F,
-							1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
-					triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerWorld) worldIn), "shoot_controller",
+					stack.hurtAndBreak(20, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
+					worldIn.addFreshEntity(abstractarrowentity);
+					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
+							DoomSounds.BFG_FIRING, SoundSource.PLAYERS, 1.0F,
+							1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+					triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn), "shoot_controller",
 							"firing");
 				}
-				boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
+				boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
 				spawnLightSource(entityLiving, isInsideWaterBlock);
 			}
 		}
@@ -77,30 +77,30 @@ public class BFG9000 extends DoomBaseItem {
 		return f;
 	}
 
-	public void reload(PlayerEntity user, Hand hand) {
-		if (user.getStackInHand(hand).getItem() instanceof BFG9000) {
-			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0
-					&& user.getInventory().count(DoomItems.BFG_CELL) > 0) {
+	public static void reload(Player user, InteractionHand hand) {
+		if (user.getItemInHand(hand).getItem() instanceof BFG9000) {
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
+					&& user.getInventory().countItem(DoomItems.BFG_CELL) > 0) {
 				removeAmmo(DoomItems.BFG_CELL, user);
-				user.getStackInHand(hand).damage(-20, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setBobbingAnimationTime(3);
+				user.getItemInHand(hand).hurtAndBreak(-20, user, s -> user.broadcastBreakEvent(hand));
+				user.getItemInHand(hand).setPopTime(3);
 			}
 		}
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-		if (world.isClient) {
-			if (((PlayerEntity) entity).getMainHandStack().getItem() instanceof BFG9000 && ClientInit.reload.isPressed()
+	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
+		if (world.isClientSide) {
+			if (((Player) entity).getMainHandItem().getItem() instanceof BFG9000 && ClientInit.reload.consumeClick()
 					&& selected) {
-				PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
+				FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.BFG9000, passedData);
 			}
 		}
 	}
 
-	public BFGEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
+	public BFGEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
 		BFGEntity arrowentity = new BFGEntity(worldIn, shooter);
 		return arrowentity;
 	}
@@ -115,7 +115,7 @@ public class BFG9000 extends DoomBaseItem {
 			private final BFG9000Render renderer = new BFG9000Render();
 
 			@Override
-			public BuiltinModelItemRenderer getCustomRenderer() {
+			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
 				return this.renderer;
 			}
 		});

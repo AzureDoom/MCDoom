@@ -77,8 +77,8 @@ import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
 public class DoomRenderRegistry {
 
@@ -219,11 +219,11 @@ public class DoomRenderRegistry {
 		EntityRendererRegistry.register(ProjectilesEntityRegister.FIRE_MOB, (ctx) -> new FireProjectileRender(ctx));
 
 		BlockEntityRendererRegistry.register(DoomMod.TOTEM,
-				(BlockEntityRendererFactory.Context rendererDispatcherIn) -> new TotemRender());
+				(BlockEntityRendererProvider.Context rendererDispatcherIn) -> new TotemRender());
 		BlockEntityRendererRegistry.register(DoomMod.GUN_TABLE_ENTITY,
-				(BlockEntityRendererFactory.Context rendererDispatcherIn) -> new GunCraftingRender());
+				(BlockEntityRendererProvider.Context rendererDispatcherIn) -> new GunCraftingRender());
 
-		BlockRenderLayerMap.INSTANCE.putBlock(DoomBlocks.JUMP_PAD, RenderLayer.getTranslucent());
+		BlockRenderLayerMap.INSTANCE.putBlock(DoomBlocks.JUMP_PAD, RenderType.translucent());
 
 		EntityRendererRegistry.register(ProjectilesEntityRegister.MEATHOOOK_ENTITY, MeatHookEntityRenderer::new);
 	}

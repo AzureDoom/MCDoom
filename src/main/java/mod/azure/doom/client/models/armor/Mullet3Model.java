@@ -2,22 +2,22 @@ package mod.azure.doom.client.models.armor;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.armor.Mullet3DoomArmor;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
 public class Mullet3Model extends GeoModel<Mullet3DoomArmor> {
 	@Override
-	public Identifier getModelResource(Mullet3DoomArmor object) {
-		return new Identifier(DoomMod.MODID, "geo/mulletarmor.geo.json");
+	public ResourceLocation getModelResource(Mullet3DoomArmor object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/mulletarmor.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(Mullet3DoomArmor object) {
-		return new Identifier(DoomMod.MODID, "textures/models/armor/redneck3_armor_layer_1.png");
+	public ResourceLocation getTextureResource(Mullet3DoomArmor object) {
+		return new ResourceLocation(DoomMod.MODID, "textures/models/armor/redneck3_armor_layer_1.png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(Mullet3DoomArmor animatable) {
-		return new Identifier(DoomMod.MODID, "animations/armor_animation.json");
+	public ResourceLocation getAnimationResource(Mullet3DoomArmor animatable) {
+		return new ResourceLocation(DoomMod.MODID, "animations/armor_animation.json");
 	}
 }

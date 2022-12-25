@@ -1,123 +1,124 @@
 package mod.azure.doom.block;
 
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldView;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RedstoneTorchBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class GunTableBlock extends Block implements BlockEntityProvider {
+public class GunTableBlock extends Block implements EntityBlock {
 
-	public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
-	private static final VoxelShape XBASE1 = Block.createCuboidShape(0, 0, -16, 16, 9, 32);
-	private static final VoxelShape XBASE2 = Block.createCuboidShape(2, 9, -14, 13, 25, 30);
-	private static final VoxelShape YBASE1 = Block.createCuboidShape(-16, 0, 0, 32, 9, 16);
-	private static final VoxelShape YBASE2 = Block.createCuboidShape(-14, 9, 2, 30, 25, 13);
-	private static final VoxelShape X_AXIS_SHAPE = VoxelShapes.union(XBASE1, XBASE2);
-	private static final VoxelShape Z_AXIS_SHAPE = VoxelShapes.union(YBASE1, YBASE2);
+	public static final DirectionProperty FACING = BlockStateProperties.FACING;
+	private static final VoxelShape XBASE1 = Block.box(0, 0, -16, 16, 9, 32); 
+	private static final VoxelShape XBASE2 = Block.box(2, 9, -14, 13, 25, 30);
+	private static final VoxelShape YBASE1 = Block.box(-16, 0, 0, 32, 9, 16); 
+	private static final VoxelShape YBASE2 = Block.box(-14, 9, 2, 30, 25, 13);
+	private static final VoxelShape X_AXIS_AABB = Shapes.or(XBASE1, XBASE2);
+	private static final VoxelShape Z_AXIS_AABB = Shapes.or(YBASE1, YBASE2);
+	public static final BooleanProperty light = RedstoneTorchBlock.LIT;
 
 	public GunTableBlock() {
-		super(FabricBlockSettings.of(Material.METAL).sounds(BlockSoundGroup.METAL).strength(4.0f).nonOpaque());
-		this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
+		super(FabricBlockSettings.of(Material.METAL).sounds(SoundType.METAL).strength(4.0f).nonOpaque());
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.WEST));
 	}
 
 	@Override
-	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		builder.add(FACING);
-	}
-
-	public BlockState rotate(BlockState state, BlockRotation rotation) {
-		return (BlockState) state.with(FACING, rotation.rotate((Direction) state.get(FACING)));
-	}
-
-	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		Direction direction = (Direction) state.get(FACING);
-		return direction.getAxis() == Direction.Axis.X ? X_AXIS_SHAPE : Z_AXIS_SHAPE;
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return DoomMod.GUN_TABLE_ENTITY.create(pos, state);
 	}
 
 	@Override
-	public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-		Direction direction = (Direction) state.get(FACING);
-		return direction.getAxis() == Direction.Axis.X
-				? world.getBlockState(pos.south()).isAir() && world.getBlockState(pos.north()).isAir()
-				: world.getBlockState(pos.east()).isAir() && world.getBlockState(pos.west()).isAir();
-	}
-
-	public BlockState mirror(BlockState state, BlockMirror mirror) {
-		return state.rotate(mirror.getRotation((Direction) state.get(FACING)));
+	public RenderShape getRenderShape(BlockState p_49232_) {
+		return RenderShape.MODEL;
 	}
 
 	@Override
-	public BlockState getPlacementState(ItemPlacementContext context) {
-		return this.getDefaultState().with(FACING, context.getPlayerFacing());
-	}
-
-	@Override
-	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-		return new GunBlockEntity(pos, state);
-	}
-
-	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
 			BlockHitResult hit) {
-		if (!world.isClient) {
-			NamedScreenHandlerFactory screenHandlerFactory = state.createScreenHandlerFactory(world, pos);
+		if (!world.isClientSide) {
+			MenuProvider screenHandlerFactory = state.getMenuProvider(world, pos);
 			if (screenHandlerFactory != null) {
-				player.openHandledScreen(screenHandlerFactory);
+				player.openMenu(screenHandlerFactory);
 			}
 		}
-		return ActionResult.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
-		return (NamedScreenHandlerFactory) world.getBlockEntity(pos);
+	public MenuProvider getMenuProvider(BlockState state, Level world, BlockPos pos) {
+		return (MenuProvider) world.getBlockEntity(pos);
 	}
 
 	@Override
-	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
 		if (state.getBlock() != newState.getBlock()) {
 			BlockEntity blockEntity = world.getBlockEntity(pos);
 			if (blockEntity instanceof GunBlockEntity) {
-				ItemScatterer.spawn(world, pos, (GunBlockEntity) blockEntity);
-				world.updateComparators(pos, this);
+				Containers.dropContents(world, pos, (GunBlockEntity) blockEntity);
+				world.updateNeighbourForOutputSignal(pos, this);
 			}
-			super.onStateReplaced(state, world, pos, newState, moved);
+			super.onRemove(state, world, pos, newState, moved);
 		}
 	}
 
 	@Override
-	public boolean hasComparatorOutput(BlockState state) {
-		return true;
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
+		return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection());
 	}
 
 	@Override
-	public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-		return ScreenHandler.calculateComparatorOutput(world.getBlockEntity(pos));
+	public BlockState rotate(BlockState state, Rotation rot) {
+		return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
+	}
+
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+		builder.add(FACING, light);
+	}
+
+	@Override
+	public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
+		return 15;
+	}
+
+	@Override
+	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+		Direction direction = state.getValue(FACING);
+		return direction.getAxis() == Direction.Axis.X ? X_AXIS_AABB : Z_AXIS_AABB;
+	}
+
+	@Override
+	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
+		Direction direction = (Direction) state.getValue(FACING);
+		return direction.getAxis() == Direction.Axis.X
+				? world.getBlockState(pos.south()).isAir() && world.getBlockState(pos.north()).isAir()
+				: world.getBlockState(pos.east()).isAir() && world.getBlockState(pos.west()).isAir();
 	}
 
 }

@@ -9,38 +9,38 @@ import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Maps;
 
 import mod.azure.doom.util.enums.DoomTier;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CampfireBlock;
-import net.minecraft.block.Material;
-import net.minecraft.block.PillarBlock;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.item.MiningToolItem;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DiggerItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 
-public class ArgentPaxel extends MiningToolItem {
+public class ArgentPaxel extends DiggerItem {
 
 	protected static final Map<Block, BlockState> SHOVEL_LOOKUP = Maps.newHashMap((new Builder<Block, BlockState>())
-			.put(Blocks.GRASS_BLOCK, Blocks.DIRT_PATH.getDefaultState())
-			.put(Blocks.DIRT, Blocks.DIRT_PATH.getDefaultState()).put(Blocks.PODZOL, Blocks.DIRT_PATH.getDefaultState())
-			.put(Blocks.COARSE_DIRT, Blocks.DIRT_PATH.getDefaultState())
-			.put(Blocks.MYCELIUM, Blocks.DIRT_PATH.getDefaultState())
-			.put(Blocks.ROOTED_DIRT, Blocks.DIRT_PATH.getDefaultState()).build());
+			.put(Blocks.GRASS_BLOCK, Blocks.DIRT_PATH.defaultBlockState())
+			.put(Blocks.DIRT, Blocks.DIRT_PATH.defaultBlockState()).put(Blocks.PODZOL, Blocks.DIRT_PATH.defaultBlockState())
+			.put(Blocks.COARSE_DIRT, Blocks.DIRT_PATH.defaultBlockState())
+			.put(Blocks.MYCELIUM, Blocks.DIRT_PATH.defaultBlockState())
+			.put(Blocks.ROOTED_DIRT, Blocks.DIRT_PATH.defaultBlockState()).build());
 
 	protected static final Map<Block, Block> BLOCK_STRIPPING_MAP = (new Builder<Block, Block>())
 			.put(Blocks.OAK_WOOD, Blocks.STRIPPED_OAK_WOOD).put(Blocks.OAK_LOG, Blocks.STRIPPED_OAK_LOG)
@@ -55,20 +55,20 @@ public class ArgentPaxel extends MiningToolItem {
 			.put(Blocks.CRIMSON_HYPHAE, Blocks.STRIPPED_CRIMSON_HYPHAE).build();
 
 	@SuppressWarnings("unused")
-	private static final List<TagKey<Block>> MINEABLE = ImmutableList.of(BlockTags.AXE_MINEABLE,
-			BlockTags.PICKAXE_MINEABLE, BlockTags.SHOVEL_MINEABLE);
+	private static final List<TagKey<Block>> MINEABLE = ImmutableList.of(BlockTags.MINEABLE_WITH_AXE,
+			BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.MINEABLE_WITH_SHOVEL);
 
 	public ArgentPaxel() {
-		super(9, -2.4F, DoomTier.DOOM, BlockTags.AXE_MINEABLE, new Item.Settings().maxCount(1));
+		super(9, -2.4F, DoomTier.DOOM, BlockTags.MINEABLE_WITH_AXE, new Item.Properties().stacksTo(1));
 	}
 
 	@Override
-	public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
+	public float getDestroySpeed(ItemStack stack, BlockState state) {
 		return 30;
 	}
 
 	@Override
-	public boolean isSuitableFor(BlockState state) {
+	public boolean isCorrectToolForDrops(BlockState state) {
 		Block block = state.getBlock();
 		if (block == Blocks.SNOW || block == Blocks.SNOW_BLOCK) {
 			return true;
@@ -78,47 +78,47 @@ public class ArgentPaxel extends MiningToolItem {
 	}
 
 	@Override
-	public ActionResult useOnBlock(ItemUsageContext context) {
-		World world = context.getWorld();
-		BlockPos blockpos = context.getBlockPos();
-		PlayerEntity player = context.getPlayer();
-		BlockState blockstate = world.getBlockState(blockpos);
+	public InteractionResult useOn(UseOnContext context) {
+		Level world = context.getLevel();
+		BlockPos blockPos = context.getClickedPos();
+		Player player = context.getPlayer();
+		BlockState blockstate = world.getBlockState(blockPos);
 		BlockState resultToSet = null;
 		Block strippedResult = BLOCK_STRIPPING_MAP.get(blockstate.getBlock());
 		if (strippedResult != null) {
-			world.playSound(player, blockpos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
-			resultToSet = strippedResult.getDefaultState().with(PillarBlock.AXIS, blockstate.get(PillarBlock.AXIS));
+			world.playSound(player, blockPos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
+			resultToSet = strippedResult.defaultBlockState().setValue(RotatedPillarBlock.AXIS,
+					blockstate.getValue(RotatedPillarBlock.AXIS));
 		} else {
-			if (context.getSide() == Direction.DOWN) {
-				return ActionResult.PASS;
-			}
-			BlockState foundResult = SHOVEL_LOOKUP.get(blockstate.getBlock());
-			if (foundResult != null && world.isAir(blockpos.up())) {
-				world.playSound(player, blockpos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
-				resultToSet = foundResult;
-			} else if (blockstate.getBlock() instanceof CampfireBlock && blockstate.get(CampfireBlock.LIT)) {
-				resultToSet = blockstate.with(CampfireBlock.LIT, false);
+			if (context.getClickedFace() != Direction.DOWN) {
+				BlockState foundResult = SHOVEL_LOOKUP.get(blockstate.getBlock());
+				if (foundResult != null && world.getBlockState(blockPos.above()).isAir()) {
+					world.playSound(player, blockPos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
+					resultToSet = foundResult;
+				} else if (blockstate.getBlock() instanceof CampfireBlock && blockstate.getValue(CampfireBlock.LIT)) {
+					resultToSet = blockstate.setValue(CampfireBlock.LIT, false);
+				}
 			}
 		}
 		if (resultToSet == null) {
-			return ActionResult.PASS;
+			return InteractionResult.PASS;
 		}
-		if (!world.isClient) {
-			world.setBlockState(blockpos, resultToSet, 11);
+		if (!world.isClientSide()) {
+			world.setBlock(blockPos, resultToSet, 11);
 			if (player != null) {
-				context.getStack().damage(1, (LivingEntity) player, (Consumer<LivingEntity>) ((p) -> {
-					((LivingEntity) p).sendToolBreakStatus(context.getHand());
+				context.getItemInHand().hurtAndBreak(1, (LivingEntity) player, (Consumer<LivingEntity>) ((p) -> {
+					((LivingEntity) p).broadcastBreakEvent(context.getHand());
 				}));
 			}
 		}
-		return ActionResult.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(
-				Text.translatable("doom.argent_powered.text").formatted(Formatting.RED).formatted(Formatting.ITALIC));
-		super.appendTooltip(stack, world, tooltip, context);
+	public void appendHoverText(ItemStack itemStack, Level level, List<Component> list, TooltipFlag tooltipFlag) {
+		list.add(Component.translatable("doom.argent_powered.text").withStyle(ChatFormatting.RED)
+				.withStyle(ChatFormatting.ITALIC));
+		super.appendHoverText(itemStack, level, list, tooltipFlag);
 	}
 
 }

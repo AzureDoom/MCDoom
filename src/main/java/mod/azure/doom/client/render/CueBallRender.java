@@ -2,18 +2,18 @@ package mod.azure.doom.client.render;
 
 import mod.azure.doom.client.models.CueballModel;
 import mod.azure.doom.entity.tierambient.CueBallEntity;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.core.BlockPos;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class CueBallRender extends GeoEntityRenderer<CueBallEntity> {
 
-	public CueBallRender(EntityRendererFactory.Context renderManagerIn) {
+	public CueBallRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new CueballModel());
 	}
 
 	@Override
-	protected int getBlockLight(CueBallEntity entityIn, BlockPos partialTicks) {
+	protected int getBlockLightLevel(CueBallEntity entityIn, BlockPos partialTicks) {
 		return 15;
 	}
 
@@ -23,7 +23,7 @@ public class CueBallRender extends GeoEntityRenderer<CueBallEntity> {
 	}
 
 	@Override
-	public boolean hasLabel(CueBallEntity entity) {
+	public boolean shouldShowName(CueBallEntity entity) {
 		return false;
 	}
 }

@@ -2,12 +2,12 @@ package mod.azure.doom.client.render;
 
 import mod.azure.doom.client.models.MancubusModel;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
-import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class MancubusRender extends GeoEntityRenderer<MancubusEntity> {
 
-	public MancubusRender(EntityRendererFactory.Context renderManagerIn) {
+	public MancubusRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new MancubusModel());
 	}
 

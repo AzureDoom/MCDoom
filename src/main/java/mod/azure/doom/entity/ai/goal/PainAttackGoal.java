@@ -6,10 +6,10 @@ import mod.azure.doom.entity.tierfodder.LostSoulEntity;
 import mod.azure.doom.entity.tierheavy.PainEntity;
 import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.DoomSounds;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.Box;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.phys.AABB;
 
 public class PainAttackGoal extends Goal {
 	private final PainEntity entity;
@@ -17,30 +17,30 @@ public class PainAttackGoal extends Goal {
 
 	public PainAttackGoal(PainEntity mob) {
 		this.entity = mob;
-		this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 	}
 
 	@Override
-	public boolean canStart() {
+	public boolean canUse() {
 		return this.entity.getTarget() != null;
 	}
 
 	@Override
-	public boolean shouldContinue() {
-		return this.canStart();
+	public boolean canContinueToUse() {
+		return this.canUse();
 	}
 
 	@Override
 	public void start() {
 		super.start();
 		this.attackTime = 0;
-		this.entity.setAttacking(true);
+		this.entity.setAggressive(true);
 	}
 
 	@Override
 	public void stop() {
 		super.stop();
-		this.entity.setAttacking(false);
+		this.entity.setAggressive(false);
 		this.entity.setAttackingState(0);
 		this.attackTime = -1;
 	}
@@ -49,15 +49,15 @@ public class PainAttackGoal extends Goal {
 	public void tick() {
 		LivingEntity livingentity = this.entity.getTarget();
 		if (livingentity != null) {
-			boolean inLineOfSight = this.entity.getVisibilityCache().canSee(livingentity);
+			boolean inLineOfSight = this.entity.getSensing().hasLineOfSight(livingentity);
 			this.attackTime++;
-			this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
-			final Box aabb = new Box(this.entity.getBlockPos()).expand(64D);
-			final Box aabb2 = new Box(this.entity.getBlockPos()).expand(3D);
+			this.entity.lookAt(livingentity, 30.0F, 30.0F);
+			final AABB aabb = new AABB(this.entity.blockPosition()).inflate(64D);
+			final AABB aabb2 = new AABB(this.entity.blockPosition()).inflate(3D);
 			if (inLineOfSight) {
 				if (this.entity.distanceTo(livingentity) >= 3.0D) {
-					this.entity.getNavigation().startMovingTo(livingentity, 1);
-					int i = this.entity.world.getEntitiesByType(DoomEntities.LOST_SOUL, aabb, Entity::isAlive).size();
+					this.entity.getNavigation().moveTo(livingentity, 1);
+					int i = this.entity.level.getEntities(DoomEntities.LOST_SOUL, aabb, Entity::isAlive).size();
 					if (i <= 15) {
 						if (this.attackTime == 1) {
 							this.entity.setAttackingState(0);
@@ -66,23 +66,20 @@ public class PainAttackGoal extends Goal {
 							this.entity.setAttackingState(1);
 							entity.playSound(DoomSounds.PAIN_HURT, 1.0F, 1.0F);
 							if (this.entity.getVariant() == 1 || this.entity.getVariant() == 3) {
-								LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.create(entity.world);
-								lost_soul.refreshPositionAndAngles(this.entity.getX(), this.entity.getY(),
-										this.entity.getZ(), 0, 0);
-								entity.world.spawnEntity(lost_soul);
+								LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.create(entity.level);
+								lost_soul.moveTo(this.entity.getX(), this.entity.getY(), this.entity.getZ(), 0, 0);
+								entity.level.addFreshEntity(lost_soul);
 							} else {
-								LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.create(entity.world);
-								lost_soul.refreshPositionAndAngles(this.entity.getX(), this.entity.getY(),
-										this.entity.getZ(), 0, 0);
-								entity.world.spawnEntity(lost_soul);
+								LostSoulEntity lost_soul = DoomEntities.LOST_SOUL.create(entity.level);
+								lost_soul.moveTo(this.entity.getX(), this.entity.getY(), this.entity.getZ(), 0, 0);
+								entity.level.addFreshEntity(lost_soul);
 
-								LostSoulEntity lost_soul1 = DoomEntities.LOST_SOUL.create(entity.world);
-								lost_soul1.refreshPositionAndAngles(this.entity.getX(), this.entity.getY(),
-										this.entity.getZ(), 0, 0);
-								entity.world.spawnEntity(lost_soul1);
+								LostSoulEntity lost_soul1 = DoomEntities.LOST_SOUL.create(entity.level);
+								lost_soul1.moveTo(this.entity.getX(), this.entity.getY(), this.entity.getZ(), 0, 0);
+								entity.level.addFreshEntity(lost_soul1);
 							}
 
-							boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
+							boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
 							entity.spawnLightSource(this.entity, isInsideWaterBlock);
 						}
 						if (this.attackTime >= 20) {
@@ -95,9 +92,9 @@ public class PainAttackGoal extends Goal {
 					}
 				} else {
 					if (this.attackTime == 3) {
-						this.entity.getEntityWorld().getOtherEntities(this.entity, aabb2).forEach(e -> {
+						this.entity.getCommandSenderWorld().getEntities(this.entity, aabb2).forEach(e -> {
 							if ((e instanceof LivingEntity)) {
-								this.entity.tryAttack(livingentity);
+								this.entity.doHurtTarget(livingentity);
 							}
 						});
 					}

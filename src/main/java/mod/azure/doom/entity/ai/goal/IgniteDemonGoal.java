@@ -5,8 +5,8 @@ import java.util.EnumSet;
 import org.jetbrains.annotations.Nullable;
 
 import mod.azure.doom.entity.tierambient.CueBallEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 public class IgniteDemonGoal extends Goal {
 	private final CueBallEntity creeper;
@@ -15,14 +15,14 @@ public class IgniteDemonGoal extends Goal {
 
 	public IgniteDemonGoal(CueBallEntity creeper) {
 		this.creeper = creeper;
-		this.setControls(EnumSet.of(Goal.Control.MOVE));
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE));
 	}
 
 	@Override
-	public boolean canStart() {
+	public boolean canUse() {
 		LivingEntity livingEntity = this.creeper.getTarget();
 		return this.creeper.getFuseSpeed() > 0
-				|| livingEntity != null && this.creeper.squaredDistanceTo(livingEntity) < 9.0;
+				|| livingEntity != null && this.creeper.distanceToSqr(livingEntity) < 9.0;
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class IgniteDemonGoal extends Goal {
 	}
 
 	@Override
-	public boolean shouldRunEveryTick() {
+	public boolean requiresUpdateEveryTick() {
 		return true;
 	}
 
@@ -47,11 +47,11 @@ public class IgniteDemonGoal extends Goal {
 			this.creeper.setFuseSpeed(-1);
 			return;
 		}
-		if (this.creeper.squaredDistanceTo(this.target) > 49.0) {
+		if (this.creeper.distanceToSqr(this.target) > 49.0) {
 			this.creeper.setFuseSpeed(-1);
 			return;
 		}
-		if (!this.creeper.getVisibilityCache().canSee(this.target)) {
+		if (!this.creeper.getSensing().hasLineOfSight(this.target)) {
 			this.creeper.setFuseSpeed(-1);
 			return;
 		}

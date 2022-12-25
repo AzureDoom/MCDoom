@@ -1,37 +1,34 @@
 package mod.azure.doom.entity.tierheavy;
 
 import java.util.EnumSet;
-import java.util.Random;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.registry.DoomSounds;
-import net.minecraft.entity.AreaEffectCloudEntity;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -45,34 +42,34 @@ public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-	public Hellknight2016Entity(EntityType<Hellknight2016Entity> entityType, World worldIn) {
+	public Hellknight2016Entity(EntityType<? extends Hellknight2016Entity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving() && !this.isAttacking() && this.onGround)
+			if (event.isMoving() && !this.isAggressive() && this.onGround)
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			if (this.isAttacking() && lastLimbDistance > 0.35F && this.onGround)
+			if (this.isAggressive() && animationSpeedOld > 0.35F && this.onGround)
 				return event.setAndContinue(RawAnimation.begin().thenLoop("run"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (this.world.isClient)
-					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
-							SoundCategory.HOSTILE, 0.25F, 1.0F, false);
+				if (this.level.isClientSide())
+					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
+							SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("jumpattack", LoopType.PLAY_ONCE));
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("attack"))
-				if (this.world.isClient)
-					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_PLAYER_ATTACK_CRIT,
-							SoundCategory.HOSTILE, 0.25F, 1.0F, false);
+				if (this.level.isClientSide())
+					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		}));
 	}
 
@@ -81,29 +78,41 @@ public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
 		return this.cache;
 	}
 
-	public static boolean spawning(EntityType<Hellknight2016Entity> p_223337_0_, World p_223337_1_, SpawnReason reason,
-			BlockPos p_223337_3_, Random p_223337_4_) {
-		return p_223337_1_.getDifficulty() != Difficulty.PEACEFUL;
+	@Override
+	protected void registerGoals() {
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+		this.goalSelector.addGoal(3, new Hellknight2016Entity.AttackGoal(this, 1.5D));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
 
 	@Override
-	protected void initGoals() {
-		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(8, new LookAroundGoal(this));
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.goalSelector.add(3, new Hellknight2016Entity.AttackGoal(this, 1.5D));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
-		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
-	}
-
-	@Override
-	public int getSafeFallDistance() {
+	public int getMaxFallDistance() {
 		return 99;
 	}
 
 	@Override
-	protected int computeFallDamage(float fallDistance, float damageMultiplier) {
+	protected void updateControlFlags() {
+		boolean flag = this.getTarget() != null && this.hasLineOfSight(this.getTarget());
+		this.goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
+		super.updateControlFlags();
+	}
+
+	@Override
+	protected void tickDeath() {
+		++this.deathTime;
+		if (this.deathTime == 30) {
+			this.remove(RemovalReason.KILLED);
+			this.dropExperience();
+		}
+	}
+
+	@Override
+	protected int calculateFallDamage(float fallDistance, float damageMultiplier) {
 		return 0;
 	}
 
@@ -114,26 +123,26 @@ public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
 
 		public AttackGoal(Hellknight2016Entity zombieIn, double speedIn) {
 			this.entity = zombieIn;
-			this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK, Goal.Control.JUMP));
+			this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Goal.Flag.JUMP));
 			this.speedModifier = speedIn;
 		}
 
-		public boolean canStart() {
+		public boolean canUse() {
 			return this.entity.getTarget() != null;
 		}
 
-		public boolean shouldContinue() {
-			return this.canStart();
+		public boolean canContinueToUse() {
+			return this.canUse();
 		}
 
 		public void start() {
 			super.start();
-			this.entity.setAttacking(true);
+			this.entity.setAggressive(true);
 		}
 
 		public void stop() {
 			super.stop();
-			this.entity.setAttacking(false);
+			this.entity.setAggressive(false);
 			this.entity.setAttackingState(0);
 			this.attackTime = -1;
 		}
@@ -141,45 +150,45 @@ public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
 		public void tick() {
 			LivingEntity livingentity = this.entity.getTarget();
 			if (livingentity != null) {
-				boolean inLineOfSight = this.entity.getVisibilityCache().canSee(livingentity);
+				boolean inLineOfSight = this.entity.getSensing().hasLineOfSight(livingentity);
 				this.attackTime++;
-				this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
-				final Box aabb = new Box(this.entity.getBlockPos()).expand(5D);
-				final Box aabb2 = new Box(this.entity.getBlockPos()).expand(3D);
+				this.entity.lookAt(livingentity, 30.0F, 30.0F);
+				final AABB aabb = new AABB(this.entity.blockPosition()).inflate(5D);
+				final AABB aabb2 = new AABB(this.entity.blockPosition()).inflate(3D);
 				if (inLineOfSight) {
-					this.entity.getNavigation().startMovingTo(livingentity, this.speedModifier);
-					if (this.entity.getEntityWorld().getOtherEntities(this.entity, aabb).contains(livingentity)) {
+					this.entity.getNavigation().moveTo(livingentity, this.speedModifier);
+					if (this.entity.getCommandSenderWorld().getEntities(this.entity, aabb).contains(livingentity)) {
 						if (this.attackTime == 1) {
 							this.entity.setAttackingState(1);
 						}
 						if (this.attackTime == 4) {
-							Vec3d vec3d = this.entity.getVelocity();
-							Vec3d vec3d2 = new Vec3d(livingentity.getX() - this.entity.getX(), 0.0,
+							Vec3 vec3d = this.entity.getDeltaMovement();
+							Vec3 vec3d2 = new Vec3(livingentity.getX() - this.entity.getX(), 0.0,
 									livingentity.getZ() - this.entity.getZ());
-							vec3d2 = vec3d2.normalize().multiply(0.4).add(vec3d.multiply(0.4));
-							this.entity.setVelocity(vec3d2.x, 0.5F, vec3d2.z);
-							this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
+							vec3d2 = vec3d2.normalize().scale(0.4).add(vec3d.scale(0.4));
+							this.entity.setDeltaMovement(vec3d2.x, 0.5F, vec3d2.z);
+							this.entity.lookAt(livingentity, 30.0F, 30.0F);
 						}
 						if (this.attackTime == 9) {
-							AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(entity.world,
-									entity.getX(), entity.getY(), entity.getZ());
-							areaeffectcloudentity.setParticleType(ParticleTypes.CRIMSON_SPORE);
+							AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(entity.level, entity.getX(),
+									entity.getY(), entity.getZ());
+							areaeffectcloudentity.setParticle(ParticleTypes.CRIMSON_SPORE);
 							areaeffectcloudentity.setRadius(3.0F);
 							areaeffectcloudentity.setDuration(5);
 							areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
-							this.entity.getEntityWorld().getOtherEntities(this.entity, aabb2).forEach(e -> {
+							this.entity.getCommandSenderWorld().getEntities(this.entity, aabb2).forEach(e -> {
 								if ((e instanceof LivingEntity)) {
-									e.damage(DamageSource.mob(this.entity),
-											(float) DoomConfig.hellknight2016_melee_damage);
-									entity.world.spawnEntity(areaeffectcloudentity);
+									e.hurt(DamageSource.mobAttack(this.entity),
+											((float) DoomConfig.hellknight2016_melee_damage));
+									entity.level.addFreshEntity(areaeffectcloudentity);
 								}
 							});
-							livingentity.timeUntilRegen = 0;
+							livingentity.invulnerableTime = 0;
 						}
 						if (this.attackTime >= 13) {
 							this.attackTime = -5;
 							this.entity.setAttackingState(0);
-							this.entity.getNavigation().startMovingTo(livingentity, this.speedModifier);
+							this.entity.getNavigation().moveTo(livingentity, this.speedModifier);
 						}
 					}
 				} else {
@@ -189,13 +198,12 @@ public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
 		}
 	}
 
-	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0D)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.hellknight2016_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.hellknight2016_melee_damage)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.6f)
-				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
+	public static AttributeSupplier.Builder createMobAttributes() {
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
+				.add(Attributes.MAX_HEALTH, DoomConfig.hellknight2016_health)
+				.add(Attributes.ATTACK_DAMAGE, DoomConfig.hellknight2016_melee_damage)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	protected boolean shouldDrown() {
@@ -207,7 +215,7 @@ public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
+	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
 		return 2.75F;
 	}
 

@@ -3,55 +3,54 @@ package mod.azure.doom.entity.tierboss;
 import java.util.List;
 import java.util.SplittableRandom;
 
-import org.jetbrains.annotations.Nullable;
-
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.IconAttackGoal;
 import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.util.registry.DoomSounds;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.AreaEffectCloudEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.PrioritizedGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.boss.BossBar;
-import net.minecraft.entity.boss.ServerBossBar;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.BossEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -63,57 +62,58 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class IconofsinEntity extends DemonEntity implements GeoEntity {
 
-	public static final TrackedData<Integer> DEATH_STATE = DataTracker.registerData(IconofsinEntity.class,
-			TrackedDataHandlerRegistry.INTEGER);
-	private final ServerBossBar bossBar = (ServerBossBar) (new ServerBossBar(this.getDisplayName(),
-			BossBar.Color.PURPLE, BossBar.Style.PROGRESS)).setDarkenSky(true).setThickenFog(true);
+	public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(IconofsinEntity.class,
+			EntityDataSerializers.INT);
+	private final ServerBossEvent bossInfo = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(),
+			BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true)
+					.setCreateWorldFog(true);
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-	public IconofsinEntity(EntityType<IconofsinEntity> entityType, World worldIn) {
+	public IconofsinEntity(EntityType<IconofsinEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving() && this.dataTracker.get(DEATH_STATE) == 0)
+			if (event.isMoving() && this.entityData.get(DEATH_STATE) == 0)
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDead()) && this.dataTracker.get(DEATH_STATE) == 0)
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 0)
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death_phaseone"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDead()) && this.dataTracker.get(DEATH_STATE) == 1)
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 1)
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			if (event.isMoving() && this.dataTracker.get(DEATH_STATE) == 1)
+			if (event.isMoving() && this.entityData.get(DEATH_STATE) == 1)
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking_nohelmet"));
-			if (this.dataTracker.get(DEATH_STATE) == 1)
+			if (this.entityData.get(DEATH_STATE) == 1)
 				return event.setAndContinue(RawAnimation.begin().thenLoop("idle_nohelmet"));
-			if (!event.isMoving() && this.velocityModified && this.dataTracker.get(DEATH_STATE) == 1)
+			if (!event.isMoving() && this.hurtMarked && this.entityData.get(DEATH_STATE) == 1)
 				return event.setAndContinue(RawAnimation.begin().thenLoop("idle_nohelmet"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (this.world.isClient)
-					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.CYBERDEMON_STEP,
-							SoundCategory.HOSTILE, 0.25F, 1.0F, false);
+				if (this.level.isClientSide())
+					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.CYBERDEMON_STEP,
+							SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("shooting", LoopType.PLAY_ONCE));
-			if (this.dataTracker.get(STATE) == 1 && this.dataTracker.get(DEATH_STATE) == 0
-					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(STATE) == 1 && this.entityData.get(DEATH_STATE) == 0
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("summoned", LoopType.PLAY_ONCE));
-			if (this.dataTracker.get(STATE) == 2 && this.dataTracker.get(DEATH_STATE) == 1
-					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(STATE) == 2 && this.entityData.get(DEATH_STATE) == 1
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("summoned_nohelmet", LoopType.PLAY_ONCE));
-			if (this.dataTracker.get(STATE) == 3 && this.dataTracker.get(DEATH_STATE) == 0
-					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(STATE) == 3 && this.entityData.get(DEATH_STATE) == 0
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("slam", LoopType.PLAY_ONCE));
-			if (this.dataTracker.get(STATE) == 4 && this.dataTracker.get(DEATH_STATE) == 1
-					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(STATE) == 4 && this.entityData.get(DEATH_STATE) == 1
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("slam_nohelmet", LoopType.PLAY_ONCE));
-			if (this.dataTracker.get(STATE) == 5 && this.dataTracker.get(DEATH_STATE) == 0
-					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(STATE) == 5 && this.entityData.get(DEATH_STATE) == 0
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("stomp", LoopType.PLAY_ONCE));
-			if (this.dataTracker.get(STATE) == 6 && this.dataTracker.get(DEATH_STATE) == 1
-					&& !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(STATE) == 6 && this.entityData.get(DEATH_STATE) == 1
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("stomp_nohelmet", LoopType.PLAY_ONCE));
 			return PlayState.STOP;
 		}));
@@ -125,60 +125,53 @@ public class IconofsinEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	protected void updatePostDeath() {
+	protected void tickDeath() {
 		++this.deathTime;
-		if (this.deathTime == 80 && this.dataTracker.get(DEATH_STATE) == 0) {
+		if (this.deathTime == 80 && this.entityData.get(DEATH_STATE) == 0) {
 			this.setHealth(this.getMaxHealth());
 			this.setDeathState(1);
 			this.deathTime = 0;
 		}
-		if (this.deathTime == 40 && this.dataTracker.get(DEATH_STATE) == 1) {
-			this.world.sendEntityStatus(this, (byte) 60);
+		if (this.deathTime == 40 && this.entityData.get(DEATH_STATE) == 1) {
 			this.remove(Entity.RemovalReason.KILLED);
-			this.dropXp();
+			this.dropExperience();
 		}
 	}
 
 	public int getDeathState() {
-		return this.dataTracker.get(DEATH_STATE);
+		return this.entityData.get(DEATH_STATE);
 	}
 
 	public void setDeathState(int state) {
-		this.dataTracker.set(DEATH_STATE, state);
+		this.entityData.set(DEATH_STATE, state);
 	}
 
 	@Override
-	public void onDeath(DamageSource source) {
-		if (!this.world.isClient) {
+	public void die(DamageSource source) {
+		if (!this.level.isClientSide) {
 			if (source == DamageSource.OUT_OF_WORLD) {
 				this.setDeathState(1);
 			}
-			if (this.dataTracker.get(DEATH_STATE) == 0) {
-				AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(this.world, this.getX(),
-						this.getY(), this.getZ());
-				areaeffectcloudentity.setParticleType(ParticleTypes.EXPLOSION);
+			if (this.entityData.get(DEATH_STATE) == 0) {
+				AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(),
+						this.getZ());
+				areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
 				areaeffectcloudentity.setRadius(3.0F);
 				areaeffectcloudentity.setDuration(55);
 				areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
-				this.world.spawnEntity(areaeffectcloudentity);
-				this.goalSelector.getRunningGoals().forEach(PrioritizedGoal::stop);
-				this.onAttacking(this.getAttacker());
-				this.world.sendEntityStatus(this, (byte) 3);
+				this.level.addFreshEntity(areaeffectcloudentity);
+				this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
+				this.setLastHurtMob(this.getLastHurtByMob());
+				this.level.broadcastEntityEvent(this, (byte) 3);
 			}
-			if (this.dataTracker.get(DEATH_STATE) == 1) {
-				super.onDeath(source);
+			if (this.entityData.get(DEATH_STATE) == 1) {
+				super.die(source);
 			}
 		}
 	}
 
 	@Override
-	public void writeCustomDataToNbt(NbtCompound tag) {
-		super.writeCustomDataToNbt(tag);
-		tag.putInt("Phase", this.getDeathState());
-	}
-
-	@Override
-	public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
+	public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
 		return false;
 	}
 
@@ -188,100 +181,104 @@ public class IconofsinEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	protected void tickCramming() {
+	protected void pushEntities() {
 	}
 
 	@Override
-	protected void initGoals() {
-		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(8, new LookAroundGoal(this));
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.goalSelector.add(4,
+	protected boolean canRide(Entity p_184228_1_) {
+		return false;
+	}
+
+	@Override
+	public void knockback(double p_147241_, double p_147242_, double p_147243_) {
+		super.knockback(0, 0, 0);
+	}
+
+	@Override
+	protected void registerGoals() {
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
+		this.goalSelector.addGoal(4,
 				new IconAttackGoal(this, new FireballAttack(this, true).setProjectileOriginOffset(0.8, 0.8, 0.8)
 						.setDamage(DoomConfig.icon_melee_damage
-								+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.icon_phaseone_damage_boos : 0))
-						.setSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
+								+ (this.entityData.get(DEATH_STATE) == 1 ? DoomConfig.icon_phaseone_damage_boos : 0))
+						.setSound(SoundEvents.FIRECHARGE_USE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.35F),
 						1.1D));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
-		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
 
 	public void spawnWave(int WaveAmount, LivingEntity entity) {
-		Random rand = this.getRandom();
+		RandomSource rand = this.getRandom();
 		List<? extends String> waveEntries = DoomConfig.icon_wave_entries;
 		SplittableRandom random = new SplittableRandom();
 		for (int k = 1; k < WaveAmount; ++k) {
 			int r = random.nextInt(-3, 3);
 			for (int i = 0; i < 1; ++i) {
 				int randomIndex = rand.nextInt(waveEntries.size());
-				Identifier randomElement1 = new Identifier(waveEntries.get(randomIndex));
-				EntityType<?> randomElement = Registries.ENTITY_TYPE.get(randomElement1);
-				Entity waveentity = randomElement.create(world);
-				waveentity.refreshPositionAndAngles(entity.getX() + r, entity.getY() + 0.5D, entity.getZ() + r, 0, 0);
-				world.spawnEntity(waveentity);
+				ResourceLocation randomElement1 = new ResourceLocation(waveEntries.get(randomIndex));
+				EntityType<?> randomElement = BuiltInRegistries.ENTITY_TYPE.get(randomElement1);
+				Entity waveentity = randomElement.create(level);
+				waveentity.setPos(entity.getX() + r, entity.getY() + 0.5D, entity.getZ() + r);
+				level.addFreshEntity(waveentity);
 			}
 		}
 	}
 
 	public void doDamage() {
-		final Box aabb = new Box(this.getBlockPos().up()).expand(64D, 64D, 64D);
-		this.getEntityWorld().getOtherEntities(this, aabb).forEach(e -> {
+		final AABB aabb = new AABB(this.blockPosition().above()).inflate(64D, 64D, 64D);
+		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
 			if (e instanceof LivingEntity) {
-				e.damage(DamageSource.mobProjectile(this, this.getTarget()), DoomConfig.icon_melee_damage
-						+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0));
+				e.hurt(DamageSource.indirectMobAttack(this, this.getTarget()), DoomConfig.icon_melee_damage
+						+ (this.entityData.get(DEATH_STATE) == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0));
 			}
 		});
 	}
 
 	public void spawnFlames(double x, double z, double maxY, double y, float yaw, int warmup) {
-		BlockPos blockPos = new BlockPos(x, y, z);
-		boolean bl = false;
-		double d = -0.75D;
+		BlockPos blockpos = new BlockPos(x, y, z);
+		boolean flag = false;
+		double d0 = 0.0D;
 		do {
-			BlockPos blockPos2 = blockPos.down();
-			BlockState blockState = this.world.getBlockState(blockPos2);
-			if (blockState.isSideSolidFullSquare(this.world, blockPos2, Direction.UP)) {
-				if (!this.world.isAir(blockPos)) {
-					BlockState blockState2 = this.world.getBlockState(blockPos);
-					VoxelShape voxelShape = blockState2.getCollisionShape(this.world, blockPos);
-					if (!voxelShape.isEmpty()) {
-						d = voxelShape.getMax(Direction.Axis.Y);
+			BlockPos blockpos1 = blockpos.below();
+			BlockState blockstate = this.level.getBlockState(blockpos1);
+			if (blockstate.isFaceSturdy(this.level, blockpos1, Direction.UP)) {
+				if (!this.level.isEmptyBlock(blockpos)) {
+					BlockState blockstate1 = this.level.getBlockState(blockpos);
+					VoxelShape voxelshape = blockstate1.getCollisionShape(this.level, blockpos);
+					if (!voxelshape.isEmpty()) {
+						d0 = voxelshape.max(Direction.Axis.Y);
 					}
 				}
-				bl = true;
+				flag = true;
 				break;
 			}
-			blockPos = blockPos.down();
-		} while (blockPos.getY() >= MathHelper.floor(maxY) - 1);
+			blockpos = blockpos.below();
+		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
-		if (bl) {
-			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
+		if (flag) {
+			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this,
 					DoomConfig.icon_melee_damage
-							+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.icon_phaseone_damage_boos : 0));
-			fang.setFireTicks(age);
-			fang.isInvisible();
-			fang.age = -150;
-			this.world.spawnEntity(fang);
+							+ (this.entityData.get(DEATH_STATE) == 1 ? DoomConfig.motherdemon_phaseone_damage_boos
+									: 0));
+			fang.setSecondsOnFire(tickCount);
+			fang.setInvisible(false);
+			this.level.addFreshEntity(fang);
 		}
 	}
 
-	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.icon_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.icon_melee_damage)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1000.0D);
+	public static AttributeSupplier.Builder createMobAttributes() {
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
+				.add(Attributes.MAX_HEALTH, DoomConfig.icon_health)
+				.add(Attributes.ATTACK_DAMAGE, DoomConfig.icon_melee_damage).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D).add(Attributes.KNOCKBACK_RESISTANCE, 1000.0D);
 	}
 
 	@Override
-	public void takeKnockback(double strength, double x, double z) {
-		super.takeKnockback(0, 0, 0);
-	}
-
-	@Override
-	protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
+	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
 		return 18.70F;
 	}
 
@@ -308,62 +305,80 @@ public class IconofsinEntity extends DemonEntity implements GeoEntity {
 		return DoomSounds.ICON_DEATH;
 	}
 
-	public void onStartedTrackingBy(ServerPlayerEntity player) {
-		super.onStartedTrackingBy(player);
-		this.bossBar.addPlayer(player);
-	}
-
-	public void onStoppedTrackingBy(ServerPlayerEntity player) {
-		super.onStoppedTrackingBy(player);
-		this.bossBar.removePlayer(player);
-	}
-
-	protected void initDataTracker() {
-		super.initDataTracker();
-		this.dataTracker.startTracking(DEATH_STATE, 0);
+	public ServerBossEvent getBossInfo() {
+		return bossInfo;
 	}
 
 	@Override
-	public void readCustomDataFromNbt(NbtCompound tag) {
-		super.readCustomDataFromNbt(tag);
+	public void startSeenByPlayer(ServerPlayer player) {
+		super.startSeenByPlayer(player);
+		this.bossInfo.addPlayer(player);
+	}
+
+	@Override
+	public void stopSeenByPlayer(ServerPlayer player) {
+		super.stopSeenByPlayer(player);
+		this.bossInfo.removePlayer(player);
+	}
+
+	@Override
+	public int getMaxSpawnClusterSize() {
+		return 1;
+	}
+
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(DEATH_STATE, 0);
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
 		if (this.hasCustomName()) {
-			this.bossBar.setName(this.getDisplayName());
+			this.bossInfo.setName(this.getDisplayName());
 		}
-		this.setDeathState(tag.getInt("Phase"));
+		this.setDeathState(compound.getInt("Phase"));
 	}
 
 	@Override
-	public void setCustomName(@Nullable Text name) {
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putInt("Phase", this.getDeathState());
+	}
+
+	@Override
+	public void setCustomName(Component name) {
 		super.setCustomName(name);
-		this.bossBar.setName(this.getDisplayName());
+		this.bossInfo.setName(this.getDisplayName());
 	}
 
 	@Override
-	protected void mobTick() {
-		super.mobTick();
-		this.bossBar.setPercent(this.getHealth() / this.getMaxHealth());
+	protected void customServerAiStep() {
+		super.customServerAiStep();
+		this.bossInfo.setProgress(this.getHealth() / this.getMaxHealth());
 	}
 
 	@Override
-	public int getArmor() {
-		return this.dataTracker.get(DEATH_STATE) == 1 ? 0 : (int) ((getHealth() / getMaxHealth()) * 100);
+	public int getArmorValue() {
+		return this.entityData.get(DEATH_STATE) == 1 ? 0 : (int) ((getHealth() / getMaxHealth()) * 100);
 	}
 
 	@Override
-	public void tickMovement() {
-		super.tickMovement();
-		++this.age;
-		if (!this.world.isClient) {
-			if (this.dataTracker.get(DEATH_STATE) == 0) {
-				this.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 1000000, 1));
-			} else if (this.dataTracker.get(DEATH_STATE) == 1) {
-				this.removeStatusEffect(StatusEffects.STRENGTH);
-				this.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 10000000, 2));
-				this.addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 10000000, 1));
+	public void aiStep() {
+		super.aiStep();
+		++this.tickCount;
+		if (!this.level.isClientSide) {
+			if (this.entityData.get(DEATH_STATE) == 0) {
+				this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000000, 1));
+			} else if (this.entityData.get(DEATH_STATE) == 1) {
+				this.removeEffect(MobEffects.DAMAGE_BOOST);
+				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 10000000, 2));
+				this.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 10000000, 1));
 			}
-			if (!this.world.getDimension().respawnAnchorWorks()) {
-				this.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 10000000, 3));
-				if (this.age % 2400 == 0) {
+			if (!this.level.dimensionType().respawnAnchorWorks()) {
+				this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 10000000, 3));
+				if (this.tickCount % 2400 == 0) {
 					this.heal(40F);
 				}
 			}
@@ -373,42 +388,42 @@ public class IconofsinEntity extends DemonEntity implements GeoEntity {
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		final Box aabb = new Box(this.getBlockPos().up()).expand(64D, 64D, 64D);
-		this.getEntityWorld().getOtherEntities(this, aabb).forEach(e -> {
-			if (e instanceof IconofsinEntity && e.age < 1) {
+		final AABB aabb = new AABB(this.blockPosition().above()).inflate(64D, 64D, 64D);
+		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
+			if (e instanceof IconofsinEntity && e.tickCount < 1) {
 				e.remove(RemovalReason.KILLED);
 			}
-			if (e instanceof PlayerEntity) {
-				if (!((PlayerEntity) e).isCreative())
-					if (!((PlayerEntity) e).isSpectator())
+			if (e instanceof Player) {
+				if (!((Player) e).isCreative())
+					if (!((Player) e).isSpectator())
 						this.setTarget((LivingEntity) e);
 			}
 		});
 	}
 
 	@Override
-	public boolean damage(DamageSource source, float amount) {
+	public boolean hurt(DamageSource source, float amount) {
 		return source == DamageSource.IN_WALL || source == DamageSource.ON_FIRE || source == DamageSource.IN_FIRE
 				? false
-				: super.damage(source, amount);
+				: super.hurt(source, amount);
 	}
 
 	@Override
-	public boolean tryAttack(Entity target) {
-		this.world.sendEntityStatus(this, (byte) 4);
-		boolean bl = target.damage(DamageSource.mob(this), (float) DoomConfig.icon_melee_damage
-				+ (this.dataTracker.get(DEATH_STATE) == 1 ? DoomConfig.icon_phaseone_damage_boos : 0));
+	public boolean doHurtTarget(Entity target) {
+		this.level.broadcastEntityEvent(this, (byte) 4);
+		boolean bl = target.hurt(DamageSource.mobAttack(this), (float) DoomConfig.icon_melee_damage
+				+ (this.entityData.get(DEATH_STATE) == 1 ? DoomConfig.icon_phaseone_damage_boos : 0));
 		if (bl) {
-			this.world.createExplosion(this, target.getX(), target.getY(), target.getZ(), 3.0F, false,
-					World.ExplosionSourceType.BLOCK);
-			this.applyDamageEffects(this, target);
-			target.timeUntilRegen = 0;
+			this.level.explode(this, target.getX(), target.getY(), target.getZ(), 3.0F, false,
+					Level.ExplosionInteraction.BLOCK);
+			this.doEnchantDamageEffects(this, target);
+			target.invulnerableTime = 0;
 		}
 		return bl;
 	}
 
 	@Override
-	public boolean cannotDespawn() {
+	public boolean requiresCustomPersistence() {
 		return true;
 	}
 
@@ -417,12 +432,12 @@ public class IconofsinEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	public boolean isImmuneToExplosion() {
+	public boolean ignoreExplosion() {
 		return true;
 	}
 
 	@Override
-	public boolean isFireImmune() {
+	public boolean fireImmune() {
 		return true;
 	}
 }

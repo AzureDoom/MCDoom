@@ -2,22 +2,22 @@ package mod.azure.doom.client.models.weapons;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.SuperShotgun;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
 public class SSGModel extends GeoModel<SuperShotgun> {
 	@Override
-	public Identifier getModelResource(SuperShotgun object) {
-		return new Identifier(DoomMod.MODID, "geo/supershotgun.geo.json");
+	public ResourceLocation getModelResource(SuperShotgun object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/supershotgun.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(SuperShotgun object) {
-		return new Identifier(DoomMod.MODID, "textures/item/supershotgun.png");
+	public ResourceLocation getTextureResource(SuperShotgun object) {
+		return new ResourceLocation(DoomMod.MODID, "textures/item/supershotgun.png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(SuperShotgun animatable) {
-		return new Identifier(DoomMod.MODID, "animations/supershotgun.animation.json");
+	public ResourceLocation getAnimationResource(SuperShotgun animatable) {
+		return new ResourceLocation(DoomMod.MODID, "animations/supershotgun.animation.json");
 	}
 }

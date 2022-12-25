@@ -1,17 +1,18 @@
 package mod.azure.doom.client.render;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import mod.azure.doom.client.models.ArchMaykrModel;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class ArchMaykrRender extends GeoEntityRenderer<ArchMakyrEntity> {
 
-	public ArchMaykrRender(EntityRendererFactory.Context renderManagerIn) {
+	public ArchMaykrRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new ArchMaykrModel());
 	}
 
@@ -19,14 +20,14 @@ public class ArchMaykrRender extends GeoEntityRenderer<ArchMakyrEntity> {
 	protected float getDeathMaxRotation(ArchMakyrEntity entityLivingBaseIn) {
 		return 0.0F;
 	}
-	
+
 	@Override
-	public void preRender(MatrixStack poseStack, ArchMakyrEntity animatable, BakedGeoModel model,
-			VertexConsumerProvider bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
+	public void preRender(PoseStack poseStack, ArchMakyrEntity animatable, BakedGeoModel model,
+			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
 			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay,
-				red, green, blue, alpha);
-		if (animatable.getDataTracker().get(ArchMakyrEntity.DEATH_STATE) == 5) {
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
+				packedOverlay, red, green, blue, alpha);
+		if (animatable.getEntityData().get(ArchMakyrEntity.DEATH_STATE) == 5) {
 			model.getBone("rWing4").get().setHidden(true);
 			if (animatable.getVariant() == 1) {
 				model.getBone("lArm2").get().setHidden(true);
@@ -42,7 +43,7 @@ public class ArchMaykrRender extends GeoEntityRenderer<ArchMakyrEntity> {
 				model.getBone("lWing4").get().setHidden(true);
 			}
 		}
-		if (animatable.getDataTracker().get(ArchMakyrEntity.DEATH_STATE) == 4) {
+		if (animatable.getEntityData().get(ArchMakyrEntity.DEATH_STATE) == 4) {
 			model.getBone("rWing4").get().setHidden(true);
 			if (animatable.getVariant() == 1) {
 				model.getBone("lArm2").get().setHidden(true);
@@ -58,7 +59,7 @@ public class ArchMaykrRender extends GeoEntityRenderer<ArchMakyrEntity> {
 				model.getBone("lWing4").get().setHidden(true);
 			}
 		}
-		if (animatable.getDataTracker().get(ArchMakyrEntity.DEATH_STATE) == 3) {
+		if (animatable.getEntityData().get(ArchMakyrEntity.DEATH_STATE) == 3) {
 			model.getBone("rWing4").get().setHidden(true);
 			if (animatable.getVariant() == 1) {
 				model.getBone("lArm2").get().setHidden(true);
@@ -72,7 +73,7 @@ public class ArchMaykrRender extends GeoEntityRenderer<ArchMakyrEntity> {
 				model.getBone("lWing4").get().setHidden(true);
 			}
 		}
-		if (animatable.getDataTracker().get(ArchMakyrEntity.DEATH_STATE) == 2) {
+		if (animatable.getEntityData().get(ArchMakyrEntity.DEATH_STATE) == 2) {
 			model.getBone("rWing4").get().setHidden(true);
 			if (animatable.getVariant() == 2) {
 				model.getBone("lWing4").get().setHidden(true);
@@ -81,10 +82,10 @@ public class ArchMaykrRender extends GeoEntityRenderer<ArchMakyrEntity> {
 				model.getBone("lArm2").get().setHidden(true);
 			}
 		}
-		if (animatable.getDataTracker().get(ArchMakyrEntity.DEATH_STATE) == 1) {
+		if (animatable.getEntityData().get(ArchMakyrEntity.DEATH_STATE) == 1) {
 			model.getBone("rWing4").get().setHidden(true);
 		}
-		if (animatable.getDataTracker().get(ArchMakyrEntity.DEATH_STATE) == 0) {
+		if (animatable.getEntityData().get(ArchMakyrEntity.DEATH_STATE) == 0) {
 			model.getBone("rWing4").get().setHidden(false);
 			if (animatable.getVariant() == 1) {
 				model.getBone("frontCloak").get().setHidden(false);

@@ -18,38 +18,37 @@ import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomSounds;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.AreaEffectCloudEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.HoglinEntity;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.PhantomEntity;
-import net.minecraft.entity.mob.ShulkerEntity;
-import net.minecraft.entity.mob.SlimeEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.Phantom;
+import net.minecraft.world.entity.monster.Shulker;
+import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.monster.hoglin.Hoglin;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -57,44 +56,45 @@ import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class BFGEntity extends PersistentProjectileEntity implements GeoEntity {
+public class BFGEntity extends AbstractArrow implements GeoEntity {
 
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
-	private static final TrackedData<Integer> BEAM_TARGET_ID = DataTracker.registerData(BFGEntity.class,
-			TrackedDataHandlerRegistry.INTEGER);
+	private static final EntityDataAccessor<Integer> TARGET_ENTITY = SynchedEntityData.defineId(BFGEntity.class,
+			EntityDataSerializers.INT);
 	private LivingEntity cachedBeamTarget;
 	private LivingEntity shooter;
 	private BlockPos lightBlockPos = null;
 	private int idleTicks = 0;
-    private int beamTicks;
+	private int beamTicks;
 	Random rand = new Random();
 	List<? extends String> whitelistEntries = DoomConfig.bfg_damage_mob_whitelist;
 	int randomIndex = rand.nextInt(whitelistEntries.size());
-	Identifier randomElement1 = new Identifier(whitelistEntries.get(randomIndex));
-	EntityType<?> randomElement = Registries.ENTITY_TYPE.get(randomElement1);
+	ResourceLocation randomElement1 = new ResourceLocation(whitelistEntries.get(randomIndex));
+	EntityType<?> randomElement = BuiltInRegistries.ENTITY_TYPE.get(randomElement1);
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();
 
-	public BFGEntity(EntityType<? extends BFGEntity> entityType, World world) {
+	public BFGEntity(EntityType<? extends BFGEntity> entityType, Level world) {
 		super(entityType, world);
-		this.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
+		this.pickup = AbstractArrow.Pickup.DISALLOWED;
 	}
 
-	public BFGEntity(World world, LivingEntity owner) {
+	public BFGEntity(Level world, LivingEntity owner) {
 		super(ProjectilesEntityRegister.BFG_CELL, owner, world);
 		this.shooter = owner;
 	}
 
-	protected BFGEntity(EntityType<? extends BFGEntity> type, double x, double y, double z, World world) {
+	protected BFGEntity(EntityType<? extends BFGEntity> type, double x, double y, double z, Level world) {
 		this(type, world);
 	}
 
-	protected BFGEntity(EntityType<? extends BFGEntity> type, LivingEntity owner, World world) {
+	protected BFGEntity(EntityType<? extends BFGEntity> type, LivingEntity owner, Level world) {
 		this(type, owner.getX(), owner.getEyeY() - 0.10000000149011612D, owner.getZ(), world);
 		this.setOwner(owner);
-		if (owner instanceof PlayerEntity) {
-			this.pickupType = PersistentProjectileEntity.PickupPermission.ALLOWED;
+		if (owner instanceof Player) {
+			this.pickup = AbstractArrow.Pickup.DISALLOWED;
 		}
 	}
 
@@ -111,84 +111,83 @@ public class BFGEntity extends PersistentProjectileEntity implements GeoEntity {
 	}
 
 	@Override
-	public Packet<ClientPlayPacketListener> createSpawnPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return DoomEntityPacket.createPacket(this);
 	}
 
 	@Override
-	protected void age() {
+	protected void tickDespawn() {
 		++this.ticksInAir;
-		if (this.ticksInAir >= 40) {
-			this.remove(Entity.RemovalReason.DISCARDED);
+//		if (this.tickCount >= 40) {
+//			this.remove(RemovalReason.KILLED);
+//		}
+	}
+
+	@Override
+	protected void doPostHurtEffects(LivingEntity living) {
+		super.doPostHurtEffects(living);
+		if (!(living instanceof Player) && !(living instanceof IconofsinEntity)) {
+			living.setDeltaMovement(0, 0, 0);
+			living.invulnerableTime = 0;
 		}
 	}
 
 	@Override
-	protected void onHit(LivingEntity living) {
-		super.onHit(living);
-		if (!(living instanceof PlayerEntity) && !(living instanceof IconofsinEntity)) {
-			living.setVelocity(0, 0, 0);
-			living.timeUntilRegen = 0;
-		}
-	}
-
-	@Override
-	public void setVelocity(double x, double y, double z, float speed, float divergence) {
-		super.setVelocity(x, y, z, speed, divergence);
+	public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
+		super.shoot(x, y, z, velocity, inaccuracy);
 		this.ticksInAir = 0;
 	}
 
 	@Override
-	public void writeCustomDataToNbt(NbtCompound tag) {
-		super.writeCustomDataToNbt(tag);
-		tag.putShort("life", (short) this.ticksInAir);
+	public void addAdditionalSaveData(CompoundTag compound) {
+		super.addAdditionalSaveData(compound);
+		compound.putShort("life", (short) this.ticksInAir);
 	}
 
 	@Override
-	public void readCustomDataFromNbt(NbtCompound tag) {
-		super.readCustomDataFromNbt(tag);
-		this.ticksInAir = tag.getShort("life");
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
+		this.ticksInAir = compound.getShort("life");
 	}
 
 	@Override
 	public void tick() {
 		int idleOpt = 100;
-		if (getVelocity().lengthSquared() < 0.01)
+		if (getDeltaMovement().lengthSqr() < 0.01)
 			idleTicks++;
 		else
 			idleTicks = 0;
 		if (idleOpt <= 0 || idleTicks < idleOpt)
 			super.tick();
-		boolean isInsideWaterBlock = world.isWater(getBlockPos());
+		boolean isInsideWaterBlock = level.isWaterAt(blockPosition());
 		spawnLightSource(isInsideWaterBlock);
-		if (this.age >= 80) {
+		if (this.tickCount >= 80) {
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
-		final Box aabb = new Box(this.getBlockPos().up()).expand(24D, 24D, 24D);
-		this.getEntityWorld().getOtherEntities(this, aabb).forEach(e -> {
-			Entity listEntity = randomElement.downcast(e);
-			if (!(e instanceof PlayerEntity || e instanceof EnderDragonEntity || e instanceof GoreNestEntity
+		final AABB aabb = new AABB(this.blockPosition().above()).inflate(24D, 24D, 24D);
+		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
+			Entity listEntity = randomElement.tryCast(e);
+			if (!(e instanceof Player || e instanceof EnderDragon || e instanceof GoreNestEntity
 					|| e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity
 					|| e instanceof MotherDemonEntity)
-					&& (e instanceof HostileEntity || e instanceof SlimeEntity || e instanceof PhantomEntity || e instanceof DemonEntity
-							|| e instanceof ShulkerEntity || e instanceof HoglinEntity || (e == listEntity))) {
+					&& (e instanceof Monster || e instanceof Slime || e instanceof Phantom || e instanceof DemonEntity
+							|| e instanceof Shulker || e instanceof Hoglin || (e == listEntity))) {
 				if (e.isAlive()) {
-					e.damage(DamageSource.explosion(this, shooter), DoomConfig.bfgball_damage_aoe);
-					this.setBeamTarget(e.getId());
+					e.hurt(DamageSource.explosion(this, shooter), DoomConfig.bfgball_damage_aoe);
+					this.setTargetedEntity(e.getId());
 				}
 			}
-			if (e instanceof EnderDragonEntity) {
+			if (e instanceof EnderDragon) {
 				if (e.isAlive()) {
-					((EnderDragonEntity) e).head.damage(DamageSource.player((PlayerEntity) this.shooter),
+					((EnderDragon) e).head.hurt(DamageSource.playerAttack((Player) this.shooter),
 							DoomConfig.bfgball_damage_dragon * 0.3F);
-					this.setBeamTarget(e.getId());
+					this.setTargetedEntity(e.getId());
 				}
 			}
 			if (e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity
 					|| e instanceof MotherDemonEntity) {
 				if (e.isAlive()) {
-					e.damage(DamageSource.player((PlayerEntity) this.shooter),
-							DoomConfig.bfgball_damage_aoe * 0.1F);
+					e.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.bfgball_damage_aoe * 0.1F);
 				}
 			}
 		});
@@ -196,12 +195,12 @@ public class BFGEntity extends PersistentProjectileEntity implements GeoEntity {
 
 	private void spawnLightSource(boolean isInWaterBlock) {
 		if (lightBlockPos == null) {
-			lightBlockPos = findFreeSpace(world, getBlockPos(), 2);
+			lightBlockPos = findFreeSpace(level, blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			world.setBlockState(lightBlockPos, DoomBlocks.TICKING_LIGHT_BLOCK.getDefaultState());
-		} else if (checkDistance(lightBlockPos, getBlockPos(), 2)) {
-			BlockEntity blockEntity = world.getBlockEntity(lightBlockPos);
+			level.setBlockAndUpdate(lightBlockPos, DoomBlocks.TICKING_LIGHT_BLOCK.defaultBlockState());
+		} else if (checkDistance(lightBlockPos, blockPosition(), 2)) {
+			BlockEntity blockEntity = level.getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity) {
 				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
 			} else
@@ -216,7 +215,7 @@ public class BFGEntity extends PersistentProjectileEntity implements GeoEntity {
 				&& Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
 	}
 
-	private BlockPos findFreeSpace(World world, BlockPos blockPos, int maxDistance) {
+	private BlockPos findFreeSpace(Level world, BlockPos blockPos, int maxDistance) {
 		if (blockPos == null)
 			return null;
 
@@ -229,7 +228,7 @@ public class BFGEntity extends PersistentProjectileEntity implements GeoEntity {
 		for (int x : offsets)
 			for (int y : offsets)
 				for (int z : offsets) {
-					BlockPos offsetPos = blockPos.add(x, y, z);
+					BlockPos offsetPos = blockPos.offset(x, y, z);
 					BlockState state = world.getBlockState(offsetPos);
 					if (state.isAir() || state.getBlock().equals(DoomBlocks.TICKING_LIGHT_BLOCK))
 						return offsetPos;
@@ -244,119 +243,103 @@ public class BFGEntity extends PersistentProjectileEntity implements GeoEntity {
 	}
 
 	@Override
-	public ItemStack asItemStack() {
+	public ItemStack getPickupItem() {
 		return new ItemStack(DoomItems.BFG_CELL);
 	}
 
 	@Override
-	public boolean hasNoGravity() {
-		if (this.isSubmergedInWater()) {
+	public boolean isNoGravity() {
+		if (this.isInWater())
 			return false;
-		} else {
-			return true;
-		}
+		return true;
 	}
 
 	@Override
-	protected void onBlockHit(BlockHitResult blockHitResult) {
-		super.onBlockHit(blockHitResult);
-		if (!this.world.isClient) {
-			this.doDamage();
-			this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.0F, false,
-					DoomConfig.enable_block_breaking ? World.ExplosionSourceType.BLOCK
-							: World.ExplosionSourceType.NONE);
+	protected void onHitBlock(BlockHitResult blockHitResult) {
+		super.onHitBlock(blockHitResult);
+		if (!this.level.isClientSide())
 			this.remove(Entity.RemovalReason.DISCARDED);
-		}
-		this.playSound(DoomSounds.BFG_HIT, 1.0F, 1.0F);
 	}
 
 	@Override
-	protected void onEntityHit(EntityHitResult entityHitResult) {
-		if (!this.world.isClient) {
+	protected void onHitEntity(EntityHitResult entityHitResult) {
+		if (!this.level.isClientSide) {
 			this.doDamage();
-			this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.0F, false,
-					DoomConfig.enable_block_breaking ? World.ExplosionSourceType.BLOCK
-							: World.ExplosionSourceType.NONE);
-			this.remove(Entity.RemovalReason.DISCARDED);
+			this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
+					DoomConfig.enable_block_breaking ? Level.ExplosionInteraction.BLOCK
+							: Level.ExplosionInteraction.NONE);
+			this.remove(RemovalReason.KILLED);
 		}
-		this.playSound(DoomSounds.BFG_HIT, 1.0F, 1.0F);
+		this.playSound(DoomSounds.BFG_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 	}
 
 	public void doDamage() {
-		final Box aabb = new Box(this.getBlockPos().up()).expand(24D, 24D, 24D);
-		this.getEntityWorld().getOtherEntities(this, aabb).forEach(e -> {
-			Entity listEntity = randomElement.downcast(e);
-			if (!(e instanceof PlayerEntity || e instanceof EnderDragonEntity || e instanceof GoreNestEntity
+		final AABB aabb = new AABB(this.blockPosition().above()).inflate(24D, 24D, 24D);
+		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
+			Entity listEntity = randomElement.tryCast(e);
+			if (!(e instanceof Player || e instanceof EnderDragon || e instanceof GoreNestEntity
 					|| e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity
 					|| e instanceof MotherDemonEntity)
-					&& (e instanceof HostileEntity || e instanceof SlimeEntity || e instanceof PhantomEntity
-							|| e instanceof DemonEntity || e instanceof ShulkerEntity || e instanceof HoglinEntity
-							|| (e == listEntity))) {
-				e.damage(DamageSource.player((PlayerEntity) this.shooter), DoomConfig.bfgball_damage);
-				this.setBeamTarget(e.getId());
-				if (!this.world.isClient()) {
-					List<LivingEntity> list1 = this.world.getNonSpectatingEntities(LivingEntity.class,
-							this.getBoundingBox().expand(4.0D, 2.0D, 4.0D));
-					AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(e.world, e.getX(), e.getY(),
-							e.getZ());
-					areaeffectcloudentity.setParticleType(ParticleTypes.TOTEM_OF_UNDYING);
+					&& (e instanceof Monster || e instanceof Slime || e instanceof Phantom || e instanceof DemonEntity
+							|| e instanceof Shulker || e instanceof Hoglin || (e == listEntity))) {
+				e.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.bfgball_damage);
+				this.setTargetedEntity(e.getId());
+				if (!this.level.isClientSide) {
+					List<LivingEntity> list1 = this.level.getEntitiesOfClass(LivingEntity.class,
+							this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D));
+					AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(e.level, e.getX(), e.getY(), e.getZ());
+					areaeffectcloudentity.setParticle(ParticleTypes.TOTEM_OF_UNDYING);
 					areaeffectcloudentity.setRadius(3.0F);
 					areaeffectcloudentity.setDuration(10);
 					if (!list1.isEmpty()) {
 						for (LivingEntity livingentity : list1) {
-							double d0 = this.squaredDistanceTo(livingentity);
+							double d0 = this.distanceToSqr(livingentity);
 							if (d0 < 16.0D) {
 								areaeffectcloudentity.setPos(e.getX(), e.getEyeY(), e.getZ());
 							}
 						}
 					}
-					e.world.spawnEntity(areaeffectcloudentity);
+					e.level.addFreshEntity(areaeffectcloudentity);
 				}
 			}
-			if (e instanceof EnderDragonEntity) {
+			if (e instanceof EnderDragon) {
 				if (e.isAlive()) {
-					((EnderDragonEntity) e).head.damage(DamageSource.player((PlayerEntity) this.shooter),
+					((EnderDragon) e).head.hurt(DamageSource.playerAttack((Player) this.shooter),
 							DoomConfig.bfgball_damage_dragon * 0.3F);
 				}
 			}
 			if (e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity
 					|| e instanceof MotherDemonEntity) {
 				if (e.isAlive()) {
-					e.damage(DamageSource.player((PlayerEntity) this.shooter), DoomConfig.bfgball_damage * 0.1F);
+					e.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.bfgball_damage * 0.1F);
 				}
 			}
 		});
 	}
 
 	@Override
-	@Environment(EnvType.CLIENT)
-	public boolean shouldRender(double distance) {
-		return true;
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(TARGET_ENTITY, 0);
 	}
 
-	@Override
-	protected void initDataTracker() {
-		super.initDataTracker();
-		this.dataTracker.startTracking(BEAM_TARGET_ID, 0);
+	private void setTargetedEntity(int entityId) {
+		this.entityData.set(TARGET_ENTITY, entityId);
 	}
 
-	private void setBeamTarget(int entityId) {
-		this.dataTracker.set(BEAM_TARGET_ID, entityId);
-	}
-
-	public boolean hasBeamTarget() {
-		return (Integer) this.dataTracker.get(BEAM_TARGET_ID) != 0;
+	public boolean hasTargetedEntity() {
+		return this.entityData.get(TARGET_ENTITY) != 0;
 	}
 
 	@Nullable
-	public LivingEntity getBeamTarget() {
-		if (!this.hasBeamTarget()) {
+	public LivingEntity getTargetedEntity() {
+		if (!this.hasTargetedEntity()) {
 			return null;
-		} else if (this.world.isClient) {
+		} else if (this.level.isClientSide) {
 			if (this.cachedBeamTarget != null) {
 				return this.cachedBeamTarget;
 			} else {
-				Entity entity = this.world.getEntityById((Integer) this.dataTracker.get(BEAM_TARGET_ID));
+				Entity entity = this.level.getEntity(this.entityData.get(TARGET_ENTITY));
 				if (entity instanceof LivingEntity) {
 					this.cachedBeamTarget = (LivingEntity) entity;
 					return this.cachedBeamTarget;
@@ -369,21 +352,20 @@ public class BFGEntity extends PersistentProjectileEntity implements GeoEntity {
 		}
 	}
 
-    public float getBeamProgress(float tickDelta) {
-        return ((float)this.beamTicks + tickDelta) / (float)this.getWarmupTime();
-    }
+	public float getBeamProgress(float tickDelta) {
+		return ((float) this.beamTicks + tickDelta) / (float) this.getWarmupTime();
+	}
 
-    public int getWarmupTime() {
-        return 80;
-    }
+	public int getWarmupTime() {
+		return 80;
+	}
 
 	@Override
-	public void onTrackedDataSet(TrackedData<?> data) {
-		super.onTrackedDataSet(data);
-        if (BEAM_TARGET_ID.equals(data)) {
-            this.beamTicks = 0;
-            this.cachedBeamTarget = null;
-        }
+	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+		super.onSyncedDataUpdated(key);
+		if (TARGET_ENTITY.equals(key)) {
+			this.cachedBeamTarget = null;
+		}
 	}
 
 	@Nullable
@@ -392,7 +374,7 @@ public class BFGEntity extends PersistentProjectileEntity implements GeoEntity {
 	}
 
 	@Override
-	public boolean doesRenderOnFire() {
+	public boolean displayFireAnimation() {
 		return false;
 	}
 }

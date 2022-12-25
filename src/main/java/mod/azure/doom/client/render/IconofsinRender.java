@@ -1,30 +1,31 @@
 package mod.azure.doom.client.render;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import mod.azure.doom.client.models.IconofsinModel;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class IconofsinRender extends GeoEntityRenderer<IconofsinEntity> {
 
-	public IconofsinRender(EntityRendererFactory.Context renderManagerIn) {
+	public IconofsinRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new IconofsinModel());
 	}
 	
 	@Override
-	public void preRender(MatrixStack poseStack, IconofsinEntity animatable, BakedGeoModel model,
-			VertexConsumerProvider bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
+	public void preRender(PoseStack poseStack, IconofsinEntity animatable, BakedGeoModel model,
+			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
 			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay,
 				red, green, blue, alpha);
 		float health = animatable.getHealth();
 		float maxhealth = animatable.getMaxHealth();
 		poseStack.scale(2F, 2F, 2F);
-		if (animatable.getDataTracker().get(IconofsinEntity.DEATH_STATE) == 1) {
+		if (animatable.getEntityData().get(IconofsinEntity.DEATH_STATE) == 1) {
 			model.getBone("rShoulderArmor").get().setHidden(true);
 			model.getBone("rArmArmor1").get().setHidden(true);
 			model.getBone("rArmArmor2").get().setHidden(true);
@@ -73,7 +74,7 @@ public class IconofsinRender extends GeoEntityRenderer<IconofsinEntity> {
 			model.getBone("rToe2Armor_1").get().setHidden(true);
 			model.getBone("rToe3Armor_1").get().setHidden(true);
 		}
-		if (animatable.getDataTracker().get(IconofsinEntity.DEATH_STATE) == 0) {
+		if (animatable.getEntityData().get(IconofsinEntity.DEATH_STATE) == 0) {
 			if (health >= (maxhealth * 0.90)) {
 				model.getBone("rShoulderArmor").get().setHidden(false);
 				model.getBone("rArmArmor1").get().setHidden(false);

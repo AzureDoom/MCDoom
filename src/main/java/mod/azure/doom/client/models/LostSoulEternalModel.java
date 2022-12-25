@@ -2,47 +2,47 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
 public class LostSoulEternalModel extends GeoModel<LostSoulEntity> {
 
-	private static final Identifier[] TEX = { new Identifier(DoomMod.MODID, "textures/entity/lostsould_eternal_1.png"),
-			new Identifier(DoomMod.MODID, "textures/entity/lostsould_eternal_2.png"),
-			new Identifier(DoomMod.MODID, "textures/entity/lostsould_eternal_3.png"),
-			new Identifier(DoomMod.MODID, "textures/entity/lostsould_eternal_4.png"),
-			new Identifier(DoomMod.MODID, "textures/entity/lostsould_eternal_5.png"),
-			new Identifier(DoomMod.MODID, "textures/entity/lostsould_eternal_6.png"),
-			new Identifier(DoomMod.MODID, "textures/entity/lostsould_eternal_7.png"),
-			new Identifier(DoomMod.MODID, "textures/entity/lostsould_eternal_8.png") };
+	private static final ResourceLocation[] TEX = { new ResourceLocation(DoomMod.MODID, "textures/entity/lostsould_eternal_1.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/lostsould_eternal_2.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/lostsould_eternal_3.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/lostsould_eternal_4.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/lostsould_eternal_5.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/lostsould_eternal_6.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/lostsould_eternal_7.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/lostsould_eternal_8.png") };
 
-	private static final Identifier[] TEX1 = { new Identifier(DoomMod.MODID, "textures/entity/lostsould_2016_1.png"),
-			new Identifier(DoomMod.MODID, "textures/entity/lostsould_2016_2.png"),
-			new Identifier(DoomMod.MODID, "textures/entity/lostsould_2016_3.png"),
-			new Identifier(DoomMod.MODID, "textures/entity/lostsould_2016_4.png"),
-			new Identifier(DoomMod.MODID, "textures/entity/lostsould_2016_5.png"),
-			new Identifier(DoomMod.MODID, "textures/entity/lostsould_2016_6.png"),
-			new Identifier(DoomMod.MODID, "textures/entity/lostsould_2016_7.png"),
-			new Identifier(DoomMod.MODID, "textures/entity/lostsould_2016_8.png") };
+	private static final ResourceLocation[] TEX1 = { new ResourceLocation(DoomMod.MODID, "textures/entity/lostsould_2016_1.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/lostsould_2016_2.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/lostsould_2016_3.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/lostsould_2016_4.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/lostsould_2016_5.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/lostsould_2016_6.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/lostsould_2016_7.png"),
+			new ResourceLocation(DoomMod.MODID, "textures/entity/lostsould_2016_8.png") };
 
 	@Override
-	public Identifier getModelResource(LostSoulEntity object) {
-		return new Identifier(DoomMod.MODID, "geo/lostsouleternal.geo.json");
+	public ResourceLocation getModelResource(LostSoulEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/lostsouleternal.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(LostSoulEntity object) {
+	public ResourceLocation getTextureResource(LostSoulEntity object) {
 		return object.getVariant() == 2 ? TEX1[(object.getFlameTimer())] : TEX[(object.getFlameTimer())];
 	}
 
 	@Override
-	public Identifier getAnimationResource(LostSoulEntity object) {
-		return new Identifier(DoomMod.MODID, "animations/lostsoul_animation.json");
+	public ResourceLocation getAnimationResource(LostSoulEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "animations/lostsoul_animation.json");
 	}
 
 	@Override
-	public RenderLayer getRenderType(LostSoulEntity animatable, Identifier texture) {
-		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
+	public RenderType getRenderType(LostSoulEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

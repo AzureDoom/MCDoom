@@ -1,9 +1,9 @@
 package mod.azure.doom.entity.ai.goal;
 
 import mod.azure.doom.entity.DemonEntity;
-import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
 
 public class DemonFlightMoveControl extends MoveControl {
 	private final int maxPitchChange;
@@ -18,41 +18,41 @@ public class DemonFlightMoveControl extends MoveControl {
 	}
 
 	public void tick() {
-		if (this.state == MoveControl.State.MOVE_TO) {
-			this.state = MoveControl.State.WAIT;
+		if (this.operation == MoveControl.Operation.MOVE_TO) {
+			this.operation = MoveControl.Operation.WAIT;
 			this.entity.setNoGravity(true);
-			double d = this.targetX - this.entity.getX();
-			double e = this.targetY - this.entity.getY();
-			double f = this.targetZ - this.entity.getZ();
+			double d = this.wantedX - this.entity.getX();
+			double e = this.wantedY - this.entity.getY();
+			double f = this.wantedZ - this.entity.getZ();
 			double g = d * d + e * e + f * f;
 			if (g < 2.500000277905201E-7D) {
-				this.entity.setUpwardSpeed(0.0F);
-				this.entity.setForwardSpeed(0.0F);
+				this.mob.setYya(0.0F);
+				this.mob.setZza(0.0F);
 				return;
 			}
 
-			float h = (float) (MathHelper.atan2(f, d) * 57.2957763671875D) - 90.0F;
-			this.entity.setYaw(this.wrapDegrees(this.entity.getYaw(), h, 90.0F));
+			float h = (float) (Mth.atan2(f, d) * 57.2957763671875D) - 90.0F;
+			this.mob.setYRot(this.rotlerp(this.mob.getYRot(), h, 90.0F));
 			float j;
 			if (this.entity.isOnGround()) {
-				j = (float) (this.speed * this.entity.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED));
+				j = (float) (this.speedModifier * this.entity.getAttributeValue(Attributes.MOVEMENT_SPEED));
 			} else {
-				j = (float) (this.speed * this.entity.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED));
+				j = (float) (this.speedModifier * this.entity.getAttributeValue(Attributes.FLYING_SPEED));
 			}
 
-			this.entity.setMovementSpeed(j * 2);
+			this.entity.setSpeed(j * 2);
 			double k = Math.sqrt(d * d + f * f);
 			if (Math.abs(e) > 9.999999747378752E-6D || Math.abs(k) > 9.999999747378752E-6D) {
-				float l = (float) (-(MathHelper.atan2(e, k) * 57.2957763671875D));
-				this.entity.setPitch(this.wrapDegrees(this.entity.getPitch(), l, (float) this.maxPitchChange));
-				this.entity.setUpwardSpeed(e > 0.0D ? j * 2 : -j * 2);
+				float l = (float) (-(Mth.atan2(e, k) * 57.2957763671875D));
+				this.entity.setXRot(this.rotlerp(this.entity.getXRot(), l, (float) this.maxPitchChange));
+				this.entity.setYya(e > 0.0D ? j * 2 : -j * 2);
 			}
 		} else {
 			if (!this.noGravity) {
 				this.entity.setNoGravity(false);
 			}
-			this.entity.setUpwardSpeed(0.0F);
-			this.entity.setForwardSpeed(0.0F);
+			this.mob.setYya(0.0F);
+			this.mob.setZza(0.0F);
 		}
 
 	}

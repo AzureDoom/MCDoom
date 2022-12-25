@@ -2,22 +2,22 @@ package mod.azure.doom.client.models.weapons;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.Unmaykr;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
 public class UnmaykrModel extends GeoModel<Unmaykr> {
 	@Override
-	public Identifier getModelResource(Unmaykr object) {
-		return new Identifier(DoomMod.MODID, "geo/unmaykr.geo.json");
+	public ResourceLocation getModelResource(Unmaykr object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/unmaykr.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(Unmaykr object) {
-		return new Identifier(DoomMod.MODID, "textures/item/unmaykr.png");
+	public ResourceLocation getTextureResource(Unmaykr object) {
+		return new ResourceLocation(DoomMod.MODID, "textures/item/unmaykr.png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(Unmaykr animatable) {
-		return new Identifier(DoomMod.MODID, "animations/unmaykr.animation.json");
+	public ResourceLocation getAnimationResource(Unmaykr animatable) {
+		return new ResourceLocation(DoomMod.MODID, "animations/unmaykr.animation.json");
 	}
 }

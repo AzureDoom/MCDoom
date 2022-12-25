@@ -2,92 +2,92 @@ package mod.azure.doom.client;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
-import net.minecraft.client.item.ModelPredicateProviderRegistry;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 public class ModelProviderinit {
 
 	public static void init() {
 		// Crucible
-		ModelPredicateProviderRegistry.register(DoomItems.CRUCIBLESWORD, new Identifier("broken"),
+		ItemProperties.register(DoomItems.CRUCIBLESWORD, new ResourceLocation("broken"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return isUsable(itemStack) ? 0.0F : 1.0F;
 				});
 		// Marauder Axe
-		ModelPredicateProviderRegistry.register(DoomItems.AXE_OPEN, new Identifier("broken"),
+		ItemProperties.register(DoomItems.AXE_OPEN, new ResourceLocation("broken"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
-					return itemStack.getDamage() < itemStack.getMaxDamage() - 1 ? 0.0F : 1.0F;
+					return itemStack.getDamageValue() < itemStack.getMaxDamage() - 1 ? 0.0F : 1.0F;
 				});
 		// NonCenter
-		ModelPredicateProviderRegistry.register(DoomItems.SG, new Identifier("nocenter"),
+		ItemProperties.register(DoomItems.SG, new ResourceLocation("nocenter"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
-		ModelPredicateProviderRegistry.register(DoomItems.ROCKETLAUNCHER, new Identifier("nocenter"),
+		ItemProperties.register(DoomItems.ROCKETLAUNCHER, new ResourceLocation("nocenter"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
-		ModelPredicateProviderRegistry.register(DoomItems.PLASMAGUN, new Identifier("nocenter"),
+		ItemProperties.register(DoomItems.PLASMAGUN, new ResourceLocation("nocenter"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
-		ModelPredicateProviderRegistry.register(DoomItems.HEAVYCANNON, new Identifier("nocenter"),
+		ItemProperties.register(DoomItems.HEAVYCANNON, new ResourceLocation("nocenter"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
-		ModelPredicateProviderRegistry.register(DoomItems.UNMAYKR, new Identifier("nocenter"),
+		ItemProperties.register(DoomItems.UNMAYKR, new ResourceLocation("nocenter"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
-		ModelPredicateProviderRegistry.register(DoomItems.UNMAKER, new Identifier("nocenter"),
+		ItemProperties.register(DoomItems.UNMAKER, new ResourceLocation("nocenter"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
-		ModelPredicateProviderRegistry.register(DoomItems.CHAINGUN, new Identifier("nocenter"),
+		ItemProperties.register(DoomItems.CHAINGUN, new ResourceLocation("nocenter"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
-		ModelPredicateProviderRegistry.register(DoomItems.BFG_ETERNAL, new Identifier("nocenter"),
+		ItemProperties.register(DoomItems.BFG_ETERNAL, new ResourceLocation("nocenter"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
-		ModelPredicateProviderRegistry.register(DoomItems.BALLISTA, new Identifier("nocenter"),
+		ItemProperties.register(DoomItems.BALLISTA, new ResourceLocation("nocenter"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
-		ModelPredicateProviderRegistry.register(DoomItems.SSG, new Identifier("nocenter"),
+		ItemProperties.register(DoomItems.SSG, new ResourceLocation("nocenter"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
-		ModelPredicateProviderRegistry.register(DoomItems.PISTOL, new Identifier("nocenter"),
+		ItemProperties.register(DoomItems.PISTOL, new ResourceLocation("nocenter"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
-		ModelPredicateProviderRegistry.register(DoomItems.DPLASMARIFLE, new Identifier("nocenter"),
+		ItemProperties.register(DoomItems.DPLASMARIFLE, new ResourceLocation("nocenter"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
-		ModelPredicateProviderRegistry.register(DoomItems.DGAUSS, new Identifier("nocenter"),
+		ItemProperties.register(DoomItems.DGAUSS, new ResourceLocation("nocenter"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
-		ModelPredicateProviderRegistry.register(DoomItems.DSG, new Identifier("nocenter"),
+		ItemProperties.register(DoomItems.DSG, new ResourceLocation("nocenter"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return nonCentered(itemStack) ? 1.0F : 0.0F;
 				});
-		ModelPredicateProviderRegistry.register(DoomItems.CHAINSAW, new Identifier("stalled"),
+		ItemProperties.register(DoomItems.CHAINSAW, new ResourceLocation("stalled"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return isUsable(itemStack) ? 0.0F : 1.0F;
 				});
-		ModelPredicateProviderRegistry.register(DoomItems.CHAINSAW64, new Identifier("stalled"),
+		ItemProperties.register(DoomItems.CHAINSAW64, new ResourceLocation("stalled"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return isUsable(itemStack) ? 0.0F : 1.0F;
 				});
 	}
 
 	private static boolean isUsable(ItemStack stack) {
-		return stack.getDamage() < stack.getMaxDamage() - 1;
+		return stack.getDamageValue() < stack.getMaxDamage() - 1;
 	}
 
 	private static boolean nonCentered(ItemStack stack) {

@@ -1,26 +1,20 @@
 package mod.azure.doom.entity.tierambient;
 
-import java.util.Random;
-
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.CustomSmallFireballEntity;
-import mod.azure.doom.entity.tierfodder.PossessedScientistEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -32,14 +26,14 @@ public class TurretEntity extends DemonEntity implements GeoEntity {
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-	public TurretEntity(EntityType<? extends DemonEntity> type, World worldIn) {
-		super(type, worldIn);
+	public TurretEntity(EntityType<TurretEntity> entityType, Level worldIn) {
+		super(entityType, worldIn);
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("attacking"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		}));
@@ -50,33 +44,30 @@ public class TurretEntity extends DemonEntity implements GeoEntity {
 		return this.cache;
 	}
 
+	public static AttributeSupplier.Builder createMobAttributes() {
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
+				.add(Attributes.MAX_HEALTH, DoomConfig.turret_health).add(Attributes.ATTACK_DAMAGE, 0.0D)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 1.0f).add(Attributes.MOVEMENT_SPEED, 0.0D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+	}
+
 	@Override
-	protected void updatePostDeath() {
+	protected void tickDeath() {
 		++this.deathTime;
 		if (this.deathTime == 30) {
-			this.remove(Entity.RemovalReason.KILLED);
-			this.dropXp();
+			this.remove(RemovalReason.KILLED);
+			this.dropExperience();
 		}
 	}
 
 	@Override
-	public void tick() {
-		super.tick();
-	}
-
-	public static boolean spawning(EntityType<PossessedScientistEntity> p_223337_0_, World p_223337_1_,
-			SpawnReason reason, BlockPos p_223337_3_, Random p_223337_4_) {
-		return p_223337_1_.getDifficulty() != Difficulty.PEACEFUL;
-	}
-
-	@Override
-	protected void initGoals() {
-		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(8, new LookAtEntityGoal(this, MerchantEntity.class, 8.0F));
-		this.goalSelector.add(4, new TurretEntity.AttackGoal(this));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
-		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
+	protected void registerGoals() {
+		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
+		this.goalSelector.addGoal(1, new TurretEntity.AttackGoal(this));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
+		this.targetSelector.addGoal(2, new HurtByTargetGoal(this).setAlertOthers());
 	}
 
 	static class AttackGoal extends Goal {
@@ -87,41 +78,41 @@ public class TurretEntity extends DemonEntity implements GeoEntity {
 			this.parentEntity = ghast;
 		}
 
-		public boolean canStart() {
+		public boolean canUse() {
 			return this.parentEntity.getTarget() != null;
 		}
 
 		public void start() {
 			super.start();
-			this.parentEntity.setAttacking(true);
+			this.parentEntity.setAggressive(true);
 		}
 
 		@Override
 		public void stop() {
 			super.stop();
-			this.parentEntity.setAttacking(false);
+			this.parentEntity.setAggressive(false);
 			this.parentEntity.setAttackingState(0);
 			this.attackTimer = -1;
 		}
 
 		public void tick() {
 			LivingEntity livingentity = this.parentEntity.getTarget();
-			if (this.parentEntity.canSee(livingentity)) {
+			if (this.parentEntity.hasLineOfSight(livingentity)) {
+				Level world = this.parentEntity.level;
 				++this.attackTimer;
-				World world = this.parentEntity.world;
-				Vec3d vec3d = this.parentEntity.getRotationVec(1.0F);
-				double f = livingentity.getX() - (this.parentEntity.getX() + vec3d.x * 2.0D);
-				double g = livingentity.getBodyY(0.5D) - (0.5D + this.parentEntity.getBodyY(0.5D));
-				double h = livingentity.getZ() - (this.parentEntity.getZ() + vec3d.z * 2.0D);
-				CustomSmallFireballEntity fireballentity = new CustomSmallFireballEntity(world, this.parentEntity, f, g,
-						h, 6);
+				Vec3 vector3d = this.parentEntity.getViewVector(1.0F);
+				double d2 = livingentity.getX() - (this.parentEntity.getX() + vector3d.x * 2.0D);
+				double d3 = livingentity.getY(0.5D) - (0.5D + this.parentEntity.getY(0.5D));
+				double d4 = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * 2.0D);
+				CustomSmallFireballEntity fireballentity = new CustomSmallFireballEntity(world, this.parentEntity, d2,
+						d3, d4, DoomConfig.turret_ranged_damage);
 				if (this.attackTimer == 10) {
 					this.parentEntity.setAttackingState(1);
 				}
 				if (this.attackTimer == 20) {
-					fireballentity.updatePosition(this.parentEntity.getX() + vec3d.x,
-							this.parentEntity.getBodyY(0.5D) + 0.5D, parentEntity.getZ() + vec3d.z);
-					world.spawnEntity(fireballentity);
+					fireballentity.setPos(this.parentEntity.getX() + vector3d.x, this.parentEntity.getY(0.5D) + 0.5D,
+							fireballentity.getZ() + vector3d.z);
+					world.addFreshEntity(fireballentity);
 				}
 				if (this.attackTimer >= 30) {
 					this.parentEntity.setAttackingState(0);
@@ -130,17 +121,9 @@ public class TurretEntity extends DemonEntity implements GeoEntity {
 			} else if (this.attackTimer > 0) {
 				--this.attackTimer;
 			}
-			this.parentEntity.lookAtEntity(livingentity, 30.0F, 30.0F);
+			this.parentEntity.lookAt(livingentity, 30.0F, 30.0F);
 		}
 
-	}
-
-	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, 7.0D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0D)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1.0f)
-				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	protected boolean shouldDrown() {
@@ -149,6 +132,11 @@ public class TurretEntity extends DemonEntity implements GeoEntity {
 
 	protected boolean shouldBurnInDay() {
 		return false;
+	}
+
+	@Override
+	public int getMaxSpawnClusterSize() {
+		return 1;
 	}
 
 }

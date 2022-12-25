@@ -2,12 +2,12 @@ package mod.azure.doom.client.render;
 
 import mod.azure.doom.client.models.ProwlerModel;
 import mod.azure.doom.entity.tierheavy.ProwlerEntity;
-import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class ProwlerRender extends GeoEntityRenderer<ProwlerEntity> {
 
-	public ProwlerRender(EntityRendererFactory.Context renderManagerIn) {
+	public ProwlerRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new ProwlerModel());
 	}
 

@@ -6,21 +6,21 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import mod.azure.doom.item.weapons.DoomBaseItem;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 
-@Mixin(PlayerEntityRenderer.class)
+@Mixin(PlayerRenderer.class)
 public class WeaponRenderingMixin {
 
 	@Inject(method = "getArmPose", at = @At(value = "TAIL"), cancellable = true)
-	private static void tryItemPose(AbstractClientPlayerEntity player, Hand hand,
-			CallbackInfoReturnable<BipedEntityModel.ArmPose> ci) {
-		ItemStack itemstack = player.getStackInHand(hand);
+	private static void tryItemPose(AbstractClientPlayer player, InteractionHand hand,
+			CallbackInfoReturnable<HumanoidModel.ArmPose> ci) {
+		ItemStack itemstack = player.getItemInHand(hand);
 		if (itemstack.getItem() instanceof DoomBaseItem) {
-			ci.setReturnValue(BipedEntityModel.ArmPose.BOW_AND_ARROW);
+			ci.setReturnValue(HumanoidModel.ArmPose.BOW_AND_ARROW);
 		}
 	}
 }

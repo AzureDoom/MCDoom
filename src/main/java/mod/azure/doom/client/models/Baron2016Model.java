@@ -2,8 +2,8 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
@@ -13,18 +13,18 @@ import software.bernie.geckolib.model.data.EntityModelData;
 public class Baron2016Model extends GeoModel<BaronEntity> {
 
 	@Override
-	public Identifier getModelResource(BaronEntity object) {
-		return new Identifier(DoomMod.MODID, "geo/baron2016.geo.json");
+	public ResourceLocation getModelResource(BaronEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/baron2016.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(BaronEntity object) {
-		return new Identifier(DoomMod.MODID, "textures/entity/baron2016.png");
+	public ResourceLocation getTextureResource(BaronEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "textures/entity/baron2016.png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(BaronEntity object) {
-		return new Identifier(DoomMod.MODID, "animations/baron2016.animation.json");
+	public ResourceLocation getAnimationResource(BaronEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "animations/baron2016.animation.json");
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class Baron2016Model extends GeoModel<BaronEntity> {
 	}
 
 	@Override
-	public RenderLayer getRenderType(BaronEntity animatable, Identifier texture) {
-		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
+	public RenderType getRenderType(BaronEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

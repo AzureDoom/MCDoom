@@ -2,6 +2,8 @@ package mod.azure.doom.client;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.gui.GunTableScreen;
 import mod.azure.doom.network.ClientEntityPacket;
@@ -14,23 +16,22 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.minecraft.client.gui.screen.ingame.HandledScreens;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.gui.screens.MenuScreens;
 
 @Environment(EnvType.CLIENT)
 public class ClientInit implements ClientModInitializer {
 
-	public static KeyBinding reload = new KeyBinding("key.doom.reload", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R,
+	public static KeyMapping reload = new KeyMapping("key.doom.reload", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R,
 			"category.doom.binds");
-	public static KeyBinding yeethook = new KeyBinding("key.doom.yeethook", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V,
+	public static KeyMapping yeethook = new KeyMapping("key.doom.yeethook", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V,
 			"category.doom.binds");
 
 	@Override
 	public void onInitializeClient() {
 		ModelProviderinit.init();
 		DoomRenderRegistry.init();
-		HandledScreens.register(DoomMod.SCREEN_HANDLER_TYPE, GunTableScreen::new);
+		MenuScreens.register(DoomMod.SCREEN_HANDLER_TYPE, GunTableScreen::new);
 		ClientPlayNetworking.registerGlobalReceiver(DoomEntityPacket.ID, (client, handler, buf, responseSender) -> {
 			ClientEntityPacket.onPacket(client, buf);
 		});

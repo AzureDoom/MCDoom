@@ -8,40 +8,41 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import mod.azure.doom.util.PlayerProperties;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
-@Mixin(PlayerEntity.class)
+@Mixin(Player.class)
 public abstract class PlayerEntityMixin extends LivingEntity implements PlayerProperties {
-	protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
+	
+	protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	@Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
-	public void readNbt(NbtCompound tag, CallbackInfo info) {
-		dataTracker.set(MEATHOOK_TRACKER, tag.getBoolean("hasHook"));
+	@Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
+	public void readNbt(CompoundTag tag, CallbackInfo info) {
+		entityData.set(MEATHOOK_TRACKER, tag.getBoolean("hasHook"));
 	}
 
-	@Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
-	public void writeNbt(NbtCompound tag, CallbackInfo info) {
-		tag.putBoolean("hasHook", dataTracker.get(MEATHOOK_TRACKER));
+	@Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
+	public void writeNbt(CompoundTag tag, CallbackInfo info) {
+		tag.putBoolean("hasHook", entityData.get(MEATHOOK_TRACKER));
 	}
 
-	@Inject(method = "initDataTracker", at = @At("HEAD"))
+	@Inject(method = "defineSynchedData", at = @At("HEAD"))
 	public void initTracker(CallbackInfo info) {
-		dataTracker.startTracking(MEATHOOK_TRACKER, false);
+		entityData.define(MEATHOOK_TRACKER, false);
 	}
 
 	@Override
 	public boolean hasMeatHook() {
-		return dataTracker.get(MEATHOOK_TRACKER);
+		return entityData.get(MEATHOOK_TRACKER);
 	}
 
 	@Override
 	public void setHasMeatHook(boolean hasHook) {
-		dataTracker.set(MEATHOOK_TRACKER, hasHook);
+		entityData.set(MEATHOOK_TRACKER, hasHook);
 	}
 }

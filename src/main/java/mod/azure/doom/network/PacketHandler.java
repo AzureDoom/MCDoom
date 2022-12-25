@@ -22,154 +22,114 @@ import mod.azure.doom.item.weapons.SuperShotgun;
 import mod.azure.doom.item.weapons.SwordCrucibleItem;
 import mod.azure.doom.item.weapons.Unmaykr;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 
 public class PacketHandler {
 
-	public static final Identifier lock_slot = new Identifier(DoomMod.MODID, "select_craft");
+	public static final ResourceLocation lock_slot = new ResourceLocation(DoomMod.MODID, "select_craft");
 
 	public static void registerMessages() {
 		ServerPlayNetworking.registerGlobalReceiver(lock_slot, new C2SMessageSelectCraft());
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.CRUCIBLE,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof SwordCrucibleItem) {
-						((SwordCrucibleItem) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof SwordCrucibleItem)
+						SwordCrucibleItem.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.MARAUDERAXE,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof AxeMarauderItem) {
-						((AxeMarauderItem) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof AxeMarauderItem)
+						AxeMarauderItem.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.CHAINSAW_ETERNAL,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof ChainsawAnimated) {
-						((ChainsawAnimated) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof ChainsawAnimated)
+						ChainsawAnimated.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.CHAINSAW,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof Chainsaw) {
-						((Chainsaw) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof Chainsaw)
+						Chainsaw.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.BALLISTA,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof Ballista) {
-						((Ballista) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof Ballista)
+						Ballista.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.BFG,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof BFG) {
-						((BFG) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof BFG)
+						BFG.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.BFG9000,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof BFG9000) {
-						((BFG9000) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof BFG9000)
+						BFG9000.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.CHAINGUN,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof Chaingun) {
-						((Chaingun) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof Chaingun)
+						Chaingun.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.PISTOL,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof PistolItem) {
-						((PistolItem) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof PistolItem)
+						PistolItem.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.PLASMA,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof PlasmaGun) {
-						((PlasmaGun) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof PlasmaGun)
+						PlasmaGun.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.ROCKETLAUNCHER,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof RocketLauncher) {
-						((RocketLauncher) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof RocketLauncher)
+						RocketLauncher.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.SHOTGUN,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof Shotgun) {
-						((Shotgun) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof Shotgun)
+						Shotgun.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.SUPERSHOTGUN,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof SuperShotgun) {
-						((SuperShotgun) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof SuperShotgun)
+						SuperShotgun.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.UNMAYKR,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof Unmaykr) {
-						((Unmaykr) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof Unmaykr)
+						Unmaykr.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.HEAVYCANNON,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof HeavyCannon) {
-						((HeavyCannon) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof HeavyCannon)
+						HeavyCannon.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.SENTINELHAMMER,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof SentinelHammerItem) {
-						((SentinelHammerItem) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof SentinelHammerItem)
+						SentinelHammerItem.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.DARKLORDCRUCIBLE,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof DarkLordCrucibleItem) {
-						((DarkLordCrucibleItem) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof DarkLordCrucibleItem)
+						DarkLordCrucibleItem.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.DSG,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof DShotgun) {
-						((DShotgun) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof DShotgun)
+						DShotgun.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.DGAUSS,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof DGauss) {
-						((DGauss) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof DGauss)
+						DGauss.reload(player, InteractionHand.MAIN_HAND);
 				});
 		ServerPlayNetworking.registerGlobalReceiver(DoomMod.DPLASMARIFLE,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof DPlasmaRifle) {
-						((DPlasmaRifle) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
+					if (player.getMainHandItem().getItem() instanceof DPlasmaRifle)
+						DPlasmaRifle.reload(player, InteractionHand.MAIN_HAND);
 				});
 	}
 }

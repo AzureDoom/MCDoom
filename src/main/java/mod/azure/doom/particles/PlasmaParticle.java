@@ -2,75 +2,68 @@ package mod.azure.doom.particles;
 
 import java.util.Random;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.particle.ParticleTextureSheet;
-import net.minecraft.client.particle.SpriteBillboardParticle;
-import net.minecraft.client.particle.SpriteProvider;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particle.DefaultParticleType;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.Mth;
 
-@Environment(value = EnvType.CLIENT)
-public class PlasmaParticle extends SpriteBillboardParticle {
+public class PlasmaParticle extends TextureSheetParticle {
 	static final Random RANDOM = new Random();
-	private final SpriteProvider spriteProvider;
+	private final SpriteSet sprites;
 
-	PlasmaParticle(ClientWorld world, double x, double y, double z, double velocityX, double velocityY,
-			double velocityZ, SpriteProvider spriteProvider) {
-		super(world, x, y, z, velocityX, velocityY, velocityZ);
-		this.velocityMultiplier = 0.96f;
-		this.field_28787 = true;
-		this.spriteProvider = spriteProvider;
-		this.scale *= 0.75f;
-		this.collidesWithWorld = false;
-		this.setSpriteForAge(spriteProvider);
+	PlasmaParticle(ClientLevel p_172136_, double p_172137_, double p_172138_, double p_172139_, double p_172140_,
+			double p_172141_, double p_172142_, SpriteSet p_172143_) {
+		super(p_172136_, p_172137_, p_172138_, p_172139_, p_172140_, p_172141_, p_172142_);
+		this.friction = 0.96F;
+		this.speedUpWhenYMotionIsBlocked = true;
+		this.sprites = p_172143_;
+		this.quadSize *= 0.75F;
+		this.hasPhysics = false;
+		this.setSpriteFromAge(p_172143_);
 	}
 
-	@Override
-	public ParticleTextureSheet getType() {
-		return ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT;
+	public ParticleRenderType getRenderType() {
+		return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
 	}
 
-	@Override
-	public int getBrightness(float tint) {
-		float f = ((float) this.age + tint) / (float) this.maxAge;
-		f = MathHelper.clamp(f, 0.0f, 1.0f);
-		int i = super.getBrightness(tint);
-		int j = i & 0xFF;
-		int k = i >> 16 & 0xFF;
-		if ((j += (int) (f * 15.0f * 16.0f)) > 240) {
+	public int getLightColor(float p_172146_) {
+		float f = ((float) this.age + p_172146_) / (float) this.lifetime;
+		f = Mth.clamp(f, 0.0F, 1.0F);
+		int i = super.getLightColor(p_172146_);
+		int j = i & 255;
+		int k = i >> 16 & 255;
+		j += (int) (f * 15.0F * 16.0F);
+		if (j > 240) {
 			j = 240;
 		}
+
 		return j | k << 16;
 	}
 
-	@Override
 	public void tick() {
 		super.tick();
-		this.setSpriteForAge(this.spriteProvider);
+		this.setSpriteFromAge(this.sprites);
 	}
 
-	@Environment(value = EnvType.CLIENT)
-	public static class Factory implements ParticleFactory<DefaultParticleType> {
-		private final SpriteProvider spriteProvider;
+	public static class Factory implements ParticleProvider<SimpleParticleType> {
+		private final SpriteSet sprite;
 
-		public Factory(SpriteProvider spriteProvider) {
-			this.spriteProvider = spriteProvider;
+		public Factory(SpriteSet p_172151_) {
+			this.sprite = p_172151_;
 		}
 
-		@Override
-		public Particle createParticle(DefaultParticleType defaultParticleType, ClientWorld clientWorld, double d,
-				double e, double f, double g, double h, double i) {
-			double rotate = MathHelper.clamp(f, 0.0f, 360.0f);
-			PlasmaParticle glowParticle = new PlasmaParticle(clientWorld, d, e, f, 0.0, 0.0, 0.0, this.spriteProvider);
-			glowParticle.setColor(1.0f, 0.9f, 1.0f);
-			glowParticle.setVelocity(g * 0.25, h * 0.25, i * 0.25);
-			glowParticle.angle = (float) rotate;
-			glowParticle.setMaxAge(clientWorld.random.nextInt(2) + 2);
-			return glowParticle;
+		public Particle createParticle(SimpleParticleType p_172162_, ClientLevel p_172163_, double p_172164_,
+				double p_172165_, double p_172166_, double p_172167_, double p_172168_, double p_172169_) {
+			PlasmaParticle glowparticle = new PlasmaParticle(p_172163_, p_172164_, p_172165_, p_172166_, 0.0D, 0.0D,
+					0.0D, this.sprite);
+			glowparticle.setColor(1.0F, 0.9F, 1.0F);
+			glowparticle.setParticleSpeed(p_172167_ * 0.25D, p_172168_ * 0.25D, p_172169_ * 0.25D);
+			glowparticle.setLifetime(p_172163_.random.nextInt(2) + 2);
+			return glowparticle;
 		}
 	}
 }

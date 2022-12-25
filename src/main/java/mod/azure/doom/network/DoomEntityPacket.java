@@ -3,34 +3,34 @@ package mod.azure.doom.network;
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.entity.Entity;
-import net.minecraft.network.Packet;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 
 public class DoomEntityPacket {
-	public static final Identifier ID = new Identifier(DoomMod.MODID, "spawn_entity");
+	public static final ResourceLocation ID = new ResourceLocation(DoomMod.MODID, "spawn_entity");
 
-	public static Packet<ClientPlayPacketListener> createPacket(Entity entity) {
-		PacketByteBuf buf = createBuffer();
-		buf.writeVarInt(Registries.ENTITY_TYPE.getRawId(entity.getType()));
-		buf.writeUuid(entity.getUuid());
+	public static Packet<ClientGamePacketListener> createPacket(Entity entity) {
+		FriendlyByteBuf buf = createBuffer();
+		buf.writeVarInt(BuiltInRegistries.ENTITY_TYPE.getId(entity.getType()));
+		buf.writeUUID(entity.getUUID());
 		buf.writeVarInt(entity.getId());
 		buf.writeDouble(entity.getX());
 		buf.writeDouble(entity.getY());
 		buf.writeDouble(entity.getZ());
-		buf.writeByte(MathHelper.floor(entity.getPitch() * 256.0F / 360.0F));
-		buf.writeByte(MathHelper.floor(entity.getYaw() * 256.0F / 360.0F));
-		buf.writeFloat(entity.getPitch());
-		buf.writeFloat(entity.getYaw());
+		buf.writeByte(Mth.floor(entity.getXRot() * 256.0F / 360.0F));
+		buf.writeByte(Mth.floor(entity.getYRot() * 256.0F / 360.0F));
+		buf.writeFloat(entity.getXRot());
+		buf.writeFloat(entity.getYRot());
 		return ServerPlayNetworking.createS2CPacket(ID, buf);
 	}
 
-	private static PacketByteBuf createBuffer() {
-		return new PacketByteBuf(Unpooled.buffer());
+	private static FriendlyByteBuf createBuffer() {
+		return new FriendlyByteBuf(Unpooled.buffer());
 	}
 
 }

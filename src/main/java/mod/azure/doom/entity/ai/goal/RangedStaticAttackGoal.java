@@ -2,8 +2,8 @@ package mod.azure.doom.entity.ai.goal;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 public class RangedStaticAttackGoal extends Goal {
 
@@ -19,30 +19,23 @@ public class RangedStaticAttackGoal extends Goal {
 		this.statecheck = state;
 	}
 
-	public boolean canStart() {
+	public boolean canUse() {
 		return this.parentEntity.getTarget() != null;
 	}
 
-	public void startExecuting() {
+	public void start() {
 		this.attackTimer = 0;
 	}
 
-	public void resetTask() {
-		this.parentEntity.setAttackingState(0);
-	}
-
-	@Override
 	public void stop() {
-		super.stop();
-		parentEntity.setNoGravity(false);
-		parentEntity.addVelocity(0, 0, 0);
+		this.parentEntity.setAttackingState(0);
 	}
 
 	public void tick() {
 		if (this.parentEntity.getTarget() != null) {
 			LivingEntity livingentity = this.parentEntity.getTarget();
-			this.parentEntity.lookAtEntity(livingentity, 30.0F, 30.0F);
-			boolean inLineOfSight = this.parentEntity.getVisibilityCache().canSee(livingentity);
+			this.parentEntity.lookAt(livingentity, 30.0F, 30.0F);
+			boolean inLineOfSight = this.parentEntity.getSensing().hasLineOfSight(livingentity);
 			if (inLineOfSight != this.seeTime > 0) {
 				this.seeTime = 0;
 			}
@@ -51,8 +44,8 @@ public class RangedStaticAttackGoal extends Goal {
 			} else {
 				--this.seeTime;
 			}
-			this.parentEntity.getNavigation().startMovingTo(livingentity, 0.95F);
-			this.parentEntity.getMoveControl().strafeTo(0.5F, -0.5F);
+			this.parentEntity.getNavigation().moveTo(livingentity, 0.95F);
+			this.parentEntity.getMoveControl().strafe(0.5F, -0.5F);
 			this.attackTimer++;
 			if (this.attackTimer == 1) {
 				this.parentEntity.setAttackingState(statecheck);
@@ -60,7 +53,7 @@ public class RangedStaticAttackGoal extends Goal {
 			if (this.attackTimer == 4) {
 				this.attack.shoot();
 
-				boolean isInsideWaterBlock = parentEntity.world.isWater(parentEntity.getBlockPos());
+				boolean isInsideWaterBlock = parentEntity.level.isWaterAt(parentEntity.blockPosition());
 				parentEntity.spawnLightSource(this.parentEntity, isInsideWaterBlock);
 			}
 			if (this.attackTimer >= 8) {

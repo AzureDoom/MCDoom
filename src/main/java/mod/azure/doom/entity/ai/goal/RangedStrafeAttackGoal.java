@@ -4,8 +4,8 @@ import java.util.EnumSet;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.attack.AbstractRangedAttack;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 public class RangedStrafeAttackGoal extends Goal {
 	private final DemonEntity entity;
@@ -27,9 +27,9 @@ public class RangedStrafeAttackGoal extends Goal {
 			int attackCooldownIn, int visibleTicksDelay, int strafeTicks, float maxAttackDistanceIn, int state) {
 		this.entity = mob;
 		this.moveSpeedAmp = moveSpeedAmpIn;
-		this.attackCooldown = attackCooldownIn;
+		this.attackCooldown = -15;
 		this.maxAttackDistance = maxAttackDistanceIn * maxAttackDistanceIn;
-		this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 		this.attack = attack;
 		this.visibleTicksDelay = 0;
 		this.strafeTicks = strafeTicks;
@@ -40,14 +40,14 @@ public class RangedStrafeAttackGoal extends Goal {
 	public RangedStrafeAttackGoal(DemonEntity mob, AbstractRangedAttack attack, int attackCooldownIn) {
 		this.entity = mob;
 		this.attackCooldown = attackCooldownIn;
-		this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 		this.attack = attack;
 	}
 
 	public RangedStrafeAttackGoal(DemonEntity mob, AbstractRangedAttack attack, double moveSpeedAmpIn, int state) {
 		this.entity = mob;
 		this.moveSpeedAmp = moveSpeedAmpIn;
-		this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 		this.attack = attack;
 		this.statecheck = state;
 	}
@@ -98,15 +98,15 @@ public class RangedStrafeAttackGoal extends Goal {
 	 * Returns whether execution should begin. You can also read and cache any state
 	 * necessary for execution in this method as well.
 	 */
-	public boolean canStart() {
+	public boolean canUse() {
 		return this.entity.getTarget() != null;
 	}
 
 	/**
 	 * Returns whether an in-progress EntityAIBase should continue executing
 	 */
-	public boolean shouldContinue() {
-		return (this.canStart() || !this.entity.getNavigation().isIdle());
+	public boolean canContinueToUse() {
+		return (this.canUse() || !this.entity.getNavigation().isDone());
 	}
 
 	/**
@@ -114,8 +114,7 @@ public class RangedStrafeAttackGoal extends Goal {
 	 */
 	public void start() {
 		super.start();
-		this.entity.setAttacking(true);
-		this.entity.setAttackingState(0);
+		this.entity.setAggressive(true);
 	}
 
 	/**
@@ -124,7 +123,7 @@ public class RangedStrafeAttackGoal extends Goal {
 	 */
 	public void stop() {
 		super.stop();
-		this.entity.setAttacking(false);
+		this.entity.setAggressive(false);
 		this.entity.setAttackingState(0);
 		this.seeTime = 0;
 		this.attackTime = -1;
@@ -137,10 +136,10 @@ public class RangedStrafeAttackGoal extends Goal {
 	public void tick() {
 		LivingEntity livingentity = this.entity.getTarget();
 		if (livingentity != null) {
-			this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
-			double distanceToTargetSq = this.entity.squaredDistanceTo(livingentity.getX(), livingentity.getY(),
+			this.entity.lookAt(livingentity, 30.0F, 30.0F);
+			double distanceToTargetSq = this.entity.distanceToSqr(livingentity.getX(), livingentity.getY(),
 					livingentity.getZ());
-			boolean inLineOfSight = this.entity.getVisibilityCache().canSee(livingentity);
+			boolean inLineOfSight = this.entity.getSensing().hasLineOfSight(livingentity);
 			if (inLineOfSight != this.seeTime > 0) {
 				this.seeTime = 0;
 			}
@@ -157,8 +156,8 @@ public class RangedStrafeAttackGoal extends Goal {
 				this.entity.getNavigation().stop();
 				++this.strafingTime;
 			} else {
-				this.entity.getNavigation().startMovingTo(livingentity, 0.95F);
-				this.entity.getMoveControl().strafeTo(this.strafingBackwards ? -0.5F : 0.5F,
+				this.entity.getNavigation().moveTo(livingentity, 0.95F);
+				this.entity.getMoveControl().strafe(this.strafingBackwards ? -0.5F : 0.5F,
 						this.strafingClockwise ? 0.5F : -0.5F);
 				this.strafingTime = -1;
 			}
@@ -182,11 +181,11 @@ public class RangedStrafeAttackGoal extends Goal {
 					this.strafingBackwards = true;
 				}
 
-				this.entity.getMoveControl().strafeTo(this.strafingBackwards ? -0.5F : 0.5F,
+				this.entity.getMoveControl().strafe(this.strafingBackwards ? -0.5F : 0.5F,
 						this.strafingClockwise ? 0.5F : -0.5F);
-				this.entity.lookAtEntity(livingentity, 30.0F, 30.0F);
+				this.entity.lookAt(livingentity, 30.0F, 30.0F);
 			} else {
-				this.entity.getLookControl().lookAt(livingentity, 30.0F, 30.0F);
+				this.entity.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
 			}
 
 			// attack
@@ -203,18 +202,18 @@ public class RangedStrafeAttackGoal extends Goal {
 				if (tickMultiShot()) {
 					this.attack.shoot();
 
-					boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
+					boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
 					entity.spawnLightSource(this.entity, isInsideWaterBlock);
 				} else {
 					this.attack.shoot();
 
-					boolean isInsideWaterBlock = entity.world.isWater(entity.getBlockPos());
+					boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
 					entity.spawnLightSource(this.entity, isInsideWaterBlock);
 				}
 			}
 			if (this.attackTime >= 8) {
 				this.entity.setAttackingState(0);
-				this.attackTime = -5;
+				this.attackTime = -15;
 			}
 		}
 	}

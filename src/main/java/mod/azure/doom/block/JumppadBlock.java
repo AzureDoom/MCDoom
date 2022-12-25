@@ -1,53 +1,47 @@
 package mod.azure.doom.block;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class JumppadBlock extends Block {
 
 	public JumppadBlock() {
-		super(AbstractBlock.Settings.of(Material.METAL).strength(4.0F).sounds(BlockSoundGroup.METAL).nonOpaque());
+		super(Block.Properties.of(Material.HEAVY_METAL).strength(4.0F).sound(SoundType.STONE).noOcclusion());
 	}
 
 	@Override
-	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return VoxelShapes.cuboid(0.00f, 0.0f, 0.00f, 1.0f, 0.2f, 1.0f);
-	}
-	
-	@Override
-	public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity, float fallDistance) {
-        entity.handleFallDamage(fallDistance, 0.0F, DamageSource.FALL);
+	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+		return Shapes.box(0.00f, 0.0f, 0.00f, 1.0f, 0.2f, 1.0f);
 	}
 
 	@Override
-	public void onEntityLand(BlockView world, Entity entity) {
-		this.jumpEntity(entity);
+	public void updateEntityAfterFallOn(BlockGetter worldIn, Entity entityIn) {
+		this.jumpEntity(entityIn);
 	}
 
 	private void jumpEntity(Entity entity) {
-		Vec3d vector3d = entity.getVelocity();
+		Vec3 vector3d = entity.getDeltaMovement();
 		if (vector3d.y < 0.0D) {
-			entity.setVelocity(vector3d.x, 1D, vector3d.z);
+			entity.setDeltaMovement(vector3d.x, 1D, vector3d.z);
 		}
 	}
-	
+
 	@Override
-	public void onSteppedOn(World world, BlockPos pos, BlockState state, Entity entity) {
-		double d0 = Math.abs(entity.getVelocity().y);
+	public void stepOn(Level worldIn, BlockPos pos, BlockState state, Entity entityIn) {
+		double d0 = Math.abs(entityIn.getDeltaMovement().y);
 		double d1 = 1.4D + d0 * 0.2D;
-		entity.setVelocity(entity.getVelocity().multiply(d1, 1.0D, 0.5D));
-		super.onSteppedOn(world, pos, state, entity);
+		entityIn.setDeltaMovement(entityIn.getDeltaMovement().multiply(d1, 1.0D, 0.5D));
+		super.stepOn(worldIn, pos, state, entityIn);
 	}
+
 }

@@ -2,21 +2,21 @@ package mod.azure.doom.client.render.projectiles;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.projectiles.UnmaykrBoltEntity;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.ProjectileEntityRenderer;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.entity.ArrowRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 
-public class UnmaykrBulletRender extends ProjectileEntityRenderer<UnmaykrBoltEntity> {
+public class UnmaykrBulletRender extends ArrowRenderer<UnmaykrBoltEntity> {
 
-	private static final Identifier ARGENT_BOLT_TEXTURE = new Identifier(DoomMod.MODID,
+	private static final ResourceLocation ARGENT_BOLT_TEXTURE = new ResourceLocation(DoomMod.MODID,
 			"textures/entity/projectiles/argent_bolt.png");
 
-	public UnmaykrBulletRender(EntityRendererFactory.Context renderManagerIn) {
+	public UnmaykrBulletRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn);
 	}
 
 	@Override
-	public Identifier getTexture(UnmaykrBoltEntity entity) {
+	public ResourceLocation getTextureLocation(UnmaykrBoltEntity entity) {
 		return ARGENT_BOLT_TEXTURE;
 	}
 

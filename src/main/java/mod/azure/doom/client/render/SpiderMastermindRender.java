@@ -2,12 +2,12 @@ package mod.azure.doom.client.render;
 
 import mod.azure.doom.client.models.SpiderMastermindModel;
 import mod.azure.doom.entity.tierboss.SpiderMastermindEntity;
-import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class SpiderMastermindRender extends GeoEntityRenderer<SpiderMastermindEntity> {
 
-	public SpiderMastermindRender(EntityRendererFactory.Context renderManagerIn) {
+	public SpiderMastermindRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new SpiderMastermindModel());
 	}
 

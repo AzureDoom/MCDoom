@@ -2,18 +2,18 @@ package mod.azure.doom.client.render;
 
 import mod.azure.doom.client.models.PainModel;
 import mod.azure.doom.entity.tierheavy.PainEntity;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.core.BlockPos;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class PainRender extends GeoEntityRenderer<PainEntity> {
 
-	public PainRender(EntityRendererFactory.Context renderManagerIn) {
+	public PainRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new PainModel());
 	}
 
 	@Override
-	protected int getBlockLight(PainEntity entity, BlockPos blockPos) {
+	protected int getBlockLightLevel(PainEntity entity, BlockPos blockPos) {
 		return entity.getAttckingState() == 1 ? 15 : 1;
 	}
 

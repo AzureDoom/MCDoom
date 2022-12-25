@@ -1,29 +1,30 @@
 package mod.azure.doom.entity.projectiles.entity;
 
+import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
 import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
-import net.minecraft.block.AbstractFireBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 
-public class FireProjectile extends ExplosiveProjectileEntity {
+public class FireProjectile extends AbstractHurtingProjectile {
 
 	protected int timeInAir;
 	protected boolean inAir;
@@ -32,30 +33,30 @@ public class FireProjectile extends ExplosiveProjectileEntity {
 	private BlockPos lightBlockPos = null;
 	private int idleTicks = 0;
 
-	public FireProjectile(EntityType<FireProjectile> entitytype, World world) {
+	public FireProjectile(EntityType<FireProjectile> entitytype, Level world) {
 		super(entitytype, world);
 	}
 
-	public FireProjectile(World worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
+	public FireProjectile(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
 			float directHitDamage) {
 		super(ProjectilesEntityRegister.FIRE_MOB, shooter, accelX, accelY, accelZ, worldIn);
 		this.directHitDamage = directHitDamage;
 	}
 
-	public FireProjectile(World worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
+	public FireProjectile(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
 		super(ProjectilesEntityRegister.FIRE_MOB, x, y, z, accelX, accelY, accelZ, worldIn);
 	}
 
 	@Override
-	public void setVelocity(double x, double y, double z, float speed, float divergence) {
-		super.setVelocity(x, y, z, speed, divergence);
-		this.ticksInAir = 0;
+	public void addAdditionalSaveData(CompoundTag compound) {
+		super.addAdditionalSaveData(compound);
+		compound.putShort("life", (short) this.ticksInAir);
 	}
 
 	@Override
-	public void writeCustomDataToNbt(NbtCompound tag) {
-		super.writeCustomDataToNbt(tag);
-		tag.putShort("life", (short) this.ticksInAir);
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
+		this.ticksInAir = compound.getShort("life");
 	}
 
 	public void setDirectHitDamage(float directHitDamage) {
@@ -63,19 +64,19 @@ public class FireProjectile extends ExplosiveProjectileEntity {
 	}
 
 	@Override
-	public Packet<ClientPlayPacketListener> createSpawnPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return DoomEntityPacket.createPacket(this);
 	}
 
 	@Override
-	public boolean hasNoGravity() {
+	public boolean isNoGravity() {
 		return false;
 	}
 
 	@Override
 	public void tick() {
 		int idleOpt = 100;
-		if (getVelocity().lengthSquared() < 0.01)
+		if (getDeltaMovement().lengthSqr() < 0.01)
 			idleTicks++;
 		else
 			idleTicks = 0;
@@ -85,59 +86,61 @@ public class FireProjectile extends ExplosiveProjectileEntity {
 		if (this.ticksInAir >= 40) {
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
-		boolean isInsideWaterBlock = world.isWater(getBlockPos());
+		boolean isInsideWaterBlock = level.isWaterAt(blockPosition());
 		spawnLightSource(isInsideWaterBlock);
-		if (this.world.isClient) {
-			double d2 = this.getX() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getWidth() * 0.5D;
-			double e2 = this.getY() + 0.05D + this.random.nextDouble();
-			double f2 = this.getZ() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getWidth() * 0.5D;
-			this.world.addParticle(ParticleTypes.FLAME, true, d2, e2, f2, 0, 0, 0);
-			this.world.addParticle(ParticleTypes.SMOKE, true, d2, e2, f2, 0, 0, 0);
+		if (this.level.isClientSide()) {
+			double x = this.getX() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getBbWidth() * 0.5D;
+			double z = this.getZ() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getBbWidth() * 0.5D;
+			this.level.addParticle(ParticleTypes.FLAME, true, x, this.getY(), z, 0, 0, 0);
+			this.level.addParticle(ParticleTypes.SMOKE, true, x, this.getY(), z, 0, 0, 0);
 		}
 	}
 
 	@Override
-	protected void onBlockHit(BlockHitResult blockHitResult) {
-		BlockPos blockPos;
-		super.onBlockHit(blockHitResult);
-		if (this.world.isClient) {
+	protected void onHitBlock(BlockHitResult blockHitResult) {
+		super.onHitBlock(blockHitResult);
+		BlockPos blockpos = blockHitResult.getBlockPos().relative(blockHitResult.getDirection());
+		if (!this.level.isClientSide) {
 			return;
 		}
 		Entity entity = this.getOwner();
-		if ((!(entity instanceof MobEntity) || this.world.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING))
-				&& this.world.isAir(blockPos = blockHitResult.getBlockPos().offset(blockHitResult.getSide()))) {
-			this.world.setBlockState(blockPos, AbstractFireBlock.getState(this.world, blockPos));
-		}
-	}
-
-	@Override
-	protected void onEntityHit(EntityHitResult entityHitResult) {
-		super.onEntityHit(entityHitResult);
-		if (!this.world.isClient) {
-			Entity entity = entityHitResult.getEntity();
-			Entity entity2 = this.getOwner();
-			entity.damage(DamageSource.mob((LivingEntity) entity2), directHitDamage);
-			if (entity2 instanceof LivingEntity) {
-				this.applyDamageEffects((LivingEntity) entity2, entity);
-				this.remove(Entity.RemovalReason.DISCARDED);
-				entity.setOnFireFor(15);
+		if ((!(entity instanceof Mob) || this.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING))) {
+			if (this.level.isEmptyBlock(blockpos)) {
+				this.level.setBlockAndUpdate(blockpos, BaseFireBlock.getState(this.level, blockpos));
 			}
 		}
 	}
 
 	@Override
-	public boolean doesRenderOnFire() {
+	protected void onHitEntity(EntityHitResult entityHitResult) {
+		super.onHitEntity(entityHitResult);
+		if (!this.level.isClientSide) {
+			Entity entity = entityHitResult.getEntity();
+			Entity entity1 = this.getOwner();
+			this.remove(RemovalReason.KILLED);
+			if (entity1 instanceof LivingEntity) {
+				if (!(entity instanceof DemonEntity)) {
+					entity.hurt(DamageSource.mobAttack((LivingEntity) entity1), directHitDamage);
+					entity.setSecondsOnFire(15);
+					this.doEnchantDamageEffects((LivingEntity) entity1, entity);
+				}
+			}
+		}
+	}
+
+	@Override
+	protected boolean shouldBurn() {
 		return false;
 	}
 
 	private void spawnLightSource(boolean isInWaterBlock) {
 		if (lightBlockPos == null) {
-			lightBlockPos = findFreeSpace(world, getBlockPos(), 2);
+			lightBlockPos = findFreeSpace(level, blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			world.setBlockState(lightBlockPos, DoomBlocks.TICKING_LIGHT_BLOCK.getDefaultState());
-		} else if (checkDistance(lightBlockPos, getBlockPos(), 2)) {
-			BlockEntity blockEntity = world.getBlockEntity(lightBlockPos);
+			level.setBlockAndUpdate(lightBlockPos, DoomBlocks.TICKING_LIGHT_BLOCK.defaultBlockState());
+		} else if (checkDistance(lightBlockPos, blockPosition(), 2)) {
+			BlockEntity blockEntity = level.getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity) {
 				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
 			} else
@@ -152,7 +155,7 @@ public class FireProjectile extends ExplosiveProjectileEntity {
 				&& Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
 	}
 
-	private BlockPos findFreeSpace(World world, BlockPos blockPos, int maxDistance) {
+	private BlockPos findFreeSpace(Level world, BlockPos blockPos, int maxDistance) {
 		if (blockPos == null)
 			return null;
 
@@ -165,7 +168,7 @@ public class FireProjectile extends ExplosiveProjectileEntity {
 		for (int x : offsets)
 			for (int y : offsets)
 				for (int z : offsets) {
-					BlockPos offsetPos = blockPos.add(x, y, z);
+					BlockPos offsetPos = blockPos.offset(x, y, z);
 					BlockState state = world.getBlockState(offsetPos);
 					if (state.isAir() || state.getBlock().equals(DoomBlocks.TICKING_LIGHT_BLOCK))
 						return offsetPos;

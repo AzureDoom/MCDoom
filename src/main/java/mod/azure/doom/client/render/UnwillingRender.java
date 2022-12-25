@@ -2,12 +2,12 @@ package mod.azure.doom.client.render;
 
 import mod.azure.doom.client.models.UnwillingModel;
 import mod.azure.doom.entity.tierfodder.UnwillingEntity;
-import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class UnwillingRender extends GeoEntityRenderer<UnwillingEntity> {
 
-	public UnwillingRender(EntityRendererFactory.Context renderManagerIn) {
+	public UnwillingRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new UnwillingModel());
 	}
 

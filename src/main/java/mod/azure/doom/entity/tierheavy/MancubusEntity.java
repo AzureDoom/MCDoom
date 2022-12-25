@@ -1,6 +1,5 @@
 package mod.azure.doom.entity.tierheavy;
 
-import java.util.Random;
 import java.util.SplittableRandom;
 
 import mod.azure.doom.config.DoomConfig;
@@ -11,42 +10,39 @@ import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
 import mod.azure.doom.entity.projectiles.entity.FireProjectile;
 import mod.azure.doom.util.registry.DoomSounds;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.RevengeGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -58,11 +54,12 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class MancubusEntity extends DemonEntity implements GeoEntity {
 
+	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(MancubusEntity.class,
+			EntityDataSerializers.INT);
+	private int attackTimer;
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
-	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(MancubusEntity.class,
-			TrackedDataHandlerRegistry.INTEGER);
 
-	public MancubusEntity(EntityType<MancubusEntity> entityType, World worldIn) {
+	public MancubusEntity(EntityType<MancubusEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 	}
 
@@ -71,35 +68,35 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			if (event.isMoving())
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (this.world.isClient)
-					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
-							SoundCategory.HOSTILE, 0.25F, 1.0F, false);
+				if (this.level.isClientSide())
+					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
+							SoundSource.HOSTILE, 0.25F, 1.0F, false);
 			if (event.getKeyframeData().getSound().matches("talk"))
-				if (this.world.isClient)
-					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.MANCUBUS_STEP,
-							SoundCategory.HOSTILE, 0.25F, 1.0F, false);
+				if (this.level.isClientSide())
+					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.MANCUBUS_STEP,
+							SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
-			if (this.dataTracker.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("firing", LoopType.PLAY_ONCE));
-			if (this.dataTracker.get(STATE) == 3 && !(this.dead || this.getHealth() < 0.01 || this.isDead()))
+			if (this.entityData.get(STATE) == 3 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("ground", LoopType.PLAY_ONCE));
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("attack"))
-				if (this.world.isClient)
-					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), DoomSounds.ROCKET_FIRING,
-							SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+				if (this.level.isClientSide())
+					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.ROCKET_FIRING,
+							SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			if (event.getKeyframeData().getSound().matches("flames"))
-				if (this.world.isClient)
-					this.getEntityWorld().playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ITEM_FIRECHARGE_USE,
-							SoundCategory.HOSTILE, 0.25F, 1.0F, true);
+				if (this.level.isClientSide())
+					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.FIRECHARGE_USE,
+							SoundSource.HOSTILE, 0.25F, 1.0F, true);
 		}));
 	}
 
@@ -109,43 +106,30 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	protected void updatePostDeath() {
+	protected void tickDeath() {
 		++this.deathTime;
 		if (this.deathTime == 80) {
-			this.remove(Entity.RemovalReason.KILLED);
-			this.dropXp();
+			this.remove(RemovalReason.KILLED);
+			this.dropExperience();
 		}
 	}
 
-	public static boolean spawning(EntityType<MancubusEntity> p_223337_0_, World p_223337_1_, SpawnReason reason,
-			BlockPos p_223337_3_, Random p_223337_4_) {
-		return p_223337_1_.getDifficulty() != Difficulty.PEACEFUL;
-	}
-
 	@Override
-	protected void initGoals() {
-		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-		this.goalSelector.add(8, new LookAtEntityGoal(this, MerchantEntity.class, 8.0F));
-		this.goalSelector.add(8, new LookAtEntityGoal(this, IronGolemEntity.class, 8.0F));
-		this.goalSelector.add(8, new LookAroundGoal(this));
-		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-		this.initCustomGoals();
+	protected void registerGoals() {
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, IronGolem.class, 8.0F));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
+		this.applyEntityAI();
 	}
 
-	protected void initCustomGoals() {
-		this.goalSelector.add(4, new MancubusFireAttackGoal(this, new FireballAttack(this)
+	protected void applyEntityAI() {
+		this.goalSelector.addGoal(4, new MancubusFireAttackGoal(this, new FireballAttack(this)
 				.setProjectileOriginOffset(0.1, 0.5, 0.1).setDamage(DoomConfig.mancubus_ranged_damage)));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
-		this.targetSelector.add(2, new ActiveTargetGoal<>(this, IronGolemEntity.class, true));
-		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
-	}
-
-	@Override
-	protected void updateGoalControls() {
-		boolean flag = this.getTarget() != null && this.canSee(this.getTarget());
-		this.goalSelector.setControlEnabled(Goal.Control.LOOK, flag);
-		super.updateGoalControls();
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+		this.targetSelector.addGoal(3, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
 
 	public class FireballAttack extends AbstractRangedAttack {
@@ -161,53 +145,63 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 
 		@Override
 		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(SoundEvents.BLOCK_CAMPFIRE_CRACKLE, 1, 1);
+			return new AttackSound(SoundEvents.CAMPFIRE_CRACKLE, 1, 1);
 		}
 
 		@Override
-		public ProjectileEntity getProjectile(World world, double d2, double d3, double d4) {
+		public Projectile getProjectile(Level world, double d2, double d3, double d4) {
 			return new FireProjectile(world, this.parentEntity, d2, d3, d4, damage);
 
 		}
 	}
 
+	@Override
+	protected void updateControlFlags() {
+		boolean flag = this.getTarget() != null && this.hasLineOfSight(this.getTarget());
+		this.goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
+		super.updateControlFlags();
+	}
+
 	public void spawnFlames(double x, double z, double maxY, double y, float yaw, int warmup) {
-		BlockPos blockPos = new BlockPos(x, y, z);
-		boolean bl = false;
-		double d = -0.75D;
+		BlockPos blockpos = new BlockPos(x, y, z);
+		boolean flag = false;
+		double d0 = 0.0D;
 		do {
-			BlockPos blockPos2 = blockPos.down();
-			BlockState blockState = this.world.getBlockState(blockPos2);
-			if (blockState.isSideSolidFullSquare(this.world, blockPos2, Direction.UP)) {
-				if (!this.world.isAir(blockPos)) {
-					BlockState blockState2 = this.world.getBlockState(blockPos);
-					VoxelShape voxelShape = blockState2.getCollisionShape(this.world, blockPos);
-					if (!voxelShape.isEmpty()) {
-						d = voxelShape.getMax(Direction.Axis.Y);
+			BlockPos blockpos1 = blockpos.below();
+			BlockState blockstate = this.level.getBlockState(blockpos1);
+			if (blockstate.isFaceSturdy(this.level, blockpos1, Direction.UP)) {
+				if (!this.level.isEmptyBlock(blockpos)) {
+					BlockState blockstate1 = this.level.getBlockState(blockpos);
+					VoxelShape voxelshape = blockstate1.getCollisionShape(this.level, blockpos);
+					if (!voxelshape.isEmpty()) {
+						d0 = voxelshape.max(Direction.Axis.Y);
 					}
 				}
-				bl = true;
+				flag = true;
 				break;
 			}
-			blockPos = blockPos.down();
-		} while (blockPos.getY() >= MathHelper.floor(maxY) - 1);
+			blockpos = blockpos.below();
+		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
-		if (bl) {
-			DoomFireEntity fang = new DoomFireEntity(this.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this,
+		if (flag) {
+			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this,
 					DoomConfig.mancubus_ranged_damage);
-			fang.setFireTicks(age);
-			fang.isInvisible();
-			this.world.spawnEntity(fang);
+			fang.setSecondsOnFire(tickCount);
+			fang.setInvisible(false);
+			this.level.addFreshEntity(fang);
 		}
 	}
 
-	public static DefaultAttributeContainer.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0D)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
-				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.6f)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, DoomConfig.mancubus_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DoomConfig.mancubus_melee_damage)
-				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 1.0D);
+	public static AttributeSupplier.Builder createMobAttributes() {
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MAX_HEALTH, DoomConfig.mancubus_health)
+				.add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+	}
+
+	@Override
+	public boolean isBaby() {
+		return false;
 	}
 
 	protected boolean shouldDrown() {
@@ -218,9 +212,12 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 		return false;
 	}
 
-	@Override
-	protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
+	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
 		return 2.80F;
+	}
+
+	public int getAttackTimer() {
+		return this.attackTimer;
 	}
 
 	@Override
@@ -233,29 +230,30 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 		return DoomSounds.MANCUBUS_DEATH;
 	}
 
-	protected void initDataTracker() {
-		super.initDataTracker();
-		this.dataTracker.startTracking(VARIANT, 0);
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(VARIANT, 0);
 	}
 
 	@Override
-	public void writeCustomDataToNbt(NbtCompound tag) {
-		super.writeCustomDataToNbt(tag);
-		tag.putInt("Variant", this.getVariant());
-	}
-
-	@Override
-	public void readCustomDataFromNbt(NbtCompound tag) {
-		super.readCustomDataFromNbt(tag);
+	public void readAdditionalSaveData(CompoundTag tag) {
+		super.readAdditionalSaveData(tag);
 		this.setVariant(tag.getInt("Variant"));
 	}
 
+	@Override
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putInt("Variant", this.getVariant());
+	}
+
 	public int getVariant() {
-		return MathHelper.clamp((Integer) this.dataTracker.get(VARIANT), 1, 5);
+		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 5);
 	}
 
 	public void setVariant(int variant) {
-		this.dataTracker.set(VARIANT, variant);
+		this.entityData.set(VARIANT, variant);
 	}
 
 	public int getVariants() {
@@ -263,17 +261,18 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	public EntityData initialize(ServerWorldAccess serverWorldAccess, LocalDifficulty difficulty,
-			SpawnReason spawnReason, EntityData entityData, NbtCompound entityTag) {
-		entityData = super.initialize(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
+			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
+		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 		SplittableRandom random = new SplittableRandom();
 		int var = random.nextInt(0, 6);
 		this.setVariant(var);
-		return entityData;
+		return spawnDataIn;
 	}
 
 	@Override
-	public int getArmor() {
+	public int getArmorValue() {
 		return this.getVariant() >= 4 ? 6 : 0;
 	}
+
 }

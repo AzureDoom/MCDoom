@@ -4,19 +4,19 @@ import java.util.List;
 
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
 import mod.azure.doom.util.registry.DoomBlocks;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -32,7 +32,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	private BlockPos lightBlockPos = null;
 
-	public DoomBaseItem(Settings properties) {
+	public DoomBaseItem(Properties properties) {
 		super(properties);
 		if (!(this instanceof Unmaykr))
 			SingletonGeoAnimatable.registerSyncedAnimatable(this);
@@ -51,16 +51,16 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 				.triggerableAnim("hook", RawAnimation.begin().then("hook", LoopType.PLAY_ONCE)));
 	}
 
-	public void removeAmmo(Item ammo, PlayerEntity playerEntity) {
+	public static void removeAmmo(Item ammo, Player playerEntity) {
 		if (!playerEntity.isCreative()) {
-			for (ItemStack item : playerEntity.getInventory().offHand) {
+			for (ItemStack item : playerEntity.getInventory().offhand) {
 				if (item.getItem() == ammo) {
-					item.decrement(1);
+					item.shrink(1);
 					break;
 				}
-				for (ItemStack item1 : playerEntity.getInventory().main) {
+				for (ItemStack item1 : playerEntity.getInventory().items) {
 					if (item1.getItem() == ammo) {
-						item1.decrement(1);
+						item1.shrink(1);
 						break;
 					}
 				}
@@ -69,38 +69,34 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 	}
 
 	@Override
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-		ItemStack itemStack = user.getStackInHand(hand);
-		user.setCurrentHand(hand);
-		return TypedActionResult.consume(itemStack);
+	public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+		ItemStack itemStack = user.getItemInHand(hand);
+		user.startUsingItem(hand);
+		return InteractionResultHolder.consume(itemStack);
 	}
 
 	@Override
-	public boolean hasGlint(ItemStack stack) {
-		return false;
-	}
-
-	@Override
-	public int getMaxUseTime(ItemStack stack) {
+	public int getUseDuration(ItemStack stack) {
 		return 72000;
 	}
 
 	@Override
-	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(Text
+	public void appendHoverText(ItemStack itemStack, Level level, List<Component> list, TooltipFlag tooltipFlag) {
+		list.add(Component
 				.translatable(
-						"Ammo: " + (stack.getMaxDamage() - stack.getDamage() - 1) + " / " + (stack.getMaxDamage() - 1))
-				.formatted(Formatting.ITALIC));
+						"Ammo: " + (itemStack.getMaxDamage() - itemStack.getDamageValue() - 1) + " / " + (itemStack.getMaxDamage() - 1))
+				.withStyle(ChatFormatting.ITALIC));
+		super.appendHoverText(itemStack, level, list, tooltipFlag);
 	}
 
 	protected void spawnLightSource(Entity entity, boolean isInWaterBlock) {
 		if (lightBlockPos == null) {
-			lightBlockPos = findFreeSpace(entity.world, entity.getBlockPos(), 2);
+			lightBlockPos = findFreeSpace(entity.level, entity.blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			entity.world.setBlockState(lightBlockPos, DoomBlocks.TICKING_LIGHT_BLOCK.getDefaultState());
-		} else if (checkDistance(lightBlockPos, entity.getBlockPos(), 2)) {
-			BlockEntity blockEntity = entity.world.getBlockEntity(lightBlockPos);
+			entity.level.setBlockAndUpdate(lightBlockPos, DoomBlocks.TICKING_LIGHT_BLOCK.defaultBlockState());
+		} else if (checkDistance(lightBlockPos, entity.blockPosition(), 2)) {
+			BlockEntity blockEntity = entity.level.getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity) {
 				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
 			} else
@@ -115,7 +111,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 				&& Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
 	}
 
-	private BlockPos findFreeSpace(World world, BlockPos blockPos, int maxDistance) {
+	private BlockPos findFreeSpace(Level world, BlockPos blockPos, int maxDistance) {
 		if (blockPos == null)
 			return null;
 
@@ -128,7 +124,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 		for (int x : offsets)
 			for (int y : offsets)
 				for (int z : offsets) {
-					BlockPos offsetPos = blockPos.add(x, y, z);
+					BlockPos offsetPos = blockPos.offset(x, y, z);
 					BlockState state = world.getBlockState(offsetPos);
 					if (state.isAir() || state.getBlock().equals(DoomBlocks.TICKING_LIGHT_BLOCK))
 						return offsetPos;

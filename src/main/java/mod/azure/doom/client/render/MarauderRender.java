@@ -2,12 +2,12 @@ package mod.azure.doom.client.render;
 
 import mod.azure.doom.client.models.MarauderModel;
 import mod.azure.doom.entity.tiersuperheavy.MarauderEntity;
-import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class MarauderRender extends GeoEntityRenderer<MarauderEntity> {
 
-	public MarauderRender(EntityRendererFactory.Context renderManagerIn) {
+	public MarauderRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new MarauderModel());
 	}
 

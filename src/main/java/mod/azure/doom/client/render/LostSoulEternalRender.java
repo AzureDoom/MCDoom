@@ -2,18 +2,18 @@ package mod.azure.doom.client.render;
 
 import mod.azure.doom.client.models.LostSoulEternalModel;
 import mod.azure.doom.entity.tierfodder.LostSoulEntity;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.core.BlockPos;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class LostSoulEternalRender extends GeoEntityRenderer<LostSoulEntity> {
 
-	public LostSoulEternalRender(EntityRendererFactory.Context renderManagerIn) {
+	public LostSoulEternalRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new LostSoulEternalModel());
 	}
 
 	@Override
-	protected int getBlockLight(LostSoulEntity entity, BlockPos blockPos) {
+	protected int getBlockLightLevel(LostSoulEntity entity, BlockPos blockPos) {
 		return 15;
 	}
 

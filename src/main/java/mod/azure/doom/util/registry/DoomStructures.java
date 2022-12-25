@@ -8,11 +8,11 @@ import mod.azure.doom.structures.GladiatorStructure;
 import mod.azure.doom.structures.HellChurchStructure;
 import mod.azure.doom.structures.IconStructure;
 import mod.azure.doom.structures.MotherdemonStructure;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.gen.structure.Structure;
-import net.minecraft.world.gen.structure.StructureType;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureType;
 
 public class DoomStructures {
 
@@ -23,15 +23,15 @@ public class DoomStructures {
 	public static StructureType<?> ARCHMAYKR;
 
 	public static void registerStructureFeatures() {
-		HELL_CHURCH = register(new Identifier(DoomMod.MODID, "hell_church"), HellChurchStructure.CODEC);
-		ICON_FIGHT = register(new Identifier(DoomMod.MODID, "icon_fight"), IconStructure.CODEC);
-		GLADIATOR_FIGHT = register(new Identifier(DoomMod.MODID, "gladiator_fight"), GladiatorStructure.CODEC);
-		MOTHERDEMON = register(new Identifier(DoomMod.MODID, "motherdemon1a"), MotherdemonStructure.CODEC);
-		ARCHMAYKR = register(new Identifier(DoomMod.MODID, "archmakyr"), ArchMaykrStructure.CODEC);
+		HELL_CHURCH = register(new ResourceLocation(DoomMod.MODID, "hell_church"), HellChurchStructure.CODEC);
+		ICON_FIGHT = register(new ResourceLocation(DoomMod.MODID, "icon_fight"), IconStructure.CODEC);
+		GLADIATOR_FIGHT = register(new ResourceLocation(DoomMod.MODID, "gladiator_fight"), GladiatorStructure.CODEC);
+		MOTHERDEMON = register(new ResourceLocation(DoomMod.MODID, "motherdemon1a"), MotherdemonStructure.CODEC);
+		ARCHMAYKR = register(new ResourceLocation(DoomMod.MODID, "archmakyr"), ArchMaykrStructure.CODEC);
 	}
 
-	private static <S extends Structure> StructureType<S> register(Identifier id, Codec<S> codec) {
-		return Registry.register(Registries.STRUCTURE_TYPE, id, () -> codec);
+	private static <S extends Structure> StructureType<S> register(ResourceLocation id, Codec<S> codec) {
+		return Registry.register(BuiltInRegistries.STRUCTURE_TYPE, id, () -> codec);
 	}
 
 }

@@ -4,73 +4,78 @@ import java.util.Optional;
 
 import mod.azure.doom.util.recipes.GunTableRecipe;
 import mod.azure.doom.util.recipes.GunTableRecipe.Type;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class GunTableOutputSlot extends Slot {
-	private final GunTableInventory gunTableInventory;
-	private final PlayerEntity player;
-	private int amount;
+	private final DoomGunInventory gunTableInventory;
+	private final Player player;
+	private int removeCount;
 
-	public GunTableOutputSlot(PlayerEntity player, GunTableInventory gunTableInventory, int index, int x, int y) {
+	public GunTableOutputSlot(Player player, DoomGunInventory gunTableInventory, int index, int x, int y) {
 		super(gunTableInventory, index, x, y);
 		this.player = player;
 		this.gunTableInventory = gunTableInventory;
 	}
 
-	public boolean canInsert(ItemStack stack) {
+	@Override
+	public boolean mayPlace(ItemStack stack) {
 		return false;
 	}
 
-	public ItemStack takeStack(int amount) {
-		if (this.hasStack()) {
-			this.amount += Math.min(amount, this.getStack().getCount());
+	@Override
+	public ItemStack remove(int amount) {
+		if (this.hasItem()) {
+			this.removeCount += Math.min(amount, this.getItem().getCount());
 		}
 
-		return super.takeStack(amount);
+		return super.remove(amount);
 	}
 
-	protected void onCrafted(ItemStack stack, int amount) {
-		this.amount += amount;
-		this.onCrafted(stack);
+	@Override
+	protected void onQuickCraft(ItemStack stack, int amount) {
+		this.removeCount += amount;
+		this.checkTakeAchievements(stack);
 	}
 
-	protected void onCrafted(ItemStack stack) {
-		stack.onCraft(this.player.world, this.player, this.amount);
-		this.amount = 0;
+	@Override
+	protected void checkTakeAchievements(ItemStack stack) {
+		stack.onCraftedBy(this.player.level, this.player, this.removeCount);
+		this.removeCount = 0;
 	}
 
-	public void onTakeItem(PlayerEntity player, ItemStack stack) {
-		this.onCrafted(stack);
-		Optional<GunTableRecipe> optionalGunTableRecipe = player.world.getRecipeManager().getFirstMatch(Type.INSTANCE,
-				gunTableInventory, player.world);
+	@Override
+	public void onTake(Player player, ItemStack stack) {
+		this.checkTakeAchievements(stack);
+		Optional<GunTableRecipe> optionalGunTableRecipe = player.level.getRecipeManager().getRecipeFor(Type.INSTANCE,
+				gunTableInventory, player.level);
 		if (optionalGunTableRecipe.isPresent()) {
 			GunTableRecipe gunTableRecipe = optionalGunTableRecipe.get();
-			DefaultedList<ItemStack> defaultedList = gunTableRecipe.getRemainder(gunTableInventory);
+			NonNullList<ItemStack> NonNullList = gunTableRecipe.getRemainingItems(gunTableInventory);
 
-			for (int i = 0; i < defaultedList.size(); ++i) {
-				ItemStack itemStack = this.gunTableInventory.getStack(i);
-				ItemStack itemStack2 = defaultedList.get(i);
+			for (int i = 0; i < NonNullList.size(); ++i) {
+				ItemStack itemStack = this.gunTableInventory.getItem(i);
+				ItemStack itemStack2 = NonNullList.get(i);
 				if (!itemStack.isEmpty()) {
-					this.gunTableInventory.removeStack(i, gunTableRecipe.countRequired(i));
-					itemStack = this.gunTableInventory.getStack(i);
+					this.gunTableInventory.removeItem(i, gunTableRecipe.countRequired(i));
+					itemStack = this.gunTableInventory.getItem(i);
 				}
 
 				if (!itemStack2.isEmpty()) {
 					if (itemStack.isEmpty()) {
-						this.gunTableInventory.setStack(i, itemStack2);
-					} else if (ItemStack.areItemsEqual(itemStack, itemStack2)
-							&& ItemStack.areNbtEqual(itemStack, itemStack2)) {
-						itemStack2.increment(itemStack.getCount());
-						this.gunTableInventory.setStack(i, itemStack2);
-					} else if (!this.player.getInventory().insertStack(itemStack2)) {
-						this.player.dropItem(itemStack2, false);
+						this.gunTableInventory.setItem(i, itemStack2);
+					} else if (ItemStack.isSame(itemStack, itemStack2)
+							&& ItemStack.isSame(itemStack, itemStack2)) {
+						itemStack2.shrink(itemStack.getCount());
+						this.gunTableInventory.setItem(i, itemStack2);
+					} else if (!this.player.getInventory().add(itemStack2)) {
+						this.player.drop(itemStack2, false);
 					}
 				}
 			}
 		}
-		this.markDirty();
+		this.setChanged();
 	}
 }

@@ -6,27 +6,27 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import mod.azure.doom.item.weapons.DoomBaseItem;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
-@Mixin(VillagerEntity.class)
-public abstract class VillagerMixin extends MerchantEntity {
+@Mixin(Villager.class)
+public abstract class VillagerMixin extends AbstractVillager {
 
-	public VillagerMixin(EntityType<? extends MerchantEntity> entityType, World world) {
+	public VillagerMixin(EntityType<? extends AbstractVillager> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	@Inject(at = @At("RETURN"), method = "interactMob", cancellable = true)
-	private void killVillager(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> ci) {
-		ItemStack itemStack = player.getStackInHand(hand);
+	@Inject(at = @At("RETURN"), method = "mobInteract", cancellable = true)
+	private void killVillager(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> ci) {
+		ItemStack itemStack = player.getItemInHand(hand);
 		if (itemStack.getItem() instanceof DoomBaseItem) {
-			ci.setReturnValue(ActionResult.FAIL);
+			ci.setReturnValue(InteractionResult.FAIL);
 		}
 	}
 }

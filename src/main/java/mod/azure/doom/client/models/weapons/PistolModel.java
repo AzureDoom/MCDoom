@@ -2,22 +2,22 @@ package mod.azure.doom.client.models.weapons;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.PistolItem;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
 public class PistolModel extends GeoModel<PistolItem> {
 	@Override
-	public Identifier getModelResource(PistolItem object) {
-		return new Identifier(DoomMod.MODID, "geo/pistol.geo.json");
+	public ResourceLocation getModelResource(PistolItem object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/pistol.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(PistolItem object) {
-		return new Identifier(DoomMod.MODID, "textures/item/pistol.png");
+	public ResourceLocation getTextureResource(PistolItem object) {
+		return new ResourceLocation(DoomMod.MODID, "textures/item/pistol.png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(PistolItem animatable) {
-		return new Identifier(DoomMod.MODID, "animations/pistol.animation.json");
+	public ResourceLocation getAnimationResource(PistolItem animatable) {
+		return new ResourceLocation(DoomMod.MODID, "animations/pistol.animation.json");
 	}
 }

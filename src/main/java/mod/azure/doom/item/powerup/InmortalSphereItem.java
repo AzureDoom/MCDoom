@@ -2,38 +2,38 @@ package mod.azure.doom.item.powerup;
 
 import java.util.List;
 
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.UseAction;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.Level;
 
 public class InmortalSphereItem extends Item {
 
 	public InmortalSphereItem() {
-		super(new Item.Settings().maxCount(1));
+		super(new Item.Properties().stacksTo(64));
 	}
 
 	@Override
-	public void usageTick(World worldIn, LivingEntity livingEntityIn, ItemStack stack, int count) {
-		if (livingEntityIn instanceof PlayerEntity) {
-			PlayerEntity playerentity = (PlayerEntity) livingEntityIn;
-			if (!worldIn.isClient) {
-				livingEntityIn.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 600, 4));
-				livingEntityIn.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 600, 4));
-				if (!playerentity.getAbilities().creativeMode) {
-					stack.decrement(1);
+	public void onUseTick(Level worldIn, LivingEntity livingEntityIn, ItemStack stack, int count) {
+		if (livingEntityIn instanceof Player) {
+			Player playerentity = (Player) livingEntityIn;
+			if (!worldIn.isClientSide()) {
+				livingEntityIn.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 600, 4));
+				livingEntityIn.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 600, 4));
+				if (!playerentity.getAbilities().instabuild) {
+					stack.shrink(1);
 					if (stack.isEmpty()) {
-						playerentity.getInventory().removeOne(stack);
+						playerentity.getInventory().removeItem(stack);
 					}
 				}
 			}
@@ -41,32 +41,32 @@ public class InmortalSphereItem extends Item {
 	}
 
 	@Override
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-		ItemStack itemStack = user.getStackInHand(hand);
-		user.setCurrentHand(hand);
-		return TypedActionResult.consume(itemStack);
+	public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+		ItemStack itemStack = user.getItemInHand(hand);
+		user.startUsingItem(hand);
+		return InteractionResultHolder.consume(itemStack);
 	}
 
 	@Override
-	public UseAction getUseAction(ItemStack stack) {
-		return UseAction.NONE;
+	public UseAnim getUseAnimation(ItemStack stack) {
+		return UseAnim.NONE;
 	}
 
 	@Override
-	public int getMaxUseTime(ItemStack stack) {
+	public int getUseDuration(ItemStack stack) {
 		return 7000;
 	}
 
 	@Override
-	public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
-		user.getStackInHand(hand);
-		return ActionResult.CONSUME;
+	public InteractionResult interactLivingEntity(ItemStack stack, Player user, LivingEntity entity, InteractionHand hand) {
+		user.getItemInHand(hand);
+		return InteractionResult.CONSUME;
 	}
 
 	@Override
-	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(Text.translatable("doom.inmortal.text").formatted(Formatting.ITALIC));
-		super.appendTooltip(stack, world, tooltip, context);
+	public void appendHoverText(ItemStack itemStack, Level level, List<Component> list, TooltipFlag tooltipFlag) {
+		list.add(Component.translatable("doom.inmortal.text").withStyle(ChatFormatting.ITALIC));
+		super.appendHoverText(itemStack, level, list, tooltipFlag);
 	}
 
 }

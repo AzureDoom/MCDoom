@@ -1,17 +1,18 @@
 package mod.azure.doom.client.render;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import mod.azure.doom.client.models.DoomHunterModel;
 import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class DoomHunterRender extends GeoEntityRenderer<DoomHunterEntity> {
 
-	public DoomHunterRender(EntityRendererFactory.Context renderManagerIn) {
+	public DoomHunterRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new DoomHunterModel());
 	}
 
@@ -21,16 +22,16 @@ public class DoomHunterRender extends GeoEntityRenderer<DoomHunterEntity> {
 	}
 	
 	@Override
-	public void preRender(MatrixStack poseStack, DoomHunterEntity animatable, BakedGeoModel model,
-			VertexConsumerProvider bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
+	public void preRender(PoseStack poseStack, DoomHunterEntity animatable, BakedGeoModel model,
+			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
 			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay,
 				red, green, blue, alpha);
-		if (animatable.getDataTracker().get(DoomHunterEntity.DEATH_STATE) == 0) 
+		if (animatable.getEntityData().get(DoomHunterEntity.DEATH_STATE) == 0) 
 			model.getBone("sled").get().setHidden(false);
-		if (animatable.getDataTracker().get(DoomHunterEntity.DEATH_STATE) == 1) 
+		if (animatable.getEntityData().get(DoomHunterEntity.DEATH_STATE) == 1) 
 			model.getBone("sled").get().setHidden(true);
-		if (animatable.getHealth() < 0.01 || animatable.isDead())
+		if (animatable.getHealth() < 0.01 || animatable.isDeadOrDying())
 			model.getBone("sled").get().setHidden(true);
 	}
 

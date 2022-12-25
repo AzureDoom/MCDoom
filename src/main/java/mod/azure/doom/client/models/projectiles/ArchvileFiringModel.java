@@ -2,28 +2,28 @@ package mod.azure.doom.client.models.projectiles;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
 public class ArchvileFiringModel extends GeoModel<DoomFireEntity> {
 	@Override
-	public Identifier getModelResource(DoomFireEntity object) {
-		return new Identifier(DoomMod.MODID, "geo/archvilefiring.geo.json");
+	public ResourceLocation getModelResource(DoomFireEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/archvilefiring.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(DoomFireEntity object) {
-		return new Identifier(DoomMod.MODID, "textures/item/empty.png");
+	public ResourceLocation getTextureResource(DoomFireEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "textures/item/empty.png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(DoomFireEntity animatable) {
-		return new Identifier(DoomMod.MODID, "animations/archvilefiring.animation.json");
+	public ResourceLocation getAnimationResource(DoomFireEntity animatable) {
+		return new ResourceLocation(DoomMod.MODID, "animations/archvilefiring.animation.json");
 	}
 
 	@Override
-	public RenderLayer getRenderType(DoomFireEntity animatable, Identifier texture) {
-		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
+	public RenderType getRenderType(DoomFireEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

@@ -9,17 +9,17 @@ import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.AbstractFireBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.phys.AABB;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -29,26 +29,26 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class DoomFireEntity extends Entity implements GeoEntity {
 
-	private int warmup;
-	private boolean startedAttack;
-	private int ticksLeft;
-	private boolean playingAnimation;
-	private LivingEntity owner;
-	private UUID ownerUuid;
+	private int warmupDelayTicks;
+	private boolean sentSpikeEvent;
+	private int lifeTicks = 75;
+	private boolean clientSideAttackStarted;
+	private LivingEntity caster;
+	private UUID casterUuid;
 	private float damage;
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-	public DoomFireEntity(EntityType<DoomFireEntity> entityType, World world) {
+	public DoomFireEntity(EntityType<DoomFireEntity> entityType, Level world) {
 		super(entityType, world);
-		this.ticksLeft = 75;
+		this.lifeTicks = 75;
 	}
 
-	public DoomFireEntity(World worldIn, double x, double y, double z, float yaw, int warmup, LivingEntity casterIn,
+	public DoomFireEntity(Level worldIn, double x, double y, double z, float yaw, int warmup, LivingEntity casterIn,
 			float damage) {
 		this(ProjectilesEntityRegister.FIRING, worldIn);
-		this.warmup = warmup;
-		this.setOwner(owner);
-		this.updatePosition(x, y, z);
+		this.warmupDelayTicks = warmup;
+		this.setCaster(casterIn);
+		this.absMoveTo(x, y, z);
 		this.damage = damage;
 	}
 
@@ -65,42 +65,38 @@ public class DoomFireEntity extends Entity implements GeoEntity {
 	}
 
 	@Override
-	protected void initDataTracker() {
+	protected void defineSynchedData() {
 	}
 
-	public void setOwner(@Nullable LivingEntity owner) {
-		this.owner = owner;
-		this.ownerUuid = owner == null ? null : owner.getUuid();
+	public void setCaster(@Nullable LivingEntity owner) {
+		this.caster = owner;
+		this.casterUuid = owner == null ? null : owner.getUUID();
 	}
 
 	@Nullable
-	public LivingEntity getOwner() {
-		if (this.owner == null && this.ownerUuid != null && this.world instanceof ServerWorld) {
-			Entity entity = ((ServerWorld) this.world).getEntity(this.ownerUuid);
+	public LivingEntity getCaster() {
+		if (this.caster == null && this.casterUuid != null && this.level instanceof ServerLevel) {
+			Entity entity = ((ServerLevel) this.level).getEntity(this.casterUuid);
 			if (entity instanceof LivingEntity) {
-				this.owner = (LivingEntity) entity;
+				this.caster = (LivingEntity) entity;
 			}
 		}
 
-		return this.owner;
+		return this.caster;
 	}
 
-	@Override
-	protected void readCustomDataFromNbt(NbtCompound tag) {
-		this.warmup = tag.getInt("Warmup");
-		if (tag.containsUuid("Owner")) {
-			this.ownerUuid = tag.getUuid("Owner");
+	protected void readAdditionalSaveData(CompoundTag compound) {
+		this.warmupDelayTicks = compound.getInt("Warmup");
+		if (compound.hasUUID("Owner")) {
+			this.casterUuid = compound.getUUID("Owner");
 		}
-
 	}
 
-	@Override
-	protected void writeCustomDataToNbt(NbtCompound tag) {
-		tag.putInt("Warmup", this.warmup);
-		if (this.ownerUuid != null) {
-			tag.putUuid("Owner", this.ownerUuid);
+	protected void addAdditionalSaveData(CompoundTag compound) {
+		compound.putInt("Warmup", this.warmupDelayTicks);
+		if (this.casterUuid != null) {
+			compound.putUUID("Owner", this.casterUuid);
 		}
-
 	}
 
 	@Override
@@ -110,8 +106,7 @@ public class DoomFireEntity extends Entity implements GeoEntity {
 	}
 
 	protected void explode() {
-		this.getEntityWorld().getOtherEntities(this, new Box(this.getBlockPos().up()).expand(8))
-				.forEach(e -> doDamage(this, e));
+		this.level.getEntities(this, new AABB(this.blockPosition().above()).inflate(8)).forEach(e -> doDamage(this, e));
 	}
 
 	private void doDamage(Entity user, Entity target) {
@@ -119,62 +114,64 @@ public class DoomFireEntity extends Entity implements GeoEntity {
 			if (target instanceof DemonEntity)
 				return;
 
-			target.timeUntilRegen = 0;
-			target.damage(DamageSource.mobProjectile(user, this.getOwner()), damage);
+			target.invulnerableTime = 0;
+			target.hurt(DamageSource.indirectMobAttack(this, (LivingEntity) target), damage);
 		}
 	}
 
 	public void tick() {
 		super.tick();
-		if (--this.warmup < 0) {
-			if (!this.startedAttack) {
-				this.world.sendEntityStatus(this, (byte) 4);
-				this.startedAttack = true;
+		if (--this.warmupDelayTicks < 0) {
+			if (!this.sentSpikeEvent) {
+				this.level.broadcastEntityEvent(this, (byte) 4);
+				this.sentSpikeEvent = true;
 			}
-			if (--this.ticksLeft < 0) {
-				this.remove(Entity.RemovalReason.DISCARDED);
+
+			if (--this.lifeTicks < 0) {
+				this.remove(RemovalReason.KILLED);
 			}
 		}
-		if (this.isAlive() && world.getBlockState(this.getBlockPos().up()).isAir()) {
-			world.setBlockState(this.getBlockPos().up(), AbstractFireBlock.getState(world, this.getBlockPos().up()));
+		if (this.isAlive() && level.getBlockState(this.blockPosition().above()).isAir()) {
+			level.setBlockAndUpdate(this.blockPosition().above(),
+					BaseFireBlock.getState(level, this.blockPosition().above()));
 		}
-		this.getEntityWorld().getOtherEntities(this, new Box(this.getBlockPos().up()).expand(1)).forEach(e -> {
+		this.level.getEntities(this, new AABB(this.blockPosition().above()).inflate(1)).forEach(e -> {
 			if (e.isAlive() && !(e instanceof DemonEntity)) {
-				e.damage(DamageSource.mobProjectile(e, this.getOwner()), damage);
-				e.setFireTicks(60);
+				e.hurt(DamageSource.indirectMobAttack(e, this.getCaster()), damage);
+				e.setRemainingFireTicks(60);
 			}
 		});
 	}
 
 	@Environment(EnvType.CLIENT)
-	public void handleStatus(byte status) {
-		super.handleStatus(status);
+	public void handleEntityEvent(byte status) {
+		super.handleEntityEvent(status);
 		if (status == 4) {
-			this.playingAnimation = true;
+			this.clientSideAttackStarted = true;
 		}
 
 	}
 
 	@Environment(EnvType.CLIENT)
 	public float getAnimationProgress(float tickDelta) {
-		if (!this.playingAnimation) {
+		if (!this.clientSideAttackStarted) {
 			return 0.0F;
 		} else {
-			int i = this.ticksLeft - 2;
+			int i = this.lifeTicks - 2;
 			return i <= 0 ? 1.0F : 1.0F - ((float) i - tickDelta) / 20.0F;
 		}
 	}
 
 	@Override
-	public Packet<ClientPlayPacketListener> createSpawnPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return DoomEntityPacket.createPacket(this);
 	}
 
 	@Override
-	public boolean damage(DamageSource source, float amount) {
+	public boolean hurt(DamageSource source, float amount) {
 		return source == DamageSource.IN_WALL || source == DamageSource.ON_FIRE || source == DamageSource.IN_FIRE
 				? false
-				: super.damage(source, amount);
+				: super.hurt(source, amount);
 	}
 
 }

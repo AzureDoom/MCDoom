@@ -2,12 +2,12 @@ package mod.azure.doom.client.render;
 
 import mod.azure.doom.client.models.CacodemonModel;
 import mod.azure.doom.entity.tierheavy.CacodemonEntity;
-import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class CacodemonRender extends GeoEntityRenderer<CacodemonEntity> {
 
-	public CacodemonRender(EntityRendererFactory.Context renderManagerIn) {
+	public CacodemonRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new CacodemonModel());
 	}
 

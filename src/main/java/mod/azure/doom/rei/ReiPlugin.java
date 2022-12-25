@@ -6,12 +6,12 @@ import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.util.recipes.GunTableRecipe;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class ReiPlugin implements REIClientPlugin {
 
 	public static final CategoryIdentifier<DoomDisplay> CRAFTING = CategoryIdentifier
-			.of(new Identifier(DoomMod.MODID, "crafting"));
+			.of(new ResourceLocation(DoomMod.MODID, "crafting"));
 
 	@Override
 	public void registerCategories(CategoryRegistry registry) {

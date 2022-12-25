@@ -2,12 +2,12 @@ package mod.azure.doom.client.render;
 
 import mod.azure.doom.client.models.GargoyleModel;
 import mod.azure.doom.entity.tierfodder.GargoyleEntity;
-import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class GargoyleRender extends GeoEntityRenderer<GargoyleEntity> {
 
-	public GargoyleRender(EntityRendererFactory.Context renderManagerIn) {
+	public GargoyleRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new GargoyleModel());
 	}
 

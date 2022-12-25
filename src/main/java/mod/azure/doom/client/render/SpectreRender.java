@@ -1,18 +1,19 @@
 package mod.azure.doom.client.render;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import mod.azure.doom.client.models.SpectreModel;
 import mod.azure.doom.entity.tierheavy.SpectreEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class SpectreRender extends GeoEntityRenderer<SpectreEntity> {
 
-	public SpectreRender(EntityRendererFactory.Context renderManagerIn) {
+	public SpectreRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new SpectreModel());
 	}
 
@@ -22,8 +23,8 @@ public class SpectreRender extends GeoEntityRenderer<SpectreEntity> {
 	}
 
 	@Override
-	public void actuallyRender(MatrixStack poseStack, SpectreEntity animatable, BakedGeoModel model,
-			RenderLayer renderType, VertexConsumerProvider bufferSource, VertexConsumer buffer, boolean isReRender,
+	public void actuallyRender(PoseStack poseStack, SpectreEntity animatable, BakedGeoModel model,
+			RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender,
 			float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick,
 				packedLight, packedOverlay, red, green, blue, 0.1F);

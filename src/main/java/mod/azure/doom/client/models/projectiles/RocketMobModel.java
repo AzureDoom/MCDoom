@@ -2,28 +2,28 @@ package mod.azure.doom.client.models.projectiles;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
 public class RocketMobModel extends GeoModel<RocketMobEntity> {
 	@Override
-	public Identifier getModelResource(RocketMobEntity object) {
-		return new Identifier(DoomMod.MODID, "geo/rocket.geo.json");
+	public ResourceLocation getModelResource(RocketMobEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "geo/rocket.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(RocketMobEntity object) {
-		return new Identifier(DoomMod.MODID, "textures/entity/projectiles/rocket.png");
+	public ResourceLocation getTextureResource(RocketMobEntity object) {
+		return new ResourceLocation(DoomMod.MODID, "textures/entity/projectiles/rocket.png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(RocketMobEntity animatable) {
-		return new Identifier(DoomMod.MODID, "animations/rocket.animation.json");
+	public ResourceLocation getAnimationResource(RocketMobEntity animatable) {
+		return new ResourceLocation(DoomMod.MODID, "animations/rocket.animation.json");
 	}
 
 	@Override
-	public RenderLayer getRenderType(RocketMobEntity animatable, Identifier texture) {
-		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
+	public RenderType getRenderType(RocketMobEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }
