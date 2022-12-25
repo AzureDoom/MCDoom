@@ -1,8 +1,3 @@
-v.4.3.1
+v.4.3.2
 
-- Fixes Pinky/Spectre heads.
-- Blood Maykr and Drone projectiles explode on block contact now.
-- Fix Gargoyle and Revenant 2016 animations.
-- Add transition to Whiplash.
-- Fix Armored Baron of Hell idle texture.
-- Dark Lord and Normal Crucible opening animations added.
+- Fixes Unmaker reloading
