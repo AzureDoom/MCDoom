@@ -1,3 +1,8 @@
-v.4.3.0
+v.4.3.1
 
-- Updated for Geckolib 4.0 and 1.19.3
+- Fixes Pinky/Spectre heads.
+- Blood Maykr and Drone projectiles explode on block contact now.
+- Fix Gargoyle and Revenant 2016 animations.
+- Add transition to Whiplash.
+- Fix Armored Baron of Hell idle texture.
+- Dark Lord and Normal Crucible opening animations added.
