@@ -141,6 +141,7 @@ public class DoomMod implements ModInitializer {
 				entries.accept(DoomItems.PRAETOR_DOOM_CHESTPLATE);
 				entries.accept(DoomItems.PRAETOR_DOOM_LEGGINGS);
 				entries.accept(DoomItems.PRAETOR_DOOM_BOOTS);
+				entries.accept(DoomItems.ASTRO_DOOM_HELMET);
 				entries.accept(DoomItems.ASTRO_DOOM_CHESTPLATE);
 				entries.accept(DoomItems.ASTRO_DOOM_LEGGINGS);
 				entries.accept(DoomItems.ASTRO_DOOM_BOOTS);
