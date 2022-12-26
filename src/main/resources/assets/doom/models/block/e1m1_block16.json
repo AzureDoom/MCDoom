@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"3": "doom:blocks/brown_green_2",
-		"e1m1_ceiling": "doom:blocks/tlite6_5"
+		"3": "doom:block/brown_green_2",
+		"e1m1_ceiling": "doom:block/tlite6_5"
 	},
 	"elements": [
 		{

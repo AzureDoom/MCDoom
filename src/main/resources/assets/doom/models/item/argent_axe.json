@@ -1,6 +1,6 @@
 {
     "parent": "item/handheld",
     "textures": {
-        "layer0": "doom:items/argent_axe"
+        "layer0": "doom:item/argent_axe"
     }
 }

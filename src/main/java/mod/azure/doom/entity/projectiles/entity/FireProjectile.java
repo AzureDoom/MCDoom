@@ -3,17 +3,19 @@ package mod.azure.doom.entity.projectiles.entity;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
 import mod.azure.doom.util.registry.DoomBlocks;
-import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -37,18 +39,12 @@ public class FireProjectile extends AbstractHurtingProjectile {
 
 	public FireProjectile(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
 			float directHitDamage) {
-		super(DoomEntities.FIRE_MOB.get(), shooter, accelX, accelY, accelZ, worldIn);
+		super(ProjectilesEntityRegister.FIRE_MOB.get(), shooter, accelX, accelY, accelZ, worldIn);
 		this.directHitDamage = directHitDamage;
 	}
 
 	public FireProjectile(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-		super(DoomEntities.FIRE_MOB.get(), x, y, z, accelX, accelY, accelZ, worldIn);
-	}
-
-	@Override
-	public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
-		super.shoot(x, y, z, velocity, inaccuracy);
-		this.ticksInAir = 0;
+		super(ProjectilesEntityRegister.FIRE_MOB.get(), x, y, z, accelX, accelY, accelZ, worldIn);
 	}
 
 	@Override
@@ -57,12 +53,18 @@ public class FireProjectile extends AbstractHurtingProjectile {
 		compound.putShort("life", (short) this.ticksInAir);
 	}
 
+	@Override
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
+		this.ticksInAir = compound.getShort("life");
+	}
+
 	public void setDirectHitDamage(float directHitDamage) {
 		this.directHitDamage = directHitDamage;
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
@@ -97,16 +99,15 @@ public class FireProjectile extends AbstractHurtingProjectile {
 	@Override
 	protected void onHitBlock(BlockHitResult blockHitResult) {
 		super.onHitBlock(blockHitResult);
+		BlockPos blockpos = blockHitResult.getBlockPos().relative(blockHitResult.getDirection());
 		if (!this.level.isClientSide) {
-			Entity entity = this.getOwner();
-			if (!(entity instanceof Mob)
-					|| net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this)) {
-				BlockPos blockpos = blockHitResult.getBlockPos().relative(blockHitResult.getDirection());
-				if (this.level.isEmptyBlock(blockpos)) {
-					this.level.setBlockAndUpdate(blockpos, BaseFireBlock.getState(this.level, blockpos));
-				}
+			return;
+		}
+		Entity entity = this.getOwner();
+		if ((!(entity instanceof Mob) || this.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING))) {
+			if (this.level.isEmptyBlock(blockpos)) {
+				this.level.setBlockAndUpdate(blockpos, BaseFireBlock.getState(this.level, blockpos));
 			}
-
 		}
 	}
 
@@ -125,6 +126,11 @@ public class FireProjectile extends AbstractHurtingProjectile {
 				}
 			}
 		}
+	}
+
+	@Override
+	protected boolean shouldBurn() {
+		return false;
 	}
 
 	private void spawnLightSource(boolean isInWaterBlock) {
@@ -164,16 +170,11 @@ public class FireProjectile extends AbstractHurtingProjectile {
 				for (int z : offsets) {
 					BlockPos offsetPos = blockPos.offset(x, y, z);
 					BlockState state = world.getBlockState(offsetPos);
-					if (state.isAir() || state.getBlock().equals(DoomBlocks.TICKING_LIGHT_BLOCK.get()))
+					if (state.isAir() || state.getBlock().equals(DoomBlocks.TICKING_LIGHT_BLOCK))
 						return offsetPos;
 				}
 
 		return null;
-	}
-	
-	@Override
-	public boolean displayFireAnimation() {
-		return false;
 	}
 
 }

@@ -2,7 +2,6 @@ package mod.azure.doom.item.weapons;
 
 import java.util.function.Consumer;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.HeavyCannonRender;
 import mod.azure.doom.config.DoomConfig;
@@ -25,27 +24,14 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.network.PacketDistributor;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 
 public class HeavyCannon extends DoomBaseItem {
 
 	public HeavyCannon() {
-		super(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(201));
-	}
-
-	@Override
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		super.initializeClient(consumer);
-		consumer.accept(new IClientItemExtensions() {
-			private final BlockEntityWithoutLevelRenderer renderer = new HeavyCannonRender();
-
-			@Override
-			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return renderer;
-			}
-		});
+		super(new Item.Properties().stacksTo(1).durability(201));
+		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
 	@Override
@@ -71,36 +57,14 @@ public class HeavyCannon extends DoomBaseItem {
 					worldIn.addFreshEntity(abstractarrowentity);
 					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
 							DoomSounds.HEAVY_CANNON.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-					if (!worldIn.isClientSide) {
-						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
-						final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
-								.with(() -> playerentity);
-						GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
-					}
+					triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn), "shoot_controller",
+							"firing");
 				}
 				boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
 				spawnLightSource(entityLiving, isInsideWaterBlock);
 			} else {
 				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
 						DoomSounds.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
-			}
-		}
-	}
-
-	public BulletEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		float j = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		BulletEntity arrowentity = new BulletEntity(worldIn, shooter,
-				(DoomConfig.SERVER.bullet_damage.get().floatValue() + (j * 2.0F)));
-		return arrowentity;
-	}
-
-	@Override
-	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-		if (worldIn.isClientSide) {
-			if (((Player) entityIn).getMainHandItem().getItem() instanceof HeavyCannon) {
-				while (Keybindings.RELOAD.consumeClick() && isSelected) {
-					DoomPacketHandler.HEAVYCANNON.sendToServer(new HeavyCannonLoadingPacket(itemSlot));
-				}
 			}
 		}
 	}
@@ -116,5 +80,52 @@ public class HeavyCannon extends DoomBaseItem {
 						DoomSounds.CLIPRELOAD.get(), SoundSource.PLAYERS, 1.00F, 1.0F);
 			}
 		}
+	}
+
+	@Override
+	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
+		if (world.isClientSide)
+			if (stack.getItem() instanceof HeavyCannon)
+				while (Keybindings.RELOAD.consumeClick() && selected)
+					DoomPacketHandler.HEAVYCANNON.sendToServer(new HeavyCannonLoadingPacket(slot));
+	}
+
+	public BulletEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
+		float j = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		BulletEntity arrowentity = new BulletEntity(worldIn, shooter,
+				(DoomConfig.SERVER.bullet_damage.get().floatValue() + (j * 2.0F)));
+		return arrowentity;
+	}
+
+	public static float getArrowVelocity(int charge) {
+		float f = charge / 20.0F;
+		f = (f * f + f * 2.0F) / 3.0F;
+		if (f > 1.0F) {
+			f = 1.0F;
+		}
+
+		return f;
+	}
+
+	public static float getPullProgress(int useTicks) {
+		float f = useTicks / 20.0F;
+		f = (f * f + f * 2.0F) / 3.0F;
+		if (f > 1.0F) {
+			f = 1.0F;
+		}
+
+		return f;
+	}
+
+	@Override
+	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+		consumer.accept(new IClientItemExtensions() {
+			private final HeavyCannonRender renderer = new HeavyCannonRender();
+
+			@Override
+			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+				return this.renderer;
+			}
+		});
 	}
 }

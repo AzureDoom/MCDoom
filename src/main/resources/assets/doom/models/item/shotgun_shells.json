@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"shell": "doom:items/shell",
-		"shell_box": "doom:items/shell_box"
+		"shell": "doom:item/shell",
+		"shell_box": "doom:item/shell_box"
 	},
 	"elements": [
 		{

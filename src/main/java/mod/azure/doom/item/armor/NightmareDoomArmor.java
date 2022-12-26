@@ -1,84 +1,73 @@
 package mod.azure.doom.item.armor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
-import mod.azure.doom.DoomMod;
-import mod.azure.doom.util.registry.DoomItems;
+import org.jetbrains.annotations.NotNull;
+
+import mod.azure.doom.client.render.armors.NightmareRender;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.item.GeoArmorItem;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class NightmareDoomArmor extends GeoArmorItem implements IAnimatable {
+public class NightmareDoomArmor extends ArmorItem implements GeoItem {
+
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public NightmareDoomArmor(ArmorMaterial materialIn, EquipmentSlot slot) {
-		super(materialIn, slot, new Item.Properties().tab(DoomMod.DoomArmorItemGroup).stacksTo(1));
-
+		super(materialIn, slot, new Item.Properties().stacksTo(1));
 	}
 
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
-
+	// Create our armor model/renderer for Fabric and return it
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(
-				new AnimationController<>(this, "controller", 20, this::predicate));
-	}
+	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+		consumer.accept(new IClientItemExtensions() {
+			private NightmareRender renderer;
 
-	private <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-		LivingEntity livingEntity = event.getExtraDataOfType(LivingEntity.class).get(0);
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		if (livingEntity instanceof ArmorStand) {
-			return PlayState.CONTINUE;
-		} else if (livingEntity instanceof LocalPlayer) {
-			LocalPlayer client = (LocalPlayer) livingEntity;
-			List<Item> equipmentList = new ArrayList<>();
-			client.getAllSlots().forEach((x) -> equipmentList.add(x.getItem()));
-			List<Item> armorList = equipmentList.subList(2, 6);
-			boolean isWearingAll = armorList.containsAll(
-					Arrays.asList(DoomItems.NIGHTMARE_DOOM_BOOTS.get(), DoomItems.NIGHTMARE_DOOM_LEGGINGS.get(),
-							DoomItems.NIGHTMARE_DOOM_CHESTPLATE.get(), DoomItems.NIGHTMARE_DOOM_HELMET.get()));
-			return isWearingAll ? PlayState.CONTINUE : PlayState.STOP;
-		}
-		return PlayState.STOP;
+			@Override
+			public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack,
+					EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
+				if (this.renderer == null)
+					this.renderer = new NightmareRender();
+
+				this.renderer.prepForRender(livingEntity, itemStack, equipmentSlot, original);
+				return this.renderer;
+			}
+		});
 	}
 
 	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
+	public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, 20, state -> {
+			return state.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+		}));
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(Component.translatable("doom.nightmarearmor.text").withStyle(ChatFormatting.YELLOW)
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
+	}
+
+	@Override
+	public void appendHoverText(ItemStack itemStack, Level level, List<Component> list, TooltipFlag tooltipFlag) {
+		list.add(Component.translatable("doom.nightmarearmor.text").withStyle(ChatFormatting.YELLOW)
 				.withStyle(ChatFormatting.ITALIC));
-		super.appendHoverText(stack, worldIn, tooltip, flagIn);
-	}
-
-	@Override
-	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-		return false;
+		super.appendHoverText(itemStack, level, list, tooltipFlag);
 	}
 
 }

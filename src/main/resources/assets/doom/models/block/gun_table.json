@@ -2,7 +2,7 @@
   "credit": "Made with Blockbench",
   "parent": "builtin/entity",
 	"textures": {
-		"particle": "doom:blocks/barrel_bottom"
+		"particle": "doom:block/barrel_bottom"
 	},
   "texture_size": [
     128,

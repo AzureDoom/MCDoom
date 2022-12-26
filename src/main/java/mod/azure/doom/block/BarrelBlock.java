@@ -1,6 +1,6 @@
 package mod.azure.doom.block;
 
-import mod.azure.doom.entity.projectiles.BarrelEntity;
+import mod.azure.doom.entity.tileentity.BarrelEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -68,7 +68,7 @@ public class BarrelBlock extends Block {
 	public void wasExploded(Level worldIn, BlockPos pos, Explosion explosionIn) {
 		if (!worldIn.isClientSide) {
 			BarrelEntity tntentity = new BarrelEntity(worldIn, (double) pos.getX() + 0.5D, (double) pos.getY(),
-					(double) pos.getZ() + 0.5D, explosionIn.getSourceMob());
+					(double) pos.getZ() + 0.5D, explosionIn.getIndirectSourceEntity());
 			worldIn.addFreshEntity(tntentity);
 		}
 	}

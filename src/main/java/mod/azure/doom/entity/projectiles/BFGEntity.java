@@ -3,7 +3,7 @@ package mod.azure.doom.entity.projectiles;
 import java.util.List;
 import java.util.Random;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
@@ -14,18 +14,18 @@ import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tierboss.MotherDemonEntity;
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
 import mod.azure.doom.util.registry.DoomBlocks;
-import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomSounds;
+import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AreaEffectCloud;
@@ -41,79 +41,86 @@ import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class BFGEntity extends AbstractArrow implements IAnimatable {
+public class BFGEntity extends AbstractArrow implements GeoEntity {
 
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
 	private static final EntityDataAccessor<Integer> TARGET_ENTITY = SynchedEntityData.defineId(BFGEntity.class,
 			EntityDataSerializers.INT);
-	private LivingEntity targetedEntity;
+	private LivingEntity cachedBeamTarget;
 	private LivingEntity shooter;
 	private BlockPos lightBlockPos = null;
 	private int idleTicks = 0;
+	private int beamTicks;
 	Random rand = new Random();
 	List<? extends String> whitelistEntries = DoomConfig.SERVER.bfg_damage_mob_whitelist.get();
 	int randomIndex = rand.nextInt(whitelistEntries.size());
 	ResourceLocation randomElement1 = new ResourceLocation(whitelistEntries.get(randomIndex));
 	EntityType<?> randomElement = ForgeRegistries.ENTITY_TYPES.getValue(randomElement1);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();
 
-	public BFGEntity(EntityType<? extends AbstractArrow> type, Level world) {
-		super(type, world);
+	public BFGEntity(EntityType<? extends BFGEntity> entityType, Level world) {
+		super(entityType, world);
+		this.pickup = AbstractArrow.Pickup.DISALLOWED;
 	}
 
-	public BFGEntity(Level world, LivingEntity shooter) {
-		super(DoomEntities.BFG_CELL.get(), shooter, world);
-		this.shooter = shooter;
+	public BFGEntity(Level world, LivingEntity owner) {
+		super(ProjectilesEntityRegister.BFG_CELL.get(), owner, world);
+		this.shooter = owner;
 	}
 
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	protected BFGEntity(EntityType<? extends BFGEntity> type, double x, double y, double z, Level world) {
+		this(type, world);
+	}
 
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
+	protected BFGEntity(EntityType<? extends BFGEntity> type, LivingEntity owner, Level world) {
+		this(type, owner.getX(), owner.getEyeY() - 0.10000000149011612D, owner.getZ(), world);
+		this.setOwner(owner);
+		if (owner instanceof Player) {
+			this.pickup = AbstractArrow.Pickup.DISALLOWED;
+		}
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<BFGEntity>(this, "controller", 0, this::predicate));
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+		}));
 	}
 
 	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
+	}
+
+	@Override
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override
 	protected void tickDespawn() {
 		++this.ticksInAir;
-		if (this.tickCount >= 40) {
-			this.remove(RemovalReason.KILLED);
-		}
-	}
-
-	public DamageSource getDamageSource() {
-		return DamageSource.arrow(this, this);
+//		if (this.tickCount >= 40) {
+//			this.remove(RemovalReason.KILLED);
+//		}
 	}
 
 	@Override
@@ -155,7 +162,7 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 		boolean isInsideWaterBlock = level.isWaterAt(blockPosition());
 		spawnLightSource(isInsideWaterBlock);
 		if (this.tickCount >= 80) {
-			this.remove(RemovalReason.KILLED);
+			this.remove(Entity.RemovalReason.DISCARDED);
 		}
 		final AABB aabb = new AABB(this.blockPosition().above()).inflate(24D, 24D, 24D);
 		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
@@ -166,7 +173,8 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 					&& (e instanceof Monster || e instanceof Slime || e instanceof Phantom || e instanceof DemonEntity
 							|| e instanceof Shulker || e instanceof Hoglin || (e == listEntity))) {
 				if (e.isAlive()) {
-					e.hurt(DamageSource.explosion(shooter), DoomConfig.SERVER.bfgball_damage_aoe.get().floatValue());
+					e.hurt(DamageSource.explosion(this, shooter),
+							DoomConfig.SERVER.bfgball_damage_aoe.get().floatValue());
 					this.setTargetedEntity(e.getId());
 				}
 			}
@@ -224,48 +232,35 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 				for (int z : offsets) {
 					BlockPos offsetPos = blockPos.offset(x, y, z);
 					BlockState state = world.getBlockState(offsetPos);
-					if (state.isAir() || state.getBlock().equals(DoomBlocks.TICKING_LIGHT_BLOCK.get()))
+					if (state.isAir() || state.getBlock().equals(DoomBlocks.TICKING_LIGHT_BLOCK))
 						return offsetPos;
 				}
 
 		return null;
 	}
 
+	public void initFromStack(ItemStack stack) {
+		if (stack.getItem() == DoomItems.BFG_CELL.get()) {
+		}
+	}
+
 	@Override
-	public Packet<?> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
+	public ItemStack getPickupItem() {
+		return new ItemStack(DoomItems.BFG_CELL.get());
 	}
 
 	@Override
 	public boolean isNoGravity() {
-		if (this.isInWater()) {
+		if (this.isInWater())
 			return false;
-		} else {
-			return true;
-		}
-	}
-
-	public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();
-
-	@Override
-	protected void onHitBlock(BlockHitResult p_230299_1_) {
-		super.onHitBlock(p_230299_1_);
-		this.setSoundEvent(DoomSounds.BFG_HIT.get());
+		return true;
 	}
 
 	@Override
-	public void setSoundEvent(SoundEvent soundIn) {
-		this.hitSound = soundIn;
-	}
-
-	@Override
-	protected SoundEvent getDefaultHitGroundSoundEvent() {
-		return DoomSounds.BFG_HIT.get();
-	}
-
-	@Override
-	public boolean isPushedByFluid() {
-		return false;
+	protected void onHitBlock(BlockHitResult blockHitResult) {
+		super.onHitBlock(blockHitResult);
+		if (!this.level.isClientSide())
+			this.remove(Entity.RemovalReason.DISCARDED);
 	}
 
 	@Override
@@ -273,26 +268,11 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 		if (!this.level.isClientSide) {
 			this.doDamage();
 			this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
-					DoomConfig.SERVER.enable_block_breaking.get() ? Explosion.BlockInteraction.BREAK
-							: Explosion.BlockInteraction.NONE);
+					DoomConfig.SERVER.enable_block_breaking.get() ? Level.ExplosionInteraction.BLOCK
+							: Level.ExplosionInteraction.NONE);
 			this.remove(RemovalReason.KILLED);
 		}
 		this.playSound(DoomSounds.BFG_HIT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
-	}
-
-	protected void onHit(HitResult result) {
-		super.onHit(result);
-		Entity entity = this.getOwner();
-		if (result.getType() != HitResult.Type.ENTITY || !((EntityHitResult) result).getEntity().is(entity)) {
-			if (!this.level.isClientSide) {
-				this.doDamage();
-				this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
-						DoomConfig.SERVER.enable_block_breaking.get() ? Explosion.BlockInteraction.BREAK
-								: Explosion.BlockInteraction.NONE);
-				this.remove(RemovalReason.KILLED);
-			}
-			this.playSound(DoomSounds.BFG_HIT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
-		}
 	}
 
 	public void doDamage() {
@@ -342,11 +322,6 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 	}
 
 	@Override
-	protected ItemStack getPickupItem() {
-		return new ItemStack(DoomItems.BFG_CELL.get());
-	}
-
-	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
 		this.entityData.define(TARGET_ENTITY, 0);
@@ -365,34 +340,45 @@ public class BFGEntity extends AbstractArrow implements IAnimatable {
 		if (!this.hasTargetedEntity()) {
 			return null;
 		} else if (this.level.isClientSide) {
-			if (this.targetedEntity != null) {
-				return this.targetedEntity;
+			if (this.cachedBeamTarget != null) {
+				return this.cachedBeamTarget;
 			} else {
 				Entity entity = this.level.getEntity(this.entityData.get(TARGET_ENTITY));
-				if (!(entity instanceof ServerPlayer) && entity instanceof LivingEntity) {
-					this.targetedEntity = (LivingEntity) entity;
-					return this.targetedEntity;
+				if (entity instanceof LivingEntity) {
+					this.cachedBeamTarget = (LivingEntity) entity;
+					return this.cachedBeamTarget;
 				} else {
 					return null;
 				}
 			}
 		} else {
-			return this.getAttackTarget();
+			return this.getTarget();
 		}
+	}
+
+	public float getBeamProgress(float tickDelta) {
+		return ((float) this.beamTicks + tickDelta) / (float) this.getWarmupTime();
+	}
+
+	public int getWarmupTime() {
+		return 80;
 	}
 
 	@Override
 	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
 		super.onSyncedDataUpdated(key);
 		if (TARGET_ENTITY.equals(key)) {
-			this.targetedEntity = null;
+			this.cachedBeamTarget = null;
 		}
-
 	}
 
 	@Nullable
-	public LivingEntity getAttackTarget() {
-		return this.targetedEntity;
+	public LivingEntity getTarget() {
+		return this.cachedBeamTarget;
 	}
 
+	@Override
+	public boolean displayFireAnimation() {
+		return false;
+	}
 }

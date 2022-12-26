@@ -1,10 +1,10 @@
 package mod.azure.doom.client.render.item;
 
 import mod.azure.doom.client.models.items.GunCraftingItemModel;
-import mod.azure.doom.item.GunTableBlockItem;
-import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
+import mod.azure.doom.item.GuntableBlockItem;
+import software.bernie.geckolib.renderer.GeoItemRenderer;
 
-public class GunCraftingItemRender extends GeoItemRenderer<GunTableBlockItem> {
+public class GunCraftingItemRender extends GeoItemRenderer<GuntableBlockItem> {
 
 	public GunCraftingItemRender() {
 		super(new GunCraftingItemModel());

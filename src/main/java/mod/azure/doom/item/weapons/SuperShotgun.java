@@ -2,7 +2,6 @@ package mod.azure.doom.item.weapons;
 
 import java.util.function.Consumer;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.SSGRender;
 import mod.azure.doom.config.DoomConfig;
@@ -28,27 +27,14 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.network.PacketDistributor;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 
 public class SuperShotgun extends DoomBaseItem {
 
 	public SuperShotgun() {
-		super(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(53));
-	}
-
-	@Override
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		super.initializeClient(consumer);
-		consumer.accept(new IClientItemExtensions() {
-			private final BlockEntityWithoutLevelRenderer renderer = new SSGRender();
-
-			@Override
-			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return renderer;
-			}
-		});
+		super(new Item.Properties().stacksTo(1).durability(53));
+		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
 	@Override
@@ -67,23 +53,17 @@ public class SuperShotgun extends DoomBaseItem {
 						ShotgunShellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
 						abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(),
 								playerentity.getYRot() + 1, 0.0F, 1.0F * 3.0F, 1.0F);
-						abstractarrowentity.isNoGravity();
 						worldIn.addFreshEntity(abstractarrowentity);
 						ShotgunShellEntity abstractarrowentity1 = createArrow(worldIn, stack, playerentity);
 						abstractarrowentity1.shootFromRotation(playerentity, playerentity.getXRot(),
 								playerentity.getYRot() - 1, 0.0F, 1.0F * 3.0F, 1.0F);
-						abstractarrowentity1.isNoGravity();
 						worldIn.addFreshEntity(abstractarrowentity1);
 
 						stack.hurtAndBreak(2, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
 						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
 								DoomSounds.SUPER_SHOTGUN_SHOOT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-						if (!worldIn.isClientSide) {
-							final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
-							final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
-									.with(() -> playerentity);
-							GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
-						}
+						triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn),
+								"shoot_controller", "firing");
 					}
 					boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
 					spawnLightSource(entityLiving, isInsideWaterBlock);
@@ -94,6 +74,17 @@ public class SuperShotgun extends DoomBaseItem {
 				((PlayerProperties) playerentity).setHasMeatHook(false);
 			}
 		}
+	}
+
+	@Override
+	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
+		if (world.isClientSide)
+			if (stack.getItem() instanceof SuperShotgun)
+				while (Keybindings.RELOAD.consumeClick() && selected)
+					DoomPacketHandler.SUPERSHOTGUN.sendToServer(new SSGLoadingPacket(slot));
+		if (((Player) entity).getMainHandItem().getItem() instanceof SuperShotgun && selected
+				&& ((PlayerProperties) entity).hasMeatHook())
+			((PlayerProperties) entity).setHasMeatHook(false);
 	}
 
 	@Override
@@ -115,26 +106,20 @@ public class SuperShotgun extends DoomBaseItem {
 		return super.use(world, player, hand);
 	}
 
-	public ShotgunShellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		float j = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter,
-				(DoomConfig.SERVER.shotgun_damage.get().floatValue() + (j * 2.0F)));
-		return arrowentity;
+	@Override
+	public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity user) {
+		((PlayerProperties) user).setHasMeatHook(false);
+		return super.finishUsingItem(stack, world, user);
 	}
 
-	@Override
-	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-		if (worldIn.isClientSide) {
-			if (((Player) entityIn).getMainHandItem().getItem() instanceof SuperShotgun) {
-				while (Keybindings.RELOAD.consumeClick() && isSelected) {
-					DoomPacketHandler.SUPERSHOTGUN.sendToServer(new SSGLoadingPacket(itemSlot));
-				}
-			}
+	public static float getArrowVelocity(int charge) {
+		float f = charge / 20.0F;
+		f = (f * f + f * 2.0F) / 3.0F;
+		if (f > 1.0F) {
+			f = 1.0F;
 		}
-		if (((Player) entityIn).getMainHandItem().getItem() instanceof SuperShotgun && isSelected
-				&& ((PlayerProperties) entityIn).hasMeatHook()) {
-			((PlayerProperties) entityIn).setHasMeatHook(false);
-		}
+
+		return f;
 	}
 
 	public static void reload(Player user, InteractionHand hand) {
@@ -147,4 +132,34 @@ public class SuperShotgun extends DoomBaseItem {
 			}
 		}
 	}
+
+	public ShotgunShellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
+		float j = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter,
+				(DoomConfig.SERVER.shotgun_damage.get().floatValue() + (j * 2.0F)));
+		return arrowentity;
+	}
+
+	public static float getPullProgress(int useTicks) {
+		float f = useTicks / 20.0F;
+		f = (f * f + f * 2.0F) / 3.0F;
+		if (f > 1.0F) {
+			f = 1.0F;
+		}
+
+		return f;
+	}
+
+	@Override
+	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+		consumer.accept(new IClientItemExtensions() {
+			private final SSGRender renderer = new SSGRender();
+
+			@Override
+			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+				return this.renderer;
+			}
+		});
+	}
+
 }

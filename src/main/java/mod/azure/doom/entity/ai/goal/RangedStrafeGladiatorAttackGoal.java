@@ -10,7 +10,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class RangedStrafeGladiatorAttackGoal extends Goal {
@@ -49,7 +49,7 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 		this.entity.setSilent(false);
 		this.entity.setTextureState(0);
 		this.entity.level.explode(this.entity, this.entity.getX(), this.entity.getY() + 5D, this.entity.getZ(), 3.0F,
-				false, Explosion.BlockInteraction.BREAK);
+				false, Level.ExplosionInteraction.BLOCK);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 		this.entity.stopUsingItem();
 		this.entity.setSilent(false);
 		this.entity.level.explode(this.entity, this.entity.getX(), this.entity.getY() + 5D, this.entity.getZ(), 3.0F,
-				false, Explosion.BlockInteraction.BREAK);
+				false, Level.ExplosionInteraction.BLOCK);
 	}
 
 	/**
@@ -170,7 +170,7 @@ public class RangedStrafeGladiatorAttackGoal extends Goal {
 					}
 					if (this.attackTime == 19) {
 						if (this.entity.getDeathState() == 1) {
-							this.entity.doHurtTarget1(livingentity);
+							this.entity.tryAttack1(livingentity);
 							livingentity.invulnerableTime = 0;
 						}
 					}

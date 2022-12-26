@@ -1,10 +1,10 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"particle": "doom:blocks/e1m1_green_wall",
-		"e1m1_green_wall": "doom:blocks/e1m1_green_wall",
-		"e1m1_green_ceiling": "doom:blocks/e1m1_green_ceiling",
-		"e1m1_floor": "doom:blocks/e1m1_floor"
+		"particle": "doom:block/e1m1_green_wall",
+		"e1m1_green_wall": "doom:block/e1m1_green_wall",
+		"e1m1_green_ceiling": "doom:block/e1m1_green_ceiling",
+		"e1m1_floor": "doom:block/e1m1_floor"
 	},
 	"elements": [
 		{

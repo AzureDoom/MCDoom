@@ -1,66 +1,67 @@
 package mod.azure.doom.entity.projectiles.entity;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.DoomSounds;
+import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class BloodBoltEntity extends AbstractHurtingProjectile implements IAnimatable {
+public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEntity {
 
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
 	private float directHitDamage = 2;
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-	public BloodBoltEntity(EntityType<BloodBoltEntity> entity, Level world) {
-		super(entity, world);
-	}
-
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
+	public BloodBoltEntity(EntityType<BloodBoltEntity> p_i50160_1_, Level p_i50160_2_) {
+		super(p_i50160_1_, p_i50160_2_);
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<BloodBoltEntity>(this, "controller", 0, this::predicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
+	public boolean displayFireAnimation() {
+		return false;
 	}
 
 	public BloodBoltEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
 			float directHitDamage) {
-		super(DoomEntities.BLOODBOLT_MOB.get(), shooter, accelX, accelY, accelZ, worldIn);
+		super(ProjectilesEntityRegister.BLOODBOLT_MOB.get(), shooter, accelX, accelY, accelZ, worldIn);
 		this.directHitDamage = directHitDamage;
 	}
 
 	public BloodBoltEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-		super(DoomEntities.BLOODBOLT_MOB.get(), x, y, z, accelX, accelY, accelZ, worldIn);
+		super(ProjectilesEntityRegister.BLOODBOLT_MOB.get(), x, y, z, accelX, accelY, accelZ, worldIn);
+	}
+
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
+			return PlayState.CONTINUE;
+		}));
+	}
+
+	@Override
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
@@ -81,6 +82,23 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements IAnima
 		this.ticksInAir = compound.getShort("life");
 	}
 
+	@Override
+	protected boolean shouldBurn() {
+		return false;
+	}
+
+	@Override
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
+	}
+
+	@Override
+	public boolean isNoGravity() {
+		if (this.isInWater())
+			return false;
+		return true;
+	}
+
 	public void setDirectHitDamage(float directHitDamage) {
 		this.directHitDamage = directHitDamage;
 	}
@@ -91,55 +109,42 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements IAnima
 	}
 
 	@Override
-	public void tick() {
-		super.tick();
-		this.level.addParticle(this.getTrailParticle(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D);
-	}
-
-	@Override
-	public boolean isOnFire() {
-		return false;
-	}
-
-	@Override
-	public Packet<?> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-
-	@Override
-	public boolean isNoGravity() {
-		if (this.isInWater()) {
-			return false;
-		} else {
-			return true;
+	protected void onHit(HitResult hitResult) {
+		super.onHit(hitResult);
+		if (!this.level.isClientSide()) {
+			this.explode();
+			this.remove(Entity.RemovalReason.DISCARDED);
 		}
+		this.playSound(DoomSounds.UNMAKYR_FIRE.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 	}
 
 	@Override
-	public boolean isPushedByFluid() {
-		return false;
-	}
-
-	@Override
-	public boolean isPickable() {
-		return false;
-	}
-
-	@Override
-	protected void onHitEntity(EntityHitResult p_213868_1_) {
-		super.onHitEntity(p_213868_1_);
-		if (!this.level.isClientSide) {
-			Entity entity = p_213868_1_.getEntity();
-			Entity entity1 = this.getOwner();
-			if (!(entity instanceof DemonEntity))
-				entity.hurt(DamageSource.mobAttack((LivingEntity) entity1), directHitDamage);
-			this.remove(RemovalReason.KILLED);
-			if (entity1 instanceof LivingEntity) {
-				if (!(entity instanceof DemonEntity))
-					this.doEnchantDamageEffects((LivingEntity) entity1, entity);
+	protected void onHitEntity(EntityHitResult entityHitResult) {
+		super.onHitEntity(entityHitResult);
+		if (!this.level.isClientSide()) {
+			Entity entity = entityHitResult.getEntity();
+			Entity entity2 = this.getOwner();
+			entity.setSecondsOnFire(5);
+			if (!(entity2 instanceof DemonEntity))
+				entity.hurt(DamageSource.mobAttack((LivingEntity) entity2), directHitDamage);
+			if (entity2 instanceof LivingEntity) {
+				if (!(entity2 instanceof DemonEntity))
+					this.doEnchantDamageEffects((LivingEntity) entity2, entity);
+				this.remove(Entity.RemovalReason.DISCARDED);
 			}
 		}
 		this.playSound(DoomSounds.UNMAKYR_FIRE.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+	}
+
+	protected void explode() {
+		this.level.getEntities(this, new AABB(this.blockPosition().above()).inflate(8)).forEach(e -> doDamage(this, e));
+	}
+
+	private void doDamage(Entity user, Entity target) {
+		if (target instanceof LivingEntity) {
+			target.invulnerableTime = 0;
+			target.hurt(DamageSource.indirectMagic(this, target), directHitDamage);
+		}
 	}
 
 }

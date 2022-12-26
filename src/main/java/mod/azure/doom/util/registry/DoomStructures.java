@@ -8,7 +8,7 @@ import mod.azure.doom.structures.GladiatorStructure;
 import mod.azure.doom.structures.HellChurchStructure;
 import mod.azure.doom.structures.IconStructure;
 import mod.azure.doom.structures.MotherdemonStructure;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -17,7 +17,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class DoomStructures {
 
 	public static final DeferredRegister<StructureType<?>> DEFERRED_REGISTRY_STRUCTURE = DeferredRegister
-			.create(Registry.STRUCTURE_TYPE_REGISTRY, DoomMod.MODID);
+			.create(Registries.STRUCTURE_TYPE, DoomMod.MODID);
 
 	public static final RegistryObject<StructureType<?>> HELL_CHURCH = DEFERRED_REGISTRY_STRUCTURE
 			.register("hell_church", () -> typeConvert(HellChurchStructure.CODEC));

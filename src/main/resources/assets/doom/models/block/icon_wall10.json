@@ -1,9 +1,9 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "doom:blocks/icon_wall10",
-		"1": "doom:blocks/icon_wall11",
-		"particle": "doom:blocks/icon_wall10"
+		"0": "doom:block/icon_wall10",
+		"1": "doom:block/icon_wall11",
+		"particle": "doom:block/icon_wall10"
 	},
 	"elements": [
 		{

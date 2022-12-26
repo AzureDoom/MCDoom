@@ -3,9 +3,9 @@ package mod.azure.doom.client.models.armor;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.armor.PraetorDoomArmor;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class PraetorModel extends AnimatedGeoModel<PraetorDoomArmor> {
+public class PraetorModel extends GeoModel<PraetorDoomArmor> {
 	@Override
 	public ResourceLocation getModelResource(PraetorDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/doomarmor.geo.json");

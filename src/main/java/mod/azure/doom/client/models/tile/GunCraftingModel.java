@@ -2,10 +2,11 @@ package mod.azure.doom.client.models.tile;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class GunCraftingModel extends AnimatedGeoModel<GunBlockEntity> {
+public class GunCraftingModel extends GeoModel<GunBlockEntity> {
 	@Override
 	public ResourceLocation getAnimationResource(GunBlockEntity entity) {
 		return new ResourceLocation(DoomMod.MODID, "animations/gun_table.animation.json");
@@ -18,6 +19,11 @@ public class GunCraftingModel extends AnimatedGeoModel<GunBlockEntity> {
 
 	@Override
 	public ResourceLocation getTextureResource(GunBlockEntity entity) {
-		return new ResourceLocation(DoomMod.MODID, "textures/blocks/gun_table.png");
+		return new ResourceLocation(DoomMod.MODID, "textures/block/gun_table.png");
+	}
+	
+	@Override
+	public RenderType getRenderType(GunBlockEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

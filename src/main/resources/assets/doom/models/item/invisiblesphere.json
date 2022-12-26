@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "doom:items/invisible_sphere"
+    "layer0": "doom:item/invisible_sphere"
   }
 }

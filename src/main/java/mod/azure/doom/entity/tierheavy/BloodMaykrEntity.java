@@ -12,7 +12,6 @@ import mod.azure.doom.entity.attack.AttackSound;
 import mod.azure.doom.entity.projectiles.entity.BloodBoltEntity;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -37,54 +36,40 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
+public class BloodMaykrEntity extends DemonEntity implements GeoEntity {
 
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public BloodMaykrEntity(EntityType<BloodMaykrEntity> type, Level worldIn) {
 		super(type, worldIn);
 		this.moveControl = new DemonFlightMoveControl(this, 90, false);
 	}
 
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
-	}
-
-	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
-		if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking_weapon", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		return PlayState.STOP;
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
+			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().then("attacking_weapon", LoopType.PLAY_ONCE));
+			return PlayState.STOP;
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<BloodMaykrEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(
-				new AnimationController<BloodMaykrEntity>(this, "controller1", 0, this::predicate1));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
@@ -96,17 +81,11 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnima
 		}
 	}
 
-	@Override
-	public Packet<?> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-
-	public static AttributeSupplier.Builder createAttributes() {
+	public static AttributeSupplier.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.bloodmaykr_health.get())
-				.add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.FLYING_SPEED, 0.25D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.bloodmaykr_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f)
+				.add(Attributes.FLYING_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -115,10 +94,9 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnima
 		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.goalSelector.addGoal(4,
-				new RangedStrafeAttackGoal(this,
-						new BloodMaykrEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.5, 0.8)
-								.setDamage(DoomConfig.SERVER.bloodmaykr_ranged_damage.get().floatValue()),
-						1.0D, 10, 30, 15, 15F, 1));
+				new RangedStrafeAttackGoal(this, new BloodMaykrEntity.FireballAttack(this)
+						.setProjectileOriginOffset(0.8, 0.5, 0.8).setDamage(DoomConfig.SERVER.bloodmaykr_ranged_damage.get().floatValue()), 1.0D,
+						10, 30, 15, 15F, 1));
 		this.goalSelector.addGoal(7, new BloodMaykrEntity.LookAroundGoal(this));
 		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
@@ -174,15 +152,15 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnima
 		public void tick() {
 			if (this.parentEntity.getTarget() == null) {
 				Vec3 vec3d = this.parentEntity.getDeltaMovement();
-				this.parentEntity.yRot = -((float) Mth.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
-				this.parentEntity.yBodyRot = this.parentEntity.yRot;
+				this.parentEntity.yo = -((float) Mth.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
+				this.parentEntity.yBodyRot = this.parentEntity.getYRot();
 			} else {
 				LivingEntity livingentity = this.parentEntity.getTarget();
 				if (livingentity.distanceToSqr(this.parentEntity) < 4096.0D) {
 					double d1 = livingentity.getX() - this.parentEntity.getX();
 					double d2 = livingentity.getZ() - this.parentEntity.getZ();
-					this.parentEntity.yRot = -((float) Mth.atan2(d1, d2)) * (180F / (float) Math.PI);
-					this.parentEntity.yBodyRot = this.parentEntity.yRot;
+					this.parentEntity.yo = -((float) Mth.atan2(d1, d2)) * (180F / (float) Math.PI);
+					this.parentEntity.yBodyRot = this.parentEntity.getYRot();
 				}
 			}
 
@@ -208,11 +186,7 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnima
 					vector3d = vector3d.normalize();
 					if (this.canReach(vector3d, Mth.ceil(d0))) {
 						this.parentEntity
-								.setDeltaMovement(this.parentEntity.getDeltaMovement().add(vector3d.scale(0.1D))); // TODO
-						// test
-						// fly
-						// speed
-						// here
+								.setDeltaMovement(this.parentEntity.getDeltaMovement().add(vector3d.scale(0.1D)));
 					} else {
 						this.operation = MoveControl.Operation.WAIT;
 					}
@@ -273,10 +247,6 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnima
 	}
 
 	@Override
-	public int tickTimer() {
-		return tickCount;
-	}
-
 	public void travel(Vec3 movementInput) {
 		if (this.isInWater()) {
 			this.moveRelative(0.02F, movementInput);
@@ -290,12 +260,12 @@ public class BloodMaykrEntity extends DemonEntity implements IAnimatable, IAnima
 			BlockPos ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
 			float f = 0.91F;
 			if (this.onGround) {
-				f = this.level.getBlockState(ground).getFriction(this.level, ground, this) * 0.91F;
+				f = this.level.getBlockState(ground).getBlock().getFriction() * 0.91F;
 			}
 			float f1 = 0.16277137F / (f * f * f);
 			f = 0.91F;
 			if (this.onGround) {
-				f = this.level.getBlockState(ground).getFriction(this.level, ground, this) * 0.91F;
+				f = this.level.getBlockState(ground).getBlock().getFriction() * 0.91F;
 			}
 			this.moveRelative(this.onGround ? 0.1F * f1 : 0.02F, movementInput);
 			this.move(MoverType.SELF, this.getDeltaMovement());

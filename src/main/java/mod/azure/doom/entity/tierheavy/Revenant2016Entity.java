@@ -11,7 +11,6 @@ import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -24,7 +23,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -46,69 +44,52 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAnimationTickable {
+public class Revenant2016Entity extends DemonEntity implements GeoEntity {
 
 	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Revenant2016Entity.class,
 			EntityDataSerializers.INT);
 	public int flameTimer;
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public Revenant2016Entity(EntityType<Revenant2016Entity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 		this.moveControl = new RevMoveControl(this);
 	}
 
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (event.isMoving() && this.isOnGround()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", EDefaultLoopTypes.LOOP));
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
+			if (!this.isAggressive() && event.isMoving()
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
+			if (this.isAggressive() && event.isMoving()
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().thenLoop("flying"));
+			if (!event.isCurrentAnimation(RawAnimation.begin().thenLoop("flying"))
+					&& !event.isCurrentAnimation(RawAnimation.begin().thenLoop("walking")))
+				return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 			return PlayState.CONTINUE;
-		}
-		if (!this.isOnGround() && !this.onGround && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("flying", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		if (!this.isOnGround() && !this.onGround && this.hurtMarked) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("flying", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (!event.isMoving() && this.hurtMarked) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
+			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().then("melee", LoopType.PLAY_ONCE));
+			return PlayState.STOP;
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(
-				new AnimationController<Revenant2016Entity>(this, "controller", 0, this::predicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
-
-	@Override
-	public Packet<?> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
@@ -149,7 +130,7 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 		return spawnDataIn;
 	}
 
-	public static AttributeSupplier.Builder createAttributes() {
+	public static AttributeSupplier.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.revenant_health.get()).add(Attributes.ATTACK_DAMAGE, 3.0D)
 				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.FLYING_SPEED, 0.25D)
@@ -215,12 +196,12 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 				BlockPos ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
 				float f = 0.91F;
 				if (this.onGround) {
-					f = this.level.getBlockState(ground).getFriction(this.level, ground, this) * 0.91F;
+					f = this.level.getBlockState(ground).getBlock().getFriction() * 0.91F;
 				}
 				float f1 = 0.16277137F / (f * f * f);
 				f = 0.91F;
 				if (this.onGround) {
-					f = this.level.getBlockState(ground).getFriction(this.level, ground, this) * 0.91F;
+					f = this.level.getBlockState(ground).getBlock().getFriction() * 0.91F;
 				}
 				this.moveRelative(this.onGround ? 0.1F * f1 : 0.02F, movementInput);
 				this.move(MoverType.SELF, this.getDeltaMovement());
@@ -277,7 +258,7 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 					BlockPos blockpos = this.mob.blockPosition();
 					BlockState blockstate = this.mob.level.getBlockState(blockpos);
 					VoxelShape voxelshape = blockstate.getCollisionShape(this.mob.level, blockpos);
-					if (d2 > (double) this.mob.getStepHeight()
+					if (d2 > (double) this.mob.getEyeHeight()
 							&& d0 * d0 + d1 * d1 < (double) Math.max(1.0F, this.mob.getBbWidth())
 							|| !voxelshape.isEmpty()
 									&& this.mob.getY() < voxelshape.max(Direction.Axis.Y) + (double) blockpos.getY()
@@ -358,11 +339,6 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 	}
 
 	@Override
-	public MobType getMobType() {
-		return MobType.UNDEAD;
-	}
-
-	@Override
 	public int getMaxSpawnClusterSize() {
 		return 7;
 	}
@@ -375,11 +351,6 @@ public class Revenant2016Entity extends DemonEntity implements IAnimatable, IAni
 
 	public int getFlameTimer() {
 		return flameTimer;
-	}
-
-	@Override
-	public int tickTimer() {
-		return tickCount;
 	}
 
 }

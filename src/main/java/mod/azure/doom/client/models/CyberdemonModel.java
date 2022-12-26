@@ -2,10 +2,11 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tiersuperheavy.CyberdemonEntity;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class CyberdemonModel extends AnimatedTickingGeoModel<CyberdemonEntity> {
+public class CyberdemonModel extends GeoModel<CyberdemonEntity> {
 
 	public ResourceLocation classic_model = new ResourceLocation(DoomMod.MODID, "geo/cyberdemon.geo.json");
 	public ResourceLocation c2016_model = new ResourceLocation(DoomMod.MODID, "geo/cyberdemon2016.geo.json");
@@ -33,5 +34,10 @@ public class CyberdemonModel extends AnimatedTickingGeoModel<CyberdemonEntity> {
 	public ResourceLocation getAnimationResource(CyberdemonEntity object) {
 		return object.getVariant() == 2 ? c2016_animation
 				: object.getVariant() == 3 ? tyrant_animation : classic_animation;
+	}
+
+	@Override
+	public RenderType getRenderType(CyberdemonEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

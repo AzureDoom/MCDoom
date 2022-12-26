@@ -6,13 +6,13 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.azure.doom.client.models.projectiles.GladiatorMaceModel;
 import mod.azure.doom.entity.projectiles.entity.GladiatorMaceEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.renderers.geo.GeoProjectilesRenderer;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.util.RenderUtils;
 
-public class GladiatorMaceRender extends GeoProjectilesRenderer<GladiatorMaceEntity> {
+public class GladiatorMaceRender extends GeoEntityRenderer<GladiatorMaceEntity> {
 
 	public GladiatorMaceRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new GladiatorMaceModel());
@@ -23,10 +23,14 @@ public class GladiatorMaceRender extends GeoProjectilesRenderer<GladiatorMaceEnt
 	}
 
 	@Override
-	public RenderType getRenderType(GladiatorMaceEntity animatable, float partialTicks, PoseStack stack,
-			MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
-			ResourceLocation textureLocation) {
-		return RenderType.entityTranslucent(getTextureLocation(animatable));
+	public void preRender(PoseStack poseStack, GladiatorMaceEntity animatable, BakedGeoModel model,
+			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
+			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		RenderUtils.faceRotation(poseStack, animatable, partialTick);
+		poseStack.scale(animatable.tickCount > 2 ? 0.5F : 0.0F, animatable.tickCount > 2 ? 0.5F : 0.0F,
+				animatable.tickCount > 2 ? 0.5F : 0.0F);
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
+				packedOverlay, red, green, blue, alpha);
 	}
 
 }

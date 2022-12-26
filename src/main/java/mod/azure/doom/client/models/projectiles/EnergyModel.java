@@ -2,10 +2,11 @@ package mod.azure.doom.client.models.projectiles;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.projectiles.EnergyCellEntity;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class EnergyModel extends AnimatedGeoModel<EnergyCellEntity> {
+public class EnergyModel extends GeoModel<EnergyCellEntity> {
 	@Override
 	public ResourceLocation getModelResource(EnergyCellEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/smallprojectile.geo.json");
@@ -19,5 +20,10 @@ public class EnergyModel extends AnimatedGeoModel<EnergyCellEntity> {
 	@Override
 	public ResourceLocation getAnimationResource(EnergyCellEntity animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/smallprojectile.animation.json");
+	}
+
+	@Override
+	public RenderType getRenderType(EnergyCellEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

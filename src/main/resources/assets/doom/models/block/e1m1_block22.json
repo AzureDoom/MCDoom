@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"3": "doom:blocks/stargr1_btm",
-		"e1m1_ceiling": "doom:blocks/e1m1_ceiling"
+		"3": "doom:block/stargr1_btm",
+		"e1m1_ceiling": "doom:block/e1m1_ceiling"
 	},
 	"elements": [
 		{

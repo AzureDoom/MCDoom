@@ -1,10 +1,10 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "particle": "doom:blocks/e1m1_toxic_wall",
-        "e1m1_ceiling": "doom:blocks/e1m1_ceiling",
-        "e1m1_toxic_floor": "doom:blocks/e1m1_toxic_floor",
-        "e1m1_toxic_wall": "doom:blocks/e1m1_toxic_wall"
+        "particle": "doom:block/e1m1_toxic_wall",
+        "e1m1_ceiling": "doom:block/e1m1_ceiling",
+        "e1m1_toxic_floor": "doom:block/e1m1_toxic_floor",
+        "e1m1_toxic_wall": "doom:block/e1m1_toxic_wall"
     },
 	"display": {
 		"thirdperson_righthand": {

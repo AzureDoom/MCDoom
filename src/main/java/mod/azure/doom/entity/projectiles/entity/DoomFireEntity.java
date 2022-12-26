@@ -2,12 +2,13 @@ package mod.azure.doom.entity.projectiles.entity;
 
 import java.util.UUID;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -16,28 +17,15 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkHooks;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class DoomFireEntity extends Entity implements IAnimatable {
-
-	private AnimationFactory factory = new AnimationFactory(this);
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		return PlayState.STOP;
-	}
-
-	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<DoomFireEntity>(this, "controller", 0, this::predicate));
-	}
+public class DoomFireEntity extends Entity implements GeoEntity {
 
 	private int warmupDelayTicks;
 	private boolean sentSpikeEvent;
@@ -46,27 +34,41 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 	private LivingEntity caster;
 	private UUID casterUuid;
 	private float damage;
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-	public DoomFireEntity(EntityType<DoomFireEntity> p_i50170_1_, Level p_i50170_2_) {
-		super(p_i50170_1_, p_i50170_2_);
+	public DoomFireEntity(EntityType<DoomFireEntity> entityType, Level world) {
+		super(entityType, world);
+		this.lifeTicks = 75;
 	}
 
-	public DoomFireEntity(Level worldIn, double x, double y, double z, float p_i47276_8_, int p_i47276_9_,
-			LivingEntity casterIn, float damage) {
-		this(DoomEntities.FIRING.get(), worldIn);
-		this.warmupDelayTicks = p_i47276_9_;
+	public DoomFireEntity(Level worldIn, double x, double y, double z, float yaw, int warmup, LivingEntity casterIn,
+			float damage) {
+		this(ProjectilesEntityRegister.FIRING.get(), worldIn);
+		this.warmupDelayTicks = warmup;
 		this.setCaster(casterIn);
-		this.yRot = p_i47276_8_ * (180F / (float) Math.PI);
-		this.setPos(x, y, z);
+		this.absMoveTo(x, y, z);
 		this.damage = damage;
 	}
 
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
+			return PlayState.CONTINUE;
+		}));
+	}
+
+	@Override
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
+	}
+
+	@Override
 	protected void defineSynchedData() {
 	}
 
-	public void setCaster(@Nullable LivingEntity p_190549_1_) {
-		this.caster = p_190549_1_;
-		this.casterUuid = p_190549_1_ == null ? null : p_190549_1_.getUUID();
+	public void setCaster(@Nullable LivingEntity owner) {
+		this.caster = owner;
+		this.casterUuid = owner == null ? null : owner.getUUID();
 	}
 
 	@Nullable
@@ -102,8 +104,7 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 	}
 
 	protected void explode() {
-		this.level.getEntities(this, new AABB(this.blockPosition().above()).inflate(8))
-				.forEach(e -> doDamage(this, e));
+		this.level.getEntities(this, new AABB(this.blockPosition().above()).inflate(8)).forEach(e -> doDamage(this, e));
 	}
 
 	private void doDamage(Entity user, Entity target) {
@@ -129,7 +130,8 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 			}
 		}
 		if (this.isAlive() && level.getBlockState(this.blockPosition().above()).isAir()) {
-			level.setBlockAndUpdate(this.blockPosition().above(), BaseFireBlock.getState(level, this.blockPosition().above()));
+			level.setBlockAndUpdate(this.blockPosition().above(),
+					BaseFireBlock.getState(level, this.blockPosition().above()));
 		}
 		this.level.getEntities(this, new AABB(this.blockPosition().above()).inflate(1)).forEach(e -> {
 			if (e.isAlive() && !(e instanceof DemonEntity)) {
@@ -139,32 +141,25 @@ public class DoomFireEntity extends Entity implements IAnimatable {
 		});
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public void handleEntityEvent(byte id) {
-		super.handleEntityEvent(id);
-		if (id == 4) {
+	public void handleEntityEvent(byte status) {
+		super.handleEntityEvent(status);
+		if (status == 4) {
 			this.clientSideAttackStarted = true;
 		}
 
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public float getAnimationProgress(float partialTicks) {
+	public float getAnimationProgress(float tickDelta) {
 		if (!this.clientSideAttackStarted) {
 			return 0.0F;
 		} else {
 			int i = this.lifeTicks - 2;
-			return i <= 0 ? 1.0F : 1.0F - ((float) i - partialTicks) / 20.0F;
+			return i <= 0 ? 1.0F : 1.0F - ((float) i - tickDelta) / 20.0F;
 		}
 	}
 
 	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
-
-	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

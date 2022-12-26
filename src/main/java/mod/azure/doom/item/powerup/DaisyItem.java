@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.ChatFormatting;
@@ -30,7 +29,7 @@ import top.theillusivec4.curios.api.type.capability.ICurio;
 public class DaisyItem extends Item {
 
 	public DaisyItem() {
-		super(new Item.Properties().tab(DoomMod.DoomPowerUPItemGroup).stacksTo(1));
+		super(new Item.Properties().stacksTo(1));
 	}
 
 	@Override

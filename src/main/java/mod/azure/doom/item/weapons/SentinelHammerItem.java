@@ -3,9 +3,9 @@ package mod.azure.doom.item.weapons;
 import java.util.List;
 import java.util.function.Consumer;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.SentinelHammerRender;
+import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.SentinelHammerLoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
@@ -28,42 +28,21 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import software.bernie.geckolib3.core.AnimationState;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.network.ISyncable;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class SentinelHammerItem extends SwordItem implements IAnimatable, ISyncable {
+public class SentinelHammerItem extends SwordItem implements GeoItem {
 
-	public AnimationFactory factory = new AnimationFactory(this);
-	public String controllerName = "controller";
-	public static final int ANIM_OPEN = 0;
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public SentinelHammerItem() {
-		super(DoomMod.DOOM_HIGHTEIR, 1, -2.5f,
-				new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(24));
-		GeckoLibNetwork.registerSyncable(this);
-	}
-
-	@Override
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		super.initializeClient(consumer);
-		consumer.accept(new IClientItemExtensions() {
-			private final BlockEntityWithoutLevelRenderer renderer = new SentinelHammerRender();
-
-			@Override
-			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return renderer;
-			}
-		});
+		super(DoomTier.DOOM_HIGHTEIR, 1, -2.5f, new Item.Properties().stacksTo(1).durability(24));
+		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
 	@Override
@@ -72,6 +51,24 @@ public class SentinelHammerItem extends SwordItem implements IAnimatable, ISynca
 				"Ammo: " + (stack.getMaxDamage() - stack.getDamageValue() - 1) + " / " + (stack.getMaxDamage() - 1))
 				.withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
+	}
+
+	private void doDamage(LivingEntity user, final Entity target) {
+		if (target instanceof LivingEntity) {
+			target.invulnerableTime = 0;
+			((LivingEntity) target).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 1000, 2));
+			target.hurt(DamageSource.playerAttack((Player) user), 25F);
+		}
+	}
+
+	@Override
+	public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "popup_controller", 0, state -> PlayState.CONTINUE));
+	}
+
+	@Override
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
@@ -96,49 +93,12 @@ public class SentinelHammerItem extends SwordItem implements IAnimatable, ISynca
 		return stack.getDamageValue() < (stack.getMaxDamage() - 1) ? true : false;
 	}
 
-	private void doDamage(LivingEntity user, final Entity target) {
-		if (target instanceof LivingEntity) {
-			target.invulnerableTime = 0;
-			((LivingEntity) target).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 1000, 2));
-			target.hurt(DamageSource.playerAttack((Player) user), 25F);
-		}
-	}
-
-	public <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-		return PlayState.CONTINUE;
-	}
-
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController(this, controllerName, 1, this::predicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
-
-	@Override
-	public void onAnimationSync(int id, int state) {
-		if (state == ANIM_OPEN) {
-			final AnimationController<?> controller = GeckoLibUtil.getControllerForID(this.factory, id, controllerName);
-			if (controller.getAnimationState() == AnimationState.Stopped) {
-				controller.markNeedsReload();
-				controller.setAnimation(new AnimationBuilder().addAnimation("using", EDefaultLoopTypes.PLAY_ONCE));
-			}
-		}
-	}
-
-	@Override
-	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-		Player Player = (Player) entityIn;
-		if (worldIn.isClientSide) {
-			if (Player.getMainHandItem().getItem() instanceof SentinelHammerItem) {
-				while (Keybindings.RELOAD.consumeClick() && isSelected) {
-					DoomPacketHandler.SENTINELHAMMER.sendToServer(new SentinelHammerLoadingPacket(itemSlot));
-				}
-			}
-		}
+	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
+		if (world.isClientSide)
+			if (stack.getItem() instanceof SentinelHammerItem)
+				while (Keybindings.RELOAD.consumeClick() && selected)
+					DoomPacketHandler.SENTINELHAMMER.sendToServer(new SentinelHammerLoadingPacket(slot));
 	}
 
 	public static void reload(Player user, InteractionHand hand) {
@@ -170,13 +130,20 @@ public class SentinelHammerItem extends SwordItem implements IAnimatable, ISynca
 	}
 
 	@Override
-	public boolean isFoil(ItemStack stack) {
-		return false;
+	public int getUseDuration(ItemStack stack) {
+		return 72000;
 	}
 
 	@Override
-	public int getUseDuration(ItemStack stack) {
-		return 7200;
+	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+		consumer.accept(new IClientItemExtensions() {
+			private final SentinelHammerRender renderer = new SentinelHammerRender();
+
+			@Override
+			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+				return this.renderer;
+			}
+		});
 	}
 
 }

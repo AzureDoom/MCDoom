@@ -7,37 +7,31 @@ import mod.azure.doom.client.models.projectiles.EnergyMobModel;
 import mod.azure.doom.entity.projectiles.EnergyCellEntity;
 import mod.azure.doom.entity.projectiles.entity.EnergyCellMobEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.renderers.geo.GeoProjectilesRenderer;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.util.RenderUtils;
 
-public class EnergyCellMobRender extends GeoProjectilesRenderer<EnergyCellMobEntity> {
+public class EnergyCellMobRender extends GeoEntityRenderer<EnergyCellMobEntity> {
 
 	public EnergyCellMobRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new EnergyMobModel());
 	}
 
-	@Override
-	public RenderType getRenderType(EnergyCellMobEntity animatable, float partialTicks, PoseStack stack,
-			MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
-			ResourceLocation textureLocation) {
-		return RenderType.entityTranslucent(getTextureLocation(animatable));
-	}
-
-	protected int getBlockLight(EnergyCellEntity entityIn, BlockPos partialTicks) {
+	protected int getBlockLightLevel(EnergyCellEntity entityIn, BlockPos partialTicks) {
 		return 15;
 	}
 
 	@Override
-	public void renderEarly(EnergyCellMobEntity animatable, PoseStack stackIn, float ticks,
-			MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, int packedOverlayIn,
-			float red, float green, float blue, float partialTicks) {
-		super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn,
-				red, green, blue, partialTicks);
-		stackIn.scale(animatable.tickCount > 2 ? 0.5F : 0.0F, animatable.tickCount > 2 ? 0.5F : 0.0F,
+	public void preRender(PoseStack poseStack, EnergyCellMobEntity animatable, BakedGeoModel model,
+			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
+			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		RenderUtils.faceRotation(poseStack, animatable, partialTick);
+		poseStack.scale(animatable.tickCount > 2 ? 0.5F : 0.0F, animatable.tickCount > 2 ? 0.5F : 0.0F,
 				animatable.tickCount > 2 ? 0.5F : 0.0F);
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
+				packedOverlay, red, green, blue, alpha);
 	}
 
 }

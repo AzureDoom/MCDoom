@@ -6,7 +6,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.LargeFireball;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -22,29 +21,29 @@ public class CustomFireballEntity extends LargeFireball {
 	}
 
 	@Override
-	protected void onHitEntity(EntityHitResult p_213868_1_) {
-		if (!this.level.isClientSide) {
-			Entity entity = p_213868_1_.getEntity();
-			Entity entity1 = this.getOwner();
-			if (!(entity instanceof DemonEntity))
-				entity.hurt(DamageSource.fireball(this, entity1), directHitDamage);
-			if (entity1 instanceof LivingEntity) {
-				if (!(entity instanceof DemonEntity))
-					this.doEnchantDamageEffects((LivingEntity) entity1, entity);
-				this.remove(RemovalReason.KILLED);
+	protected void onHitEntity(EntityHitResult entityHitResult) {
+		if (!this.level.isClientSide()) {
+			Entity entity = entityHitResult.getEntity();
+			Entity entity2 = this.getOwner();
+			entity.setSecondsOnFire(5);
+			if (!(entity2 instanceof DemonEntity))
+				entity.hurt(DamageSource.fireball(this, entity2), directHitDamage);
+			if (entity2 instanceof LivingEntity) {
+				if (!(entity2 instanceof DemonEntity))
+					this.doEnchantDamageEffects((LivingEntity) entity2, entity);
+				this.remove(Entity.RemovalReason.DISCARDED);
 			}
 		}
 	}
 
 	@Override
-	protected void onHit(HitResult p_37218_) {
-		super.onHit(p_37218_);
-		if (!this.level.isClientSide) {
-			boolean flag = DoomConfig.SERVER.enable_block_breaking.get();
-			this.level.explode((Entity) null, this.getX(), this.getY(), this.getZ(), 1, true,
-					flag ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
+	protected void onHit(HitResult hitResult) {
+		super.onHit(hitResult);
+		if (!this.level.isClientSide()) {
+			boolean bl = DoomConfig.SERVER.enable_block_breaking.get();
+			this.level.explode(null, this.getX(), this.getY(), this.getZ(), 1, true,
+					bl ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
 			this.discard();
 		}
 	}
-
 }

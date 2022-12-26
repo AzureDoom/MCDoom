@@ -14,8 +14,7 @@ import net.minecraft.world.level.Level;
 public class ArgentSword extends SwordItem {
 
 	public ArgentSword() {
-		super(DoomMod.ARGENT_TIER, 6, -2.4F,
-				new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(9000));
+		super(DoomMod.ARGENT_TIER, 6, -2.4F, new Item.Properties().stacksTo(1).durability(9000));
 	}
 
 	@Override

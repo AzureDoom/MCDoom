@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 public class ArgentHoe extends HoeItem {
 
 	public ArgentHoe() {
-		super(DoomMod.ARGENT_TIER, 4, -2.4F, new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1));
+		super(DoomMod.ARGENT_TIER, 4, -2.4F, new Item.Properties().stacksTo(1));
 	}
 
 	@Override

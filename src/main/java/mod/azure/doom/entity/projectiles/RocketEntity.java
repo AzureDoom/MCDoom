@@ -1,21 +1,19 @@
 package mod.azure.doom.entity.projectiles;
 
-import java.util.List;
-
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
 import mod.azure.doom.util.registry.DoomBlocks;
-import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomSounds;
+import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
@@ -24,27 +22,21 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class RocketEntity extends AbstractArrow implements IAnimatable {
+public class RocketEntity extends AbstractArrow implements GeoEntity {
 
 	protected int timeInAir;
 	protected boolean inAir;
@@ -53,45 +45,47 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 	private float projectiledamage;
 	private BlockPos lightBlockPos = null;
 	private int idleTicks = 0;
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();
 
-	public RocketEntity(EntityType<? extends AbstractArrow> type, Level world) {
-		super(type, world);
+	public RocketEntity(EntityType<? extends RocketEntity> entityType, Level world) {
+		super(entityType, world);
+		this.pickup = AbstractArrow.Pickup.DISALLOWED;
 	}
 
 	public RocketEntity(Level world, LivingEntity owner) {
-		super(DoomEntities.ROCKET.get(), owner, world);
+		super(ProjectilesEntityRegister.ROCKET.get(), owner, world);
 		this.shooter = owner;
 	}
 
 	public RocketEntity(Level world, LivingEntity owner, float damage) {
-		super(DoomEntities.ROCKET.get(), owner, world);
+		super(ProjectilesEntityRegister.ROCKET.get(), owner, world);
 		this.shooter = owner;
 		this.projectiledamage = damage;
 	}
 
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
+	protected RocketEntity(EntityType<? extends RocketEntity> type, double x, double y, double z, Level world) {
+		this(type, world);
 	}
 
-	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<RocketEntity>(this, "controller", 0, this::predicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
-
-	@Override
-	protected void tickDespawn() {
-		++this.ticksInAir;
-		if (this.tickCount >= 40) {
-			this.remove(RemovalReason.KILLED);
+	protected RocketEntity(EntityType<? extends RocketEntity> type, LivingEntity owner, Level world) {
+		this(type, owner.getX(), owner.getEyeY() - 0.10000000149011612D, owner.getZ(), world);
+		this.setOwner(owner);
+		if (owner instanceof Player) {
+			this.pickup = AbstractArrow.Pickup.DISALLOWED;
 		}
+	}
+
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
+			return PlayState.CONTINUE;
+		}));
+	}
+
+	@Override
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
@@ -100,6 +94,19 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 		if (!(living instanceof Player) && !(living instanceof IconofsinEntity)) {
 			living.setDeltaMovement(0, 0, 0);
 			living.invulnerableTime = 0;
+		}
+	}
+
+	@Override
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
+	}
+
+	@Override
+	protected void tickDespawn() {
+		++this.ticksInAir;
+		if (this.tickCount >= 40) {
+			this.remove(RemovalReason.KILLED);
 		}
 	}
 
@@ -130,88 +137,16 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 			idleTicks = 0;
 		if (idleOpt <= 0 || idleTicks < idleOpt)
 			super.tick();
+		++this.ticksInAir;
+		if (this.ticksInAir >= 80) {
+			this.remove(Entity.RemovalReason.DISCARDED);
+		}
 		boolean isInsideWaterBlock = level.isWaterAt(blockPosition());
 		spawnLightSource(isInsideWaterBlock);
-		boolean flag = this.isNoPhysics();
-		Vec3 vector3d = this.getDeltaMovement();
-		if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
-			double f = vector3d.horizontalDistance();
-			this.yRot = (float) (Mth.atan2(vector3d.x, vector3d.z) * (double) (180F / (float) Math.PI));
-			this.xRot = (float) (Mth.atan2(vector3d.y, (double) f) * (double) (180F / (float) Math.PI));
-			this.yRotO = this.getYRot();
-			this.xRotO = this.getXRot();
-		}
-
-		if (this.tickCount >= 100) {
-			this.remove(RemovalReason.KILLED);
-		}
-
-		if (this.inAir && !flag) {
-			this.tickDespawn();
-
-			++this.timeInAir;
-		} else {
-			this.timeInAir = 0;
-			Vec3 vector3d2 = this.position();
-			Vec3 vector3d3 = vector3d2.add(vector3d);
-			HitResult raytraceresult = this.level.clip(
-					new ClipContext(vector3d2, vector3d3, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
-			if (raytraceresult.getType() != HitResult.Type.MISS) {
-				vector3d3 = raytraceresult.getLocation();
-			}
-			while (this.isAlive()) {
-				EntityHitResult entityraytraceresult = this.findHitEntity(vector3d2, vector3d3);
-				if (entityraytraceresult != null) {
-					raytraceresult = entityraytraceresult;
-				}
-				if (raytraceresult != null && raytraceresult.getType() == HitResult.Type.ENTITY) {
-					Entity entity = ((EntityHitResult) raytraceresult).getEntity();
-					Entity entity1 = this.getOwner();
-					if (entity instanceof Player && entity1 instanceof Player
-							&& !((Player) entity1).canHarmPlayer((Player) entity)) {
-						raytraceresult = null;
-						entityraytraceresult = null;
-					}
-				}
-				if (raytraceresult != null && raytraceresult.getType() != HitResult.Type.MISS && !flag
-						&& !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
-					this.onHit(raytraceresult);
-					this.hasImpulse = true;
-				}
-				if (entityraytraceresult == null || this.getPierceLevel() <= 0) {
-					break;
-				}
-				raytraceresult = null;
-			}
-			vector3d = this.getDeltaMovement();
-			double d3 = vector3d.x;
-			double d4 = vector3d.y;
-			double d0 = vector3d.z;
-			double d5 = this.getX() + d3;
-			double d1 = this.getY() + d4;
-			double d2 = this.getZ() + d0;
-			double f1 = vector3d.horizontalDistance();
-			if (flag) {
-				this.yRot = (float) (Mth.atan2(-d3, -d0) * (double) (180F / (float) Math.PI));
-			} else {
-				this.yRot = (float) (Mth.atan2(d3, d0) * (double) (180F / (float) Math.PI));
-			}
-			this.xRot = (float) (Mth.atan2(d4, (double) f1) * (double) (180F / (float) Math.PI));
-			this.xRot = lerpRotation(this.xRotO, this.getXRot());
-			this.yRot = lerpRotation(this.yRotO, this.getYRot());
-			float f2 = 0.99F;
-			this.setDeltaMovement(vector3d.scale((double) f2));
-			if (!this.isNoGravity() && !flag) {
-				Vec3 vector3d4 = this.getDeltaMovement();
-				this.setDeltaMovement(vector3d4.x, vector3d4.y - (double) 0.05F, vector3d4.z);
-			}
-			this.setPos(d5, d1, d2);
-			this.checkInsideBlocks();
-			if (this.level.isClientSide()) {
-				double x = this.getX() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
-				double z = this.getZ() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
-				this.level.addParticle(ParticleTypes.FLAME, true, x, this.getY(), z, 0, 0, 0);
-			}
+		if (this.level.isClientSide()) {
+			double d2 = this.getX() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
+			double f2 = this.getZ() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
+			this.level.addParticle(ParticleTypes.SMOKE, true, d2, this.getY(), f2, 0, 0, 0);
 		}
 	}
 
@@ -252,38 +187,23 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 				for (int z : offsets) {
 					BlockPos offsetPos = blockPos.offset(x, y, z);
 					BlockState state = world.getBlockState(offsetPos);
-					if (state.isAir() || state.getBlock().equals(DoomBlocks.TICKING_LIGHT_BLOCK.get()))
+					if (state.isAir() || state.getBlock().equals(DoomBlocks.TICKING_LIGHT_BLOCK))
 						return offsetPos;
 				}
 
 		return null;
 	}
 
-	@Override
-	public ItemStack getPickupItem() {
-		return new ItemStack(DoomItems.ROCKET.get());
-	}
-
-	@Override
-	public Packet<?> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
+	public void initFromStack(ItemStack stack) {
+		if (stack.getItem() == DoomItems.ROCKET.get()) {
+		}
 	}
 
 	@Override
 	public boolean isNoGravity() {
-		if (this.isInWater()) {
+		if (this.isInWater())
 			return false;
-		} else {
-			return true;
-		}
-	}
-
-	public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();
-
-	@Override
-	protected void onHitBlock(BlockHitResult p_230299_1_) {
-		super.onHitBlock(p_230299_1_);
-		this.setSoundEvent(DoomSounds.ROCKET_HIT.get());
+		return true;
 	}
 
 	@Override
@@ -297,65 +217,54 @@ public class RocketEntity extends AbstractArrow implements IAnimatable {
 	}
 
 	@Override
-	public boolean isPushedByFluid() {
-		return false;
-	}
-
-	@Override
-	protected void onHitEntity(EntityHitResult p_213868_1_) {
-		Entity entity = this.getOwner();
-		if (p_213868_1_.getType() != HitResult.Type.ENTITY || !((EntityHitResult) p_213868_1_).getEntity().is(entity)) {
-			if (!this.level.isClientSide) {
-				this.doDamage();
-				this.remove(RemovalReason.KILLED);
-			}
-		}
-	}
-
-	@Override
-	protected void onHit(HitResult result) {
-		super.onHit(result);
-		Entity entity = this.getOwner();
-		if (result.getType() != HitResult.Type.ENTITY || !((EntityHitResult) result).getEntity().is(entity)) {
-			if (!this.level.isClientSide) {
-				this.doDamage();
-				this.remove(RemovalReason.KILLED);
-			}
-		}
-	}
-
-	@Override
 	public void remove(RemovalReason reason) {
 		AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
 		areaeffectcloudentity.setParticle(ParticleTypes.LAVA);
 		areaeffectcloudentity.setRadius(6);
 		areaeffectcloudentity.setDuration(1);
-		areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
+		areaeffectcloudentity.absMoveTo(this.getX(), this.getY(), this.getZ());
 		this.level.addFreshEntity(areaeffectcloudentity);
 		level.playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE,
 				SoundSource.PLAYERS, 1.0F, 1.5F);
 		super.remove(reason);
 	}
 
-	public void doDamage() {
-		float f2 = 4.0F;
-		int k1 = Mth.floor(this.getX() - (double) f2 - 1.0D);
-		int l1 = Mth.floor(this.getX() + (double) f2 + 1.0D);
-		int i2 = Mth.floor(this.getY() - (double) f2 - 1.0D);
-		int i1 = Mth.floor(this.getY() + (double) f2 + 1.0D);
-		int j2 = Mth.floor(this.getZ() - (double) f2 - 1.0D);
-		int j1 = Mth.floor(this.getZ() + (double) f2 + 1.0D);
-		List<Entity> list = this.level.getEntities(this,
-				new AABB((double) k1, (double) i2, (double) j2, (double) l1, (double) i1, (double) j1));
-		Vec3 vector3d = new Vec3(this.getX(), this.getY(), this.getZ());
-		for (int k2 = 0; k2 < list.size(); ++k2) {
-			Entity entity = list.get(k2);
-			double d12 = (double) (Mth.sqrt((float) entity.distanceToSqr(vector3d)) / f2);
-			if (d12 <= 1.0D) {
-				if (entity instanceof LivingEntity) {
-					entity.hurt(DamageSource.playerAttack((Player) this.shooter), projectiledamage);
-				}
-			}
+	@Override
+	protected void onHitBlock(BlockHitResult blockHitResult) {
+		super.onHitBlock(blockHitResult);
+		if (!this.level.isClientSide()) {
+			this.doDamage();
+			this.remove(Entity.RemovalReason.DISCARDED);
 		}
 	}
+
+	@Override
+	protected void onHitEntity(EntityHitResult entityHitResult) {
+		if (!this.level.isClientSide()) {
+			this.doDamage();
+			this.remove(Entity.RemovalReason.DISCARDED);
+		}
+	}
+
+	@Override
+	public ItemStack getPickupItem() {
+		return new ItemStack(DoomItems.ROCKET.get());
+	}
+
+	public void doDamage() {
+		this.level.getEntities(this, new AABB(this.blockPosition().above()).inflate(4)).forEach(e -> {
+			if (e instanceof LivingEntity) {
+				e.hurt(DamageSource.playerAttack((Player) this.shooter), projectiledamage);
+			}
+			this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 0.0F,
+					Level.ExplosionInteraction.NONE);
+		});
+
+	}
+
+	@Override
+	public boolean displayFireAnimation() {
+		return false;
+	}
+
 }

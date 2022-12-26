@@ -3,9 +3,9 @@ package mod.azure.doom.client.models.weapons;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.DarkLordCrucibleItem;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class DarkLordCrucibleModel extends AnimatedGeoModel<DarkLordCrucibleItem> {
+public class DarkLordCrucibleModel extends GeoModel<DarkLordCrucibleItem> {
 	@Override
 	public ResourceLocation getModelResource(DarkLordCrucibleItem object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/darklordcrucible.geo.json");
@@ -13,7 +13,7 @@ public class DarkLordCrucibleModel extends AnimatedGeoModel<DarkLordCrucibleItem
 
 	@Override
 	public ResourceLocation getTextureResource(DarkLordCrucibleItem object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/items/darklordcrucible.png");
+		return new ResourceLocation(DoomMod.MODID, "textures/item/darklordcrucible.png");
 	}
 
 	@Override

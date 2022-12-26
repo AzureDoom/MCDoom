@@ -14,14 +14,12 @@ import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.AxeMarauderLoadingPacket;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
@@ -33,8 +31,7 @@ import net.minecraft.world.phys.AABB;
 public class AxeMarauderItem extends SwordItem {
 
 	public AxeMarauderItem() {
-		super(DoomMod.DOOM_HIGHTEIR, 1, -2.5f, new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1)
-				.durability(24));
+		super(DoomMod.DOOM_HIGHTEIR, 1, -2.5f, new Item.Properties().stacksTo(1).durability(24));
 	}
 
 	@Override
@@ -117,19 +114,6 @@ public class AxeMarauderItem extends SwordItem {
 	@Override
 	public boolean isFoil(ItemStack stack) {
 		return false;
-	}
-
-	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-		ItemStack stack = new ItemStack(this);
-		stack.hasTag();
-		stack.enchant(Enchantments.SMITE, 10);
-		stack.enchant(Enchantments.MOB_LOOTING, 10);
-		stack.enchant(Enchantments.SHARPNESS, 10);
-		stack.enchant(Enchantments.SWEEPING_EDGE, 10);
-		if ((group == DoomMod.DoomWeaponItemGroup) || (group == CreativeModeTab.TAB_SEARCH)) {
-			items.add(stack);
-		}
 	}
 
 	@Override

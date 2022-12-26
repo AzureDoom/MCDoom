@@ -3,9 +3,9 @@ package mod.azure.doom.client.models.weapons;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.Ballista;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class BallistaModel extends AnimatedGeoModel<Ballista> {
+public class BallistaModel extends GeoModel<Ballista> {
 	@Override
 	public ResourceLocation getModelResource(Ballista object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/ballista.geo.json");
@@ -13,7 +13,7 @@ public class BallistaModel extends AnimatedGeoModel<Ballista> {
 
 	@Override
 	public ResourceLocation getTextureResource(Ballista object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/items/ballista.png");
+		return new ResourceLocation(DoomMod.MODID, "textures/item/ballista.png");
 	}
 
 	@Override

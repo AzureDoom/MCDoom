@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
@@ -31,12 +30,7 @@ import net.minecraft.world.phys.AABB;
 public class Chainsaw extends Item {
 
 	public Chainsaw() {
-		super(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(601));
-	}
-
-	@Override
-	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-		return false;
+		super(new Item.Properties().stacksTo(1).durability(601));
 	}
 
 	public static void removeAmmo(Item ammo, Player playerEntity) {
@@ -82,8 +76,8 @@ public class Chainsaw extends Item {
 	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
 		LivingEntity user = (LivingEntity) entityIn;
 		Player player = (Player) entityIn;
-		if (player.getMainHandItem().sameItemStackIgnoreDurability(stack)
-				&& stack.getDamageValue() < (stack.getMaxDamage() - 1) && !player.getCooldowns().isOnCooldown(this)) {
+		if (player.getMainHandItem().sameItem(stack) && stack.getDamageValue() < (stack.getMaxDamage() - 1)
+				&& !player.getCooldowns().isOnCooldown(this)) {
 			final AABB aabb = new AABB(entityIn.blockPosition().above()).inflate(1D, 1D, 1D);
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDamage(user, e));
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDeathCheck(user, e, stack));
@@ -92,13 +86,10 @@ public class Chainsaw extends Item {
 			worldIn.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_IDLE.get(),
 					SoundSource.PLAYERS, 0.05F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
-		if (worldIn.isClientSide) {
-			if (player.getMainHandItem().sameItemStackIgnoreDurability(stack)) {
-				while (Keybindings.RELOAD.consumeClick() && isSelected) {
-					DoomPacketHandler.CHAINSAW.sendToServer(new ChainsawLoadingPacket(itemSlot));
-				}
-			}
-		}
+		if (worldIn.isClientSide) 
+			if (player.getMainHandItem().getItem() instanceof Chainsaw && Keybindings.RELOAD.consumeClick()
+					&& isSelected) 
+				DoomPacketHandler.CHAINSAW.sendToServer(new ChainsawLoadingPacket(itemSlot));
 	}
 
 	public static void reload(Player user, InteractionHand hand) {
@@ -116,17 +107,15 @@ public class Chainsaw extends Item {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
 			target.hurt(DamageSource.playerAttack((Player) user), DoomConfig.SERVER.chainsaw_damage.get().floatValue());
-			user.level.playSound((Player) null, user.getX(), user.getY(), user.getZ(),
-					DoomSounds.CHAINSAW_ATTACKING.get(), SoundSource.PLAYERS, 0.3F,
-					1.0F / (user.level.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+			user.level.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_ATTACKING.get(),
+					SoundSource.PLAYERS, 0.3F, 1.0F / (user.level.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 	}
 
 	private void doDeathCheck(LivingEntity user, Entity target, ItemStack stack) {
 		Random rand = new Random();
 		List<Item> givenList = Arrays.asList(DoomItems.CHAINGUN_BULLETS.get(), DoomItems.SHOTGUN_SHELLS.get(),
-				DoomItems.ARGENT_BOLT.get(), DoomItems.SHOTGUN_SHELLS.get(), DoomItems.ENERGY_CELLS.get(),
-				DoomItems.ROCKET.get());
+				DoomItems.ARGENT_BOLT.get(), DoomItems.SHOTGUN_SHELLS.get(), DoomItems.ENERGY_CELLS.get(), DoomItems.ROCKET.get());
 		if (target instanceof DemonEntity && !(target instanceof Player)) {
 			if (((LivingEntity) target).isDeadOrDying()) {
 				if (user instanceof Player) {

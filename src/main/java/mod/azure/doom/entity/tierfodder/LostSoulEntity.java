@@ -6,11 +6,9 @@ import java.util.SplittableRandom;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
-import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -22,7 +20,6 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -37,30 +34,23 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, IAnimationTickable {
+public class LostSoulEntity extends DemonEntity implements GeoEntity {
+
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	protected static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(LostSoulEntity.class,
 			EntityDataSerializers.BYTE);
 	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(LostSoulEntity.class,
@@ -71,32 +61,21 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 	public LostSoulEntity(EntityType<? extends LostSoulEntity> type, Level world) {
 		super(type, world);
 		this.moveControl = new LostSoulEntity.MoveHelperController(this);
-	}
-	
-	@Override
-	public float getStepHeight() {
-		return 4.0F;
-	}
-
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (!(animationSpeed > -0.15F && animationSpeed < 0.15F)) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
+		this.maxUpStep = 4.0F;
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<LostSoulEntity>(this, "controller", 0.1F, this::predicate));
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+			if (event.isMoving())
+				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+		}));
 	}
 
 	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
@@ -140,26 +119,11 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 		return spawnDataIn;
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public LostSoulEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-		super(DoomEntities.LOST_SOUL.get(), worldIn);
-	}
-
-	public LostSoulEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ) {
-		super(DoomEntities.LOST_SOUL.get(), worldIn);
-	}
-
-	@Override
-	public Packet<?> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-
-	public static AttributeSupplier.Builder createAttributes() {
+	public static AttributeSupplier.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.lost_soul_health.get())
-				.add(Attributes.FLYING_SPEED, 0.25D)
-				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.lost_soul_melee_damage.get())
-				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.lost_soul_health.get()).add(Attributes.FLYING_SPEED, 0.25D)
+				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.lost_soul_melee_damage.get()).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -187,7 +151,7 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 	}
 
 	protected void explode() {
-		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, Explosion.BlockInteraction.NONE);
+		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, Level.ExplosionInteraction.NONE);
 	}
 
 	private boolean getVexFlag(int p_190656_1_) {
@@ -246,12 +210,12 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 			BlockPos ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
 			float f = 0.91F;
 			if (this.onGround) {
-				f = this.level.getBlockState(ground).getFriction(this.level, ground, this) * 0.91F;
+				f = this.level.getBlockState(ground).getBlock().getFriction() * 0.91F;
 			}
 			float f1 = 0.16277137F / (f * f * f);
 			f = 0.91F;
 			if (this.onGround) {
-				f = this.level.getBlockState(ground).getFriction(this.level, ground, this) * 0.91F;
+				f = this.level.getBlockState(ground).getBlock().getFriction() * 0.91F;
 			}
 			this.moveRelative(this.onGround ? 0.1F * f1 : 0.02F, movementInput);
 			this.move(MoverType.SELF, this.getDeltaMovement());
@@ -303,7 +267,7 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 					vector3d = vector3d.normalize();
 					if (this.canReach(vector3d, Mth.ceil(d0))) {
 						this.parentEntity
-								.setDeltaMovement(this.parentEntity.getDeltaMovement().add(vector3d.scale(0.2D))); 
+								.setDeltaMovement(this.parentEntity.getDeltaMovement().add(vector3d.scale(0.2D)));
 					} else {
 						this.operation = MoveControl.Operation.WAIT;
 					}
@@ -341,15 +305,15 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 		public void tick() {
 			if (this.parentEntity.getTarget() == null) {
 				Vec3 vec3d = this.parentEntity.getDeltaMovement();
-				this.parentEntity.yRot = -((float) Mth.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
-				this.parentEntity.yBodyRot = this.parentEntity.yRot;
+				this.parentEntity.yo = -((float) Mth.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
+				this.parentEntity.yBodyRot = this.parentEntity.getYRot();
 			} else {
 				LivingEntity livingentity = this.parentEntity.getTarget();
 				if (livingentity.distanceToSqr(this.parentEntity) < 4096.0D) {
 					double d1 = livingentity.getX() - this.parentEntity.getX();
 					double d2 = livingentity.getZ() - this.parentEntity.getZ();
-					this.parentEntity.yRot = -((float) Mth.atan2(d1, d2)) * (180F / (float) Math.PI);
-					this.parentEntity.yBodyRot = this.parentEntity.yRot;
+					this.parentEntity.yo = -((float) Mth.atan2(d1, d2)) * (180F / (float) Math.PI);
+					this.parentEntity.yBodyRot = this.parentEntity.getYRot();
 				}
 			}
 
@@ -371,11 +335,6 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 	}
 
 	@Override
-	public MobType getMobType() {
-		return MobType.UNDEAD;
-	}
-
-	@Override
 	protected float getSoundVolume() {
 		return 1.0F;
 	}
@@ -387,11 +346,6 @@ public class LostSoulEntity extends DemonEntity implements Enemy, IAnimatable, I
 	@Override
 	public int getMaxSpawnClusterSize() {
 		return 7;
-	}
-
-	@Override
-	public int tickTimer() {
-		return tickCount;
 	}
 
 	@Override

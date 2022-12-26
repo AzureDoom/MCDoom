@@ -20,6 +20,7 @@ import mod.azure.doom.util.packets.weapons.RocketLauncherLoadingPacket;
 import mod.azure.doom.util.packets.weapons.SGLoadingPacket;
 import mod.azure.doom.util.packets.weapons.SSGLoadingPacket;
 import mod.azure.doom.util.packets.weapons.SentinelHammerLoadingPacket;
+import mod.azure.doom.util.packets.weapons.UnmakerLoadingPacket;
 import mod.azure.doom.util.packets.weapons.UnmaykrLoadingPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
@@ -70,6 +71,10 @@ public class DoomPacketHandler {
 
 	public static final SimpleChannel UNMAYKR = NetworkRegistry.newSimpleChannel(
 			new ResourceLocation(DoomMod.MODID, "unmakyr"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals,
+			PROTOCOL_VERSION::equals);
+
+	public static final SimpleChannel UNMAKER = NetworkRegistry.newSimpleChannel(
+			new ResourceLocation(DoomMod.MODID, "unmaker"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals,
 			PROTOCOL_VERSION::equals);
 
 	public static final SimpleChannel CRUCIBLE = NetworkRegistry.newSimpleChannel(
@@ -123,8 +128,6 @@ public class DoomPacketHandler {
 				DPlasmaLoadingPacket::new, DPlasmaLoadingPacket::handle);
 		BALLISTA.registerMessage(channel_id++, BallistaLoadingPacket.class, BallistaLoadingPacket::encode,
 				BallistaLoadingPacket::new, BallistaLoadingPacket::handle);
-		BALLISTA.registerMessage(channel_id++, BallistaLoadingPacket.class, BallistaLoadingPacket::encode,
-				BallistaLoadingPacket::new, BallistaLoadingPacket::handle);
 		BFG.registerMessage(channel_id++, BFGLoadingPacket.class, BFGLoadingPacket::encode, BFGLoadingPacket::new,
 				BFGLoadingPacket::handle);
 		BFG9000.registerMessage(channel_id++, BFG9000LoadingPacket.class, BFG9000LoadingPacket::encode,
@@ -144,6 +147,8 @@ public class DoomPacketHandler {
 				SSGLoadingPacket::new, SSGLoadingPacket::handle);
 		UNMAYKR.registerMessage(channel_id++, UnmaykrLoadingPacket.class, UnmaykrLoadingPacket::encode,
 				UnmaykrLoadingPacket::new, UnmaykrLoadingPacket::handle);
+		UNMAKER.registerMessage(channel_id++, UnmakerLoadingPacket.class, UnmakerLoadingPacket::encode,
+				UnmakerLoadingPacket::new, UnmakerLoadingPacket::handle);
 		CRUCIBLE.registerMessage(channel_id++, CrucibleLoadingPacket.class, CrucibleLoadingPacket::encode,
 				CrucibleLoadingPacket::new, CrucibleLoadingPacket::handle);
 		CHAINSAW.registerMessage(channel_id++, ChainsawLoadingPacket.class, ChainsawLoadingPacket::encode,

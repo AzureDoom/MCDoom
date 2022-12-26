@@ -2,10 +2,12 @@ package mod.azure.doom.entity;
 
 import java.util.UUID;
 
+import org.jetbrains.annotations.Nullable;
+
+import mod.azure.doom.entity.ai.goal.DoomNavigation;
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
 import mod.azure.doom.util.registry.DoomBlocks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -20,19 +22,19 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.NeutralMob;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.network.NetworkHooks;
 
-public class DemonEntity extends PathfinderMob implements NeutralMob {
+public class DemonEntity extends Monster implements NeutralMob, Enemy {
 
 	private static final EntityDataAccessor<Integer> ANGER_TIME = SynchedEntityData.defineId(DemonEntity.class,
 			EntityDataSerializers.INT);
@@ -42,24 +44,20 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 	private UUID targetUuid;
 	private BlockPos lightBlockPos = null;
 
-	protected DemonEntity(EntityType<? extends PathfinderMob> type, Level worldIn) {
+	protected DemonEntity(EntityType<? extends Monster> type, Level worldIn) {
 		super(type, worldIn);
-		this.noCulling = false;
 		this.xpReward = (int) (this.getMaxHealth());
-	}
-
-	public static boolean passPeacefulAndYCheck(EntityType<? extends DemonEntity> config, LevelAccessor world,
-			MobSpawnType reason, BlockPos pos, RandomSource random) {
-		if (world.getDifficulty() == Difficulty.PEACEFUL)
-			return false;
-		if ((reason != MobSpawnType.CHUNK_GENERATION && reason != MobSpawnType.NATURAL))
-			return !world.getBlockState(pos.below()).is(Blocks.NETHER_WART_BLOCK);
-		return !world.getBlockState(pos.below()).is(Blocks.NETHER_WART_BLOCK);
+		maxUpStep = 1.5f;
 	}
 
 	@Override
-	public boolean canStandOnFluid(FluidState state) {
-		return state.is(FluidTags.LAVA);
+	public MobType getMobType() {
+		return MobType.UNDEAD;
+	}
+
+	@Override
+	public boolean canStandOnFluid(FluidState fluidState) {
+		return fluidState.is(FluidTags.LAVA);
 	}
 
 	public int getAttckingState() {
@@ -68,6 +66,15 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 
 	public void setAttackingState(int time) {
 		this.entityData.set(STATE, time);
+	}
+
+	public static boolean canSpawnInDark(EntityType<? extends DemonEntity> type, LevelAccessor serverWorldAccess,
+			MobSpawnType spawnReason, BlockPos pos, RandomSource random) {
+		if (serverWorldAccess.getDifficulty() == Difficulty.PEACEFUL)
+			return false;
+		if ((spawnReason != MobSpawnType.CHUNK_GENERATION && spawnReason != MobSpawnType.NATURAL))
+			return !serverWorldAccess.getBlockState(pos.below()).is(Blocks.NETHER_WART_BLOCK);
+		return !serverWorldAccess.getBlockState(pos.below()).is(Blocks.NETHER_WART_BLOCK);
 	}
 
 	@Override
@@ -83,8 +90,8 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 	}
 
 	@Override
-	public void setRemainingPersistentAngerTime(int time) {
-		this.entityData.set(ANGER_TIME, time);
+	public void setRemainingPersistentAngerTime(int ticks) {
+		this.entityData.set(ANGER_TIME, ticks);
 	}
 
 	@Override
@@ -93,13 +100,8 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 	}
 
 	@Override
-	public void setPersistentAngerTarget(UUID target) {
-		this.targetUuid = target;
-	}
-
-	@Override
-	public Packet<?> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
+	public void setPersistentAngerTarget(@Nullable UUID uuid) {
+		this.targetUuid = uuid;
 	}
 
 	@Override
@@ -108,8 +110,12 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 	}
 
 	@Override
-	protected boolean shouldDespawnInPeaceful() {
-		return true;
+	protected void tickDeath() {
+		++this.deathTime;
+		if (this.deathTime == 35) {
+			this.remove(Entity.RemovalReason.KILLED);
+			this.dropExperience();
+		}
 	}
 
 	public void performRangedAttack(LivingEntity target, float pullProgress) {
@@ -121,17 +127,16 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 	}
 
 	@Override
-	protected PathNavigation createNavigation(Level worldIn) {
-		return new WallClimberNavigation(this, worldIn);
+	protected PathNavigation createNavigation(Level world) {
+		return new DoomNavigation(this, world);
 	}
 
 	@Override
 	public void playAmbientSound() {
-		SoundEvent soundevent = this.getAmbientSound();
-		if (soundevent != null) {
-			this.playSound(soundevent, 0.25F, this.getVoicePitch());
+		SoundEvent soundEvent = this.getAmbientSound();
+		if (soundEvent != null) {
+			this.playSound(soundEvent, 0.25F, this.getVoicePitch());
 		}
-
 	}
 
 	public void spawnLightSource(Entity entity, boolean isInWaterBlock) {
@@ -176,15 +181,6 @@ public class DemonEntity extends PathfinderMob implements NeutralMob {
 				}
 
 		return null;
-	}
-
-	@Override
-	protected void tickDeath() {
-		++this.deathTime;
-		if (this.deathTime == 35) {
-			this.remove(Entity.RemovalReason.KILLED);
-			this.dropExperience();
-		}
 	}
 
 	@Override

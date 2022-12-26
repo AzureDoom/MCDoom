@@ -2,14 +2,15 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import com.mojang.math.Vector3f;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.data.EntityModelData;
 
-public class GladiatorModel extends AnimatedTickingGeoModel<GladiatorEntity> {
+public class GladiatorModel extends GeoModel<GladiatorEntity> {
 
 	@Override
 	public ResourceLocation getModelResource(GladiatorEntity object) {
@@ -26,16 +27,22 @@ public class GladiatorModel extends AnimatedTickingGeoModel<GladiatorEntity> {
 	public ResourceLocation getAnimationResource(GladiatorEntity object) {
 		return new ResourceLocation(DoomMod.MODID, "animations/gladiator.animation.json");
 	}
-	
-	@Override
-	public void setLivingAnimations(GladiatorEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
-		super.setLivingAnimations(entity, uniqueID, customPredicate);
-		IBone head = this.getAnimationProcessor().getBone("neck");
 
-		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
+	@Override
+	public void setCustomAnimations(GladiatorEntity animatable, long instanceId,
+			AnimationState<GladiatorEntity> animationState) {
+		super.setCustomAnimations(animatable, instanceId, animationState);
+
+		CoreGeoBone head = getAnimationProcessor().getBone("neck");
+		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+
 		if (head != null) {
-			head.setRotationY(
-					Vector3f.YP.rotation(extraData.netHeadYaw * ((float) Math.PI / 340F)).j());
+			head.setRotX(entityData.headPitch() * ((float) Math.PI / 340F));
 		}
+	}
+
+	@Override
+	public RenderType getRenderType(GladiatorEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "doom:items/bronze_chestplate"
+        "layer0": "doom:item/bronze_chestplate"
     }
 }

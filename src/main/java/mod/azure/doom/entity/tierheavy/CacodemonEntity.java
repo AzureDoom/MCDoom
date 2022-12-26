@@ -11,7 +11,6 @@ import mod.azure.doom.entity.attack.FireballAttack;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -23,7 +22,6 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -43,62 +41,44 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable, IAnimationTickable {
+public class CacodemonEntity extends DemonEntity implements Enemy, GeoEntity {
 
 	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(CacodemonEntity.class,
 			EntityDataSerializers.INT);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public CacodemonEntity(EntityType<? extends CacodemonEntity> type, Level worldIn) {
 		super(type, worldIn);
 		this.moveControl = new CacodemonEntity.GhastMoveControl(this);
 	}
 
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (event.isMoving()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) {
-			if (level.isClientSide) {
-				event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
-				return PlayState.CONTINUE;
-			}
-		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
-	}
-
-	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
-		if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		return PlayState.STOP;
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+			if (event.isMoving())
+				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
+			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
+			return PlayState.STOP;
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<CacodemonEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(new AnimationController<CacodemonEntity>(this, "controller1", 0, this::predicate1));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
@@ -150,17 +130,9 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable, 
 		return spawnDataIn;
 	}
 
-	@Override
-	public Packet<?> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-
-	public static float fireBallDirectHitDamage = 6.0F;
-
-	public static AttributeSupplier.Builder createAttributes() {
+	public static AttributeSupplier.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
-				.add(Attributes.FLYING_SPEED, 0.25D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.cacodemon_health.get())
+				.add(Attributes.FLYING_SPEED, 0.25D).add(Attributes.MAX_HEALTH, DoomConfig.SERVER.cacodemon_health.get())
 				.add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
 				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
@@ -172,9 +144,8 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable, 
 		this.goalSelector.addGoal(7, new CacodemonEntity.LookAroundGoal(this));
 		this.goalSelector.addGoal(4, new RangedStaticAttackGoal(this,
 				new FireballAttack(this, true).setDamage(DoomConfig.SERVER.cacodemon_ranged_damage.get().floatValue())
-						.setProjectileOriginOffset(1.5, 0.3, 1.5)
-						.setSound(DoomSounds.CACODEMON_AFFECTIONATE_SCREAM.get(), 1.0F,
-								1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
+						.setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(DoomSounds.CACODEMON_AFFECTIONATE_SCREAM.get(),
+								1.0F, 1.2F / (this.getRandom().nextFloat() * 0.2F + 0.9F)),
 				1));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
@@ -212,12 +183,12 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable, 
 			BlockPos ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
 			float f = 0.91F;
 			if (this.onGround) {
-				f = this.level.getBlockState(ground).getFriction(this.level, ground, this) * 0.91F;
+				f = this.level.getBlockState(ground).getBlock().getFriction() * 0.91F;
 			}
 			float f1 = 0.16277137F / (f * f * f);
 			f = 0.91F;
 			if (this.onGround) {
-				f = this.level.getBlockState(ground).getFriction(this.level, ground, this) * 0.91F;
+				f = this.level.getBlockState(ground).getBlock().getFriction() * 0.91F;
 			}
 			this.moveRelative(this.onGround ? 0.1F * f1 : 0.02F, movementInput);
 			this.move(MoverType.SELF, this.getDeltaMovement());
@@ -245,15 +216,15 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable, 
 		public void tick() {
 			if (this.parentEntity.getTarget() == null) {
 				Vec3 vec3d = this.parentEntity.getDeltaMovement();
-				this.parentEntity.yRot = -((float) Mth.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
-				this.parentEntity.yBodyRot = this.parentEntity.yRot;
+				this.parentEntity.yo = -((float) Mth.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
+				this.parentEntity.yBodyRot = this.parentEntity.getYRot();
 			} else {
 				LivingEntity livingentity = this.parentEntity.getTarget();
 				if (livingentity.distanceToSqr(this.parentEntity) < 4096.0D) {
 					double d1 = livingentity.getX() - this.parentEntity.getX();
 					double d2 = livingentity.getZ() - this.parentEntity.getZ();
-					this.parentEntity.yRot = -((float) Mth.atan2(d1, d2)) * (180F / (float) Math.PI);
-					this.parentEntity.yBodyRot = this.parentEntity.yRot;
+					this.parentEntity.yo = -((float) Mth.atan2(d1, d2)) * (180F / (float) Math.PI);
+					this.parentEntity.yBodyRot = this.parentEntity.getYRot();
 				}
 			}
 
@@ -321,11 +292,6 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable, 
 	}
 
 	@Override
-	public MobType getMobType() {
-		return MobType.UNDEAD;
-	}
-
-	@Override
 	protected float getSoundVolume() {
 		return 1.0F;
 	}
@@ -333,11 +299,6 @@ public class CacodemonEntity extends DemonEntity implements Enemy, IAnimatable, 
 	@Override
 	public int getMaxSpawnClusterSize() {
 		return 2;
-	}
-
-	@Override
-	public int tickTimer() {
-		return tickCount;
 	}
 
 }

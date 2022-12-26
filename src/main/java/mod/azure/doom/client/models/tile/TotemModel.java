@@ -2,10 +2,11 @@ package mod.azure.doom.client.models.tile;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tileentity.TotemEntity;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class TotemModel extends AnimatedGeoModel<TotemEntity> {
+public class TotemModel extends GeoModel<TotemEntity> {
 	@Override
 	public ResourceLocation getAnimationResource(TotemEntity entity) {
 		return new ResourceLocation(DoomMod.MODID, "animations/totem.animation.json");
@@ -18,6 +19,11 @@ public class TotemModel extends AnimatedGeoModel<TotemEntity> {
 
 	@Override
 	public ResourceLocation getTextureResource(TotemEntity entity) {
-		return new ResourceLocation(DoomMod.MODID, "textures/blocks/totem.png");
+		return new ResourceLocation(DoomMod.MODID, "textures/block/totem.png");
+	}
+
+	@Override
+	public RenderType getRenderType(TotemEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

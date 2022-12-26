@@ -2,7 +2,6 @@ package mod.azure.doom.item.weapons;
 
 import java.util.function.Consumer;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.PlasmagunRender;
 import mod.azure.doom.config.DoomConfig;
@@ -25,27 +24,14 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.network.PacketDistributor;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 
 public class PlasmaGun extends DoomBaseItem {
 
 	public PlasmaGun() {
-		super(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(401));
-	}
-
-	@Override
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		super.initializeClient(consumer);
-		consumer.accept(new IClientItemExtensions() {
-			private final BlockEntityWithoutLevelRenderer renderer = new PlasmagunRender();
-
-			@Override
-			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return renderer;
-			}
-		});
+		super(new Item.Properties().stacksTo(1).durability(401));
+		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
 	@Override
@@ -71,12 +57,8 @@ public class PlasmaGun extends DoomBaseItem {
 						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
 								DoomSounds.PLASMA_FIRING.get(), SoundSource.PLAYERS, 1.0F,
 								1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
-						if (!worldIn.isClientSide) {
-							final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
-							final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
-									.with(() -> playerentity);
-							GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN_FASTER);
-						}
+						triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn),
+								"shoot_controller", "firing");
 					}
 					boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
 					spawnLightSource(entityLiving, isInsideWaterBlock);
@@ -84,24 +66,6 @@ public class PlasmaGun extends DoomBaseItem {
 			} else {
 				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
 						DoomSounds.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
-			}
-		}
-	}
-
-	public EnergyCellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		float j = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		EnergyCellEntity arrowentity = new EnergyCellEntity(worldIn, shooter,
-				(DoomConfig.SERVER.energycell_damage.get().floatValue() + (j * 2.0F)));
-		return arrowentity;
-	}
-
-	@Override
-	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-		if (worldIn.isClientSide) {
-			if (((Player) entityIn).getMainHandItem().getItem() instanceof PlasmaGun) {
-				while (Keybindings.RELOAD.consumeClick() && isSelected) {
-					DoomPacketHandler.PLASMA.sendToServer(new PlasmaLoadingPacket(itemSlot));
-				}
 			}
 		}
 	}
@@ -120,7 +84,29 @@ public class PlasmaGun extends DoomBaseItem {
 	}
 
 	@Override
-	public boolean canDisableShield(ItemStack stack, ItemStack shield, LivingEntity entity, LivingEntity attacker) {
-		return true;
+	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
+		if (world.isClientSide)
+			if (stack.getItem() instanceof PlasmaGun)
+				while (Keybindings.RELOAD.consumeClick() && selected)
+					DoomPacketHandler.PLASMA.sendToServer(new PlasmaLoadingPacket(slot));
+	}
+
+	public EnergyCellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
+		float j = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		EnergyCellEntity arrowentity = new EnergyCellEntity(worldIn, shooter,
+				(DoomConfig.SERVER.energycell_damage.get().floatValue() + (j * 2.0F)));
+		return arrowentity;
+	}
+
+	@Override
+	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+		consumer.accept(new IClientItemExtensions() {
+			private final PlasmagunRender renderer = new PlasmagunRender();
+
+			@Override
+			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+				return this.renderer;
+			}
+		});
 	}
 }

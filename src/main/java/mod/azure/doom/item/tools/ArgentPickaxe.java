@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 public class ArgentPickaxe extends PickaxeItem {
 
 	public ArgentPickaxe() {
-		super(DoomMod.ARGENT_TIER, 3, -2.4F, new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1));
+		super(DoomMod.ARGENT_TIER, 3, -2.4F, new Item.Properties().stacksTo(1));
 	}
 
 	@Override

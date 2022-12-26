@@ -191,7 +191,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 
 	private boolean equals(ItemStack itemStack, ItemStack otherItemStack) {
 		return itemStack.getItem() == otherItemStack.getItem()
-				&& ItemStack.isSameIgnoreDurability(itemStack, otherItemStack);
+				&& ItemStack.isSame(itemStack, otherItemStack);
 	}
 
 	public void removed(Player player) {

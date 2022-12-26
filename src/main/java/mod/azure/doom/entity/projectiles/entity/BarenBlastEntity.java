@@ -1,72 +1,67 @@
 package mod.azure.doom.entity.projectiles.entity;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.DoomSounds;
-import net.minecraft.core.particles.ParticleTypes;
+import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class BarenBlastEntity extends AbstractHurtingProjectile implements IAnimatable {
+public class BarenBlastEntity extends AbstractHurtingProjectile implements GeoEntity {
 
 	public int explosionPower = 1;
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
-	private float directHitDamage = 4F;
+	private float directHitDamage = 0F;
 	private LivingEntity shooter;
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public BarenBlastEntity(EntityType<? extends BarenBlastEntity> p_i50160_1_, Level p_i50160_2_) {
 		super(p_i50160_1_, p_i50160_2_);
 	}
 
+	public void setDirectHitDamage(float directHitDamage) {
+		this.directHitDamage = directHitDamage;
+	}
+
 	public BarenBlastEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
 			float directHitDamage) {
-		super(DoomEntities.BARENBLAST.get(), shooter, accelX, accelY, accelZ, worldIn);
+		super(ProjectilesEntityRegister.BARENBLAST.get(), shooter, accelX, accelY, accelZ, worldIn);
 		this.shooter = shooter;
 		this.directHitDamage = directHitDamage;
 	}
 
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
+	public BarenBlastEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
+		super(ProjectilesEntityRegister.BARENBLAST.get(), x, y, z, accelX, accelY, accelZ, worldIn);
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<BarenBlastEntity>(this, "controller", 0, this::predicate));
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
+			return PlayState.CONTINUE;
+		}));
 	}
 
 	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
-
-	public void setDirectHitDamage(float directHitDamage) {
-		this.directHitDamage = directHitDamage;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
@@ -88,96 +83,60 @@ public class BarenBlastEntity extends AbstractHurtingProjectile implements IAnim
 	}
 
 	@Override
-	public void tick() {
-		Entity entity = this.getOwner();
-		if (this.level.isClientSide
-				|| (entity == null || entity.isAlive()) && this.level.hasChunkAt(this.blockPosition())) {
-			super.tick();
-			HitResult raytraceresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
-			if (raytraceresult.getType() != HitResult.Type.MISS
-					&& !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
-				this.onHit(raytraceresult);
-			}
-			this.checkInsideBlocks();
-			Vec3 vector3d = this.getDeltaMovement();
-			double d0 = this.getX() + vector3d.x;
-			double d1 = this.getY() + vector3d.y;
-			double d2 = this.getZ() + vector3d.z;
-			ProjectileUtil.rotateTowardsMovement(this, 0.2F);
-			float f = this.getInertia();
-			if (this.isInWater()) {
-				for (int i = 0; i < 4; ++i) {
-					this.level.addParticle(ParticleTypes.BUBBLE, d0 - vector3d.x * 0.25D, d1 - vector3d.y * 0.25D,
-							d2 - vector3d.z * 0.25D, vector3d.x, vector3d.y, vector3d.z);
-				}
-				f = 0.8F;
-			}
-			this.setDeltaMovement(vector3d.add(this.xPower, this.yPower, this.zPower).scale((double) f));
-			this.level.addParticle(this.getTrailParticle(), d0, d1 + 0.5D, d2, 0.0D, 0.0D, 0.0D);
-			this.setPos(d0, d1, d2);
-		} else {
-			this.remove(RemovalReason.KILLED);
-		}
-	}
-
 	protected boolean shouldBurn() {
 		return false;
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override
 	public boolean isNoGravity() {
-		if (this.isInWater()) {
+		if (this.isInWater())
 			return false;
-		} else {
-			return true;
-		}
-	}
-
-	@Override
-	public boolean isPushedByFluid() {
-		return false;
-	}
-
-	@Override
-	public boolean isPickable() {
 		return true;
 	}
 
 	@Override
-	protected void onHit(HitResult result) {
-		super.onHit(result);
-		if (!this.level.isClientSide) {
+	protected void onHit(HitResult hitResult) {
+		super.onHit(hitResult);
+		if (!this.level.isClientSide()) {
 			this.explode();
-			this.remove(RemovalReason.KILLED);
+			this.remove(Entity.RemovalReason.DISCARDED);
 		}
 		this.playSound(DoomSounds.ROCKET_HIT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 
 	}
 
 	@Override
-	protected void onHitEntity(EntityHitResult p_213868_1_) {
-		super.onHitEntity(p_213868_1_);
-		if (!this.level.isClientSide) {
-			Entity entity = p_213868_1_.getEntity();
-			Entity entity1 = this.getOwner();
-			if (!(entity instanceof DemonEntity))
-				entity.hurt(DamageSource.mobAttack((LivingEntity) entity1), directHitDamage);
-			this.remove(RemovalReason.KILLED);
-			if (entity1 instanceof LivingEntity) {
-				if (!(entity instanceof DemonEntity))
-					this.doEnchantDamageEffects((LivingEntity) entity1, entity);
+	protected void onHitEntity(EntityHitResult entityHitResult) {
+		super.onHitEntity(entityHitResult);
+		if (!this.level.isClientSide()) {
+			Entity entity = entityHitResult.getEntity();
+			Entity entity2 = this.getOwner();
+			entity.setSecondsOnFire(5);
+			if (!(entity2 instanceof DemonEntity))
+				entity.hurt(DamageSource.mobAttack((LivingEntity) entity2), directHitDamage);
+			if (entity2 instanceof LivingEntity) {
+				if (!(entity2 instanceof DemonEntity))
+					this.doEnchantDamageEffects((LivingEntity) entity2, entity);
+				this.remove(Entity.RemovalReason.DISCARDED);
 			}
 		}
 		this.playSound(DoomSounds.ROCKET_HIT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 	}
 
 	protected void explode() {
-		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, Explosion.BlockInteraction.NONE);
+		this.level.getEntities(this, new AABB(this.blockPosition().above()).inflate(8)).forEach(e -> doDamage(this, e));
+	}
+
+	private void doDamage(Entity user, Entity target) {
+		if (target instanceof LivingEntity) {
+			target.invulnerableTime = 0;
+			target.hurt(DamageSource.indirectMagic(this, target), directHitDamage);
+		}
 	}
 
 	public LivingEntity getShooter() {

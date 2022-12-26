@@ -1,6 +1,6 @@
 package mod.azure.doom.entity.tierboss;
 
-import java.util.EnumSet;
+import java.util.Random;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
@@ -15,7 +15,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -24,6 +23,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AreaEffectCloud;
@@ -32,16 +32,14 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.MoveTowardsTargetGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -56,96 +54,53 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
+public class ArchMakyrEntity extends DemonEntity implements GeoEntity {
 
 	public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(ArchMakyrEntity.class,
 			EntityDataSerializers.INT);
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(ArchMakyrEntity.class,
 			EntityDataSerializers.INT);
 	private final ServerBossEvent bossInfo = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(),
 			BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true)
 					.setCreateWorldFog(true);
 
-	public ArchMakyrEntity(EntityType<ArchMakyrEntity> type, Level worldIn) {
-		super(type, worldIn);
-		this.moveControl = new ArchMakyrEntity.MoveHelperController(this);
-	}
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) < 5) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_phaseone", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 5) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("flying", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
-	}
-
-	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
-		if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking_ranged", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.entityData.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("attacking_aoe", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.entityData.get(STATE) == 3 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("flying_up", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		return PlayState.STOP;
+	public ArchMakyrEntity(EntityType<ArchMakyrEntity> entityType, Level worldIn) {
+		super(entityType, worldIn);
+		this.moveControl = new MoveHelperController(this);
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<ArchMakyrEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(new AnimationController<ArchMakyrEntity>(this, "controller1", 0, this::predicate1));
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) < 5)
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death_phaseone"));
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 5)
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
+			return event.setAndContinue(RawAnimation.begin().thenLoop("flying"));
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
+			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().then("attacking_ranged", LoopType.PLAY_ONCE));
+			if (this.entityData.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().then("attacking_aoe", LoopType.PLAY_ONCE));
+			if (this.entityData.get(STATE) == 3 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().then("flying_up", LoopType.PLAY_ONCE));
+			return PlayState.STOP;
+		}));
 	}
 
 	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
-
-	@Override
-	public void die(DamageSource source) {
-		if (!this.level.isClientSide) {
-			if (source == DamageSource.OUT_OF_WORLD) {
-				this.setDeathState(5);
-			}
-			if (this.entityData.get(DEATH_STATE) > 5) {
-				AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(),
-						this.getZ());
-				areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
-				areaeffectcloudentity.setRadius(3.0F);
-				areaeffectcloudentity.setDuration(55);
-				areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
-				this.level.addFreshEntity(areaeffectcloudentity);
-				this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
-				this.setLastHurtMob(this.getLastHurtByMob());
-				this.level.broadcastEntityEvent(this, (byte) 3);
-			}
-			if (this.entityData.get(DEATH_STATE) == 5) {
-				super.die(source);
-			}
-		}
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
@@ -192,45 +147,53 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	@Override
-	public int getMaxFallDistance() {
-		return 99;
+	public void die(DamageSource source) {
+		if (!this.level.isClientSide) {
+			if (source == DamageSource.OUT_OF_WORLD) {
+				this.setDeathState(5);
+			}
+			if (this.entityData.get(DEATH_STATE) > 5) {
+				AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(),
+						this.getZ());
+				areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
+				areaeffectcloudentity.setRadius(3.0F);
+				areaeffectcloudentity.setDuration(55);
+				areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
+				this.level.addFreshEntity(areaeffectcloudentity);
+				this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
+				this.setLastHurtMob(this.getLastHurtByMob());
+				this.level.broadcastEntityEvent(this, (byte) 3);
+			}
+			if (this.entityData.get(DEATH_STATE) == 5) {
+				super.die(source);
+			}
+		}
 	}
 
 	@Override
-	protected int calculateFallDamage(float fallDistance, float damageMultiplier) {
-		return 0;
-	}
-
-	@Override
-	public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
-		return false;
-	}
-
-	@Override
-	public boolean isPushable() {
-		return false;
-	}
-
-	@Override
-	protected void pushEntities() {
-	}
-
-	@Override
-	protected boolean canRide(Entity p_184228_1_) {
-		return false;
-	}
-
-	@Override
-	public int getArmorValue() {
-		return 15;
-	}
-
-	protected PathNavigation createNavigation(Level worldIn) {
-		FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
-		flyingpathnavigator.setCanOpenDoors(false);
-		flyingpathnavigator.setCanFloat(true);
-		flyingpathnavigator.setCanPassDoors(true);
-		return flyingpathnavigator;
+	protected void registerGoals() {
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
+		this.goalSelector.addGoal(4, new RangedStrafeAttackGoal(this, new FireballAttack(this, true)
+				.setProjectileOriginOffset(0.8, 0.4, 0.8)
+				.setDamage(DoomConfig.SERVER.archmaykr_ranged_damage.get().floatValue()
+						+ (this.entityData.get(DEATH_STATE) == 1
+								? DoomConfig.SERVER.archmaykr_phaseone_damage_boost.get().floatValue()
+								: this.entityData.get(DEATH_STATE) == 2
+										? DoomConfig.SERVER.archmaykr_phasetwo_damage_boost.get().floatValue()
+										: this.entityData.get(DEATH_STATE) == 3
+												? DoomConfig.SERVER.archmaykr_phasethree_damage_boost.get().floatValue()
+												: this.entityData.get(DEATH_STATE) == 4
+														? DoomConfig.SERVER.archmaykr_phasefour_damage_boost.get()
+																.floatValue()
+														: 0)),
+				1.0D, 1));
+		this.targetSelector.addGoal(4, new KnockbackGoal(this, 1.0D));
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
 	}
 
 	static class MoveHelperController extends MoveControl {
@@ -276,67 +239,45 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	@Override
-	protected void registerGoals() {
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, IronGolem.class, 8.0F));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		this.goalSelector.addGoal(7, new ArchMakyrEntity.LookAroundGoal(this));
-		this.goalSelector.addGoal(4, new RangedStrafeAttackGoal(this, new FireballAttack(this, true)
-				.setProjectileOriginOffset(0.8, 0.4, 0.8)
-				.setDamage(DoomConfig.SERVER.archmaykr_ranged_damage.get().floatValue()
-						+ (this.entityData.get(DEATH_STATE) == 1
-								? DoomConfig.SERVER.archmaykr_phaseone_damage_boost.get().floatValue()
-								: this.entityData.get(DEATH_STATE) == 2
-										? DoomConfig.SERVER.archmaykr_phasetwo_damage_boost.get().floatValue()
-										: this.entityData.get(DEATH_STATE) == 3
-												? DoomConfig.SERVER.archmaykr_phasethree_damage_boost.get().floatValue()
-												: this.entityData.get(DEATH_STATE) == 4
-														? DoomConfig.SERVER.archmaykr_phasefour_damage_boost.get()
-																.floatValue()
-														: 0)),
-				1.0D, 1));
-		this.targetSelector.addGoal(4, new KnockbackGoal(this, 1.0D));
-		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
-		this.goalSelector.addGoal(2, new MoveTowardsTargetGoal(this, 0.9D, 32.0F));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
-		this.targetSelector.addGoal(3, (new HurtByTargetGoal(this).setAlertOthers()));
+	public int getMaxFallDistance() {
+		return 99;
 	}
 
-	static class LookAroundGoal extends Goal {
-		private final ArchMakyrEntity parentEntity;
-
-		public LookAroundGoal(ArchMakyrEntity ghast) {
-			this.parentEntity = ghast;
-			this.setFlags(EnumSet.of(Goal.Flag.LOOK));
-		}
-
-		public boolean canUse() {
-			return true;
-		}
-
-		public void tick() {
-			if (this.parentEntity.getTarget() == null) {
-				Vec3 vec3d = this.parentEntity.getDeltaMovement();
-				this.parentEntity.yRot = -((float) Mth.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
-				this.parentEntity.yBodyRot = this.parentEntity.yRot;
-			} else {
-				LivingEntity livingentity = this.parentEntity.getTarget();
-				if (livingentity.distanceToSqr(this.parentEntity) < 4096.0D) {
-					double d1 = livingentity.getX() - this.parentEntity.getX();
-					double d2 = livingentity.getZ() - this.parentEntity.getZ();
-					this.parentEntity.yRot = -((float) Mth.atan2(d1, d2)) * (180F / (float) Math.PI);
-					this.parentEntity.yBodyRot = this.parentEntity.yRot;
-				}
-			}
-
-		}
+	@Override
+	protected int calculateFallDamage(float fallDistance, float damageMultiplier) {
+		return 0;
 	}
 
-	public ServerBossEvent getBossInfo() {
-		return bossInfo;
+	@Override
+	public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
+		return false;
+	}
+
+	@Override
+	public boolean isPushable() {
+		return false;
+	}
+
+	@Override
+	protected void pushEntities() {
+	}
+
+	@Override
+	protected boolean canRide(Entity p_184228_1_) {
+		return false;
+	}
+
+	@Override
+	public int getArmorValue() {
+		return 15;
+	}
+
+	protected PathNavigation createNavigation(Level worldIn) {
+		FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
+		flyingpathnavigator.setCanOpenDoors(false);
+		flyingpathnavigator.setCanFloat(true);
+		flyingpathnavigator.setCanPassDoors(true);
+		return flyingpathnavigator;
 	}
 
 	@Override
@@ -382,22 +323,22 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		return 2;
 	}
 
-	@Override
-	public Packet<?> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
+	public static boolean spawning(EntityType<ArchMakyrEntity> p_223337_0_, Level p_223337_1_, MobSpawnType reason,
+			BlockPos p_223337_3_, Random p_223337_4_) {
+		return p_223337_1_.getDifficulty() != Difficulty.PEACEFUL;
 	}
 
-	public static AttributeSupplier.Builder createAttributes() {
+	public static Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.55D).add(Attributes.FLYING_SPEED, 0.25D)
 				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.archmaykr_health.get())
-				.add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.55D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.ATTACK_DAMAGE, 0.0D)
+				.add(Attributes.ATTACK_KNOCKBACK, 1.0D);
 	}
 
 	@Override
-	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
-		return 1.5F;
+	public void knockback(double p_147241_, double p_147242_, double p_147243_) {
+		super.knockback(0, 0, 0);
 	}
 
 	@Override
@@ -409,16 +350,8 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	@Override
-	public boolean isBaby() {
-		return false;
-	}
-
-	protected boolean shouldDrown() {
-		return false;
-	}
-
-	protected boolean shouldBurnInDay() {
-		return false;
+	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
+		return 1.5F;
 	}
 
 	@Override
@@ -437,18 +370,8 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 	}
 
 	@Override
-	public MobType getMobType() {
-		return MobType.UNDEAD;
-	}
-
-	@Override
 	public int getMaxSpawnClusterSize() {
 		return 1;
-	}
-
-	@Override
-	public boolean isMaxGroupSizeReached(int p_204209_1_) {
-		return this.isAlive() ? true : super.isMaxGroupSizeReached(p_204209_1_);
 	}
 
 	@Override
@@ -456,7 +379,7 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		super.baseTick();
 		final AABB aabb = new AABB(this.blockPosition().above()).inflate(64D, 64D, 64D);
 		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
-			if (e.isAddedToWorld() && e instanceof ArchMakyrEntity && e.tickCount < 1) {
+			if (e instanceof ArchMakyrEntity && e.tickCount < 1) {
 				e.remove(RemovalReason.KILLED);
 			}
 			if (e instanceof Player) {
@@ -491,11 +414,6 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 		this.bossInfo.setProgress(this.getHealth() / this.getMaxHealth());
 	}
 
-	@Override
-	public int tickTimer() {
-		return tickCount;
-	}
-
 	public void spawnFlames(double x, double z, double maxY, double y, float yaw, int warmup) {
 		BlockPos blockpos = new BlockPos(x, y, z);
 		boolean flag = false;
@@ -527,9 +445,11 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 											: this.entityData.get(DEATH_STATE) == 3
 													? DoomConfig.SERVER.archmaykr_phasethree_damage_boost.get()
 															.floatValue()
+
 													: this.entityData.get(DEATH_STATE) == 4
 															? DoomConfig.SERVER.archmaykr_phasefour_damage_boost.get()
 																	.floatValue()
+
 															: 0));
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
@@ -544,11 +464,6 @@ public class ArchMakyrEntity extends DemonEntity implements IAnimatable, IAnimat
 
 	@Override
 	public void checkDespawn() {
-	}
-
-	@Override
-	public void knockback(double p_147241_, double p_147242_, double p_147243_) {
-		super.knockback(0, 0, 0);
 	}
 
 	@Override

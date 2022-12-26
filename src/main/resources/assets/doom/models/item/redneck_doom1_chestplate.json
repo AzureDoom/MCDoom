@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "doom:items/redneck_chestplate1"
+        "layer0": "doom:item/redneck_chestplate1"
     }
 }

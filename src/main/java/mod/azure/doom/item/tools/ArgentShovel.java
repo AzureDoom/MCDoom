@@ -14,13 +14,12 @@ import net.minecraft.world.level.Level;
 public class ArgentShovel extends ShovelItem {
 
 	public ArgentShovel() {
-		super(DoomMod.ARGENT_TIER, 4, -2.4F, new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1));
+		super(DoomMod.ARGENT_TIER, 4, -2.4F, new Item.Properties().stacksTo(1));
 	}
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(Component
-				.translatable("doom.argent_powered.text").withStyle(ChatFormatting.RED)
+		tooltip.add(Component.translatable("doom.argent_powered.text").withStyle(ChatFormatting.RED)
 				.withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}

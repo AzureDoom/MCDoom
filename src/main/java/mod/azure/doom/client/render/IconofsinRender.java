@@ -6,33 +6,25 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.azure.doom.client.models.IconofsinModel;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.geo.render.built.GeoModel;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class IconofsinRender extends GeoEntityRenderer<IconofsinEntity> {
 
 	public IconofsinRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new IconofsinModel());
 	}
-
+	
 	@Override
-	public RenderType getRenderType(IconofsinEntity animatable, float partialTicks, PoseStack stack,
-			MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
-			ResourceLocation textureLocation) {
-		return RenderType.entityTranslucent(getTextureLocation(animatable));
-	}
-
-	@Override
-	public void render(GeoModel model, IconofsinEntity animatable, float partialTicks, RenderType type,
-			PoseStack matrixStackIn, MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder,
-			int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		super.render(model, animatable, partialTicks, type, matrixStackIn, renderTypeBuffer, vertexBuilder,
-				packedLightIn, packedOverlayIn, red, green, blue, alpha);
+	public void preRender(PoseStack poseStack, IconofsinEntity animatable, BakedGeoModel model,
+			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
+			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay,
+				red, green, blue, alpha);
 		float health = animatable.getHealth();
 		float maxhealth = animatable.getMaxHealth();
+		poseStack.scale(2F, 2F, 2F);
 		if (animatable.getEntityData().get(IconofsinEntity.DEATH_STATE) == 1) {
 			model.getBone("rShoulderArmor").get().setHidden(true);
 			model.getBone("rArmArmor1").get().setHidden(true);
@@ -200,15 +192,6 @@ public class IconofsinRender extends GeoEntityRenderer<IconofsinEntity> {
 				model.getBone("rToe3Armor_1").get().setHidden(true);
 			}
 		}
-	}
-
-	@Override
-	public void renderEarly(IconofsinEntity animatable, PoseStack stackIn, float ticks,
-			MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, int packedOverlayIn,
-			float red, float green, float blue, float partialTicks) {
-		super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn,
-				red, green, blue, partialTicks);
-		stackIn.scale(2F, 2F, 2F);
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 
 public class IconAttackGoal extends Goal {
 	private final IconofsinEntity entity;
@@ -101,7 +101,7 @@ public class IconAttackGoal extends Goal {
 					}
 					this.entity.doHurtTarget(livingentity);
 					this.entity.level.explode(this.entity, livingentity.getX(), livingentity.getY(),
-							livingentity.getZ(), 3.0F, false, Explosion.BlockInteraction.BREAK);
+							livingentity.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
 					livingentity.invulnerableTime = 0;
 				}
 			}

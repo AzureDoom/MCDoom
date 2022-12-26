@@ -1,9 +1,9 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"e1m1_ceiling": "doom:blocks/e1m1_ceiling",
-		"e1m1_floor": "doom:blocks/e1m1_toxic_floor",
-		"particle": "doom:blocks/nuke24"
+		"e1m1_ceiling": "doom:block/e1m1_ceiling",
+		"e1m1_floor": "doom:block/e1m1_toxic_floor",
+		"particle": "doom:block/nuke24"
 	},
 	"elements": [
 		{

@@ -4,8 +4,8 @@ import org.lwjgl.glfw.GLFW;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.gui.weapons.GunTableScreen;
-import mod.azure.doom.client.render.ArachnotronEternalRender;
-import mod.azure.doom.client.render.ArachnotronRender;
+import mod.azure.doom.client.render.ArachonotronEternalRender;
+import mod.azure.doom.client.render.ArachonotronRender;
 import mod.azure.doom.client.render.ArchMaykrRender;
 import mod.azure.doom.client.render.ArchvileRender;
 import mod.azure.doom.client.render.ArmoredBaronRender;
@@ -53,42 +53,12 @@ import mod.azure.doom.client.render.TurretRender;
 import mod.azure.doom.client.render.UnwillingRender;
 import mod.azure.doom.client.render.WhiplashRender;
 import mod.azure.doom.client.render.ZombiemanRender;
-import mod.azure.doom.client.render.armors.AstroRender;
-import mod.azure.doom.client.render.armors.BronzeRender;
-import mod.azure.doom.client.render.armors.ClassicBronzeRender;
-import mod.azure.doom.client.render.armors.ClassicIndigoRender;
-import mod.azure.doom.client.render.armors.ClassicRedRender;
-import mod.azure.doom.client.render.armors.ClassicRender;
-import mod.azure.doom.client.render.armors.CrimsonRender;
-import mod.azure.doom.client.render.armors.CultistRender;
-import mod.azure.doom.client.render.armors.DarkLordArmorRender;
-import mod.azure.doom.client.render.armors.DemoncideRender;
-import mod.azure.doom.client.render.armors.DemonicRender;
-import mod.azure.doom.client.render.armors.DoomRender;
-import mod.azure.doom.client.render.armors.DoomicornRender;
-import mod.azure.doom.client.render.armors.EmberRender;
-import mod.azure.doom.client.render.armors.GoldRender;
-import mod.azure.doom.client.render.armors.HotrodRender;
-import mod.azure.doom.client.render.armors.MaykrRender;
-import mod.azure.doom.client.render.armors.MidnightRender;
-import mod.azure.doom.client.render.armors.Mullet1Render;
-import mod.azure.doom.client.render.armors.Mullet2Render;
-import mod.azure.doom.client.render.armors.Mullet3Render;
-import mod.azure.doom.client.render.armors.NightmareRender;
-import mod.azure.doom.client.render.armors.PainterRender;
-import mod.azure.doom.client.render.armors.PhobosRender;
-import mod.azure.doom.client.render.armors.PraetorRender;
-import mod.azure.doom.client.render.armors.PurplePonyRender;
-import mod.azure.doom.client.render.armors.SantaRender;
-import mod.azure.doom.client.render.armors.SentinelRender;
-import mod.azure.doom.client.render.armors.TwentyFiveRender;
-import mod.azure.doom.client.render.armors.ZombieRender;
 import mod.azure.doom.client.render.projectiles.ArgentBoltRender;
 import mod.azure.doom.client.render.projectiles.BFGCellRender;
 import mod.azure.doom.client.render.projectiles.BarenBlastRender;
 import mod.azure.doom.client.render.projectiles.BulletsRender;
 import mod.azure.doom.client.render.projectiles.ChaingunBulletRender;
-import mod.azure.doom.client.render.projectiles.EnergyRender;
+import mod.azure.doom.client.render.projectiles.EnergyCellRender;
 import mod.azure.doom.client.render.projectiles.GrenadeRender;
 import mod.azure.doom.client.render.projectiles.MeatHookEntityRenderer;
 import mod.azure.doom.client.render.projectiles.RocketRender;
@@ -105,40 +75,11 @@ import mod.azure.doom.client.render.projectiles.entity.RocketMobRender;
 import mod.azure.doom.client.render.tile.GunCraftingRender;
 import mod.azure.doom.client.render.tile.TotemRender;
 import mod.azure.doom.config.DoomConfig;
-import mod.azure.doom.item.armor.AstroDoomArmor;
-import mod.azure.doom.item.armor.BronzeDoomArmor;
-import mod.azure.doom.item.armor.ClassicBronzeDoomArmor;
-import mod.azure.doom.item.armor.ClassicDoomArmor;
-import mod.azure.doom.item.armor.ClassicIndigoDoomArmor;
-import mod.azure.doom.item.armor.ClassicRedDoomArmor;
-import mod.azure.doom.item.armor.CrimsonDoomArmor;
-import mod.azure.doom.item.armor.CultistDoomArmor;
-import mod.azure.doom.item.armor.DarkLordArmor;
-import mod.azure.doom.item.armor.DemoncideDoomArmor;
-import mod.azure.doom.item.armor.DemonicDoomArmor;
-import mod.azure.doom.item.armor.DoomArmor;
-import mod.azure.doom.item.armor.DoomicornDoomArmor;
-import mod.azure.doom.item.armor.EmberDoomArmor;
-import mod.azure.doom.item.armor.GoldDoomArmor;
-import mod.azure.doom.item.armor.HotrodDoomArmor;
-import mod.azure.doom.item.armor.MaykrDoomArmor;
-import mod.azure.doom.item.armor.MidnightDoomArmor;
-import mod.azure.doom.item.armor.Mullet2DoomArmor;
-import mod.azure.doom.item.armor.Mullet3DoomArmor;
-import mod.azure.doom.item.armor.MulletDoomArmor;
-import mod.azure.doom.item.armor.NightmareDoomArmor;
-import mod.azure.doom.item.armor.PainterDoomArmor;
-import mod.azure.doom.item.armor.PhobosDoomArmor;
-import mod.azure.doom.item.armor.PraetorDoomArmor;
-import mod.azure.doom.item.armor.PurplePonyDoomArmor;
-import mod.azure.doom.item.armor.SantaDoomArmor;
-import mod.azure.doom.item.armor.SentinelDoomArmor;
-import mod.azure.doom.item.armor.TwentyFiveDoomArmor;
-import mod.azure.doom.item.armor.ZombieDoomArmor;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomScreens;
+import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -152,31 +93,30 @@ import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
 @EventBusSubscriber(modid = DoomMod.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientModEventSubscriber {
 
 	@SubscribeEvent
 	public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
-		event.registerEntityRenderer(DoomEntities.GLADIATOR_MACE.get(), GladiatorMaceRender::new);
-		event.registerEntityRenderer(DoomEntities.MEATHOOOK_ENTITY.get(), MeatHookEntityRenderer::new);
-		event.registerEntityRenderer(DoomEntities.SHOTGUN_SHELL.get(), ShotgunShellRender::new);
-		event.registerEntityRenderer(DoomEntities.ARGENT_BOLT.get(), ArgentBoltRender::new);
-		event.registerEntityRenderer(DoomEntities.GRENADE.get(), GrenadeRender::new);
-		event.registerEntityRenderer(DoomEntities.DRONEBOLT_MOB.get(), DroneBoltRender::new);
-		event.registerEntityRenderer(DoomEntities.FIRE_MOB.get(), FireProjectileRender::new);
-		event.registerEntityRenderer(DoomEntities.UNMAYKR.get(), UnmaykrBulletRender::new);
-		event.registerEntityRenderer(DoomEntities.BULLETS.get(), BulletsRender::new);
-		event.registerEntityRenderer(DoomEntities.BFG_CELL.get(), BFGCellRender::new);
-		event.registerEntityRenderer(DoomEntities.ROCKET.get(), RocketRender::new);
-		event.registerEntityRenderer(DoomEntities.CHAINGUN_BULLET.get(), ChaingunBulletRender::new);
-		event.registerEntityRenderer(DoomEntities.BLOODBOLT_MOB.get(), BloodBoltRender::new);
-		event.registerEntityRenderer(DoomEntities.BARENBLAST.get(), BarenBlastRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.GLADIATOR_MACE.get(), GladiatorMaceRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.MEATHOOOK_ENTITY.get(), MeatHookEntityRenderer::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.SHOTGUN_SHELL.get(), ShotgunShellRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.ARGENT_BOLT.get(), ArgentBoltRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.GRENADE.get(), GrenadeRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.DRONEBOLT_MOB.get(), DroneBoltRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.FIRE_MOB.get(), FireProjectileRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.UNMAYKR.get(), UnmaykrBulletRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.BULLETS.get(), BulletsRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.BFG_CELL.get(), BFGCellRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.ROCKET.get(), RocketRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.CHAINGUN_BULLET.get(), ChaingunBulletRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.BLOODBOLT_MOB.get(), BloodBoltRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.BARENBLAST.get(), BarenBlastRender::new);
 		event.registerEntityRenderer(DoomEntities.LOST_SOUL.get(), LostSoulRender::new);
 		event.registerEntityRenderer(DoomEntities.LOST_SOUL_ETERNAL.get(), LostSoulEternalRender::new);
 		event.registerEntityRenderer(DoomEntities.IMP.get(), ImpRender::new);
-		event.registerEntityRenderer(DoomEntities.ARACHNOTRON.get(), ArachnotronRender::new);
+		event.registerEntityRenderer(DoomEntities.ARACHNOTRON.get(), ArachonotronRender::new);
 		event.registerEntityRenderer(DoomEntities.PINKY.get(), PinkyRender::new);
 		event.registerEntityRenderer(DoomEntities.CACODEMON.get(), CacodemonRender::new);
 		event.registerEntityRenderer(DoomEntities.ARCHVILE.get(), ArchvileRender::new);
@@ -195,15 +135,15 @@ public class ClientModEventSubscriber {
 		event.registerEntityRenderer(DoomEntities.ICONOFSIN.get(), IconofsinRender::new);
 		event.registerEntityRenderer(DoomEntities.POSSESSEDSCIENTIST.get(), PossessedScientistRender::new);
 		event.registerEntityRenderer(DoomEntities.POSSESSEDSOLDIER.get(), PossessedSoldierRender::new);
-		event.registerEntityRenderer(DoomEntities.ENERGY_CELL_MOB.get(), EnergyCellMobRender::new);
-		event.registerEntityRenderer(DoomEntities.ENERGY_CELL.get(), EnergyRender::new);
-		event.registerEntityRenderer(DoomEntities.ROCKET_MOB.get(), RocketMobRender::new);
-		event.registerEntityRenderer(DoomEntities.CHAINGUN_MOB.get(), ChaingunMobRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.ENERGY_CELL_MOB.get(), EnergyCellMobRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.ENERGY_CELL.get(), EnergyCellRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.ROCKET_MOB.get(), RocketMobRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.CHAINGUN_MOB.get(), ChaingunMobRender::new);
 		event.registerEntityRenderer(DoomEntities.GORE_NEST.get(), GoreNestRender::new);
 		event.registerEntityRenderer(DoomEntities.MECHAZOMBIE.get(), MechaZombieRender::new);
 		event.registerEntityRenderer(DoomEntities.GARGOYLE.get(), GargoyleRender::new);
 		event.registerEntityRenderer(DoomEntities.HELLKNIGHT2016.get(), Hellknight2016Render::new);
-		event.registerEntityRenderer(DoomEntities.FIRING.get(), ArchvileFiringRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.FIRING.get(), ArchvileFiringRender::new);
 		event.registerEntityRenderer(DoomEntities.SPECTRE.get(), SpectreRender::new);
 		event.registerEntityRenderer(DoomEntities.CUEBALL.get(), CueBallRender::new);
 		event.registerEntityRenderer(DoomEntities.PROWLER.get(), ProwlerRender::new);
@@ -219,7 +159,7 @@ public class ClientModEventSubscriber {
 		event.registerEntityRenderer(DoomEntities.BLOODMAYKR.get(), BloodMaykrRender::new);
 		event.registerEntityRenderer(DoomEntities.ARCHMAKER.get(), ArchMaykrRender::new);
 		event.registerEntityRenderer(DoomEntities.SPIDERMASTERMIND2016.get(), SpiderMastermind2016Render::new);
-		event.registerEntityRenderer(DoomEntities.ARACHNOTRONETERNAL.get(), ArachnotronEternalRender::new);
+		event.registerEntityRenderer(DoomEntities.ARACHNOTRONETERNAL.get(), ArachonotronEternalRender::new);
 		event.registerEntityRenderer(DoomEntities.TENTACLE.get(), TentacleRender::new);
 		event.registerEntityRenderer(DoomEntities.MOTHERDEMON.get(), MotherDemonRender::new);
 		event.registerEntityRenderer(DoomEntities.TURRET.get(), TurretRender::new);
@@ -227,9 +167,9 @@ public class ClientModEventSubscriber {
 		event.registerEntityRenderer(DoomEntities.REVENANT2016.get(), Revenant2016Render::new);
 		event.registerEntityRenderer(DoomEntities.GLADIATOR.get(), GladiatorRender::new);
 
-		event.registerEntityRenderer(DoomEntities.BARREL.get(), BarrelRender::new);
-		event.registerBlockEntityRenderer(DoomEntities.TOTEM.get(), TotemRender::new);
-		event.registerBlockEntityRenderer(DoomEntities.GUN_TABLE_ENTITY.get(), GunCraftingRender::new);
+		event.registerEntityRenderer(ProjectilesEntityRegister.BARREL.get(), BarrelRender::new);
+		event.registerBlockEntityRenderer(DoomEntities.TOTEM.get(), context -> new TotemRender());
+		event.registerBlockEntityRenderer(DoomEntities.GUN_TABLE_ENTITY.get(), context -> new GunCraftingRender());
 	}
 
 	@SubscribeEvent
@@ -326,40 +266,5 @@ public class ClientModEventSubscriber {
 
 	public static boolean nonCentered(ItemStack stack) {
 		return DoomConfig.SERVER.enable_noncenter.get();
-	}
-
-	@SubscribeEvent
-	public static void registerRenderers(final EntityRenderersEvent.AddLayers event) {
-		GeoArmorRenderer.registerArmorRenderer(DoomicornDoomArmor.class, new DoomicornRender());
-		GeoArmorRenderer.registerArmorRenderer(NightmareDoomArmor.class, new NightmareRender());
-		GeoArmorRenderer.registerArmorRenderer(PurplePonyDoomArmor.class, new PurplePonyRender());
-		GeoArmorRenderer.registerArmorRenderer(DoomArmor.class, new DoomRender());
-		GeoArmorRenderer.registerArmorRenderer(AstroDoomArmor.class, new AstroRender());
-		GeoArmorRenderer.registerArmorRenderer(BronzeDoomArmor.class, new BronzeRender());
-		GeoArmorRenderer.registerArmorRenderer(CrimsonDoomArmor.class, new CrimsonRender());
-		GeoArmorRenderer.registerArmorRenderer(DemoncideDoomArmor.class, new DemoncideRender());
-		GeoArmorRenderer.registerArmorRenderer(DemonicDoomArmor.class, new DemonicRender());
-		GeoArmorRenderer.registerArmorRenderer(EmberDoomArmor.class, new EmberRender());
-		GeoArmorRenderer.registerArmorRenderer(GoldDoomArmor.class, new GoldRender());
-		GeoArmorRenderer.registerArmorRenderer(HotrodDoomArmor.class, new HotrodRender());
-		GeoArmorRenderer.registerArmorRenderer(MidnightDoomArmor.class, new MidnightRender());
-		GeoArmorRenderer.registerArmorRenderer(PhobosDoomArmor.class, new PhobosRender());
-		GeoArmorRenderer.registerArmorRenderer(PraetorDoomArmor.class, new PraetorRender());
-		GeoArmorRenderer.registerArmorRenderer(TwentyFiveDoomArmor.class, new TwentyFiveRender());
-		GeoArmorRenderer.registerArmorRenderer(ClassicBronzeDoomArmor.class, new ClassicBronzeRender());
-		GeoArmorRenderer.registerArmorRenderer(ClassicDoomArmor.class, new ClassicRender());
-		GeoArmorRenderer.registerArmorRenderer(ClassicIndigoDoomArmor.class, new ClassicIndigoRender());
-		GeoArmorRenderer.registerArmorRenderer(ClassicRedDoomArmor.class, new ClassicRedRender());
-		GeoArmorRenderer.registerArmorRenderer(MulletDoomArmor.class, new Mullet1Render());
-		GeoArmorRenderer.registerArmorRenderer(Mullet2DoomArmor.class, new Mullet2Render());
-		GeoArmorRenderer.registerArmorRenderer(Mullet3DoomArmor.class, new Mullet3Render());
-		GeoArmorRenderer.registerArmorRenderer(PainterDoomArmor.class, new PainterRender());
-		GeoArmorRenderer.registerArmorRenderer(CultistDoomArmor.class, new CultistRender());
-		GeoArmorRenderer.registerArmorRenderer(MaykrDoomArmor.class, new MaykrRender());
-		GeoArmorRenderer.registerArmorRenderer(SentinelDoomArmor.class, new SentinelRender());
-		GeoArmorRenderer.registerArmorRenderer(ZombieDoomArmor.class, new ZombieRender());
-		GeoArmorRenderer.registerArmorRenderer(SantaDoomArmor.class, new SantaRender());
-		GeoArmorRenderer.registerArmorRenderer(DarkLordArmor.class, new DarkLordArmorRender());
-
 	}
 }

@@ -40,8 +40,7 @@ public class ArgentPaxel extends DiggerItem {
 			.collect(Collectors.toCollection(Sets::newIdentityHashSet));
 
 	public ArgentPaxel() {
-		super(8, -2.4F, DoomMod.ARGENT_TIER, BlockTags.MINEABLE_WITH_PICKAXE,
-				new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1));
+		super(8, -2.4F, DoomMod.ARGENT_TIER, BlockTags.MINEABLE_WITH_PICKAXE, new Item.Properties().stacksTo(1));
 	}
 
 	@Override

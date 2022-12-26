@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.ChainsawRender;
 import mod.azure.doom.config.DoomConfig;
@@ -17,7 +16,7 @@ import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -31,54 +30,37 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class ChainsawAnimated extends Item implements IAnimatable {
+public class ChainsawAnimated extends Item implements GeoItem {
 
-	public AnimationFactory factory = new AnimationFactory(this);
-	private String controllerName = "controller";
-
-	private <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("running", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
-	}
-
-	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController(this, controllerName, 1, this::predicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public ChainsawAnimated() {
-		super(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(601));
+		super(new Item.Properties().stacksTo(1).durability(601));
+		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
 	@Override
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		super.initializeClient(consumer);
-		consumer.accept(new IClientItemExtensions() {
-			private final BlockEntityWithoutLevelRenderer renderer = new ChainsawRender();
-
-			@Override
-			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return renderer;
-			}
-		});
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
-	public boolean isFoil(ItemStack stack) {
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "shoot_controller", event -> {
+			return event.setAndContinue(RawAnimation.begin().thenLoop("running"));
+		}));
+	}
+
+	@Override
+	public boolean isEnchantable(ItemStack stack) {
 		return false;
 	}
 
@@ -95,37 +77,30 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-		LivingEntity user = (LivingEntity) entityIn;
-		Player player = (Player) entityIn;
-		if (player.getMainHandItem().sameItemStackIgnoreDurability(stack)
+	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
+		LivingEntity user = (LivingEntity) entity;
+		Player player = (Player) entity;
+		if (player.getMainHandItem().sameItem(stack)
 				&& stack.getDamageValue() < (stack.getMaxDamage() - 1) && !player.getCooldowns().isOnCooldown(this)) {
-			final AABB aabb = new AABB(entityIn.blockPosition().above()).inflate(1D, 1D, 1D);
-			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDamage(user, e));
-			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDeathCheck(user, e, stack));
-			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> damageItem(user, stack));
-			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> addParticle(e));
-			worldIn.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_IDLE.get(),
-					SoundSource.PLAYERS, 0.05F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+			final AABB aabb = new AABB(entity.blockPosition().above()).inflate(1D, 1D, 1D);
+			entity.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDamage(user, e));
+			entity.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDeathCheck(user, e, stack));
+			entity.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> damageItem(user, stack));
+			entity.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> addParticle(e));
 		}
-		if (worldIn.isClientSide) {
-			if (player.getMainHandItem().sameItemStackIgnoreDurability(stack)) {
-				while (Keybindings.RELOAD.consumeClick() && isSelected) {
-					DoomPacketHandler.CHAINSAW_ETERNAL.sendToServer(new ChainsawEternalLoadingPacket(itemSlot));
-				}
-			}
+		if (selected && stack.getMaxDamage() < (stack.getMaxDamage() - 1)) {
+			world.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_IDLE.get(),
+					SoundSource.PLAYERS, 0.05F, 1.0F / (world.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
+		if (world.isClientSide)
+			if (stack.getItem() instanceof ChainsawAnimated)
+				while (Keybindings.RELOAD.consumeClick() && selected)
+					DoomPacketHandler.CHAINSAW_ETERNAL.sendToServer(new ChainsawEternalLoadingPacket(slot));
 	}
 
-	public static void reload(Player user, InteractionHand hand) {
-		if (user.getItemInHand(hand).getItem() instanceof ChainsawAnimated) {
-			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
-					&& user.getInventory().countItem(DoomItems.GAS_BARREL.get()) > 0) {
-				removeAmmo(DoomItems.GAS_BARREL.get(), user);
-				user.getItemInHand(hand).hurtAndBreak(-200, user, s -> user.broadcastBreakEvent(hand));
-				user.getItemInHand(hand).setPopTime(3);
-			}
-		}
+	@Override
+	public boolean isFoil(ItemStack stack) {
+		return false;
 	}
 
 	public static void removeAmmo(Item ammo, Player playerEntity) {
@@ -145,7 +120,18 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 		}
 	}
 
-	private void doDamage(LivingEntity user, final Entity target) {
+	public static void reload(Player user, InteractionHand hand) {
+		if (user.getItemInHand(hand).getItem() instanceof ChainsawAnimated) {
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
+					&& user.getInventory().countItem(DoomItems.GAS_BARREL.get()) > 0) {
+				removeAmmo(DoomItems.GAS_BARREL.get(), user);
+				user.getItemInHand(hand).hurtAndBreak(-200, user, s -> user.broadcastBreakEvent(hand));
+				user.getItemInHand(hand).setPopTime(3);
+			}
+		}
+	}
+
+	private void doDamage(LivingEntity user, Entity target) {
 		if (target instanceof LivingEntity) {
 			target.setDeltaMovement(0, 0, 0);
 			target.invulnerableTime = 0;
@@ -159,8 +145,7 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 	private void doDeathCheck(LivingEntity user, Entity target, ItemStack stack) {
 		Random rand = new Random();
 		List<Item> givenList = Arrays.asList(DoomItems.CHAINGUN_BULLETS.get(), DoomItems.SHOTGUN_SHELLS.get(),
-				DoomItems.ARGENT_BOLT.get(), DoomItems.SHOTGUN_SHELLS.get(), DoomItems.ENERGY_CELLS.get(),
-				DoomItems.ROCKET.get());
+				DoomItems.ARGENT_BOLT.get(), DoomItems.SHOTGUN_SHELLS.get(), DoomItems.ENERGY_CELLS.get(), DoomItems.ROCKET.get());
 		if (target instanceof DemonEntity && !(target instanceof Player)) {
 			if (((LivingEntity) target).isDeadOrDying()) {
 				if (user instanceof Player) {
@@ -189,9 +174,22 @@ public class ChainsawAnimated extends Item implements IAnimatable {
 
 	private void addParticle(Entity target) {
 		if (target instanceof LivingEntity) {
-			target.level.addParticle(DustParticleOptions.REDSTONE, target.getRandomX(0.5D), target.getRandomY(),
+			target.level.addParticle(ParticleTypes.CRIMSON_SPORE, target.getRandomX(0.5D), target.getRandomY(),
 					target.getRandomZ(0.5D), 0.0D, 0D, 0D);
+
 		}
+	}
+
+	@Override
+	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+		consumer.accept(new IClientItemExtensions() {
+			private final ChainsawRender renderer = new ChainsawRender();
+
+			@Override
+			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+				return this.renderer;
+			}
+		});
 	}
 
 }

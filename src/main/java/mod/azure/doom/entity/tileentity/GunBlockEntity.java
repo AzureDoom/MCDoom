@@ -15,25 +15,16 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoBlockEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class GunBlockEntity extends BlockEntity implements ImplementedInventory, MenuProvider, IAnimatable {
+public class GunBlockEntity extends BlockEntity implements ImplementedInventory, MenuProvider, GeoBlockEntity {
 
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
-
-	private <E extends BlockEntity & IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
-	}
-
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	private final NonNullList<ItemStack> items = NonNullList.withSize(6, ItemStack.EMPTY);
 
 	public GunBlockEntity(BlockPos pos, BlockState state) {
@@ -41,23 +32,27 @@ public class GunBlockEntity extends BlockEntity implements ImplementedInventory,
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<GunBlockEntity>(this, "controller", 0, this::predicate));
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
-	public AnimationFactory getFactory() {
-		return factory;
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
+			return PlayState.CONTINUE;
+		}));
 	}
 
 	@Override
-	public AbstractContainerMenu createMenu(int syncId, Inventory inventory, Player player) {
-		return new GunTableScreenHandler(syncId, inventory, ContainerLevelAccess.create(level, worldPosition));
+	public void load(CompoundTag nbt) {
+		super.load(nbt);
+		ContainerHelper.loadAllItems(nbt, items);
 	}
 
 	@Override
-	public Component getDisplayName() {
-		return Component.translatable("block.doom.gun_table");
+	public void saveAdditional(CompoundTag nbt) {
+		super.saveAdditional(nbt);
+		ContainerHelper.saveAllItems(nbt, items);
 	}
 
 	@Override
@@ -66,9 +61,12 @@ public class GunBlockEntity extends BlockEntity implements ImplementedInventory,
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
-		ContainerHelper.loadAllItems(tag, items);
+	public Component getDisplayName() {
+		return Component.translatable("block.doom.gun_table");
 	}
 
+	@Override
+	public AbstractContainerMenu createMenu(int syncId, Inventory inventory, Player player) {
+		return new GunTableScreenHandler(syncId, inventory, ContainerLevelAccess.create(level, worldPosition));
+	}
 }

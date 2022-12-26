@@ -1,7 +1,7 @@
 package mod.azure.doom.entity.projectiles;
 
 import mod.azure.doom.util.PlayerProperties;
-import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -20,23 +20,23 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class MeatHookEntity extends AbstractArrow implements IAnimatable {
+public class MeatHookEntity extends AbstractArrow implements GeoEntity {
 	private static final EntityDataAccessor<Integer> HOOKED_ENTITY_ID = SynchedEntityData.defineId(MeatHookEntity.class,
 			EntityDataSerializers.INT);
 	public static final EntityDataAccessor<Float> FORCED_YAW = SynchedEntityData.defineId(MeatHookEntity.class,
 			EntityDataSerializers.FLOAT);
-	private AnimationFactory factory = new AnimationFactory(this);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	private double maxRange = 0D;
 	private double maxSpeed = 0D;
 	private boolean isPulling = false;
-	public Entity hookedEntity;
+	private Entity hookedEntity;
 	private ItemStack stack;
 
 	public MeatHookEntity(EntityType<? extends AbstractArrow> type, Player owner, Level world) {
@@ -46,19 +46,19 @@ public class MeatHookEntity extends AbstractArrow implements IAnimatable {
 	}
 
 	public MeatHookEntity(Level world, LivingEntity owner) {
-		super(DoomEntities.MEATHOOOK_ENTITY.get(), owner, world);
+		super(ProjectilesEntityRegister.MEATHOOOK_ENTITY.get(), owner, world);
 		this.setNoGravity(true);
 		this.setBaseDamage(0);
 	}
 
 	public MeatHookEntity(Level world, double x, double y, double z) {
-		super(DoomEntities.MEATHOOOK_ENTITY.get(), x, y, z, world);
+		super(ProjectilesEntityRegister.MEATHOOOK_ENTITY.get(), x, y, z, world);
 		this.setNoGravity(true);
 		this.setBaseDamage(0);
 	}
 
 	public MeatHookEntity(Level world) {
-		super(DoomEntities.MEATHOOOK_ENTITY.get(), world);
+		super(ProjectilesEntityRegister.MEATHOOOK_ENTITY.get(), world);
 		this.setNoGravity(true);
 		this.setBaseDamage(0);
 	}
@@ -68,18 +68,16 @@ public class MeatHookEntity extends AbstractArrow implements IAnimatable {
 		this.pickup = AbstractArrow.Pickup.DISALLOWED;
 	}
 
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		return PlayState.CONTINUE;
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
+			return PlayState.CONTINUE;
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<MeatHookEntity>(this, "controller", 0, this::predicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
@@ -92,7 +90,6 @@ public class MeatHookEntity extends AbstractArrow implements IAnimatable {
 	@Override
 	public void tick() {
 		super.tick();
-
 		if (getOwner()instanceof Player owner) {
 			setYRot(entityData.get(FORCED_YAW));
 
@@ -101,14 +98,13 @@ public class MeatHookEntity extends AbstractArrow implements IAnimatable {
 
 			if (!level.isClientSide()) {
 				if (owner.isDeadOrDying() || !((PlayerProperties) owner).hasMeatHook()
-						|| !((PlayerProperties) owner).hasMeatHook() || owner.distanceTo(this) > maxRange
-						|| !((PlayerProperties) owner).hasMeatHook())
+						|| owner.distanceTo(this) > maxRange)
 					kill();
 
 				if (this.hookedEntity != null) {
 					if (this.hookedEntity.isRemoved()) {
 						this.hookedEntity = null;
-						onRemovedFromWorld();
+						onClientRemoval();
 					} else {
 						this.absMoveTo(this.hookedEntity.getX(), this.hookedEntity.getY(0.8D),
 								this.hookedEntity.getZ());

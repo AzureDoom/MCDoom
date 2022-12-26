@@ -6,11 +6,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.azure.doom.client.models.ArchMaykrModel;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.geo.render.built.GeoModel;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class ArchMaykrRender extends GeoEntityRenderer<ArchMakyrEntity> {
 
@@ -19,23 +17,16 @@ public class ArchMaykrRender extends GeoEntityRenderer<ArchMakyrEntity> {
 	}
 
 	@Override
-	public RenderType getRenderType(ArchMakyrEntity animatable, float partialTicks, PoseStack stack,
-			MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
-			ResourceLocation textureLocation) {
-		return RenderType.entityTranslucent(getTextureLocation(animatable));
-	}
-
-	@Override
 	protected float getDeathMaxRotation(ArchMakyrEntity entityLivingBaseIn) {
 		return 0.0F;
 	}
 
 	@Override
-	public void render(GeoModel model, ArchMakyrEntity animatable, float partialTicks, RenderType type,
-			PoseStack matrixStackIn, MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder,
-			int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		super.render(model, animatable, partialTicks, type, matrixStackIn, renderTypeBuffer, vertexBuilder,
-				packedLightIn, packedOverlayIn, red, green, blue, alpha);
+	public void preRender(PoseStack poseStack, ArchMakyrEntity animatable, BakedGeoModel model,
+			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
+			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
+				packedOverlay, red, green, blue, alpha);
 		if (animatable.getEntityData().get(ArchMakyrEntity.DEATH_STATE) == 5) {
 			model.getBone("rWing4").get().setHidden(true);
 			if (animatable.getVariant() == 1) {
@@ -111,5 +102,4 @@ public class ArchMaykrRender extends GeoEntityRenderer<ArchMakyrEntity> {
 			}
 		}
 	}
-
 }

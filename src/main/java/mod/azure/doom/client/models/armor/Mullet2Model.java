@@ -3,9 +3,9 @@ package mod.azure.doom.client.models.armor;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.armor.Mullet2DoomArmor;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class Mullet2Model extends AnimatedGeoModel<Mullet2DoomArmor> {
+public class Mullet2Model extends GeoModel<Mullet2DoomArmor> {
 	@Override
 	public ResourceLocation getModelResource(Mullet2DoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/mulletarmor.geo.json");

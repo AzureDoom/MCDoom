@@ -1,6 +1,6 @@
 {
     "parent": "item/handheld",
     "textures": {
-        "layer0": "doom:items/e1m1"
+        "layer0": "doom:item/e1m1"
     }
 }

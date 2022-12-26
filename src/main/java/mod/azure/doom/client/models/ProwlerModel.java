@@ -2,14 +2,16 @@ package mod.azure.doom.client.models;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierheavy.ProwlerEntity;
-import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import net.minecraft.util.Mth;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.data.EntityModelData;
 
-public class ProwlerModel extends AnimatedTickingGeoModel<ProwlerEntity> {
+public class ProwlerModel extends GeoModel<ProwlerEntity> {
 
 	@Override
 	public ResourceLocation getModelResource(ProwlerEntity object) {
@@ -28,22 +30,21 @@ public class ProwlerModel extends AnimatedTickingGeoModel<ProwlerEntity> {
 	}
 
 	@Override
-	public void setLivingAnimations(ProwlerEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
-		super.setLivingAnimations(entity, uniqueID, customPredicate);
-		IBone head = this.getAnimationProcessor().getBone("neck");
+	public void setCustomAnimations(ProwlerEntity animatable, long instanceId,
+			AnimationState<ProwlerEntity> animationState) {
+		super.setCustomAnimations(animatable, instanceId, animationState);
 
-		EntityModelData extraData = (EntityModelData) customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
+		CoreGeoBone head = getAnimationProcessor().getBone("neck");
+		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+
 		if (head != null) {
-			head.setRotationX(
-					Vector3f.XP
-							.rotation(Vector3f.XP
-									.rotation(extraData.headPitch * ((float) Math.PI / 180F)).i())
-							.i());
-			head.setRotationY(
-					Vector3f.YP
-							.rotation(Vector3f.YP
-									.rotation(extraData.netHeadYaw * ((float) Math.PI / 340F)).j())
-							.j());
+			head.setRotX(entityData.headPitch() * Mth.DEG_TO_RAD);
+			head.setRotY(entityData.netHeadYaw() * ((float) Math.PI / 340F));
 		}
+	}
+
+	@Override
+	public RenderType getRenderType(ProwlerEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

@@ -1,9 +1,9 @@
 {
 	"textures": {
-		"0": "doom:blocks/barrel_bottom",
-		"1": "doom:blocks/barrel_side",
-		"2": "doom:blocks/barrel_top",
-		"particle": "doom:blocks/barrel_bottom"
+		"0": "doom:block/barrel_bottom",
+		"1": "doom:block/barrel_side",
+		"2": "doom:block/barrel_top",
+		"particle": "doom:block/barrel_bottom"
 	},
 	"elements": [
 		{

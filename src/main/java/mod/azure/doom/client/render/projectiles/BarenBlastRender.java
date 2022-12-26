@@ -6,13 +6,13 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.azure.doom.client.models.projectiles.BarenBlastModel;
 import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
-import software.bernie.geckolib3.renderers.geo.GeoProjectilesRenderer;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.util.RenderUtils;
 
-public class BarenBlastRender extends GeoProjectilesRenderer<BarenBlastEntity> {
+public class BarenBlastRender extends GeoEntityRenderer<BarenBlastEntity> {
 
 	public BarenBlastRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new BarenBlastModel());
@@ -23,10 +23,14 @@ public class BarenBlastRender extends GeoProjectilesRenderer<BarenBlastEntity> {
 	}
 
 	@Override
-	public RenderType getRenderType(BarenBlastEntity animatable, float partialTicks, PoseStack stack,
-			MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
-			ResourceLocation textureLocation) {
-		return RenderType.entityTranslucent(getTextureLocation(animatable));
+	public void preRender(PoseStack poseStack, BarenBlastEntity animatable, BakedGeoModel model,
+			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
+			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		RenderUtils.faceRotation(poseStack, animatable, partialTick);
+		poseStack.scale(animatable.tickCount > 2 ? 0.5F : 0.0F, animatable.tickCount > 2 ? 0.5F : 0.0F,
+				animatable.tickCount > 2 ? 0.5F : 0.0F);
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
+				packedOverlay, red, green, blue, alpha);
 	}
 
 }

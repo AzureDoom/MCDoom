@@ -9,7 +9,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -24,7 +23,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -41,85 +39,52 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.SoundKeyframeEvent;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
+public class DoomHunterEntity extends DemonEntity implements GeoEntity {
+
+	public int flameTimer;
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(DoomHunterEntity.class,
+			EntityDataSerializers.INT);
 
 	public DoomHunterEntity(EntityType<DoomHunterEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 	}
 
-	public int flameTimer;
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
-	public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(DoomHunterEntity.class,
-			EntityDataSerializers.INT);
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 1) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("sled_death", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		if (event.isMoving() && this.hurtDuration < 0) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("rockets", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.entityData.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("flamethrower", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.entityData.get(STATE) == 3 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("chainsaw", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		event.getController().setAnimationSpeed(0.5);
-		return PlayState.CONTINUE;
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 1)
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("sled_death"));
+			if (event.isMoving() && this.hurtDuration < 0)
+				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
+			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().thenLoop("rockets"));
+			if (this.entityData.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().thenLoop("flamethrower"));
+			if (this.entityData.get(STATE) == 3 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().thenLoop("chainsaw"));
+			event.getController().setAnimationSpeed(0.5);
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("phasechange"))
+				if (this.level.isClientSide())
+					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
+							DoomSounds.DOOMHUNTER_PHASECHANGE.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		AnimationController<DoomHunterEntity> controller = new AnimationController<DoomHunterEntity>(this, "controller",
-				0, this::predicate);
-		controller.registerSoundListener(this::soundListener);
-		data.addAnimationController(controller);
-	}
-
-	private <ENTITY extends IAnimatable> void soundListener(SoundKeyframeEvent<ENTITY> event) {
-		if (event.sound.matches("phasechange")) {
-			if (this.level.isClientSide) {
-				this.getCommandSenderWorld().playLocalSound(this.getX(), this.getY(), this.getZ(),
-						DoomSounds.DOOMHUNTER_PHASECHANGE.get(), SoundSource.HOSTILE, 0.25F, 1.0F, true);
-			}
-		}
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
-
-	@Override
-	public Packet<?> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
@@ -173,10 +138,9 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 				float f = (float) Mth.atan2(livingentity.getZ() - parentEntity.getZ(),
 						livingentity.getX() - parentEntity.getX());
 				RocketMobEntity fireballentity = new RocketMobEntity(world, this.parentEntity, d2, d3, d4,
-						DoomConfig.SERVER.doomhunter_ranged_damage.get().floatValue()
-								+ (this.parentEntity.entityData.get(DEATH_STATE) == 1
-										? DoomConfig.SERVER.doomhunter_extra_phase_two_damage.get().floatValue()
-										: 0));
+						DoomConfig.SERVER.doomhunter_ranged_damage.get().floatValue() + (this.parentEntity.entityData.get(DEATH_STATE) == 1
+								? DoomConfig.SERVER.doomhunter_extra_phase_two_damage.get().floatValue()
+								: 0));
 				this.parentEntity.getNavigation().moveTo(livingentity,
 						this.parentEntity.getDeathState() == 0 ? 0.75 : 1.0);
 				if (this.attackTimer == 15) {
@@ -237,8 +201,7 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 		if (flag) {
 			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this,
 					DoomConfig.SERVER.doomhunter_ranged_damage.get().floatValue()
-							+ (this.entityData.get(DEATH_STATE) == 1
-									? DoomConfig.SERVER.doomhunter_extra_phase_two_damage.get().floatValue()
+							+ (this.entityData.get(DEATH_STATE) == 1 ? DoomConfig.SERVER.doomhunter_extra_phase_two_damage.get().floatValue()
 									: 0));
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
@@ -246,12 +209,12 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 		}
 	}
 
-	public static AttributeSupplier.Builder createAttributes() {
+	public static AttributeSupplier.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.doomhunter_health.get())
-				.add(Attributes.FLYING_SPEED, 2.25D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f)
-				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.doomhunter_melee_damage.get())
-				.add(Attributes.MOVEMENT_SPEED, 0.55D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.doomhunter_health.get()).add(Attributes.FLYING_SPEED, 2.25D)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f)
+				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.doomhunter_melee_damage.get()).add(Attributes.MOVEMENT_SPEED, 0.55D)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	public boolean causeFallDamage(float distance, float damageMultiplier) {
@@ -282,22 +245,12 @@ public class DoomHunterEntity extends DemonEntity implements IAnimatable, IAnima
 	}
 
 	@Override
-	public MobType getMobType() {
-		return MobType.UNDEAD;
-	}
-
-	@Override
 	public int getMaxSpawnClusterSize() {
 		return 1;
 	}
 
 	public int getFlameTimer() {
 		return flameTimer;
-	}
-
-	@Override
-	public int tickTimer() {
-		return tickCount;
 	}
 
 	@Override

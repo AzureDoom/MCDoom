@@ -1,13 +1,13 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"2": "doom:blocks/wall_computer_1",
-		"3": "doom:blocks/wall_computer_2",
-		"4": "doom:blocks/wall_computer_3",
-		"5": "doom:blocks/wall_computer_4",
-		"e1m1_ceiling": "doom:blocks/e1m1_ceiling",
-		"e1m1_floor": "doom:blocks/e1m1_floor",
-		"particle": "doom:blocks/wall_computer_1"
+		"2": "doom:block/wall_computer_1",
+		"3": "doom:block/wall_computer_2",
+		"4": "doom:block/wall_computer_3",
+		"5": "doom:block/wall_computer_4",
+		"e1m1_ceiling": "doom:block/e1m1_ceiling",
+		"e1m1_floor": "doom:block/e1m1_floor",
+		"particle": "doom:block/wall_computer_1"
 	},
 	"elements": [
 		{

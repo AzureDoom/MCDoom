@@ -2,9 +2,7 @@ package mod.azure.doom.item.weapons;
 
 import java.util.function.Consumer;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
-import mod.azure.doom.client.render.weapons.UnmakerRender;
 import mod.azure.doom.client.render.weapons.UnmaykrRender;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.UnmaykrBoltEntity;
@@ -26,42 +24,17 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.network.PacketDistributor;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 
 public class Unmaykr extends DoomBaseItem {
 
 	public final String itemID;
 
 	public Unmaykr(String id) {
-		super(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup).stacksTo(1).durability(9000));
+		super(new Item.Properties().stacksTo(1).durability(9000));
 		this.itemID = id;
-		GeckoLibNetwork.registerSyncable(this);
-	}
-
-	@Override
-	public String getSyncKey() {
-		return super.getSyncKey() + "_" + itemID;
-	}
-
-	@Override
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		super.initializeClient(consumer);
-		consumer.accept(new IClientItemExtensions() {
-			private final BlockEntityWithoutLevelRenderer renderer = new UnmaykrRender();
-			private final BlockEntityWithoutLevelRenderer renderer2 = new UnmakerRender();
-
-			@Override
-			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return Unmaykr.this.itemID.equalsIgnoreCase("demon") ? renderer2 : renderer;
-			}
-		});
-	}
-
-	@Override
-	public boolean isFoil(ItemStack stack) {
-		return false;
+		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
 	@Override
@@ -86,11 +59,6 @@ public class Unmaykr extends DoomBaseItem {
 					UnmaykrBoltEntity abstractarrowentity2 = createArrow(worldIn, stack, playerentity);
 					abstractarrowentity2.shootFromRotation(playerentity, playerentity.getXRot(),
 							playerentity.getYRot() - 10, 0.0F, 1.0F * 3.0F, 1.0F);
-
-					abstractarrowentity.isNoGravity();
-					abstractarrowentity1.isNoGravity();
-					abstractarrowentity2.isNoGravity();
-
 					stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
 					worldIn.addFreshEntity(abstractarrowentity);
 					worldIn.addFreshEntity(abstractarrowentity1);
@@ -98,12 +66,8 @@ public class Unmaykr extends DoomBaseItem {
 					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
 							DoomSounds.UNMAKYR_FIRE.get(), SoundSource.PLAYERS, 1.0F,
 							1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
-					if (!worldIn.isClientSide) {
-						final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerLevel) worldIn);
-						final PacketDistributor.PacketTarget target = PacketDistributor.TRACKING_ENTITY_AND_SELF
-								.with(() -> playerentity);
-						GeckoLibNetwork.syncAnimation(target, this, id, ANIM_OPEN);
-					}
+					triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn), "shoot_controller",
+							"firing");
 				}
 				boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
 				spawnLightSource(entityLiving, isInsideWaterBlock);
@@ -111,22 +75,8 @@ public class Unmaykr extends DoomBaseItem {
 		}
 	}
 
-	public UnmaykrBoltEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		float j = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		UnmaykrBoltEntity arrowentity = new UnmaykrBoltEntity(worldIn, shooter,
-				(DoomConfig.SERVER.unmaykr_damage.get().floatValue() + (j * 2.0F)));
-		return arrowentity;
-	}
-
-	@Override
-	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-		if (worldIn.isClientSide) {
-			if (((Player) entityIn).getMainHandItem().getItem() instanceof Unmaykr) {
-				while (Keybindings.RELOAD.consumeClick() && isSelected) {
-					DoomPacketHandler.UNMAYKR.sendToServer(new UnmaykrLoadingPacket(itemSlot));
-				}
-			}
-		}
+	public static float getArrowVelocity(int charge) {
+		return 1.0F;
 	}
 
 	public static void reload(Player user, InteractionHand hand) {
@@ -138,5 +88,32 @@ public class Unmaykr extends DoomBaseItem {
 				user.getItemInHand(hand).setPopTime(3);
 			}
 		}
+	}
+
+	@Override
+	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
+		if (world.isClientSide)
+			if (stack.getItem() instanceof Unmaykr)
+				while (Keybindings.RELOAD.consumeClick() && selected)
+					DoomPacketHandler.UNMAYKR.sendToServer(new UnmaykrLoadingPacket(slot));
+	}
+
+	public UnmaykrBoltEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
+		float j = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		UnmaykrBoltEntity arrowentity = new UnmaykrBoltEntity(worldIn, shooter,
+				(DoomConfig.SERVER.unmaykr_damage.get().floatValue() + (j * 2.0F)));
+		return arrowentity;
+	}
+
+	@Override
+	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+		consumer.accept(new IClientItemExtensions() {
+			private final UnmaykrRender renderer = new UnmaykrRender();
+
+			@Override
+			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+				return this.renderer;
+			}
+		});
 	}
 }

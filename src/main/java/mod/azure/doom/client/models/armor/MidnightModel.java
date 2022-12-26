@@ -3,9 +3,9 @@ package mod.azure.doom.client.models.armor;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.armor.MidnightDoomArmor;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class MidnightModel extends AnimatedGeoModel<MidnightDoomArmor> {
+public class MidnightModel extends GeoModel<MidnightDoomArmor> {
 	@Override
 	public ResourceLocation getModelResource(MidnightDoomArmor object) {
 		return new ResourceLocation(DoomMod.MODID, "geo/doom1armor.geo.json");

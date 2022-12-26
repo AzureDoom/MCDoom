@@ -14,7 +14,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -24,17 +23,13 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -48,25 +43,22 @@ import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.core.animation.Animation.LoopType;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnimationTickable {
+public class MotherDemonEntity extends DemonEntity implements GeoEntity {
 
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(MotherDemonEntity.class,
 			EntityDataSerializers.INT);
 	private final ServerBossEvent bossInfo = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(),
@@ -77,47 +69,50 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 		super(entityType, worldIn);
 	}
 
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (event.isMoving()) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("moving", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 0) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death_phaseone", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 1) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", EDefaultLoopTypes.PLAY_ONCE));
-			return PlayState.CONTINUE;
-		}
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("moving", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
-	}
-
-	private <E extends IAnimatable> PlayState predicate1(AnimationEvent<E> event) {
-		if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("shooting", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		if (this.entityData.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("fire", EDefaultLoopTypes.LOOP));
-			return PlayState.CONTINUE;
-		}
-		return PlayState.STOP;
+	@Override
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+			if (event.isMoving())
+				return event.setAndContinue(RawAnimation.begin().thenLoop("moving"));
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 0)
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death_phaseone"));
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 1)
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
+			return event.setAndContinue(RawAnimation.begin().thenLoop("moving"));
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
+			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().then("shooting", LoopType.PLAY_ONCE));
+			if (this.entityData.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().then("fire", LoopType.PLAY_ONCE));
+			return PlayState.STOP;
+		}));
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<MotherDemonEntity>(this, "controller", 0, this::predicate));
-		data.addAnimationController(
-				new AnimationController<MotherDemonEntity>(this, "controller1", 0, this::predicate1));
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
+	protected void tickDeath() {
+		++this.deathTime;
+		if (this.deathTime == 80 && this.entityData.get(DEATH_STATE) == 0) {
+			this.setHealth(this.getMaxHealth());
+			this.setDeathState(1);
+			this.deathTime = 0;
+		}
+		if (this.deathTime == 40 && this.entityData.get(DEATH_STATE) == 1) {
+			this.remove(Entity.RemovalReason.KILLED);
+			this.dropExperience();
+		}
+	}
+
+	public int getDeathState() {
+		return this.entityData.get(DEATH_STATE);
+	}
+
+	public void setDeathState(int state) {
+		this.entityData.set(DEATH_STATE, state);
 	}
 
 	@Override
@@ -145,28 +140,6 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 	}
 
 	@Override
-	protected void tickDeath() {
-		++this.deathTime;
-		if (this.deathTime == 80 && this.entityData.get(DEATH_STATE) == 0) {
-			this.setHealth(this.getMaxHealth());
-			this.setDeathState(1);
-			this.deathTime = 0;
-		}
-		if (this.deathTime == 40 && this.entityData.get(DEATH_STATE) == 1) {
-			this.remove(Entity.RemovalReason.KILLED);
-			this.dropExperience();
-		}
-	}
-
-	public int getDeathState() {
-		return this.entityData.get(DEATH_STATE);
-	}
-
-	public void setDeathState(int state) {
-		this.entityData.set(DEATH_STATE, state);
-	}
-
-	@Override
 	public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
 		return false;
 	}
@@ -178,20 +151,6 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 
 	@Override
 	protected void pushEntities() {
-	}
-
-	@Override
-	protected boolean canRide(Entity p_184228_1_) {
-		return false;
-	}
-
-	@Override
-	public Packet<?> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-
-	public ServerBossEvent getBossInfo() {
-		return bossInfo;
 	}
 
 	@Override
@@ -217,6 +176,22 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 		boolean flag = this.getTarget() != null && this.hasLineOfSight(this.getTarget());
 		this.goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
 		super.updateControlFlags();
+	}
+
+	@Override
+	public void baseTick() {
+		super.baseTick();
+		final AABB aabb = new AABB(this.blockPosition().above()).inflate(64D, 64D, 64D);
+		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
+			if (e instanceof MotherDemonEntity && e.tickCount < 1) {
+				e.remove(RemovalReason.KILLED);
+			}
+			if (e instanceof Player) {
+				if (!((Player) e).isCreative())
+					if (!((Player) e).isSpectator())
+						this.setTarget((LivingEntity) e);
+			}
+		});
 	}
 
 	@Override
@@ -264,20 +239,17 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 				float f = (float) Mth.atan2(livingentity.getZ() - parentEntity.getZ(),
 						livingentity.getX() - parentEntity.getX());
 				CustomFireballEntity fireballentity = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4,
-						DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue()
-								+ (this.parentEntity.entityData.get(DEATH_STATE) == 1
-										? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
-										: 0));
+						DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue() + (this.parentEntity.entityData.get(DEATH_STATE) == 1
+								? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
+								: 0));
 				CustomFireballEntity fireballentity1 = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4,
-						DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue()
-								+ (this.parentEntity.entityData.get(DEATH_STATE) == 1
-										? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
-										: 0));
+						DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue() + (this.parentEntity.entityData.get(DEATH_STATE) == 1
+								? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
+								: 0));
 				CustomFireballEntity fireballentity2 = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4,
-						DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue()
-								+ (this.parentEntity.entityData.get(DEATH_STATE) == 1
-										? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
-										: 0));
+						DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue() + (this.parentEntity.entityData.get(DEATH_STATE) == 1
+								? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
+								: 0));
 				this.parentEntity.getNavigation().moveTo(livingentity, 1.5D);
 				if (this.attackTimer == 15) {
 					if (parentEntity.getHealth() <= (parentEntity.getMaxHealth() * 0.50)) {
@@ -290,8 +262,8 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 										f1, 0);
 							}
 							parentEntity.level.playLocalSound(this.parentEntity.getX(), this.parentEntity.getY(),
-									this.parentEntity.getZ(), DoomSounds.MOTHER_ATTACK.get(), SoundSource.HOSTILE, 1.0F,
-									1.0F, true);
+									this.parentEntity.getZ(), DoomSounds.MOTHER_ATTACK.get(), SoundSource.HOSTILE, 1.0F, 1.0F,
+									true);
 							this.parentEntity.setAttackingState(2);
 						}
 						livingentity.setDeltaMovement(livingentity.getDeltaMovement().multiply(0.4f, 1.4f, 0.4f));
@@ -309,8 +281,8 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 								this.parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z * 1.0D);
 						world.addFreshEntity(fireballentity2);
 						parentEntity.level.playLocalSound(this.parentEntity.getX(), this.parentEntity.getY(),
-								this.parentEntity.getZ(), DoomSounds.MOTHER_ATTACK.get(), SoundSource.HOSTILE, 1.0F,
-								1.0F, true);
+								this.parentEntity.getZ(), DoomSounds.MOTHER_ATTACK.get(), SoundSource.HOSTILE, 1.0F, 1.0F,
+								true);
 						TentacleEntity lost_soul = DoomEntities.TENTACLE.get().create(world);
 						lost_soul.moveTo(livingentity.getX(), livingentity.getY(), livingentity.getZ(), 0, 0);
 						world.addFreshEntity(lost_soul);
@@ -353,8 +325,7 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 		if (flag) {
 			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this,
 					DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue()
-							+ (this.entityData.get(DEATH_STATE) == 1
-									? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
+							+ (this.entityData.get(DEATH_STATE) == 1 ? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue()
 									: 0));
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
@@ -362,11 +333,16 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 		}
 	}
 
-	public static AttributeSupplier.Builder createAttributes() {
+	public static AttributeSupplier.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.motherdemon_health.get())
-				.add(Attributes.ATTACK_DAMAGE, 12.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 0.9f).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.motherdemon_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.9f);
+	}
+
+	@Override
+	public void knockback(double strength, double x, double z) {
+		super.knockback(0, 0, 0);
 	}
 
 	@Override
@@ -385,16 +361,6 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 	}
 
 	@Override
-	public MobType getMobType() {
-		return MobType.UNDEAD;
-	}
-
-	@Override
-	public boolean canChangeDimensions() {
-		return false;
-	}
-
-	@Override
 	public void startSeenByPlayer(ServerPlayer player) {
 		super.startSeenByPlayer(player);
 		this.bossInfo.addPlayer(player);
@@ -404,53 +370,6 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 	public void stopSeenByPlayer(ServerPlayer player) {
 		super.stopSeenByPlayer(player);
 		this.bossInfo.removePlayer(player);
-	}
-
-	@Override
-	public int getMaxSpawnClusterSize() {
-		return 1;
-	}
-
-	@Override
-	public boolean isMaxGroupSizeReached(int p_204209_1_) {
-		return this.isAlive() ? true : super.isMaxGroupSizeReached(p_204209_1_);
-	}
-
-	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_213386_1_, DifficultyInstance p_213386_2_,
-			MobSpawnType p_213386_3_, SpawnGroupData p_213386_4_, CompoundTag p_213386_5_) {
-		return super.finalizeSpawn(p_213386_1_, p_213386_2_, p_213386_3_, p_213386_4_, p_213386_5_);
-	}
-
-	@Override
-	public void baseTick() {
-		super.baseTick();
-		final AABB aabb = new AABB(this.blockPosition().above()).inflate(64D, 64D, 64D);
-		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
-			if (e.isAddedToWorld() && e instanceof MotherDemonEntity && e.tickCount < 1) {
-				e.remove(RemovalReason.KILLED);
-			}
-			if (e instanceof Player) {
-				if (!((Player) e).isCreative())
-					if (!((Player) e).isSpectator())
-						this.setTarget((LivingEntity) e);
-			}
-		});
-	}
-
-	@Override
-	public void readAdditionalSaveData(CompoundTag compound) {
-		super.readAdditionalSaveData(compound);
-		if (this.hasCustomName()) {
-			this.bossInfo.setName(this.getDisplayName());
-		}
-		this.setDeathState(compound.getInt("Phase"));
-	}
-
-	@Override
-	public void addAdditionalSaveData(CompoundTag tag) {
-		super.addAdditionalSaveData(tag);
-		tag.putInt("Phase", this.getDeathState());
 	}
 
 	@Override
@@ -472,8 +391,18 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 	}
 
 	@Override
-	public int tickTimer() {
-		return tickCount;
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
+		if (this.hasCustomName()) {
+			this.bossInfo.setName(this.getDisplayName());
+		}
+		this.setDeathState(compound.getInt("Phase"));
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putInt("Phase", this.getDeathState());
 	}
 
 	@Override
@@ -483,11 +412,6 @@ public class MotherDemonEntity extends DemonEntity implements IAnimatable, IAnim
 
 	@Override
 	public void checkDespawn() {
-	}
-
-	@Override
-	public void knockback(double p_147241_, double p_147242_, double p_147243_) {
-		super.knockback(0, 0, 0);
 	}
 
 	@Override

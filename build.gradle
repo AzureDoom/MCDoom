@@ -30,7 +30,7 @@ import com.modrinth.minotaur.dependencies.ModDependency
 
 version = project.mod_version
 group = "mod.azure.doom"
-archivesBaseName = "MCDoom-Forge-1.19.2"
+archivesBaseName = "MCDoom-Forge-1.19.3"
 
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -42,7 +42,7 @@ mixin {
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
-    mappings channel: 'official', version: '1.19.2'
+    mappings channel: 'official', version: '1.19.3'
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
@@ -84,16 +84,15 @@ repositories {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.2-43.1.25'
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.2-5.1.1.0")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.2-5.1.1.0:api")
-	implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19:3.1.35')
+    minecraft 'net.minecraftforge:forge:1.19.3-44.0.37'
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.3-5.1.1.2")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.3-5.1.1.2:api")
+	implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19.3:4.0.2')
 	annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:9.1.520")
-    implementation fg.deobf("curse.maven:reiw-521393:3909553")
-    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:8.0.75")
-    implementation fg.deobf("dev.architectury:architectury-forge:6.0.35")
-    implementation fg.deobf("curse.maven:projectmmo-353935:3902639")
+    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:10.0.581")
+    implementation fg.deobf("curse.maven:reiw-521393:4167495")
+    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:9.0.94")
+    implementation fg.deobf("dev.architectury:architectury-forge:7.0.66")
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -157,14 +156,13 @@ if (file('key.properties').exists()) {
         	releaseType = "${curse_release}"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
-        	addGameVersion("1.19.2")
+        	addGameVersion("1.19.3")
         	addGameVersion("Forge")
         	addGameVersion("Java 17")
 
         	relations {
             	requiredDependency 'curios'  
             	requiredDependency 'geckolib' 
-            	optionalDependency 'project-mmo'
             	optionalDependency 'roughly-enough-items'
             	optionalDependency 'better-combat-by-daedelus' 
         	}
@@ -181,10 +179,10 @@ if (file('key.properties').exists()) {
 		token = modrinthProp.getProperty('modrinthKey')
 		projectId = 'Mfo4FiDF' 
 		versionNumber = project.mod_version 
-		versionName = 'Forge 1.19.2'
+		versionName = 'Forge 1.19.3'
 		uploadFile = jar 
 		changelog = rootProject.file("changelog.txt").text
-		gameVersions = ['1.19.2']
+		gameVersions = ['1.19.3']
 		loaders = ['forge']
 		dependencies { 
         	required.project "geckolib"

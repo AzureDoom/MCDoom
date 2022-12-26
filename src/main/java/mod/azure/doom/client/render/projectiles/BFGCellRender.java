@@ -1,39 +1,39 @@
 package mod.azure.doom.client.render.projectiles;
 
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.models.projectiles.BFGBallModel;
 import mod.azure.doom.entity.projectiles.BFGEntity;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import software.bernie.geckolib3.geo.render.built.GeoModel;
-import software.bernie.geckolib3.renderers.geo.GeoProjectilesRenderer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.util.RenderUtils;
 
-public class BFGCellRender extends GeoProjectilesRenderer<BFGEntity> {
+public class BFGCellRender extends GeoEntityRenderer<BFGEntity> {
 
-	private static final RenderType BEAM = RenderType
-			.entitySmoothCutout(new ResourceLocation(DoomMod.MODID, "textures/entity/projectiles/bfg_beam.png"));
+	private static final RenderType CRYSTAL_BEAM_LAYER = RenderType
+			.entityTranslucent(new ResourceLocation(DoomMod.MODID, "textures/entity/projectiles/bfg_beam.png"));
 
 	public BFGCellRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new BFGBallModel());
-	}
-
-	@Override
-	public RenderType getRenderType(BFGEntity animatable, float partialTicks, PoseStack stack,
-			MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
-			ResourceLocation textureLocation) {
-		return RenderType.entityTranslucent(getTextureLocation(animatable));
 	}
 
 	protected int getBlockLightLevel(BFGEntity entityIn, BlockPos partialTicks) {
@@ -41,86 +41,111 @@ public class BFGCellRender extends GeoProjectilesRenderer<BFGEntity> {
 	}
 
 	@Override
-	public void render(GeoModel model, BFGEntity animatable, float partialTicks, RenderType type,
-			PoseStack matrixStackIn, MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder,
-			int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		super.render(model, animatable, partialTicks, type, matrixStackIn, renderTypeBuffer, vertexBuilder,
-				packedLightIn, packedOverlayIn, red, green, blue, alpha);
-		float f = getY(animatable, partialTicks);
-		LivingEntity target = animatable.getTargetedEntity();
-		if (target != null) {
-			float f3 = (float) target.getX();
-			float f4 = (float) target.getY();
-			float f5 = (float) target.getZ();
-			float f6 = (float) ((double) f3 - animatable.getX());
-			float f7 = (float) ((double) f4 - animatable.getY());
-			float f8 = (float) ((double) f5 - animatable.getZ());
-			matrixStackIn.translate((double) f6, (double) f7, (double) f8);
-			renderCrystalBeams(-f6, -f7 + f, -f8, partialTicks, animatable.tickCount, matrixStackIn, renderTypeBuffer,
-					packedLightIn);
+	public boolean shouldRender(BFGEntity entity, Frustum frustum, double x, double y, double z) {
+		LivingEntity livingEntity;
+		if (super.shouldRender(entity, frustum, x, y, z)) {
+			return true;
 		}
+		if (entity.hasTargetedEntity() && (livingEntity = entity.getTargetedEntity()) != null) {
+			Vec3 Vec3 = this.fromLerpedPosition(livingEntity, (double) livingEntity.getBbHeight() * 0.5, 1.0f);
+			Vec3 Vec32 = this.fromLerpedPosition(entity, entity.getEyeHeight(), 1.0f);
+			return frustum.isVisible(new AABB(Vec32.x, Vec32.y, Vec32.z, Vec3.x, Vec3.y, Vec3.z));
+		}
+		return false;
 	}
-	
+
+	private Vec3 fromLerpedPosition(Entity entity, double yOffset, float delta) {
+		double d = Mth.lerp((double) delta, entity.xOld, entity.getX());
+		double e = Mth.lerp((double) delta, entity.yOld, entity.getY()) + yOffset;
+		double f = Mth.lerp((double) delta, entity.zOld, entity.getZ());
+		return new Vec3(d, e, f);
+	}
+
+	private static void vertex(VertexConsumer vertexConsumer, Matrix4f positionMatrix, Matrix3f normalMatrix, float x,
+			float y, float z, int red, int green, int blue, float u, float v) {
+		vertexConsumer.vertex(positionMatrix, x, y, z).color(255, 255, 255, 255).uv(u, v)
+				.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT)
+				.normal(normalMatrix, 0.0f, -1.0f, 0.0f).endVertex();
+	}
+
 	@Override
-	public void renderEarly(BFGEntity animatable, PoseStack stackIn, float ticks,
-			MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, int packedOverlayIn,
-			float red, float green, float blue, float partialTicks) {
-		super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn, red,
-				green, blue, partialTicks);
-		stackIn.scale(animatable.tickCount > 2 ? 1.0F : 0.0F, animatable.tickCount > 2 ? 1.0F : 0.0F,
-				animatable.tickCount > 2 ? 1.0F : 0.0F);
-	}
-
-	public static void renderCrystalBeams(float p_229059_0_, float p_229059_1_, float p_229059_2_, float p_229059_3_,
-			int p_229059_4_, PoseStack p_229059_5_, MultiBufferSource p_229059_6_, int p_229059_7_) {
-		float f = Mth.sqrt(p_229059_0_ * p_229059_0_ + p_229059_2_ * p_229059_2_);
-		float f1 = Mth.sqrt(p_229059_0_ * p_229059_0_ + p_229059_1_ * p_229059_1_ + p_229059_2_ * p_229059_2_);
-		p_229059_5_.pushPose();
-		p_229059_5_.translate(0.0D, 1.0D, 0.0D);
-		p_229059_5_.mulPose(Vector3f.YP
-				.rotation((float) (-Math.atan2((double) p_229059_2_, (double) p_229059_0_)) - ((float) Math.PI / 2F)));
-		p_229059_5_.mulPose(
-				Vector3f.XP.rotation((float) (-Math.atan2((double) f, (double) p_229059_1_)) - ((float) Math.PI / 2F)));
-		VertexConsumer ivertexbuilder = p_229059_6_.getBuffer(BEAM);
-		float f2 = 0.0F - ((float) p_229059_4_ + p_229059_3_) * 0.01F;
-		float f3 = Mth.sqrt(p_229059_0_ * p_229059_0_ + p_229059_1_ * p_229059_1_ + p_229059_2_ * p_229059_2_)
-				/ 32.0F - ((float) p_229059_4_ + p_229059_3_) * 0.01F;
-		float f4 = 0.0F;
-		float f5 = 0.75F;
-		float f6 = 0.0F;
-		PoseStack.Pose matrixstack$entry = p_229059_5_.last();
-		Matrix4f matrix4f = matrixstack$entry.pose();
-		Matrix3f matrix3f = matrixstack$entry.normal();
-
-		for (int j = 1; j <= 8; ++j) {
-			float f7 = Mth.sin((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.75F;
-			float f8 = Mth.cos((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.75F;
-			float f9 = (float) j / 8.0F;
-			ivertexbuilder.vertex(matrix4f, f4 * 0.2F, f5 * 0.2F, 0.0F).color(0, 0, 0, 255).uv(f6, f2)
-					.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(p_229059_7_).normal(matrix3f, 0.0F, -1.0F, 0.0F)
-					.endVertex();
-			ivertexbuilder.vertex(matrix4f, f4, f5, f1).color(255, 255, 255, 255).uv(f6, f3)
-					.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(p_229059_7_).normal(matrix3f, 0.0F, -1.0F, 0.0F)
-					.endVertex();
-			ivertexbuilder.vertex(matrix4f, f7, f8, f1).color(255, 255, 255, 255).uv(f9, f3)
-					.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(p_229059_7_).normal(matrix3f, 0.0F, -1.0F, 0.0F)
-					.endVertex();
-			ivertexbuilder.vertex(matrix4f, f7 * 0.2F, f8 * 0.2F, 0.0F).color(0, 0, 0, 255).uv(f9, f2)
-					.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(p_229059_7_).normal(matrix3f, 0.0F, -1.0F, 0.0F)
-					.endVertex();
-			f4 = f7;
-			f5 = f8;
-			f6 = f9;
+	public void render(BFGEntity entity, float entityYaw, float partialTick, PoseStack poseStack,
+			MultiBufferSource bufferSource, int packedLight) {
+		super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+		LivingEntity livingEntity = entity.getTargetedEntity();
+		if (livingEntity != null) {
+			float h = entity.getBeamProgress(partialTick);
+			float j = (float) entity.level.getGameTime() + partialTick;
+			float k = j * 0.5f % 1.0f;
+			float l = entity.getEyeHeight();
+			poseStack.pushPose();
+			poseStack.translate(0.0f, l, 0.0f);
+			Vec3 Vec3 = this.fromLerpedPosition(livingEntity, (double) livingEntity.getBbHeight() * 0.5, partialTick);
+			Vec3 Vec32 = this.fromLerpedPosition(entity, l, partialTick);
+			Vec3 Vec33 = Vec3.subtract(Vec32);
+			float m = (float) (Vec33.length() + 1.0);
+			Vec33 = Vec33.normalize();
+			float n = (float) Math.acos(Vec33.y);
+			float o = (float) Math.atan2(Vec33.z, Vec33.x);
+			poseStack.mulPose(Axis.YP.rotationDegrees((1.5707964f - o) * 57.295776f));
+			poseStack.mulPose(Axis.XP.rotationDegrees(n * 57.295776f));
+			float q = j * 0.05f * -1.5f;
+			float r = h * h;
+			int s = 64 + (int) (r * 191.0f);
+			int t = 32 + (int) (r * 191.0f);
+			int u = 128 - (int) (r * 64.0f);
+			float x = Mth.cos(q + 2.3561945f) * 0.282f;
+			float y = Mth.sin(q + 2.3561945f) * 0.282f;
+			float z = Mth.cos(q + 0.7853982f) * 0.282f;
+			float aa = Mth.sin(q + 0.7853982f) * 0.282f;
+			float ab = Mth.cos(q + 3.926991f) * 0.282f;
+			float ac = Mth.sin(q + 3.926991f) * 0.282f;
+			float ad = Mth.cos(q + 5.4977875f) * 0.282f;
+			float ae = Mth.sin(q + 5.4977875f) * 0.282f;
+			float af = Mth.cos(q + (float) Math.PI) * 0.2f;
+			float ag = Mth.sin(q + (float) Math.PI) * 0.2f;
+			float ah = Mth.cos(q + 0.0f) * 0.2f;
+			float ai = Mth.sin(q + 0.0f) * 0.2f;
+			float aj = Mth.cos(q + 1.5707964f) * 0.2f;
+			float ak = Mth.sin(q + 1.5707964f) * 0.2f;
+			float al = Mth.cos(q + 4.712389f) * 0.2f;
+			float am = Mth.sin(q + 4.712389f) * 0.2f;
+			float an = m;
+			float aq = -1.0f + k;
+			float ar = m * 2.5f + aq;
+			VertexConsumer vertexConsumer = bufferSource.getBuffer(CRYSTAL_BEAM_LAYER);
+			PoseStack.Pose entry = poseStack.last();
+			Matrix4f matrix4f = entry.pose();
+			Matrix3f matrix3f = entry.normal();
+			BFGCellRender.vertex(vertexConsumer, matrix4f, matrix3f, af, an, ag, s, t, u, 0.4999f, ar);
+			BFGCellRender.vertex(vertexConsumer, matrix4f, matrix3f, af, 0.0f, ag, s, t, u, 0.4999f, aq);
+			BFGCellRender.vertex(vertexConsumer, matrix4f, matrix3f, ah, 0.0f, ai, s, t, u, 0.0f, aq);
+			BFGCellRender.vertex(vertexConsumer, matrix4f, matrix3f, ah, an, ai, s, t, u, 0.0f, ar);
+			BFGCellRender.vertex(vertexConsumer, matrix4f, matrix3f, aj, an, ak, s, t, u, 0.4999f, ar);
+			BFGCellRender.vertex(vertexConsumer, matrix4f, matrix3f, aj, 0.0f, ak, s, t, u, 0.4999f, aq);
+			BFGCellRender.vertex(vertexConsumer, matrix4f, matrix3f, al, 0.0f, am, s, t, u, 0.0f, aq);
+			BFGCellRender.vertex(vertexConsumer, matrix4f, matrix3f, al, an, am, s, t, u, 0.0f, ar);
+			float as = 0.0f;
+			if (entity.tickCount % 2 == 0) {
+				as = 0.5f;
+			}
+			BFGCellRender.vertex(vertexConsumer, matrix4f, matrix3f, x, an, y, s, t, u, 0.5f, as + 0.5f);
+			BFGCellRender.vertex(vertexConsumer, matrix4f, matrix3f, z, an, aa, s, t, u, 1.0f, as + 0.5f);
+			BFGCellRender.vertex(vertexConsumer, matrix4f, matrix3f, ad, an, ae, s, t, u, 1.0f, as);
+			BFGCellRender.vertex(vertexConsumer, matrix4f, matrix3f, ab, an, ac, s, t, u, 0.5f, as);
+			poseStack.popPose();
 		}
-
-		p_229059_5_.popPose();
 	}
 
-	public static float getY(BFGEntity p_229051_0_, float p_229051_1_) {
-		float f = (float) p_229051_0_.tickCount + p_229051_1_;
-		float f1 = Mth.sin(f * 0.2F) / 2.0F + 0.5F;
-		f1 = (f1 * f1 + f1) * 0.4F;
-		return f1 - 1.4F;
+	@Override
+	public void preRender(PoseStack poseStack, BFGEntity animatable, BakedGeoModel model,
+			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
+			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		RenderUtils.faceRotation(poseStack, animatable, partialTick);
+		poseStack.scale(animatable.tickCount > 2 ? 0.5F : 0.0F, animatable.tickCount > 2 ? 0.5F : 0.0F,
+				animatable.tickCount > 2 ? 0.5F : 0.0F);
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
+				packedOverlay, red, green, blue, alpha);
 	}
 
 }

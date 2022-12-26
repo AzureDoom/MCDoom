@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "doom:items/maykr_boots"
+        "layer0": "doom:item/maykr_boots"
     }
 }
