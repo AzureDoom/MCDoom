@@ -3,7 +3,9 @@ package mod.azure.doom.config;
 import java.util.Arrays;
 import java.util.List;
 
-public class DoomConfig extends CustomMidnightConfig {
+import eu.midnightdust.lib.config.MidnightConfig;
+
+public class DoomConfig extends MidnightConfig {
 
 	@Entry
 	public static boolean enable_all_villager_trades = true;

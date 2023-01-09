@@ -1,7 +1,7 @@
 package mod.azure.doom;
 
+import eu.midnightdust.lib.config.MidnightConfig;
 import mod.azure.doom.client.gui.GunTableScreenHandler;
-import mod.azure.doom.config.CustomMidnightConfig;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
 import mod.azure.doom.entity.tileentity.IconBlockEntity;
@@ -355,7 +355,7 @@ public class DoomMod implements ModInitializer {
 	public void onInitialize() {
 		DataTrackers.MEATHOOK_TRACKER.getId();
 		DoomBlocks.init();
-		CustomMidnightConfig.init(MODID, DoomConfig.class);
+		MidnightConfig.init(MODID, DoomConfig.class);
 		ITEMS = new DoomItems();
 		SOUNDS = new DoomSounds();
 		MOBS = new DoomEntities();
