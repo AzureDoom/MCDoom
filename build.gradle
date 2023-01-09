@@ -2,11 +2,15 @@ buildscript {
     repositories {
     	maven { url  = 'https://plugins.gradle.org/m2/' }
     }
+    dependencies {
+        classpath "gradle.plugin.com.github.johnrengelman:shadow:7.1.0"
+    }
 }
 
 plugins {
-    id 'fabric-loom' version '0.12-SNAPSHOT'
+    id 'fabric-loom' version '1.0-SNAPSHOT'
 	id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.modrinth.minotaur" version "2.+"
 }
@@ -32,6 +36,11 @@ repositories {
 	maven { url = "https://ladysnake.jfrog.io/artifactory/mods" }
 	maven { url = "https://maven.kosmx.dev/" }
 	maven { url 'https://jitpack.io' }
+	maven { url 'https://api.modrinth.com/maven' }
+}
+
+configurations {
+    shade
 }
 
 dependencies {
@@ -39,7 +48,9 @@ dependencies {
     mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19.3:4.0.2'
+    modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19.3:4.0.3'
+	modImplementation "maven.modrinth:midnightlib:1.1.0-fabric"
+    shade group: 'maven.modrinth', name: 'midnightlib', version: '1.1.0-fabric'
 	modImplementation ("com.terraformersmc:modmenu:5.0.2")
     modImplementation "dev.emi:trinkets:3.5.0"
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:10.0.581") {
@@ -54,9 +65,17 @@ dependencies {
     modApi("me.shedaniel.cloth:cloth-config-fabric:9.0.94") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-	modCompileOnly "curse.maven:BetterC-639842:4159901"
+	modCompileOnly "curse.maven:BetterC-639842:4211960"
     modCompileOnly "dev.kosmx.player-anim:player-animation-lib-fabric:0.4.1+1.19.3"
     modApi "com.github.ZsoltMolnarrr:TinyConfig:1.0.2"
+}
+
+shadowJar {
+    configurations = [project.configurations.shade]
+    from sourceSets.main.output
+    duplicatesStrategy = 'exclude'
+    relocate 'eu.midnightdust', 'mod.azure.doom.shadowed.midnightlib'
+    classifier 'dev'
 }
 
 processResources {
@@ -87,13 +106,21 @@ tasks.withType(JavaCompile).configureEach {
     it.options.release = 17
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = "sources"
-	from sourceSets.main.allSource
+java {
+	withSourcesJar()
 }
 
 jar {
 	from "LICENSE"
+}
+
+artifacts {
+    archives shadowJar
+}
+
+remapJar {
+    dependsOn(shadowJar)
+    inputFile = shadowJar.archiveFile
 }
 
 loom {

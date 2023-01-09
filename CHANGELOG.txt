@@ -1,3 +1,4 @@
-v.4.3.3
+v.4.3.4
 
-- Fixes Astro Helmet missing in Creative tab.
+- Fixes all Armor with Better Combat.
+- Fixes Config not saving in Mod Menu.
