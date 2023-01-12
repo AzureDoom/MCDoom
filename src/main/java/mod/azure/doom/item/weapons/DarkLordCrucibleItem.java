@@ -8,6 +8,7 @@ import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.client.render.weapons.DarkLordCrucibleRender;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
@@ -49,7 +50,7 @@ public class DarkLordCrucibleItem extends SwordItem implements GeoItem {
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public DarkLordCrucibleItem() {
-		super(DoomTier.DOOM_HIGHTEIR, 1, -2.5f, new Item.Properties().stacksTo(1).durability(24));
+		super(DoomTier.DOOM_HIGHTEIR, 1, -2.5f, new Item.Properties().stacksTo(1).durability(DoomConfig.darkcrucible_max_uses));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
@@ -80,7 +81,8 @@ public class DarkLordCrucibleItem extends SwordItem implements GeoItem {
 					!(target instanceof ArchMakyrEntity) || !(target instanceof GladiatorEntity)
 							|| !(target instanceof IconofsinEntity) || !(target instanceof MotherDemonEntity)
 							|| !(target instanceof SpiderMastermind2016Entity)
-							|| !(target instanceof SpiderMastermindEntity) ? 30F : 200F);
+							|| !(target instanceof SpiderMastermindEntity) ? (DoomConfig.darkcrucible_damage / 10F)
+									: DoomConfig.darkcrucible_damage);
 		}
 	}
 

@@ -6,8 +6,11 @@ import org.jetbrains.annotations.Nullable;
 
 import mod.azure.doom.entity.ai.goal.DoomNavigation;
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
+import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.DoomBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -188,6 +191,11 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 		return source == DamageSource.IN_WALL || source == DamageSource.ON_FIRE || source == DamageSource.IN_FIRE
 				? false
 				: super.hurt(source, amount);
+	}
+
+	@Override
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+		return DoomEntityPacket.createPacket(this);
 	}
 
 }

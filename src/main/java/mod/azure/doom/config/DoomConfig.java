@@ -34,7 +34,21 @@ public class DoomConfig extends MidnightConfig {
 	public static float doom_armor_knockbackResistance = 4;
 
 	@Entry
-	public static int crucible_marauder_max_damage = 5;
+	public static int marauder_max_uses = 24;
+	@Entry
+	public static float marauder_axe_item_damage = 200F;
+	@Entry
+	public static int crucible_max_uses = 24;
+	@Entry
+	public static float crucible_damage = 200F;
+	@Entry
+	public static int darkcrucible_max_uses = 24;
+	@Entry
+	public static float darkcrucible_damage = 200F;
+	@Entry
+	public static int sentinelhammer_max_uses = 24;
+	@Entry
+	public static float sentinelhammer_damage = 25;
 	@Entry
 	public static boolean enable_block_breaking = false;
 	@Entry

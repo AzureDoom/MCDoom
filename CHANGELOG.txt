@@ -1,4 +1,4 @@
-v.4.3.4
+v.4.3.5
 
-- Fixes all Armor with Better Combat.
-- Fixes Config not saving in Mod Menu.
+- Fixes mob spawning due to mojmap change to wrong method. 
+- Addes Max Uses and Damage configs for Marauder Axe, Crucbile, Darklord Crucbile, and Sential Hammer. 
