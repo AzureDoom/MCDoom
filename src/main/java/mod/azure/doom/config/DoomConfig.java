@@ -21,8 +21,15 @@ public class DoomConfig {
 		public final ConfigValue<Integer> doom_armor_boots_stat;
 		public final ConfigValue<Integer> doom_armor_toughness;
 		public final ConfigValue<Integer> doom_armor_knockbackResistance;
-		
-		public final ConfigValue<Integer> crucible_marauder_max_damage;
+
+		public final ConfigValue<Integer> marauder_max_uses;
+		public final ConfigValue<Integer> marauder_axe_item_damage;
+		public final ConfigValue<Integer> crucible_max_uses;
+		public final ConfigValue<Integer> crucible_damage;
+		public final ConfigValue<Integer> darkcrucible_max_uses;
+		public final ConfigValue<Integer> darkcrucible_damage;
+		public final ConfigValue<Integer> sentinelhammer_max_uses;
+		public final ConfigValue<Integer> sentinelhammer_damage;
 		public final ConfigValue<Boolean> enable_block_breaking;
 		public final ConfigValue<Boolean> enable_noncenter;
 		public final ConfigValue<Double> argent_bolt_damage;
@@ -211,8 +218,22 @@ public class DoomConfig {
 					.define("Mason Trades Toggle", true);
 			builder.pop();
 			builder.push("Weapons");
-			this.crucible_marauder_max_damage = builder.translation("text.doom.config.marauder_axe_damage")
-					.defineInRange("Max Damage of Marauder Axe", 5, 1, Integer.MAX_VALUE);
+			this.marauder_max_uses = builder.translation("text.doom.config.marauder_max_uses")
+					.defineInRange("Max Uses of Marauder Axe", 24, 1, Integer.MAX_VALUE);
+			this.marauder_axe_item_damage = builder.translation("text.doom.config.marauder_axe_item_damage")
+					.defineInRange("Damage of Marauder Axe", 200, 1, Integer.MAX_VALUE);
+			this.crucible_max_uses = builder.translation("text.doom.config.crucible_max_uses")
+					.defineInRange("Max Uses of Crucible", 24, 1, Integer.MAX_VALUE);
+			this.crucible_damage = builder.translation("text.doom.config.crucible_damage")
+					.defineInRange("Damage of Darklord Crucible", 200, 1, Integer.MAX_VALUE);
+			this.darkcrucible_max_uses = builder.translation("text.doom.config.darkcrucible_max_uses")
+					.defineInRange("Max Uses of Darklord Crucible", 24, 1, Integer.MAX_VALUE);
+			this.darkcrucible_damage = builder.translation("text.doom.config.darkcrucible_damage")
+					.defineInRange("Damage of Darklord Crucible", 200, 1, Integer.MAX_VALUE);
+			this.sentinelhammer_max_uses = builder.translation("text.doom.config.sentinelhammer_max_uses")
+					.defineInRange("Max Uses of Sentienl Hammer", 24, 1, Integer.MAX_VALUE);
+			this.sentinelhammer_damage = builder.translation("text.doom.config.sentinelhammer_damage")
+					.defineInRange("Damage of Sentienl Hammer", 25, 1, Integer.MAX_VALUE);
 			this.enable_block_breaking = builder.translation("text.doom.config.enable_block_breaking")
 					.define("Should Rockets/BFG Break Blocks", false);
 			this.enable_noncenter = builder.translation("text.doom.config.enable_noncenter")
@@ -243,8 +264,8 @@ public class DoomConfig {
 					2.5, 1, Double.MAX_VALUE);
 			this.grenade_damage = builder.translation("text.doom.config.grenade_damage").defineInRange("Grenade Damage",
 					30, 1, Double.MAX_VALUE);
-			this.chainsaw_damage = builder.translation("text.doom.config.chainsaw_damage").defineInRange("Chainsaw Damage",
-					2, 1, Double.MAX_VALUE);
+			this.chainsaw_damage = builder.translation("text.doom.config.chainsaw_damage")
+					.defineInRange("Chainsaw Damage", 2, 1, Double.MAX_VALUE);
 			this.max_meathook_distance = builder.translation("text.doom.config.max_meathook_distance")
 					.defineInRange("Max Meathook Distance", 32, 1, Double.MAX_VALUE);
 			builder.pop();

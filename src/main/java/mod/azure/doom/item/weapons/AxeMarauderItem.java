@@ -4,6 +4,7 @@ import java.util.List;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
@@ -31,7 +32,7 @@ import net.minecraft.world.phys.AABB;
 public class AxeMarauderItem extends SwordItem {
 
 	public AxeMarauderItem() {
-		super(DoomMod.DOOM_HIGHTEIR, 1, -2.5f, new Item.Properties().stacksTo(1).durability(24));
+		super(DoomMod.DOOM_HIGHTEIR, 1, -2.5f, new Item.Properties().stacksTo(1).durability(DoomConfig.SERVER.marauder_max_uses.get()));
 	}
 
 	@Override
@@ -67,7 +68,8 @@ public class AxeMarauderItem extends SwordItem {
 					!(target instanceof ArchMakyrEntity) || !(target instanceof GladiatorEntity)
 							|| !(target instanceof IconofsinEntity) || !(target instanceof MotherDemonEntity)
 							|| !(target instanceof SpiderMastermind2016Entity)
-							|| !(target instanceof SpiderMastermindEntity) ? 20F : 200F);
+							|| !(target instanceof SpiderMastermindEntity) ? (DoomConfig.SERVER.marauder_axe_item_damage.get().floatValue() / 10F)
+									: DoomConfig.SERVER.marauder_axe_item_damage.get().floatValue());
 		}
 	}
 

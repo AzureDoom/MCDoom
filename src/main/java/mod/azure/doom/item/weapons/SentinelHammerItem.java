@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.SentinelHammerRender;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.SentinelHammerLoadingPacket;
@@ -41,7 +42,7 @@ public class SentinelHammerItem extends SwordItem implements GeoItem {
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public SentinelHammerItem() {
-		super(DoomTier.DOOM_HIGHTEIR, 1, -2.5f, new Item.Properties().stacksTo(1).durability(24));
+		super(DoomTier.DOOM_HIGHTEIR, 1, -2.5f, new Item.Properties().stacksTo(1).durability(DoomConfig.SERVER.sentinelhammer_max_uses.get()));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
@@ -57,7 +58,7 @@ public class SentinelHammerItem extends SwordItem implements GeoItem {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
 			((LivingEntity) target).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 1000, 2));
-			target.hurt(DamageSource.playerAttack((Player) user), 25F);
+			target.hurt(DamageSource.playerAttack((Player) user), DoomConfig.SERVER.sentinelhammer_damage.get().floatValue());
 		}
 	}
 

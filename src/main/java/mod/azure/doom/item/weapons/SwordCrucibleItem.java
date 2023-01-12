@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.SwordCrucibleRender;
+import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
@@ -45,7 +46,7 @@ public class SwordCrucibleItem extends SwordItem implements GeoItem {
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public SwordCrucibleItem() {
-		super(DoomTier.DOOM_HIGHTEIR, 1, -2.5f, new Item.Properties().stacksTo(1).durability(24));
+		super(DoomTier.DOOM_HIGHTEIR, 1, -2.5f, new Item.Properties().stacksTo(1).durability(DoomConfig.SERVER.crucible_max_uses.get()));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
@@ -71,7 +72,8 @@ public class SwordCrucibleItem extends SwordItem implements GeoItem {
 					!(target instanceof ArchMakyrEntity) || !(target instanceof GladiatorEntity)
 							|| !(target instanceof IconofsinEntity) || !(target instanceof MotherDemonEntity)
 							|| !(target instanceof SpiderMastermind2016Entity)
-							|| !(target instanceof SpiderMastermindEntity) ? 30F : 200F);
+							|| !(target instanceof SpiderMastermindEntity) ? (DoomConfig.SERVER.crucible_damage.get().floatValue() / 10F)
+									: DoomConfig.SERVER.crucible_damage.get().floatValue());
 		}
 	}
 
