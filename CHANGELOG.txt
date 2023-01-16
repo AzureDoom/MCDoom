@@ -1,3 +1,3 @@
-v.4.3.5
+v.4.3.6
 
-- Addes Max Uses and Damage configs for Marauder Axe, Crucbile, Darklord Crucbile, and Sential Hammer. 
+- Fixes Crucbiles, Axe and Hammers melee damage. 

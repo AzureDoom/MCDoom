@@ -65,10 +65,10 @@ public class AxeMarauderItem extends SwordItem {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
 			target.hurt(DamageSource.playerAttack((Player) user),
-					!(target instanceof ArchMakyrEntity) || !(target instanceof GladiatorEntity)
-							|| !(target instanceof IconofsinEntity) || !(target instanceof MotherDemonEntity)
-							|| !(target instanceof SpiderMastermind2016Entity)
-							|| !(target instanceof SpiderMastermindEntity) ? (DoomConfig.SERVER.marauder_axe_item_damage.get().floatValue() / 10F)
+					(target instanceof ArchMakyrEntity) || (target instanceof GladiatorEntity)
+							|| (target instanceof IconofsinEntity) || (target instanceof MotherDemonEntity)
+							|| (target instanceof SpiderMastermind2016Entity)
+							|| (target instanceof SpiderMastermindEntity) ? (DoomConfig.SERVER.marauder_axe_item_damage.get().floatValue() / 10F)
 									: DoomConfig.SERVER.marauder_axe_item_damage.get().floatValue());
 		}
 	}

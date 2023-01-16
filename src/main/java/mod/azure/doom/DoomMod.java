@@ -53,7 +53,7 @@ public class DoomMod {
 			new ForgeTier(17, 5000, 18, 3.0F, 30, ARGENT_TAG, () -> Ingredient.of(DoomItems.ARGENT_BLOCK.get())),
 			new ResourceLocation(MODID, "argent"), List.of(Tiers.NETHERITE), List.of());
 	public static final Tier DOOM_HIGHTEIR = TierSortingRegistry.registerTier(
-			new ForgeTier(17, 24, 18, -1.9F, 30, ARGENT_TAG, () -> Ingredient.of(DoomItems.ARGENT_BLOCK.get())),
+			new ForgeTier(17, 0, 30, -1.9F, 0, ARGENT_TAG, () -> Ingredient.of(DoomItems.ARGENT_BLOCK.get())),
 			new ResourceLocation(MODID, "doom_highertier"), List.of(Tiers.NETHERITE), List.of());
 
 	public DoomMod() {
