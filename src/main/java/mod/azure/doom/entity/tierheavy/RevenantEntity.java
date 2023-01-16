@@ -45,7 +45,7 @@ public class RevenantEntity extends DemonEntity implements GeoEntity {
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving() && this.hurtTime == 0 && !this.isAggressive())
+			if (event.isMoving())
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
 			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
