@@ -11,7 +11,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 public enum DoomTier implements Tier {
 	DOOM(18, 1561, 16.0F, 3.0F, 30, () -> {
 		return Ingredient.of(DoomItems.ARGENT_ENERGY);
-	}), DOOM_HIGHTEIR(6, 24, 16.0F, 85.0F, 30, () -> {
+	}), DOOM_HIGHTEIR(6, 0, 16.0F, -1.9F, 30, () -> {
 		return Ingredient.of(DoomBlocks.ARGENT_BLOCK);
 	}), CHAINSAW(6, 5, 16.0F, 0.0F, 30, () -> {
 		return Ingredient.of(DoomItems.GAS_BARREL);

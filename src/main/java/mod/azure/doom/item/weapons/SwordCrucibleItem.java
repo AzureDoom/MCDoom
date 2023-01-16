@@ -50,7 +50,8 @@ public class SwordCrucibleItem extends SwordItem implements GeoItem {
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public SwordCrucibleItem() {
-		super(DoomTier.DOOM_HIGHTEIR, 1, -2.5f, new Item.Properties().stacksTo(1).durability(DoomConfig.crucible_max_uses));
+		super(DoomTier.DOOM_HIGHTEIR, 1, -2.5f,
+				new Item.Properties().stacksTo(1).durability(DoomConfig.crucible_max_uses));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
@@ -73,10 +74,10 @@ public class SwordCrucibleItem extends SwordItem implements GeoItem {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
 			target.hurt(DamageSource.playerAttack((Player) user),
-					!(target instanceof ArchMakyrEntity) || !(target instanceof GladiatorEntity)
-							|| !(target instanceof IconofsinEntity) || !(target instanceof MotherDemonEntity)
-							|| !(target instanceof SpiderMastermind2016Entity)
-							|| !(target instanceof SpiderMastermindEntity) ? (DoomConfig.crucible_damage / 10F)
+					(target instanceof ArchMakyrEntity) || (target instanceof GladiatorEntity)
+							|| (target instanceof IconofsinEntity) || (target instanceof MotherDemonEntity)
+							|| (target instanceof SpiderMastermind2016Entity)
+							|| (target instanceof SpiderMastermindEntity) ? (DoomConfig.crucible_damage / 10F)
 									: DoomConfig.crucible_damage);
 		}
 	}
