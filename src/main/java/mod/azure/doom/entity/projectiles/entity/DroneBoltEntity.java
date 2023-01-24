@@ -97,5 +97,12 @@ public class DroneBoltEntity extends AbstractHurtingProjectile {
 		}
 		this.playSound(DoomSounds.UNMAKYR_FIRE.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 	}
+	
+	@Override
+	public void tick() {
+		super.tick();
+		if (this.tickCount >= 80) 
+			this.remove(Entity.RemovalReason.DISCARDED);
+	}
 
 }

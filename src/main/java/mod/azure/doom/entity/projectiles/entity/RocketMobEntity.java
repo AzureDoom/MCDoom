@@ -141,6 +141,13 @@ public class RocketMobEntity extends AbstractHurtingProjectile implements GeoEnt
 					Level.ExplosionInteraction.NONE);
 		});
 	}
+	
+	@Override
+	public void tick() {
+		super.tick();
+		if (this.tickCount >= 80) 
+			this.remove(Entity.RemovalReason.DISCARDED);
+	}
 
 	public LivingEntity getShooter() {
 		return shooter;

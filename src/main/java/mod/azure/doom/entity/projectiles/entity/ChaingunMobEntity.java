@@ -41,6 +41,8 @@ public class ChaingunMobEntity extends AbstractHurtingProjectile {
 	@Override
 	public void tick() {
 		super.tick();
+		if (this.tickCount >= 80)
+			this.remove(Entity.RemovalReason.DISCARDED);
 		if (this.level.isClientSide()) {
 			double x = this.getX() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
 			double z = this.getZ() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
