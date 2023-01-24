@@ -146,5 +146,12 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
 			target.hurt(DamageSource.indirectMagic(this, target), directHitDamage);
 		}
 	}
+	
+	@Override
+	public void tick() {
+		super.tick();
+		if (this.tickCount >= 80) 
+			this.remove(Entity.RemovalReason.DISCARDED);
+	}
 
 }

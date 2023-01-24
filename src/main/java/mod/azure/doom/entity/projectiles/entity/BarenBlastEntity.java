@@ -146,5 +146,12 @@ public class BarenBlastEntity extends AbstractHurtingProjectile implements GeoEn
 	public void setShooter(LivingEntity shooter) {
 		this.shooter = shooter;
 	}
+	
+	@Override
+	public void tick() {
+		super.tick();
+		if (this.tickCount >= 80) 
+			this.remove(Entity.RemovalReason.DISCARDED);
+	}
 
 }
