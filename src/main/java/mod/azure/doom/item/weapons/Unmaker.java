@@ -2,6 +2,8 @@ package mod.azure.doom.item.weapons;
 
 import java.util.function.Consumer;
 
+import mod.azure.azurelib.animatable.GeoItem;
+import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.UnmakerRender;
 import mod.azure.doom.config.DoomConfig;
@@ -24,8 +26,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import software.bernie.geckolib.animatable.GeoItem;
-import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 
 public class Unmaker extends DoomBaseItem {
 

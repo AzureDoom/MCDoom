@@ -8,8 +8,8 @@ import mod.azure.doom.util.PlayerProperties;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.renderer.GeoItemRenderer;
+import mod.azure.azurelib.cache.object.GeoBone;
+import mod.azure.azurelib.renderer.GeoItemRenderer;
 
 public class SSGRender extends GeoItemRenderer<SuperShotgun> {
 

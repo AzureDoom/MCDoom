@@ -3,7 +3,7 @@ package mod.azure.doom.client.models.weapons;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.BFG;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.model.GeoModel;
+import mod.azure.azurelib.model.GeoModel;
 
 public class BFGModel extends GeoModel<BFG> {
 	@Override

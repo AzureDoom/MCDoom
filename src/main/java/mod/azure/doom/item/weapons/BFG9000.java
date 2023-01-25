@@ -2,6 +2,8 @@ package mod.azure.doom.item.weapons;
 
 import java.util.function.Consumer;
 
+import mod.azure.azurelib.animatable.GeoItem;
+import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.BFG9000Render;
 import mod.azure.doom.entity.projectiles.BFGEntity;
@@ -21,8 +23,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import software.bernie.geckolib.animatable.GeoItem;
-import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 
 public class BFG9000 extends DoomBaseItem {
 

@@ -7,9 +7,9 @@ import mod.azure.doom.client.models.projectiles.BloodBoltModel;
 import mod.azure.doom.entity.projectiles.entity.BloodBoltEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import software.bernie.geckolib.util.RenderUtils;
+import mod.azure.azurelib.cache.object.BakedGeoModel;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.util.RenderUtils;
 
 public class BloodBoltRender extends GeoEntityRenderer<BloodBoltEntity> {
 

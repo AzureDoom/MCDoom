@@ -3,6 +3,8 @@ package mod.azure.doom.item.weapons;
 import java.util.List;
 import java.util.function.Consumer;
 
+import mod.azure.azurelib.animatable.GeoItem;
+import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.DGaussRender;
 import mod.azure.doom.entity.projectiles.ArgentBoltEntity;
@@ -25,8 +27,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import software.bernie.geckolib.animatable.GeoItem;
-import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 
 public class DGauss extends DoomBaseItem {
 

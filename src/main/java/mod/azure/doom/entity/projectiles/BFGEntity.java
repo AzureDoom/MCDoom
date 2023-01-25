@@ -49,12 +49,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.util.AzureLibUtil;
 
 public class BFGEntity extends AbstractArrow implements GeoEntity {
 
@@ -73,7 +73,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 	int randomIndex = rand.nextInt(whitelistEntries.size());
 	ResourceLocation randomElement1 = new ResourceLocation(whitelistEntries.get(randomIndex));
 	EntityType<?> randomElement = ForgeRegistries.ENTITY_TYPES.getValue(randomElement1);
-	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();
 
 	public BFGEntity(EntityType<? extends BFGEntity> entityType, Level world) {

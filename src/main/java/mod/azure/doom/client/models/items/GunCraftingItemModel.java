@@ -3,7 +3,7 @@ package mod.azure.doom.client.models.items;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.GuntableBlockItem;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.model.GeoModel;
+import mod.azure.azurelib.model.GeoModel;
 
 public class GunCraftingItemModel extends GeoModel<GuntableBlockItem> {
 	@Override

@@ -2,6 +2,7 @@ package mod.azure.doom;
 
 import java.util.List;
 
+import mod.azure.azurelib.AzureLib;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.DoomVillagerTrades;
 import mod.azure.doom.util.LootHandler;
@@ -39,7 +40,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import software.bernie.geckolib.GeckoLib;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 import top.theillusivec4.curios.api.SlotTypePreset;
 
@@ -82,7 +82,7 @@ public class DoomMod {
 		DoomParticles.PARTICLES.register(modEventBus);
 		DoomStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
 		ModEntitySpawn.SERIALIZER.register(modEventBus);
-		GeckoLib.initialize();
+		AzureLib.initialize();
 		modEventBus.addListener(this::addCreativeTabs);
 	}
 

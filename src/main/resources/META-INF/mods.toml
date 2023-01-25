@@ -11,9 +11,9 @@ description='''
 Adds Doom into Minecraft
 '''
 [[dependencies.doom]]
-    modId="geckolib"
+    modId="azurelib"
     mandatory=true
-    versionRange="[4.0.2,)"
+    versionRange="[1.0.0,)"
     ordering="BEFORE"
     side="BOTH"
 [[dependencies.doom]]

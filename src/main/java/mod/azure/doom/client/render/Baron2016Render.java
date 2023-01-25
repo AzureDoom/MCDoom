@@ -3,7 +3,7 @@ package mod.azure.doom.client.render;
 import mod.azure.doom.client.models.Baron2016Model;
 import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 public class Baron2016Render extends GeoEntityRenderer<BaronEntity> {
 

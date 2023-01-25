@@ -3,7 +3,7 @@ package mod.azure.doom.client.render;
 import mod.azure.doom.client.models.WhiplashModel;
 import mod.azure.doom.entity.tierheavy.WhiplashEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 public class WhiplashRender extends GeoEntityRenderer<WhiplashEntity> {
 

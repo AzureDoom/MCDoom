@@ -4,7 +4,7 @@ import mod.azure.doom.client.models.ArchvileModel;
 import mod.azure.doom.entity.tiersuperheavy.ArchvileEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 public class ArchvileRender extends GeoEntityRenderer<ArchvileEntity> {
 

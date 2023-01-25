@@ -7,8 +7,8 @@ import mod.azure.doom.client.models.MotherDemonModel;
 import mod.azure.doom.entity.tierboss.MotherDemonEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.cache.object.BakedGeoModel;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 public class MotherDemonRender extends GeoEntityRenderer<MotherDemonEntity> {
 

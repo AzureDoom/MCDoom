@@ -4,7 +4,7 @@ import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierboss.MotherDemonEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.model.GeoModel;
+import mod.azure.azurelib.model.GeoModel;
 
 public class MotherDemonModel extends GeoModel<MotherDemonEntity> {
 
