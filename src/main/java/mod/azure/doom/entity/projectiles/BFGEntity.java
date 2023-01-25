@@ -5,6 +5,13 @@ import java.util.Random;
 
 import org.jetbrains.annotations.Nullable;
 
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.network.packet.EntityPacket;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierambient.GoreNestEntity;
@@ -13,7 +20,6 @@ import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tierboss.MotherDemonEntity;
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
-import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomSounds;
@@ -49,12 +55,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class BFGEntity extends AbstractArrow implements GeoEntity {
 
@@ -73,7 +73,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 	int randomIndex = rand.nextInt(whitelistEntries.size());
 	ResourceLocation randomElement1 = new ResourceLocation(whitelistEntries.get(randomIndex));
 	EntityType<?> randomElement = BuiltInRegistries.ENTITY_TYPE.get(randomElement1);
-	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();
 
 	public BFGEntity(EntityType<? extends BFGEntity> entityType, Level world) {
@@ -112,7 +112,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return DoomEntityPacket.createPacket(this);
+		return EntityPacket.createPacket(this);
 	}
 
 	@Override

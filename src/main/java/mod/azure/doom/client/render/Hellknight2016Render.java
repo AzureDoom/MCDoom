@@ -3,7 +3,7 @@ package mod.azure.doom.client.render;
 import mod.azure.doom.client.models.Hellknight2016Model;
 import mod.azure.doom.entity.tierheavy.Hellknight2016Entity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 public class Hellknight2016Render extends GeoEntityRenderer<Hellknight2016Entity> {
 

@@ -6,15 +6,12 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.gui.GunTableScreen;
-import mod.azure.doom.network.ClientEntityPacket;
-import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.particles.PlasmaParticle;
 import mod.azure.doom.util.registry.DoomParticles;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -32,9 +29,6 @@ public class ClientInit implements ClientModInitializer {
 		ModelProviderinit.init();
 		DoomRenderRegistry.init();
 		MenuScreens.register(DoomMod.SCREEN_HANDLER_TYPE, GunTableScreen::new);
-		ClientPlayNetworking.registerGlobalReceiver(DoomEntityPacket.ID, (client, handler, buf, responseSender) -> {
-			ClientEntityPacket.onPacket(client, buf);
-		});
 		KeyBindingHelper.registerKeyBinding(reload);
 		KeyBindingHelper.registerKeyBinding(yeethook);
 		ParticleFactoryRegistry.getInstance().register(DoomParticles.PLASMA, PlasmaParticle.Factory::new);

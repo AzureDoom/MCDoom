@@ -23,9 +23,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import software.bernie.geckolib.animatable.GeoItem;
-import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
-import software.bernie.geckolib.animatable.client.RenderProvider;
+import mod.azure.azurelib.animatable.GeoItem;
+import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
+import mod.azure.azurelib.animatable.client.RenderProvider;
 
 public class BFG9000 extends DoomBaseItem {
 

@@ -4,7 +4,7 @@ import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierheavy.ArachnotronEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.model.GeoModel;
+import mod.azure.azurelib.model.GeoModel;
 
 /**
  * Arachnotron - Batpixxler

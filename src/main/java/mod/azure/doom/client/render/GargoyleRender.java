@@ -3,7 +3,7 @@ package mod.azure.doom.client.render;
 import mod.azure.doom.client.models.GargoyleModel;
 import mod.azure.doom.entity.tierfodder.GargoyleEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 public class GargoyleRender extends GeoEntityRenderer<GargoyleEntity> {
 

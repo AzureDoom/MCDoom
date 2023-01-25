@@ -1,8 +1,8 @@
 package mod.azure.doom.entity.projectiles;
 
+import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
-import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomParticles;
@@ -69,7 +69,7 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return DoomEntityPacket.createPacket(this);
+		return EntityPacket.createPacket(this);
 	}
 
 	@Override

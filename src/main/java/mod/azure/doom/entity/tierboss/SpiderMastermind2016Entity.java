@@ -21,11 +21,11 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
 
 public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 

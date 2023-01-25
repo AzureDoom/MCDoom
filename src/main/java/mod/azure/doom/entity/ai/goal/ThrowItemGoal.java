@@ -2,7 +2,7 @@ package mod.azure.doom.entity.ai.goal;
 
 import java.util.EnumSet;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import mod.azure.doom.entity.DemonEntity;
 import net.minecraft.util.Mth;

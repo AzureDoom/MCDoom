@@ -1,7 +1,13 @@
 package mod.azure.doom.entity.projectiles;
 
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.network.packet.EntityPacket;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomParticles;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
@@ -28,12 +34,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.object.PlayState;
-import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class BulletEntity extends AbstractArrow implements GeoEntity {
 
@@ -43,7 +43,7 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
 	public static final EntityDataAccessor<Integer> PARTICLE = SynchedEntityData.defineId(BulletEntity.class,
 			EntityDataSerializers.INT);
 	private float projectiledamage;
-	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();
 
 	public BulletEntity(EntityType<? extends BulletEntity> entityType, Level world) {
@@ -109,7 +109,7 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
 
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return DoomEntityPacket.createPacket(this);
+		return EntityPacket.createPacket(this);
 	}
 
 	@Override

@@ -2,8 +2,8 @@ package mod.azure.doom.client.render.armors;
 
 import mod.azure.doom.client.models.armor.ClassicRedModel;
 import mod.azure.doom.item.armor.ClassicRedDoomArmor;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.renderer.GeoArmorRenderer;
+import mod.azure.azurelib.cache.object.GeoBone;
+import mod.azure.azurelib.renderer.GeoArmorRenderer;
 
 public class ClassicRedRender extends GeoArmorRenderer<ClassicRedDoomArmor> {
 	public ClassicRedRender() {

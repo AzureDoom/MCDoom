@@ -1,6 +1,6 @@
 package mod.azure.doom.block;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;

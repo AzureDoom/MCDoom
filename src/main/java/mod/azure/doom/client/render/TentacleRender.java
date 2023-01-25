@@ -3,7 +3,7 @@ package mod.azure.doom.client.render;
 import mod.azure.doom.client.models.TentacleModel;
 import mod.azure.doom.entity.tierambient.TentacleEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 public class TentacleRender extends GeoEntityRenderer<TentacleEntity> {
 

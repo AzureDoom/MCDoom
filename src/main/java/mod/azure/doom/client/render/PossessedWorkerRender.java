@@ -1,10 +1,13 @@
 package mod.azure.doom.client.render;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
+import mod.azure.azurelib.cache.object.GeoBone;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.renderer.layer.BlockAndItemGeoLayer;
 import mod.azure.doom.client.models.PossessedWorkerModel;
 import mod.azure.doom.entity.tierfodder.PossessedScientistEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -12,9 +15,6 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer;
 
 public class PossessedWorkerRender extends GeoEntityRenderer<PossessedScientistEntity> {
 

@@ -1,6 +1,7 @@
 package mod.azure.doom;
 
 import eu.midnightdust.lib.config.MidnightConfig;
+import mod.azure.azurelib.AzureLib;
 import mod.azure.doom.client.gui.GunTableScreenHandler;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
@@ -41,7 +42,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import software.bernie.geckolib.GeckoLib;
 
 public class DoomMod implements ModInitializer {
 
@@ -390,7 +390,7 @@ public class DoomMod implements ModInitializer {
 			}
 		});
 		MobAttributes.init();
-		GeckoLib.initialize();
+		AzureLib.initialize();
 		PacketHandler.registerMessages();
 		DoomStructures.registerStructureFeatures();
 		SCREEN_HANDLER_TYPE = new MenuType<>(GunTableScreenHandler::new);

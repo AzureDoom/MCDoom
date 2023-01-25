@@ -4,7 +4,7 @@ import mod.azure.doom.client.models.PainModel;
 import mod.azure.doom.entity.tierheavy.PainEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 public class PainRender extends GeoEntityRenderer<PainEntity> {
 

@@ -4,9 +4,9 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
 
+import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.doom.entity.ai.goal.DoomNavigation;
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
-import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.DoomBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
@@ -195,7 +195,7 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return DoomEntityPacket.createPacket(this);
+		return EntityPacket.createPacket(this);
 	}
 
 }

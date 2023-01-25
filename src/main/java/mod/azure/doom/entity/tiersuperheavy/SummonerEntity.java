@@ -5,8 +5,16 @@ import java.util.List;
 import java.util.SplittableRandom;
 import java.util.function.Predicate;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
@@ -49,18 +57,10 @@ import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
-import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class SummonerEntity extends DemonEntity implements GeoEntity {
 
-	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private int targetChangeTime;
 	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(SummonerEntity.class,
 			EntityDataSerializers.INT);

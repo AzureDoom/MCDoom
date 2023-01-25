@@ -35,18 +35,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.util.AzureLibUtil;
 
 public class GargoyleEntity extends DemonEntity implements GeoEntity {
 
-	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
 	public GargoyleEntity(EntityType<GargoyleEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);

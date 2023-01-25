@@ -16,17 +16,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import software.bernie.geckolib.animatable.GeoItem;
-import software.bernie.geckolib.animatable.client.RenderProvider;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import mod.azure.azurelib.animatable.GeoItem;
+import mod.azure.azurelib.animatable.client.RenderProvider;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.util.AzureLibUtil;
 
 public class CultistDoomArmor extends ArmorItem implements GeoItem {
 
-	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
 	public CultistDoomArmor(ArmorMaterial materialIn, EquipmentSlot slot) {

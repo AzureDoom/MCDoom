@@ -3,11 +3,11 @@ package mod.azure.doom.item;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import mod.azure.azurelib.animatable.GeoItem;
+import mod.azure.azurelib.animatable.client.RenderProvider;
 import mod.azure.doom.client.render.item.TotemItemRender;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.level.block.Block;
-import software.bernie.geckolib.animatable.GeoItem;
-import software.bernie.geckolib.animatable.client.RenderProvider;
 
 public class TotemBlockItem extends DoomBlockItem {
 

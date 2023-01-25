@@ -29,7 +29,7 @@ group = project.maven_group
 repositories {
 	maven { url "https://cfa2.cursemaven.com" }
     maven { url "https://maven.shedaniel.me/" }
-    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+    maven { url 'https://dl.cloudsmith.io/public/azuredoom-mods/azurelib/maven/' }
     maven { url 'https://maven.blamejared.com' }
     maven { url 'https://plugins.gradle.org/m2/' }
 	maven { url = "https://maven.terraformersmc.com/" }
@@ -48,7 +48,7 @@ dependencies {
     mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19.3:4.0.3'
+  	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.19.3:1.0.1'
 	modImplementation "maven.modrinth:midnightlib:1.1.0-fabric"
     shade group: 'maven.modrinth', name: 'midnightlib', version: '1.1.0-fabric'
 	modImplementation ("com.terraformersmc:modmenu:5.0.2")
@@ -147,7 +147,7 @@ if (file('key.properties').exists()) {
 
         	relations {
             	requiredDependency 'fabric-api'  
-            	requiredDependency 'geckolib'  
+            	requiredDependency 'azurelib'  
             	requiredDependency 'trinkets'  
             	optionalDependency 'roughly-enough-items' 
             	optionalDependency 'better-combat-by-daedelus' 
@@ -180,7 +180,7 @@ if (file('key.properties').exists()) {
 		gameVersions = ['1.19.3']
 		loaders = ['fabric','quilt']
 		dependencies { 
-        	required.project "geckolib"
+        	required.project "azurelib"
         	required.project "trinkets"
         	required.project "fabric-api"
         	optional.project "better-combat"

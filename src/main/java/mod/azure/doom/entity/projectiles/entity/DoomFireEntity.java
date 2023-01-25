@@ -4,8 +4,14 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
 
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.network.packet.EntityPacket;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -20,12 +26,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.phys.AABB;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.object.PlayState;
-import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class DoomFireEntity extends Entity implements GeoEntity {
 
@@ -36,7 +36,7 @@ public class DoomFireEntity extends Entity implements GeoEntity {
 	private LivingEntity caster;
 	private UUID casterUuid;
 	private float damage;
-	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
 	public DoomFireEntity(EntityType<DoomFireEntity> entityType, Level world) {
 		super(entityType, world);
@@ -164,7 +164,7 @@ public class DoomFireEntity extends Entity implements GeoEntity {
 
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return DoomEntityPacket.createPacket(this);
+		return EntityPacket.createPacket(this);
 	}
 
 	@Override

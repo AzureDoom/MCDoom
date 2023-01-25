@@ -1,7 +1,13 @@
 package mod.azure.doom.entity.projectiles.entity;
 
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.network.packet.EntityPacket;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.DoomSounds;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.core.particles.ParticleOptions;
@@ -18,12 +24,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.object.PlayState;
-import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEntity {
 
@@ -31,7 +31,7 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
 	protected boolean inAir;
 	private int ticksInAir;
 	private float directHitDamage = 2;
-	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
 	public BloodBoltEntity(EntityType<BloodBoltEntity> p_i50160_1_, Level p_i50160_2_) {
 		super(p_i50160_1_, p_i50160_2_);
@@ -89,7 +89,7 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
 
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return DoomEntityPacket.createPacket(this);
+		return EntityPacket.createPacket(this);
 	}
 
 	@Override
@@ -146,11 +146,11 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
 			target.hurt(DamageSource.indirectMagic(this, target), directHitDamage);
 		}
 	}
-	
+
 	@Override
 	public void tick() {
 		super.tick();
-		if (this.tickCount >= 80) 
+		if (this.tickCount >= 80)
 			this.remove(Entity.RemovalReason.DISCARDED);
 	}
 

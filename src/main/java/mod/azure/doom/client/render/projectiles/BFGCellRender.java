@@ -23,9 +23,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import software.bernie.geckolib.util.RenderUtils;
+import mod.azure.azurelib.cache.object.BakedGeoModel;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.util.RenderUtils;
 
 public class BFGCellRender extends GeoEntityRenderer<BFGEntity> {
 

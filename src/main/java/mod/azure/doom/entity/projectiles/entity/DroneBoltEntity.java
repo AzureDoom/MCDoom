@@ -1,8 +1,8 @@
 package mod.azure.doom.entity.projectiles.entity;
 
+import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.DoomSounds;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.nbt.CompoundTag;
@@ -56,7 +56,7 @@ public class DroneBoltEntity extends AbstractHurtingProjectile {
 
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return DoomEntityPacket.createPacket(this);
+		return EntityPacket.createPacket(this);
 	}
 
 	@Override
@@ -97,11 +97,11 @@ public class DroneBoltEntity extends AbstractHurtingProjectile {
 		}
 		this.playSound(DoomSounds.UNMAKYR_FIRE, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 	}
-	
+
 	@Override
 	public void tick() {
 		super.tick();
-		if (this.tickCount >= 80) 
+		if (this.tickCount >= 80)
 			this.remove(Entity.RemovalReason.DISCARDED);
 	}
 

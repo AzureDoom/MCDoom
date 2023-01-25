@@ -5,11 +5,11 @@ import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.model.data.EntityModelData;
+import mod.azure.azurelib.constant.DataTickets;
+import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
+import mod.azure.azurelib.core.animation.AnimationState;
+import mod.azure.azurelib.model.GeoModel;
+import mod.azure.azurelib.model.data.EntityModelData;
 
 public class ArchMaykrModel extends GeoModel<ArchMakyrEntity> {
 

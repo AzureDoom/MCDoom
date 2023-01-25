@@ -1,8 +1,8 @@
 package mod.azure.doom.entity.projectiles.entity;
 
+import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tileentity.TickingLightEntity;
-import mod.azure.doom.network.DoomEntityPacket;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.core.BlockPos;
@@ -65,7 +65,7 @@ public class FireProjectile extends AbstractHurtingProjectile {
 
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return DoomEntityPacket.createPacket(this);
+		return EntityPacket.createPacket(this);
 	}
 
 	@Override
