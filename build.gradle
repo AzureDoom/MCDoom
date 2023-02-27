@@ -48,7 +48,7 @@ dependencies {
     mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-  	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.19.3:1.0.1'
+  	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.19.3:1.0.3'
 	modImplementation "maven.modrinth:midnightlib:1.1.0-fabric"
     shade group: 'maven.modrinth', name: 'midnightlib', version: '1.1.0-fabric'
 	modImplementation ("com.terraformersmc:modmenu:5.0.2")
