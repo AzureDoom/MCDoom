@@ -1,3 +1,6 @@
-v.4.3.9
+v.4.3.10
 
-- Convert from Geckolib to AzureLib
+- Fix Gun Crafting table gun placement on the render.
+- Fix Gun Crafting table not animating.
+- Fix broken walking animation on Possessed Scientist.
+- Fix crash with Grenades. 
