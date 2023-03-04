@@ -1,5 +1,11 @@
 package mod.azure.doom.entity.tileentity;
 
+import mod.azure.azurelib.animatable.GeoBlockEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.gui.GunTableScreenHandler;
 import net.minecraft.core.BlockPos;
@@ -15,12 +21,6 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import mod.azure.azurelib.animatable.GeoBlockEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class GunBlockEntity extends BlockEntity implements ImplementedInventory, MenuProvider, GeoBlockEntity {
 
@@ -39,7 +39,7 @@ public class GunBlockEntity extends BlockEntity implements ImplementedInventory,
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			return PlayState.CONTINUE;
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		}));
 	}
 
