@@ -24,7 +24,7 @@ public class GunCraftingRender extends GeoBlockRenderer<GunBlockEntity> {
 			@Override
 			protected ItemStack getStackForBone(GeoBone bone, GunBlockEntity animatable) {
 				return switch (bone.getName()) {
-				case "group" -> new ItemStack(DoomItems.PISTOL);
+				case "gun" -> new ItemStack(DoomItems.PISTOL);
 				default -> null;
 				};
 			}
@@ -43,8 +43,8 @@ public class GunCraftingRender extends GeoBlockRenderer<GunBlockEntity> {
 					int packedOverlay) {
 				poseStack.mulPose(Axis.XP.rotationDegrees(-40));
 				poseStack.mulPose(Axis.YP.rotationDegrees(0));
-				poseStack.mulPose(Axis.ZP.rotationDegrees(-5));
-				poseStack.translate(-0.10D, 0.96D, 0.9D);
+				poseStack.mulPose(Axis.ZP.rotationDegrees(0));
+				poseStack.translate(0.15D, 0.0D, 0.0D);
 				poseStack.scale(0.5f, 0.5f, 0.5f);
 				super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight,
 						packedOverlay);
