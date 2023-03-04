@@ -172,7 +172,7 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 
 	@Override
 	protected void onHitBlock(BlockHitResult blockHitResult) {
-		super.onHit(blockHitResult);
+		super.onHitBlock(blockHitResult);
 		if (!this.level.isClientSide())
 			if (this.tickCount >= 46)
 				this.remove(Entity.RemovalReason.DISCARDED);
