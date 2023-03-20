@@ -149,7 +149,6 @@ if (file('key.properties').exists()) {
             	requiredDependency 'fabric-api'  
             	requiredDependency 'azurelib'  
             	requiredDependency 'trinkets'  
-            	optionalDependency 'roughly-enough-items' 
             	optionalDependency 'better-combat-by-daedelus' 
         	}
         	mainArtifact(remapJar)
@@ -185,7 +184,6 @@ if (file('key.properties').exists()) {
         	required.project "fabric-api"
         	optional.project "better-combat"
             optional.project "modmenu"
-            optional.project "roughly-enough-items"
    		}
 	}
 }
