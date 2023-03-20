@@ -163,7 +163,6 @@ if (file('key.properties').exists()) {
         	relations {
             	requiredDependency 'curios'  
             	requiredDependency 'azurelib' 
-            	optionalDependency 'roughly-enough-items'
             	optionalDependency 'better-combat-by-daedelus' 
         	}
     	}
@@ -187,7 +186,6 @@ if (file('key.properties').exists()) {
 		dependencies { 
         	required.project "azurelib"
         	optional.project "better-combat"
-            optional.project "roughly-enough-items"
    		}
 	}
 }
