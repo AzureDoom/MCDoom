@@ -105,7 +105,7 @@ public class DarkLordCrucibleItem extends SwordItem implements GeoItem {
 	}
 
 	public static void reload(Player user, InteractionHand hand) {
-		if (user.getItemInHand(hand).getItem() instanceof AxeMarauderItem) {
+		if (user.getItemInHand(hand).getItem() instanceof DarkLordCrucibleItem) {
 			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
 					&& user.getInventory().countItem(DoomBlocks.ARGENT_BLOCK.get().asItem()) > 0) {
 				removeAmmo(DoomBlocks.ARGENT_BLOCK.get().asItem(), user);
