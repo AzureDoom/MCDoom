@@ -52,6 +52,7 @@ dependencies {
 	modImplementation "maven.modrinth:midnightlib:1.1.0-fabric"
     shade group: 'maven.modrinth', name: 'midnightlib', version: '1.1.0-fabric'
 	modImplementation ("com.terraformersmc:modmenu:5.0.2")
+	modImplementation "curse.maven:SBL-661293:4277537-sources-4277538"
     modImplementation "dev.emi:trinkets:3.5.0"
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:10.0.581") {
         exclude(group: "net.fabricmc.fabric-api")
