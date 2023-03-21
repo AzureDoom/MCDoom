@@ -10,8 +10,9 @@ public abstract class DoomSpecialCraftingRecipe implements GunRecipes {
 		this.id = id;
 	}
 
+	@Override
 	public ResourceLocation getId() {
-		return this.id;
+		return id;
 	}
 
 	public boolean isIgnoredInRecipeBook() {

@@ -8,16 +8,16 @@ import mod.azure.azurelib.model.GeoModel;
 public class SwordCrucibleModel extends GeoModel<SwordCrucibleItem> {
 	@Override
 	public ResourceLocation getModelResource(SwordCrucibleItem object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/cruciblesword.geo.json");
+		return DoomMod.modResource("geo/cruciblesword.geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(SwordCrucibleItem object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/item/crucible.png");
+		return DoomMod.modResource("textures/item/crucible.png");
 	}
 
 	@Override
 	public ResourceLocation getAnimationResource(SwordCrucibleItem animatable) {
-		return new ResourceLocation(DoomMod.MODID, "animations/cruciblesword.animation.json");
+		return DoomMod.modResource("animations/cruciblesword.animation.json");
 	}
 }

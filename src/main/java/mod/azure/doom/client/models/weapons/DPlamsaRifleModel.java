@@ -8,16 +8,16 @@ import mod.azure.azurelib.model.GeoModel;
 public class DPlamsaRifleModel extends GeoModel<DPlasmaRifle> {
 	@Override
 	public ResourceLocation getModelResource(DPlasmaRifle object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/doomed_plasma_rifle.geo.json");
+		return DoomMod.modResource("geo/doomed_plasma_rifle.geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(DPlasmaRifle object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/item/doomed_plasma_rifle.png");
+		return DoomMod.modResource("textures/item/doomed_plasma_rifle.png");
 	}
 
 	@Override
 	public ResourceLocation getAnimationResource(DPlasmaRifle animatable) {
-		return new ResourceLocation(DoomMod.MODID, "animations/doomed_plasma_rifle.animation.json");
+		return DoomMod.modResource("animations/doomed_plasma_rifle.animation.json");
 	}
 }

@@ -8,16 +8,16 @@ import mod.azure.azurelib.model.GeoModel;
 public class RocketLauncherModel extends GeoModel<RocketLauncher> {
 	@Override
 	public ResourceLocation getModelResource(RocketLauncher object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/rocketlauncher.geo.json");
+		return DoomMod.modResource("geo/rocketlauncher.geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(RocketLauncher object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/item/rocketlauncher.png");
+		return DoomMod.modResource("textures/item/rocketlauncher.png");
 	}
 
 	@Override
 	public ResourceLocation getAnimationResource(RocketLauncher animatable) {
-		return new ResourceLocation(DoomMod.MODID, "animations/rocketlauncher.animation.json");
+		return DoomMod.modResource("animations/rocketlauncher.animation.json");
 	}
 }

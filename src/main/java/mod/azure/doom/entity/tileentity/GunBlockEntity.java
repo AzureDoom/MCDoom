@@ -33,14 +33,12 @@ public class GunBlockEntity extends BlockEntity implements ImplementedInventory,
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, event -> {
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
-		}));
+		controllers.add(new AnimationController<>(this, event -> event.setAndContinue(RawAnimation.begin().thenLoop("idle"))));
 	}
 
 	@Override

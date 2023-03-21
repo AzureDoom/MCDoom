@@ -19,10 +19,8 @@ import net.minecraft.client.gui.screens.MenuScreens;
 @Environment(EnvType.CLIENT)
 public class ClientInit implements ClientModInitializer {
 
-	public static KeyMapping reload = new KeyMapping("key.doom.reload", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R,
-			"category.doom.binds");
-	public static KeyMapping yeethook = new KeyMapping("key.doom.yeethook", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V,
-			"category.doom.binds");
+	public static KeyMapping reload = new KeyMapping("key.doom.reload", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, "category.doom.binds");
+	public static KeyMapping yeethook = new KeyMapping("key.doom.yeethook", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, "category.doom.binds");
 
 	@Override
 	public void onInitializeClient() {

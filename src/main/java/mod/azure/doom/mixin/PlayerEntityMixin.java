@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level;
 
 @Mixin(Player.class)
 public abstract class PlayerEntityMixin extends LivingEntity implements PlayerProperties {
-	
+
 	protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, Level world) {
 		super(entityType, world);
 	}

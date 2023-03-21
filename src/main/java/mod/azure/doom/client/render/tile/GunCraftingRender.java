@@ -30,24 +30,20 @@ public class GunCraftingRender extends GeoBlockRenderer<GunBlockEntity> {
 			}
 
 			@Override
-			protected ItemTransforms.TransformType getTransformTypeForStack(GeoBone bone, ItemStack stack,
-					GunBlockEntity animatable) {
+			protected ItemTransforms.TransformType getTransformTypeForStack(GeoBone bone, ItemStack stack, GunBlockEntity animatable) {
 				return switch (bone.getName()) {
 				default -> ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND;
 				};
 			}
 
 			@Override
-			protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack,
-					GunBlockEntity animatable, MultiBufferSource bufferSource, float partialTick, int packedLight,
-					int packedOverlay) {
+			protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack, GunBlockEntity animatable, MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay) {
 				poseStack.mulPose(Axis.XP.rotationDegrees(-40));
 				poseStack.mulPose(Axis.YP.rotationDegrees(0));
 				poseStack.mulPose(Axis.ZP.rotationDegrees(0));
 				poseStack.translate(0.15D, 0.0D, 0.0D);
 				poseStack.scale(0.5f, 0.5f, 0.5f);
-				super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight,
-						packedOverlay);
+				super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
 			}
 		});
 	}

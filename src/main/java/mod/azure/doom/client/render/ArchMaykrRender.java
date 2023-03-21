@@ -3,12 +3,12 @@ package mod.azure.doom.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import mod.azure.azurelib.cache.object.BakedGeoModel;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mod.azure.doom.client.models.ArchMaykrModel;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import mod.azure.azurelib.cache.object.BakedGeoModel;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 public class ArchMaykrRender extends GeoEntityRenderer<ArchMakyrEntity> {
 
@@ -22,11 +22,8 @@ public class ArchMaykrRender extends GeoEntityRenderer<ArchMakyrEntity> {
 	}
 
 	@Override
-	public void preRender(PoseStack poseStack, ArchMakyrEntity animatable, BakedGeoModel model,
-			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
-			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
-				packedOverlay, red, green, blue, alpha);
+	public void preRender(PoseStack poseStack, ArchMakyrEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
 		if (animatable.getEntityData().get(ArchMakyrEntity.DEATH_STATE) == 5) {
 			model.getBone("rWing4").get().setHidden(true);
 			if (animatable.getVariant() == 1) {

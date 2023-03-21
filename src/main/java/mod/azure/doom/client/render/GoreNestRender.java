@@ -1,9 +1,9 @@
 package mod.azure.doom.client.render;
 
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mod.azure.doom.client.models.GoreNestModel;
 import mod.azure.doom.entity.tierambient.GoreNestEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 public class GoreNestRender extends GeoEntityRenderer<GoreNestEntity> {
 

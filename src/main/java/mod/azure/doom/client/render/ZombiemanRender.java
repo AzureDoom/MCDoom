@@ -20,7 +20,7 @@ public class ZombiemanRender extends GeoEntityRenderer<ZombiemanEntity> {
 
 	public ZombiemanRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new ZombiemanModel());
-		this.addRenderLayer(new BlockAndItemGeoLayer<>(this) {
+		addRenderLayer(new BlockAndItemGeoLayer<>(this) {
 			@Nullable
 			@Override
 			protected ItemStack getStackForBone(GeoBone bone, ZombiemanEntity animatable) {
@@ -31,23 +31,19 @@ public class ZombiemanRender extends GeoEntityRenderer<ZombiemanEntity> {
 			}
 
 			@Override
-			protected ItemTransforms.TransformType getTransformTypeForStack(GeoBone bone, ItemStack stack,
-					ZombiemanEntity animatable) {
+			protected ItemTransforms.TransformType getTransformTypeForStack(GeoBone bone, ItemStack stack, ZombiemanEntity animatable) {
 				return switch (bone.getName()) {
 				default -> ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND;
 				};
 			}
 
 			@Override
-			protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack,
-					ZombiemanEntity animatable, MultiBufferSource bufferSource, float partialTick, int packedLight,
-					int packedOverlay) {
+			protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack, ZombiemanEntity animatable, MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay) {
 				poseStack.mulPose(Axis.XP.rotationDegrees(-110));
 				poseStack.mulPose(Axis.YP.rotationDegrees(0));
 				poseStack.mulPose(Axis.ZP.rotationDegrees(0));
 				poseStack.translate(0.0D, 0.0D, -0.4D);
-				super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight,
-						packedOverlay);
+				super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
 			}
 		});
 	}

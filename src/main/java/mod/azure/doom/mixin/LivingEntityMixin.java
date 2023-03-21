@@ -23,16 +23,16 @@ public class LivingEntityMixin {
 
 	@Inject(method = "checkTotemDeathProtection", at = @At(value = "HEAD"), cancellable = true)
 	private void tryUseTotem(DamageSource source, CallbackInfoReturnable<Boolean> ci) {
-		LivingEntity livingEntity = (LivingEntity) (Object) this;
-		if (source.isBypassInvul()) 
+		final var livingEntity = (LivingEntity) (Object) this;
+		if (source.isBypassInvul())
 			ci.setReturnValue(false);
 		else {
-			ItemStack stack = TrinketsApi.getTrinketComponent(livingEntity).map(component -> {
-				List<Tuple<SlotReference, ItemStack>> res = component.getEquipped(DoomItems.SOULCUBE);
+			final var stack = TrinketsApi.getTrinketComponent(livingEntity).map(component -> {
+				final List<Tuple<SlotReference, ItemStack>> res = component.getEquipped(DoomItems.SOULCUBE);
 				return res.size() > 0 ? res.get(0).getB() : ItemStack.EMPTY;
 			}).orElse(ItemStack.EMPTY);
 
-			if (!stack.isEmpty() && DoomConfig.enable_soulcube_effects == true) {
+			if (!stack.isEmpty() && DoomConfig.enable_soulcube_effects) {
 				stack.hurtAndBreak(1, livingEntity, p -> p.broadcastBreakEvent(livingEntity.getUsedItemHand()));
 				livingEntity.setHealth(20.0F);
 				livingEntity.removeAllEffects();

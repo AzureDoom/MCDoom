@@ -8,7 +8,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -30,16 +29,15 @@ public class JumppadBlock extends Block {
 	}
 
 	private void jumpEntity(Entity entity) {
-		Vec3 vector3d = entity.getDeltaMovement();
-		if (vector3d.y < 0.0D) {
+		var vector3d = entity.getDeltaMovement();
+		if (vector3d.y < 0.0D)
 			entity.setDeltaMovement(vector3d.x, 1D, vector3d.z);
-		}
 	}
 
 	@Override
 	public void stepOn(Level worldIn, BlockPos pos, BlockState state, Entity entityIn) {
-		double d0 = Math.abs(entityIn.getDeltaMovement().y);
-		double d1 = 1.4D + d0 * 0.2D;
+		var d0 = Math.abs(entityIn.getDeltaMovement().y);
+		var d1 = 1.4D + d0 * 0.2D;
 		entityIn.setDeltaMovement(entityIn.getDeltaMovement().multiply(d1, 1.0D, 0.5D));
 		super.stepOn(worldIn, pos, state, entityIn);
 	}

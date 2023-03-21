@@ -29,8 +29,7 @@ public class E1M1TurnableHurtBlock extends Block {
 
 	public E1M1TurnableHurtBlock() {
 		super(FabricBlockSettings.of(Material.METAL).sounds(SoundType.BONE_BLOCK));
-		this.registerDefaultState(
-				this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.valueOf(true)));
+		this.registerDefaultState(this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.valueOf(true)));
 	}
 
 	@Override
@@ -60,10 +59,8 @@ public class E1M1TurnableHurtBlock extends Block {
 
 	@Override
 	public void stepOn(Level worldIn, BlockPos pos, BlockState state, Entity entityIn) {
-		if (!entityIn.fireImmune() && entityIn instanceof LivingEntity
-				&& !EnchantmentHelper.hasFrostWalker((LivingEntity) entityIn)) {
+		if (!entityIn.fireImmune() && entityIn instanceof LivingEntity && !EnchantmentHelper.hasFrostWalker((LivingEntity) entityIn))
 			entityIn.hurt(DamageSource.HOT_FLOOR, 1.0F);
-		}
 		super.stepOn(worldIn, pos, state, entityIn);
 	}
 

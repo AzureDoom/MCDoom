@@ -8,16 +8,16 @@ import mod.azure.azurelib.model.GeoModel;
 public class SSGModel extends GeoModel<SuperShotgun> {
 	@Override
 	public ResourceLocation getModelResource(SuperShotgun object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/supershotgun.geo.json");
+		return DoomMod.modResource("geo/supershotgun.geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(SuperShotgun object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/item/supershotgun.png");
+		return DoomMod.modResource("textures/item/supershotgun.png");
 	}
 
 	@Override
 	public ResourceLocation getAnimationResource(SuperShotgun animatable) {
-		return new ResourceLocation(DoomMod.MODID, "animations/supershotgun.animation.json");
+		return DoomMod.modResource("animations/supershotgun.animation.json");
 	}
 }

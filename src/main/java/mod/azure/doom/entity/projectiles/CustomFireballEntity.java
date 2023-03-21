@@ -14,8 +14,7 @@ public class CustomFireballEntity extends LargeFireball {
 
 	private float directHitDamage = 6.0F;
 
-	public CustomFireballEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
-			float directHitDamage) {
+	public CustomFireballEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, float directHitDamage) {
 		super(worldIn, shooter, accelX, accelY, accelZ, 1);
 		this.directHitDamage = directHitDamage;
 	}
@@ -23,8 +22,8 @@ public class CustomFireballEntity extends LargeFireball {
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		if (!this.level.isClientSide()) {
-			Entity entity = entityHitResult.getEntity();
-			Entity entity2 = this.getOwner();
+			var entity = entityHitResult.getEntity();
+			var entity2 = this.getOwner();
 			entity.setSecondsOnFire(5);
 			if (!(entity2 instanceof DemonEntity))
 				entity.hurt(DamageSource.fireball(this, entity2), directHitDamage);
@@ -40,9 +39,8 @@ public class CustomFireballEntity extends LargeFireball {
 	protected void onHit(HitResult hitResult) {
 		super.onHit(hitResult);
 		if (!this.level.isClientSide()) {
-			boolean bl = DoomConfig.enable_block_breaking;
-			this.level.explode(null, this.getX(), this.getY(), this.getZ(), 1, true,
-					bl ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
+			var bl = DoomConfig.enable_block_breaking;
+			this.level.explode(null, this.getX(), this.getY(), this.getZ(), 1, true, bl ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
 			this.discard();
 		}
 	}

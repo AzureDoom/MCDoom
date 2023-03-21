@@ -8,16 +8,16 @@ import mod.azure.azurelib.model.GeoModel;
 public class HeavyCannonModel extends GeoModel<HeavyCannon> {
 	@Override
 	public ResourceLocation getModelResource(HeavyCannon object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/heavycannon.geo.json");
+		return DoomMod.modResource("geo/heavycannon.geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(HeavyCannon object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/item/heavycannon.png");
+		return DoomMod.modResource("textures/item/heavycannon.png");
 	}
 
 	@Override
 	public ResourceLocation getAnimationResource(HeavyCannon animatable) {
-		return new ResourceLocation(DoomMod.MODID, "animations/heavycannon.animation.json");
+		return DoomMod.modResource("animations/heavycannon.animation.json");
 	}
 }

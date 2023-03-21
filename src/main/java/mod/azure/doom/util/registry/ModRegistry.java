@@ -46,7 +46,7 @@ public class ModRegistry {
 			ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> DoomVillagerTrades.addTrades());
 		LootTableEvents.MODIFY.register((resourceManager, lootManager, id, supplier, setter) -> {
 			if (DoomLoot.BASTION_BRIDGE.equals(id) || DoomLoot.BASTION_HOGLIN_STABLE.equals(id) || DoomLoot.BASTION_OTHER.equals(id) || DoomLoot.BASTION_TREASURE.equals(id) || DoomLoot.NETHER_BRIDGE.equals(id) || DoomLoot.RUINED_PORTAL.equals(id) || DoomLoot.SPAWN_BONUS_CHEST.equals(id)) {
-				LootPool poolBuilder = LootPool.lootPool().setRolls(ConstantValue.exactly(1)).with(LootItem.lootTableItem(DoomItems.INMORTAL).build()).with(LootItem.lootTableItem(DoomItems.INVISIBLE).build()).with(LootItem.lootTableItem(DoomItems.MEGA).build()).with(LootItem.lootTableItem(DoomItems.POWER).build()).with(LootItem.lootTableItem(DoomItems.SOULCUBE).build()).with(LootItem.lootTableItem(DoomItems.DAISY).build()).build();
+				final LootPool poolBuilder = LootPool.lootPool().setRolls(ConstantValue.exactly(1)).with(LootItem.lootTableItem(DoomItems.INMORTAL).build()).with(LootItem.lootTableItem(DoomItems.INVISIBLE).build()).with(LootItem.lootTableItem(DoomItems.MEGA).build()).with(LootItem.lootTableItem(DoomItems.POWER).build()).with(LootItem.lootTableItem(DoomItems.SOULCUBE).build()).with(LootItem.lootTableItem(DoomItems.DAISY).build()).build();
 				supplier.pool(poolBuilder);
 			}
 		});

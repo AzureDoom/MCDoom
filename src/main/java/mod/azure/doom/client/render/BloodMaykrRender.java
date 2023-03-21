@@ -1,9 +1,9 @@
 package mod.azure.doom.client.render;
 
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mod.azure.doom.client.models.BloodMaykrModel;
 import mod.azure.doom.entity.tierheavy.BloodMaykrEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 public class BloodMaykrRender extends GeoEntityRenderer<BloodMaykrEntity> {
 

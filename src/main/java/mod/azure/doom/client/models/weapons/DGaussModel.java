@@ -8,16 +8,16 @@ import mod.azure.azurelib.model.GeoModel;
 public class DGaussModel extends GeoModel<DGauss> {
 	@Override
 	public ResourceLocation getModelResource(DGauss object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/doomed_gauss_cannon.geo.json");
+		return DoomMod.modResource("geo/doomed_gauss_cannon.geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(DGauss object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/item/doomed_gauss_cannon.png");
+		return DoomMod.modResource("textures/item/doomed_gauss_cannon.png");
 	}
 
 	@Override
 	public ResourceLocation getAnimationResource(DGauss animatable) {
-		return new ResourceLocation(DoomMod.MODID, "animations/doomed_gauss_cannon.animation.json");
+		return DoomMod.modResource("animations/doomed_gauss_cannon.animation.json");
 	}
 }

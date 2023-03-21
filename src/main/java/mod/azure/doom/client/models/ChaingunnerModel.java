@@ -1,15 +1,13 @@
 package mod.azure.doom.client.models;
 
+import mod.azure.azurelib.constant.DataTickets;
+import mod.azure.azurelib.core.animation.AnimationState;
+import mod.azure.azurelib.model.GeoModel;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierfodder.ChaingunnerEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import mod.azure.azurelib.constant.DataTickets;
-import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
-import mod.azure.azurelib.core.animation.AnimationState;
-import mod.azure.azurelib.model.GeoModel;
-import mod.azure.azurelib.model.data.EntityModelData;
 
 public class ChaingunnerModel extends GeoModel<ChaingunnerEntity> {
 
@@ -18,26 +16,25 @@ public class ChaingunnerModel extends GeoModel<ChaingunnerEntity> {
 
 	@Override
 	public ResourceLocation getModelResource(ChaingunnerEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/shotgunzombie.geo.json");
+		return DoomMod.modResource("geo/shotgunzombie.geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(ChaingunnerEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/entity/chaingunner.png");
+		return DoomMod.modResource("textures/entity/chaingunner.png");
 	}
 
 	@Override
 	public ResourceLocation getAnimationResource(ChaingunnerEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "animations/chaingunner.animation.json");
+		return DoomMod.modResource("animations/chaingunner.animation.json");
 	}
 
 	@Override
-	public void setCustomAnimations(ChaingunnerEntity animatable, long instanceId,
-			AnimationState<ChaingunnerEntity> animationState) {
+	public void setCustomAnimations(ChaingunnerEntity animatable, long instanceId, AnimationState<ChaingunnerEntity> animationState) {
 		super.setCustomAnimations(animatable, instanceId, animationState);
 
-		CoreGeoBone head = getAnimationProcessor().getBone("head");
-		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+		var head = getAnimationProcessor().getBone("head");
+		var entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
 
 		if (head != null) {
 			head.setRotX(entityData.headPitch() * Mth.DEG_TO_RAD);

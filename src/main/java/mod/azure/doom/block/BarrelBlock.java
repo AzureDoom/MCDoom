@@ -8,12 +8,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -42,8 +39,7 @@ public class BarrelBlock extends Block {
 
 	public BarrelBlock() {
 		super(FabricBlockSettings.of(Material.METAL).sounds(SoundType.METAL).nonOpaque());
-		this.registerDefaultState(
-				this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.valueOf(true)));
+		this.registerDefaultState(this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.valueOf(true)));
 	}
 
 	@Override
@@ -52,8 +48,7 @@ public class BarrelBlock extends Block {
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos,
-			boolean isMoving) {
+	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
 		explode(worldIn, pos, null);
 		worldIn.removeBlock(pos, false);
 	}
@@ -61,60 +56,52 @@ public class BarrelBlock extends Block {
 	@Override
 	public void wasExploded(Level worldIn, BlockPos pos, Explosion explosionIn) {
 		if (!worldIn.isClientSide) {
-			BarrelEntity tntentity = new BarrelEntity(worldIn, (double) pos.getX() + 0.5D, (double) pos.getY(),
-					(double) pos.getZ() + 0.5D, explosionIn.getIndirectSourceEntity());
+			var tntentity = new BarrelEntity(worldIn, (double) pos.getX() + 0.5D, (double) pos.getY(), (double) pos.getZ() + 0.5D, explosionIn.getIndirectSourceEntity());
 			worldIn.addFreshEntity(tntentity);
 		}
 	}
 
 	private static void explode(Level level, BlockPos blockPos, @Nullable LivingEntity livingEntity) {
-		if (level.isClientSide) {
+		if (level.isClientSide)
 			return;
-		}
-		BarrelEntity primedTnt = new BarrelEntity(level, (double) blockPos.getX() + 0.5, blockPos.getY(),
-				(double) blockPos.getZ() + 0.5, livingEntity);
+		var primedTnt = new BarrelEntity(level, (double) blockPos.getX() + 0.5, blockPos.getY(), (double) blockPos.getZ() + 0.5, livingEntity);
 		level.addFreshEntity(primedTnt);
 	}
 
 	@Override
 	public void playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
-		if (!worldIn.isClientSide() && !player.isCreative()) {
+		if (!worldIn.isClientSide() && !player.isCreative())
 			explode(worldIn, pos, null);
-		}
 
 		super.playerWillDestroy(worldIn, pos, state, player);
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn,
-			BlockHitResult hit) {
-		ItemStack itemstack = player.getItemInHand(handIn);
-		Item item = itemstack.getItem();
-		if (item != Items.FLINT_AND_STEEL && item != Items.FIRE_CHARGE) {
+	public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+		var itemstack = player.getItemInHand(handIn);
+		var item = itemstack.getItem();
+		if (item != Items.FLINT_AND_STEEL && item != Items.FIRE_CHARGE)
 			return super.use(state, worldIn, pos, player, handIn, hit);
-		} else {
+		else {
 			explode(worldIn, pos, player);
 			worldIn.setBlock(pos, Blocks.AIR.defaultBlockState(), 11);
-			if (!player.isCreative()) {
-				if (item == Items.FLINT_AND_STEEL) {
+			if (!player.isCreative())
+				if (item == Items.FLINT_AND_STEEL)
 					itemstack.hurtAndBreak(1, player, (player1) -> {
 						player1.broadcastBreakEvent(handIn);
 					});
-				} else {
+				else
 					itemstack.shrink(1);
-				}
-			}
 
 			return InteractionResult.sidedSuccess(worldIn.isClientSide);
 		}
 	}
 
 	@Override
-	public void onProjectileHit(Level level, BlockState blockState, BlockHitResult blockHitResult,
-			Projectile projectile) {
+	public void onProjectileHit(Level level, BlockState blockState, BlockHitResult blockHitResult, Projectile projectile) {
 		if (!level.isClientSide) {
-			BlockPos blockPos = blockHitResult.getBlockPos();
-			Entity entity = projectile.getOwner();
+			var blockPos = blockHitResult.getBlockPos();
+			var entity = projectile.getOwner();
 			explode(level, blockPos, entity instanceof LivingEntity ? (LivingEntity) entity : null);
 			level.removeBlock(blockPos, false);
 		}

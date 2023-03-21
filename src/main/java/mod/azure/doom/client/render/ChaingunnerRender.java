@@ -20,7 +20,7 @@ public class ChaingunnerRender extends GeoEntityRenderer<ChaingunnerEntity> {
 
 	public ChaingunnerRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new ChaingunnerModel());
-		this.addRenderLayer(new BlockAndItemGeoLayer<>(this) {
+		addRenderLayer(new BlockAndItemGeoLayer<>(this) {
 			@Nullable
 			@Override
 			protected ItemStack getStackForBone(GeoBone bone, ChaingunnerEntity animatable) {
@@ -31,23 +31,19 @@ public class ChaingunnerRender extends GeoEntityRenderer<ChaingunnerEntity> {
 			}
 
 			@Override
-			protected ItemTransforms.TransformType getTransformTypeForStack(GeoBone bone, ItemStack stack,
-					ChaingunnerEntity animatable) {
+			protected ItemTransforms.TransformType getTransformTypeForStack(GeoBone bone, ItemStack stack, ChaingunnerEntity animatable) {
 				return switch (bone.getName()) {
 				default -> ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND;
 				};
 			}
 
 			@Override
-			protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack,
-					ChaingunnerEntity animatable, MultiBufferSource bufferSource, float partialTick, int packedLight,
-					int packedOverlay) {
+			protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack, ChaingunnerEntity animatable, MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay) {
 				poseStack.mulPose(Axis.XP.rotationDegrees(-50));
 				poseStack.mulPose(Axis.YP.rotationDegrees(0));
 				poseStack.mulPose(Axis.ZP.rotationDegrees(0));
 				poseStack.translate(0.0D, 0.0D, -0.2D);
-				super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight,
-						packedOverlay);
+				super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
 			}
 		});
 	}

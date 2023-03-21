@@ -8,16 +8,16 @@ import mod.azure.azurelib.model.GeoModel;
 public class ChainsawModel extends GeoModel<ChainsawAnimated> {
 	@Override
 	public ResourceLocation getModelResource(ChainsawAnimated object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/chainsaw_eternal.geo.json");
+		return DoomMod.modResource("geo/chainsaw_eternal.geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(ChainsawAnimated object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/item/chainsaweternal.png");
+		return DoomMod.modResource("textures/item/chainsaweternal.png");
 	}
 
 	@Override
 	public ResourceLocation getAnimationResource(ChainsawAnimated animatable) {
-		return new ResourceLocation(DoomMod.MODID, "animations/chainsaw.animation.json");
+		return DoomMod.modResource("animations/chainsaw.animation.json");
 	}
 }

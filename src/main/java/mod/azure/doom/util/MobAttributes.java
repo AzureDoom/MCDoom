@@ -8,7 +8,6 @@ import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tierboss.MotherDemonEntity;
-import mod.azure.doom.entity.tierboss.SpiderMastermind2016Entity;
 import mod.azure.doom.entity.tierboss.SpiderMastermindEntity;
 import mod.azure.doom.entity.tierfodder.ChaingunnerEntity;
 import mod.azure.doom.entity.tierfodder.GargoyleEntity;
@@ -56,8 +55,7 @@ public class MobAttributes {
 		FabricDefaultAttributeRegistry.register(DoomEntities.CHAINGUNNER, ChaingunnerEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.CYBERDEMON, CyberdemonEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.HELLKNIGHT, HellknightEntity.createMobAttributes());
-		FabricDefaultAttributeRegistry.register(DoomEntities.HELLKNIGHT2016,
-				Hellknight2016Entity.createMobAttributes());
+		FabricDefaultAttributeRegistry.register(DoomEntities.HELLKNIGHT2016, Hellknight2016Entity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.ICONOFSIN, IconofsinEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.IMP, ImpEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.IMP_STONE, ImpStoneEntity.createMobAttributes());
@@ -69,15 +67,12 @@ public class MobAttributes {
 		FabricDefaultAttributeRegistry.register(DoomEntities.PAIN, PainEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.PINKY, PinkyEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.SPECTRE, SpectreEntity.createMobAttributes());
-		FabricDefaultAttributeRegistry.register(DoomEntities.POSSESSEDSCIENTIST,
-				PossessedScientistEntity.createMobAttributes());
-		FabricDefaultAttributeRegistry.register(DoomEntities.POSSESSEDSOLDIER,
-				PossessedSoldierEntity.createMobAttributes());
+		FabricDefaultAttributeRegistry.register(DoomEntities.POSSESSEDSCIENTIST, PossessedScientistEntity.createMobAttributes());
+		FabricDefaultAttributeRegistry.register(DoomEntities.POSSESSEDSOLDIER, PossessedSoldierEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.MECHAZOMBIE, MechaZombieEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.REVENANT, RevenantEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.SHOTGUNGUY, ShotgunguyEntity.createMobAttributes());
-		FabricDefaultAttributeRegistry.register(DoomEntities.SPIDERMASTERMIND,
-				SpiderMastermindEntity.createMobAttributes());
+		FabricDefaultAttributeRegistry.register(DoomEntities.SPIDERMASTERMIND, SpiderMastermindEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.UNWILLING, UnwillingEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.ZOMBIEMAN, ZombiemanEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.GORE_NEST, GoreNestEntity.createMobAttributes());
@@ -85,17 +80,14 @@ public class MobAttributes {
 		FabricDefaultAttributeRegistry.register(DoomEntities.CUEBALL, CueBallEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.PROWLER, ProwlerEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.DREADKNIGHT, Hellknight2016Entity.createMobAttributes());
-		FabricDefaultAttributeRegistry.register(DoomEntities.POSSESSEDWORKER,
-				PossessedScientistEntity.createMobAttributes());
+		FabricDefaultAttributeRegistry.register(DoomEntities.POSSESSEDWORKER, PossessedScientistEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.DOOMHUNTER, DoomHunterEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.WHIPLASH, WhiplashEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.BARON2016, BaronEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.ARMORBARON, ArmoredBaronEntity.createMobAttributes());
-		FabricDefaultAttributeRegistry.register(DoomEntities.ARACHNOTRONETERNAL,
-				ArachnotronEntity.createMobAttributes());
+		FabricDefaultAttributeRegistry.register(DoomEntities.ARACHNOTRONETERNAL, ArachnotronEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.MAYKRDRONE, MaykrDroneEntity.createMobAttributes());
-		FabricDefaultAttributeRegistry.register(DoomEntities.SPIDERMASTERMIND2016,
-				SpiderMastermind2016Entity.createMobAttributes());
+		FabricDefaultAttributeRegistry.register(DoomEntities.SPIDERMASTERMIND2016, SpiderMastermindEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.BLOODMAYKR, BloodMaykrEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.ARCHMAKER, ArchMakyrEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.FIREBARON, FireBaronEntity.createMobAttributes());

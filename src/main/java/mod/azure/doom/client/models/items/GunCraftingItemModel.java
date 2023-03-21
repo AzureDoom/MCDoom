@@ -8,16 +8,16 @@ import mod.azure.azurelib.model.GeoModel;
 public class GunCraftingItemModel extends GeoModel<GuntableBlockItem> {
 	@Override
 	public ResourceLocation getAnimationResource(GuntableBlockItem entity) {
-		return new ResourceLocation(DoomMod.MODID, "animations/gun_table.animation.json");
+		return DoomMod.modResource("animations/gun_table.animation.json");
 	}
 
 	@Override
 	public ResourceLocation getModelResource(GuntableBlockItem animatable) {
-		return new ResourceLocation(DoomMod.MODID, "geo/gun_table.geo.json");
+		return DoomMod.modResource("geo/gun_table.geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(GuntableBlockItem entity) {
-		return new ResourceLocation(DoomMod.MODID, "textures/block/gun_table.png");
+		return DoomMod.modResource("textures/block/gun_table.png");
 	}
 }

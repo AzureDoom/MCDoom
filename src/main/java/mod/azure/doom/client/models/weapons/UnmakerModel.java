@@ -8,16 +8,16 @@ import mod.azure.azurelib.model.GeoModel;
 public class UnmakerModel extends GeoModel<Unmaker> {
 	@Override
 	public ResourceLocation getModelResource(Unmaker object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/unmaykr.geo.json");
+		return DoomMod.modResource("geo/unmaykr.geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(Unmaker object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/item/unmaker.png");
+		return DoomMod.modResource("textures/item/unmaker.png");
 	}
 
 	@Override
 	public ResourceLocation getAnimationResource(Unmaker animatable) {
-		return new ResourceLocation(DoomMod.MODID, "animations/unmaykr.animation.json");
+		return DoomMod.modResource("animations/unmaykr.animation.json");
 	}
 }

@@ -8,16 +8,16 @@ import mod.azure.azurelib.model.GeoModel;
 public class BFGModel extends GeoModel<BFG> {
 	@Override
 	public ResourceLocation getModelResource(BFG object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/bfgeternal.geo.json");
+		return DoomMod.modResource("geo/bfgeternal.geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(BFG object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/item/bfgeternal.png");
+		return DoomMod.modResource("textures/item/bfgeternal.png");
 	}
 
 	@Override
 	public ResourceLocation getAnimationResource(BFG animatable) {
-		return new ResourceLocation(DoomMod.MODID, "animations/bfg.animation.json");
+		return DoomMod.modResource("animations/bfg.animation.json");
 	}
 }

@@ -23,11 +23,9 @@ public class DoomGunInventory implements Container {
 
 	@Override
 	public boolean isEmpty() {
-		for (ItemStack stack : stacks) {
-			if (!stack.isEmpty()) {
+		for (ItemStack stack : stacks)
+			if (!stack.isEmpty())
 				return false;
-			}
-		}
 		return true;
 	}
 
@@ -38,10 +36,9 @@ public class DoomGunInventory implements Container {
 
 	@Override
 	public ItemStack removeItem(int slot, int amount) {
-		ItemStack itemStack = ContainerHelper.removeItem(this.stacks, slot, amount);
-		if (!itemStack.isEmpty() && slot != 5) {
+		var itemStack = ContainerHelper.removeItem(this.stacks, slot, amount);
+		if (!itemStack.isEmpty() && slot != 5)
 			this.container.onContentChanged(this);
-		}
 		return itemStack;
 	}
 

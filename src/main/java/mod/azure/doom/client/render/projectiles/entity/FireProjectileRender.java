@@ -14,8 +14,7 @@ import net.minecraft.util.Mth;
 
 public class FireProjectileRender extends EntityRenderer<FireProjectile> {
 
-	private static final ResourceLocation ARGENT_BOLT_TEXTURE = new ResourceLocation(DoomMod.MODID,
-			"textures/entity/projectiles/argent_bolt.png");
+	private static final ResourceLocation ARGENT_BOLT_TEXTURE = DoomMod.modResource("textures/entity/projectiles/argent_bolt.png");
 
 	public FireProjectileRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn);
@@ -31,13 +30,10 @@ public class FireProjectileRender extends EntityRenderer<FireProjectile> {
 	}
 
 	@Override
-	public void render(FireProjectile persistentProjectileEntity, float f, float g, PoseStack matrixStack,
-			MultiBufferSource vertexConsumerProvider, int i) {
+	public void render(FireProjectile persistentProjectileEntity, float f, float g, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i) {
 		matrixStack.pushPose();
-		matrixStack.mulPose(Axis.YP.rotationDegrees(
-				Mth.lerp(g, persistentProjectileEntity.yRotO, persistentProjectileEntity.getYRot()) - 90.0F));
-		matrixStack.mulPose(Axis.ZP.rotationDegrees(
-				Mth.lerp(g, persistentProjectileEntity.xRotO, persistentProjectileEntity.getXRot())));
+		matrixStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(g, persistentProjectileEntity.yRotO, persistentProjectileEntity.getYRot()) - 90.0F));
+		matrixStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(g, persistentProjectileEntity.xRotO, persistentProjectileEntity.getXRot())));
 
 		matrixStack.mulPose(Axis.XP.rotationDegrees(45.0F));
 		matrixStack.scale(0.05625F, 0.05625F, 0.05625F);

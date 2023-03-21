@@ -8,16 +8,16 @@ import mod.azure.azurelib.model.GeoModel;
 public class PistolModel extends GeoModel<PistolItem> {
 	@Override
 	public ResourceLocation getModelResource(PistolItem object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/pistol.geo.json");
+		return DoomMod.modResource("geo/pistol.geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(PistolItem object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/item/pistol.png");
+		return DoomMod.modResource("textures/item/pistol.png");
 	}
 
 	@Override
 	public ResourceLocation getAnimationResource(PistolItem animatable) {
-		return new ResourceLocation(DoomMod.MODID, "animations/pistol.animation.json");
+		return DoomMod.modResource("animations/pistol.animation.json");
 	}
 }

@@ -56,7 +56,7 @@ public class DoomProjectiles {
 	public static EntityType<MeatHookEntity> MEATHOOOK_ENTITY;
 
 	private static <T extends Entity> EntityType<T> projectile(EntityType.EntityFactory<T> factory, String id, float height, float width) {
-		var type = FabricEntityTypeBuilder.<T>create(MobCategory.MISC, factory).dimensions(new EntityDimensions(height, width, true)).disableSummon().spawnableFarFromPlayer().trackRangeBlocks(90).trackedUpdateRate(1).build();
+		final var type = FabricEntityTypeBuilder.<T>create(MobCategory.MISC, factory).dimensions(new EntityDimensions(height, width, true)).disableSummon().spawnableFarFromPlayer().trackRangeBlocks(90).trackedUpdateRate(1).build();
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, DoomMod.modResource(id), type);
 		ENTITY_TYPES.add(type);
 		ENTITY_THAT_USE_ITEM_RENDERS.add(type);

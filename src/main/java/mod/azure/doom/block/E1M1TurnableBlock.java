@@ -18,14 +18,13 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 
 public class E1M1TurnableBlock extends Block {
-	
+
 	public static final DirectionProperty direction = HorizontalDirectionalBlock.FACING;
 	public static final BooleanProperty light = RedstoneTorchBlock.LIT;
 
 	public E1M1TurnableBlock() {
 		super(FabricBlockSettings.of(Material.METAL).sounds(SoundType.BONE_BLOCK));
-		this.registerDefaultState(
-				this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.valueOf(true)));
+		this.registerDefaultState(this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.valueOf(true)));
 	}
 
 	@Override

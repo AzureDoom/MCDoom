@@ -1,26 +1,26 @@
 package mod.azure.doom.client.models;
 
+import mod.azure.azurelib.model.GeoModel;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierambient.GoreNestEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import mod.azure.azurelib.model.GeoModel;
 
 public class GoreNestModel extends GeoModel<GoreNestEntity> {
 
 	@Override
 	public ResourceLocation getModelResource(GoreNestEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/gorenest.geo.json");
+		return DoomMod.modResource("geo/gorenest.geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(GoreNestEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/entity/gore_nest.png");
+		return DoomMod.modResource("textures/entity/gore_nest.png");
 	}
 
 	@Override
 	public ResourceLocation getAnimationResource(GoreNestEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "animations/gorenest_animation.json");
+		return DoomMod.modResource("animations/gorenest_animation.json");
 	}
 
 	@Override

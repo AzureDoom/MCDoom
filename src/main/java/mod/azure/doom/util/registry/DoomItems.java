@@ -309,8 +309,8 @@ public class DoomItems {
 	public static Item[] ITEMS = { CHAINSAW_ETERNAL, CRUCIBLESWORD, ROCKETLAUNCHER, AXE_OPEN, HEAVYCANNON, SSG, PLASMAGUN, CHAINSAW64, CHAINSAW, CHAINGUN, BALLISTA, UNMAYKR, BFG_ETERNAL, BFG, SG, PISTOL };
 
 	public static Map<Item, Item> getItemMap() {
-		Map<Item, Item> vanillaItemMap = new HashMap<>();
-		for (Item i : DoomItems.ITEMS) {
+		final Map<Item, Item> vanillaItemMap = new HashMap<>();
+		for (final Item i : DoomItems.ITEMS) {
 			vanillaItemMap.put(BuiltInRegistries.ITEM.get(DoomMod.modResource(BuiltInRegistries.ITEM.getKey(i).getPath())), i);
 		}
 		return vanillaItemMap;

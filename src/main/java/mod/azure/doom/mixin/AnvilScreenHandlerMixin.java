@@ -23,27 +23,19 @@ import net.minecraft.world.item.enchantment.Enchantments;
 @Mixin(value = AnvilMenu.class)
 public abstract class AnvilScreenHandlerMixin extends ItemCombinerMenu {
 
-	public AnvilScreenHandlerMixin(MenuType<?> type, int syncId, Inventory playerInventory,
-			ContainerLevelAccess context) {
+	public AnvilScreenHandlerMixin(MenuType<?> type, int syncId, Inventory playerInventory, ContainerLevelAccess context) {
 		super(type, syncId, playerInventory, context);
 	}
 
 	@Inject(method = "createResult", at = @At(value = "RETURN"))
 	private void updateRuinedRepair(CallbackInfo ci) {
-		ItemStack leftStack = this.inputSlots.getItem(0).copy();
-		ItemStack rightStack = this.inputSlots.getItem(1).copy();
-		if ((leftStack.getItem() instanceof DoomBaseItem || leftStack.getItem() instanceof AxeMarauderItem
-				|| leftStack.getItem() instanceof DarkLordCrucibleItem
-				|| leftStack.getItem() instanceof SwordCrucibleItem || leftStack.getItem() instanceof ChainsawAnimated
-				|| leftStack.getItem() instanceof Chainsaw)
-				&& (EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.MENDING)
-						|| EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.UNBREAKING)
-						|| EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.INFINITY_ARROWS)
-						|| EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.FLAMING_ARROWS)
-						|| EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.PUNCH_ARROWS))) {
-			ItemStack repaired = ItemStack.EMPTY;
-			this.resultSlots.setItem(0, repaired);
-			this.broadcastChanges();
+		final var leftStack = inputSlots.getItem(0).copy();
+		final var rightStack = inputSlots.getItem(1).copy();
+		if ((leftStack.getItem() instanceof DoomBaseItem || leftStack.getItem() instanceof AxeMarauderItem || leftStack.getItem() instanceof DarkLordCrucibleItem || leftStack.getItem() instanceof SwordCrucibleItem || leftStack.getItem() instanceof ChainsawAnimated || leftStack.getItem() instanceof Chainsaw)
+				&& (EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.MENDING) || EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.UNBREAKING) || EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.INFINITY_ARROWS) || EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.FLAMING_ARROWS) || EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.PUNCH_ARROWS))) {
+			final var repaired = ItemStack.EMPTY;
+			resultSlots.setItem(0, repaired);
+			broadcastChanges();
 		}
 	}
 }

@@ -1,25 +1,25 @@
 package mod.azure.doom.client.models.projectiles;
 
+import mod.azure.azurelib.model.GeoModel;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.projectiles.EnergyCellEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import mod.azure.azurelib.model.GeoModel;
 
 public class EnergyModel extends GeoModel<EnergyCellEntity> {
 	@Override
 	public ResourceLocation getModelResource(EnergyCellEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/smallprojectile.geo.json");
+		return DoomMod.modResource("geo/smallprojectile.geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(EnergyCellEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/entity/projectiles/plasma_ball.png");
+		return DoomMod.modResource("textures/entity/projectiles/plasma_ball.png");
 	}
 
 	@Override
 	public ResourceLocation getAnimationResource(EnergyCellEntity animatable) {
-		return new ResourceLocation(DoomMod.MODID, "animations/smallprojectile.animation.json");
+		return DoomMod.modResource("animations/smallprojectile.animation.json");
 	}
 
 	@Override

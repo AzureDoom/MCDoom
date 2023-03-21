@@ -11,8 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ArgentBoltRender extends ArrowRenderer<ArgentBoltEntity> {
 
-	private static final ResourceLocation ARGENT_BOLT_TEXTURE = new ResourceLocation(DoomMod.MODID,
-			"textures/entity/projectiles/argent_bolt.png");
+	private static final ResourceLocation ARGENT_BOLT_TEXTURE = DoomMod.modResource("textures/entity/projectiles/argent_bolt.png");
 
 	public ArgentBoltRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn);
@@ -24,8 +23,7 @@ public class ArgentBoltRender extends ArrowRenderer<ArgentBoltEntity> {
 	}
 
 	@Override
-	public void render(ArgentBoltEntity persistentProjectileEntity, float f, float g, PoseStack matrixStack,
-			MultiBufferSource vertexConsumerProvider, int i) {
+	public void render(ArgentBoltEntity persistentProjectileEntity, float f, float g, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i) {
 		super.render(persistentProjectileEntity, f, g, matrixStack, vertexConsumerProvider, i);
 		matrixStack.pushPose();
 		matrixStack.scale(0, 0, 0);

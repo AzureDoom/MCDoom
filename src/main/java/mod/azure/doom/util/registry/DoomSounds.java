@@ -118,7 +118,7 @@ public class DoomSounds {
 	public static SoundEvent MOTHER_HURT;
 
 	static SoundEvent of(String id) {
-		var sound = SoundEvent.createVariableRangeEvent(DoomMod.modResource(id));
+		final var sound = SoundEvent.createVariableRangeEvent(DoomMod.modResource(id));
 		Registry.register(BuiltInRegistries.SOUND_EVENT, DoomMod.modResource(id), sound);
 		return sound;
 	}

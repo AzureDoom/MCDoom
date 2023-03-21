@@ -1,44 +1,39 @@
 package mod.azure.doom.client.models;
 
+import mod.azure.azurelib.constant.DataTickets;
+import mod.azure.azurelib.core.animation.AnimationState;
+import mod.azure.azurelib.model.GeoModel;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import mod.azure.azurelib.constant.DataTickets;
-import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
-import mod.azure.azurelib.core.animation.AnimationState;
-import mod.azure.azurelib.model.GeoModel;
-import mod.azure.azurelib.model.data.EntityModelData;
 
 public class GladiatorModel extends GeoModel<GladiatorEntity> {
 
 	@Override
 	public ResourceLocation getModelResource(GladiatorEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/gladiator.geo.json");
+		return DoomMod.modResource("geo/gladiator.geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(GladiatorEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/entity/" + (object.getTextureState() == 1 ? "gladiator_1"
-				: object.getTextureState() == 2 ? "gladiator_2" : "gladiator") + ".png");
+		return DoomMod.modResource("textures/entity/" + (object.getTextureState() == 1 ? "gladiator_1" : object.getTextureState() == 2 ? "gladiator_2" : "gladiator") + ".png");
 	}
 
 	@Override
 	public ResourceLocation getAnimationResource(GladiatorEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "animations/gladiator.animation.json");
+		return DoomMod.modResource("animations/gladiator.animation.json");
 	}
 
 	@Override
-	public void setCustomAnimations(GladiatorEntity animatable, long instanceId,
-			AnimationState<GladiatorEntity> animationState) {
+	public void setCustomAnimations(GladiatorEntity animatable, long instanceId, AnimationState<GladiatorEntity> animationState) {
 		super.setCustomAnimations(animatable, instanceId, animationState);
 
-		CoreGeoBone head = getAnimationProcessor().getBone("neck");
-		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+		var head = getAnimationProcessor().getBone("neck");
+		var entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
 
-		if (head != null) {
+		if (head != null)
 			head.setRotX(entityData.headPitch() * ((float) Math.PI / 340F));
-		}
 	}
 
 	@Override

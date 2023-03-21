@@ -24,17 +24,17 @@ public class TotemBlockItem extends DoomBlockItem {
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				if (this.renderer == null)
-					this.renderer = new TotemItemRender();
+				if (renderer == null)
+					renderer = new TotemItemRender();
 
-				return this.renderer;
+				return renderer;
 			}
 		});
 	}
 
 	@Override
 	public Supplier<Object> getRenderProvider() {
-		return this.renderProvider;
+		return renderProvider;
 	}
 
 }

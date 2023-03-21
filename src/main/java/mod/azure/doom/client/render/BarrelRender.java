@@ -12,17 +12,15 @@ import net.minecraft.resources.ResourceLocation;
 
 public class BarrelRender extends EntityRenderer<BarrelEntity> {
 
-	protected static final ResourceLocation TEXTURE = new ResourceLocation(DoomMod.MODID,
-			"textures/blocks/barrel_explode.png");
+	protected static final ResourceLocation TEXTURE = new ResourceLocation(DoomMod.MODID, "textures/blocks/barrel_explode.png");
 
 	public BarrelRender(EntityRendererProvider.Context context) {
 		super(context);
-		this.shadowRadius = 0.5F;
+		shadowRadius = 0.5F;
 	}
 
 	@Override
-	public void render(BarrelEntity entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn,
-			MultiBufferSource bufferIn, int packedLightIn) {
+	public void render(BarrelEntity entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
 		matrixStackIn.pushPose();
 		matrixStackIn.translate(0.0D, 0.5D, 0.0D);
 		matrixStackIn.mulPose(Axis.YP.rotationDegrees(-90.0F));

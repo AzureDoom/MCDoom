@@ -30,7 +30,6 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -41,8 +40,7 @@ public class ArgentBoltEntity extends AbstractArrow {
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
-	public static final EntityDataAccessor<Boolean> PARTICLE = SynchedEntityData.defineId(ArgentBoltEntity.class,
-			EntityDataSerializers.BOOLEAN);
+	public static final EntityDataAccessor<Boolean> PARTICLE = SynchedEntityData.defineId(ArgentBoltEntity.class, EntityDataSerializers.BOOLEAN);
 	private LivingEntity shooter;
 	private BlockPos lightBlockPos = null;
 	private int idleTicks = 0;
@@ -66,9 +64,8 @@ public class ArgentBoltEntity extends AbstractArrow {
 		this(type, owner.getX(), owner.getEyeY() - 0.10000000149011612D, owner.getZ(), world);
 		this.setOwner(owner);
 		this.shooter = owner;
-		if (owner instanceof Player) {
+		if (owner instanceof Player)
 			this.pickup = AbstractArrow.Pickup.DISALLOWED;
-		}
 	}
 
 	@Override
@@ -102,9 +99,8 @@ public class ArgentBoltEntity extends AbstractArrow {
 	@Override
 	protected void tickDespawn() {
 		++this.ticksInAir;
-		if (this.tickCount >= 40) {
+		if (this.tickCount >= 40)
 			this.remove(RemovalReason.KILLED);
-		}
 	}
 
 	@Override
@@ -127,7 +123,7 @@ public class ArgentBoltEntity extends AbstractArrow {
 
 	@Override
 	public void tick() {
-		int idleOpt = 100;
+		var idleOpt = 100;
 		if (getDeltaMovement().lengthSqr() < 0.01)
 			idleTicks++;
 		else
@@ -135,15 +131,12 @@ public class ArgentBoltEntity extends AbstractArrow {
 		if (idleOpt <= 0 || idleTicks < idleOpt)
 			super.tick();
 		++this.ticksInAir;
-		if (this.ticksInAir >= 80) {
+		if (this.ticksInAir >= 80)
 			this.remove(Entity.RemovalReason.DISCARDED);
-		}
-		boolean isInsideWaterBlock = level.isWaterAt(blockPosition());
+		var isInsideWaterBlock = level.isWaterAt(blockPosition());
 		spawnLightSource(isInsideWaterBlock);
-		if (this.level.isClientSide()) {
-			this.level.addParticle(this.useParticle() ? ParticleTypes.ANGRY_VILLAGER : ParticleTypes.FLASH, true,
-					this.getX(), this.getY(), this.getZ(), 0, 0, 0);
-		}
+		if (this.level.isClientSide())
+			this.level.addParticle(this.useParticle() ? ParticleTypes.ANGRY_VILLAGER : ParticleTypes.FLASH, true, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
 	}
 
 	private void spawnLightSource(boolean isInWaterBlock) {
@@ -153,19 +146,17 @@ public class ArgentBoltEntity extends AbstractArrow {
 				return;
 			level.setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
 		} else if (checkDistance(lightBlockPos, blockPosition(), 2)) {
-			BlockEntity blockEntity = level.getBlockEntity(lightBlockPos);
-			if (blockEntity instanceof TickingLightEntity) {
+			var blockEntity = level.getBlockEntity(lightBlockPos);
+			if (blockEntity instanceof TickingLightEntity)
 				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
-			} else
+			else
 				lightBlockPos = null;
 		} else
 			lightBlockPos = null;
 	}
 
 	private boolean checkDistance(BlockPos blockPosA, BlockPos blockPosB, int distance) {
-		return Math.abs(blockPosA.getX() - blockPosB.getX()) <= distance
-				&& Math.abs(blockPosA.getY() - blockPosB.getY()) <= distance
-				&& Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
+		return Math.abs(blockPosA.getX() - blockPosB.getX()) <= distance && Math.abs(blockPosA.getY() - blockPosB.getY()) <= distance && Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
 	}
 
 	private BlockPos findFreeSpace(Level world, BlockPos blockPos, int maxDistance) {
@@ -174,13 +165,13 @@ public class ArgentBoltEntity extends AbstractArrow {
 
 		var offsets = new int[maxDistance * 2 + 1];
 		offsets[0] = 0;
-		for (int i = 2; i <= maxDistance * 2; i += 2) {
+		for (var i = 2; i <= maxDistance * 2; i += 2) {
 			offsets[i - 1] = i / 2;
 			offsets[i] = -i / 2;
 		}
-		for (int x : offsets)
-			for (int y : offsets)
-				for (int z : offsets) {
+		for (var x : offsets)
+			for (var y : offsets)
+				for (var z : offsets) {
 					var offsetPos = blockPos.offset(x, y, z);
 					var state = world.getBlockState(offsetPos);
 					if (state.isAir() || state.getBlock().equals(AzureLibMod.TICKING_LIGHT_BLOCK))
@@ -215,15 +206,13 @@ public class ArgentBoltEntity extends AbstractArrow {
 	@Override
 	public void remove(RemovalReason reason) {
 		if (this.useParticle()) {
-			AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(),
-					this.getZ());
+			AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
 			areaeffectcloudentity.setParticle(ParticleTypes.LAVA);
 			areaeffectcloudentity.setRadius(6);
 			areaeffectcloudentity.setDuration(1);
 			areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
 			this.level.addFreshEntity(areaeffectcloudentity);
-			level.playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE,
-					SoundSource.PLAYERS, 1.0F, 1.5F);
+			level.playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0F, 1.5F);
 		}
 		super.remove(reason);
 	}
@@ -240,8 +229,7 @@ public class ArgentBoltEntity extends AbstractArrow {
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		Entity entity = entityHitResult.getEntity();
-		if (entityHitResult.getType() != HitResult.Type.ENTITY
-				|| !((EntityHitResult) entityHitResult).getEntity().is(entity)) {
+		if (entityHitResult.getType() != HitResult.Type.ENTITY || !((EntityHitResult) entityHitResult).getEntity().is(entity)) {
 			if (!this.level.isClientSide) {
 				this.remove(RemovalReason.KILLED);
 			}
@@ -262,15 +250,12 @@ public class ArgentBoltEntity extends AbstractArrow {
 				if (!this.level.isClientSide && entity1 instanceof LivingEntity) {
 					EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
 					EnchantmentHelper.doPostDamageEffects((LivingEntity) entity1, livingentity);
-					this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.5F,
-							Level.ExplosionInteraction.NONE);
+					this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.5F, Level.ExplosionInteraction.NONE);
 					this.remove(RemovalReason.KILLED);
 				}
 				this.doPostHurtEffects(livingentity);
-				if (entity1 != null && livingentity != entity1 && livingentity instanceof Player
-						&& entity1 instanceof ServerPlayer && !this.isSilent()) {
-					((ServerPlayer) entity1).connection
-							.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
+				if (entity1 != null && livingentity != entity1 && livingentity instanceof Player && entity1 instanceof ServerPlayer && !this.isSilent()) {
+					((ServerPlayer) entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
 				}
 			}
 		} else {

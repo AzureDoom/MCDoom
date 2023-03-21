@@ -1,9 +1,9 @@
 package mod.azure.doom.client.render;
 
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mod.azure.doom.client.models.TurretModel;
 import mod.azure.doom.entity.tierambient.TurretEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 public class TurretRender extends GeoEntityRenderer<TurretEntity> {
 

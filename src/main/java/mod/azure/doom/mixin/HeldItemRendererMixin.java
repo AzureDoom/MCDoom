@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import mod.azure.doom.item.weapons.DoomBaseItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.world.item.ItemStack;
 
@@ -29,23 +28,21 @@ public abstract class HeldItemRendererMixin {
 	private ItemStack offHandItem;
 
 	public HeldItemRendererMixin(Minecraft client) {
-		this.minecraft = client;
+		minecraft = client;
 	}
 
 	@Inject(method = "tick", at = @At("TAIL"))
 	public void fguns$cancelAnimation(CallbackInfo ci) {
-		LocalPlayer clientPlayerEntity = this.minecraft.player;
-		ItemStack itemStack = clientPlayerEntity.getMainHandItem();
-		ItemStack itemStack2 = clientPlayerEntity.getOffhandItem();
-		if ((this.mainHandItem.getItem() instanceof DoomBaseItem) && (itemStack.getItem() instanceof DoomBaseItem)
-				&& ItemStack.isSame(mainHandItem, itemStack)) {
-			this.mainHandHeight = 1;
-			this.mainHandItem = itemStack;
+		final var clientPlayerEntity = minecraft.player;
+		final var itemStack = clientPlayerEntity.getMainHandItem();
+		final var itemStack2 = clientPlayerEntity.getOffhandItem();
+		if (mainHandItem.getItem() instanceof DoomBaseItem && itemStack.getItem() instanceof DoomBaseItem && ItemStack.isSame(mainHandItem, itemStack)) {
+			mainHandHeight = 1;
+			mainHandItem = itemStack;
 		}
-		if ((this.offHandItem.getItem() instanceof DoomBaseItem) && (itemStack2.getItem() instanceof DoomBaseItem)
-				&& ItemStack.isSame(offHandItem, itemStack2)) {
-			this.offHandHeight = 1;
-			this.offHandItem = itemStack2;
+		if (offHandItem.getItem() instanceof DoomBaseItem && itemStack2.getItem() instanceof DoomBaseItem && ItemStack.isSame(offHandItem, itemStack2)) {
+			offHandHeight = 1;
+			offHandItem = itemStack2;
 		}
 	}
 }

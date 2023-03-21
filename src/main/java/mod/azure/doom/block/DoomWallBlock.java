@@ -2,7 +2,6 @@ package mod.azure.doom.block;
 
 import org.jetbrains.annotations.Nullable;
 
-import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tileentity.IconBlockEntity;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomEntities;
@@ -60,47 +59,41 @@ public class DoomWallBlock extends BaseEntityBlock {
 	@Override
 	public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 		super.setPlacedBy(worldIn, pos, state, placer, stack);
-		BlockEntity tileentity = worldIn.getBlockEntity(pos);
-		if (tileentity instanceof IconBlockEntity) {
+		var tileentity = worldIn.getBlockEntity(pos);
+		if (tileentity instanceof IconBlockEntity)
 			checkIconSpawn(worldIn, pos, (IconBlockEntity) tileentity);
-		}
 	}
 
 	public static void checkIconSpawn(Level worldIn, BlockPos pos, IconBlockEntity tileEntityIn) {
 		if (!worldIn.isClientSide) {
-			Block block = tileEntityIn.getBlockState().getBlock();
-			boolean flag = block == DoomBlocks.ICON_WALL1 || block == DoomBlocks.ICON_WALL2 || block == DoomBlocks.ICON_WALL3 || block == DoomBlocks.ICON_WALL4 || block == DoomBlocks.ICON_WALL5 || block == DoomBlocks.ICON_WALL6 || block == DoomBlocks.ICON_WALL7 || block == DoomBlocks.ICON_WALL8 || block == DoomBlocks.ICON_WALL9 || block == DoomBlocks.ICON_WALL10 || block == DoomBlocks.ICON_WALL11 || block == DoomBlocks.ICON_WALL12 || block == DoomBlocks.ICON_WALL13
-					|| block == DoomBlocks.ICON_WALL14 || block == DoomBlocks.ICON_WALL15 || block == DoomBlocks.ICON_WALL16;
+			var block = tileEntityIn.getBlockState().getBlock();
+			var flag = block == DoomBlocks.ICON_WALL1 || block == DoomBlocks.ICON_WALL2 || block == DoomBlocks.ICON_WALL3 || block == DoomBlocks.ICON_WALL4 || block == DoomBlocks.ICON_WALL5 || block == DoomBlocks.ICON_WALL6 || block == DoomBlocks.ICON_WALL7 || block == DoomBlocks.ICON_WALL8 || block == DoomBlocks.ICON_WALL9 || block == DoomBlocks.ICON_WALL10 || block == DoomBlocks.ICON_WALL11 || block == DoomBlocks.ICON_WALL12 || block == DoomBlocks.ICON_WALL13 || block == DoomBlocks.ICON_WALL14
+					|| block == DoomBlocks.ICON_WALL15 || block == DoomBlocks.ICON_WALL16;
 			if (flag && pos.getY() >= 3 && worldIn.getDifficulty() != Difficulty.PEACEFUL) {
-				BlockPattern blockpattern = getOrCreateIconFull();
-				BlockPattern.BlockPatternMatch blockpattern$patternhelper = blockpattern.find(worldIn, pos);
+				var blockpattern = getOrCreateIconFull();
+				var blockpattern$patternhelper = blockpattern.find(worldIn, pos);
 				if (blockpattern$patternhelper != null) {
-					for (int i = 0; i < blockpattern.getWidth(); ++i) {
-						for (int j = 0; j < blockpattern.getHeight(); ++j) {
-							BlockInWorld cachedblockinfo = blockpattern$patternhelper.getBlock(i, j, 0);
+					for (var i = 0; i < blockpattern.getWidth(); ++i)
+						for (var j = 0; j < blockpattern.getHeight(); ++j) {
+							var cachedblockinfo = blockpattern$patternhelper.getBlock(i, j, 0);
 							worldIn.setBlock(cachedblockinfo.getPos(), Blocks.AIR.defaultBlockState(), 2);
 							worldIn.levelEvent(2001, cachedblockinfo.getPos(), Block.getId(cachedblockinfo.getState()));
 						}
-					}
 
-					IconofsinEntity witherentity = DoomEntities.ICONOFSIN.create(worldIn);
-					BlockPos blockpos = blockpattern$patternhelper.getBlock(1, 2, 0).getPos();
+					var witherentity = DoomEntities.ICONOFSIN.create(worldIn);
+					var blockpos = blockpattern$patternhelper.getBlock(1, 2, 0).getPos();
 					witherentity.moveTo((double) blockpos.getX() + 0.5D, (double) blockpos.getY() + 0.55D, (double) blockpos.getZ() + 0.5D, blockpattern$patternhelper.getForwards().getAxis() == Direction.Axis.X ? 0.0F : 90.0F, 0.0F);
 					witherentity.yBodyRot = blockpattern$patternhelper.getForwards().getAxis() == Direction.Axis.X ? 0.0F : 90.0F;
 					witherentity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 4));
 					witherentity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 200, 4));
 					worldIn.addFreshEntity(witherentity);
 
-					for (ServerPlayer serverplayerentity : worldIn.getEntitiesOfClass(ServerPlayer.class, witherentity.getBoundingBox().inflate(50.0D))) {
+					for (ServerPlayer serverplayerentity : worldIn.getEntitiesOfClass(ServerPlayer.class, witherentity.getBoundingBox().inflate(50.0D)))
 						CriteriaTriggers.SUMMONED_ENTITY.trigger(serverplayerentity, witherentity);
-					}
 
-					for (int k = 0; k < blockpattern.getWidth(); ++k) {
-						for (int l = 0; l < blockpattern.getHeight(); ++l) {
+					for (var k = 0; k < blockpattern.getWidth(); ++k)
+						for (var l = 0; l < blockpattern.getHeight(); ++l)
 							worldIn.updateNeighborsAt(blockpattern$patternhelper.getBlock(k, l, 0).getPos(), Blocks.AIR);
-						}
-					}
-
 				}
 			}
 		}

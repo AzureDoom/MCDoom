@@ -1,25 +1,25 @@
 package mod.azure.doom.client.models.projectiles;
 
+import mod.azure.azurelib.model.GeoModel;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.projectiles.GrenadeEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import mod.azure.azurelib.model.GeoModel;
 
 public class GrenadeModel extends GeoModel<GrenadeEntity> {
 	@Override
 	public ResourceLocation getModelResource(GrenadeEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/doomed_grenade.geo.json");
+		return DoomMod.modResource("geo/doomed_grenade.geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(GrenadeEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/item/doomed_grenade.png");
+		return DoomMod.modResource("textures/item/doomed_grenade.png");
 	}
 
 	@Override
 	public ResourceLocation getAnimationResource(GrenadeEntity animatable) {
-		return new ResourceLocation(DoomMod.MODID, "animations/doomed_grenade.animation.json");
+		return DoomMod.modResource("animations/doomed_grenade.animation.json");
 	}
 
 	@Override

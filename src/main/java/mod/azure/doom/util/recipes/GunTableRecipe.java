@@ -3,7 +3,6 @@ package mod.azure.doom.util.recipes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +20,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -45,14 +43,13 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 
 	@Override
 	public boolean matches(DoomGunInventory inv, Level world) {
-		for (int i = 0; i < 5; i++) {
-			ItemStack slotStack = inv.getItem(i);
-			Pair<Ingredient, Integer> pair = ingredients[i];
-			Ingredient ingredient = pair.getKey();
-			int count = pair.getRight();
-			if (slotStack.getCount() < count || !(ingredient.test(slotStack))) {
+		for (var i = 0; i < 5; i++) {
+			final var slotStack = inv.getItem(i);
+			final var pair = ingredients[i];
+			final var ingredient = pair.getKey();
+			final var count = pair.getRight();
+			if (slotStack.getCount() < count || !ingredient.test(slotStack))
 				return false;
-			}
 		}
 		return true;
 	}
@@ -67,7 +64,7 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 
 	@Override
 	public ItemStack assemble(DoomGunInventory inv) {
-		return this.getResultItem().copy();
+		return getResultItem().copy();
 	}
 
 	@Override
@@ -93,7 +90,7 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 	public static class Type implements RecipeType<GunTableRecipe> {
 		private Type() {
 		}
-		
+
 		public static final Type INSTANCE = new Type();
 		public static final String ID = "gun_table";
 	}
@@ -105,76 +102,71 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 
 	@Override
 	public int compareTo(@NotNull GunTableRecipe o) {
-		Item outputThis = getResultItem().getItem();
-		Item outputOther = o.getResultItem().getItem();
+		final var outputThis = getResultItem().getItem();
+		final var outputOther = o.getResultItem().getItem();
 		return BuiltInRegistries.ITEM.getKey(outputThis).compareTo(BuiltInRegistries.ITEM.getKey(outputOther));
 	}
-	
+
 	public static class Serializer implements RecipeSerializer<GunTableRecipe> {
 
 		@Override
 		public GunTableRecipe fromJson(ResourceLocation identifier, JsonObject jsonObject) {
-			String pattern = GsonHelper.getAsString(jsonObject, "pattern");
-			Map<String, Pair<Ingredient, Integer>> map = getComponents(GsonHelper.getAsJsonObject(jsonObject, "key"));
+			final var pattern = GsonHelper.getAsString(jsonObject, "pattern");
+			final var map = getComponents(GsonHelper.getAsJsonObject(jsonObject, "key"));
 
-			List<Pair<Ingredient, Integer>> pairList = getIngredients(pattern, map, pattern.length());
-			if (pairList.isEmpty()) {
+			final var pairList = getIngredients(pattern, map, pattern.length());
+			if (pairList.isEmpty())
 				throw new JsonParseException("No ingredients for gun table recipe");
-			} else if (pairList.size() > 5) {
+			else if (pairList.size() > 5)
 				throw new JsonParseException("Too many ingredients for gun table recipe");
-			} else {
-				ItemStack itemStack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(jsonObject, "result"));
+			else {
+				final var itemStack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(jsonObject, "result"));
 				return new GunTableRecipe(identifier, pairList.toArray(new Pair[0]), itemStack);
 			}
 		}
 
-		private static List<Pair<Ingredient, Integer>> getIngredients(String pattern,
-				Map<String, Pair<Ingredient, Integer>> keys, int width) {
-			List<Pair<Ingredient, Integer>> pairList = new ArrayList<>();
-			for (int i = 0; i < 5; i++) {
+		private static List<Pair<Ingredient, Integer>> getIngredients(String pattern, Map<String, Pair<Ingredient, Integer>> keys, int width) {
+			final List<Pair<Ingredient, Integer>> pairList = new ArrayList<>();
+			for (var i = 0; i < 5; i++)
 				pairList.add(Pair.of(Ingredient.EMPTY, 0));
-			}
-			Set<String> set = Sets.newHashSet(keys.keySet());
+			final var set = Sets.newHashSet(keys.keySet());
 			set.remove(" ");
 
-			for (int i = 0; i < pattern.length(); ++i) {
-				String key = pattern.substring(i, i + 1);
-				Ingredient ingredient = keys.get(key).getKey();
-				if (ingredient == null) {
-					throw new JsonSyntaxException(
-							"Pattern references symbol '" + key + "' but it's not defined in the key");
-				}
+			for (var i = 0; i < pattern.length(); ++i) {
+				final var key = pattern.substring(i, i + 1);
+				final var ingredient = keys.get(key).getKey();
+				if (ingredient == null)
+					throw new JsonSyntaxException("Pattern references symbol '" + key + "' but it's not defined in the key");
 
 				set.remove(key);
 				pairList.set(i, Pair.of(ingredient, keys.get(key).getRight()));
 			}
 
-			if (!set.isEmpty()) {
+			if (!set.isEmpty())
 				throw new JsonSyntaxException("Key defines symbols that aren't used in pattern: " + set);
-			} else {
+			else
 				return pairList;
-			}
 		}
 
 		@Override
 		public GunTableRecipe fromNetwork(ResourceLocation identifier, FriendlyByteBuf packetByteBuf) {
-			Pair<Ingredient, Integer>[] pairs = new Pair[5];
-			for (int j = 0; j < 5; ++j) {
-				Ingredient ingredient = Ingredient.fromNetwork(packetByteBuf);
-				int count = packetByteBuf.readInt();
+			final Pair<Ingredient, Integer>[] pairs = new Pair[5];
+			for (var j = 0; j < 5; ++j) {
+				final var ingredient = Ingredient.fromNetwork(packetByteBuf);
+				final var count = packetByteBuf.readInt();
 				pairs[j] = Pair.of(ingredient, count);
 			}
 
-			ItemStack output = packetByteBuf.readItem();
+			final var output = packetByteBuf.readItem();
 			return new GunTableRecipe(identifier, pairs, output);
 		}
 
 		@Override
 		public void toNetwork(FriendlyByteBuf packetByteBuf, GunTableRecipe gunTableRecipe) {
-			for (int i = 0; i < 5; i++) {
-				Pair<Ingredient, Integer> pair = gunTableRecipe.ingredients[i];
-				Ingredient ingredient = pair.getKey();
-				int count = pair.getRight();
+			for (var i = 0; i < 5; i++) {
+				final var pair = gunTableRecipe.ingredients[i];
+				final var ingredient = pair.getKey();
+				final var count = pair.getRight();
 				ingredient.toNetwork(packetByteBuf);
 				packetByteBuf.writeInt(count);
 			}
@@ -182,22 +174,20 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 		}
 
 		private static Map<String, Pair<Ingredient, Integer>> getComponents(JsonObject json) {
-			Map<String, Pair<Ingredient, Integer>> map = Maps.newHashMap();
+			final Map<String, Pair<Ingredient, Integer>> map = Maps.newHashMap();
 
-			for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-				String key = entry.getKey();
-				JsonElement jsonElement = entry.getValue();
+			for (final Map.Entry<String, JsonElement> entry : json.entrySet()) {
+				final String key = entry.getKey();
+				final JsonElement jsonElement = entry.getValue();
 				if (key.length() != 1) {
-					throw new JsonSyntaxException("Invalid key entry: '" + entry.getKey()
-							+ "' is an invalid symbol (must be 1 String only).");
+					throw new JsonSyntaxException("Invalid key entry: '" + entry.getKey() + "' is an invalid symbol (must be 1 String only).");
 				}
 
 				if (" ".equals(key)) {
 					throw new JsonSyntaxException("Invalid key entry: ' ' is a reserved symbol.");
 				}
 
-				map.put(key, Pair.of(Ingredient.fromJson(jsonElement),
-						GsonHelper.getAsInt(jsonElement.getAsJsonObject(), "count", 1)));
+				map.put(key, Pair.of(Ingredient.fromJson(jsonElement), GsonHelper.getAsInt(jsonElement.getAsJsonObject(), "count", 1)));
 			}
 
 			map.put(" ", Pair.of(Ingredient.EMPTY, 0));

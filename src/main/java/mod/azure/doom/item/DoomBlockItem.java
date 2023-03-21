@@ -1,13 +1,13 @@
 package mod.azure.doom.item;
 
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.level.block.Block;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.block.Block;
 
 public abstract class DoomBlockItem extends BlockItem implements GeoItem {
 
@@ -24,7 +24,7 @@ public abstract class DoomBlockItem extends BlockItem implements GeoItem {
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 }

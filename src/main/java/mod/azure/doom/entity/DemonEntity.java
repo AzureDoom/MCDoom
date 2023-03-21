@@ -14,7 +14,6 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.TimeUtil;
@@ -33,8 +32,6 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 
 public class DemonEntity extends Monster implements NeutralMob, Enemy {
@@ -47,7 +44,7 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 
 	protected DemonEntity(EntityType<? extends Monster> type, Level worldIn) {
 		super(type, worldIn);
-		this.xpReward = (int) (this.getMaxHealth());
+		xpReward = (int) getMaxHealth();
 		maxUpStep = 1.5f;
 	}
 
@@ -62,17 +59,17 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 	}
 
 	public int getAttckingState() {
-		return this.entityData.get(STATE);
+		return entityData.get(STATE);
 	}
 
 	public void setAttackingState(int time) {
-		this.entityData.set(STATE, time);
+		entityData.set(STATE, time);
 	}
 
 	public static boolean canSpawnInDark(EntityType<? extends DemonEntity> type, LevelAccessor serverWorldAccess, MobSpawnType spawnReason, BlockPos pos, RandomSource random) {
 		if (serverWorldAccess.getDifficulty() == Difficulty.PEACEFUL)
 			return false;
-		if ((spawnReason != MobSpawnType.CHUNK_GENERATION && spawnReason != MobSpawnType.NATURAL))
+		if (spawnReason != MobSpawnType.CHUNK_GENERATION && spawnReason != MobSpawnType.NATURAL)
 			return !serverWorldAccess.getBlockState(pos.below()).is(Blocks.NETHER_WART_BLOCK);
 		return !serverWorldAccess.getBlockState(pos.below()).is(Blocks.NETHER_WART_BLOCK);
 	}
@@ -80,41 +77,41 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
-		this.entityData.define(ANGER_TIME, 0);
-		this.entityData.define(STATE, 0);
+		entityData.define(ANGER_TIME, 0);
+		entityData.define(STATE, 0);
 	}
 
 	@Override
 	public int getRemainingPersistentAngerTime() {
-		return this.entityData.get(ANGER_TIME);
+		return entityData.get(ANGER_TIME);
 	}
 
 	@Override
 	public void setRemainingPersistentAngerTime(int ticks) {
-		this.entityData.set(ANGER_TIME, ticks);
+		entityData.set(ANGER_TIME, ticks);
 	}
 
 	@Override
 	public UUID getPersistentAngerTarget() {
-		return this.targetUuid;
+		return targetUuid;
 	}
 
 	@Override
 	public void setPersistentAngerTarget(@Nullable UUID uuid) {
-		this.targetUuid = uuid;
+		targetUuid = uuid;
 	}
 
 	@Override
 	public void startPersistentAngerTimer() {
-		this.setRemainingPersistentAngerTime(ANGER_TIME_RANGE.sample(this.random));
+		setRemainingPersistentAngerTime(ANGER_TIME_RANGE.sample(random));
 	}
 
 	@Override
 	protected void tickDeath() {
-		++this.deathTime;
-		if (this.deathTime == 35) {
-			this.remove(Entity.RemovalReason.KILLED);
-			this.dropExperience();
+		++deathTime;
+		if (deathTime == 35) {
+			remove(Entity.RemovalReason.KILLED);
+			dropExperience();
 		}
 	}
 
@@ -133,10 +130,9 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 
 	@Override
 	public void playAmbientSound() {
-		SoundEvent soundEvent = this.getAmbientSound();
-		if (soundEvent != null) {
-			this.playSound(soundEvent, 0.25F, this.getVoicePitch());
-		}
+		var soundEvent = getAmbientSound();
+		if (soundEvent != null)
+			this.playSound(soundEvent, 0.25F, getVoicePitch());
 	}
 
 	public void spawnLightSource(Entity entity, boolean isInWaterBlock) {
@@ -146,10 +142,10 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 				return;
 			entity.level.setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
 		} else if (checkDistance(lightBlockPos, entity.blockPosition(), 2)) {
-			BlockEntity blockEntity = entity.level.getBlockEntity(lightBlockPos);
-			if (blockEntity instanceof TickingLightEntity) {
+			var blockEntity = entity.level.getBlockEntity(lightBlockPos);
+			if (blockEntity instanceof TickingLightEntity)
 				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
-			} else
+			else
 				lightBlockPos = null;
 		} else
 			lightBlockPos = null;
@@ -163,17 +159,17 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 		if (blockPos == null)
 			return null;
 
-		int[] offsets = new int[maxDistance * 2 + 1];
+		var offsets = new int[maxDistance * 2 + 1];
 		offsets[0] = 0;
-		for (int i = 2; i <= maxDistance * 2; i += 2) {
+		for (var i = 2; i <= maxDistance * 2; i += 2) {
 			offsets[i - 1] = i / 2;
 			offsets[i] = -i / 2;
 		}
-		for (int x : offsets)
-			for (int y : offsets)
-				for (int z : offsets) {
-					BlockPos offsetPos = blockPos.offset(x, y, z);
-					BlockState state = world.getBlockState(offsetPos);
+		for (final var x : offsets)
+			for (final var y : offsets)
+				for (final var z : offsets) {
+					final var offsetPos = blockPos.offset(x, y, z);
+					final var state = world.getBlockState(offsetPos);
 					if (state.isAir() || state.getBlock().equals(AzureLibMod.TICKING_LIGHT_BLOCK))
 						return offsetPos;
 				}

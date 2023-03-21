@@ -107,14 +107,14 @@ public class DoomEntities {
 	public static EntityType<GladiatorEntity> GLADIATOR;
 
 	private static <T extends Entity> EntityType<T> mob(String id, EntityType.EntityFactory<T> factory, float height, float width) {
-		var type = FabricEntityTypeBuilder.<T>create(MobCategory.MONSTER, factory).dimensions(EntityDimensions.scalable(height, width)).fireImmune().trackedUpdateRate(1).trackRangeBlocks(90).build();
+		final var type = FabricEntityTypeBuilder.<T>create(MobCategory.MONSTER, factory).dimensions(EntityDimensions.scalable(height, width)).fireImmune().trackedUpdateRate(1).trackRangeBlocks(90).build();
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, DoomMod.modResource(id), type);
 
 		return type;
 	}
 
 	private static <T extends Entity> EntityType<T> blockentity(String id, EntityType.EntityFactory<T> factory, float height, float width) {
-		var type = FabricEntityTypeBuilder.<T>create(MobCategory.MISC, factory).dimensions(EntityDimensions.scalable(height, width)).fireImmune().trackedUpdateRate(1).trackRangeBlocks(90).build();
+		final var type = FabricEntityTypeBuilder.<T>create(MobCategory.MISC, factory).dimensions(EntityDimensions.scalable(height, width)).fireImmune().trackedUpdateRate(1).trackRangeBlocks(90).build();
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, DoomMod.modResource(id), type);
 
 		return type;

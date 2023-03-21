@@ -20,7 +20,7 @@ public class PossessedScientistRender extends GeoEntityRenderer<PossessedScienti
 
 	public PossessedScientistRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new PossessedScientistModel());
-		this.addRenderLayer(new BlockAndItemGeoLayer<>(this) {
+		addRenderLayer(new BlockAndItemGeoLayer<>(this) {
 			@Nullable
 			@Override
 			protected ItemStack getStackForBone(GeoBone bone, PossessedScientistEntity animatable) {
@@ -31,23 +31,19 @@ public class PossessedScientistRender extends GeoEntityRenderer<PossessedScienti
 			}
 
 			@Override
-			protected ItemTransforms.TransformType getTransformTypeForStack(GeoBone bone, ItemStack stack,
-					PossessedScientistEntity animatable) {
+			protected ItemTransforms.TransformType getTransformTypeForStack(GeoBone bone, ItemStack stack, PossessedScientistEntity animatable) {
 				return switch (bone.getName()) {
 				default -> ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND;
 				};
 			}
 
 			@Override
-			protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack,
-					PossessedScientistEntity animatable, MultiBufferSource bufferSource, float partialTick,
-					int packedLight, int packedOverlay) {
+			protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack, PossessedScientistEntity animatable, MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay) {
 				poseStack.mulPose(Axis.XP.rotationDegrees(0));
 				poseStack.mulPose(Axis.YP.rotationDegrees(-30));
 				poseStack.mulPose(Axis.ZP.rotationDegrees(0));
 				poseStack.translate(0.02D, -0.8D, -0.1D);
-				super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight,
-						packedOverlay);
+				super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
 			}
 		});
 	}
