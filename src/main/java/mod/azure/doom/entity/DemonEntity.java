@@ -4,10 +4,10 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
 
+import mod.azure.azurelib.AzureLibMod;
+import mod.azure.azurelib.entities.TickingLightEntity;
 import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.doom.entity.ai.goal.DoomNavigation;
-import mod.azure.doom.entity.tileentity.TickingLightEntity;
-import mod.azure.doom.util.registry.DoomBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -39,10 +39,8 @@ import net.minecraft.world.level.material.FluidState;
 
 public class DemonEntity extends Monster implements NeutralMob, Enemy {
 
-	private static final EntityDataAccessor<Integer> ANGER_TIME = SynchedEntityData.defineId(DemonEntity.class,
-			EntityDataSerializers.INT);
-	public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(DemonEntity.class,
-			EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Integer> ANGER_TIME = SynchedEntityData.defineId(DemonEntity.class, EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(DemonEntity.class, EntityDataSerializers.INT);
 	private static final UniformInt ANGER_TIME_RANGE = TimeUtil.rangeOfSeconds(20, 39);
 	private UUID targetUuid;
 	private BlockPos lightBlockPos = null;
@@ -71,8 +69,7 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 		this.entityData.set(STATE, time);
 	}
 
-	public static boolean canSpawnInDark(EntityType<? extends DemonEntity> type, LevelAccessor serverWorldAccess,
-			MobSpawnType spawnReason, BlockPos pos, RandomSource random) {
+	public static boolean canSpawnInDark(EntityType<? extends DemonEntity> type, LevelAccessor serverWorldAccess, MobSpawnType spawnReason, BlockPos pos, RandomSource random) {
 		if (serverWorldAccess.getDifficulty() == Difficulty.PEACEFUL)
 			return false;
 		if ((spawnReason != MobSpawnType.CHUNK_GENERATION && spawnReason != MobSpawnType.NATURAL))
@@ -147,7 +144,7 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 			lightBlockPos = findFreeSpace(entity.level, entity.blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			entity.level.setBlockAndUpdate(lightBlockPos, DoomBlocks.TICKING_LIGHT_BLOCK.defaultBlockState());
+			entity.level.setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
 		} else if (checkDistance(lightBlockPos, entity.blockPosition(), 2)) {
 			BlockEntity blockEntity = entity.level.getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity) {
@@ -159,9 +156,7 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 	}
 
 	private boolean checkDistance(BlockPos blockPosA, BlockPos blockPosB, int distance) {
-		return Math.abs(blockPosA.getX() - blockPosB.getX()) <= distance
-				&& Math.abs(blockPosA.getY() - blockPosB.getY()) <= distance
-				&& Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
+		return Math.abs(blockPosA.getX() - blockPosB.getX()) <= distance && Math.abs(blockPosA.getY() - blockPosB.getY()) <= distance && Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
 	}
 
 	private BlockPos findFreeSpace(Level world, BlockPos blockPos, int maxDistance) {
@@ -179,7 +174,7 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 				for (int z : offsets) {
 					BlockPos offsetPos = blockPos.offset(x, y, z);
 					BlockState state = world.getBlockState(offsetPos);
-					if (state.isAir() || state.getBlock().equals(DoomBlocks.TICKING_LIGHT_BLOCK))
+					if (state.isAir() || state.getBlock().equals(AzureLibMod.TICKING_LIGHT_BLOCK))
 						return offsetPos;
 				}
 
@@ -188,9 +183,7 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		return source == DamageSource.IN_WALL || source == DamageSource.ON_FIRE || source == DamageSource.IN_FIRE
-				? false
-				: super.hurt(source, amount);
+		return source == DamageSource.IN_WALL || source == DamageSource.ON_FIRE || source == DamageSource.IN_FIRE ? false : super.hurt(source, amount);
 	}
 
 	@Override

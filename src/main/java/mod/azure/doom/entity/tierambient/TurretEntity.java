@@ -1,5 +1,11 @@
 package mod.azure.doom.entity.tierambient;
 
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.CustomSmallFireballEntity;
@@ -14,13 +20,6 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class TurretEntity extends DemonEntity implements GeoEntity {
 
@@ -96,19 +95,18 @@ public class TurretEntity extends DemonEntity implements GeoEntity {
 		}
 
 		public void tick() {
-			LivingEntity livingentity = this.parentEntity.getTarget();
+			var livingentity = this.parentEntity.getTarget();
 			if (this.parentEntity.hasLineOfSight(livingentity)) {
-				Level world = this.parentEntity.level;
+				var world = this.parentEntity.level;
 				++this.attackTimer;
-				Vec3 vector3d = this.parentEntity.getViewVector(1.0F);
-				double d2 = livingentity.getX() - (this.parentEntity.getX() + vector3d.x * 2.0D);
-				double d3 = livingentity.getY(0.5D) - (0.5D + this.parentEntity.getY(0.5D));
-				double d4 = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * 2.0D);
-				CustomSmallFireballEntity fireballentity = new CustomSmallFireballEntity(world, this.parentEntity, d2,
-						d3, d4, DoomConfig.turret_ranged_damage);
-				if (this.attackTimer == 10) {
+				var vector3d = this.parentEntity.getViewVector(1.0F);
+				var x = livingentity.getX() - (this.parentEntity.getX() + vector3d.x * 2.0D);
+				var y = livingentity.getY(0.5D) - (0.5D + this.parentEntity.getY(0.5D));
+				var z = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * 2.0D);
+				var fireballentity = new CustomSmallFireballEntity(world, this.parentEntity, x, y, z,
+						DoomConfig.turret_ranged_damage);
+				if (this.attackTimer == 10)
 					this.parentEntity.setAttackingState(1);
-				}
 				if (this.attackTimer == 20) {
 					fireballentity.setPos(this.parentEntity.getX() + vector3d.x, this.parentEntity.getY(0.5D) + 0.5D,
 							fireballentity.getZ() + vector3d.z);

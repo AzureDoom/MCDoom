@@ -10,7 +10,7 @@ import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomParticles;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -52,12 +52,12 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
 	}
 
 	public BulletEntity(Level world, LivingEntity owner, float damage) {
-		super(ProjectilesEntityRegister.BULLETS, owner, world);
+		super(DoomProjectiles.BULLETS, owner, world);
 		this.projectiledamage = damage;
 	}
 
 	public BulletEntity(Level world, LivingEntity owner) {
-		super(ProjectilesEntityRegister.BULLETS, owner, world);
+		super(DoomProjectiles.BULLETS, owner, world);
 	}
 
 	protected BulletEntity(EntityType<? extends BulletEntity> type, double x, double y, double z, Level world) {

@@ -9,7 +9,7 @@ import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -46,12 +46,12 @@ public class ChaingunBulletEntity extends AbstractArrow implements GeoEntity {
 	}
 
 	public ChaingunBulletEntity(Level world, LivingEntity owner, float damage) {
-		super(ProjectilesEntityRegister.CHAINGUN_BULLET, owner, world);
+		super(DoomProjectiles.CHAINGUN_BULLET, owner, world);
 		this.projectiledamage = damage;
 	}
 
 	public ChaingunBulletEntity(Level world, LivingEntity owner) {
-		super(ProjectilesEntityRegister.CHAINGUN_BULLET, owner, world);
+		super(DoomProjectiles.CHAINGUN_BULLET, owner, world);
 	}
 
 	protected ChaingunBulletEntity(EntityType<? extends ChaingunBulletEntity> type, double x, double y, double z,

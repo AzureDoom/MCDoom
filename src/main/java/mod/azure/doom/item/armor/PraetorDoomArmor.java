@@ -33,7 +33,6 @@ public class PraetorDoomArmor extends ArmorItem implements GeoItem {
 		super(materialIn, slot, new Item.Properties().stacksTo(1));
 	}
 
-	// Create our armor model/renderer for Fabric and return it
 	@Override
 	public void createRenderer(Consumer<Object> consumer) {
 		consumer.accept(new RenderProvider() {

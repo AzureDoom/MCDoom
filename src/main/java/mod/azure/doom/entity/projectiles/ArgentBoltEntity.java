@@ -1,12 +1,12 @@
 package mod.azure.doom.entity.projectiles;
 
+import mod.azure.azurelib.AzureLibMod;
+import mod.azure.azurelib.entities.TickingLightEntity;
 import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import mod.azure.doom.entity.tileentity.TickingLightEntity;
-import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -31,7 +31,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -55,7 +54,7 @@ public class ArgentBoltEntity extends AbstractArrow {
 	}
 
 	public ArgentBoltEntity(Level world, LivingEntity owner) {
-		super(ProjectilesEntityRegister.ARGENT_BOLT, owner, world);
+		super(DoomProjectiles.ARGENT_BOLT, owner, world);
 		this.shooter = owner;
 	}
 
@@ -152,7 +151,7 @@ public class ArgentBoltEntity extends AbstractArrow {
 			lightBlockPos = findFreeSpace(level, blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			level.setBlockAndUpdate(lightBlockPos, DoomBlocks.TICKING_LIGHT_BLOCK.defaultBlockState());
+			level.setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
 		} else if (checkDistance(lightBlockPos, blockPosition(), 2)) {
 			BlockEntity blockEntity = level.getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity) {
@@ -173,7 +172,7 @@ public class ArgentBoltEntity extends AbstractArrow {
 		if (blockPos == null)
 			return null;
 
-		int[] offsets = new int[maxDistance * 2 + 1];
+		var offsets = new int[maxDistance * 2 + 1];
 		offsets[0] = 0;
 		for (int i = 2; i <= maxDistance * 2; i += 2) {
 			offsets[i - 1] = i / 2;
@@ -182,9 +181,9 @@ public class ArgentBoltEntity extends AbstractArrow {
 		for (int x : offsets)
 			for (int y : offsets)
 				for (int z : offsets) {
-					BlockPos offsetPos = blockPos.offset(x, y, z);
-					BlockState state = world.getBlockState(offsetPos);
-					if (state.isAir() || state.getBlock().equals(DoomBlocks.TICKING_LIGHT_BLOCK))
+					var offsetPos = blockPos.offset(x, y, z);
+					var state = world.getBlockState(offsetPos);
+					if (state.isAir() || state.getBlock().equals(AzureLibMod.TICKING_LIGHT_BLOCK))
 						return offsetPos;
 				}
 

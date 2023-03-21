@@ -2,11 +2,11 @@ package mod.azure.doom.block;
 
 import org.jetbrains.annotations.Nullable;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tileentity.IconBlockEntity;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomEntities;
+import mod.azure.doom.util.registry.ModRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -69,14 +69,8 @@ public class DoomWallBlock extends BaseEntityBlock {
 	public static void checkIconSpawn(Level worldIn, BlockPos pos, IconBlockEntity tileEntityIn) {
 		if (!worldIn.isClientSide) {
 			Block block = tileEntityIn.getBlockState().getBlock();
-			boolean flag = block == DoomBlocks.ICON_WALL1 || block == DoomBlocks.ICON_WALL2
-					|| block == DoomBlocks.ICON_WALL3 || block == DoomBlocks.ICON_WALL4
-					|| block == DoomBlocks.ICON_WALL5 || block == DoomBlocks.ICON_WALL6
-					|| block == DoomBlocks.ICON_WALL7 || block == DoomBlocks.ICON_WALL8
-					|| block == DoomBlocks.ICON_WALL9 || block == DoomBlocks.ICON_WALL10
-					|| block == DoomBlocks.ICON_WALL11 || block == DoomBlocks.ICON_WALL12
-					|| block == DoomBlocks.ICON_WALL13 || block == DoomBlocks.ICON_WALL14
-					|| block == DoomBlocks.ICON_WALL15 || block == DoomBlocks.ICON_WALL16;
+			boolean flag = block == DoomBlocks.ICON_WALL1 || block == DoomBlocks.ICON_WALL2 || block == DoomBlocks.ICON_WALL3 || block == DoomBlocks.ICON_WALL4 || block == DoomBlocks.ICON_WALL5 || block == DoomBlocks.ICON_WALL6 || block == DoomBlocks.ICON_WALL7 || block == DoomBlocks.ICON_WALL8 || block == DoomBlocks.ICON_WALL9 || block == DoomBlocks.ICON_WALL10 || block == DoomBlocks.ICON_WALL11 || block == DoomBlocks.ICON_WALL12 || block == DoomBlocks.ICON_WALL13
+					|| block == DoomBlocks.ICON_WALL14 || block == DoomBlocks.ICON_WALL15 || block == DoomBlocks.ICON_WALL16;
 			if (flag && pos.getY() >= 3 && worldIn.getDifficulty() != Difficulty.PEACEFUL) {
 				BlockPattern blockpattern = getOrCreateIconFull();
 				BlockPattern.BlockPatternMatch blockpattern$patternhelper = blockpattern.find(worldIn, pos);
@@ -91,26 +85,19 @@ public class DoomWallBlock extends BaseEntityBlock {
 
 					IconofsinEntity witherentity = DoomEntities.ICONOFSIN.create(worldIn);
 					BlockPos blockpos = blockpattern$patternhelper.getBlock(1, 2, 0).getPos();
-					witherentity.moveTo((double) blockpos.getX() + 0.5D, (double) blockpos.getY() + 0.55D,
-							(double) blockpos.getZ() + 0.5D,
-							blockpattern$patternhelper.getForwards().getAxis() == Direction.Axis.X ? 0.0F : 90.0F,
-							0.0F);
-					witherentity.yBodyRot = blockpattern$patternhelper.getForwards().getAxis() == Direction.Axis.X
-							? 0.0F
-							: 90.0F;
+					witherentity.moveTo((double) blockpos.getX() + 0.5D, (double) blockpos.getY() + 0.55D, (double) blockpos.getZ() + 0.5D, blockpattern$patternhelper.getForwards().getAxis() == Direction.Axis.X ? 0.0F : 90.0F, 0.0F);
+					witherentity.yBodyRot = blockpattern$patternhelper.getForwards().getAxis() == Direction.Axis.X ? 0.0F : 90.0F;
 					witherentity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 4));
 					witherentity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 200, 4));
 					worldIn.addFreshEntity(witherentity);
 
-					for (ServerPlayer serverplayerentity : worldIn.getEntitiesOfClass(ServerPlayer.class,
-							witherentity.getBoundingBox().inflate(50.0D))) {
+					for (ServerPlayer serverplayerentity : worldIn.getEntitiesOfClass(ServerPlayer.class, witherentity.getBoundingBox().inflate(50.0D))) {
 						CriteriaTriggers.SUMMONED_ENTITY.trigger(serverplayerentity, witherentity);
 					}
 
 					for (int k = 0; k < blockpattern.getWidth(); ++k) {
 						for (int l = 0; l < blockpattern.getHeight(); ++l) {
-							worldIn.updateNeighborsAt(blockpattern$patternhelper.getBlock(k, l, 0).getPos(),
-									Blocks.AIR);
+							worldIn.updateNeighborsAt(blockpattern$patternhelper.getBlock(k, l, 0).getPos(), Blocks.AIR);
 						}
 					}
 
@@ -121,31 +108,17 @@ public class DoomWallBlock extends BaseEntityBlock {
 
 	public static BlockPattern getOrCreateIconFull() {
 		if (iconPatternFull == null) {
-			iconPatternFull = BlockPatternBuilder.start().aisle("!@#$", "%^&*", "()-_", "+=12")
-					.where('!', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL1)))
-					.where('@', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL2)))
-					.where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL3)))
-					.where('$', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL4)))
-					.where('%', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL5)))
-					.where('^', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL6)))
-					.where('&', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL7)))
-					.where('*', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL8)))
-					.where('(', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL9)))
-					.where(')', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL10)))
-					.where('-', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL11)))
-					.where('_', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL12)))
-					.where('+', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL13)))
-					.where('=', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL14)))
-					.where('1', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL15)))
-					.where('2', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL16)))
-					.build();
+			iconPatternFull = BlockPatternBuilder.start().aisle("!@#$", "%^&*", "()-_", "+=12").where('!', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL1))).where('@', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL2))).where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL3))).where('$', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL4)))
+					.where('%', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL5))).where('^', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL6))).where('&', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL7))).where('*', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL8))).where('(', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL9)))
+					.where(')', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL10))).where('-', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL11))).where('_', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL12))).where('+', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL13))).where('=', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL14)))
+					.where('1', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL15))).where('2', BlockInWorld.hasState(BlockStatePredicate.forBlock(DoomBlocks.ICON_WALL16))).build();
 		}
 		return iconPatternFull;
 	}
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return DoomMod.ICON.create(pos, state);
+		return ModRegistry.ICON.create(pos, state);
 	}
 
 	@Override

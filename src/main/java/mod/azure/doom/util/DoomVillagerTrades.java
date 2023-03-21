@@ -2,7 +2,6 @@ package mod.azure.doom.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomBlocks;
@@ -16,9 +15,9 @@ public class DoomVillagerTrades {
 
 	public static void addTrades() {
 		if (DoomConfig.enable_weaponsmith_trades) {
-			List<ItemListing> weapon_trades = new ArrayList<>(
+			var weapon_trades = new ArrayList<>(
 					Arrays.asList(VillagerTrades.TRADES.get(VillagerProfession.WEAPONSMITH).get(3)));
-			ItemListing[] result = new ItemListing[] {};
+			var result = new ItemListing[] {};
 			weapon_trades.add(
 					new VillagerTrades.ItemsAndEmeraldsToItems(Items.EMERALD, 1, 1, DoomItems.ARGENT_ENERGY, 6, 12, 5));
 			weapon_trades
@@ -38,8 +37,8 @@ public class DoomVillagerTrades {
 		}
 
 		if (DoomConfig.enable_toolsmith_trades) {
-			ItemListing[] result = new ItemListing[] {};
-			List<ItemListing> tool_trades = new ArrayList<>(
+			var result = new ItemListing[] {};
+			var tool_trades = new ArrayList<>(
 					Arrays.asList(VillagerTrades.TRADES.get(VillagerProfession.TOOLSMITH).get(3)));
 			tool_trades.add(
 					new VillagerTrades.ItemsAndEmeraldsToItems(Items.EMERALD, 2, DoomItems.ARGENT_PICKAXE, 1, 12, 5));
@@ -53,9 +52,9 @@ public class DoomVillagerTrades {
 		}
 
 		if (DoomConfig.enable_mason_trades) {
-			List<ItemListing> block_trades = new ArrayList<>(
+			var block_trades = new ArrayList<>(
 					Arrays.asList(VillagerTrades.TRADES.get(VillagerProfession.MASON).get(3)));
-			ItemListing[] result = new ItemListing[] {};
+			var result = new ItemListing[] {};
 			block_trades.add(
 					new VillagerTrades.ItemsAndEmeraldsToItems(Items.EMERALD, 2, DoomBlocks.E1M1_1.asItem(), 1, 12, 5));
 			block_trades.add(

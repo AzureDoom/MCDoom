@@ -3,7 +3,7 @@ package mod.azure.doom.entity.projectiles.entity;
 import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.registry.DoomSounds;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -30,12 +30,12 @@ public class ChaingunMobEntity extends AbstractHurtingProjectile {
 
 	public ChaingunMobEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
 			float directHitDamage) {
-		super(ProjectilesEntityRegister.CHAINGUN_MOB, shooter, accelX, accelY, accelZ, worldIn);
+		super(DoomProjectiles.CHAINGUN_MOB, shooter, accelX, accelY, accelZ, worldIn);
 		this.directHitDamage = directHitDamage;
 	}
 
 	public ChaingunMobEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-		super(ProjectilesEntityRegister.CHAINGUN_MOB, x, y, z, accelX, accelY, accelZ, worldIn);
+		super(DoomProjectiles.CHAINGUN_MOB, x, y, z, accelX, accelY, accelZ, worldIn);
 	}
 
 	@Override

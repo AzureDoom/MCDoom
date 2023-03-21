@@ -1,7 +1,7 @@
 package mod.azure.doom.block;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
+import mod.azure.doom.util.registry.ModRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,9 +35,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class GunTableBlock extends Block implements EntityBlock {
 
 	public static final DirectionProperty FACING = BlockStateProperties.FACING;
-	private static final VoxelShape XBASE1 = Block.box(0, 0, -16, 16, 9, 32); 
+	private static final VoxelShape XBASE1 = Block.box(0, 0, -16, 16, 9, 32);
 	private static final VoxelShape XBASE2 = Block.box(2, 9, -14, 13, 25, 30);
-	private static final VoxelShape YBASE1 = Block.box(-16, 0, 0, 32, 9, 16); 
+	private static final VoxelShape YBASE1 = Block.box(-16, 0, 0, 32, 9, 16);
 	private static final VoxelShape YBASE2 = Block.box(-14, 9, 2, 30, 25, 13);
 	private static final VoxelShape X_AXIS_AABB = Shapes.or(XBASE1, XBASE2);
 	private static final VoxelShape Z_AXIS_AABB = Shapes.or(YBASE1, YBASE2);
@@ -50,7 +50,7 @@ public class GunTableBlock extends Block implements EntityBlock {
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return DoomMod.GUN_TABLE_ENTITY.create(pos, state);
+		return ModRegistry.GUN_TABLE_ENTITY.create(pos, state);
 	}
 
 	@Override
@@ -59,8 +59,7 @@ public class GunTableBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-			BlockHitResult hit) {
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (!world.isClientSide) {
 			MenuProvider screenHandlerFactory = state.getMenuProvider(world, pos);
 			if (screenHandlerFactory != null) {
@@ -116,9 +115,7 @@ public class GunTableBlock extends Block implements EntityBlock {
 	@Override
 	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
 		Direction direction = (Direction) state.getValue(FACING);
-		return direction.getAxis() == Direction.Axis.X
-				? world.getBlockState(pos.south()).isAir() && world.getBlockState(pos.north()).isAir()
-				: world.getBlockState(pos.east()).isAir() && world.getBlockState(pos.west()).isAir();
+		return direction.getAxis() == Direction.Axis.X ? world.getBlockState(pos.south()).isAir() && world.getBlockState(pos.north()).isAir() : world.getBlockState(pos.east()).isAir() && world.getBlockState(pos.west()).isAir();
 	}
 
 }

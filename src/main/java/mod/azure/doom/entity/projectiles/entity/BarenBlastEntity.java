@@ -9,7 +9,7 @@ import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.registry.DoomSounds;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -43,13 +43,13 @@ public class BarenBlastEntity extends AbstractHurtingProjectile implements GeoEn
 
 	public BarenBlastEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
 			float directHitDamage) {
-		super(ProjectilesEntityRegister.BARENBLAST, shooter, accelX, accelY, accelZ, worldIn);
+		super(DoomProjectiles.BARENBLAST, shooter, accelX, accelY, accelZ, worldIn);
 		this.shooter = shooter;
 		this.directHitDamage = directHitDamage;
 	}
 
 	public BarenBlastEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-		super(ProjectilesEntityRegister.BARENBLAST, x, y, z, accelX, accelY, accelZ, worldIn);
+		super(DoomProjectiles.BARENBLAST, x, y, z, accelX, accelY, accelZ, worldIn);
 	}
 
 	@Override

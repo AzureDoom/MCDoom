@@ -9,7 +9,7 @@ import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.registry.DoomSounds;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -43,7 +43,7 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements Ge
 
 	public EnergyCellMobEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
 			float directHitDamage) {
-		super(ProjectilesEntityRegister.ENERGY_CELL_MOB, shooter, accelX, accelY, accelZ, worldIn);
+		super(DoomProjectiles.ENERGY_CELL_MOB, shooter, accelX, accelY, accelZ, worldIn);
 		this.shooter = shooter;
 		this.walkDist = 3.0F;
 		this.directHitDamage = directHitDamage;
@@ -51,7 +51,7 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements Ge
 
 	public EnergyCellMobEntity(Level worldIn, double x, double y, double z, double accelX, double accelY,
 			double accelZ) {
-		super(ProjectilesEntityRegister.ENERGY_CELL_MOB, x, y, z, accelX, accelY, accelZ, worldIn);
+		super(DoomProjectiles.ENERGY_CELL_MOB, x, y, z, accelX, accelY, accelZ, worldIn);
 	}
 
 	@Override

@@ -11,7 +11,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 
-public enum DoomArmorMaterial implements ArmorMaterial {
+public enum DAMat implements ArmorMaterial {
 	DOOM_ARMOR("doom_armor", 500,
 			new int[] { DoomConfig.doom_armor_head_stat, DoomConfig.doom_armor_leggings_stat,
 					DoomConfig.doom_armor_chestplate_stat, DoomConfig.doom_armor_boots_stat },
@@ -30,7 +30,7 @@ public enum DoomArmorMaterial implements ArmorMaterial {
 	private final float knockbackResistance;
 	private final LazyLoadedValue<Ingredient> repairIngredientSupplier;
 
-	private DoomArmorMaterial(String name, int durabilityMultiplier, int[] protectionAmounts, int enchantability,
+	private DAMat(String name, int durabilityMultiplier, int[] protectionAmounts, int enchantability,
 			SoundEvent equipSound, float toughness, float knockbackResistance, Supplier<Ingredient> supplier) {
 		this.name = name;
 		this.durabilityMultiplier = durabilityMultiplier;

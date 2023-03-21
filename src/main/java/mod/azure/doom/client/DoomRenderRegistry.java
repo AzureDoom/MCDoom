@@ -1,6 +1,5 @@
 package mod.azure.doom.client;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.render.ArachonotronEternalRender;
 import mod.azure.doom.client.render.ArachonotronRender;
 import mod.azure.doom.client.render.ArchMaykrRender;
@@ -73,12 +72,13 @@ import mod.azure.doom.client.render.tile.GunCraftingRender;
 import mod.azure.doom.client.render.tile.TotemRender;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomEntities;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
+import mod.azure.doom.util.registry.DoomProjectiles;
+import mod.azure.doom.util.registry.ModRegistry;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 
 public class DoomRenderRegistry {
 
@@ -167,8 +167,7 @@ public class DoomRenderRegistry {
 
 		EntityRendererRegistry.register(DoomEntities.ARACHNOTRONETERNAL, (ctx) -> new ArachonotronEternalRender(ctx));
 
-		EntityRendererRegistry.register(DoomEntities.SPIDERMASTERMIND2016,
-				(ctx) -> new SpiderMastermind2016Render(ctx));
+		EntityRendererRegistry.register(DoomEntities.SPIDERMASTERMIND2016, (ctx) -> new SpiderMastermind2016Render(ctx));
 
 		EntityRendererRegistry.register(DoomEntities.TENTACLE, (ctx) -> new TentacleRender(ctx));
 
@@ -182,49 +181,44 @@ public class DoomRenderRegistry {
 
 		EntityRendererRegistry.register(DoomEntities.GLADIATOR, (ctx) -> new GladiatorRender(ctx));
 
-		EntityRendererRegistry.register(ProjectilesEntityRegister.ARGENT_BOLT, (ctx) -> new ArgentBoltRender(ctx));
+		EntityRendererRegistry.register(DoomProjectiles.ARGENT_BOLT, (ctx) -> new ArgentBoltRender(ctx));
 
-		EntityRendererRegistry.register(ProjectilesEntityRegister.GRENADE, (ctx) -> new GrenadeRender(ctx));
+		EntityRendererRegistry.register(DoomProjectiles.GRENADE, (ctx) -> new GrenadeRender(ctx));
 
-		EntityRendererRegistry.register(ProjectilesEntityRegister.SHOTGUN_SHELL, (ctx) -> new ShotgunShellRender(ctx));
+		EntityRendererRegistry.register(DoomProjectiles.SHOTGUN_SHELL, (ctx) -> new ShotgunShellRender(ctx));
 
-		EntityRendererRegistry.register(ProjectilesEntityRegister.ENERGY_CELL, (ctx) -> new EnergyCellRender(ctx));
+		EntityRendererRegistry.register(DoomProjectiles.ENERGY_CELL, (ctx) -> new EnergyCellRender(ctx));
 
-		EntityRendererRegistry.register(ProjectilesEntityRegister.BFG_CELL, (ctx) -> new BFGCellRender(ctx));
+		EntityRendererRegistry.register(DoomProjectiles.BFG_CELL, (ctx) -> new BFGCellRender(ctx));
 
-		EntityRendererRegistry.register(ProjectilesEntityRegister.ROCKET, (ctx) -> new RocketRender(ctx));
+		EntityRendererRegistry.register(DoomProjectiles.ROCKET, (ctx) -> new RocketRender(ctx));
 
-		EntityRendererRegistry.register(ProjectilesEntityRegister.BARENBLAST, (ctx) -> new BarenBlastRender(ctx));
+		EntityRendererRegistry.register(DoomProjectiles.BARENBLAST, (ctx) -> new BarenBlastRender(ctx));
 
-		EntityRendererRegistry.register(ProjectilesEntityRegister.BULLETS, (ctx) -> new BulletsRender(ctx));
+		EntityRendererRegistry.register(DoomProjectiles.BULLETS, (ctx) -> new BulletsRender(ctx));
 
-		EntityRendererRegistry.register(ProjectilesEntityRegister.CHAINGUN_BULLET,
-				(ctx) -> new ChaingunBulletRender(ctx));
+		EntityRendererRegistry.register(DoomProjectiles.CHAINGUN_BULLET, (ctx) -> new ChaingunBulletRender(ctx));
 
-		EntityRendererRegistry.register(ProjectilesEntityRegister.UNMAYKR, (ctx) -> new UnmaykrBulletRender(ctx));
+		EntityRendererRegistry.register(DoomProjectiles.UNMAYKR, (ctx) -> new UnmaykrBulletRender(ctx));
 
-		EntityRendererRegistry.register(ProjectilesEntityRegister.ROCKET_MOB, (ctx) -> new RocketMobRender(ctx));
+		EntityRendererRegistry.register(DoomProjectiles.ROCKET_MOB, (ctx) -> new RocketMobRender(ctx));
 
-		EntityRendererRegistry.register(ProjectilesEntityRegister.ENERGY_CELL_MOB,
-				(ctx) -> new EnergyCellMobRender(ctx));
+		EntityRendererRegistry.register(DoomProjectiles.ENERGY_CELL_MOB, (ctx) -> new EnergyCellMobRender(ctx));
 
-		EntityRendererRegistry.register(ProjectilesEntityRegister.CHAINGUN_MOB, (ctx) -> new ChaingunMobRender(ctx));
+		EntityRendererRegistry.register(DoomProjectiles.CHAINGUN_MOB, (ctx) -> new ChaingunMobRender(ctx));
 
-		EntityRendererRegistry.register(ProjectilesEntityRegister.FIRING, (ctx) -> new ArchvileFiringRender(ctx));
+		EntityRendererRegistry.register(DoomProjectiles.FIRING, (ctx) -> new ArchvileFiringRender(ctx));
 
-		EntityRendererRegistry.register(ProjectilesEntityRegister.GLADIATOR_MACE,
-				(ctx) -> new GladiatorMaceRender(ctx));
-		EntityRendererRegistry.register(ProjectilesEntityRegister.DRONEBOLT_MOB, (ctx) -> new DroneBoltRender(ctx));
-		EntityRendererRegistry.register(ProjectilesEntityRegister.BLOODBOLT_MOB, (ctx) -> new BloodBoltRender(ctx));
-		EntityRendererRegistry.register(ProjectilesEntityRegister.FIRE_MOB, (ctx) -> new FireProjectileRender(ctx));
+		EntityRendererRegistry.register(DoomProjectiles.GLADIATOR_MACE, (ctx) -> new GladiatorMaceRender(ctx));
+		EntityRendererRegistry.register(DoomProjectiles.DRONEBOLT_MOB, (ctx) -> new DroneBoltRender(ctx));
+		EntityRendererRegistry.register(DoomProjectiles.BLOODBOLT_MOB, (ctx) -> new BloodBoltRender(ctx));
+		EntityRendererRegistry.register(DoomProjectiles.FIRE_MOB, (ctx) -> new FireProjectileRender(ctx));
 
-		BlockEntityRendererRegistry.register(DoomMod.TOTEM,
-				(BlockEntityRendererProvider.Context rendererDispatcherIn) -> new TotemRender());
-		BlockEntityRendererRegistry.register(DoomMod.GUN_TABLE_ENTITY,
-				(BlockEntityRendererProvider.Context rendererDispatcherIn) -> new GunCraftingRender());
+		BlockEntityRenderers.register(ModRegistry.TOTEM, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new TotemRender());
+		BlockEntityRenderers.register(ModRegistry.GUN_TABLE_ENTITY, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new GunCraftingRender());
 
 		BlockRenderLayerMap.INSTANCE.putBlock(DoomBlocks.JUMP_PAD, RenderType.translucent());
 
-		EntityRendererRegistry.register(ProjectilesEntityRegister.MEATHOOOK_ENTITY, MeatHookEntityRenderer::new);
+		EntityRendererRegistry.register(DoomProjectiles.MEATHOOOK_ENTITY, MeatHookEntityRenderer::new);
 	}
 }

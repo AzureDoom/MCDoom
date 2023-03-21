@@ -1,7 +1,7 @@
 package mod.azure.doom.block;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tileentity.TotemEntity;
+import mod.azure.doom.util.registry.ModRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,31 +32,25 @@ public class TotemBlock extends BaseEntityBlock implements EntityBlock {
 
 	public static final BooleanProperty light = RedstoneTorchBlock.LIT;
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-	private static final VoxelShape X_LENGTH1 = Block.box(5.299999999999999, 0, 5.3000000000000025, 10.7, 15.9,
-			10.600000000000001);
-	private static final VoxelShape X_LENGTH2 = Block.box(-0.20000000000000107, 10.100000000000001, 5.3000000000000025,
-			16.200000000000003, 15.4, 10.600000000000001);
-	private static final VoxelShape Y_LENGTH1 = Block.box(5.3000000000000025, 0, 5.299999999999999, 10.600000000000001,
-			15.9, 10.7);
-	private static final VoxelShape Y_LENGTH2 = Block.box(5.3000000000000025, 10.100000000000001, -0.20000000000000107,
-			10.600000000000001, 15.4, 16.200000000000003);
+	private static final VoxelShape X_LENGTH1 = Block.box(5.299999999999999, 0, 5.3000000000000025, 10.7, 15.9, 10.600000000000001);
+	private static final VoxelShape X_LENGTH2 = Block.box(-0.20000000000000107, 10.100000000000001, 5.3000000000000025, 16.200000000000003, 15.4, 10.600000000000001);
+	private static final VoxelShape Y_LENGTH1 = Block.box(5.3000000000000025, 0, 5.299999999999999, 10.600000000000001, 15.9, 10.7);
+	private static final VoxelShape Y_LENGTH2 = Block.box(5.3000000000000025, 10.100000000000001, -0.20000000000000107, 10.600000000000001, 15.4, 16.200000000000003);
 	private static final VoxelShape X_AXIS_AABB = Shapes.or(X_LENGTH1, X_LENGTH2);
 	private static final VoxelShape Z_AXIS_AABB = Shapes.or(Y_LENGTH1, Y_LENGTH2);
 
 	public TotemBlock() {
-		super(FabricBlockSettings.of(Material.METAL).sounds(SoundType.BONE_BLOCK).nonOpaque().requiresTool()
-				.strength(3, 3).luminance(15));
+		super(FabricBlockSettings.of(Material.METAL).sounds(SoundType.BONE_BLOCK).nonOpaque().requiresTool().strength(3, 3).luminance(15));
 	}
 
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
-			BlockEntityType<T> type) {
-		return createTickerHelper(type, DoomMod.TOTEM, TotemEntity::tick);
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+		return createTickerHelper(type, ModRegistry.TOTEM, TotemEntity::tick);
 	}
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return DoomMod.TOTEM.create(pos, state);
+		return ModRegistry.TOTEM.create(pos, state);
 	}
 
 	@Override
@@ -81,7 +75,7 @@ public class TotemBlock extends BaseEntityBlock implements EntityBlock {
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-		Direction direction = state.getValue(FACING);
+		var direction = state.getValue(FACING);
 		return direction.getAxis() == Direction.Axis.X ? Z_AXIS_AABB : X_AXIS_AABB;
 	}
 

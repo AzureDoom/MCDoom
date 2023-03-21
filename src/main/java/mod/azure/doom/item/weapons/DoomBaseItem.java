@@ -2,8 +2,17 @@ package mod.azure.doom.item.weapons;
 
 import java.util.List;
 
-import mod.azure.doom.entity.tileentity.TickingLightEntity;
-import mod.azure.doom.util.registry.DoomBlocks;
+import mod.azure.azurelib.AzureLibMod;
+import mod.azure.azurelib.animatable.GeoItem;
+import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.entities.TickingLightEntity;
+import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -17,15 +26,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import mod.azure.azurelib.animatable.GeoItem;
-import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public abstract class DoomBaseItem extends Item implements GeoItem {
 
@@ -45,10 +45,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, "shoot_controller", event -> PlayState.CONTINUE)
-				.triggerableAnim("firing", RawAnimation.begin().then("firing", LoopType.PLAY_ONCE))
-				.triggerableAnim("firing_faster", RawAnimation.begin().then("firing_faster", LoopType.PLAY_ONCE))
-				.triggerableAnim("hook", RawAnimation.begin().then("hook", LoopType.PLAY_ONCE)));
+		controllers.add(new AnimationController<>(this, "shoot_controller", event -> PlayState.CONTINUE).triggerableAnim("firing", RawAnimation.begin().then("firing", LoopType.PLAY_ONCE)).triggerableAnim("firing_faster", RawAnimation.begin().then("firing_faster", LoopType.PLAY_ONCE)).triggerableAnim("hook", RawAnimation.begin().then("hook", LoopType.PLAY_ONCE)));
 	}
 
 	public static void removeAmmo(Item ammo, Player playerEntity) {
@@ -82,10 +79,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 
 	@Override
 	public void appendHoverText(ItemStack itemStack, Level level, List<Component> list, TooltipFlag tooltipFlag) {
-		list.add(Component
-				.translatable(
-						"Ammo: " + (itemStack.getMaxDamage() - itemStack.getDamageValue() - 1) + " / " + (itemStack.getMaxDamage() - 1))
-				.withStyle(ChatFormatting.ITALIC));
+		list.add(Component.translatable("Ammo: " + (itemStack.getMaxDamage() - itemStack.getDamageValue() - 1) + " / " + (itemStack.getMaxDamage() - 1)).withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(itemStack, level, list, tooltipFlag);
 	}
 
@@ -94,7 +88,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 			lightBlockPos = findFreeSpace(entity.level, entity.blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			entity.level.setBlockAndUpdate(lightBlockPos, DoomBlocks.TICKING_LIGHT_BLOCK.defaultBlockState());
+			entity.level.setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
 		} else if (checkDistance(lightBlockPos, entity.blockPosition(), 2)) {
 			BlockEntity blockEntity = entity.level.getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity) {
@@ -106,9 +100,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 	}
 
 	private boolean checkDistance(BlockPos blockPosA, BlockPos blockPosB, int distance) {
-		return Math.abs(blockPosA.getX() - blockPosB.getX()) <= distance
-				&& Math.abs(blockPosA.getY() - blockPosB.getY()) <= distance
-				&& Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
+		return Math.abs(blockPosA.getX() - blockPosB.getX()) <= distance && Math.abs(blockPosA.getY() - blockPosB.getY()) <= distance && Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
 	}
 
 	private BlockPos findFreeSpace(Level world, BlockPos blockPos, int maxDistance) {
@@ -126,7 +118,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 				for (int z : offsets) {
 					BlockPos offsetPos = blockPos.offset(x, y, z);
 					BlockState state = world.getBlockState(offsetPos);
-					if (state.isAir() || state.getBlock().equals(DoomBlocks.TICKING_LIGHT_BLOCK))
+					if (state.isAir() || state.getBlock().equals(AzureLibMod.TICKING_LIGHT_BLOCK))
 						return offsetPos;
 				}
 

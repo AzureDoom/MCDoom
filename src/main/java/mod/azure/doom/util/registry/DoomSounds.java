@@ -3,164 +3,236 @@ package mod.azure.doom.util.registry;
 import mod.azure.doom.DoomMod;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 
 public class DoomSounds {
 
-	public static SoundEvent EMPTY = of("doom.emptyclip");
-	public static SoundEvent BEEP = of("doom.grenadeabouttoexplode");
-
-	public static SoundEvent BFG_FIRING = of("doom.bfg_firing");
-	public static SoundEvent BFG_HIT = of("doom.bfg_hit");
-
-	public static SoundEvent PLASMA_FIRING = of("doom.plasmafire");
-	public static SoundEvent PLASMA_HIT = of("doom.plasmahit");
-
-	public static SoundEvent ROCKET_FIRING = of("doom.rocketfire");
-	public static SoundEvent ROCKET_HIT = of("doom.rockethit");
-
-	public static SoundEvent HEAVY_CANNON = of("doom.heavy_cannon");
-
-	public static SoundEvent SHOOT1 = of("doom.shoot1");
-
-	public static SoundEvent CHAINSAW_IDLE = of("doom.chainsaw_idle");
-	public static SoundEvent CHAINSAW_ATTACKING = of("doom.chainsaw_attacking");
-
-	public static SoundEvent CHAINGUN_SHOOT = of("doom.chaingun_fire");
-
-	public static SoundEvent PISTOL_HIT = of("doom.pistol_fire");
-
-	public static SoundEvent SHOTGUN_SHOOT = of("doom.shotgun_fire");
-	public static SoundEvent SHOTGUNRELOAD = of("doom.shotgunreload");
-	public static SoundEvent CLIPRELOAD = of("doom.clipreload");
-
-	public static SoundEvent SUPER_SHOTGUN_SHOOT = of("doom.super_shotgun_fire");
-
-	public static SoundEvent UNMAKYR_FIRE = of("doom.unmakyr_fire");
-
-	public static SoundEvent LOADING_END = of("doom.loading_end");
-
-	public static SoundEvent QUICK1_1 = of("doom.quick1_1");
-	
-	public static SoundEvent CRUCIBLE_LEFT = of("crucible_left");
-	public static SoundEvent CRUCIBLE_RIGHT = of("crucible_right");
-	public static SoundEvent CRUCIBLE_STAB = of("crucible_stab");
-	
-	public static SoundEvent CRUCIBLE_HAMMER = of("crucible_hammer");
-	public static SoundEvent CRUCIBLE_AXE_RIGHT = of("crucible_axe_right");
-	public static SoundEvent CRUCIBLE_AXE_LEFT = of("crucible_axe_left");
-
-	public static SoundEvent E1M1 = of("doom.e1m1");
-	public static SoundEvent NETHERAMBIENT_GEOFFPLAYSGUITAR = of("doom.netherambient_geoffplaysguitar");
-
-	public static SoundEvent IMP_AMBIENT = of("doom.imp_ambient");
-	public static SoundEvent IMP_DEATH = of("doom.imp_death");
-	public static SoundEvent IMP_HURT = of("doom.imp_hurt");
-	public static SoundEvent IMP_STEP = of("doom.imp_step");
-
-	public static SoundEvent ARCHVILE_DEATH = of("doom.arch_vile_death");
-	public static SoundEvent ARCHVILE_HURT = of("doom.arch_vile_hit");
-	public static SoundEvent ARCHVILE_AMBIENT = of("doom.arch_vile_idle");
-	public static SoundEvent ARCHVILE_PORTAL = of("doom.arch_vile_portal");
-	public static SoundEvent ARCHVILE_SCREAM = of("doom.arch_vile_scream");
-	public static SoundEvent ARCHVILE_STARE = of("doom.arch_vile_stare");
-
-	public static SoundEvent BARON_AMBIENT = of("doom.baron_angry");
-	public static SoundEvent BARON_DEATH = of("doom.baron_death");
-	public static SoundEvent BARON_HURT = of("doom.baron_hurt");
-	public static SoundEvent BARON_STEP = of("doom.baron_say");
-
-	public static SoundEvent PINKY_AMBIENT = of("doom.pinky_idle");
-	public static SoundEvent PINKY_DEATH = of("doom.pinky_death");
-	public static SoundEvent PINKY_HURT = of("doom.pinky_hurt");
-	public static SoundEvent PINKY_STEP = of("doom.pinky_step");
-	public static SoundEvent PINKY_YELL = of("doom.pinky_yell");
-
-	public static SoundEvent LOST_SOUL_DEATH = of("doom.lost_soul_death");
-	public static SoundEvent LOST_SOUL_AMBIENT = of("doom.lost_soul_say");
-
-	public static SoundEvent CACODEMON_AMBIENT = of("doom.cacodemon_moan");
-	public static SoundEvent CACODEMON_DEATH = of("doom.cacodemon_death");
-	public static SoundEvent CACODEMON_HURT = of("doom.cacodemon_hit");
-	public static SoundEvent CACODEMON_AFFECTIONATE_SCREAM = of("doom.cacodemon_affectionate_scream");
-
-	public static SoundEvent SPIDERDEMON_AMBIENT = of("doom.spiderdemon_step");
-	public static SoundEvent SPIDERDEMON_DEATH = of("doom.spiderdemon_death");
-	public static SoundEvent SPIDERDEMON_HURT = of("doom.spiderdemon_say");
-
-	public static SoundEvent ZOMBIEMAN_AMBIENT = of("doom.zombieman_idle");
-	public static SoundEvent ZOMBIEMAN_DEATH = of("doom.zombieman_death");
-	public static SoundEvent ZOMBIEMAN_HURT = of("doom.zombieman_hurt");
-
-	public static SoundEvent CYBERDEMON_AMBIENT = of("doom.cyberdemon_throw");
-	public static SoundEvent CYBERDEMON_DEATH = of("doom.cyberdemon_death");
-	public static SoundEvent CYBERDEMON_HURT = of("doom.cyberdemon_hit");
-	public static SoundEvent CYBERDEMON_STEP = of("doom.cyberdemon_walk");
-
-	public static SoundEvent MANCUBUS_AMBIENT = of("doom.mancubus_say");
-	public static SoundEvent MANCUBUS_DEATH = of("doom.mancubus_death");
-	public static SoundEvent MANCUBUS_HURT = of("doom.mancubus_hit");
-	public static SoundEvent MANCUBUS_STEP = of("doom.mancubus_walk");
-
-	public static SoundEvent REVENANT_AMBIENT = of("doom.revenant_say");
-	public static SoundEvent REVENANT_DEATH = of("doom.revenant_death");
-	public static SoundEvent REVENANT_HURT = of("doom.revenant_hurt");
-	public static SoundEvent REVENANT_ATTACK = of("doom.revenant_attack");
-	public static SoundEvent REVENANT_DOOT = of("doom.revenant_doot");
-
-	public static SoundEvent ARACHNOTRON_AMBIENT = of("doom.arachnotron_idle");
-	public static SoundEvent ARACHNOTRON_DEATH = of("doom.arachnotron_death");
-	public static SoundEvent ARACHNOTRON_HURT = of("doom.arachnotron_hurt");
-
-	public static SoundEvent HELLKNIGHT_AMBIENT = of("doom.hellknight_say");
-	public static SoundEvent HELLKNIGHT_DEATH = of("doom.hellknight_death");
-	public static SoundEvent HELLKNIGHT_HURT = of("doom.hellknight_hurt");
-
-	public static SoundEvent PAIN_AMBIENT = of("doom.pain_say");
-	public static SoundEvent PAIN_DEATH = of("doom.pain_death");
-	public static SoundEvent PAIN_HURT = of("doom.pain_hurt");
-
-	public static SoundEvent ICON_AMBIENT = of("doom.icon_ambient");
-	public static SoundEvent ICON_DEATH = of("doom.icon_death");
-	public static SoundEvent ICON_HURT = of("doom.icon_hurt");
-
-	public static SoundEvent BALLISTA_FIRING = of("doom.ballista_firing");
-
-	public static SoundEvent PSOLDIER_AMBIENT = of("doom.psoldier_idle");
-	public static SoundEvent PSOLDIER_DEATH = of("doom.psoldier_death");
-	public static SoundEvent PSOLDIER_HURT = of("doom.psoldier_hit");
-
-	public static SoundEvent GARGOLYE_AMBIENT = of("doom.gargolye_idle");
-	public static SoundEvent GARGOLYE_DEATH = of("doom.gargolye_death");
-	public static SoundEvent GARGOLYE_HURT = of("doom.gargolye_hit");
-
-	public static SoundEvent MECHA_AMBIENT = of("doom.mecha_idle");
-	public static SoundEvent MECHA_DEATH = of("doom.mecha_death");
-	public static SoundEvent MECHA_HURT = of("doom.mecha_hit");
-
-	public static SoundEvent WHIPLASH_AMBIENT = of("doom.whiplash_ambient");
-	public static SoundEvent WHIPLASH_DEATH = of("doom.whiplash_death");
-	public static SoundEvent WHIPLASH_HURT = of("doom.whiplash_hurt");
-
-	public static SoundEvent DOOMHUNTER_AMBIENT = of("doom.doomhunter_ambient");
-	public static SoundEvent DOOMHUNTER_DEATH = of("doom.doomhunter_death");
-	public static SoundEvent DOOMHUNTER_HURT = of("doom.doomhunter_hurt");
-	public static SoundEvent DOOMHUNTER_PHASECHANGE = of("doom.doomhunter_phasechange");
-
-	public static SoundEvent MAKYR_AMBIENT = of("doom.maykr_ambient");
-	public static SoundEvent MAKYR_DEATH = of("doom.maykr_death");
-	public static SoundEvent MAKYR_HURT = of("doom.maykr_hurt");
-
-	public static SoundEvent MOTHER_AMBIENT = of("doom.mother_ambient");
-	public static SoundEvent MOTHER_DEATH = of("doom.mother_death");
-	public static SoundEvent MOTHER_ATTACK = of("doom.mother_attack");
-	public static SoundEvent MOTHER_HURT = of("doom.mother_pain");
+	public static SoundEvent EMPTY;
+	public static SoundEvent BEEP;
+	public static SoundEvent BFG_FIRING;
+	public static SoundEvent BFG_HIT;
+	public static SoundEvent PLASMA_FIRING;
+	public static SoundEvent PLASMA_HIT;
+	public static SoundEvent ROCKET_FIRING;
+	public static SoundEvent ROCKET_HIT;
+	public static SoundEvent HEAVY_CANNON;
+	public static SoundEvent SHOOT1;
+	public static SoundEvent CHAINSAW_IDLE;
+	public static SoundEvent CHAINSAW_ATTACKING;
+	public static SoundEvent CHAINGUN_SHOOT;
+	public static SoundEvent PISTOL_HIT;
+	public static SoundEvent SHOTGUN_SHOOT;
+	public static SoundEvent SHOTGUNRELOAD;
+	public static SoundEvent CLIPRELOAD;
+	public static SoundEvent SUPER_SHOTGUN_SHOOT;
+	public static SoundEvent UNMAKYR_FIRE;
+	public static SoundEvent LOADING_END;
+	public static SoundEvent QUICK1_1;
+	public static SoundEvent CRUCIBLE_LEFT;
+	public static SoundEvent CRUCIBLE_RIGHT;
+	public static SoundEvent CRUCIBLE_STAB;
+	public static SoundEvent CRUCIBLE_HAMMER;
+	public static SoundEvent CRUCIBLE_AXE_RIGHT;
+	public static SoundEvent CRUCIBLE_AXE_LEFT;
+	public static SoundEvent E1M1;
+	public static SoundEvent NETHERAMBIENT_GEOFFPLAYSGUITAR;
+	public static SoundEvent IMP_AMBIENT;
+	public static SoundEvent IMP_DEATH;
+	public static SoundEvent IMP_HURT;
+	public static SoundEvent IMP_STEP;
+	public static SoundEvent ARCHVILE_DEATH;
+	public static SoundEvent ARCHVILE_HURT;
+	public static SoundEvent ARCHVILE_AMBIENT;
+	public static SoundEvent ARCHVILE_PORTAL;
+	public static SoundEvent ARCHVILE_SCREAM;
+	public static SoundEvent ARCHVILE_STARE;
+	public static SoundEvent BARON_AMBIENT;
+	public static SoundEvent BARON_DEATH;
+	public static SoundEvent BARON_HURT;
+	public static SoundEvent BARON_STEP;
+	public static SoundEvent PINKY_AMBIENT;
+	public static SoundEvent PINKY_DEATH;
+	public static SoundEvent PINKY_HURT;
+	public static SoundEvent PINKY_STEP;
+	public static SoundEvent PINKY_YELL;
+	public static SoundEvent LOST_SOUL_DEATH;
+	public static SoundEvent LOST_SOUL_AMBIENT;
+	public static SoundEvent CACODEMON_AMBIENT;
+	public static SoundEvent CACODEMON_DEATH;
+	public static SoundEvent CACODEMON_HURT;
+	public static SoundEvent CACODEMON_AFFECTIONATE_SCREAM;
+	public static SoundEvent SPIDERDEMON_AMBIENT;
+	public static SoundEvent SPIDERDEMON_DEATH;
+	public static SoundEvent SPIDERDEMON_HURT;
+	public static SoundEvent ZOMBIEMAN_AMBIENT;
+	public static SoundEvent ZOMBIEMAN_DEATH;
+	public static SoundEvent ZOMBIEMAN_HURT;
+	public static SoundEvent CYBERDEMON_AMBIENT;
+	public static SoundEvent CYBERDEMON_DEATH;
+	public static SoundEvent CYBERDEMON_HURT;
+	public static SoundEvent CYBERDEMON_STEP;
+	public static SoundEvent MANCUBUS_AMBIENT;
+	public static SoundEvent MANCUBUS_DEATH;
+	public static SoundEvent MANCUBUS_HURT;
+	public static SoundEvent MANCUBUS_STEP;
+	public static SoundEvent REVENANT_AMBIENT;
+	public static SoundEvent REVENANT_DEATH;
+	public static SoundEvent REVENANT_HURT;
+	public static SoundEvent REVENANT_ATTACK;
+	public static SoundEvent REVENANT_DOOT;
+	public static SoundEvent ARACHNOTRON_AMBIENT;
+	public static SoundEvent ARACHNOTRON_DEATH;
+	public static SoundEvent ARACHNOTRON_HURT;
+	public static SoundEvent HELLKNIGHT_AMBIENT;
+	public static SoundEvent HELLKNIGHT_DEATH;
+	public static SoundEvent HELLKNIGHT_HURT;
+	public static SoundEvent PAIN_AMBIENT;
+	public static SoundEvent PAIN_DEATH;
+	public static SoundEvent PAIN_HURT;
+	public static SoundEvent ICON_AMBIENT;
+	public static SoundEvent ICON_DEATH;
+	public static SoundEvent ICON_HURT;
+	public static SoundEvent BALLISTA_FIRING;
+	public static SoundEvent PSOLDIER_AMBIENT;
+	public static SoundEvent PSOLDIER_DEATH;
+	public static SoundEvent PSOLDIER_HURT;
+	public static SoundEvent GARGOLYE_AMBIENT;
+	public static SoundEvent GARGOLYE_DEATH;
+	public static SoundEvent GARGOLYE_HURT;
+	public static SoundEvent MECHA_AMBIENT;
+	public static SoundEvent MECHA_DEATH;
+	public static SoundEvent MECHA_HURT;
+	public static SoundEvent WHIPLASH_AMBIENT;
+	public static SoundEvent WHIPLASH_DEATH;
+	public static SoundEvent WHIPLASH_HURT;
+	public static SoundEvent DOOMHUNTER_AMBIENT;
+	public static SoundEvent DOOMHUNTER_DEATH;
+	public static SoundEvent DOOMHUNTER_HURT;
+	public static SoundEvent DOOMHUNTER_PHASECHANGE;
+	public static SoundEvent MAKYR_AMBIENT;
+	public static SoundEvent MAKYR_DEATH;
+	public static SoundEvent MAKYR_HURT;
+	public static SoundEvent MOTHER_AMBIENT;
+	public static SoundEvent MOTHER_DEATH;
+	public static SoundEvent MOTHER_ATTACK;
+	public static SoundEvent MOTHER_HURT;
 
 	static SoundEvent of(String id) {
-		SoundEvent sound = SoundEvent.createVariableRangeEvent(new ResourceLocation(DoomMod.MODID, id));
-		Registry.register(BuiltInRegistries.SOUND_EVENT, new ResourceLocation(DoomMod.MODID, id), sound);
+		var sound = SoundEvent.createVariableRangeEvent(DoomMod.modResource(id));
+		Registry.register(BuiltInRegistries.SOUND_EVENT, DoomMod.modResource(id), sound);
 		return sound;
+	}
+
+	public static void initialize() {
+		EMPTY = of("doom.emptyclip");
+		BEEP = of("doom.grenadeabouttoexplode");
+		BFG_FIRING = of("doom.bfg_firing");
+		BFG_HIT = of("doom.bfg_hit");
+		PLASMA_FIRING = of("doom.plasmafire");
+		PLASMA_HIT = of("doom.plasmahit");
+		ROCKET_FIRING = of("doom.rocketfire");
+		ROCKET_HIT = of("doom.rockethit");
+		HEAVY_CANNON = of("doom.heavy_cannon");
+		SHOOT1 = of("doom.shoot1");
+		CHAINSAW_IDLE = of("doom.chainsaw_idle");
+		CHAINSAW_ATTACKING = of("doom.chainsaw_attacking");
+		CHAINGUN_SHOOT = of("doom.chaingun_fire");
+		PISTOL_HIT = of("doom.pistol_fire");
+		SHOTGUN_SHOOT = of("doom.shotgun_fire");
+		SHOTGUNRELOAD = of("doom.shotgunreload");
+		CLIPRELOAD = of("doom.clipreload");
+		SUPER_SHOTGUN_SHOOT = of("doom.super_shotgun_fire");
+		UNMAKYR_FIRE = of("doom.unmakyr_fire");
+		LOADING_END = of("doom.loading_end");
+		QUICK1_1 = of("doom.quick1_1");
+		CRUCIBLE_LEFT = of("crucible_left");
+		CRUCIBLE_RIGHT = of("crucible_right");
+		CRUCIBLE_STAB = of("crucible_stab");
+		CRUCIBLE_HAMMER = of("crucible_hammer");
+		CRUCIBLE_AXE_RIGHT = of("crucible_axe_right");
+		CRUCIBLE_AXE_LEFT = of("crucible_axe_left");
+		E1M1 = of("doom.e1m1");
+		NETHERAMBIENT_GEOFFPLAYSGUITAR = of("doom.netherambient_geoffplaysguitar");
+		IMP_AMBIENT = of("doom.imp_ambient");
+		IMP_DEATH = of("doom.imp_death");
+		IMP_HURT = of("doom.imp_hurt");
+		IMP_STEP = of("doom.imp_step");
+		ARCHVILE_DEATH = of("doom.arch_vile_death");
+		ARCHVILE_HURT = of("doom.arch_vile_hit");
+		ARCHVILE_AMBIENT = of("doom.arch_vile_idle");
+		ARCHVILE_PORTAL = of("doom.arch_vile_portal");
+		ARCHVILE_SCREAM = of("doom.arch_vile_scream");
+		ARCHVILE_STARE = of("doom.arch_vile_stare");
+		BARON_AMBIENT = of("doom.baron_angry");
+		BARON_DEATH = of("doom.baron_death");
+		BARON_HURT = of("doom.baron_hurt");
+		BARON_STEP = of("doom.baron_say");
+		PINKY_AMBIENT = of("doom.pinky_idle");
+		PINKY_DEATH = of("doom.pinky_death");
+		PINKY_HURT = of("doom.pinky_hurt");
+		PINKY_STEP = of("doom.pinky_step");
+		PINKY_YELL = of("doom.pinky_yell");
+		LOST_SOUL_DEATH = of("doom.lost_soul_death");
+		LOST_SOUL_AMBIENT = of("doom.lost_soul_say");
+		CACODEMON_AMBIENT = of("doom.cacodemon_moan");
+		CACODEMON_DEATH = of("doom.cacodemon_death");
+		CACODEMON_HURT = of("doom.cacodemon_hit");
+		CACODEMON_AFFECTIONATE_SCREAM = of("doom.cacodemon_affectionate_scream");
+		SPIDERDEMON_AMBIENT = of("doom.spiderdemon_step");
+		SPIDERDEMON_DEATH = of("doom.spiderdemon_death");
+		SPIDERDEMON_HURT = of("doom.spiderdemon_say");
+		ZOMBIEMAN_AMBIENT = of("doom.zombieman_idle");
+		ZOMBIEMAN_DEATH = of("doom.zombieman_death");
+		ZOMBIEMAN_HURT = of("doom.zombieman_hurt");
+		CYBERDEMON_AMBIENT = of("doom.cyberdemon_throw");
+		CYBERDEMON_DEATH = of("doom.cyberdemon_death");
+		CYBERDEMON_HURT = of("doom.cyberdemon_hit");
+		CYBERDEMON_STEP = of("doom.cyberdemon_walk");
+		MANCUBUS_AMBIENT = of("doom.mancubus_say");
+		MANCUBUS_DEATH = of("doom.mancubus_death");
+		MANCUBUS_HURT = of("doom.mancubus_hit");
+		MANCUBUS_STEP = of("doom.mancubus_walk");
+		REVENANT_AMBIENT = of("doom.revenant_say");
+		REVENANT_DEATH = of("doom.revenant_death");
+		REVENANT_HURT = of("doom.revenant_hurt");
+		REVENANT_ATTACK = of("doom.revenant_attack");
+		REVENANT_DOOT = of("doom.revenant_doot");
+		ARACHNOTRON_AMBIENT = of("doom.arachnotron_idle");
+		ARACHNOTRON_DEATH = of("doom.arachnotron_death");
+		ARACHNOTRON_HURT = of("doom.arachnotron_hurt");
+		HELLKNIGHT_AMBIENT = of("doom.hellknight_say");
+		HELLKNIGHT_DEATH = of("doom.hellknight_death");
+		HELLKNIGHT_HURT = of("doom.hellknight_hurt");
+		PAIN_AMBIENT = of("doom.pain_say");
+		PAIN_DEATH = of("doom.pain_death");
+		PAIN_HURT = of("doom.pain_hurt");
+		ICON_AMBIENT = of("doom.icon_ambient");
+		ICON_DEATH = of("doom.icon_death");
+		ICON_HURT = of("doom.icon_hurt");
+		BALLISTA_FIRING = of("doom.ballista_firing");
+		PSOLDIER_AMBIENT = of("doom.psoldier_idle");
+		PSOLDIER_DEATH = of("doom.psoldier_death");
+		PSOLDIER_HURT = of("doom.psoldier_hit");
+		GARGOLYE_AMBIENT = of("doom.gargolye_idle");
+		GARGOLYE_DEATH = of("doom.gargolye_death");
+		GARGOLYE_HURT = of("doom.gargolye_hit");
+		MECHA_AMBIENT = of("doom.mecha_idle");
+		MECHA_DEATH = of("doom.mecha_death");
+		MECHA_HURT = of("doom.mecha_hit");
+		WHIPLASH_AMBIENT = of("doom.whiplash_ambient");
+		WHIPLASH_DEATH = of("doom.whiplash_death");
+		WHIPLASH_HURT = of("doom.whiplash_hurt");
+		DOOMHUNTER_AMBIENT = of("doom.doomhunter_ambient");
+		DOOMHUNTER_DEATH = of("doom.doomhunter_death");
+		DOOMHUNTER_HURT = of("doom.doomhunter_hurt");
+		DOOMHUNTER_PHASECHANGE = of("doom.doomhunter_phasechange");
+		MAKYR_AMBIENT = of("doom.maykr_ambient");
+		MAKYR_DEATH = of("doom.maykr_death");
+		MAKYR_HURT = of("doom.maykr_hurt");
+		MOTHER_AMBIENT = of("doom.mother_ambient");
+		MOTHER_DEATH = of("doom.mother_death");
+		MOTHER_ATTACK = of("doom.mother_attack");
+		MOTHER_HURT = of("doom.mother_pain");
 	}
 
 }

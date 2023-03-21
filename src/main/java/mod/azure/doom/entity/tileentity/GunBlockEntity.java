@@ -6,8 +6,8 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.gui.GunTableScreenHandler;
+import mod.azure.doom.util.registry.ModRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -28,7 +28,7 @@ public class GunBlockEntity extends BlockEntity implements ImplementedInventory,
 	private final NonNullList<ItemStack> items = NonNullList.withSize(6, ItemStack.EMPTY);
 
 	public GunBlockEntity(BlockPos pos, BlockState state) {
-		super(DoomMod.GUN_TABLE_ENTITY, pos, state);
+		super(ModRegistry.GUN_TABLE_ENTITY, pos, state);
 	}
 
 	@Override

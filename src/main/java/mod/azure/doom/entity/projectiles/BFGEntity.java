@@ -5,11 +5,13 @@ import java.util.Random;
 
 import org.jetbrains.annotations.Nullable;
 
+import mod.azure.azurelib.AzureLibMod;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.entities.TickingLightEntity;
 import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
@@ -19,11 +21,9 @@ import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tierboss.MotherDemonEntity;
-import mod.azure.doom.entity.tileentity.TickingLightEntity;
-import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import mod.azure.doom.util.registry.DoomSounds;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -61,8 +61,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 	protected int timeInAir;
 	protected boolean inAir;
 	private int ticksInAir;
-	private static final EntityDataAccessor<Integer> TARGET_ENTITY = SynchedEntityData.defineId(BFGEntity.class,
-			EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Integer> TARGET_ENTITY = SynchedEntityData.defineId(BFGEntity.class, EntityDataSerializers.INT);
 	private LivingEntity cachedBeamTarget;
 	private LivingEntity shooter;
 	private BlockPos lightBlockPos = null;
@@ -82,7 +81,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 	}
 
 	public BFGEntity(Level world, LivingEntity owner) {
-		super(ProjectilesEntityRegister.BFG_CELL, owner, world);
+		super(DoomProjectiles.BFG_CELL, owner, world);
 		this.shooter = owner;
 	}
 
@@ -167,11 +166,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 		final AABB aabb = new AABB(this.blockPosition().above()).inflate(24D, 24D, 24D);
 		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
 			Entity listEntity = randomElement.tryCast(e);
-			if (!(e instanceof Player || e instanceof EnderDragon || e instanceof GoreNestEntity
-					|| e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity
-					|| e instanceof MotherDemonEntity)
-					&& (e instanceof Monster || e instanceof Slime || e instanceof Phantom || e instanceof DemonEntity
-							|| e instanceof Shulker || e instanceof Hoglin || (e == listEntity))) {
+			if (!(e instanceof Player || e instanceof EnderDragon || e instanceof GoreNestEntity || e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity) && (e instanceof Monster || e instanceof Slime || e instanceof Phantom || e instanceof DemonEntity || e instanceof Shulker || e instanceof Hoglin || (e == listEntity))) {
 				if (e.isAlive()) {
 					e.hurt(DamageSource.explosion(this, shooter), DoomConfig.bfgball_damage_aoe);
 					this.setTargetedEntity(e.getId());
@@ -179,13 +174,11 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 			}
 			if (e instanceof EnderDragon) {
 				if (e.isAlive()) {
-					((EnderDragon) e).head.hurt(DamageSource.playerAttack((Player) this.shooter),
-							DoomConfig.bfgball_damage_dragon * 0.3F);
+					((EnderDragon) e).head.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.bfgball_damage_dragon * 0.3F);
 					this.setTargetedEntity(e.getId());
 				}
 			}
-			if (e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity
-					|| e instanceof MotherDemonEntity) {
+			if (e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity) {
 				if (e.isAlive()) {
 					e.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.bfgball_damage_aoe * 0.1F);
 				}
@@ -198,7 +191,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 			lightBlockPos = findFreeSpace(level, blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			level.setBlockAndUpdate(lightBlockPos, DoomBlocks.TICKING_LIGHT_BLOCK.defaultBlockState());
+			level.setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
 		} else if (checkDistance(lightBlockPos, blockPosition(), 2)) {
 			BlockEntity blockEntity = level.getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity) {
@@ -210,9 +203,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 	}
 
 	private boolean checkDistance(BlockPos blockPosA, BlockPos blockPosB, int distance) {
-		return Math.abs(blockPosA.getX() - blockPosB.getX()) <= distance
-				&& Math.abs(blockPosA.getY() - blockPosB.getY()) <= distance
-				&& Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
+		return Math.abs(blockPosA.getX() - blockPosB.getX()) <= distance && Math.abs(blockPosA.getY() - blockPosB.getY()) <= distance && Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
 	}
 
 	private BlockPos findFreeSpace(Level world, BlockPos blockPos, int maxDistance) {
@@ -230,7 +221,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 				for (int z : offsets) {
 					BlockPos offsetPos = blockPos.offset(x, y, z);
 					BlockState state = world.getBlockState(offsetPos);
-					if (state.isAir() || state.getBlock().equals(DoomBlocks.TICKING_LIGHT_BLOCK))
+					if (state.isAir() || state.getBlock().equals(AzureLibMod.TICKING_LIGHT_BLOCK))
 						return offsetPos;
 				}
 
@@ -265,9 +256,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		if (!this.level.isClientSide) {
 			this.doDamage();
-			this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
-					DoomConfig.enable_block_breaking ? Level.ExplosionInteraction.BLOCK
-							: Level.ExplosionInteraction.NONE);
+			this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, DoomConfig.enable_block_breaking ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
 			this.remove(RemovalReason.KILLED);
 		}
 		this.playSound(DoomSounds.BFG_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
@@ -277,16 +266,11 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 		final AABB aabb = new AABB(this.blockPosition().above()).inflate(24D, 24D, 24D);
 		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
 			Entity listEntity = randomElement.tryCast(e);
-			if (!(e instanceof Player || e instanceof EnderDragon || e instanceof GoreNestEntity
-					|| e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity
-					|| e instanceof MotherDemonEntity)
-					&& (e instanceof Monster || e instanceof Slime || e instanceof Phantom || e instanceof DemonEntity
-							|| e instanceof Shulker || e instanceof Hoglin || (e == listEntity))) {
+			if (!(e instanceof Player || e instanceof EnderDragon || e instanceof GoreNestEntity || e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity) && (e instanceof Monster || e instanceof Slime || e instanceof Phantom || e instanceof DemonEntity || e instanceof Shulker || e instanceof Hoglin || (e == listEntity))) {
 				e.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.bfgball_damage);
 				this.setTargetedEntity(e.getId());
 				if (!this.level.isClientSide) {
-					List<LivingEntity> list1 = this.level.getEntitiesOfClass(LivingEntity.class,
-							this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D));
+					List<LivingEntity> list1 = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D));
 					AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(e.level, e.getX(), e.getY(), e.getZ());
 					areaeffectcloudentity.setParticle(ParticleTypes.TOTEM_OF_UNDYING);
 					areaeffectcloudentity.setRadius(3.0F);
@@ -304,12 +288,10 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 			}
 			if (e instanceof EnderDragon) {
 				if (e.isAlive()) {
-					((EnderDragon) e).head.hurt(DamageSource.playerAttack((Player) this.shooter),
-							DoomConfig.bfgball_damage_dragon * 0.3F);
+					((EnderDragon) e).head.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.bfgball_damage_dragon * 0.3F);
 				}
 			}
-			if (e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity
-					|| e instanceof MotherDemonEntity) {
+			if (e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity) {
 				if (e.isAlive()) {
 					e.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.bfgball_damage * 0.1F);
 				}

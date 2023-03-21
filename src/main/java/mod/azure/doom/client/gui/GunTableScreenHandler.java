@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.util.recipes.GunTableRecipe;
 import mod.azure.doom.util.recipes.GunTableRecipe.Type;
 import mod.azure.doom.util.registry.DoomBlocks;
+import mod.azure.doom.util.registry.ModRegistry;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -34,7 +34,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 
 	// server
 	public GunTableScreenHandler(int syncId, Inventory playerInventory, ContainerLevelAccess context) {
-		super(DoomMod.SCREEN_HANDLER_TYPE, syncId);
+		super(ModRegistry.SCREEN_HANDLER_TYPE, syncId);
 		this.playerInventory = playerInventory;
 		this.gunTableInventory = new DoomGunInventory(this);
 		this.context = context;
@@ -62,8 +62,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 		if (!world.isClientSide()) {
 			ServerPlayer serverPlayerEntity = (ServerPlayer) player;
 			ItemStack itemStack = ItemStack.EMPTY;
-			Optional<GunTableRecipe> optional = world.getServer().getRecipeManager().getRecipeFor(Type.INSTANCE,
-					craftingInventory, world);
+			Optional<GunTableRecipe> optional = world.getServer().getRecipeManager().getRecipeFor(Type.INSTANCE, craftingInventory, world);
 			if (optional.isPresent()) {
 				GunTableRecipe craftingRecipe = optional.get();
 				itemStack = craftingRecipe.assemble(craftingInventory);
@@ -129,8 +128,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 	}
 
 	public List<GunTableRecipe> getRecipes() {
-		List<GunTableRecipe> list = new ArrayList<>(
-				playerInventory.player.level.getRecipeManager().getAllRecipesFor(Type.INSTANCE));
+		List<GunTableRecipe> list = new ArrayList<>(playerInventory.player.level.getRecipeManager().getAllRecipesFor(Type.INSTANCE));
 		list.sort(null);
 		return list;
 	}
@@ -190,8 +188,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 	}
 
 	private boolean equals(ItemStack itemStack, ItemStack otherItemStack) {
-		return itemStack.getItem() == otherItemStack.getItem()
-				&& ItemStack.isSame(itemStack, otherItemStack);
+		return itemStack.getItem() == otherItemStack.getItem() && ItemStack.isSame(itemStack, otherItemStack);
 	}
 
 	public void removed(Player player) {

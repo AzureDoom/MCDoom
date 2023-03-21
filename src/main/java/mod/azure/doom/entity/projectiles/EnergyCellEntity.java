@@ -11,7 +11,7 @@ import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomParticles;
 import mod.azure.doom.util.registry.DoomSounds;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -46,11 +46,11 @@ public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
 	}
 
 	public EnergyCellEntity(Level world, LivingEntity owner) {
-		super(ProjectilesEntityRegister.ENERGY_CELL, owner, world);
+		super(DoomProjectiles.ENERGY_CELL, owner, world);
 	}
 
 	public EnergyCellEntity(Level world, LivingEntity owner, float damage) {
-		super(ProjectilesEntityRegister.ENERGY_CELL, owner, world);
+		super(DoomProjectiles.ENERGY_CELL, owner, world);
 		this.projectiledamage = damage;
 	}
 

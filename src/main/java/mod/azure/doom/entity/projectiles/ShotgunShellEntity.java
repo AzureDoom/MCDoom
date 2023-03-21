@@ -9,7 +9,7 @@ import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.registry.DoomItems;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -45,7 +45,7 @@ public class ShotgunShellEntity extends AbstractArrow implements GeoEntity {
 	}
 
 	public ShotgunShellEntity(Level world, LivingEntity owner, float damage) {
-		super(ProjectilesEntityRegister.SHOTGUN_SHELL, owner, world);
+		super(DoomProjectiles.SHOTGUN_SHELL, owner, world);
 		this.shelldamage = damage;
 	}
 

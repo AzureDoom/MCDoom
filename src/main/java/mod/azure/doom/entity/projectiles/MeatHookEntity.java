@@ -1,7 +1,7 @@
 package mod.azure.doom.entity.projectiles;
 
 import mod.azure.doom.util.PlayerProperties;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -46,19 +46,19 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
 	}
 
 	public MeatHookEntity(Level world, LivingEntity owner) {
-		super(ProjectilesEntityRegister.MEATHOOOK_ENTITY, owner, world);
+		super(DoomProjectiles.MEATHOOOK_ENTITY, owner, world);
 		this.setNoGravity(true);
 		this.setBaseDamage(0);
 	}
 
 	public MeatHookEntity(Level world, double x, double y, double z) {
-		super(ProjectilesEntityRegister.MEATHOOOK_ENTITY, x, y, z, world);
+		super(DoomProjectiles.MEATHOOOK_ENTITY, x, y, z, world);
 		this.setNoGravity(true);
 		this.setBaseDamage(0);
 	}
 
 	public MeatHookEntity(Level world) {
-		super(ProjectilesEntityRegister.MEATHOOOK_ENTITY, world);
+		super(DoomProjectiles.MEATHOOOK_ENTITY, world);
 		this.setNoGravity(true);
 		this.setBaseDamage(0);
 	}

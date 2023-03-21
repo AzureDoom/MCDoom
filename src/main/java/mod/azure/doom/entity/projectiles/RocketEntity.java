@@ -1,18 +1,18 @@
 package mod.azure.doom.entity.projectiles;
 
+import mod.azure.azurelib.AzureLibMod;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.entities.TickingLightEntity;
 import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import mod.azure.doom.entity.tileentity.TickingLightEntity;
-import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import mod.azure.doom.util.registry.DoomSounds;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -54,12 +54,12 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
 	}
 
 	public RocketEntity(Level world, LivingEntity owner) {
-		super(ProjectilesEntityRegister.ROCKET, owner, world);
+		super(DoomProjectiles.ROCKET, owner, world);
 		this.shooter = owner;
 	}
 
 	public RocketEntity(Level world, LivingEntity owner, float damage) {
-		super(ProjectilesEntityRegister.ROCKET, owner, world);
+		super(DoomProjectiles.ROCKET, owner, world);
 		this.shooter = owner;
 		this.projectiledamage = damage;
 	}
@@ -155,7 +155,7 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
 			lightBlockPos = findFreeSpace(level, blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			level.setBlockAndUpdate(lightBlockPos, DoomBlocks.TICKING_LIGHT_BLOCK.defaultBlockState());
+			level.setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
 		} else if (checkDistance(lightBlockPos, blockPosition(), 2)) {
 			BlockEntity blockEntity = level.getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity) {
@@ -167,9 +167,7 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
 	}
 
 	private boolean checkDistance(BlockPos blockPosA, BlockPos blockPosB, int distance) {
-		return Math.abs(blockPosA.getX() - blockPosB.getX()) <= distance
-				&& Math.abs(blockPosA.getY() - blockPosB.getY()) <= distance
-				&& Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
+		return Math.abs(blockPosA.getX() - blockPosB.getX()) <= distance && Math.abs(blockPosA.getY() - blockPosB.getY()) <= distance && Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
 	}
 
 	private BlockPos findFreeSpace(Level world, BlockPos blockPos, int maxDistance) {
@@ -187,7 +185,7 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
 				for (int z : offsets) {
 					BlockPos offsetPos = blockPos.offset(x, y, z);
 					BlockState state = world.getBlockState(offsetPos);
-					if (state.isAir() || state.getBlock().equals(DoomBlocks.TICKING_LIGHT_BLOCK))
+					if (state.isAir() || state.getBlock().equals(AzureLibMod.TICKING_LIGHT_BLOCK))
 						return offsetPos;
 				}
 
@@ -224,8 +222,7 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
 		areaeffectcloudentity.setDuration(1);
 		areaeffectcloudentity.absMoveTo(this.getX(), this.getY(), this.getZ());
 		this.level.addFreshEntity(areaeffectcloudentity);
-		level.playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE,
-				SoundSource.PLAYERS, 1.0F, 1.5F);
+		level.playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0F, 1.5F);
 		super.remove(reason);
 	}
 
@@ -256,8 +253,7 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
 			if (e instanceof LivingEntity) {
 				e.hurt(DamageSource.playerAttack((Player) this.shooter), projectiledamage);
 			}
-			this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 0.0F,
-					Level.ExplosionInteraction.NONE);
+			this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 0.0F, Level.ExplosionInteraction.NONE);
 		});
 
 	}

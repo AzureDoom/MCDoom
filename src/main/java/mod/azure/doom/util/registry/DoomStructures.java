@@ -23,11 +23,11 @@ public class DoomStructures {
 	public static StructureType<?> ARCHMAYKR;
 
 	public static void registerStructureFeatures() {
-		HELL_CHURCH = register(new ResourceLocation(DoomMod.MODID, "hell_church"), HellChurchStructure.CODEC);
-		ICON_FIGHT = register(new ResourceLocation(DoomMod.MODID, "icon_fight"), IconStructure.CODEC);
-		GLADIATOR_FIGHT = register(new ResourceLocation(DoomMod.MODID, "gladiator_fight"), GladiatorStructure.CODEC);
-		MOTHERDEMON = register(new ResourceLocation(DoomMod.MODID, "motherdemon1a"), MotherdemonStructure.CODEC);
-		ARCHMAYKR = register(new ResourceLocation(DoomMod.MODID, "archmakyr"), ArchMaykrStructure.CODEC);
+		HELL_CHURCH = register(DoomMod.modResource("hell_church"), HellChurchStructure.CODEC);
+		ICON_FIGHT = register(DoomMod.modResource("icon_fight"), IconStructure.CODEC);
+		GLADIATOR_FIGHT = register(DoomMod.modResource("gladiator_fight"), GladiatorStructure.CODEC);
+		MOTHERDEMON = register(DoomMod.modResource("motherdemon1a"), MotherdemonStructure.CODEC);
+		ARCHMAYKR = register(DoomMod.modResource("archmakyr"), ArchMaykrStructure.CODEC);
 	}
 
 	private static <S extends Structure> StructureType<S> register(ResourceLocation id, Codec<S> codec) {

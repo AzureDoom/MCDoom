@@ -1,12 +1,12 @@
 package mod.azure.doom.entity.projectiles;
 
+import mod.azure.azurelib.AzureLibMod;
+import mod.azure.azurelib.entities.TickingLightEntity;
 import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import mod.azure.doom.entity.tileentity.TickingLightEntity;
-import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomParticles;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -46,16 +46,15 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 	}
 
 	public UnmaykrBoltEntity(Level world, LivingEntity owner) {
-		super(ProjectilesEntityRegister.UNMAYKR, owner, world);
+		super(DoomProjectiles.UNMAYKR, owner, world);
 	}
 
 	public UnmaykrBoltEntity(Level world, LivingEntity owner, float damage) {
-		super(ProjectilesEntityRegister.UNMAYKR, owner, world);
+		super(DoomProjectiles.UNMAYKR, owner, world);
 		this.projectiledamage = damage;
 	}
 
-	protected UnmaykrBoltEntity(EntityType<? extends UnmaykrBoltEntity> type, double x, double y, double z,
-			Level world) {
+	protected UnmaykrBoltEntity(EntityType<? extends UnmaykrBoltEntity> type, double x, double y, double z, Level world) {
 		this(type, world);
 	}
 
@@ -134,7 +133,7 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 			lightBlockPos = findFreeSpace(level, blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			level.setBlockAndUpdate(lightBlockPos, DoomBlocks.TICKING_LIGHT_BLOCK.defaultBlockState());
+			level.setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
 		} else if (checkDistance(lightBlockPos, blockPosition(), 2)) {
 			BlockEntity blockEntity = level.getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity) {
@@ -146,9 +145,7 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 	}
 
 	private boolean checkDistance(BlockPos blockPosA, BlockPos blockPosB, int distance) {
-		return Math.abs(blockPosA.getX() - blockPosB.getX()) <= distance
-				&& Math.abs(blockPosA.getY() - blockPosB.getY()) <= distance
-				&& Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
+		return Math.abs(blockPosA.getX() - blockPosB.getX()) <= distance && Math.abs(blockPosA.getY() - blockPosB.getY()) <= distance && Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
 	}
 
 	private BlockPos findFreeSpace(Level world, BlockPos blockPos, int maxDistance) {
@@ -166,7 +163,7 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 				for (int z : offsets) {
 					BlockPos offsetPos = blockPos.offset(x, y, z);
 					BlockState state = world.getBlockState(offsetPos);
-					if (state.isAir() || state.getBlock().equals(DoomBlocks.TICKING_LIGHT_BLOCK))
+					if (state.isAir() || state.getBlock().equals(AzureLibMod.TICKING_LIGHT_BLOCK))
 						return offsetPos;
 				}
 
@@ -206,8 +203,7 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		Entity entity = entityHitResult.getEntity();
-		if (entityHitResult.getType() != HitResult.Type.ENTITY
-				|| !((EntityHitResult) entityHitResult).getEntity().is(entity)) {
+		if (entityHitResult.getType() != HitResult.Type.ENTITY || !((EntityHitResult) entityHitResult).getEntity().is(entity)) {
 			if (!this.level.isClientSide) {
 				this.remove(RemovalReason.KILLED);
 			}
@@ -231,10 +227,8 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 					this.remove(RemovalReason.KILLED);
 				}
 				this.doPostHurtEffects(livingentity);
-				if (entity1 != null && livingentity != entity1 && livingentity instanceof Player
-						&& entity1 instanceof ServerPlayer && !this.isSilent()) {
-					((ServerPlayer) entity1).connection
-							.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
+				if (entity1 != null && livingentity != entity1 && livingentity instanceof Player && entity1 instanceof ServerPlayer && !this.isSilent()) {
+					((ServerPlayer) entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
 				}
 			}
 		} else {

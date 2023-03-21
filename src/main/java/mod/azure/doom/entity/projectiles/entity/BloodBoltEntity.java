@@ -9,7 +9,7 @@ import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.registry.DoomSounds;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -44,12 +44,12 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
 
 	public BloodBoltEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
 			float directHitDamage) {
-		super(ProjectilesEntityRegister.BLOODBOLT_MOB, shooter, accelX, accelY, accelZ, worldIn);
+		super(DoomProjectiles.BLOODBOLT_MOB, shooter, accelX, accelY, accelZ, worldIn);
 		this.directHitDamage = directHitDamage;
 	}
 
 	public BloodBoltEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-		super(ProjectilesEntityRegister.BLOODBOLT_MOB, x, y, z, accelX, accelY, accelZ, worldIn);
+		super(DoomProjectiles.BLOODBOLT_MOB, x, y, z, accelX, accelY, accelZ, worldIn);
 	}
 
 	@Override

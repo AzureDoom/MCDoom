@@ -48,303 +48,127 @@ import mod.azure.doom.entity.tileentity.BarrelEntity;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 
 public class DoomEntities {
 
-	public static final EntityType<BarrelEntity> BARREL = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "barrel"),
-			FabricEntityTypeBuilder.<BarrelEntity>create(MobCategory.MISC, BarrelEntity::new)
-					.dimensions(EntityDimensions.fixed(0.98F, 0.98F)).trackRangeBlocks(90).trackedUpdateRate(1).forceTrackedVelocityUpdates(true)
-					.build());
+	public static EntityType<BarrelEntity> BARREL;
 
-	public static final EntityType<ImpEntity> IMP = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "imp"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, ImpEntity::new)
-					.dimensions(EntityDimensions.fixed(0.6f, 1.95F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
+	public static EntityType<ImpEntity> IMP;
+	public static EntityType<PinkyEntity> PINKY;
+	public static EntityType<SpectreEntity> SPECTRE;
+	public static EntityType<LostSoulEntity> LOST_SOUL;
+	public static EntityType<LostSoulEntity> LOST_SOUL_ETERNAL;
+	public static EntityType<CacodemonEntity> CACODEMON;
+	public static EntityType<ArchvileEntity> ARCHVILE;
+	public static EntityType<BaronEntity> BARON;
+	public static EntityType<MancubusEntity> MANCUBUS;
+	public static EntityType<SpiderMastermindEntity> SPIDERMASTERMIND;
+	public static EntityType<ArachnotronEntity> ARACHNOTRON;
+	public static EntityType<ZombiemanEntity> ZOMBIEMAN;
+	public static EntityType<RevenantEntity> REVENANT;
+	public static EntityType<ImpStoneEntity> IMP_STONE;
+	public static EntityType<ChaingunnerEntity> CHAINGUNNER;
+	public static EntityType<MarauderEntity> MARAUDER;
+	public static EntityType<ShotgunguyEntity> SHOTGUNGUY;
+	public static EntityType<PainEntity> PAIN;
+	public static EntityType<HellknightEntity> HELLKNIGHT;
+	public static EntityType<Hellknight2016Entity> HELLKNIGHT2016;
+	public static EntityType<Hellknight2016Entity> DREADKNIGHT;
+	public static EntityType<CyberdemonEntity> CYBERDEMON;
+	public static EntityType<UnwillingEntity> UNWILLING;
+	public static EntityType<PossessedSoldierEntity> POSSESSEDSOLDIER;
+	public static EntityType<PossessedScientistEntity> POSSESSEDSCIENTIST;
+	public static EntityType<PossessedScientistEntity> POSSESSEDWORKER;
+	public static EntityType<MechaZombieEntity> MECHAZOMBIE;
+	public static EntityType<CueBallEntity> CUEBALL;
+	public static EntityType<GoreNestEntity> GORE_NEST;
+	public static EntityType<GargoyleEntity> GARGOYLE;
+	public static EntityType<ProwlerEntity> PROWLER;
+	public static EntityType<IconofsinEntity> ICONOFSIN;
+	public static EntityType<ArachnotronEntity> ARACHNOTRONETERNAL;
+	public static EntityType<DoomHunterEntity> DOOMHUNTER;
+	public static EntityType<WhiplashEntity> WHIPLASH;
+	public static EntityType<BaronEntity> BARON2016;
+	public static EntityType<FireBaronEntity> FIREBARON;
+	public static EntityType<ArmoredBaronEntity> ARMORBARON;
+	public static EntityType<SpiderMastermind2016Entity> SPIDERMASTERMIND2016;
+	public static EntityType<MaykrDroneEntity> MAYKRDRONE;
+	public static EntityType<TentacleEntity> TENTACLE;
+	public static EntityType<TurretEntity> TURRET;
+	public static EntityType<MotherDemonEntity> MOTHERDEMON;
+	public static EntityType<BloodMaykrEntity> BLOODMAYKR;
+	public static EntityType<ArchMakyrEntity> ARCHMAKER;
+	public static EntityType<SummonerEntity> SUMMONER;
+	public static EntityType<Revenant2016Entity> REVENANT2016;
+	public static EntityType<GladiatorEntity> GLADIATOR;
 
-	public static final EntityType<PinkyEntity> PINKY = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "pinky"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, PinkyEntity::new)
-					.dimensions(EntityDimensions.fixed(1.7f, 2.2F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
+	private static <T extends Entity> EntityType<T> mob(String id, EntityType.EntityFactory<T> factory, float height, float width) {
+		var type = FabricEntityTypeBuilder.<T>create(MobCategory.MONSTER, factory).dimensions(EntityDimensions.scalable(height, width)).fireImmune().trackedUpdateRate(1).trackRangeBlocks(90).build();
+		Registry.register(BuiltInRegistries.ENTITY_TYPE, DoomMod.modResource(id), type);
 
-	public static final EntityType<SpectreEntity> SPECTRE = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "spectre"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, SpectreEntity::new)
-					.dimensions(EntityDimensions.fixed(1.7f, 2.2F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
+		return type;
+	}
 
-	public static final EntityType<LostSoulEntity> LOST_SOUL = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "lost_soul"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, LostSoulEntity::new)
-					.dimensions(EntityDimensions.fixed(1.0F, 1.0F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
+	private static <T extends Entity> EntityType<T> blockentity(String id, EntityType.EntityFactory<T> factory, float height, float width) {
+		var type = FabricEntityTypeBuilder.<T>create(MobCategory.MISC, factory).dimensions(EntityDimensions.scalable(height, width)).fireImmune().trackedUpdateRate(1).trackRangeBlocks(90).build();
+		Registry.register(BuiltInRegistries.ENTITY_TYPE, DoomMod.modResource(id), type);
 
-	public static final EntityType<LostSoulEntity> LOST_SOUL_ETERNAL = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "lost_soul_eternal"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, LostSoulEntity::new)
-					.dimensions(EntityDimensions.fixed(1.5F, 1.5F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
+		return type;
+	}
 
-	public static final EntityType<CacodemonEntity> CACODEMON = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "cacodemon"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, CacodemonEntity::new)
-					.dimensions(EntityDimensions.fixed(2.0F, 2.0F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<ArchvileEntity> ARCHVILE = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "archvile"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, ArchvileEntity::new)
-					.dimensions(EntityDimensions.fixed(0.9F, 3.3F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<BaronEntity> BARON = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "baron"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, BaronEntity::new)
-					.dimensions(EntityDimensions.fixed(1.3f, 3.9F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<MancubusEntity> MANCUBUS = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "mancubus"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, MancubusEntity::new)
-					.dimensions(EntityDimensions.fixed(2.3F, 3.0F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<SpiderMastermindEntity> SPIDERMASTERMIND = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "spidermastermind"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, SpiderMastermindEntity::new)
-					.dimensions(EntityDimensions.fixed(6.0F, 4.0F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<ArachnotronEntity> ARACHNOTRON = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "arachnotron"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, ArachnotronEntity::new)
-					.dimensions(EntityDimensions.fixed(4.0F, 2.0F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<ZombiemanEntity> ZOMBIEMAN = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "zombieman"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, ZombiemanEntity::new)
-					.dimensions(EntityDimensions.fixed(0.75f, 2.1F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<RevenantEntity> REVENANT = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "revenant"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, RevenantEntity::new)
-					.dimensions(EntityDimensions.fixed(1.9f, 3.95F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<ImpStoneEntity> IMP_STONE = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "stone_imp"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, ImpStoneEntity::new)
-					.dimensions(EntityDimensions.fixed(0.6f, 1.95F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-	public static final EntityType<ChaingunnerEntity> CHAINGUNNER = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "chaingunner"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, ChaingunnerEntity::new)
-					.dimensions(EntityDimensions.fixed(0.75f, 2.1F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<MarauderEntity> MARAUDER = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "marauder"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, MarauderEntity::new)
-					.dimensions(EntityDimensions.fixed(1.5f, 2.6F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<ShotgunguyEntity> SHOTGUNGUY = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "shotgunguy"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, ShotgunguyEntity::new)
-					.dimensions(EntityDimensions.fixed(0.75f, 2.1F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<PainEntity> PAIN = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "painelemental"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, PainEntity::new)
-					.dimensions(EntityDimensions.fixed(2.0F, 2.0F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<HellknightEntity> HELLKNIGHT = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "hellknight"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, HellknightEntity::new)
-					.dimensions(EntityDimensions.fixed(1.4F, 3.5F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<Hellknight2016Entity> HELLKNIGHT2016 = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "hellknight2016"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, Hellknight2016Entity::new)
-					.dimensions(EntityDimensions.fixed(1.8F, 3.0F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<Hellknight2016Entity> DREADKNIGHT = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "dreadknight"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, Hellknight2016Entity::new)
-					.dimensions(EntityDimensions.fixed(1.8F, 3.0F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<CyberdemonEntity> CYBERDEMON = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "cyberdemon"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, CyberdemonEntity::new)
-					.dimensions(EntityDimensions.fixed(3.0f, 7.0F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<UnwillingEntity> UNWILLING = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "unwilling"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, UnwillingEntity::new)
-					.dimensions(EntityDimensions.fixed(0.6f, 1.95F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<PossessedSoldierEntity> POSSESSEDSOLDIER = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "possessed_soldier"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, PossessedSoldierEntity::new)
-					.dimensions(EntityDimensions.fixed(0.9f, 2.35F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<PossessedScientistEntity> POSSESSEDSCIENTIST = Registry.register(
-			BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(DoomMod.MODID, "possessed_scientist"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, PossessedScientistEntity::new)
-					.dimensions(EntityDimensions.fixed(1.5f, 1.95F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<PossessedScientistEntity> POSSESSEDWORKER = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "possessed_worker"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, PossessedScientistEntity::new)
-					.dimensions(EntityDimensions.fixed(1.5f, 1.95F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<MechaZombieEntity> MECHAZOMBIE = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "mechazombie"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, MechaZombieEntity::new)
-					.dimensions(EntityDimensions.fixed(1.2f, 2.3F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<CueBallEntity> CUEBALL = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "cueball"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, CueBallEntity::new)
-					.dimensions(EntityDimensions.fixed(1.1F, 2.1F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<GoreNestEntity> GORE_NEST = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "gore_nest"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, GoreNestEntity::new)
-					.dimensions(EntityDimensions.fixed(3.0f, 4.0F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<GargoyleEntity> GARGOYLE = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "gargoyle"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, GargoyleEntity::new)
-					.dimensions(EntityDimensions.fixed(3.0f, 4.0F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<ProwlerEntity> PROWLER = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "prowler"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, ProwlerEntity::new)
-					.dimensions(EntityDimensions.fixed(3.0f, 4.0F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<IconofsinEntity> ICONOFSIN = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "iconofsin"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, IconofsinEntity::new)
-					.dimensions(EntityDimensions.fixed(6.3f, 20.0F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<ArachnotronEntity> ARACHNOTRONETERNAL = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "arachnotroneternal"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, ArachnotronEntity::new)
-					.dimensions(EntityDimensions.fixed(4.0F, 3.0F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<DoomHunterEntity> DOOMHUNTER = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "doom_hunter"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, DoomHunterEntity::new)
-					.dimensions(EntityDimensions.fixed(3.0f, 7.0F)).fireImmune().trackedUpdateRate(1)
-					.trackRangeBlocks(90).build());
-
-	public static final EntityType<WhiplashEntity> WHIPLASH = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "whiplash"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, WhiplashEntity::new)
-					.dimensions(EntityDimensions.fixed(1.7f, 2.2F)).fireImmune().trackedUpdateRate(1)
-					.trackRangeBlocks(90).build());
-
-	public static final EntityType<BaronEntity> BARON2016 = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "baron2016"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, BaronEntity::new)
-					.dimensions(EntityDimensions.fixed(1.7f, 4.2F)).fireImmune().trackedUpdateRate(1)
-					.trackRangeBlocks(90).build());
-
-	public static final EntityType<FireBaronEntity> FIREBARON = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "firebronebaron"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, FireBaronEntity::new)
-					.dimensions(EntityDimensions.fixed(1.7f, 4.2F)).fireImmune().trackedUpdateRate(1)
-					.trackRangeBlocks(90).build());
-
-	public static final EntityType<ArmoredBaronEntity> ARMORBARON = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "armoredbaron"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, ArmoredBaronEntity::new)
-					.dimensions(EntityDimensions.fixed(1.7f, 4.2F)).fireImmune().trackedUpdateRate(1)
-					.trackRangeBlocks(90).build());
-
-	public static final EntityType<SpiderMastermind2016Entity> SPIDERMASTERMIND2016 = Registry.register(
-			BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(DoomMod.MODID, "spidermastermind2016"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, SpiderMastermind2016Entity::new)
-					.dimensions(EntityDimensions.fixed(6.0F, 4.0F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<MaykrDroneEntity> MAYKRDRONE = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "maykr_drone"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, MaykrDroneEntity::new)
-					.dimensions(EntityDimensions.fixed(1.2f, 2.7F)).fireImmune().trackedUpdateRate(1)
-					.trackRangeBlocks(90).build());
-
-	public static final EntityType<TentacleEntity> TENTACLE = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "tentacle"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, TentacleEntity::new)
-					.dimensions(EntityDimensions.fixed(1.7f, 2.2F)).fireImmune().trackedUpdateRate(1)
-					.trackRangeBlocks(90).build());
-
-	public static final EntityType<TurretEntity> TURRET = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "turret"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, TurretEntity::new)
-					.dimensions(EntityDimensions.fixed(1.7f, 2.2F)).fireImmune().trackedUpdateRate(1)
-					.trackRangeBlocks(90).build());
-
-	public static final EntityType<MotherDemonEntity> MOTHERDEMON = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "motherdemon"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, MotherDemonEntity::new)
-					.dimensions(EntityDimensions.fixed(6.3f, 10.0F)).fireImmune().trackedUpdateRate(1)
-					.trackRangeBlocks(90).build());
-
-	public static final EntityType<BloodMaykrEntity> BLOODMAYKR = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "blood_maykr"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, BloodMaykrEntity::new)
-					.dimensions(EntityDimensions.fixed(2.7f, 5.5F)).fireImmune().trackedUpdateRate(1)
-					.trackRangeBlocks(90).build());
-
-	public static final EntityType<ArchMakyrEntity> ARCHMAKER = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "arch_maykr"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, ArchMakyrEntity::new)
-					.dimensions(EntityDimensions.fixed(4.7f, 11.2F)).fireImmune().trackedUpdateRate(1)
-					.trackRangeBlocks(90).build());
-
-	public static final EntityType<SummonerEntity> SUMMONER = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "summoner"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, SummonerEntity::new)
-					.dimensions(EntityDimensions.fixed(0.9F, 4.3F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<Revenant2016Entity> REVENANT2016 = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "revenant2016"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, Revenant2016Entity::new)
-					.dimensions(EntityDimensions.fixed(1.9f, 3.95F)).fireImmune().trackRangeBlocks(90)
-					.trackedUpdateRate(1).forceTrackedVelocityUpdates(true).build());
-
-	public static final EntityType<GladiatorEntity> GLADIATOR = Registry.register(BuiltInRegistries.ENTITY_TYPE,
-			new ResourceLocation(DoomMod.MODID, "gladiator"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, GladiatorEntity::new)
-					.dimensions(EntityDimensions.fixed(1.7f, 4.2F)).fireImmune().trackedUpdateRate(1)
-					.trackRangeBlocks(90).build());
+	public static void initialize() {
+		BARREL = blockentity("barrel", BarrelEntity::new, 0.98F, 0.98F);
+		IMP = mob("imp", ImpEntity::new, 0.6f, 1.95F);
+		PINKY = mob("pinky", PinkyEntity::new, 1.7f, 2.2F);
+		SPECTRE = mob("spectre", SpectreEntity::new, 1.7f, 2.2F);
+		LOST_SOUL = mob("lost_soul", LostSoulEntity::new, 1.0F, 1.0F);
+		LOST_SOUL_ETERNAL = mob("lost_soul_eternal", LostSoulEntity::new, 1.5F, 1.5F);
+		CACODEMON = mob("cacodemon", CacodemonEntity::new, 2.0F, 2.0F);
+		ARCHVILE = mob("archvile", ArchvileEntity::new, 0.9F, 3.3F);
+		BARON = mob("baron", BaronEntity::new, 1.3f, 3.9F);
+		MANCUBUS = mob("mancubus", MancubusEntity::new, 2.3F, 3.0F);
+		SPIDERMASTERMIND = mob("spidermastermind", SpiderMastermindEntity::new, 6.0F, 4.0F);
+		ARACHNOTRON = mob("arachnotron", ArachnotronEntity::new, 4.0F, 2.0F);
+		ZOMBIEMAN = mob("zombieman", ZombiemanEntity::new, 0.75f, 2.1F);
+		REVENANT = mob("revenant", RevenantEntity::new, 1.9f, 3.95F);
+		IMP_STONE = mob("stone_imp", ImpStoneEntity::new, 0.6f, 1.95F);
+		CHAINGUNNER = mob("chaingunner", ChaingunnerEntity::new, 0.75f, 2.1F);
+		MARAUDER = mob("marauder", MarauderEntity::new, 1.5f, 2.6F);
+		SHOTGUNGUY = mob("shotgunguy", ShotgunguyEntity::new, 0.75f, 2.1F);
+		PAIN = mob("painelemental", PainEntity::new, 2.0F, 2.0F);
+		HELLKNIGHT = mob("hellknight", HellknightEntity::new, 1.4F, 3.5F);
+		HELLKNIGHT2016 = mob("hellknight2016", Hellknight2016Entity::new, 1.8F, 3.0F);
+		DREADKNIGHT = mob("dreadknight", Hellknight2016Entity::new, 1.8F, 3.0F);
+		CYBERDEMON = mob("cyberdemon", CyberdemonEntity::new, 3.0f, 7.0F);
+		UNWILLING = mob("unwilling", UnwillingEntity::new, 0.6f, 1.95F);
+		POSSESSEDSOLDIER = mob("possessed_soldier", PossessedSoldierEntity::new, 0.9f, 2.35F);
+		POSSESSEDSCIENTIST = mob("possessed_scientist", PossessedScientistEntity::new, 1.5f, 1.95F);
+		POSSESSEDWORKER = mob("possessed_worker", PossessedScientistEntity::new, 1.5f, 1.95F);
+		MECHAZOMBIE = mob("mechazombie", MechaZombieEntity::new, 1.2f, 2.3F);
+		CUEBALL = mob("cueball", CueBallEntity::new, 1.1F, 2.1F);
+		GORE_NEST = mob("gore_nest", GoreNestEntity::new, 3.0f, 4.0F);
+		GARGOYLE = mob("gargoyle", GargoyleEntity::new, 3.0f, 4.0F);
+		PROWLER = mob("prowler", ProwlerEntity::new, 3.0f, 4.0F);
+		ICONOFSIN = mob("iconofsin", IconofsinEntity::new, 6.3f, 20.0F);
+		ARACHNOTRONETERNAL = mob("arachnotroneternal", ArachnotronEntity::new, 4.0F, 3.0F);
+		DOOMHUNTER = mob("doom_hunter", DoomHunterEntity::new, 3.0f, 7.0F);
+		WHIPLASH = mob("whiplash", WhiplashEntity::new, 1.7f, 2.2F);
+		BARON2016 = mob("baron2016", BaronEntity::new, 1.7f, 4.2F);
+		FIREBARON = mob("firebronebaron", FireBaronEntity::new, 1.7f, 4.2F);
+		ARMORBARON = mob("armoredbaron", ArmoredBaronEntity::new, 1.7f, 4.2F);
+		SPIDERMASTERMIND2016 = mob("spidermastermind2016", SpiderMastermind2016Entity::new, 6.0F, 4.0F);
+		MAYKRDRONE = mob("maykr_drone", MaykrDroneEntity::new, 1.2f, 2.7F);
+		TENTACLE = mob("tentacle", TentacleEntity::new, 1.7f, 2.2F);
+		TURRET = mob("turret", TurretEntity::new, 1.7f, 2.2F);
+		MOTHERDEMON = mob("motherdemon", MotherDemonEntity::new, 6.3f, 10.0F);
+		BLOODMAYKR = mob("blood_maykr", BloodMaykrEntity::new, 2.7f, 5.5F);
+		ARCHMAKER = mob("arch_maykr", ArchMakyrEntity::new, 4.7f, 11.2F);
+		SUMMONER = mob("summoner", SummonerEntity::new, 0.9F, 4.3F);
+		REVENANT2016 = mob("revenant2016", Revenant2016Entity::new, 1.9f, 3.95F);
+		GLADIATOR = mob("gladiator", GladiatorEntity::new, 1.7f, 4.2F);
+	}
 }

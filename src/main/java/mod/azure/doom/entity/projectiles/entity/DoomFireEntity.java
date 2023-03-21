@@ -12,7 +12,7 @@ import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
@@ -45,7 +45,7 @@ public class DoomFireEntity extends Entity implements GeoEntity {
 
 	public DoomFireEntity(Level worldIn, double x, double y, double z, float yaw, int warmup, LivingEntity casterIn,
 			float damage) {
-		this(ProjectilesEntityRegister.FIRING, worldIn);
+		this(DoomProjectiles.FIRING, worldIn);
 		this.warmupDelayTicks = warmup;
 		this.setCaster(casterIn);
 		this.absMoveTo(x, y, z);

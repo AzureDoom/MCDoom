@@ -1,5 +1,11 @@
 package mod.azure.doom.entity.tierambient;
 
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import net.minecraft.world.damagesource.DamageSource;
@@ -15,12 +21,6 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class TentacleEntity extends DemonEntity implements GeoEntity {
 
@@ -110,10 +110,10 @@ public class TentacleEntity extends DemonEntity implements GeoEntity {
 		}
 
 		public void tick() {
-			LivingEntity livingentity = this.entity.getTarget();
+			var livingentity = this.entity.getTarget();
 			if (livingentity != null) {
 				this.entity.lookAt(livingentity, 30.0F, 90.0F);
-				final AABB aabb2 = new AABB(this.entity.blockPosition()).inflate(2D);
+				var aabb2 = new AABB(this.entity.blockPosition()).inflate(2D);
 				if (this.entity.hasLineOfSight(livingentity)) {
 					++this.cooldown;
 					if (this.entity.getCommandSenderWorld().getEntities(this.entity, aabb2).contains(livingentity)) {

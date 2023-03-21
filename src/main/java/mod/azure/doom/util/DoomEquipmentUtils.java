@@ -21,14 +21,12 @@ public class DoomEquipmentUtils {
 	public static boolean ruinedItemHasEnchantment(ItemStack ruinedItem, Enchantment enchantment) {
 		if (ruinedItem.getTag() == null)
 			return false;
-		String tagString = ruinedItem.getTag().getString(TAG);
-		Map<Enchantment, Integer> enchantMap = DoomEquipmentUtils.processEncodedEnchantments(tagString);
+		var enchantMap = DoomEquipmentUtils.processEncodedEnchantments(ruinedItem.getTag().getString(TAG));
 		if (enchantMap == null)
 			return false;
-		for (Enchantment e : enchantMap.keySet()) {
+		for (Enchantment e : enchantMap.keySet())
 			if (e == enchantment)
 				return true;
-		}
 		return false;
 	}
 
@@ -37,28 +35,25 @@ public class DoomEquipmentUtils {
 	}
 
 	public static int generateRepairLevelCost(ItemStack repaired, int maxLevel) {
-		int targetLevel = maxLevel * (repaired.getMaxDamage() - repaired.getDamageValue()) / repaired.getMaxDamage();
+		var targetLevel = maxLevel * (repaired.getMaxDamage() - repaired.getDamageValue()) / repaired.getMaxDamage();
 		return Math.max(targetLevel, 1);
 	}
 
 	public static ItemStack generateRepairedItemForAnvilByFraction(ItemStack leftStack, double damageFraction) {
-		int maxDamage = new ItemStack(DoomItems.getItemMap().get(leftStack.getItem())).getMaxDamage();
+		var maxDamage = new ItemStack(DoomItems.getItemMap().get(leftStack.getItem())).getMaxDamage();
 		return generateRepairedItemForAnvilByDamage(leftStack, (int) (damageFraction * (double) maxDamage));
 	}
 
 	public static ItemStack generateRepairedItemForAnvilByDamage(ItemStack leftStack, int targetDamage) {
-
-		ItemStack repaired = new ItemStack(DoomItems.getItemMap().get(leftStack.getItem()));
-		CompoundTag tag = leftStack.getOrCreateTag();
-		String encodedEnch = tag.getString(TAG);
+		var repaired = new ItemStack(DoomItems.getItemMap().get(leftStack.getItem()));
+		var tag = leftStack.getOrCreateTag();
+		var encodedEnch = tag.getString(TAG);
 		if (!encodedEnch.isEmpty())
 			tag.remove(TAG);
-		Map<Enchantment, Integer> enchantMap = DoomEquipmentUtils.processEncodedEnchantments(encodedEnch);
-		if (enchantMap != null) {
-			for (Map.Entry<Enchantment, Integer> enchant : enchantMap.entrySet()) {
+		var enchantMap = DoomEquipmentUtils.processEncodedEnchantments(encodedEnch);
+		if (enchantMap != null)
+			for (Map.Entry<Enchantment, Integer> enchant : enchantMap.entrySet())
 				repaired.enchant(enchant.getKey(), enchant.getValue());
-			}
-		}
 		repaired.setTag(repaired.getOrCreateTag().merge(tag));
 		repaired.setDamageValue(targetDamage);
 		return repaired;
@@ -68,12 +63,11 @@ public class DoomEquipmentUtils {
 		if (encodedEnchants.isEmpty())
 			return null;
 		Map<Enchantment, Integer> enchants = new HashMap<>();
-		for (String encodedEnchant : encodedEnchants.split(",")) {
-			String[] enchantItem = encodedEnchant.split(">");
-			String[] enchantKey = enchantItem[0].split(":");
-			int enchantLevel = Integer.parseInt(enchantItem[1]);
+		for (var encodedEnchant : encodedEnchants.split(",")) {
+			var enchantItem = encodedEnchant.split(">");
+			var enchantKey = enchantItem[0].split(":");
 			enchants.put(BuiltInRegistries.ENCHANTMENT.get(new ResourceLocation(enchantKey[0], enchantKey[1])),
-					enchantLevel);
+					Integer.parseInt(enchantItem[1]));
 		}
 		return enchants.isEmpty() ? null : enchants;
 	}
@@ -82,15 +76,13 @@ public class DoomEquipmentUtils {
 			boolean forceSet) {
 		for (Map.Entry<Item, Item> itemMap : DoomItems.getItemMap().entrySet()) {
 			if (isVanillaItemStackBreaking(breakingStack, itemMap.getValue())) {
-				// Directly copy over breaking Item's NBT, removing specific fields
-				ItemStack ruinedStack = new ItemStack(itemMap.getKey());
-				CompoundTag breakingNBT = breakingStack.getOrCreateTag();
+				var ruinedStack = new ItemStack(itemMap.getKey());
+				var breakingNBT = breakingStack.getOrCreateTag();
 				if (breakingNBT.contains("Damage"))
 					breakingNBT.remove("Damage");
 				if (breakingNBT.contains("RepairCost"))
 					breakingNBT.remove("RepairCost");
-				// Set enchantment NBT data
-				CompoundTag enchantTag = getTagForEnchantments(breakingStack, ruinedStack);
+				var enchantTag = getTagForEnchantments(breakingStack, ruinedStack);
 				if (enchantTag != null)
 					breakingNBT.merge(enchantTag);
 				if (breakingNBT.contains("Enchantments"))
@@ -103,12 +95,11 @@ public class DoomEquipmentUtils {
 
 	public static CompoundTag getTagForEnchantments(ItemStack breakingStack, ItemStack ruinedStack) {
 		Set<String> enchantmentStrings = new HashSet<>();
-		for (Map.Entry<Enchantment, Integer> ench : EnchantmentHelper.getEnchantments(breakingStack).entrySet()) {
-			String enchantString = BuiltInRegistries.ENCHANTMENT.getKey(ench.getKey()) + ">" + ench.getValue();
-			enchantmentStrings.add(enchantString);
+		for (var ench : EnchantmentHelper.getEnchantments(breakingStack).entrySet()) {
+			enchantmentStrings.add(BuiltInRegistries.ENCHANTMENT.getKey(ench.getKey()) + ">" + ench.getValue());
 		}
 		if (!enchantmentStrings.isEmpty()) {
-			CompoundTag tag = ruinedStack.getTag();
+			var tag = ruinedStack.getTag();
 			if (tag == null)
 				tag = new CompoundTag();
 			tag.putString(TAG, String.join(",", enchantmentStrings));

@@ -4,10 +4,10 @@ import org.lwjgl.glfw.GLFW;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
-import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.gui.GunTableScreen;
 import mod.azure.doom.particles.PlasmaParticle;
 import mod.azure.doom.util.registry.DoomParticles;
+import mod.azure.doom.util.registry.ModRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -28,7 +28,7 @@ public class ClientInit implements ClientModInitializer {
 	public void onInitializeClient() {
 		ModelProviderinit.init();
 		DoomRenderRegistry.init();
-		MenuScreens.register(DoomMod.SCREEN_HANDLER_TYPE, GunTableScreen::new);
+		MenuScreens.register(ModRegistry.SCREEN_HANDLER_TYPE, GunTableScreen::new);
 		KeyBindingHelper.registerKeyBinding(reload);
 		KeyBindingHelper.registerKeyBinding(yeethook);
 		ParticleFactoryRegistry.getInstance().register(DoomParticles.PLASMA, PlasmaParticle.Factory::new);

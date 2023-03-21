@@ -48,7 +48,7 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 
 public class MobAttributes {
 
-	public static void init() {
+	public static void initialize() {
 		FabricDefaultAttributeRegistry.register(DoomEntities.GLADIATOR, GladiatorEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.ARCHVILE, ArchvileEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.BARON, BaronEntity.createMobAttributes());

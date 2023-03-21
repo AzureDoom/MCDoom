@@ -10,7 +10,7 @@ import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -38,13 +38,13 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
 	}
 
 	public GladiatorMaceEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ) {
-		super(ProjectilesEntityRegister.GLADIATOR_MACE, shooter, accelX, accelY, accelZ, worldIn);
+		super(DoomProjectiles.GLADIATOR_MACE, shooter, accelX, accelY, accelZ, worldIn);
 		this.shooter = shooter;
 	}
 
 	public GladiatorMaceEntity(Level worldIn, double x, double y, double z, double accelX, double accelY,
 			double accelZ) {
-		super(ProjectilesEntityRegister.GLADIATOR_MACE, x, y, z, accelX, accelY, accelZ, worldIn);
+		super(DoomProjectiles.GLADIATOR_MACE, x, y, z, accelX, accelY, accelZ, worldIn);
 	}
 
 	@Override

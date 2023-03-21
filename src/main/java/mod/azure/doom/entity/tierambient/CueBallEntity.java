@@ -1,7 +1,11 @@
 package mod.azure.doom.entity.tierambient;
 
-import java.util.SplittableRandom;
-
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.IgniteDemonGoal;
@@ -32,12 +36,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class CueBallEntity extends DemonEntity implements GeoEntity {
 
@@ -93,15 +91,13 @@ public class CueBallEntity extends DemonEntity implements GeoEntity {
 		if (this.deathTime == 30) {
 			this.remove(RemovalReason.KILLED);
 			this.dropExperience();
-			if (!this.level.isClientSide && this.getVariant() == 1) {
+			if (!this.level.isClientSide && this.getVariant() == 1)
 				this.explode();
-			}
 			if (!this.level.isClientSide && this.getVariant() == 3) {
-				final AABB aabb = new AABB(this.blockPosition().above()).inflate(24D, 24D, 24D);
+				var aabb = new AABB(this.blockPosition().above()).inflate(24D, 24D, 24D);
 				this.getLevel().getEntities(this, aabb).forEach(e -> {
-					if (e.isAlive() && e instanceof DemonEntity) {
+					if (e.isAlive() && e instanceof DemonEntity)
 						((LivingEntity) e).addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000, 1));
-					}
 				});
 			}
 		}
@@ -143,28 +139,23 @@ public class CueBallEntity extends DemonEntity implements GeoEntity {
 	public void aiStep() {
 		super.aiStep();
 		flameTimer = (flameTimer + 1) % 2;
-		if (this.level.isClientSide) {
-			if (this.getVariant() == 3) {
-				for (int i = 0; i < 2; ++i) {
+		if (this.level.isClientSide)
+			if (this.getVariant() == 3)
+				for (var i = 0; i < 2; ++i)
 					this.level.addParticle(ParticleTypes.PORTAL, this.getRandomX(0.5D), this.getRandomY() - 0.25D,
 							this.getRandomZ(0.5D), (this.random.nextDouble() - 0.5D) * 2.0D, -this.random.nextDouble(),
 							(this.random.nextDouble() - 0.5D) * 2.0D);
-				}
-			}
-		}
+
 		if (this.isAlive() && this.getVariant() != 3) {
 			int i;
 			this.lastFuseTime = this.currentFuseTime;
-			if (this.isIgnited()) {
+			if (this.isIgnited())
 				this.setFuseSpeed(1);
-			}
-			if ((i = this.getFuseSpeed()) > 0 && this.currentFuseTime == 0) {
+			if ((i = this.getFuseSpeed()) > 0 && this.currentFuseTime == 0)
 				this.gameEvent(GameEvent.PRIME_FUSE);
-			}
 			this.currentFuseTime += i;
-			if (this.currentFuseTime < 0) {
+			if (this.currentFuseTime < 0)
 				this.currentFuseTime = 0;
-			}
 			if (this.currentFuseTime >= this.fuseTime) {
 				this.currentFuseTime = this.fuseTime;
 				if (!(this.getHealth() < 0.01 || this.isDeadOrDying()))
@@ -191,9 +182,8 @@ public class CueBallEntity extends DemonEntity implements GeoEntity {
 	public void readAdditionalSaveData(CompoundTag tag) {
 		super.readAdditionalSaveData(tag);
 		this.setVariant(tag.getInt("Variant"));
-		if (this.entityData.get(CHARGED).booleanValue()) {
+		if (this.entityData.get(CHARGED).booleanValue())
 			tag.putBoolean("powered", true);
-		}
 		tag.putShort("Fuse", (short) this.fuseTime);
 		tag.putByte("ExplosionRadius", (byte) this.explosionRadius);
 		tag.putBoolean("ignited", this.isIgnited());
@@ -204,15 +194,12 @@ public class CueBallEntity extends DemonEntity implements GeoEntity {
 		super.addAdditionalSaveData(tag);
 		tag.putInt("Variant", this.getVariant());
 		this.entityData.set(CHARGED, tag.getBoolean("powered"));
-		if (tag.contains("Fuse", 99)) {
+		if (tag.contains("Fuse", 99))
 			this.fuseTime = tag.getShort("Fuse");
-		}
-		if (tag.contains("ExplosionRadius", 99)) {
+		if (tag.contains("ExplosionRadius", 99))
 			this.explosionRadius = tag.getByte("ExplosionRadius");
-		}
-		if (tag.getBoolean("ignited")) {
+		if (tag.getBoolean("ignited"))
 			this.ignite();
-		}
 	}
 
 	public int getVariant() {
@@ -231,8 +218,7 @@ public class CueBallEntity extends DemonEntity implements GeoEntity {
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
 			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-		SplittableRandom random = new SplittableRandom();
-		int var = random.nextInt(0, 4);
+		var var = this.getRandom().nextInt(0, 4);
 		this.setVariant(var);
 		return spawnDataIn;
 	}
