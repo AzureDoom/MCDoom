@@ -38,7 +38,7 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			if (this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())
+			if (dead || getHealth() < 0.01 || isDeadOrDying())
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			event.getController().setAnimationSpeed(0.25);
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
@@ -47,7 +47,7 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override
@@ -71,17 +71,15 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	protected void tickDeath() {
-		++this.deathTime;
-		if (this.deathTime == 60) {
-			this.remove(RemovalReason.KILLED);
-			this.dropExperience();
+		++deathTime;
+		if (deathTime == 60) {
+			remove(RemovalReason.KILLED);
+			dropExperience();
 		}
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.gorenest_health).add(Attributes.ATTACK_DAMAGE, 0.0D)
-				.add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, DoomConfig.gorenest_health).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -92,44 +90,37 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 	@Override
 	protected void actuallyHurt(DamageSource source, float damageAmount) {
 		if (source == DamageSource.OUT_OF_WORLD)
-			this.remove(Entity.RemovalReason.KILLED);
+			remove(Entity.RemovalReason.KILLED);
 
 		if (!(source.getEntity() instanceof Player))
-			this.setHealth(5.0F);
+			setHealth(5.0F);
 
-		this.remove(Entity.RemovalReason.KILLED);
+		remove(Entity.RemovalReason.KILLED);
 	}
 
 	@Override
 	public void aiStep() {
-		if (this.level.isClientSide) {
-			this.level.addParticle(DustParticleOptions.REDSTONE, this.getRandomX(0.5D), this.getRandomY(),
-					this.getRandomZ(0.5D), (this.random.nextDouble() - 0.5D) * 2.0D, -this.random.nextDouble(),
-					(this.random.nextDouble() - 0.5D) * 2.0D);
-			this.level.addParticle(ParticleTypes.SOUL, this.getRandomX(0.2D), this.getRandomY(), this.getRandomZ(0.5D),
-					0.0D, 0D, 0D);
+		if (level.isClientSide) {
+			level.addParticle(DustParticleOptions.REDSTONE, getRandomX(0.5D), getRandomY(), getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), (random.nextDouble() - 0.5D) * 2.0D);
+			level.addParticle(ParticleTypes.SOUL, getRandomX(0.2D), getRandomY(), getRandomZ(0.5D), 0.0D, 0D, 0D);
 		}
-		++this.spawnTimer;
-		var aabb = new AABB(this.blockPosition()).inflate(64D);
-		var i = this.level.getEntities(EntityTypeTest.forClass(DemonEntity.class), aabb, Entity::isAlive).size();
-		if (this.spawnTimer == 800 && i <= 15)
-			this.spawnWave();
-		if (this.spawnTimer >= 810)
-			this.spawnTimer = 0;
+		++spawnTimer;
+		final var aabb = new AABB(blockPosition()).inflate(64D);
+		final var i = level.getEntities(EntityTypeTest.forClass(DemonEntity.class), aabb, Entity::isAlive).size();
+		if (spawnTimer == 800 && i <= 15)
+			spawnWave();
+		if (spawnTimer >= 810)
+			spawnTimer = 0;
 		super.aiStep();
 	}
 
 	public void spawnWave() {
-		var givenList = Arrays.asList(DoomEntities.HELLKNIGHT, DoomEntities.POSSESSEDSCIENTIST, DoomEntities.IMP,
-				DoomEntities.PINKY, DoomEntities.CACODEMON, DoomEntities.CHAINGUNNER, DoomEntities.GARGOYLE,
-				DoomEntities.HELLKNIGHT2016, DoomEntities.LOST_SOUL, DoomEntities.POSSESSEDSOLDIER,
-				DoomEntities.SHOTGUNGUY, DoomEntities.UNWILLING, DoomEntities.ZOMBIEMAN, DoomEntities.ARACHNOTRON,
-				DoomEntities.ARCHVILE, DoomEntities.MECHAZOMBIE, DoomEntities.PAIN, DoomEntities.MANCUBUS);
-		var r = this.random.nextInt(-3, 3);
+		final var givenList = Arrays.asList(DoomEntities.HELLKNIGHT, DoomEntities.POSSESSEDSCIENTIST, DoomEntities.IMP, DoomEntities.PINKY, DoomEntities.CACODEMON, DoomEntities.CHAINGUNNER, DoomEntities.GARGOYLE, DoomEntities.HELLKNIGHT2016, DoomEntities.LOST_SOUL, DoomEntities.POSSESSEDSOLDIER, DoomEntities.SHOTGUNGUY, DoomEntities.UNWILLING, DoomEntities.ZOMBIEMAN, DoomEntities.ARACHNOTRON, DoomEntities.ARCHVILE, DoomEntities.MECHAZOMBIE, DoomEntities.PAIN, DoomEntities.MANCUBUS);
+		final var r = random.nextInt(-3, 3);
 
 		for (var k = 1; k < 5; ++k) {
 			for (int i = 0; i < 1; i++) {
-				var waveentity = givenList.get(this.random.nextInt(givenList.size())).create(level);
+				final var waveentity = givenList.get(random.nextInt(givenList.size())).create(level);
 				waveentity.setPos(this.getX() + r, this.getY() + 0.5D, this.getZ() + r);
 				level.addFreshEntity(waveentity);
 			}

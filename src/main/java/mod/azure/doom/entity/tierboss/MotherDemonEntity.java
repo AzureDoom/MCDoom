@@ -2,6 +2,14 @@ package mod.azure.doom.entity.tierboss;
 
 import java.util.Random;
 
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.projectiles.CustomFireballEntity;
@@ -47,23 +55,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class MotherDemonEntity extends DemonEntity implements GeoEntity {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-	public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(MotherDemonEntity.class,
-			EntityDataSerializers.INT);
-	private final ServerBossEvent bossInfo = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(),
-			BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true)
-					.setCreateWorldFog(true);
+	public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(MotherDemonEntity.class, EntityDataSerializers.INT);
+	private final ServerBossEvent bossInfo = (ServerBossEvent) new ServerBossEvent(getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS).setDarkenScreen(true).setCreateWorldFog(true);
 
 	public MotherDemonEntity(EntityType<MotherDemonEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
@@ -74,15 +71,15 @@ public class MotherDemonEntity extends DemonEntity implements GeoEntity {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			if (event.isMoving())
 				return event.setAndContinue(RawAnimation.begin().thenLoop("moving"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 0)
+			if ((dead || getHealth() < 0.01 || isDeadOrDying()) && entityData.get(DEATH_STATE) == 0)
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death_phaseone"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()) && this.entityData.get(DEATH_STATE) == 1)
+			if ((dead || getHealth() < 0.01 || isDeadOrDying()) && entityData.get(DEATH_STATE) == 1)
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("moving"));
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("shooting", LoopType.PLAY_ONCE));
-			if (this.entityData.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+			if (entityData.get(STATE) == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("fire", LoopType.PLAY_ONCE));
 			return PlayState.STOP;
 		}));
@@ -90,50 +87,49 @@ public class MotherDemonEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override
 	protected void tickDeath() {
-		++this.deathTime;
-		if (this.deathTime == 80 && this.entityData.get(DEATH_STATE) == 0) {
-			this.setHealth(this.getMaxHealth());
-			this.setDeathState(1);
-			this.deathTime = 0;
+		++deathTime;
+		if (deathTime == 80 && entityData.get(DEATH_STATE) == 0) {
+			setHealth(getMaxHealth());
+			setDeathState(1);
+			deathTime = 0;
 		}
-		if (this.deathTime == 40 && this.entityData.get(DEATH_STATE) == 1) {
-			this.remove(Entity.RemovalReason.KILLED);
-			this.dropExperience();
+		if (deathTime == 40 && entityData.get(DEATH_STATE) == 1) {
+			remove(Entity.RemovalReason.KILLED);
+			dropExperience();
 		}
 	}
 
 	public int getDeathState() {
-		return this.entityData.get(DEATH_STATE);
+		return entityData.get(DEATH_STATE);
 	}
 
 	public void setDeathState(int state) {
-		this.entityData.set(DEATH_STATE, state);
+		entityData.set(DEATH_STATE, state);
 	}
 
 	@Override
 	public void die(DamageSource source) {
-		if (!this.level.isClientSide) {
+		if (!level.isClientSide) {
 			if (source == DamageSource.OUT_OF_WORLD) {
-				this.setDeathState(1);
+				setDeathState(1);
 			}
-			if (this.entityData.get(DEATH_STATE) == 0) {
-				AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(),
-						this.getZ());
+			if (entityData.get(DEATH_STATE) == 0) {
+				final AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(level, this.getX(), this.getY(), this.getZ());
 				areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
 				areaeffectcloudentity.setRadius(3.0F);
 				areaeffectcloudentity.setDuration(55);
 				areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
-				this.level.addFreshEntity(areaeffectcloudentity);
-				this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
-				this.setLastHurtMob(this.getLastHurtByMob());
-				this.level.broadcastEntityEvent(this, (byte) 3);
+				level.addFreshEntity(areaeffectcloudentity);
+				goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
+				setLastHurtMob(getLastHurtByMob());
+				level.broadcastEntityEvent(this, (byte) 3);
 			}
-			if (this.entityData.get(DEATH_STATE) == 1) {
+			if (entityData.get(DEATH_STATE) == 1) {
 				super.die(source);
 			}
 		}
@@ -155,41 +151,41 @@ public class MotherDemonEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, IronGolem.class, 8.0F));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		this.goalSelector.addGoal(2, new MoveTowardsTargetGoal(this, 0.9D, 32.0F));
-		this.applyEntityAI();
+		goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
+		goalSelector.addGoal(8, new LookAtPlayerGoal(this, IronGolem.class, 8.0F));
+		goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
+		goalSelector.addGoal(2, new MoveTowardsTargetGoal(this, 0.9D, 32.0F));
+		applyEntityAI();
 	}
 
 	protected void applyEntityAI() {
-		this.goalSelector.addGoal(1, new MotherDemonEntity.AttackGoal(this));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
-		this.targetSelector.addGoal(3, (new HurtByTargetGoal(this).setAlertOthers()));
+		goalSelector.addGoal(1, new MotherDemonEntity.AttackGoal(this));
+		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+		targetSelector.addGoal(3, new HurtByTargetGoal(this).setAlertOthers());
 	}
 
 	@Override
 	protected void updateControlFlags() {
-		boolean flag = this.getTarget() != null && this.hasLineOfSight(this.getTarget());
-		this.goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
+		final boolean flag = getTarget() != null && hasLineOfSight(getTarget());
+		goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
 		super.updateControlFlags();
 	}
 
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		final AABB aabb = new AABB(this.blockPosition().above()).inflate(64D, 64D, 64D);
-		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
+		final AABB aabb = new AABB(blockPosition().above()).inflate(64D, 64D, 64D);
+		getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
 			if (e instanceof MotherDemonEntity && e.tickCount < 1) {
 				e.remove(RemovalReason.KILLED);
 			}
 			if (e instanceof Player) {
 				if (!((Player) e).isCreative())
 					if (!((Player) e).isSpectator())
-						this.setTarget((LivingEntity) e);
+						setTarget((LivingEntity) e);
 			}
 		});
 	}
@@ -204,99 +200,82 @@ public class MotherDemonEntity extends DemonEntity implements GeoEntity {
 		protected int attackTimer = 0;
 
 		public AttackGoal(MotherDemonEntity ghast) {
-			this.parentEntity = ghast;
+			parentEntity = ghast;
 		}
 
+		@Override
 		public boolean canUse() {
-			return this.parentEntity.getTarget() != null;
+			return parentEntity.getTarget() != null;
 		}
 
+		@Override
 		public void start() {
 			super.start();
-			this.parentEntity.setAggressive(true);
+			parentEntity.setAggressive(true);
 		}
 
 		@Override
 		public void stop() {
 			super.stop();
-			this.parentEntity.setAggressive(false);
-			this.parentEntity.setAttackingState(0);
-			this.attackTimer = -1;
+			parentEntity.setAggressive(false);
+			parentEntity.setAttackingState(0);
+			attackTimer = -1;
 		}
 
+		@Override
 		public void tick() {
-			LivingEntity livingentity = this.parentEntity.getTarget();
-			if (this.parentEntity.hasLineOfSight(livingentity)) {
-				Level world = this.parentEntity.level;
-				++this.attackTimer;
-				Random rand = new Random();
-				Vec3 vector3d = this.parentEntity.getViewVector(1.0F);
-				double d0 = Math.min(livingentity.getY(), livingentity.getY());
-				double d1 = Math.max(livingentity.getY(), livingentity.getY()) + 1.0D;
-				double d2 = livingentity.getX() - (this.parentEntity.getX() + vector3d.x * 2.0D);
-				double d3 = livingentity.getY(0.5D) - (0.5D + this.parentEntity.getY(0.5D));
-				double d4 = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * 2.0D);
-				float f = (float) Mth.atan2(livingentity.getZ() - parentEntity.getZ(),
-						livingentity.getX() - parentEntity.getX());
-				CustomFireballEntity fireballentity = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4,
-						DoomConfig.motherdemon_ranged_damage + (this.parentEntity.entityData.get(DEATH_STATE) == 1
-								? DoomConfig.motherdemon_phaseone_damage_boos
-								: 0));
-				CustomFireballEntity fireballentity1 = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4,
-						DoomConfig.motherdemon_ranged_damage + (this.parentEntity.entityData.get(DEATH_STATE) == 1
-								? DoomConfig.motherdemon_phaseone_damage_boos
-								: 0));
-				CustomFireballEntity fireballentity2 = new CustomFireballEntity(world, this.parentEntity, d2, d3, d4,
-						DoomConfig.motherdemon_ranged_damage + (this.parentEntity.entityData.get(DEATH_STATE) == 1
-								? DoomConfig.motherdemon_phaseone_damage_boos
-								: 0));
-				this.parentEntity.getNavigation().moveTo(livingentity, 1.5D);
-				if (this.attackTimer == 15) {
-					if (parentEntity.getHealth() <= (parentEntity.getMaxHealth() * 0.50)) {
+			final LivingEntity livingentity = parentEntity.getTarget();
+			if (parentEntity.hasLineOfSight(livingentity)) {
+				final Level world = parentEntity.level;
+				++attackTimer;
+				final Random rand = new Random();
+				final Vec3 vector3d = parentEntity.getViewVector(1.0F);
+				final double d0 = Math.min(livingentity.getY(), livingentity.getY());
+				final double d1 = Math.max(livingentity.getY(), livingentity.getY()) + 1.0D;
+				final double d2 = livingentity.getX() - (parentEntity.getX() + vector3d.x * 2.0D);
+				final double d3 = livingentity.getY(0.5D) - (0.5D + parentEntity.getY(0.5D));
+				final double d4 = livingentity.getZ() - (parentEntity.getZ() + vector3d.z * 2.0D);
+				final float f = (float) Mth.atan2(livingentity.getZ() - parentEntity.getZ(), livingentity.getX() - parentEntity.getX());
+				final CustomFireballEntity fireballentity = new CustomFireballEntity(world, parentEntity, d2, d3, d4, DoomConfig.motherdemon_ranged_damage + (parentEntity.entityData.get(DEATH_STATE) == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0));
+				final CustomFireballEntity fireballentity1 = new CustomFireballEntity(world, parentEntity, d2, d3, d4, DoomConfig.motherdemon_ranged_damage + (parentEntity.entityData.get(DEATH_STATE) == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0));
+				final CustomFireballEntity fireballentity2 = new CustomFireballEntity(world, parentEntity, d2, d3, d4, DoomConfig.motherdemon_ranged_damage + (parentEntity.entityData.get(DEATH_STATE) == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0));
+				parentEntity.getNavigation().moveTo(livingentity, 1.5D);
+				if (attackTimer == 15) {
+					if (parentEntity.getHealth() <= parentEntity.getMaxHealth() * 0.50) {
 						for (int l = 0; l < 32; ++l) {
-							float f1 = f + (float) l * (float) Math.PI * 0.4F;
+							final float f1 = f + l * (float) Math.PI * 0.4F;
 							for (int y = 0; y < 5; ++y) {
-								parentEntity.spawnFlames(
-										parentEntity.getX() + (double) Mth.cos(f1) * rand.nextDouble() * 11.5D,
-										parentEntity.getZ() + (double) Mth.sin(f1) * rand.nextDouble() * 11.5D, d0, d1,
-										f1, 0);
+								parentEntity.spawnFlames(parentEntity.getX() + Mth.cos(f1) * rand.nextDouble() * 11.5D, parentEntity.getZ() + Mth.sin(f1) * rand.nextDouble() * 11.5D, d0, d1, f1, 0);
 							}
-							parentEntity.level.playLocalSound(this.parentEntity.getX(), this.parentEntity.getY(),
-									this.parentEntity.getZ(), DoomSounds.MOTHER_ATTACK, SoundSource.HOSTILE, 1.0F, 1.0F,
-									true);
-							this.parentEntity.setAttackingState(2);
+							parentEntity.level.playLocalSound(parentEntity.getX(), parentEntity.getY(), parentEntity.getZ(), DoomSounds.MOTHER_ATTACK, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+							parentEntity.setAttackingState(2);
 						}
 						livingentity.setDeltaMovement(livingentity.getDeltaMovement().multiply(0.4f, 1.4f, 0.4f));
-						TentacleEntity lost_soul = DoomEntities.TENTACLE.create(world);
+						final TentacleEntity lost_soul = DoomEntities.TENTACLE.create(world);
 						lost_soul.moveTo(livingentity.getX(), livingentity.getY(), livingentity.getZ(), 0, 0);
 						world.addFreshEntity(lost_soul);
 					} else {
-						fireballentity.setPos(this.parentEntity.getX() + vector3d.x * 1.0D,
-								this.parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z * 1.0D);
+						fireballentity.setPos(parentEntity.getX() + vector3d.x * 1.0D, parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z * 1.0D);
 						world.addFreshEntity(fireballentity);
-						fireballentity1.setPos((this.parentEntity.getX() + 3) + vector3d.x * 1.0D,
-								this.parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z * 1.0D);
+						fireballentity1.setPos(parentEntity.getX() + 3 + vector3d.x * 1.0D, parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z * 1.0D);
 						world.addFreshEntity(fireballentity1);
-						fireballentity2.setPos((this.parentEntity.getX() - 3) + vector3d.x * 1.0D,
-								this.parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z * 1.0D);
+						fireballentity2.setPos(parentEntity.getX() - 3 + vector3d.x * 1.0D, parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z * 1.0D);
 						world.addFreshEntity(fireballentity2);
-						parentEntity.level.playLocalSound(this.parentEntity.getX(), this.parentEntity.getY(),
-								this.parentEntity.getZ(), DoomSounds.MOTHER_ATTACK, SoundSource.HOSTILE, 1.0F, 1.0F,
-								true);
-						TentacleEntity lost_soul = DoomEntities.TENTACLE.create(world);
+						parentEntity.level.playLocalSound(parentEntity.getX(), parentEntity.getY(), parentEntity.getZ(), DoomSounds.MOTHER_ATTACK, SoundSource.HOSTILE, 1.0F, 1.0F, true);
+						final TentacleEntity lost_soul = DoomEntities.TENTACLE.create(world);
 						lost_soul.moveTo(livingentity.getX(), livingentity.getY(), livingentity.getZ(), 0, 0);
 						world.addFreshEntity(lost_soul);
-						this.parentEntity.setAttackingState(1);
+						parentEntity.setAttackingState(1);
 					}
 				}
-				if (this.attackTimer >= 30) {
-					this.parentEntity.setAttackingState(0);
-					this.attackTimer = -5;
+				if (attackTimer >= 30) {
+					parentEntity.setAttackingState(0);
+					attackTimer = -5;
 				}
-			} else if (this.attackTimer > 0) {
-				--this.attackTimer;
+			} else if (attackTimer > 0) {
+				--attackTimer;
 			}
-			this.parentEntity.lookAt(livingentity, 30.0F, 30.0F);
+			parentEntity.lookAt(livingentity, 30.0F, 30.0F);
 		}
 
 	}
@@ -306,12 +285,12 @@ public class MotherDemonEntity extends DemonEntity implements GeoEntity {
 		boolean flag = false;
 		double d0 = 0.0D;
 		do {
-			BlockPos blockpos1 = blockpos.below();
-			BlockState blockstate = this.level.getBlockState(blockpos1);
-			if (blockstate.isFaceSturdy(this.level, blockpos1, Direction.UP)) {
-				if (!this.level.isEmptyBlock(blockpos)) {
-					BlockState blockstate1 = this.level.getBlockState(blockpos);
-					VoxelShape voxelshape = blockstate1.getCollisionShape(this.level, blockpos);
+			final BlockPos blockpos1 = blockpos.below();
+			final BlockState blockstate = level.getBlockState(blockpos1);
+			if (blockstate.isFaceSturdy(level, blockpos1, Direction.UP)) {
+				if (!level.isEmptyBlock(blockpos)) {
+					final BlockState blockstate1 = level.getBlockState(blockpos);
+					final VoxelShape voxelshape = blockstate1.getCollisionShape(level, blockpos);
 					if (!voxelshape.isEmpty()) {
 						d0 = voxelshape.max(Direction.Axis.Y);
 					}
@@ -323,21 +302,15 @@ public class MotherDemonEntity extends DemonEntity implements GeoEntity {
 		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
-			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this,
-					DoomConfig.motherdemon_ranged_damage
-							+ (this.entityData.get(DEATH_STATE) == 1 ? DoomConfig.motherdemon_phaseone_damage_boos
-									: 0));
+			final DoomFireEntity fang = new DoomFireEntity(level, x, blockpos.getY() + d0, z, yaw, 1, this, DoomConfig.motherdemon_ranged_damage + (entityData.get(DEATH_STATE) == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0));
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
-			this.level.addFreshEntity(fang);
+			level.addFreshEntity(fang);
 		}
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.motherdemon_health).add(Attributes.ATTACK_DAMAGE, 0.0D)
-				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 0.9f);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomConfig.motherdemon_health).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.9f);
 	}
 
 	@Override
@@ -363,46 +336,46 @@ public class MotherDemonEntity extends DemonEntity implements GeoEntity {
 	@Override
 	public void startSeenByPlayer(ServerPlayer player) {
 		super.startSeenByPlayer(player);
-		this.bossInfo.addPlayer(player);
+		bossInfo.addPlayer(player);
 	}
 
 	@Override
 	public void stopSeenByPlayer(ServerPlayer player) {
 		super.stopSeenByPlayer(player);
-		this.bossInfo.removePlayer(player);
+		bossInfo.removePlayer(player);
 	}
 
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
-		this.entityData.define(DEATH_STATE, 0);
+		entityData.define(DEATH_STATE, 0);
 	}
 
 	@Override
 	public void setCustomName(Component name) {
 		super.setCustomName(name);
-		this.bossInfo.setName(this.getDisplayName());
+		bossInfo.setName(getDisplayName());
 	}
 
 	@Override
 	protected void customServerAiStep() {
 		super.customServerAiStep();
-		this.bossInfo.setProgress(this.getHealth() / this.getMaxHealth());
+		bossInfo.setProgress(getHealth() / getMaxHealth());
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
-		if (this.hasCustomName()) {
-			this.bossInfo.setName(this.getDisplayName());
+		if (hasCustomName()) {
+			bossInfo.setName(getDisplayName());
 		}
-		this.setDeathState(compound.getInt("Phase"));
+		setDeathState(compound.getInt("Phase"));
 	}
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag tag) {
 		super.addAdditionalSaveData(tag);
-		tag.putInt("Phase", this.getDeathState());
+		tag.putInt("Phase", getDeathState());
 	}
 
 	@Override

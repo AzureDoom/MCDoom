@@ -4,6 +4,13 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import mod.azure.azurelib.animatable.GeoItem;
+import mod.azure.azurelib.animatable.client.RenderProvider;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.client.render.armors.GoldRender;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.model.HumanoidModel;
@@ -16,15 +23,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import mod.azure.azurelib.animatable.GeoItem;
-import mod.azure.azurelib.animatable.client.RenderProvider;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.util.AzureLibUtil;
 
-public class GoldDoomArmor extends ArmorItem implements  GeoItem {
+public class GoldDoomArmor extends ArmorItem implements GeoItem {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
@@ -40,32 +40,29 @@ public class GoldDoomArmor extends ArmorItem implements  GeoItem {
 			private GoldRender renderer;
 
 			@Override
-			public HumanoidModel<LivingEntity> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack,
-					EquipmentSlot equipmentSlot, HumanoidModel<LivingEntity> original) {
-				if (this.renderer == null)
-					this.renderer = new GoldRender();
+			public HumanoidModel<LivingEntity> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<LivingEntity> original) {
+				if (renderer == null)
+					renderer = new GoldRender();
 
-				this.renderer.prepForRender(livingEntity, itemStack, equipmentSlot, original);
-				return this.renderer;
+				renderer.prepForRender(livingEntity, itemStack, equipmentSlot, original);
+				return renderer;
 			}
 		});
 	}
 
 	@Override
 	public Supplier<Object> getRenderProvider() {
-		return this.renderProvider;
+		return renderProvider;
 	}
 
 	@Override
 	public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, 20, state -> {
-			return state.setAndContinue(RawAnimation.begin().thenLoop("idle"));
-		}));
+		controllers.add(new AnimationController<>(this, 20, state -> state.setAndContinue(RawAnimation.begin().thenLoop("idle"))));
 	}
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override

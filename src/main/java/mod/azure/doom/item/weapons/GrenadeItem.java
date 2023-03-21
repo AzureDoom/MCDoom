@@ -4,6 +4,14 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import mod.azure.azurelib.animatable.GeoItem;
+import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
+import mod.azure.azurelib.animatable.client.RenderProvider;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.client.render.item.GrenadeItemRender;
 import mod.azure.doom.entity.projectiles.GrenadeEntity;
 import net.minecraft.ChatFormatting;
@@ -16,14 +24,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import mod.azure.azurelib.animatable.GeoItem;
-import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
-import mod.azure.azurelib.animatable.client.RenderProvider;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class GrenadeItem extends Item implements GeoItem {
 
@@ -42,16 +42,16 @@ public class GrenadeItem extends Item implements GeoItem {
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
-		ItemStack itemstack = user.getItemInHand(hand);
+		final ItemStack itemstack = user.getItemInHand(hand);
 		if (!user.getCooldowns().isOnCooldown(this)) {
 			user.getCooldowns().addCooldown(this, 25);
 			if (!world.isClientSide) {
-				GrenadeEntity snowball = new GrenadeEntity(world, user);
+				final GrenadeEntity snowball = new GrenadeEntity(world, user);
 				snowball.shootFromRotation(user, user.getXRot(), user.getYRot(), 0.0F, 1.05F, 1.0F);
 				snowball.setBaseDamage(0);
 				world.addFreshEntity(snowball);
@@ -67,10 +67,8 @@ public class GrenadeItem extends Item implements GeoItem {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(Component.translatable("doom.doomed_credit.text").withStyle(ChatFormatting.RED)
-				.withStyle(ChatFormatting.ITALIC));
-		tooltip.add(Component.translatable("doom.doomed_credit1.text").withStyle(ChatFormatting.RED)
-				.withStyle(ChatFormatting.ITALIC));
+		tooltip.add(Component.translatable("doom.doomed_credit.text").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.ITALIC));
+		tooltip.add(Component.translatable("doom.doomed_credit1.text").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 
@@ -81,14 +79,14 @@ public class GrenadeItem extends Item implements GeoItem {
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return this.renderer;
+				return renderer;
 			}
 		});
 	}
 
 	@Override
 	public Supplier<Object> getRenderProvider() {
-		return this.renderProvider;
+		return renderProvider;
 	}
 
 }

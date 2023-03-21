@@ -32,7 +32,7 @@ public class TurretEntity extends DemonEntity implements GeoEntity {
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("attacking"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		}));
@@ -40,33 +40,30 @@ public class TurretEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.turret_health).add(Attributes.ATTACK_DAMAGE, 0.0D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 1.0f).add(Attributes.MOVEMENT_SPEED, 0.0D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, DoomConfig.turret_health).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.KNOCKBACK_RESISTANCE, 1.0f).add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
 	protected void tickDeath() {
-		++this.deathTime;
-		if (this.deathTime == 30) {
-			this.remove(RemovalReason.KILLED);
-			this.dropExperience();
+		++deathTime;
+		if (deathTime == 30) {
+			remove(RemovalReason.KILLED);
+			dropExperience();
 		}
 	}
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
-		this.goalSelector.addGoal(1, new TurretEntity.AttackGoal(this));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
-		this.targetSelector.addGoal(2, new HurtByTargetGoal(this).setAlertOthers());
+		goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
+		goalSelector.addGoal(1, new TurretEntity.AttackGoal(this));
+		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
+		targetSelector.addGoal(2, new HurtByTargetGoal(this).setAlertOthers());
 	}
 
 	static class AttackGoal extends Goal {
@@ -74,52 +71,53 @@ public class TurretEntity extends DemonEntity implements GeoEntity {
 		protected int attackTimer = 0;
 
 		public AttackGoal(TurretEntity ghast) {
-			this.parentEntity = ghast;
+			parentEntity = ghast;
 		}
 
+		@Override
 		public boolean canUse() {
-			return this.parentEntity.getTarget() != null;
+			return parentEntity.getTarget() != null;
 		}
 
+		@Override
 		public void start() {
 			super.start();
-			this.parentEntity.setAggressive(true);
+			parentEntity.setAggressive(true);
 		}
 
 		@Override
 		public void stop() {
 			super.stop();
-			this.parentEntity.setAggressive(false);
-			this.parentEntity.setAttackingState(0);
-			this.attackTimer = -1;
+			parentEntity.setAggressive(false);
+			parentEntity.setAttackingState(0);
+			attackTimer = -1;
 		}
 
+		@Override
 		public void tick() {
-			var livingentity = this.parentEntity.getTarget();
-			if (this.parentEntity.hasLineOfSight(livingentity)) {
-				var world = this.parentEntity.level;
-				++this.attackTimer;
-				var vector3d = this.parentEntity.getViewVector(1.0F);
-				var x = livingentity.getX() - (this.parentEntity.getX() + vector3d.x * 2.0D);
-				var y = livingentity.getY(0.5D) - (0.5D + this.parentEntity.getY(0.5D));
-				var z = livingentity.getZ() - (this.parentEntity.getZ() + vector3d.z * 2.0D);
-				var fireballentity = new CustomSmallFireballEntity(world, this.parentEntity, x, y, z,
-						DoomConfig.turret_ranged_damage);
-				if (this.attackTimer == 10)
-					this.parentEntity.setAttackingState(1);
-				if (this.attackTimer == 20) {
-					fireballentity.setPos(this.parentEntity.getX() + vector3d.x, this.parentEntity.getY(0.5D) + 0.5D,
-							fireballentity.getZ() + vector3d.z);
+			final var livingentity = parentEntity.getTarget();
+			if (parentEntity.hasLineOfSight(livingentity)) {
+				final var world = parentEntity.level;
+				++attackTimer;
+				final var vector3d = parentEntity.getViewVector(1.0F);
+				final var x = livingentity.getX() - (parentEntity.getX() + vector3d.x * 2.0D);
+				final var y = livingentity.getY(0.5D) - (0.5D + parentEntity.getY(0.5D));
+				final var z = livingentity.getZ() - (parentEntity.getZ() + vector3d.z * 2.0D);
+				final var fireballentity = new CustomSmallFireballEntity(world, parentEntity, x, y, z, DoomConfig.turret_ranged_damage);
+				if (attackTimer == 10)
+					parentEntity.setAttackingState(1);
+				if (attackTimer == 20) {
+					fireballentity.setPos(parentEntity.getX() + vector3d.x, parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z);
 					world.addFreshEntity(fireballentity);
 				}
-				if (this.attackTimer >= 30) {
-					this.parentEntity.setAttackingState(0);
-					this.attackTimer = -40;
+				if (attackTimer >= 30) {
+					parentEntity.setAttackingState(0);
+					attackTimer = -40;
 				}
-			} else if (this.attackTimer > 0) {
-				--this.attackTimer;
+			} else if (attackTimer > 0) {
+				--attackTimer;
 			}
-			this.parentEntity.lookAt(livingentity, 30.0F, 30.0F);
+			parentEntity.lookAt(livingentity, 30.0F, 30.0F);
 		}
 
 	}

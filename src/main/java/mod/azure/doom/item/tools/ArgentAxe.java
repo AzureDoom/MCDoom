@@ -29,17 +29,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class ArgentAxe extends DiggerItem {
 
-	protected static final Map<Block, Block> BLOCK_STRIPPING_MAP = (new Builder<Block, Block>())
-			.put(Blocks.OAK_WOOD, Blocks.STRIPPED_OAK_WOOD).put(Blocks.OAK_LOG, Blocks.STRIPPED_OAK_LOG)
-			.put(Blocks.DARK_OAK_WOOD, Blocks.STRIPPED_DARK_OAK_WOOD)
-			.put(Blocks.DARK_OAK_LOG, Blocks.STRIPPED_DARK_OAK_LOG).put(Blocks.ACACIA_WOOD, Blocks.STRIPPED_ACACIA_WOOD)
-			.put(Blocks.ACACIA_LOG, Blocks.STRIPPED_ACACIA_LOG).put(Blocks.BIRCH_WOOD, Blocks.STRIPPED_BIRCH_WOOD)
-			.put(Blocks.BIRCH_LOG, Blocks.STRIPPED_BIRCH_LOG).put(Blocks.JUNGLE_WOOD, Blocks.STRIPPED_JUNGLE_WOOD)
-			.put(Blocks.JUNGLE_LOG, Blocks.STRIPPED_JUNGLE_LOG).put(Blocks.SPRUCE_WOOD, Blocks.STRIPPED_SPRUCE_WOOD)
-			.put(Blocks.SPRUCE_LOG, Blocks.STRIPPED_SPRUCE_LOG).put(Blocks.WARPED_STEM, Blocks.STRIPPED_WARPED_STEM)
-			.put(Blocks.WARPED_HYPHAE, Blocks.STRIPPED_WARPED_HYPHAE)
-			.put(Blocks.CRIMSON_STEM, Blocks.STRIPPED_CRIMSON_STEM)
-			.put(Blocks.CRIMSON_HYPHAE, Blocks.STRIPPED_CRIMSON_HYPHAE).build();
+	protected static final Map<Block, Block> BLOCK_STRIPPING_MAP = new Builder<Block, Block>().put(Blocks.OAK_WOOD, Blocks.STRIPPED_OAK_WOOD).put(Blocks.OAK_LOG, Blocks.STRIPPED_OAK_LOG).put(Blocks.DARK_OAK_WOOD, Blocks.STRIPPED_DARK_OAK_WOOD).put(Blocks.DARK_OAK_LOG, Blocks.STRIPPED_DARK_OAK_LOG).put(Blocks.ACACIA_WOOD, Blocks.STRIPPED_ACACIA_WOOD).put(Blocks.ACACIA_LOG, Blocks.STRIPPED_ACACIA_LOG).put(Blocks.BIRCH_WOOD, Blocks.STRIPPED_BIRCH_WOOD)
+			.put(Blocks.BIRCH_LOG, Blocks.STRIPPED_BIRCH_LOG).put(Blocks.JUNGLE_WOOD, Blocks.STRIPPED_JUNGLE_WOOD).put(Blocks.JUNGLE_LOG, Blocks.STRIPPED_JUNGLE_LOG).put(Blocks.SPRUCE_WOOD, Blocks.STRIPPED_SPRUCE_WOOD).put(Blocks.SPRUCE_LOG, Blocks.STRIPPED_SPRUCE_LOG).put(Blocks.WARPED_STEM, Blocks.STRIPPED_WARPED_STEM).put(Blocks.WARPED_HYPHAE, Blocks.STRIPPED_WARPED_HYPHAE).put(Blocks.CRIMSON_STEM, Blocks.STRIPPED_CRIMSON_STEM).put(Blocks.CRIMSON_HYPHAE, Blocks.STRIPPED_CRIMSON_HYPHAE)
+			.build();
 
 	public ArgentAxe() {
 		super(8, -2.4F, DoomTier.DOOM, BlockTags.MINEABLE_WITH_AXE, new Item.Properties().stacksTo(1));
@@ -52,20 +44,19 @@ public class ArgentAxe extends DiggerItem {
 
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
-		Level world = context.getLevel();
-		BlockPos blockPos = context.getClickedPos();
-		BlockState blockState = world.getBlockState(blockPos);
-		Block block = (Block) BLOCK_STRIPPING_MAP.get(blockState.getBlock());
+		final Level world = context.getLevel();
+		final BlockPos blockPos = context.getClickedPos();
+		final BlockState blockState = world.getBlockState(blockPos);
+		final Block block = BLOCK_STRIPPING_MAP.get(blockState.getBlock());
 		if (block != null) {
-			Player playerEntity = context.getPlayer();
+			final Player playerEntity = context.getPlayer();
 			world.playSound(playerEntity, blockPos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
 			if (!world.isClientSide) {
-				world.setBlock(blockPos,
-						(BlockState) block.defaultBlockState().setValue(RotatedPillarBlock.AXIS, blockState.getValue(RotatedPillarBlock.AXIS)), 11);
+				world.setBlock(blockPos, block.defaultBlockState().setValue(RotatedPillarBlock.AXIS, blockState.getValue(RotatedPillarBlock.AXIS)), 11);
 				if (playerEntity != null) {
-					context.getItemInHand().hurtAndBreak(1, (LivingEntity) playerEntity, (Consumer) ((p) -> {
+					context.getItemInHand().hurtAndBreak(1, (LivingEntity) playerEntity, (Consumer) p -> {
 						((LivingEntity) p).broadcastBreakEvent(context.getHand());
-					}));
+					});
 				}
 			}
 
@@ -77,8 +68,7 @@ public class ArgentAxe extends DiggerItem {
 
 	@Override
 	public void appendHoverText(ItemStack itemStack, Level level, List<Component> list, TooltipFlag tooltipFlag) {
-		list.add(Component.translatable("doom.argent_powered.text").withStyle(ChatFormatting.RED)
-				.withStyle(ChatFormatting.ITALIC));
+		list.add(Component.translatable("doom.argent_powered.text").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(itemStack, level, list, tooltipFlag);
 	}
 

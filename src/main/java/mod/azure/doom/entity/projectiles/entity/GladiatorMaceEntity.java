@@ -42,21 +42,18 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
 		this.shooter = shooter;
 	}
 
-	public GladiatorMaceEntity(Level worldIn, double x, double y, double z, double accelX, double accelY,
-			double accelZ) {
+	public GladiatorMaceEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
 		super(DoomProjectiles.GLADIATOR_MACE, x, y, z, accelX, accelY, accelZ, worldIn);
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, event -> {
-			return PlayState.CONTINUE;
-		}));
+		controllers.add(new AnimationController<>(this, event -> PlayState.CONTINUE));
 	}
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override
@@ -67,19 +64,19 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
 	@Override
 	public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
 		super.shoot(x, y, z, velocity, inaccuracy);
-		this.ticksInAir = 0;
+		ticksInAir = 0;
 	}
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
-		compound.putShort("life", (short) this.ticksInAir);
+		compound.putShort("life", (short) ticksInAir);
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
-		this.ticksInAir = compound.getShort("life");
+		ticksInAir = compound.getShort("life");
 	}
 
 	@Override
@@ -94,7 +91,7 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
 
 	@Override
 	public boolean isNoGravity() {
-		if (this.isInWater())
+		if (isInWater())
 			return false;
 		return true;
 	}
@@ -102,32 +99,27 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
 	@Override
 	protected void onHit(HitResult hitResult) {
 		super.onHit(hitResult);
-		if (!this.level.isClientSide()) {
-			this.remove(Entity.RemovalReason.DISCARDED);
-		}
-		this.playSound(SoundEvents.NETHERITE_BLOCK_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+		if (!level.isClientSide())
+			remove(Entity.RemovalReason.DISCARDED);
+		this.playSound(SoundEvents.NETHERITE_BLOCK_HIT, 1.0F, 1.2F / (random.nextFloat() * 0.2F + 0.9F));
 	}
 
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		super.onHitEntity(entityHitResult);
-		if (!this.level.isClientSide()) {
-			Entity entity = entityHitResult.getEntity();
-			Entity entity2 = this.getOwner();
+		if (!level.isClientSide()) {
+			final var entity = entityHitResult.getEntity();
+			final var entity2 = getOwner();
 			entity.setSecondsOnFire(5);
 			if (!(entity2 instanceof DemonEntity))
-				entity.hurt(DamageSource.mobAttack((LivingEntity) entity2),
-						DoomConfig.gladiator_ranged_damage
-								+ (this.shooter.getEntityData().get(GladiatorEntity.DEATH_STATE) == 1
-										? DoomConfig.gladiator_phaseone_damage_boost
-										: 0));
+				entity.hurt(DamageSource.mobAttack((LivingEntity) entity2), DoomConfig.gladiator_ranged_damage + (shooter.getEntityData().get(GladiatorEntity.DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
 			if (entity2 instanceof LivingEntity) {
 				if (!(entity2 instanceof DemonEntity))
-					this.doEnchantDamageEffects((LivingEntity) entity2, entity);
-				this.remove(Entity.RemovalReason.DISCARDED);
+					doEnchantDamageEffects((LivingEntity) entity2, entity);
+				remove(Entity.RemovalReason.DISCARDED);
 			}
 		}
-		this.playSound(SoundEvents.NETHERITE_BLOCK_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+		this.playSound(SoundEvents.NETHERITE_BLOCK_HIT, 1.0F, 1.2F / (random.nextFloat() * 0.2F + 0.9F));
 	}
 
 	public LivingEntity getShooter() {
@@ -141,8 +133,8 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
 	@Override
 	public void tick() {
 		super.tick();
-		if (this.tickCount >= 80)
-			this.remove(Entity.RemovalReason.DISCARDED);
+		if (tickCount >= 80)
+			remove(Entity.RemovalReason.DISCARDED);
 	}
 
 }

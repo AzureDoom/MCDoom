@@ -33,9 +33,9 @@ public class TentacleEntity extends DemonEntity implements GeoEntity {
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("attacking"));
-			if (this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())
+			if (dead || getHealth() < 0.01 || isDeadOrDying())
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		}));
@@ -43,22 +43,19 @@ public class TentacleEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.tentacle_health).add(Attributes.ATTACK_DAMAGE, 0.0D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 1.0f).add(Attributes.MOVEMENT_SPEED, 0.0D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, DoomConfig.tentacle_health).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.KNOCKBACK_RESISTANCE, 1.0f).add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
 	protected void tickDeath() {
-		++this.deathTime;
-		if (this.deathTime == 30) {
-			this.remove(RemovalReason.KILLED);
-			this.dropExperience();
+		++deathTime;
+		if (deathTime == 30) {
+			remove(RemovalReason.KILLED);
+			dropExperience();
 		}
 	}
 
@@ -78,12 +75,12 @@ public class TentacleEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
-		this.goalSelector.addGoal(9, new TentacleEntity.AttackGoal(this));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
-		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
+		goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
+		goalSelector.addGoal(9, new TentacleEntity.AttackGoal(this));
+		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+		targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
 	}
 
 	static class AttackGoal extends Goal {
@@ -91,53 +88,55 @@ public class TentacleEntity extends DemonEntity implements GeoEntity {
 		public int cooldown;
 
 		public AttackGoal(TentacleEntity parentEntity) {
-			this.entity = parentEntity;
+			entity = parentEntity;
 		}
 
+		@Override
 		public boolean canUse() {
-			return this.entity.getTarget() != null;
+			return entity.getTarget() != null;
 		}
 
+		@Override
 		public void start() {
-			this.cooldown = 0;
-			this.entity.setAttackingState(0);
+			cooldown = 0;
+			entity.setAttackingState(0);
 		}
 
 		@Override
 		public void stop() {
 			super.stop();
-			this.entity.setAttackingState(0);
+			entity.setAttackingState(0);
 		}
 
+		@Override
 		public void tick() {
-			var livingentity = this.entity.getTarget();
+			final var livingentity = entity.getTarget();
 			if (livingentity != null) {
-				this.entity.lookAt(livingentity, 30.0F, 90.0F);
-				var aabb2 = new AABB(this.entity.blockPosition()).inflate(2D);
-				if (this.entity.hasLineOfSight(livingentity)) {
-					++this.cooldown;
-					if (this.entity.getCommandSenderWorld().getEntities(this.entity, aabb2).contains(livingentity)) {
-						if (this.cooldown == 2) {
-							this.entity.getCommandSenderWorld().getEntities(this.entity, aabb2).forEach(e -> {
-								if ((e instanceof LivingEntity)) {
-									e.hurt(DamageSource.indirectMagic(this.entity, livingentity),
-											DoomConfig.tentacle_melee_damage);
+				entity.lookAt(livingentity, 30.0F, 90.0F);
+				final var aabb2 = new AABB(entity.blockPosition()).inflate(2D);
+				if (entity.hasLineOfSight(livingentity)) {
+					++cooldown;
+					if (entity.getCommandSenderWorld().getEntities(entity, aabb2).contains(livingentity)) {
+						if (cooldown == 2) {
+							entity.getCommandSenderWorld().getEntities(entity, aabb2).forEach(e -> {
+								if (e instanceof LivingEntity) {
+									e.hurt(DamageSource.indirectMagic(entity, livingentity), DoomConfig.tentacle_melee_damage);
 									livingentity.invulnerableTime = 0;
 								}
 							});
-							this.entity.setAttackingState(1);
+							entity.setAttackingState(1);
 						}
-						if (this.cooldown >= 10) {
-							this.entity.setAttackingState(0);
-							this.cooldown = -5;
+						if (cooldown >= 10) {
+							entity.setAttackingState(0);
+							cooldown = -5;
 						}
 					} else {
-						--this.cooldown;
-						this.entity.setAttackingState(0);
+						--cooldown;
+						entity.setAttackingState(0);
 					}
-				} else if (this.cooldown > 0) {
-					--this.cooldown;
-					this.entity.setAttackingState(0);
+				} else if (cooldown > 0) {
+					--cooldown;
+					entity.setAttackingState(0);
 				}
 			}
 		}

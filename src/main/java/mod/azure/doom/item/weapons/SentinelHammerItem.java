@@ -5,6 +5,14 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import io.netty.buffer.Unpooled;
+import mod.azure.azurelib.animatable.GeoItem;
+import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
+import mod.azure.azurelib.animatable.client.RenderProvider;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.client.render.weapons.SentinelHammerRender;
@@ -31,14 +39,6 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import mod.azure.azurelib.animatable.GeoItem;
-import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
-import mod.azure.azurelib.animatable.client.RenderProvider;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class SentinelHammerItem extends SwordItem implements GeoItem {
 
@@ -52,9 +52,7 @@ public class SentinelHammerItem extends SwordItem implements GeoItem {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(Component.translatable(
-				"Ammo: " + (stack.getMaxDamage() - stack.getDamageValue() - 1) + " / " + (stack.getMaxDamage() - 1))
-				.withStyle(ChatFormatting.ITALIC));
+		tooltip.add(Component.translatable("Ammo: " + (stack.getMaxDamage() - stack.getDamageValue() - 1) + " / " + (stack.getMaxDamage() - 1)).withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 
@@ -73,20 +71,18 @@ public class SentinelHammerItem extends SwordItem implements GeoItem {
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity miner) {
-		if (miner instanceof Player) {
-			Player playerentity = (Player) miner;
-			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
+		if (miner instanceof Player playerentity) {
+			if (stack.getDamageValue() < stack.getMaxDamage() - 1) {
 				if (playerentity.getMainHandItem().getItem() instanceof SentinelHammerItem) {
 					final AABB aabb = new AABB(miner.blockPosition().above()).inflate(5D, 5D, 5D);
 					miner.getCommandSenderWorld().getEntities(miner, aabb).forEach(e -> doDamage(playerentity, e));
 					stack.hurtAndBreak(1, miner, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
-					AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(miner.level, miner.getX(),
-							playerentity.getY(), playerentity.getZ());
+					final AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(miner.level, miner.getX(), playerentity.getY(), playerentity.getZ());
 					areaeffectcloudentity.setParticle(ParticleTypes.CRIT);
 					areaeffectcloudentity.setRadius(5.0F);
 					areaeffectcloudentity.setDuration(20);
@@ -95,16 +91,15 @@ public class SentinelHammerItem extends SwordItem implements GeoItem {
 				}
 			}
 		}
-		return stack.getDamageValue() < (stack.getMaxDamage() - 1) ? true : false;
+		return stack.getDamageValue() < stack.getMaxDamage() - 1 ? true : false;
 	}
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		Player playerentity = (Player) entity;
+		final Player playerentity = (Player) entity;
 		if (world.isClientSide) {
-			if (playerentity.getMainHandItem().getItem() instanceof SentinelHammerItem
-					&& ClientInit.reload.consumeClick() && selected) {
-				FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
+			if (playerentity.getMainHandItem().getItem() instanceof SentinelHammerItem && ClientInit.reload.consumeClick() && selected) {
+				final FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.SENTINELHAMMER, passedData);
 			}
@@ -113,8 +108,7 @@ public class SentinelHammerItem extends SwordItem implements GeoItem {
 
 	public static void reload(Player user, InteractionHand hand) {
 		if (user.getItemInHand(hand).getItem() instanceof SentinelHammerItem) {
-			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
-					&& user.getInventory().countItem(DoomItems.ARGENT_ENERGY) > 0) {
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0 && user.getInventory().countItem(DoomItems.ARGENT_ENERGY) > 0) {
 				removeAmmo(DoomItems.ARGENT_ENERGY, user);
 				user.getItemInHand(hand).hurtAndBreak(-5, user, s -> user.broadcastBreakEvent(hand));
 				user.getItemInHand(hand).setPopTime(3);
@@ -124,12 +118,12 @@ public class SentinelHammerItem extends SwordItem implements GeoItem {
 
 	public static void removeAmmo(Item ammo, Player Player) {
 		if (!Player.isCreative()) {
-			for (ItemStack item : Player.getInventory().offhand) {
+			for (final ItemStack item : Player.getInventory().offhand) {
 				if (item.getItem() == ammo) {
 					item.shrink(1);
 					break;
 				}
-				for (ItemStack item1 : Player.getInventory().items) {
+				for (final ItemStack item1 : Player.getInventory().items) {
 					if (item1.getItem() == ammo) {
 						item1.shrink(1);
 						break;
@@ -151,14 +145,14 @@ public class SentinelHammerItem extends SwordItem implements GeoItem {
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return this.renderer;
+				return renderer;
 			}
 		});
 	}
 
 	@Override
 	public Supplier<Object> getRenderProvider() {
-		return this.renderProvider;
+		return renderProvider;
 	}
 
 }

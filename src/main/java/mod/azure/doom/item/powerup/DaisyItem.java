@@ -39,12 +39,11 @@ public class DaisyItem extends TrinketItem {
 		super.appendHoverText(itemStack, level, list, tooltipFlag);
 	}
 
-	public Multimap<Attribute, AttributeModifier> getModifiers(ItemStack stack, SlotReference slot,
-			LivingEntity entity, UUID uuid) {
-		var modifiers = super.getModifiers(stack, slot, entity, uuid);
-		if (DoomConfig.enable_daisy_effects == true) {
-			modifiers.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(uuid,
-					DoomMod.MODID + ":movement_speed", 2.0, AttributeModifier.Operation.MULTIPLY_TOTAL));
+	@Override
+	public Multimap<Attribute, AttributeModifier> getModifiers(ItemStack stack, SlotReference slot, LivingEntity entity, UUID uuid) {
+		final var modifiers = super.getModifiers(stack, slot, entity, uuid);
+		if (DoomConfig.enable_daisy_effects) {
+			modifiers.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(uuid, DoomMod.MODID + ":movement_speed", 2.0, AttributeModifier.Operation.MULTIPLY_TOTAL));
 			SlotAttributes.addSlotModifier(modifiers, "legs/belt", uuid, 1, AttributeModifier.Operation.ADDITION);
 		}
 		return modifiers;

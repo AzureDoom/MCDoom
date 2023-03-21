@@ -35,28 +35,14 @@ import net.minecraft.world.level.material.Material;
 
 public class ArgentPaxel extends DiggerItem {
 
-	protected static final Map<Block, BlockState> SHOVEL_LOOKUP = Maps.newHashMap((new Builder<Block, BlockState>())
-			.put(Blocks.GRASS_BLOCK, Blocks.DIRT_PATH.defaultBlockState())
-			.put(Blocks.DIRT, Blocks.DIRT_PATH.defaultBlockState()).put(Blocks.PODZOL, Blocks.DIRT_PATH.defaultBlockState())
-			.put(Blocks.COARSE_DIRT, Blocks.DIRT_PATH.defaultBlockState())
-			.put(Blocks.MYCELIUM, Blocks.DIRT_PATH.defaultBlockState())
-			.put(Blocks.ROOTED_DIRT, Blocks.DIRT_PATH.defaultBlockState()).build());
+	protected static final Map<Block, BlockState> SHOVEL_LOOKUP = Maps.newHashMap(new Builder<Block, BlockState>().put(Blocks.GRASS_BLOCK, Blocks.DIRT_PATH.defaultBlockState()).put(Blocks.DIRT, Blocks.DIRT_PATH.defaultBlockState()).put(Blocks.PODZOL, Blocks.DIRT_PATH.defaultBlockState()).put(Blocks.COARSE_DIRT, Blocks.DIRT_PATH.defaultBlockState()).put(Blocks.MYCELIUM, Blocks.DIRT_PATH.defaultBlockState()).put(Blocks.ROOTED_DIRT, Blocks.DIRT_PATH.defaultBlockState()).build());
 
-	protected static final Map<Block, Block> BLOCK_STRIPPING_MAP = (new Builder<Block, Block>())
-			.put(Blocks.OAK_WOOD, Blocks.STRIPPED_OAK_WOOD).put(Blocks.OAK_LOG, Blocks.STRIPPED_OAK_LOG)
-			.put(Blocks.DARK_OAK_WOOD, Blocks.STRIPPED_DARK_OAK_WOOD)
-			.put(Blocks.DARK_OAK_LOG, Blocks.STRIPPED_DARK_OAK_LOG).put(Blocks.ACACIA_WOOD, Blocks.STRIPPED_ACACIA_WOOD)
-			.put(Blocks.ACACIA_LOG, Blocks.STRIPPED_ACACIA_LOG).put(Blocks.BIRCH_WOOD, Blocks.STRIPPED_BIRCH_WOOD)
-			.put(Blocks.BIRCH_LOG, Blocks.STRIPPED_BIRCH_LOG).put(Blocks.JUNGLE_WOOD, Blocks.STRIPPED_JUNGLE_WOOD)
-			.put(Blocks.JUNGLE_LOG, Blocks.STRIPPED_JUNGLE_LOG).put(Blocks.SPRUCE_WOOD, Blocks.STRIPPED_SPRUCE_WOOD)
-			.put(Blocks.SPRUCE_LOG, Blocks.STRIPPED_SPRUCE_LOG).put(Blocks.WARPED_STEM, Blocks.STRIPPED_WARPED_STEM)
-			.put(Blocks.WARPED_HYPHAE, Blocks.STRIPPED_WARPED_HYPHAE)
-			.put(Blocks.CRIMSON_STEM, Blocks.STRIPPED_CRIMSON_STEM)
-			.put(Blocks.CRIMSON_HYPHAE, Blocks.STRIPPED_CRIMSON_HYPHAE).build();
+	protected static final Map<Block, Block> BLOCK_STRIPPING_MAP = new Builder<Block, Block>().put(Blocks.OAK_WOOD, Blocks.STRIPPED_OAK_WOOD).put(Blocks.OAK_LOG, Blocks.STRIPPED_OAK_LOG).put(Blocks.DARK_OAK_WOOD, Blocks.STRIPPED_DARK_OAK_WOOD).put(Blocks.DARK_OAK_LOG, Blocks.STRIPPED_DARK_OAK_LOG).put(Blocks.ACACIA_WOOD, Blocks.STRIPPED_ACACIA_WOOD).put(Blocks.ACACIA_LOG, Blocks.STRIPPED_ACACIA_LOG).put(Blocks.BIRCH_WOOD, Blocks.STRIPPED_BIRCH_WOOD)
+			.put(Blocks.BIRCH_LOG, Blocks.STRIPPED_BIRCH_LOG).put(Blocks.JUNGLE_WOOD, Blocks.STRIPPED_JUNGLE_WOOD).put(Blocks.JUNGLE_LOG, Blocks.STRIPPED_JUNGLE_LOG).put(Blocks.SPRUCE_WOOD, Blocks.STRIPPED_SPRUCE_WOOD).put(Blocks.SPRUCE_LOG, Blocks.STRIPPED_SPRUCE_LOG).put(Blocks.WARPED_STEM, Blocks.STRIPPED_WARPED_STEM).put(Blocks.WARPED_HYPHAE, Blocks.STRIPPED_WARPED_HYPHAE).put(Blocks.CRIMSON_STEM, Blocks.STRIPPED_CRIMSON_STEM).put(Blocks.CRIMSON_HYPHAE, Blocks.STRIPPED_CRIMSON_HYPHAE)
+			.build();
 
 	@SuppressWarnings("unused")
-	private static final List<TagKey<Block>> MINEABLE = ImmutableList.of(BlockTags.MINEABLE_WITH_AXE,
-			BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.MINEABLE_WITH_SHOVEL);
+	private static final List<TagKey<Block>> MINEABLE = ImmutableList.of(BlockTags.MINEABLE_WITH_AXE, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.MINEABLE_WITH_SHOVEL);
 
 	public ArgentPaxel() {
 		super(9, -2.4F, DoomTier.DOOM, BlockTags.MINEABLE_WITH_AXE, new Item.Properties().stacksTo(1));
@@ -69,35 +55,32 @@ public class ArgentPaxel extends DiggerItem {
 
 	@Override
 	public boolean isCorrectToolForDrops(BlockState state) {
-		Block block = state.getBlock();
+		final Block block = state.getBlock();
 		if (block == Blocks.SNOW || block == Blocks.SNOW_BLOCK) {
 			return true;
 		}
-		Material material = state.getMaterial();
+		final Material material = state.getMaterial();
 		return material == Material.STONE || material == Material.METAL;
 	}
 
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
-		Level world = context.getLevel();
-		BlockPos blockPos = context.getClickedPos();
-		Player player = context.getPlayer();
-		BlockState blockstate = world.getBlockState(blockPos);
+		final Level world = context.getLevel();
+		final BlockPos blockPos = context.getClickedPos();
+		final Player player = context.getPlayer();
+		final BlockState blockstate = world.getBlockState(blockPos);
 		BlockState resultToSet = null;
-		Block strippedResult = BLOCK_STRIPPING_MAP.get(blockstate.getBlock());
+		final Block strippedResult = BLOCK_STRIPPING_MAP.get(blockstate.getBlock());
 		if (strippedResult != null) {
 			world.playSound(player, blockPos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
-			resultToSet = strippedResult.defaultBlockState().setValue(RotatedPillarBlock.AXIS,
-					blockstate.getValue(RotatedPillarBlock.AXIS));
-		} else {
-			if (context.getClickedFace() != Direction.DOWN) {
-				BlockState foundResult = SHOVEL_LOOKUP.get(blockstate.getBlock());
-				if (foundResult != null && world.getBlockState(blockPos.above()).isAir()) {
-					world.playSound(player, blockPos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
-					resultToSet = foundResult;
-				} else if (blockstate.getBlock() instanceof CampfireBlock && blockstate.getValue(CampfireBlock.LIT)) {
-					resultToSet = blockstate.setValue(CampfireBlock.LIT, false);
-				}
+			resultToSet = strippedResult.defaultBlockState().setValue(RotatedPillarBlock.AXIS, blockstate.getValue(RotatedPillarBlock.AXIS));
+		} else if (context.getClickedFace() != Direction.DOWN) {
+			final BlockState foundResult = SHOVEL_LOOKUP.get(blockstate.getBlock());
+			if (foundResult != null && world.getBlockState(blockPos.above()).isAir()) {
+				world.playSound(player, blockPos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
+				resultToSet = foundResult;
+			} else if (blockstate.getBlock() instanceof CampfireBlock && blockstate.getValue(CampfireBlock.LIT)) {
+				resultToSet = blockstate.setValue(CampfireBlock.LIT, false);
 			}
 		}
 		if (resultToSet == null) {
@@ -106,9 +89,9 @@ public class ArgentPaxel extends DiggerItem {
 		if (!world.isClientSide()) {
 			world.setBlock(blockPos, resultToSet, 11);
 			if (player != null) {
-				context.getItemInHand().hurtAndBreak(1, (LivingEntity) player, (Consumer<LivingEntity>) ((p) -> {
-					((LivingEntity) p).broadcastBreakEvent(context.getHand());
-				}));
+				context.getItemInHand().hurtAndBreak(1, (LivingEntity) player, (Consumer<LivingEntity>) p -> {
+					p.broadcastBreakEvent(context.getHand());
+				});
 			}
 		}
 		return InteractionResult.SUCCESS;
@@ -116,8 +99,7 @@ public class ArgentPaxel extends DiggerItem {
 
 	@Override
 	public void appendHoverText(ItemStack itemStack, Level level, List<Component> list, TooltipFlag tooltipFlag) {
-		list.add(Component.translatable("doom.argent_powered.text").withStyle(ChatFormatting.RED)
-				.withStyle(ChatFormatting.ITALIC));
+		list.add(Component.translatable("doom.argent_powered.text").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(itemStack, level, list, tooltipFlag);
 	}
 

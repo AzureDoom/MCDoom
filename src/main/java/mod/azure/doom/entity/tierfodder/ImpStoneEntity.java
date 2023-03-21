@@ -1,5 +1,11 @@
 package mod.azure.doom.entity.tierfodder;
 
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
@@ -21,12 +27,6 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class ImpStoneEntity extends DemonEntity implements GeoEntity {
 
@@ -39,11 +39,9 @@ public class ImpStoneEntity extends DemonEntity implements GeoEntity {
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving())
+			if (event.isMoving() || (isAggressive() && !(dead || getHealth() < 0.01 || isDeadOrDying())))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("spinning"));
-			if (this.isAggressive() && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenLoop("spinning"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+			if (dead || getHealth() < 0.01 || isDeadOrDying())
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		}));
@@ -51,43 +49,39 @@ public class ImpStoneEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override
 	protected void tickDeath() {
-		++this.deathTime;
-		if (this.deathTime == 50) {
-			this.remove(RemovalReason.KILLED);
-			this.dropExperience();
+		++deathTime;
+		if (deathTime == 50) {
+			remove(RemovalReason.KILLED);
+			dropExperience();
 		}
 	}
 
 	@Override
 	public void aiStep() {
-		if (this.level.isClientSide && (this.isAggressive() || !(animationSpeed > -0.15F && animationSpeed < 0.15F))) {
-			this.level.addParticle(ParticleTypes.SOUL_FIRE_FLAME, this.getRandomX(0.2D), this.getRandomY(),
-					this.getRandomZ(0.5D), 0.0D, 0D, 0D);
+		if (level.isClientSide && (isAggressive() || !(animationSpeed > -0.15F && animationSpeed < 0.15F))) {
+			level.addParticle(ParticleTypes.SOUL_FIRE_FLAME, getRandomX(0.2D), getRandomY(), getRandomZ(0.5D), 0.0D, 0D, 0D);
 		}
 		super.aiStep();
 	}
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 1.25D, 2));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
-		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
+		goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+		goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
+		goalSelector.addGoal(4, new DemonAttackGoal(this, 1.25D, 2));
+		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+		targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.impstone_health)
-				.add(Attributes.ATTACK_DAMAGE, DoomConfig.impstone_melee_damage).add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomConfig.impstone_health).add(Attributes.ATTACK_DAMAGE, DoomConfig.impstone_melee_damage).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -119,7 +113,7 @@ public class ImpStoneEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState blockIn) {
-		this.playSound(this.getStepSound(), 0.15F, 1.0F);
+		this.playSound(getStepSound(), 0.15F, 1.0F);
 	}
 
 	@Override

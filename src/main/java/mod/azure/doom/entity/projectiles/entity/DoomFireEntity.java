@@ -40,28 +40,25 @@ public class DoomFireEntity extends Entity implements GeoEntity {
 
 	public DoomFireEntity(EntityType<DoomFireEntity> entityType, Level world) {
 		super(entityType, world);
-		this.lifeTicks = 75;
+		lifeTicks = 75;
 	}
 
-	public DoomFireEntity(Level worldIn, double x, double y, double z, float yaw, int warmup, LivingEntity casterIn,
-			float damage) {
+	public DoomFireEntity(Level worldIn, double x, double y, double z, float yaw, int warmup, LivingEntity casterIn, float damage) {
 		this(DoomProjectiles.FIRING, worldIn);
-		this.warmupDelayTicks = warmup;
-		this.setCaster(casterIn);
+		warmupDelayTicks = warmup;
+		setCaster(casterIn);
 		this.absMoveTo(x, y, z);
 		this.damage = damage;
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, event -> {
-			return PlayState.CONTINUE;
-		}));
+		controllers.add(new AnimationController<>(this, event -> PlayState.CONTINUE));
 	}
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override
@@ -69,44 +66,43 @@ public class DoomFireEntity extends Entity implements GeoEntity {
 	}
 
 	public void setCaster(@Nullable LivingEntity owner) {
-		this.caster = owner;
-		this.casterUuid = owner == null ? null : owner.getUUID();
+		caster = owner;
+		casterUuid = owner == null ? null : owner.getUUID();
 	}
 
 	@Nullable
 	public LivingEntity getCaster() {
-		if (this.caster == null && this.casterUuid != null && this.level instanceof ServerLevel) {
-			Entity entity = ((ServerLevel) this.level).getEntity(this.casterUuid);
-			if (entity instanceof LivingEntity) {
-				this.caster = (LivingEntity) entity;
-			}
+		if (caster == null && casterUuid != null && level instanceof ServerLevel) {
+			final var entity = ((ServerLevel) level).getEntity(casterUuid);
+			if (entity instanceof LivingEntity)
+				caster = (LivingEntity) entity;
 		}
 
-		return this.caster;
+		return caster;
 	}
 
+	@Override
 	protected void readAdditionalSaveData(CompoundTag compound) {
-		this.warmupDelayTicks = compound.getInt("Warmup");
-		if (compound.hasUUID("Owner")) {
-			this.casterUuid = compound.getUUID("Owner");
-		}
+		warmupDelayTicks = compound.getInt("Warmup");
+		if (compound.hasUUID("Owner"))
+			casterUuid = compound.getUUID("Owner");
 	}
 
+	@Override
 	protected void addAdditionalSaveData(CompoundTag compound) {
-		compound.putInt("Warmup", this.warmupDelayTicks);
-		if (this.casterUuid != null) {
-			compound.putUUID("Owner", this.casterUuid);
-		}
+		compound.putInt("Warmup", warmupDelayTicks);
+		if (casterUuid != null)
+			compound.putUUID("Owner", casterUuid);
 	}
 
 	@Override
 	public void remove(RemovalReason reason) {
-		this.explode();
+		explode();
 		super.remove(reason);
 	}
 
 	protected void explode() {
-		this.level.getEntities(this, new AABB(this.blockPosition().above()).inflate(8)).forEach(e -> doDamage(this, e));
+		level.getEntities(this, new AABB(blockPosition().above()).inflate(8)).forEach(e -> doDamage(this, e));
 	}
 
 	private void doDamage(Entity user, Entity target) {
@@ -119,47 +115,42 @@ public class DoomFireEntity extends Entity implements GeoEntity {
 		}
 	}
 
+	@Override
 	public void tick() {
 		super.tick();
-		if (--this.warmupDelayTicks < 0) {
-			if (!this.sentSpikeEvent) {
-				this.level.broadcastEntityEvent(this, (byte) 4);
-				this.sentSpikeEvent = true;
+		if (--warmupDelayTicks < 0) {
+			if (!sentSpikeEvent) {
+				level.broadcastEntityEvent(this, (byte) 4);
+				sentSpikeEvent = true;
 			}
 
-			if (--this.lifeTicks < 0) {
-				this.remove(RemovalReason.KILLED);
-			}
+			if (--lifeTicks < 0)
+				remove(RemovalReason.KILLED);
 		}
-		if (this.isAlive() && level.getBlockState(this.blockPosition().above()).isAir()) {
-			level.setBlockAndUpdate(this.blockPosition().above(),
-					BaseFireBlock.getState(level, this.blockPosition().above()));
-		}
-		this.level.getEntities(this, new AABB(this.blockPosition().above()).inflate(1)).forEach(e -> {
+		if (isAlive() && level.getBlockState(blockPosition().above()).isAir())
+			level.setBlockAndUpdate(blockPosition().above(), BaseFireBlock.getState(level, blockPosition().above()));
+		level.getEntities(this, new AABB(blockPosition().above()).inflate(1)).forEach(e -> {
 			if (e.isAlive() && !(e instanceof DemonEntity)) {
-				e.hurt(DamageSource.indirectMobAttack(e, this.getCaster()), damage);
+				e.hurt(DamageSource.indirectMobAttack(e, getCaster()), damage);
 				e.setRemainingFireTicks(60);
 			}
 		});
 	}
 
+	@Override
 	@Environment(EnvType.CLIENT)
 	public void handleEntityEvent(byte status) {
 		super.handleEntityEvent(status);
-		if (status == 4) {
-			this.clientSideAttackStarted = true;
-		}
-
+		if (status == 4)
+			clientSideAttackStarted = true;
 	}
 
 	@Environment(EnvType.CLIENT)
 	public float getAnimationProgress(float tickDelta) {
-		if (!this.clientSideAttackStarted) {
+		if (!clientSideAttackStarted)
 			return 0.0F;
-		} else {
-			int i = this.lifeTicks - 2;
-			return i <= 0 ? 1.0F : 1.0F - ((float) i - tickDelta) / 20.0F;
-		}
+		else
+			return lifeTicks - 2 <= 0 ? 1.0F : 1.0F - (lifeTicks - 2 - tickDelta) / 20.0F;
 	}
 
 	@Override
@@ -169,9 +160,7 @@ public class DoomFireEntity extends Entity implements GeoEntity {
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		return source == DamageSource.IN_WALL || source == DamageSource.ON_FIRE || source == DamageSource.IN_FIRE
-				? false
-				: super.hurt(source, amount);
+		return source == DamageSource.IN_WALL || source == DamageSource.ON_FIRE || source == DamageSource.IN_FIRE ? false : super.hurt(source, amount);
 	}
 
 }

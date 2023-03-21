@@ -2,6 +2,14 @@ package mod.azure.doom.entity.tierheavy;
 
 import java.util.SplittableRandom;
 
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.MancubusFireAttackGoal;
@@ -43,19 +51,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class MancubusEntity extends DemonEntity implements GeoEntity {
 
-	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(MancubusEntity.class,
-			EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(MancubusEntity.class, EntityDataSerializers.INT);
 	private int attackTimer;
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -68,74 +67,68 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			if (event.isMoving())
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+			if (dead || getHealth() < 0.01 || isDeadOrDying())
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (this.level.isClientSide())
-					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
-							SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level.isClientSide())
+					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 			if (event.getKeyframeData().getSound().matches("talk"))
-				if (this.level.isClientSide())
-					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.MANCUBUS_STEP,
-							SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level.isClientSide())
+					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.MANCUBUS_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
-			if (this.entityData.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+			if (entityData.get(STATE) == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("firing", LoopType.PLAY_ONCE));
-			if (this.entityData.get(STATE) == 3 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+			if (entityData.get(STATE) == 3 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("ground", LoopType.PLAY_ONCE));
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("attack"))
-				if (this.level.isClientSide())
-					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.ROCKET_FIRING,
-							SoundSource.HOSTILE, 0.25F, 1.0F, true);
+				if (level.isClientSide())
+					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.ROCKET_FIRING, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			if (event.getKeyframeData().getSound().matches("flames"))
-				if (this.level.isClientSide())
-					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.FIRECHARGE_USE,
-							SoundSource.HOSTILE, 0.25F, 1.0F, true);
+				if (level.isClientSide())
+					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.FIRECHARGE_USE, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 		}));
 	}
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override
 	protected void tickDeath() {
-		++this.deathTime;
-		if (this.deathTime == 80) {
-			this.remove(RemovalReason.KILLED);
-			this.dropExperience();
+		++deathTime;
+		if (deathTime == 80) {
+			remove(RemovalReason.KILLED);
+			dropExperience();
 		}
 	}
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, IronGolem.class, 8.0F));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		this.applyEntityAI();
+		goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
+		goalSelector.addGoal(8, new LookAtPlayerGoal(this, IronGolem.class, 8.0F));
+		goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
+		applyEntityAI();
 	}
 
 	protected void applyEntityAI() {
-		this.goalSelector.addGoal(4, new MancubusFireAttackGoal(this, new FireballAttack(this)
-				.setProjectileOriginOffset(0.1, 0.5, 0.1).setDamage(DoomConfig.mancubus_ranged_damage)));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
-		this.targetSelector.addGoal(3, (new HurtByTargetGoal(this).setAlertOthers()));
+		goalSelector.addGoal(4, new MancubusFireAttackGoal(this, new FireballAttack(this).setProjectileOriginOffset(0.1, 0.5, 0.1).setDamage(DoomConfig.mancubus_ranged_damage)));
+		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+		targetSelector.addGoal(3, new HurtByTargetGoal(this).setAlertOthers());
 	}
 
 	public class FireballAttack extends AbstractRangedAttack {
 
-		public FireballAttack(MancubusEntity parentEntity, double xOffSetModifier, double entityHeightFraction,
-				double zOffSetModifier, float damage) {
+		public FireballAttack(MancubusEntity parentEntity, double xOffSetModifier, double entityHeightFraction, double zOffSetModifier, float damage) {
 			super(parentEntity, xOffSetModifier, entityHeightFraction, zOffSetModifier, damage);
 		}
 
@@ -150,15 +143,15 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 
 		@Override
 		public Projectile getProjectile(Level world, double d2, double d3, double d4) {
-			return new FireProjectile(world, this.parentEntity, d2, d3, d4, damage);
+			return new FireProjectile(world, parentEntity, d2, d3, d4, damage);
 
 		}
 	}
 
 	@Override
 	protected void updateControlFlags() {
-		boolean flag = this.getTarget() != null && this.hasLineOfSight(this.getTarget());
-		this.goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
+		final boolean flag = getTarget() != null && hasLineOfSight(getTarget());
+		goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
 		super.updateControlFlags();
 	}
 
@@ -167,12 +160,12 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 		boolean flag = false;
 		double d0 = 0.0D;
 		do {
-			BlockPos blockpos1 = blockpos.below();
-			BlockState blockstate = this.level.getBlockState(blockpos1);
-			if (blockstate.isFaceSturdy(this.level, blockpos1, Direction.UP)) {
-				if (!this.level.isEmptyBlock(blockpos)) {
-					BlockState blockstate1 = this.level.getBlockState(blockpos);
-					VoxelShape voxelshape = blockstate1.getCollisionShape(this.level, blockpos);
+			final BlockPos blockpos1 = blockpos.below();
+			final BlockState blockstate = level.getBlockState(blockpos1);
+			if (blockstate.isFaceSturdy(level, blockpos1, Direction.UP)) {
+				if (!level.isEmptyBlock(blockpos)) {
+					final BlockState blockstate1 = level.getBlockState(blockpos);
+					final VoxelShape voxelshape = blockstate1.getCollisionShape(level, blockpos);
 					if (!voxelshape.isEmpty()) {
 						d0 = voxelshape.max(Direction.Axis.Y);
 					}
@@ -184,19 +177,15 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
-			DoomFireEntity fang = new DoomFireEntity(this.level, x, (double) blockpos.getY() + d0, z, yaw, 1, this,
-					DoomConfig.mancubus_ranged_damage);
+			final DoomFireEntity fang = new DoomFireEntity(level, x, blockpos.getY() + d0, z, yaw, 1, this, DoomConfig.mancubus_ranged_damage);
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
-			this.level.addFreshEntity(fang);
+			level.addFreshEntity(fang);
 		}
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MAX_HEALTH, DoomConfig.mancubus_health)
-				.add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MAX_HEALTH, DoomConfig.mancubus_health).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -212,12 +201,13 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 		return false;
 	}
 
+	@Override
 	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
 		return 2.80F;
 	}
 
 	public int getAttackTimer() {
-		return this.attackTimer;
+		return attackTimer;
 	}
 
 	@Override
@@ -233,27 +223,27 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
-		this.entityData.define(VARIANT, 0);
+		entityData.define(VARIANT, 0);
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag) {
 		super.readAdditionalSaveData(tag);
-		this.setVariant(tag.getInt("Variant"));
+		setVariant(tag.getInt("Variant"));
 	}
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag tag) {
 		super.addAdditionalSaveData(tag);
-		tag.putInt("Variant", this.getVariant());
+		tag.putInt("Variant", getVariant());
 	}
 
 	public int getVariant() {
-		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 5);
+		return Mth.clamp(entityData.get(VARIANT), 1, 5);
 	}
 
 	public void setVariant(int variant) {
-		this.entityData.set(VARIANT, variant);
+		entityData.set(VARIANT, variant);
 	}
 
 	public int getVariants() {
@@ -261,18 +251,17 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
-			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-		SplittableRandom random = new SplittableRandom();
-		int var = random.nextInt(0, 6);
-		this.setVariant(var);
+		final SplittableRandom random = new SplittableRandom();
+		final int var = random.nextInt(0, 6);
+		setVariant(var);
 		return spawnDataIn;
 	}
 
 	@Override
 	public int getArmorValue() {
-		return this.getVariant() >= 4 ? 6 : 0;
+		return getVariant() >= 4 ? 6 : 0;
 	}
 
 }

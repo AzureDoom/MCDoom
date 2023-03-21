@@ -40,7 +40,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override
@@ -50,12 +50,12 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 
 	public static void removeAmmo(Item ammo, Player playerEntity) {
 		if (!playerEntity.isCreative()) {
-			for (ItemStack item : playerEntity.getInventory().offhand) {
+			for (final ItemStack item : playerEntity.getInventory().offhand) {
 				if (item.getItem() == ammo) {
 					item.shrink(1);
 					break;
 				}
-				for (ItemStack item1 : playerEntity.getInventory().items) {
+				for (final ItemStack item1 : playerEntity.getInventory().items) {
 					if (item1.getItem() == ammo) {
 						item1.shrink(1);
 						break;
@@ -67,7 +67,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
-		ItemStack itemStack = user.getItemInHand(hand);
+		final ItemStack itemStack = user.getItemInHand(hand);
 		user.startUsingItem(hand);
 		return InteractionResultHolder.consume(itemStack);
 	}
@@ -90,7 +90,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 				return;
 			entity.level.setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
 		} else if (checkDistance(lightBlockPos, entity.blockPosition(), 2)) {
-			BlockEntity blockEntity = entity.level.getBlockEntity(lightBlockPos);
+			final BlockEntity blockEntity = entity.level.getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity) {
 				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
 			} else
@@ -107,17 +107,17 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 		if (blockPos == null)
 			return null;
 
-		int[] offsets = new int[maxDistance * 2 + 1];
+		final int[] offsets = new int[maxDistance * 2 + 1];
 		offsets[0] = 0;
 		for (int i = 2; i <= maxDistance * 2; i += 2) {
 			offsets[i - 1] = i / 2;
 			offsets[i] = -i / 2;
 		}
-		for (int x : offsets)
-			for (int y : offsets)
-				for (int z : offsets) {
-					BlockPos offsetPos = blockPos.offset(x, y, z);
-					BlockState state = world.getBlockState(offsetPos);
+		for (final int x : offsets)
+			for (final int y : offsets)
+				for (final int z : offsets) {
+					final BlockPos offsetPos = blockPos.offset(x, y, z);
+					final BlockState state = world.getBlockState(offsetPos);
 					if (state.isAir() || state.getBlock().equals(AzureLibMod.TICKING_LIGHT_BLOCK))
 						return offsetPos;
 				}

@@ -1,5 +1,13 @@
 package mod.azure.doom.entity.tierfodder;
 
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.ThrowItemGoal;
@@ -28,14 +36,6 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class PossessedScientistEntity extends DemonEntity implements GeoEntity {
 
@@ -50,16 +50,15 @@ public class PossessedScientistEntity extends DemonEntity implements GeoEntity {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			if (event.isMoving())
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walk"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+			if (dead || getHealth() < 0.01 || isDeadOrDying())
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (this.level.isClientSide())
-					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
-							SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level.isClientSide())
+					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("attack", LoopType.PLAY_ONCE));
 			return PlayState.STOP;
 		}));
@@ -67,35 +66,32 @@ public class PossessedScientistEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override
 	protected void tickDeath() {
-		++this.deathTime;
-		if (this.deathTime == 40) {
-			this.remove(RemovalReason.KILLED);
-			this.dropExperience();
+		++deathTime;
+		if (deathTime == 40) {
+			remove(RemovalReason.KILLED);
+			dropExperience();
 		}
 	}
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		this.goalSelector.addGoal(2, new ThrowItemGoal(this, 1.0D));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
-		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+		goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+		goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
+		goalSelector.addGoal(2, new ThrowItemGoal(this, 1.0D));
+		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+		targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
+		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.possessed_scientist_health)
-				.add(Attributes.ATTACK_DAMAGE, DoomConfig.possessed_scientist_melee_damage)
-				.add(Attributes.MOVEMENT_SPEED, 0.15D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomConfig.possessed_scientist_health).add(Attributes.ATTACK_DAMAGE, DoomConfig.possessed_scientist_melee_damage).add(Attributes.MOVEMENT_SPEED, 0.15D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -128,11 +124,11 @@ public class PossessedScientistEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	public void performRangedAttack(LivingEntity target, float pullProgress) {
-		Vec3 vec3 = target.getDeltaMovement();
-		double d0 = target.getX() + vec3.x - this.getX();
-		double d1 = target.getEyeY() - (double) 1.1F - this.getY();
-		double d2 = target.getZ() + vec3.z - this.getZ();
-		double d3 = Math.sqrt(d0 * d0 + d2 * d2);
+		final Vec3 vec3 = target.getDeltaMovement();
+		final double d0 = target.getX() + vec3.x - this.getX();
+		final double d1 = target.getEyeY() - 1.1F - this.getY();
+		final double d2 = target.getZ() + vec3.z - this.getZ();
+		final double d3 = Math.sqrt(d0 * d0 + d2 * d2);
 		Potion potion;
 		if (target instanceof DemonEntity) {
 			if (target.getHealth() <= 4.0F) {
@@ -141,18 +137,17 @@ public class PossessedScientistEntity extends DemonEntity implements GeoEntity {
 				potion = Potions.REGENERATION;
 			}
 
-			this.setTarget((LivingEntity) null);
+			setTarget((LivingEntity) null);
 		} else {
 			potion = Potions.POISON;
 		}
 
-		ThrownPotion thrownpotion = new ThrownPotion(this.level, this);
+		final ThrownPotion thrownpotion = new ThrownPotion(level, this);
 		thrownpotion.setItem(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), potion));
 		thrownpotion.setXRot(thrownpotion.getXRot() - -20.0F);
 		thrownpotion.shoot(d0, d1 + d3 * 0.2D, d2, 0.75F, 8.0F);
-		this.level.playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_THROW,
-				this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
-		this.level.addFreshEntity(thrownpotion);
+		level.playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_THROW, getSoundSource(), 1.0F, 0.8F + random.nextFloat() * 0.4F);
+		level.addFreshEntity(thrownpotion);
 	}
 
 }

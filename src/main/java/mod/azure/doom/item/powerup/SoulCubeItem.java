@@ -23,8 +23,7 @@ public class SoulCubeItem extends TrinketItem {
 
 	@Override
 	public void appendHoverText(ItemStack itemStack, Level level, List<Component> list, TooltipFlag tooltipFlag) {
-		list.add(Component.translatable("Uses Remaining: " + (itemStack.getMaxDamage() - itemStack.getDamageValue()))
-				.withStyle(ChatFormatting.ITALIC));
+		list.add(Component.translatable("Uses Remaining: " + (itemStack.getMaxDamage() - itemStack.getDamageValue())).withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(itemStack, level, list, tooltipFlag);
 	}
 }

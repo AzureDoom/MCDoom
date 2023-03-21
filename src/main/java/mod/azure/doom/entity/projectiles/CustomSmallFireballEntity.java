@@ -12,8 +12,7 @@ public class CustomSmallFireballEntity extends SmallFireball {
 
 	private float directHitDamage = 5.0F;
 
-	public CustomSmallFireballEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
-			float directHitDamage) {
+	public CustomSmallFireballEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, float directHitDamage) {
 		super(worldIn, shooter, accelX, accelY, accelZ);
 		this.directHitDamage = directHitDamage;
 	}
@@ -21,9 +20,9 @@ public class CustomSmallFireballEntity extends SmallFireball {
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		if (!this.level.isClientSide()) {
-			Entity entity = entityHitResult.getEntity();
+			var entity = entityHitResult.getEntity();
 			if (!entity.fireImmune()) {
-				Entity entity2 = this.getOwner();
+				var entity2 = this.getOwner();
 				entity.setSecondsOnFire(5);
 				if (!(entity2 instanceof DemonEntity))
 					entity.hurt(DamageSource.fireball(this, entity2), directHitDamage);

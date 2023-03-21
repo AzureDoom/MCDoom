@@ -2,6 +2,14 @@ package mod.azure.doom.entity.tierheavy;
 
 import java.util.EnumSet;
 
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.registry.DoomSounds;
@@ -29,14 +37,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
 
@@ -49,45 +49,43 @@ public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving() && !this.isAggressive() && this.onGround)
+			if (event.isMoving() && !isAggressive() && onGround)
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			if (this.isAggressive() && animationSpeedOld > 0.35F && this.onGround)
+			if (isAggressive() && animationSpeedOld > 0.35F && onGround)
 				return event.setAndContinue(RawAnimation.begin().thenLoop("run"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+			if (dead || getHealth() < 0.01 || isDeadOrDying())
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (this.level.isClientSide())
-					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP,
-							SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level.isClientSide())
+					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("jumpattack", LoopType.PLAY_ONCE));
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("attack"))
-				if (this.level.isClientSide())
-					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-							SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level.isClientSide())
+					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		}));
 	}
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-		this.goalSelector.addGoal(3, new Hellknight2016Entity.AttackGoal(this, 1.5D));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
-		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
+		goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+		goalSelector.addGoal(3, new Hellknight2016Entity.AttackGoal(this, 1.5D));
+		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+		goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
+		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+		targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
 	}
 
 	@Override
@@ -97,17 +95,17 @@ public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
 
 	@Override
 	protected void updateControlFlags() {
-		boolean flag = this.getTarget() != null && this.hasLineOfSight(this.getTarget());
-		this.goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
+		final boolean flag = getTarget() != null && hasLineOfSight(getTarget());
+		goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
 		super.updateControlFlags();
 	}
 
 	@Override
 	protected void tickDeath() {
-		++this.deathTime;
-		if (this.deathTime == 30) {
-			this.remove(RemovalReason.KILLED);
-			this.dropExperience();
+		++deathTime;
+		if (deathTime == 30) {
+			remove(RemovalReason.KILLED);
+			dropExperience();
 		}
 	}
 
@@ -122,88 +120,86 @@ public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
 		private int attackTime;
 
 		public AttackGoal(Hellknight2016Entity zombieIn, double speedIn) {
-			this.entity = zombieIn;
-			this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Goal.Flag.JUMP));
-			this.speedModifier = speedIn;
+			entity = zombieIn;
+			setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Goal.Flag.JUMP));
+			speedModifier = speedIn;
 		}
 
+		@Override
 		public boolean canUse() {
-			return this.entity.getTarget() != null;
+			return entity.getTarget() != null;
 		}
 
+		@Override
 		public boolean canContinueToUse() {
-			return this.canUse();
+			return canUse();
 		}
 
+		@Override
 		public void start() {
 			super.start();
-			this.entity.setAggressive(true);
+			entity.setAggressive(true);
 		}
 
+		@Override
 		public void stop() {
 			super.stop();
-			this.entity.setAggressive(false);
-			this.entity.setAttackingState(0);
-			this.attackTime = -1;
+			entity.setAggressive(false);
+			entity.setAttackingState(0);
+			attackTime = -1;
 		}
 
+		@Override
 		public void tick() {
-			LivingEntity livingentity = this.entity.getTarget();
+			final LivingEntity livingentity = entity.getTarget();
 			if (livingentity != null) {
-				boolean inLineOfSight = this.entity.getSensing().hasLineOfSight(livingentity);
-				this.attackTime++;
-				this.entity.lookAt(livingentity, 30.0F, 30.0F);
-				final AABB aabb = new AABB(this.entity.blockPosition()).inflate(5D);
-				final AABB aabb2 = new AABB(this.entity.blockPosition()).inflate(3D);
+				final boolean inLineOfSight = entity.getSensing().hasLineOfSight(livingentity);
+				attackTime++;
+				entity.lookAt(livingentity, 30.0F, 30.0F);
+				final AABB aabb = new AABB(entity.blockPosition()).inflate(5D);
+				final AABB aabb2 = new AABB(entity.blockPosition()).inflate(3D);
 				if (inLineOfSight) {
-					this.entity.getNavigation().moveTo(livingentity, this.speedModifier);
-					if (this.entity.getCommandSenderWorld().getEntities(this.entity, aabb).contains(livingentity)) {
-						if (this.attackTime == 1) {
-							this.entity.setAttackingState(1);
+					entity.getNavigation().moveTo(livingentity, speedModifier);
+					if (entity.getCommandSenderWorld().getEntities(entity, aabb).contains(livingentity)) {
+						if (attackTime == 1) {
+							entity.setAttackingState(1);
 						}
-						if (this.attackTime == 4) {
-							Vec3 vec3d = this.entity.getDeltaMovement();
-							Vec3 vec3d2 = new Vec3(livingentity.getX() - this.entity.getX(), 0.0,
-									livingentity.getZ() - this.entity.getZ());
+						if (attackTime == 4) {
+							final Vec3 vec3d = entity.getDeltaMovement();
+							Vec3 vec3d2 = new Vec3(livingentity.getX() - entity.getX(), 0.0, livingentity.getZ() - entity.getZ());
 							vec3d2 = vec3d2.normalize().scale(0.4).add(vec3d.scale(0.4));
-							this.entity.setDeltaMovement(vec3d2.x, 0.5F, vec3d2.z);
-							this.entity.lookAt(livingentity, 30.0F, 30.0F);
+							entity.setDeltaMovement(vec3d2.x, 0.5F, vec3d2.z);
+							entity.lookAt(livingentity, 30.0F, 30.0F);
 						}
-						if (this.attackTime == 9) {
-							AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(entity.level, entity.getX(),
-									entity.getY(), entity.getZ());
+						if (attackTime == 9) {
+							final AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(entity.level, entity.getX(), entity.getY(), entity.getZ());
 							areaeffectcloudentity.setParticle(ParticleTypes.CRIMSON_SPORE);
 							areaeffectcloudentity.setRadius(3.0F);
 							areaeffectcloudentity.setDuration(5);
 							areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
-							this.entity.getCommandSenderWorld().getEntities(this.entity, aabb2).forEach(e -> {
-								if ((e instanceof LivingEntity)) {
-									e.hurt(DamageSource.mobAttack(this.entity),
-											((float) DoomConfig.hellknight2016_melee_damage));
+							entity.getCommandSenderWorld().getEntities(entity, aabb2).forEach(e -> {
+								if (e instanceof LivingEntity) {
+									e.hurt(DamageSource.mobAttack(entity), (float) DoomConfig.hellknight2016_melee_damage);
 									entity.level.addFreshEntity(areaeffectcloudentity);
 								}
 							});
 							livingentity.invulnerableTime = 0;
 						}
-						if (this.attackTime >= 13) {
-							this.attackTime = -5;
-							this.entity.setAttackingState(0);
-							this.entity.getNavigation().moveTo(livingentity, this.speedModifier);
+						if (attackTime >= 13) {
+							attackTime = -5;
+							entity.setAttackingState(0);
+							entity.getNavigation().moveTo(livingentity, speedModifier);
 						}
 					}
 				} else {
-					--this.attackTime;
+					--attackTime;
 				}
 			}
 		}
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.hellknight2016_health)
-				.add(Attributes.ATTACK_DAMAGE, DoomConfig.hellknight2016_melee_damage)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomConfig.hellknight2016_health).add(Attributes.ATTACK_DAMAGE, DoomConfig.hellknight2016_melee_damage).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	protected boolean shouldDrown() {

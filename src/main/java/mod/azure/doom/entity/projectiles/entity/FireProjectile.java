@@ -19,8 +19,6 @@ import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
@@ -49,13 +47,13 @@ public class FireProjectile extends AbstractHurtingProjectile {
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
-		compound.putShort("life", (short) this.ticksInAir);
+		compound.putShort("life", (short) ticksInAir);
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
-		this.ticksInAir = compound.getShort("life");
+		ticksInAir = compound.getShort("life");
 	}
 
 	public void setDirectHitDamage(float directHitDamage) {
@@ -74,54 +72,50 @@ public class FireProjectile extends AbstractHurtingProjectile {
 
 	@Override
 	public void tick() {
-		int idleOpt = 100;
+		final var idleOpt = 100;
 		if (getDeltaMovement().lengthSqr() < 0.01)
 			idleTicks++;
 		else
 			idleTicks = 0;
 		if (idleOpt <= 0 || idleTicks < idleOpt)
 			super.tick();
-		++this.ticksInAir;
-		if (this.ticksInAir >= 40) {
-			this.remove(Entity.RemovalReason.DISCARDED);
-		}
-		boolean isInsideWaterBlock = level.isWaterAt(blockPosition());
+		++ticksInAir;
+		if (ticksInAir >= 40) 
+			remove(Entity.RemovalReason.DISCARDED);
+		final var isInsideWaterBlock = level.isWaterAt(blockPosition());
 		spawnLightSource(isInsideWaterBlock);
-		if (this.level.isClientSide()) {
-			double x = this.getX() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getBbWidth() * 0.5D;
-			double z = this.getZ() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getBbWidth() * 0.5D;
-			this.level.addParticle(ParticleTypes.FLAME, true, x, this.getY(), z, 0, 0, 0);
-			this.level.addParticle(ParticleTypes.SMOKE, true, x, this.getY(), z, 0, 0, 0);
+		if (level.isClientSide()) {
+			level.addParticle(ParticleTypes.FLAME, true, this.getX() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, this.getY(), this.getZ() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, 0, 0, 0);
+			level.addParticle(ParticleTypes.SMOKE, true, this.getX() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, this.getY(), this.getZ() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, 0, 0, 0);
 		}
 	}
 
 	@Override
 	protected void onHitBlock(BlockHitResult blockHitResult) {
 		super.onHitBlock(blockHitResult);
-		BlockPos blockpos = blockHitResult.getBlockPos().relative(blockHitResult.getDirection());
-		if (!this.level.isClientSide) {
+		final var blockpos = blockHitResult.getBlockPos().relative(blockHitResult.getDirection());
+		if (!level.isClientSide) {
 			return;
 		}
-		Entity entity = this.getOwner();
-		if ((!(entity instanceof Mob) || this.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING))) {
-			if (this.level.isEmptyBlock(blockpos)) {
-				this.level.setBlockAndUpdate(blockpos, BaseFireBlock.getState(this.level, blockpos));
-			}
+		final var entity = getOwner();
+		if (!(entity instanceof Mob) || level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
+			if (level.isEmptyBlock(blockpos)) 
+				level.setBlockAndUpdate(blockpos, BaseFireBlock.getState(level, blockpos));
 		}
 	}
 
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		super.onHitEntity(entityHitResult);
-		if (!this.level.isClientSide) {
-			Entity entity = entityHitResult.getEntity();
-			Entity entity1 = this.getOwner();
-			this.remove(RemovalReason.KILLED);
+		if (!level.isClientSide) {
+			final var entity = entityHitResult.getEntity();
+			final var entity1 = getOwner();
+			remove(RemovalReason.KILLED);
 			if (entity1 instanceof LivingEntity) {
 				if (!(entity instanceof DemonEntity)) {
 					entity.hurt(DamageSource.mobAttack((LivingEntity) entity1), directHitDamage);
 					entity.setSecondsOnFire(15);
-					this.doEnchantDamageEffects((LivingEntity) entity1, entity);
+					doEnchantDamageEffects((LivingEntity) entity1, entity);
 				}
 			}
 		}
@@ -139,10 +133,10 @@ public class FireProjectile extends AbstractHurtingProjectile {
 				return;
 			level.setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
 		} else if (checkDistance(lightBlockPos, blockPosition(), 2)) {
-			BlockEntity blockEntity = level.getBlockEntity(lightBlockPos);
-			if (blockEntity instanceof TickingLightEntity) {
+			final var blockEntity = level.getBlockEntity(lightBlockPos);
+			if (blockEntity instanceof TickingLightEntity) 
 				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
-			} else
+			else
 				lightBlockPos = null;
 		} else
 			lightBlockPos = null;
@@ -156,17 +150,17 @@ public class FireProjectile extends AbstractHurtingProjectile {
 		if (blockPos == null)
 			return null;
 
-		int[] offsets = new int[maxDistance * 2 + 1];
+		final var offsets = new int[maxDistance * 2 + 1];
 		offsets[0] = 0;
-		for (int i = 2; i <= maxDistance * 2; i += 2) {
+		for (var i = 2; i <= maxDistance * 2; i += 2) {
 			offsets[i - 1] = i / 2;
 			offsets[i] = -i / 2;
 		}
-		for (int x : offsets)
-			for (int y : offsets)
-				for (int z : offsets) {
-					BlockPos offsetPos = blockPos.offset(x, y, z);
-					BlockState state = world.getBlockState(offsetPos);
+		for (final var x : offsets)
+			for (final var y : offsets)
+				for (final var z : offsets) {
+					final var offsetPos = blockPos.offset(x, y, z);
+					final var state = world.getBlockState(offsetPos);
 					if (state.isAir() || state.getBlock().equals(AzureLibMod.TICKING_LIGHT_BLOCK))
 						return offsetPos;
 				}

@@ -23,8 +23,7 @@ public class PowerSphereItem extends Item {
 
 	@Override
 	public void onUseTick(Level worldIn, LivingEntity livingEntityIn, ItemStack stack, int count) {
-		if (livingEntityIn instanceof Player) {
-			Player playerentity = (Player) livingEntityIn;
+		if (livingEntityIn instanceof Player playerentity) {
 			if (!worldIn.isClientSide()) {
 				livingEntityIn.heal(20);
 				if (!playerentity.getAbilities().instabuild) {
@@ -39,7 +38,7 @@ public class PowerSphereItem extends Item {
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
-		ItemStack itemStack = user.getItemInHand(hand);
+		final ItemStack itemStack = user.getItemInHand(hand);
 		user.startUsingItem(hand);
 		return InteractionResultHolder.consume(itemStack);
 	}

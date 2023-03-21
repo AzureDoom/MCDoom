@@ -37,12 +37,12 @@ public class Chainsaw extends Item {
 
 	public static void removeAmmo(Item ammo, Player playerEntity) {
 		if (!playerEntity.isCreative()) {
-			for (ItemStack item : playerEntity.getInventory().offhand) {
+			for (final ItemStack item : playerEntity.getInventory().offhand) {
 				if (item.getItem() == ammo) {
 					item.shrink(1);
 					break;
 				}
-				for (ItemStack item1 : playerEntity.getInventory().items) {
+				for (final ItemStack item1 : playerEntity.getInventory().items) {
 					if (item1.getItem() == ammo) {
 						item1.shrink(1);
 						break;
@@ -69,29 +69,24 @@ public class Chainsaw extends Item {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(Component.translatable(
-				"Fuel: " + (stack.getMaxDamage() - stack.getDamageValue() - 1) + " / " + (stack.getMaxDamage() - 1))
-				.withStyle(ChatFormatting.ITALIC));
+		tooltip.add(Component.translatable("Fuel: " + (stack.getMaxDamage() - stack.getDamageValue() - 1) + " / " + (stack.getMaxDamage() - 1)).withStyle(ChatFormatting.ITALIC));
 	}
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-		LivingEntity user = (LivingEntity) entityIn;
-		Player player = (Player) entityIn;
-		if (player.getMainHandItem().sameItem(stack) && stack.getDamageValue() < (stack.getMaxDamage() - 1)
-				&& !player.getCooldowns().isOnCooldown(this)) {
+		final LivingEntity user = (LivingEntity) entityIn;
+		final Player player = (Player) entityIn;
+		if (player.getMainHandItem().sameItem(stack) && stack.getDamageValue() < stack.getMaxDamage() - 1 && !player.getCooldowns().isOnCooldown(this)) {
 			final AABB aabb = new AABB(entityIn.blockPosition().above()).inflate(1D, 1D, 1D);
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDamage(user, e));
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDeathCheck(user, e, stack));
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> damageItem(user, stack));
-			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> addParticle(e));
-			worldIn.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_IDLE,
-					SoundSource.PLAYERS, 0.05F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(this::addParticle);
+			worldIn.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_IDLE, SoundSource.PLAYERS, 0.05F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 		if (worldIn.isClientSide) {
-			if (player.getMainHandItem().getItem() instanceof Chainsaw && ClientInit.reload.consumeClick()
-					&& isSelected) {
-				FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
+			if (player.getMainHandItem().getItem() instanceof Chainsaw && ClientInit.reload.consumeClick() && isSelected) {
+				final FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.CHAINSAW, passedData);
 			}
@@ -100,8 +95,7 @@ public class Chainsaw extends Item {
 
 	public static void reload(Player user, InteractionHand hand) {
 		if (user.getItemInHand(hand).getItem() instanceof Chainsaw) {
-			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
-					&& user.getInventory().countItem(DoomItems.GAS_BARREL) > 0) {
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0 && user.getInventory().countItem(DoomItems.GAS_BARREL) > 0) {
 				removeAmmo(DoomItems.GAS_BARREL, user);
 				user.getItemInHand(hand).hurtAndBreak(-200, user, s -> user.broadcastBreakEvent(hand));
 				user.getItemInHand(hand).setPopTime(3);
@@ -113,24 +107,20 @@ public class Chainsaw extends Item {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
 			target.hurt(DamageSource.playerAttack((Player) user), DoomConfig.chainsaw_damage);
-			user.level.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_ATTACKING,
-					SoundSource.PLAYERS, 0.3F, 1.0F / (user.level.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+			user.level.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_ATTACKING, SoundSource.PLAYERS, 0.3F, 1.0F / (user.level.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 	}
 
 	private void doDeathCheck(LivingEntity user, Entity target, ItemStack stack) {
-		Random rand = new Random();
-		List<Item> givenList = Arrays.asList(DoomItems.CHAINGUN_BULLETS, DoomItems.SHOTGUN_SHELLS,
-				DoomItems.ARGENT_BOLT, DoomItems.SHOTGUN_SHELLS, DoomItems.ENERGY_CELLS, DoomItems.ROCKET);
+		final Random rand = new Random();
+		final List<Item> givenList = Arrays.asList(DoomItems.CHAINGUN_BULLETS, DoomItems.SHOTGUN_SHELLS, DoomItems.ARGENT_BOLT, DoomItems.SHOTGUN_SHELLS, DoomItems.ENERGY_CELLS, DoomItems.ROCKET);
 		if (target instanceof DemonEntity && !(target instanceof Player)) {
 			if (((LivingEntity) target).isDeadOrDying()) {
-				if (user instanceof Player) {
-					Player playerentity = (Player) user;
-					if (stack.getDamageValue() < (stack.getMaxDamage() - 1)
-							&& !playerentity.getCooldowns().isOnCooldown(this)) {
-						for (int i = 0; i < 5;) {
-							int randomIndex = rand.nextInt(givenList.size());
-							Item randomElement = givenList.get(randomIndex);
+				if (user instanceof Player playerentity) {
+					if (stack.getDamageValue() < stack.getMaxDamage() - 1 && !playerentity.getCooldowns().isOnCooldown(this)) {
+						for (final int i = 0; i < 5;) {
+							final int randomIndex = rand.nextInt(givenList.size());
+							final Item randomElement = givenList.get(randomIndex);
 							target.spawnAtLocation(randomElement);
 							break;
 						}
@@ -141,7 +131,7 @@ public class Chainsaw extends Item {
 	}
 
 	private void damageItem(LivingEntity user, ItemStack stack) {
-		Player player = (Player) user;
+		final Player player = (Player) user;
 		if (!player.getAbilities().instabuild) {
 			stack.setDamageValue(stack.getDamageValue() + 1);
 		}
@@ -150,8 +140,7 @@ public class Chainsaw extends Item {
 
 	private void addParticle(Entity target) {
 		if (target instanceof LivingEntity) {
-			target.level.addParticle(DustParticleOptions.REDSTONE, target.getRandomX(0.5D), target.getRandomY(),
-					target.getRandomZ(0.5D), 0.0D, 0D, 0D);
+			target.level.addParticle(DustParticleOptions.REDSTONE, target.getRandomX(0.5D), target.getRandomY(), target.getRandomZ(0.5D), 0.0D, 0D, 0D);
 		}
 	}
 

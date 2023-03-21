@@ -25,8 +25,7 @@ public class MegaSphereItem extends Item {
 
 	@Override
 	public void onUseTick(Level worldIn, LivingEntity livingEntityIn, ItemStack stack, int count) {
-		if (livingEntityIn instanceof Player) {
-			Player playerentity = (Player) livingEntityIn;
+		if (livingEntityIn instanceof Player playerentity) {
 			if (!worldIn.isClientSide()) {
 				livingEntityIn.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST, 600, 4));
 				livingEntityIn.heal(40);
@@ -44,7 +43,7 @@ public class MegaSphereItem extends Item {
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
-		ItemStack itemStack = user.getItemInHand(hand);
+		final ItemStack itemStack = user.getItemInHand(hand);
 		user.startUsingItem(hand);
 		return InteractionResultHolder.consume(itemStack);
 	}
