@@ -56,10 +56,12 @@ import net.minecraft.world.phys.Vec3;
 public class DemonEntity extends Monster implements NeutralMob, Enemy {
 
 	private static final EntityDataAccessor<Integer> ANGER_TIME = SynchedEntityData.defineId(DemonEntity.class, EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Boolean> SCREAM = SynchedEntityData.defineId(DemonEntity.class, EntityDataSerializers.BOOLEAN);
 	public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(DemonEntity.class, EntityDataSerializers.INT);
 	private static final UniformInt ANGER_TIME_RANGE = TimeUtil.rangeOfSeconds(20, 39);
 	private UUID targetUuid;
 	private BlockPos lightBlockPos = null;
+	public int screamingCounter = 0;
 
 	protected DemonEntity(EntityType<? extends Monster> type, Level worldIn) {
 		super(type, worldIn);
@@ -85,6 +87,14 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 		entityData.set(STATE, time);
 	}
 
+	public boolean isScreaming() {
+		return this.entityData.get(SCREAM);
+	}
+
+	public void setScreamingStatus(boolean screaming) {
+		this.entityData.set(SCREAM, Boolean.valueOf(screaming));
+	}
+
 	public static boolean canSpawnInDark(EntityType<? extends DemonEntity> type, LevelAccessor serverWorldAccess, MobSpawnType spawnReason, BlockPos pos, RandomSource random) {
 		if (serverWorldAccess.getDifficulty() == Difficulty.PEACEFUL)
 			return false;
@@ -98,6 +108,7 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 		super.defineSynchedData();
 		entityData.define(ANGER_TIME, 0);
 		entityData.define(STATE, 0);
+		entityData.define(SCREAM, false);
 	}
 
 	@Override
