@@ -29,7 +29,7 @@ public class CultistDoomArmor extends ArmorItem implements GeoItem {
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
-	public CultistDoomArmor(ArmorMaterial materialIn, EquipmentSlot slot) {
+	public CultistDoomArmor(ArmorMaterial materialIn, Type slot) {
 		super(materialIn, slot, new Item.Properties().stacksTo(1));
 	}
 

@@ -49,7 +49,7 @@ public class DoomMod implements ModInitializer {
 	public static final ResourceLocation DSG = new ResourceLocation(MODID, "doomed_shotgun");
 	public static final ResourceLocation DGAUSS = new ResourceLocation(MODID, "doomed_gauss");
 	public static final ResourceLocation DPLASMARIFLE = new ResourceLocation(MODID, "doomed_plasma_rifle");
-	public static final CreativeModeTab DoomEggItemGroup = FabricItemGroup.builder(new ResourceLocation(MODID, "eggs")).icon(() -> new ItemStack(DoomItems.IMP_SPAWN_EGG)).displayItems((enabledFeatures, entries, operatorEnabled) -> {
+	public static final CreativeModeTab DoomEggItemGroup = FabricItemGroup.builder(new ResourceLocation(MODID, "eggs")).icon(() -> new ItemStack(DoomItems.IMP_SPAWN_EGG)).displayItems((context, entries) -> {
 		entries.accept(DoomItems.GORE_NEST_SPAWN_EGG);
 		entries.accept(DoomItems.CUEBALL_SPAWN_EGG);
 		entries.accept(DoomItems.TENTACLE_SPAWN_EGG);
@@ -98,7 +98,7 @@ public class DoomMod implements ModInitializer {
 		entries.accept(DoomItems.GLADIATOR_SPAWN_EGG);
 		entries.accept(DoomItems.ARCH_MAKYR_SPAWN_EGG);
 	}).build();
-	public static final CreativeModeTab DoomArmorItemGroup = FabricItemGroup.builder(new ResourceLocation(MODID, "armor")).icon(() -> new ItemStack(DoomItems.DOOM_HELMET)).displayItems((enabledFeatures, entries, operatorEnabled) -> {
+	public static final CreativeModeTab DoomArmorItemGroup = FabricItemGroup.builder(new ResourceLocation(MODID, "armor")).icon(() -> new ItemStack(DoomItems.DOOM_HELMET)).displayItems((enabledFeatures, entries) -> {
 		entries.accept(DoomItems.DOOM_HELMET);
 		entries.accept(DoomItems.DOOM_CHESTPLATE);
 		entries.accept(DoomItems.DOOM_LEGGINGS);
@@ -203,7 +203,7 @@ public class DoomMod implements ModInitializer {
 		entries.accept(DoomItems.DARKLORD_LEGGINGS);
 		entries.accept(DoomItems.DARKLORD_BOOTS);
 	}).build();
-	public static final CreativeModeTab DoomBlockItemGroup = FabricItemGroup.builder(new ResourceLocation(MODID, "blocks")).icon(() -> new ItemStack(DoomBlocks.BARREL_BLOCK)).displayItems((enabledFeatures, entries, operatorEnabled) -> {
+	public static final CreativeModeTab DoomBlockItemGroup = FabricItemGroup.builder(new ResourceLocation(MODID, "blocks")).icon(() -> new ItemStack(DoomBlocks.BARREL_BLOCK)).displayItems((enabledFeatures, entries) -> {
 		entries.accept(DoomBlocks.BARREL_BLOCK);
 		entries.accept(DoomBlocks.JUMP_PAD);
 		entries.accept(DoomBlocks.DOOM_SAND);
@@ -254,7 +254,7 @@ public class DoomMod implements ModInitializer {
 		entries.accept(DoomBlocks.ICON_WALL15);
 		entries.accept(DoomBlocks.ICON_WALL16);
 	}).build();
-	public static final CreativeModeTab DoomWeaponItemGroup = FabricItemGroup.builder(new ResourceLocation(MODID, "weapons")).icon(() -> new ItemStack(DoomItems.BFG_ETERNAL)).displayItems((enabledFeatures, entries, operatorEnabled) -> {
+	public static final CreativeModeTab DoomWeaponItemGroup = FabricItemGroup.builder(new ResourceLocation(MODID, "weapons")).icon(() -> new ItemStack(DoomItems.BFG_ETERNAL)).displayItems((enabledFeatures, entries) -> {
 		entries.accept(DoomItems.ARGENT_AXE);
 		entries.accept(DoomItems.ARGENT_HOE);
 		entries.accept(DoomItems.ARGENT_SHOVEL);
@@ -295,7 +295,7 @@ public class DoomMod implements ModInitializer {
 		entries.accept(DoomItems.ENERGY_CELLS);
 		entries.accept(DoomItems.BFG_CELL);
 	}).build();
-	public static final CreativeModeTab DoomPowerUPItemGroup = FabricItemGroup.builder(new ResourceLocation(MODID, "powerup")).icon(() -> new ItemStack(DoomItems.SOULCUBE)).displayItems((enabledFeatures, entries, operatorEnabled) -> {
+	public static final CreativeModeTab DoomPowerUPItemGroup = FabricItemGroup.builder(new ResourceLocation(MODID, "powerup")).icon(() -> new ItemStack(DoomItems.SOULCUBE)).displayItems((enabledFeatures, entries) -> {
 		entries.accept(DoomItems.ARGENT_ENERGY);
 		entries.accept(DoomItems.ARGENT_PLATE);
 		entries.accept(DoomItems.SOULCUBE);

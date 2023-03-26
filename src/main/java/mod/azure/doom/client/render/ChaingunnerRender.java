@@ -12,8 +12,8 @@ import mod.azure.doom.client.models.ChaingunnerModel;
 import mod.azure.doom.entity.tierfodder.ChaingunnerEntity;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 public class ChaingunnerRender extends GeoEntityRenderer<ChaingunnerEntity> {
@@ -31,9 +31,9 @@ public class ChaingunnerRender extends GeoEntityRenderer<ChaingunnerEntity> {
 			}
 
 			@Override
-			protected ItemTransforms.TransformType getTransformTypeForStack(GeoBone bone, ItemStack stack, ChaingunnerEntity animatable) {
+			protected ItemDisplayContext getTransformTypeForStack(GeoBone bone, ItemStack stack, ChaingunnerEntity animatable) {
 				return switch (bone.getName()) {
-				default -> ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND;
+				default -> ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
 				};
 			}
 

@@ -468,7 +468,7 @@ public class ArchvileEntity extends DemonEntity implements GeoEntity {
 	}
 
 	public void spawnFangs(double p_190876_1_, double p_190876_3_, double p_190876_5_, double p_190876_7_, float p_190876_9_, int p_190876_10_) {
-		BlockPos blockpos = new BlockPos(p_190876_1_, p_190876_7_, p_190876_3_);
+		BlockPos blockpos = BlockPos.containing(p_190876_1_, p_190876_7_, p_190876_3_);
 		boolean flag = false;
 		double d0 = 0.0D;
 		do {

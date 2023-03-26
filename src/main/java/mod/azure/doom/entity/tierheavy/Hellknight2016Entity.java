@@ -51,7 +51,7 @@ public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			if (event.isMoving() && !isAggressive() && onGround)
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			if (isAggressive() && animationSpeedOld > 0.35F && onGround)
+			if (isAggressive() && this.walkAnimation.speed() > 0.35F && onGround)
 				return event.setAndContinue(RawAnimation.begin().thenLoop("run"));
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
@@ -179,7 +179,7 @@ public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
 							areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
 							entity.getCommandSenderWorld().getEntities(entity, aabb2).forEach(e -> {
 								if (e instanceof LivingEntity) {
-									e.hurt(DamageSource.mobAttack(entity), (float) DoomConfig.hellknight2016_melee_damage);
+									e.hurt(damageSources().mobAttack(entity), (float) DoomConfig.hellknight2016_melee_damage);
 									entity.level.addFreshEntity(areaeffectcloudentity);
 								}
 							});

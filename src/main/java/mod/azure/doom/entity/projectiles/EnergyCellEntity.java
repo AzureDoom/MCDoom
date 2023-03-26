@@ -163,9 +163,9 @@ public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
 		final var entity1 = getOwner();
 		DamageSource damagesource;
 		if (entity1 == null)
-			damagesource = DamageSource.arrow(this, this);
+			damagesource = damageSources().arrow(this, this);
 		else {
-			damagesource = DamageSource.arrow(this, entity1);
+			damagesource = damageSources().arrow(this, entity1);
 			if (entity1 instanceof LivingEntity)
 				((LivingEntity) entity1).setLastHurtMob(entity);
 		}

@@ -29,7 +29,7 @@ public class DarkLordArmor extends ArmorItem implements GeoItem {
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
-	public DarkLordArmor(ArmorMaterial materialIn, EquipmentSlot slot) {
+	public DarkLordArmor(ArmorMaterial materialIn, Type slot) {
 		super(materialIn, slot, new Item.Properties().stacksTo(1));
 	}
 

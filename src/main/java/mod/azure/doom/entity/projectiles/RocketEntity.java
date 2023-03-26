@@ -21,7 +21,6 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -241,7 +240,7 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
 	public void doDamage() {
 		level.getEntities(this, new AABB(blockPosition().above()).inflate(4)).forEach(e -> {
 			if (e instanceof LivingEntity)
-				e.hurt(DamageSource.playerAttack((Player) shooter), projectiledamage);
+				e.hurt(damageSources().playerAttack((Player) shooter), projectiledamage);
 			level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 0.0F, Level.ExplosionInteraction.NONE);
 		});
 

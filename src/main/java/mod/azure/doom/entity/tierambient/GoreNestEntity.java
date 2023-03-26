@@ -89,7 +89,7 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	protected void actuallyHurt(DamageSource source, float damageAmount) {
-		if (source == DamageSource.OUT_OF_WORLD)
+		if (source == damageSources().outOfWorld())
 			remove(Entity.RemovalReason.KILLED);
 
 		if (!(source.getEntity() instanceof Player))

@@ -221,7 +221,7 @@ public class ArgentBoltEntity extends AbstractArrow {
 		final AABB aabb = new AABB(this.blockPosition().above()).inflate(2D, 2D, 2D);
 		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
 			if (e instanceof LivingEntity) {
-				e.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.argent_bolt_damage);
+				e.hurt(damageSources().playerAttack((Player) this.shooter), DoomConfig.argent_bolt_damage);
 			}
 		});
 	}
@@ -237,9 +237,9 @@ public class ArgentBoltEntity extends AbstractArrow {
 		Entity entity1 = this.getOwner();
 		DamageSource damagesource;
 		if (entity1 == null) {
-			damagesource = DamageSource.arrow(this, this);
+			damagesource = damageSources().arrow(this, this);
 		} else {
-			damagesource = DamageSource.arrow(this, entity1);
+			damagesource = damageSources().arrow(this, entity1);
 			if (entity1 instanceof LivingEntity) {
 				((LivingEntity) entity1).setLastHurtMob(entity);
 			}

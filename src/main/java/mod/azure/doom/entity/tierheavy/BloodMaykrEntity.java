@@ -253,7 +253,7 @@ public class BloodMaykrEntity extends DemonEntity implements GeoEntity {
 			move(MoverType.SELF, getDeltaMovement());
 			this.setDeltaMovement(getDeltaMovement().scale(0.5D));
 		} else {
-			final BlockPos ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
+			final BlockPos ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
 			float f = 0.91F;
 			if (onGround) {
 				f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
@@ -267,7 +267,6 @@ public class BloodMaykrEntity extends DemonEntity implements GeoEntity {
 			move(MoverType.SELF, getDeltaMovement());
 			this.setDeltaMovement(getDeltaMovement().scale(f));
 		}
-		calculateEntityAnimation(this, false);
 	}
 
 }

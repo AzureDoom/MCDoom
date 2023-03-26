@@ -35,10 +35,11 @@
 	"depends": {
 		"fabricloader": ">=0.14.1",
 		"fabric": "*",
-		"minecraft": ">=1.19.3",
+		"minecraft": ">=1.19.4",
 		"java": ">=17",
-		"azurelib": ">=1.0.1",
-		"trinkets": ">=3.5.0"
+		"azurelib": ">=1.0.6",
+		"smartbrainlib": ">=1.9",
+		"trinkets": ">=3.6.0"
 	},
 	"accessWidener": "doom.accesswidener"
 }

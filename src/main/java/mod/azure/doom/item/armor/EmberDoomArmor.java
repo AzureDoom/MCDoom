@@ -29,7 +29,7 @@ public class EmberDoomArmor extends ArmorItem implements GeoItem {
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
-	public EmberDoomArmor(ArmorMaterial materialIn, EquipmentSlot slot) {
+	public EmberDoomArmor(ArmorMaterial materialIn, Type slot) {
 		super(materialIn, slot, new Item.Properties().stacksTo(1));
 	}
 

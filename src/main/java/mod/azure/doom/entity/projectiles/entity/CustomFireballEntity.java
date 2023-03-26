@@ -1,8 +1,7 @@
-package mod.azure.doom.entity.projectiles;
+package mod.azure.doom.entity.projectiles.entity;
 
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.LargeFireball;
@@ -26,7 +25,7 @@ public class CustomFireballEntity extends LargeFireball {
 			var entity2 = this.getOwner();
 			entity.setSecondsOnFire(5);
 			if (!(entity2 instanceof DemonEntity))
-				entity.hurt(DamageSource.fireball(this, entity2), directHitDamage);
+				entity.hurt(damageSources().fireball(this, entity2), directHitDamage);
 			if (entity2 instanceof LivingEntity) {
 				if (!(entity2 instanceof DemonEntity))
 					this.doEnchantDamageEffects((LivingEntity) entity2, entity);

@@ -26,7 +26,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AreaEffectCloud;
@@ -60,7 +59,7 @@ public class SentinelHammerItem extends SwordItem implements GeoItem {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
 			((LivingEntity) target).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 1000, 2));
-			target.hurt(DamageSource.playerAttack((Player) user), DoomConfig.sentinelhammer_damage);
+			target.hurt(user.damageSources().playerAttack((Player) user), DoomConfig.sentinelhammer_damage);
 		}
 	}
 

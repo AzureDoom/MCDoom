@@ -137,7 +137,7 @@ public class IconofsinEntity extends DemonEntity implements GeoEntity {
 	@Override
 	public void die(DamageSource source) {
 		if (!level.isClientSide) {
-			if (source == DamageSource.OUT_OF_WORLD) {
+			if (source == damageSources().outOfWorld()) {
 				setDeathState(1);
 			}
 			if (entityData.get(DEATH_STATE) == 0) {
@@ -214,13 +214,13 @@ public class IconofsinEntity extends DemonEntity implements GeoEntity {
 		final AABB aabb = new AABB(blockPosition().above()).inflate(64D, 64D, 64D);
 		getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
 			if (e instanceof LivingEntity) {
-				e.hurt(DamageSource.indirectMobAttack(this, getTarget()), DoomConfig.icon_melee_damage + (entityData.get(DEATH_STATE) == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0));
+				e.hurt(damageSources().indirectMagic(this, getTarget()), DoomConfig.icon_melee_damage + (entityData.get(DEATH_STATE) == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0));
 			}
 		});
 	}
 
 	public void spawnFlames(double x, double z, double maxY, double y, float yaw, int warmup) {
-		BlockPos blockpos = new BlockPos(x, y, z);
+		BlockPos blockpos = BlockPos.containing(x, y, z);
 		boolean flag = false;
 		double d0 = 0.0D;
 		do {
@@ -378,13 +378,13 @@ public class IconofsinEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		return source == DamageSource.IN_WALL || source == DamageSource.ON_FIRE || source == DamageSource.IN_FIRE ? false : super.hurt(source, amount);
+		return source == damageSources().inWall() || source == damageSources().onFire() || source == damageSources().inFire() ? false : super.hurt(source, amount);
 	}
 
 	@Override
 	public boolean doHurtTarget(Entity target) {
 		level.broadcastEntityEvent(this, (byte) 4);
-		final boolean bl = target.hurt(DamageSource.mobAttack(this), DoomConfig.icon_melee_damage + (entityData.get(DEATH_STATE) == 1 ? DoomConfig.icon_phaseone_damage_boos : 0));
+		final boolean bl = target.hurt(damageSources().mobAttack(this), DoomConfig.icon_melee_damage + (entityData.get(DEATH_STATE) == 1 ? DoomConfig.icon_phaseone_damage_boos : 0));
 		if (bl) {
 			level.explode(this, target.getX(), target.getY(), target.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
 			doEnchantDamageEffects(this, target);

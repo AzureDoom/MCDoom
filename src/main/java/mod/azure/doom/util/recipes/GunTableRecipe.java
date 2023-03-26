@@ -16,6 +16,7 @@ import com.google.gson.JsonSyntaxException;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.gui.DoomGunInventory;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -63,8 +64,8 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 	}
 
 	@Override
-	public ItemStack assemble(DoomGunInventory inv) {
-		return getResultItem().copy();
+	public ItemStack assemble(DoomGunInventory inv, RegistryAccess var2) {
+		return this.getResultItem(var2).copy();
 	}
 
 	@Override
@@ -73,7 +74,7 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 	}
 
 	@Override
-	public ItemStack getResultItem() {
+	public ItemStack getResultItem(RegistryAccess var1) {
 		return output;
 	}
 
@@ -102,8 +103,8 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 
 	@Override
 	public int compareTo(@NotNull GunTableRecipe o) {
-		final var outputThis = getResultItem().getItem();
-		final var outputOther = o.getResultItem().getItem();
+		var outputThis = output.getItem();
+		var outputOther = o.output.getItem();
 		return BuiltInRegistries.ITEM.getKey(outputThis).compareTo(BuiltInRegistries.ITEM.getKey(outputOther));
 	}
 

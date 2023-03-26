@@ -65,7 +65,7 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		var width = ((this.width - this.imageWidth) / 2) - 5;
 		var height = (this.height - this.imageHeight) / 2;
-		blit(matrices, width, height, this.getBlitOffset(), 0.0F, 0.0F, this.imageWidth, this.imageHeight, 512, 256);
+		blit(matrices, width, height, 0, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 512, 256);
 
 	}
 
@@ -77,9 +77,9 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 			var m = Math.min(113, this.scrollOff * k);
 			if (this.scrollOff == i - 1)
 				m = 113;
-			blit(matrices, x + 113, y + 18 + m, this.getBlitOffset(), 0.0F, 199.0F, 6, 27, 512, 256);
+			blit(matrices, x + 113, y + 18 + m, 0, 0.0F, 199.0F, 6, 27, 512, 256);
 		} else
-			blit(matrices, x + 113, y + 18, this.getBlitOffset(), 6.0F, 199.0F, 6, 27, 512, 256);
+			blit(matrices, x + 113, y + 18, 0, 6.0F, 199.0F, 6, 27, 512, 256);
 
 	}
 
@@ -102,15 +102,13 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 				if (this.canScroll(tradeOfferList.size()) && (m < this.scrollOff || m >= 7 + this.scrollOff))
 					++m;
 				else {
-					var output = gunTableRecipe.getResultItem();
-					this.itemRenderer.blitOffset = 100.0F;
+					var output = gunTableRecipe.output;
 					var n = yPos + 2;
 					this.renderIngredients(matrices, gunTableRecipe, xPos, n);
 
 					this.renderButtonArrows(matrices, gunTableRecipe, width + 20, n);
-					this.itemRenderer.renderAndDecorateFakeItem(output, width + 24 + 68, n);
-					this.itemRenderer.renderGuiItemDecorations(this.font, output, width + 24 + 68, n);
-					this.itemRenderer.blitOffset = 0.0F;
+					this.itemRenderer.renderAndDecorateFakeItem(matrices, output, width + 24 + 68, n);
+					this.itemRenderer.renderGuiItemDecorations(matrices, this.font, output, width + 24 + 68, n);
 					yPos += 20;
 					++m;
 				}
@@ -133,7 +131,7 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 		RenderSystem.enableBlend();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, TEXTURE);
-		blit(matrices, x + 5 + 35 + 20, y + 3, this.getBlitOffset(), 15.0F, 171.0F, 10, 9, 512, 256);
+		blit(matrices, x + 5 + 35 + 20, y + 3, 0, 15.0F, 171.0F, 10, 9, 512, 256);
 
 	}
 
@@ -143,8 +141,8 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 			if (displayStacks.length > 0) {
 				var stack = new ItemStack(displayStacks[0].getItem(), gunTableRecipe.countRequired(i));
 				if (!stack.isEmpty()) {
-					this.itemRenderer.renderGuiItem(stack, x, y);
-					this.itemRenderer.renderGuiItemDecorations(this.font, stack, x, y);
+					this.itemRenderer.renderGuiItem(matrices, stack, x, y);
+					this.itemRenderer.renderGuiItemDecorations(matrices,this.font, stack, x, y);
 					x += 20;
 				}
 			}
@@ -207,14 +205,14 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 			if (this.isHovered && menu.getRecipes().size() > this.index + scrollOff) {
 				ItemStack stack;
 				if (mouseX < this.getX() + 20) {
-					stack = menu.getRecipes().get(this.index + scrollOff).getResultItem();
+					stack = menu.getRecipes().get(this.index + scrollOff).output;
 					renderTooltip(matrices, stack, mouseX, mouseY);
 				} else if (mouseX < this.getX() + 50 && mouseX > this.getX() + 30) {
-					stack = menu.getRecipes().get(this.index + scrollOff).getResultItem();
+					stack = menu.getRecipes().get(this.index + scrollOff).output;
 					if (!stack.isEmpty())
 						renderTooltip(matrices, stack, mouseX, mouseY);
 				} else if (mouseX > this.getX() + 65) {
-					stack = menu.getRecipes().get(this.index + scrollOff).getResultItem();
+					stack = menu.getRecipes().get(this.index + scrollOff).output;
 					renderTooltip(matrices, stack, mouseX, mouseY);
 				}
 			}

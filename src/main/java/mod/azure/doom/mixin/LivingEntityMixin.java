@@ -11,6 +11,7 @@ import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketsApi;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -24,7 +25,7 @@ public class LivingEntityMixin {
 	@Inject(method = "checkTotemDeathProtection", at = @At(value = "HEAD"), cancellable = true)
 	private void tryUseTotem(DamageSource source, CallbackInfoReturnable<Boolean> ci) {
 		final var livingEntity = (LivingEntity) (Object) this;
-		if (source.isBypassInvul())
+		if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY))
 			ci.setReturnValue(false);
 		else {
 			final var stack = TrinketsApi.getTrinketComponent(livingEntity).map(component -> {

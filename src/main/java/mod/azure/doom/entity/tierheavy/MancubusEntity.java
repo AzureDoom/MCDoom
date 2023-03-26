@@ -156,7 +156,7 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 	}
 
 	public void spawnFlames(double x, double z, double maxY, double y, float yaw, int warmup) {
-		BlockPos blockpos = new BlockPos(x, y, z);
+		BlockPos blockpos = BlockPos.containing(x, y, z);
 		boolean flag = false;
 		double d0 = 0.0D;
 		do {

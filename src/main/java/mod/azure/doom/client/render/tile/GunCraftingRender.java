@@ -12,7 +12,7 @@ import mod.azure.doom.client.models.tile.GunCraftingModel;
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 public class GunCraftingRender extends GeoBlockRenderer<GunBlockEntity> {
@@ -30,9 +30,9 @@ public class GunCraftingRender extends GeoBlockRenderer<GunBlockEntity> {
 			}
 
 			@Override
-			protected ItemTransforms.TransformType getTransformTypeForStack(GeoBone bone, ItemStack stack, GunBlockEntity animatable) {
+			protected ItemDisplayContext getTransformTypeForStack(GeoBone bone, ItemStack stack, GunBlockEntity animatable) {
 				return switch (bone.getName()) {
-				default -> ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND;
+				default -> ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
 				};
 			}
 

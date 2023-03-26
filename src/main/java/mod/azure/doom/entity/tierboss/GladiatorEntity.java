@@ -13,7 +13,7 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.goal.RangedStrafeGladiatorAttackGoal;
 import mod.azure.doom.entity.attack.AbstractDoubleRangedAttack;
 import mod.azure.doom.entity.attack.AttackSound;
-import mod.azure.doom.entity.projectiles.CustomFireballEntity;
+import mod.azure.doom.entity.projectiles.entity.CustomFireballEntity;
 import mod.azure.doom.entity.projectiles.entity.GladiatorMaceEntity;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.particles.ParticleTypes;
@@ -102,7 +102,7 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 	@Override
 	public void die(DamageSource source) {
 		if (!level.isClientSide) {
-			if (source == DamageSource.OUT_OF_WORLD)
+			if (source == damageSources().outOfWorld())
 				setDeathState(1);
 			if (entityData.get(DEATH_STATE) == 0) {
 				final AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(level, this.getX(), this.getY(), this.getZ());
@@ -238,7 +238,7 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 	@Override
 	public boolean doHurtTarget(Entity target) {
 		level.broadcastEntityEvent(this, (byte) 4);
-		final boolean bl = target.hurt(DamageSource.mobAttack(this), (float) DoomConfig.gladiator_melee_damage + (entityData.get(DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
+		final boolean bl = target.hurt(damageSources().mobAttack(this), (float) DoomConfig.gladiator_melee_damage + (entityData.get(DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
 		if (bl) {
 			target.setDeltaMovement(target.getDeltaMovement().multiply(1.4f, 1.4f, 1.4f));
 			doEnchantDamageEffects(this, target);
@@ -250,7 +250,7 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 
 	public boolean tryAttack1(Entity target) {
 		level.broadcastEntityEvent(this, (byte) 4);
-		final boolean bl = target.hurt(DamageSource.mobAttack(this), (float) DoomConfig.gladiator_melee_damage + (entityData.get(DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
+		final boolean bl = target.hurt(damageSources().mobAttack(this), (float) DoomConfig.gladiator_melee_damage + (entityData.get(DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
 		if (bl) {
 			target.setDeltaMovement(target.getDeltaMovement().multiply(1.4f, 1.4f, 1.4f));
 			doEnchantDamageEffects(this, target);

@@ -21,7 +21,7 @@ public class DoomDisplay implements Display {
 	public DoomDisplay(GunTableRecipe recipe) {
 		input = Arrays.stream(recipe.ingredients).map(Pair::getLeft).map(EntryIngredients::ofIngredient).toList();
 		count = Arrays.stream(recipe.ingredients).map(Pair::getRight).toList();
-		output = EntryIngredients.of(recipe.getResultItem());
+		output = EntryIngredients.of(recipe.output);
 		recipe2 = recipe;
 	}
 

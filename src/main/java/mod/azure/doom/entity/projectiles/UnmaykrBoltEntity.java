@@ -201,9 +201,9 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 		final var entity1 = getOwner();
 		DamageSource damagesource;
 		if (entity1 == null)
-			damagesource = DamageSource.indirectMagic(this, this);
+			damagesource = damageSources().indirectMagic(this, this);
 		else {
-			damagesource = DamageSource.indirectMagic(this, entity1);
+			damagesource = damageSources().indirectMagic(this, entity1);
 			if (entity1 instanceof LivingEntity)
 				((LivingEntity) entity1).setLastHurtMob(entity);
 		}

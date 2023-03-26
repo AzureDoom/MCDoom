@@ -8,7 +8,6 @@ import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -86,7 +85,7 @@ public class DroneBoltEntity extends AbstractHurtingProjectile {
 			final var entity = entityHitResult.getEntity();
 			final var entity2 = getOwner();
 			if (!(entity2 instanceof DemonEntity))
-				entity.hurt(DamageSource.mobAttack((LivingEntity) entity2), directHitDamage);
+				entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
 			if (entity2 instanceof LivingEntity) {
 				if (!(entity2 instanceof DemonEntity))
 					doEnchantDamageEffects((LivingEntity) entity2, entity);

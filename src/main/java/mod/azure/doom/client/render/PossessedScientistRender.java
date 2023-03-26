@@ -11,8 +11,8 @@ import mod.azure.azurelib.renderer.layer.BlockAndItemGeoLayer;
 import mod.azure.doom.client.models.PossessedScientistModel;
 import mod.azure.doom.entity.tierfodder.PossessedScientistEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -31,9 +31,9 @@ public class PossessedScientistRender extends GeoEntityRenderer<PossessedScienti
 			}
 
 			@Override
-			protected ItemTransforms.TransformType getTransformTypeForStack(GeoBone bone, ItemStack stack, PossessedScientistEntity animatable) {
+			protected ItemDisplayContext getTransformTypeForStack(GeoBone bone, ItemStack stack, PossessedScientistEntity animatable) {
 				return switch (bone.getName()) {
-				default -> ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND;
+				default -> ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
 				};
 			}
 

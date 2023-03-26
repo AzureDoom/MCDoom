@@ -29,7 +29,7 @@ public class ClassicBronzeDoomArmor extends ArmorItem implements GeoItem {
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
-	public ClassicBronzeDoomArmor(ArmorMaterial materialIn, EquipmentSlot slot) {
+	public ClassicBronzeDoomArmor(ArmorMaterial materialIn, Type slot) {
 		super(materialIn, slot, new Item.Properties().stacksTo(1));
 	}
 

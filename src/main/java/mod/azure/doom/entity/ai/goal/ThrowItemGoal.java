@@ -65,9 +65,7 @@ public class ThrowItemGoal extends Goal {
 					if (this.attackTime == 4) {
 						this.rangedAttackMob.setAttackingState(1);
 						this.rangedAttackMob.getNavigation().stop();
-						float f = (float) Math.sqrt(d0) / 100.0F;
-						float f1 = Mth.clamp(f, 0.1F, 100.0F);
-						this.rangedAttackMob.performRangedAttack(this.target, f1);
+						this.rangedAttackMob.performRangedAttack(this.target, Mth.clamp((float) Math.sqrt(d0) / 100.0F, 0.1F, 100.0F));
 						livingentity.invulnerableTime = 0;
 					}
 					if (this.attackTime >= 8) {

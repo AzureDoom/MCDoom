@@ -22,7 +22,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -180,7 +179,7 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 		final var entity = entityHitResult.getEntity();
 		if (!level.isClientSide()) {
 			if (entity instanceof CacodemonEntity) {
-				entity.hurt(DamageSource.playerAttack((Player) shooter), ((LivingEntity) entity).getMaxHealth());
+				entity.hurt(damageSources().playerAttack((Player) shooter), ((LivingEntity) entity).getMaxHealth());
 				remove(Entity.RemovalReason.DISCARDED);
 			} else {
 				super.onHitEntity(entityHitResult);
@@ -197,7 +196,7 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 	private void doDamage(Entity user, Entity target) {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
-			target.hurt(DamageSource.indirectMagic(this, target), DoomConfig.grenade_damage);
+			target.hurt(damageSources().indirectMagic(this, target), DoomConfig.grenade_damage);
 		}
 	}
 

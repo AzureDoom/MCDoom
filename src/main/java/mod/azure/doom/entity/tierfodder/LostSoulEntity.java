@@ -59,7 +59,7 @@ public class LostSoulEntity extends DemonEntity implements GeoEntity {
 	public LostSoulEntity(EntityType<? extends LostSoulEntity> type, Level world) {
 		super(type, world);
 		moveControl = new LostSoulEntity.MoveHelperController(this);
-		maxUpStep = 4.0F;
+		setMaxUpStep(4.0F);
 	}
 
 	@Override
@@ -205,7 +205,7 @@ public class LostSoulEntity extends DemonEntity implements GeoEntity {
 			move(MoverType.SELF, getDeltaMovement());
 			this.setDeltaMovement(getDeltaMovement().scale(0.5D));
 		} else {
-			final BlockPos ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
+			final BlockPos ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
 			float f = 0.91F;
 			if (onGround) {
 				f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
@@ -222,7 +222,6 @@ public class LostSoulEntity extends DemonEntity implements GeoEntity {
 		if (tickCount % 10 == 0) {
 			refreshDimensions();
 		}
-		calculateEntityAnimation(this, false);
 	}
 
 	@Override

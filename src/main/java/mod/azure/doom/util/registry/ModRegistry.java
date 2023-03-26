@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -31,12 +32,12 @@ public class ModRegistry {
 	public static void initialize() {
 
 		DoomBlocks.initialize();
+		DoomEntities.initialize();
+		DoomProjectiles.initialize();
 		DoomItems.initItems();
 		DoomItems.initArmor();
 		DoomItems.initEggs();
 		DoomSounds.initialize();
-		DoomProjectiles.initialize();
-		DoomEntities.initialize();
 		MobSpawn.addSpawnEntries();
 		MobAttributes.initialize();
 		AzureLib.initialize();
@@ -51,9 +52,9 @@ public class ModRegistry {
 			}
 		});
 		ICON = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, DoomMod.modResource("icon"), FabricBlockEntityTypeBuilder.create(IconBlockEntity::new, DoomBlocks.ICON_WALL1).build(null));
-		TOTEM = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, DoomMod.modResource(":totem"), FabricBlockEntityTypeBuilder.create(TotemEntity::new, DoomBlocks.TOTEM).build(null));
-		GUN_TABLE_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, DoomMod.modResource(":guntable"), FabricBlockEntityTypeBuilder.create(GunBlockEntity::new, DoomBlocks.GUN_TABLE).build(null));
-		SCREEN_HANDLER_TYPE = new MenuType<>(GunTableScreenHandler::new);
+		TOTEM = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, DoomMod.modResource("totem"), FabricBlockEntityTypeBuilder.create(TotemEntity::new, DoomBlocks.TOTEM).build(null));
+		GUN_TABLE_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, DoomMod.modResource("guntable"), FabricBlockEntityTypeBuilder.create(GunBlockEntity::new, DoomBlocks.GUN_TABLE).build(null));
+		SCREEN_HANDLER_TYPE = new MenuType<>(GunTableScreenHandler::new, FeatureFlags.VANILLA_SET);
 		Registry.register(BuiltInRegistries.MENU, DoomMod.modResource("guntable_screen_type"), SCREEN_HANDLER_TYPE);
 	}
 }

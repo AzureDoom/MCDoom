@@ -29,7 +29,7 @@ public class Mullet3DoomArmor extends ArmorItem implements GeoItem {
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
-	public Mullet3DoomArmor(ArmorMaterial materialIn, EquipmentSlot slot) {
+	public Mullet3DoomArmor(ArmorMaterial materialIn, Type slot) {
 		super(materialIn, slot, new Item.Properties().stacksTo(1));
 	}
 

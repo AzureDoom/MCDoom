@@ -15,7 +15,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -123,7 +122,7 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
 			final var entity2 = getOwner();
 			entity.setSecondsOnFire(5);
 			if (!(entity2 instanceof DemonEntity))
-				entity.hurt(DamageSource.mobAttack((LivingEntity) entity2), directHitDamage);
+				entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
 			if (entity2 instanceof LivingEntity) {
 				if (!(entity2 instanceof DemonEntity))
 					doEnchantDamageEffects((LivingEntity) entity2, entity);
@@ -140,7 +139,7 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
 	private void doDamage(Entity user, Entity target) {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
-			target.hurt(DamageSource.indirectMagic(this, target), directHitDamage);
+			target.hurt(damageSources().indirectMagic(this, target), directHitDamage);
 		}
 	}
 

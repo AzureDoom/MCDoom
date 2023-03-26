@@ -1,8 +1,8 @@
 package mod.azure.doom.entity.attack;
 
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.projectiles.CustomFireballEntity;
-import mod.azure.doom.entity.projectiles.CustomSmallFireballEntity;
+import mod.azure.doom.entity.projectiles.entity.CustomFireballEntity;
+import mod.azure.doom.entity.projectiles.entity.CustomSmallFireballEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;

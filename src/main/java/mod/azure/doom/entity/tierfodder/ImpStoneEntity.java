@@ -63,7 +63,7 @@ public class ImpStoneEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	public void aiStep() {
-		if (level.isClientSide && (isAggressive() || !(animationSpeed > -0.15F && animationSpeed < 0.15F))) {
+		if (level.isClientSide && (isAggressive() || !(walkAnimation.speed() > -0.15F && walkAnimation.speed() < 0.15F))) {
 			level.addParticle(ParticleTypes.SOUL_FIRE_FLAME, getRandomX(0.2D), getRandomY(), getRandomZ(0.5D), 0.0D, 0D, 0D);
 		}
 		super.aiStep();

@@ -5,21 +5,32 @@ import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 
 import mod.azure.azurelib.AzureLibMod;
+import mod.azure.azurelib.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.entities.TickingLightEntity;
 import mod.azure.azurelib.network.packet.EntityPacket;
-import mod.azure.doom.entity.ai.goal.DoomNavigation;
+import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
+import mod.azure.doom.entity.projectiles.entity.BloodBoltEntity;
+import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
+import mod.azure.doom.entity.projectiles.entity.CustomFireballEntity;
+import mod.azure.doom.entity.projectiles.entity.CustomSmallFireballEntity;
+import mod.azure.doom.entity.projectiles.entity.EnergyCellMobEntity;
+import mod.azure.doom.entity.projectiles.entity.FireProjectile;
+import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,10 +40,18 @@ import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrownPotion;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.Vec3;
 
 public class DemonEntity extends Monster implements NeutralMob, Enemy {
 
@@ -45,7 +64,7 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 	protected DemonEntity(EntityType<? extends Monster> type, Level worldIn) {
 		super(type, worldIn);
 		xpReward = (int) getMaxHealth();
-		maxUpStep = 1.5f;
+		setMaxUpStep(1.5f);
 	}
 
 	@Override
@@ -125,7 +144,7 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 
 	@Override
 	protected PathNavigation createNavigation(Level world) {
-		return new DoomNavigation(this, world);
+		return new AzureNavigation(this, world);
 	}
 
 	@Override
@@ -179,12 +198,113 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		return source == DamageSource.IN_WALL || source == DamageSource.ON_FIRE || source == DamageSource.IN_FIRE ? false : super.hurt(source, amount);
+		return source == damageSources().inWall() || source == damageSources().onFire() || source == damageSources().inFire() ? false : super.hurt(source, amount);
 	}
 
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return EntityPacket.createPacket(this);
+	}
+
+	public void shootBaron(Entity target, float damage) {
+		if (!this.level.isClientSide) {
+			if (this.getTarget() != null) {
+				var projectile = new BarenBlastEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				projectile.setPos(this.getX() + this.getViewVector(1.0F).x * 2, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
+				this.getCommandSenderWorld().addFreshEntity(projectile);
+			}
+		}
+	}
+
+	public void shootBolt(Entity target, float damage) {
+		if (!this.level.isClientSide) {
+			if (this.getTarget() != null) {
+				var projectile = new BloodBoltEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				projectile.setPos(this.getX() + this.getViewVector(1.0F).x * 2, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
+				this.getCommandSenderWorld().addFreshEntity(projectile);
+			}
+		}
+	}
+
+	public void shootChaingun(Entity target, float damage) {
+		if (!this.level.isClientSide) {
+			if (this.getTarget() != null) {
+				var projectile = new ChaingunMobEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				projectile.setPos(this.getX() + this.getViewVector(1.0F).x * 2, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
+				this.getCommandSenderWorld().addFreshEntity(projectile);
+			}
+		}
+	}
+
+	public void shootEnergyCell(Entity target, float damage) {
+		if (!this.level.isClientSide) {
+			if (this.getTarget() != null) {
+				var projectile = new EnergyCellMobEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				projectile.setPos(this.getX() + this.getViewVector(1.0F).x * 2, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
+				this.getCommandSenderWorld().addFreshEntity(projectile);
+			}
+		}
+	}
+
+	public void shootMancubus(Entity target, float damage) {
+		if (!this.level.isClientSide) {
+			if (this.getTarget() != null) {
+				var projectile = new FireProjectile(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				projectile.setPos(this.getX() + this.getViewVector(1.0F).x * 2, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
+				this.getCommandSenderWorld().addFreshEntity(projectile);
+			}
+		}
+	}
+
+	public void shootRocket(Entity target, float damage) {
+		if (!this.level.isClientSide) {
+			if (this.getTarget() != null) {
+				var projectile = new RocketMobEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				projectile.setPos(this.getX() + this.getViewVector(1.0F).x * 2, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
+				this.getCommandSenderWorld().addFreshEntity(projectile);
+			}
+		}
+	}
+
+	public void shootFireball(Entity target, float damage, int offset) {
+		if (!this.level.isClientSide) {
+			if (this.getTarget() != null) {
+				var projectile = new CustomFireballEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				projectile.setPos((this.getX() + this.getViewVector(1.0F).x * 2) + offset, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
+				this.getCommandSenderWorld().addFreshEntity(projectile);
+			}
+		}
+	}
+
+	public void shootSmallFireball(Entity target, float damage) {
+		if (!this.level.isClientSide) {
+			if (this.getTarget() != null) {
+				var projectile = new CustomSmallFireballEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				projectile.setPos(this.getX() + this.getViewVector(1.0F).x * 2, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
+				this.getCommandSenderWorld().addFreshEntity(projectile);
+			}
+		}
+	}
+
+	public void throwPotion(LivingEntity target) {
+		if (!this.level.isClientSide) {
+			if (this.getTarget() != null) {
+				final Vec3 vec3 = target.getDeltaMovement();
+				final double d0 = target.getX() + vec3.x - this.getX();
+				final double d1 = target.getEyeY() - 1.1F - this.getY();
+				final double d2 = target.getZ() + vec3.z - this.getZ();
+				final double d3 = Math.sqrt(d0 * d0 + d2 * d2);
+				Potion potion = Potions.POISON;
+				final ThrownPotion thrownpotion = new ThrownPotion(level, this);
+				thrownpotion.setItem(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), potion));
+				thrownpotion.setXRot(thrownpotion.getXRot() - -20.0F);
+				thrownpotion.shoot(d0, d1 + d3 * 0.2D, d2, 0.75F, 8.0F);
+				thrownpotion.setPos(this.getX() + this.getViewVector(1.0F).x * 2, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
+				level.playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_THROW, getSoundSource(), 1.0F, 0.8F + random.nextFloat() * 0.4F);
+				this.getCommandSenderWorld().addFreshEntity(thrownpotion);
+				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 10, false, false));
+			}
+		}
 	}
 
 }

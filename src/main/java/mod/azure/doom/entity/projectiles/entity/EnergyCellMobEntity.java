@@ -13,7 +13,6 @@ import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -33,8 +32,8 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements Ge
 	private LivingEntity shooter;
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-	public EnergyCellMobEntity(EntityType<? extends EnergyCellMobEntity> p_i50160_1_, Level p_i50160_2_) {
-		super(p_i50160_1_, p_i50160_2_);
+	public EnergyCellMobEntity(EntityType<? extends EnergyCellMobEntity> type, Level level) {
+		super(type, level);
 	}
 
 	public void setDirectHitDamage(float directHitDamage) {
@@ -115,7 +114,7 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements Ge
 			final var entity2 = getOwner();
 			entity.setSecondsOnFire(5);
 			if (!(entity2 instanceof DemonEntity))
-				entity.hurt(DamageSource.mobAttack((LivingEntity) entity2), directHitDamage);
+				entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
 			if (entity2 instanceof LivingEntity) {
 				if (!(entity2 instanceof DemonEntity))
 					doEnchantDamageEffects((LivingEntity) entity2, entity);
@@ -132,7 +131,7 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements Ge
 	private void doDamage(Entity user, Entity target) {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
-			target.hurt(DamageSource.indirectMagic(this, target), directHitDamage);
+			target.hurt(damageSources().indirectMagic(this, target), directHitDamage);
 		}
 	}
 

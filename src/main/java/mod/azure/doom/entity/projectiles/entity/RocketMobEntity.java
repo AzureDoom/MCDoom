@@ -13,7 +13,6 @@ import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -119,7 +118,7 @@ public class RocketMobEntity extends AbstractHurtingProjectile implements GeoEnt
 			final var entity2 = getOwner();
 			entity.setSecondsOnFire(5);
 			if (!(entity2 instanceof DemonEntity))
-				entity.hurt(DamageSource.mobAttack((LivingEntity) entity2), directHitDamage);
+				entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
 			if (entity2 instanceof LivingEntity) {
 				if (!(entity2 instanceof DemonEntity))
 					doEnchantDamageEffects((LivingEntity) entity2, entity);
@@ -132,7 +131,7 @@ public class RocketMobEntity extends AbstractHurtingProjectile implements GeoEnt
 	protected void explode() {
 		level.getEntities(this, new AABB(blockPosition().above()).inflate(4)).forEach(e -> {
 			if (e instanceof LivingEntity)
-				e.hurt(DamageSource.sonicBoom(this), directHitDamage);
+				e.hurt(damageSources().sonicBoom(this), directHitDamage);
 			level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 0.0F, Level.ExplosionInteraction.NONE);
 		});
 	}

@@ -15,7 +15,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -112,7 +111,7 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
 			final var entity2 = getOwner();
 			entity.setSecondsOnFire(5);
 			if (!(entity2 instanceof DemonEntity))
-				entity.hurt(DamageSource.mobAttack((LivingEntity) entity2), DoomConfig.gladiator_ranged_damage + (shooter.getEntityData().get(GladiatorEntity.DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
+				entity.hurt(damageSources().mobAttack((LivingEntity) entity2), DoomConfig.gladiator_ranged_damage + (shooter.getEntityData().get(GladiatorEntity.DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
 			if (entity2 instanceof LivingEntity) {
 				if (!(entity2 instanceof DemonEntity))
 					doEnchantDamageEffects((LivingEntity) entity2, entity);
