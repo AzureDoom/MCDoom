@@ -62,7 +62,7 @@ public class PossessedScientistEntity extends DemonEntity implements GeoEntity, 
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walk"));
 			if (this.swinging && !isDead)
 				return event.setAndContinue(RawAnimation.begin().then("attack", LoopType.PLAY_ONCE));
-			return event.setAndContinue(isDead ? RawAnimation.begin().thenPlayAndHold("death") : RawAnimation.begin().thenLoop("idle"));
+			return event.setAndContinue(isDead ? RawAnimation.begin().thenPlayAndHold("death2") : RawAnimation.begin().thenLoop("idle"));
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
 				if (level.isClientSide())
@@ -107,12 +107,12 @@ public class PossessedScientistEntity extends DemonEntity implements GeoEntity, 
 
 	@Override
 	public BrainActivityGroup<PossessedScientistEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<PossessedScientistEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.1f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<PossessedScientistEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.7f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
 	}
 
 	@Override
 	public BrainActivityGroup<PossessedScientistEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(0.9F), new ProjectileAttack<>(5).attackInterval(mob -> 80), new AnimatableMeleeAttack<>(0));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(0.75F), new ProjectileAttack<>(5).attackInterval(mob -> 80), new AnimatableMeleeAttack<>(0));
 	}
 
 	@Override
