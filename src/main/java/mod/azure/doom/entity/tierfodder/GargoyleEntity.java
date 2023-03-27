@@ -5,13 +5,14 @@ import java.util.List;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.ai.DemonFlyControl;
-import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.entity.task.ProjectileAttack;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
@@ -67,15 +68,15 @@ public class GargoyleEntity extends DemonEntity implements SmartBrainOwner<Gargo
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			if (isDead)
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-//			if (!isAggressive() && event.isMoving() && !isDead)
-//				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-//			if (isAggressive() && !this.swinging && event.isMoving() && !isDead)
-//				return event.setAndContinue(RawAnimation.begin().thenLoop("flying"));
-//			if (this.swinging && !isDead)
-//				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
-//			if (!event.isCurrentAnimation(RawAnimation.begin().thenLoop("flying"))  && !isDead && !event.isCurrentAnimation(RawAnimation.begin().thenLoop("walking")) && !event.isCurrentAnimation(RawAnimation.begin().thenLoop("attacking")))
-//				return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
-			return event.setAndContinue(isDead ? RawAnimation.begin().thenPlayAndHold("death") : RawAnimation.begin().thenLoop("idle"));
+			if (!isAggressive() && event.isMoving() && !isDead)
+				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
+			if (isAggressive() && !this.swinging && event.isMoving() && !isDead)
+				return event.setAndContinue(RawAnimation.begin().thenLoop("flying"));
+			if (this.swinging && !isDead)
+				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
+			if (!event.isCurrentAnimation(RawAnimation.begin().thenLoop("flying")) && !isDead && !event.isCurrentAnimation(RawAnimation.begin().thenLoop("walking")) && !event.isCurrentAnimation(RawAnimation.begin().thenLoop("attacking")))
+				return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+			return PlayState.CONTINUE;
 		}));
 	}
 
@@ -125,13 +126,8 @@ public class GargoyleEntity extends DemonEntity implements SmartBrainOwner<Gargo
 	}
 
 	@Override
-	protected void registerGoals() {
-		goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
-	}
-
-	@Override
 	protected PathNavigation createNavigation(Level worldIn) {
-		final FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
+		final var flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
 		flyingpathnavigator.setCanOpenDoors(false);
 		flyingpathnavigator.setCanFloat(true);
 		flyingpathnavigator.setCanPassDoors(true);
@@ -160,11 +156,11 @@ public class GargoyleEntity extends DemonEntity implements SmartBrainOwner<Gargo
 			} else {
 				final var ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
 				var f = 0.91F;
-				if (onGround) 
+				if (onGround)
 					f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
 				final var f1 = 0.16277137F / (f * f * f);
 				f = 0.91F;
-				if (onGround) 
+				if (onGround)
 					f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
 				moveRelative(onGround ? 0.1F * f1 : 0.02F, movementInput);
 				move(MoverType.SELF, getDeltaMovement());

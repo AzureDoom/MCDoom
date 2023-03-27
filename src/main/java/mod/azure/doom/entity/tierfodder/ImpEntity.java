@@ -1,7 +1,6 @@
 package mod.azure.doom.entity.tierfodder;
 
 import java.util.List;
-import java.util.SplittableRandom;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
@@ -192,9 +191,8 @@ public class ImpEntity extends DemonEntity implements SmartBrainOwner<ImpEntity>
 	@Override
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-		final SplittableRandom random = new SplittableRandom();
-		final int var = random.nextInt(0, 5);
-		setVariant(var);
+		final var variant = this.getRandom().nextInt(0, 5);
+		setVariant(variant);
 		return spawnDataIn;
 	}
 

@@ -182,7 +182,7 @@ public class ShotgunguyEntity extends DemonEntity implements SmartBrainOwner<Sho
 	@Override
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-		setVariant(random.nextInt());
+		setVariant(getRandom().nextInt());
 		return spawnDataIn;
 	}
 }

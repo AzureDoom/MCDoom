@@ -153,7 +153,7 @@ public class MaykrDroneEntity extends DemonEntity implements SmartBrainOwner<May
 	@Override
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-		setVariant(random.nextInt());
+		setVariant(getRandom().nextInt());
 		return spawnDataIn;
 	}
 

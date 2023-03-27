@@ -117,8 +117,8 @@ public class UnwillingEntity extends DemonEntity implements GeoEntity, SmartBrai
 
 	@Override
 	public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
-		double d = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
-		return d <= this.getMeleeAttackRangeSqr(livingEntity);
+		var distance = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+		return distance <= this.getMeleeAttackRangeSqr(livingEntity);
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {

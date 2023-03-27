@@ -124,8 +124,8 @@ public class ImpStoneEntity extends DemonEntity implements GeoEntity, SmartBrain
 
 	@Override
 	public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
-		double d = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
-		return d <= this.getMeleeAttackRangeSqr(livingEntity);
+		var distance = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+		return distance <= this.getMeleeAttackRangeSqr(livingEntity);
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {

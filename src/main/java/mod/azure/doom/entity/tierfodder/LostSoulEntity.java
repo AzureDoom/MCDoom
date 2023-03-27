@@ -123,8 +123,8 @@ public class LostSoulEntity extends DemonEntity implements GeoEntity, SmartBrain
 	@Override
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-		final var var = this.getRandom().nextInt(0, 4);
-		setVariant(var);
+		final var variant = this.getRandom().nextInt(0, 4);
+		setVariant(variant);
 		return spawnDataIn;
 	}
 
@@ -184,8 +184,8 @@ public class LostSoulEntity extends DemonEntity implements GeoEntity, SmartBrain
 
 	@Override
 	public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
-		double d = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
-		return d <= this.getMeleeAttackRangeSqr(livingEntity);
+		var distance = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+		return distance <= this.getMeleeAttackRangeSqr(livingEntity);
 	}
 
 	@Override
@@ -292,7 +292,7 @@ public class LostSoulEntity extends DemonEntity implements GeoEntity, SmartBrain
 
 	@Override
 	protected PathNavigation createNavigation(Level worldIn) {
-		final FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
+		final var flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
 		flyingpathnavigator.setCanOpenDoors(false);
 		flyingpathnavigator.setCanFloat(true);
 		flyingpathnavigator.setCanPassDoors(true);
