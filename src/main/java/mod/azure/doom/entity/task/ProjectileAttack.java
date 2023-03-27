@@ -75,7 +75,7 @@ public class ProjectileAttack<E extends DemonEntity> extends CustomDelayedBehavi
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
 
-		return entity.getSensing().hasLineOfSight(this.target) && entity.distanceToSqr(this.target) < 32;
+		return entity.getSensing().hasLineOfSight(this.target);
 	}
 
 	@Override
@@ -98,17 +98,22 @@ public class ProjectileAttack<E extends DemonEntity> extends CustomDelayedBehavi
 		if (this.target == null)
 			return;
 
-		if (!entity.getSensing().hasLineOfSight(this.target) || entity.distanceToSqr(this.target) > 32)
+		if (!entity.getSensing().hasLineOfSight(this.target))
 			return;
+		
+		entity.swing(InteractionHand.MAIN_HAND);
 
 		if (entity instanceof PossessedSoldierEntity || entity instanceof BaronEntity || entity instanceof FireBaronEntity)
 			entity.shootBaron(this.target, damage);
 
-		if (entity instanceof BloodMaykrEntity || entity instanceof MaykrDroneEntity)
+		if (entity instanceof MaykrDroneEntity)
 			entity.shootBolt(this.target, damage);
 
+		if (entity instanceof BloodMaykrEntity )
+			entity.shootBloodBolt(this.target, damage);
+
 		if (entity instanceof SpiderMastermindEntity || entity instanceof ChaingunnerEntity || entity instanceof ShotgunguyEntity || entity instanceof ZombiemanEntity || entity instanceof MarauderEntity)
-			entity.shootChaingun(this.target, damage);
+			entity.shootChaingun(this.target, entity instanceof ChaingunnerEntity ? DoomConfig.chaingun_bullet_damage : damage);
 
 		if (entity instanceof SpiderMastermind2016Entity || entity instanceof ArachnotronEntity)
 			entity.shootEnergyCell(this.target, damage);

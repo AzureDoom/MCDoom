@@ -18,18 +18,15 @@ public class CustomSmallFireballEntity extends SmallFireball {
 
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
-		if (!this.level.isClientSide()) {
-			var entity = entityHitResult.getEntity();
-			if (!entity.fireImmune()) {
-				var entity2 = this.getOwner();
-				entity.setSecondsOnFire(5);
-				if (!(entity2 instanceof DemonEntity))
-					entity.hurt(damageSources().fireball(this, entity2), directHitDamage);
-				if (entity2 instanceof LivingEntity) {
-					if (!(entity2 instanceof DemonEntity))
-						this.doEnchantDamageEffects((LivingEntity) entity2, entity);
-					this.remove(Entity.RemovalReason.DISCARDED);
-				}
+		if (!level.isClientSide()) {
+			final var entity = entityHitResult.getEntity();
+			final var entity2 = getOwner();
+			if (!(entity instanceof DemonEntity))
+				entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
+			if (entity2 instanceof LivingEntity) {
+				if (!(entity instanceof DemonEntity))
+					doEnchantDamageEffects((LivingEntity) entity2, entity);
+				remove(Entity.RemovalReason.DISCARDED);
 			}
 		}
 	}

@@ -19,8 +19,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 
 public class EnergyCellMobEntity extends AbstractHurtingProjectile implements GeoEntity {
 
@@ -97,8 +97,8 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements Ge
 	}
 
 	@Override
-	protected void onHit(HitResult hitResult) {
-		super.onHit(hitResult);
+	protected void onHitBlock(BlockHitResult result) {
+		super.onHitBlock(result);
 		if (!level.isClientSide()) {
 			explode();
 			remove(Entity.RemovalReason.DISCARDED);
@@ -112,11 +112,10 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements Ge
 		if (!level.isClientSide()) {
 			final var entity = entityHitResult.getEntity();
 			final var entity2 = getOwner();
-			entity.setSecondsOnFire(5);
-			if (!(entity2 instanceof DemonEntity))
+			if (!(entity instanceof DemonEntity))
 				entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
 			if (entity2 instanceof LivingEntity) {
-				if (!(entity2 instanceof DemonEntity))
+				if (!(entity instanceof DemonEntity))
 					doEnchantDamageEffects((LivingEntity) entity2, entity);
 				remove(Entity.RemovalReason.DISCARDED);
 			}

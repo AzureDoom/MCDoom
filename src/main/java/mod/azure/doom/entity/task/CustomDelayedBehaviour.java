@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import mod.azure.doom.entity.DemonEntity;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
 public abstract class CustomDelayedBehaviour<E extends DemonEntity> extends ExtendedBehaviour<E> {
@@ -57,7 +58,7 @@ public abstract class CustomDelayedBehaviour<E extends DemonEntity> extends Exte
 	protected final void tick(ServerLevel level, E entity, long gameTime) {
 		super.tick(level, entity, gameTime);
 
-		entity.setAttackingState(2);
+		entity.swing(InteractionHand.MAIN_HAND);
 		if (this.delayFinishedAt <= gameTime) {
 			doDelayedAction(entity);
 			this.delayedCallback.accept(entity);

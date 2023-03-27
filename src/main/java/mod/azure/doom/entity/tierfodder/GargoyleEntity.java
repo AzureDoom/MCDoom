@@ -1,74 +1,81 @@
 package mod.azure.doom.entity.tierfodder;
 
-import java.util.EnumSet;
+import java.util.List;
 
-import mod.azure.azurelib.animatable.GeoEntity;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.ai.DemonFlyControl;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
-import mod.azure.doom.entity.ai.goal.RangedAttackGoal;
-import mod.azure.doom.entity.attack.FireballAttack;
+import mod.azure.doom.entity.task.ProjectileAttack;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.StayWithinDistanceOfAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
-public class GargoyleEntity extends DemonEntity implements GeoEntity {
+public class GargoyleEntity extends DemonEntity implements SmartBrainOwner<GargoyleEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
 	public GargoyleEntity(EntityType<GargoyleEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
-		moveControl = new GargoyleMoveControl(this);
+		moveControl = new DemonFlyControl(this);
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
+		var isDead = this.isDeadOrDying();
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (dead || getHealth() < 0.01 || isDeadOrDying())
+			if (isDead)
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			if (!isAggressive() && event.isMoving() && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			if (isAggressive() && event.isMoving() && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenLoop("flying"));
-			if (!event.isCurrentAnimation(RawAnimation.begin().thenLoop("flying")) && !event.isCurrentAnimation(RawAnimation.begin().thenLoop("walking")))
-				return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
-			return PlayState.CONTINUE;
-		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
-			return PlayState.STOP;
+//			if (!isAggressive() && event.isMoving() && !isDead)
+//				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
+//			if (isAggressive() && !this.swinging && event.isMoving() && !isDead)
+//				return event.setAndContinue(RawAnimation.begin().thenLoop("flying"));
+//			if (this.swinging && !isDead)
+//				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
+//			if (!event.isCurrentAnimation(RawAnimation.begin().thenLoop("flying"))  && !isDead && !event.isCurrentAnimation(RawAnimation.begin().thenLoop("walking")) && !event.isCurrentAnimation(RawAnimation.begin().thenLoop("attacking")))
+//				return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+			return event.setAndContinue(isDead ? RawAnimation.begin().thenPlayAndHold("death") : RawAnimation.begin().thenLoop("idle"));
 		}));
 	}
 
@@ -87,15 +94,39 @@ public class GargoyleEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
+	protected void customServerAiStep() {
+		tickBrain(this);
+		super.customServerAiStep();
+	}
+
+	@Override
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
+
+	@Override
+	public List<ExtendedSensor<GargoyleEntity>> getSensors() {
+		return ObjectArrayList.of(new NearbyLivingEntitySensor<GargoyleEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<GargoyleEntity>());
+	}
+
+	@Override
+	public BrainActivityGroup<GargoyleEntity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new StayWithinDistanceOfAttackTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
+	}
+
+	@Override
+	public BrainActivityGroup<GargoyleEntity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<GargoyleEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+	}
+
+	@Override
+	public BrainActivityGroup<GargoyleEntity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new ProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(DoomConfig.gargoyle_ranged_damage), new AnimatableMeleeAttack<>(20));
+	}
+
+	@Override
 	protected void registerGoals() {
-		goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-		goalSelector.addGoal(4, new RangedAttackGoal(this, new FireballAttack(this, false).setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomConfig.gargoyle_ranged_damage).setSound(SoundEvents.BLAZE_SHOOT, 1.0F, 1.4F + getRandom().nextFloat() * 0.35F), 1.1D));
 		goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
-		goalSelector.addGoal(7, new GargoyleEntity.LookAroundGoal(this));
-		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
-		targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
 	}
 
 	@Override
@@ -127,124 +158,20 @@ public class GargoyleEntity extends DemonEntity implements GeoEntity {
 				move(MoverType.SELF, getDeltaMovement());
 				this.setDeltaMovement(getDeltaMovement().scale(0.5D));
 			} else {
-				final BlockPos ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
-				float f = 0.91F;
-				if (onGround) {
+				final var ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
+				var f = 0.91F;
+				if (onGround) 
 					f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
-				}
-				final float f1 = 0.16277137F / (f * f * f);
+				final var f1 = 0.16277137F / (f * f * f);
 				f = 0.91F;
-				if (onGround) {
+				if (onGround) 
 					f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
-				}
 				moveRelative(onGround ? 0.1F * f1 : 0.02F, movementInput);
 				move(MoverType.SELF, getDeltaMovement());
 				this.setDeltaMovement(getDeltaMovement().scale(f));
 			}
 		} else {
 			super.travel(movementInput);
-		}
-	}
-
-	static class GargoyleMoveControl extends MoveControl {
-		protected final DemonEntity entity;
-		private int courseChangeCooldown;
-
-		public GargoyleMoveControl(DemonEntity entity) {
-			super(entity);
-			this.entity = entity;
-		}
-
-		@Override
-		public void tick() {
-			if (entity.isAggressive()) {
-				if (operation == MoveControl.Operation.MOVE_TO) {
-					if (courseChangeCooldown-- <= 0) {
-						courseChangeCooldown += entity.getRandom().nextInt(5) + 2;
-						Vec3 vector3d = new Vec3(wantedX - entity.getX(), wantedY - entity.getY(), wantedZ - entity.getZ());
-						final double d0 = vector3d.length();
-						vector3d = vector3d.normalize();
-						if (canReach(vector3d, Mth.ceil(d0))) {
-							entity.setDeltaMovement(entity.getDeltaMovement().add(vector3d.scale(0.1D)));
-						} else {
-							operation = MoveControl.Operation.WAIT;
-						}
-					}
-				} else {
-					operation = MoveControl.Operation.WAIT;
-					entity.setZza(0.0F);
-				}
-			} else if (operation == MoveControl.Operation.MOVE_TO) {
-				operation = MoveControl.Operation.WAIT;
-				final double d0 = wantedX - entity.getX();
-				final double d1 = wantedZ - entity.getZ();
-				final double d2 = wantedY - entity.getY();
-				final double d3 = d0 * d0 + d2 * d2 + d1 * d1;
-				if (d3 < 2.5000003E-7F) {
-					entity.setZza(0.0F);
-					return;
-				}
-				final float f9 = (float) (Mth.atan2(d1, d0) * (180F / (float) Math.PI)) - 90.0F;
-				entity.setYRot(rotlerp(mob.getYRot(), f9, 90.0F));
-				entity.setSpeed((float) 0.25D);
-				final BlockPos blockpos = mob.blockPosition();
-				final BlockState blockstate = mob.level.getBlockState(blockpos);
-				final VoxelShape voxelshape = blockstate.getCollisionShape(mob.level, blockpos);
-				if (d2 > mob.getEyeHeight() && d0 * d0 + d1 * d1 < Math.max(1.0F, mob.getBbWidth()) || !voxelshape.isEmpty() && mob.getY() < voxelshape.max(Direction.Axis.Y) + blockpos.getY() && !blockstate.is(BlockTags.DOORS) && !blockstate.is(BlockTags.FENCES)) {
-					operation = MoveControl.Operation.JUMPING;
-				}
-			} else if (operation == MoveControl.Operation.JUMPING) {
-				mob.setSpeed((float) 0.25D);
-				if (mob.isOnGround()) {
-					operation = MoveControl.Operation.WAIT;
-				}
-			} else {
-				operation = MoveControl.Operation.WAIT;
-				entity.setZza(0.0F);
-			}
-		}
-
-		private boolean canReach(Vec3 direction, int steps) {
-			AABB axisalignedbb = mob.getBoundingBox();
-			for (int i = 1; i < steps; ++i) {
-				axisalignedbb = axisalignedbb.move(direction);
-				if (!mob.level.noCollision(entity, axisalignedbb)) {
-					return false;
-				}
-			}
-			return true;
-		}
-	}
-
-	static class LookAroundGoal extends Goal {
-		private final GargoyleEntity parentEntity;
-
-		public LookAroundGoal(GargoyleEntity ghast) {
-			parentEntity = ghast;
-			setFlags(EnumSet.of(Goal.Flag.LOOK));
-		}
-
-		@Override
-		public boolean canUse() {
-			return true;
-		}
-
-		@Override
-		public void tick() {
-			if (parentEntity.getTarget() == null) {
-				final Vec3 vec3d = parentEntity.getDeltaMovement();
-				parentEntity.yo = -((float) Mth.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
-				parentEntity.yBodyRot = parentEntity.getYRot();
-			} else {
-				final LivingEntity livingentity = parentEntity.getTarget();
-				if (livingentity.distanceToSqr(parentEntity) < 4096.0D) {
-					final double d1 = livingentity.getX() - parentEntity.getX();
-					final double d2 = livingentity.getZ() - parentEntity.getZ();
-					parentEntity.yo = -((float) Mth.atan2(d1, d2)) * (180F / (float) Math.PI);
-					parentEntity.yBodyRot = parentEntity.getYRot();
-				}
-			}
-
 		}
 	}
 

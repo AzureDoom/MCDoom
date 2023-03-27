@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import mod.azure.azurelib.AzureLibMod;
 import mod.azure.azurelib.ai.pathing.AzureNavigation;
+import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.entities.TickingLightEntity;
 import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
@@ -13,6 +14,7 @@ import mod.azure.doom.entity.projectiles.entity.BloodBoltEntity;
 import mod.azure.doom.entity.projectiles.entity.ChaingunMobEntity;
 import mod.azure.doom.entity.projectiles.entity.CustomFireballEntity;
 import mod.azure.doom.entity.projectiles.entity.CustomSmallFireballEntity;
+import mod.azure.doom.entity.projectiles.entity.DroneBoltEntity;
 import mod.azure.doom.entity.projectiles.entity.EnergyCellMobEntity;
 import mod.azure.doom.entity.projectiles.entity.FireProjectile;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
@@ -53,7 +55,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 
-public class DemonEntity extends Monster implements NeutralMob, Enemy {
+public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, GeoEntity {
 
 	private static final EntityDataAccessor<Integer> ANGER_TIME = SynchedEntityData.defineId(DemonEntity.class, EntityDataSerializers.INT);
 	public static final EntityDataAccessor<Boolean> SCREAM = SynchedEntityData.defineId(DemonEntity.class, EntityDataSerializers.BOOLEAN);
@@ -221,7 +223,17 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 		if (!this.level.isClientSide) {
 			if (this.getTarget() != null) {
 				var projectile = new BarenBlastEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
-				projectile.setPos(this.getX() + this.getViewVector(1.0F).x * 2, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
+				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
+				this.getCommandSenderWorld().addFreshEntity(projectile);
+			}
+		}
+	}
+
+	public void shootBloodBolt(Entity target, float damage) {
+		if (!this.level.isClientSide) {
+			if (this.getTarget() != null) {
+				var projectile = new BloodBoltEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
 		}
@@ -230,8 +242,8 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 	public void shootBolt(Entity target, float damage) {
 		if (!this.level.isClientSide) {
 			if (this.getTarget() != null) {
-				var projectile = new BloodBoltEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
-				projectile.setPos(this.getX() + this.getViewVector(1.0F).x * 2, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
+				var projectile = new DroneBoltEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
 		}
@@ -241,7 +253,7 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 		if (!this.level.isClientSide) {
 			if (this.getTarget() != null) {
 				var projectile = new ChaingunMobEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
-				projectile.setPos(this.getX() + this.getViewVector(1.0F).x * 2, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
+				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
 		}
@@ -251,7 +263,7 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 		if (!this.level.isClientSide) {
 			if (this.getTarget() != null) {
 				var projectile = new EnergyCellMobEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
-				projectile.setPos(this.getX() + this.getViewVector(1.0F).x * 2, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
+				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
 		}
@@ -261,7 +273,7 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 		if (!this.level.isClientSide) {
 			if (this.getTarget() != null) {
 				var projectile = new FireProjectile(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
-				projectile.setPos(this.getX() + this.getViewVector(1.0F).x * 2, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
+				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
 		}
@@ -271,7 +283,7 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 		if (!this.level.isClientSide) {
 			if (this.getTarget() != null) {
 				var projectile = new RocketMobEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
-				projectile.setPos(this.getX() + this.getViewVector(1.0F).x * 2, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
+				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
 		}
@@ -281,7 +293,7 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 		if (!this.level.isClientSide) {
 			if (this.getTarget() != null) {
 				var projectile = new CustomFireballEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
-				projectile.setPos((this.getX() + this.getViewVector(1.0F).x * 2) + offset, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
+				projectile.setPos((this.getX() + this.getViewVector(1.0F).x) + offset, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
 		}
@@ -291,7 +303,7 @@ public class DemonEntity extends Monster implements NeutralMob, Enemy {
 		if (!this.level.isClientSide) {
 			if (this.getTarget() != null) {
 				var projectile = new CustomSmallFireballEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
-				projectile.setPos(this.getX() + this.getViewVector(1.0F).x * 2, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
+				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
 		}

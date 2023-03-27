@@ -13,8 +13,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 
 public class DroneBoltEntity extends AbstractHurtingProjectile {
 
@@ -65,8 +65,8 @@ public class DroneBoltEntity extends AbstractHurtingProjectile {
 	}
 
 	@Override
-	protected void onHit(HitResult result) {
-		super.onHit(result);
+	protected void onHitBlock(BlockHitResult result) {
+		super.onHitBlock(result);
 		if (!level.isClientSide()) {
 			explode();
 			remove(Entity.RemovalReason.DISCARDED);
@@ -84,10 +84,10 @@ public class DroneBoltEntity extends AbstractHurtingProjectile {
 		if (!level.isClientSide()) {
 			final var entity = entityHitResult.getEntity();
 			final var entity2 = getOwner();
-			if (!(entity2 instanceof DemonEntity))
+			if (!(entity instanceof DemonEntity))
 				entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
 			if (entity2 instanceof LivingEntity) {
-				if (!(entity2 instanceof DemonEntity))
+				if (!(entity instanceof DemonEntity))
 					doEnchantDamageEffects((LivingEntity) entity2, entity);
 				remove(Entity.RemovalReason.DISCARDED);
 			}
@@ -100,6 +100,11 @@ public class DroneBoltEntity extends AbstractHurtingProjectile {
 		super.tick();
 		if (tickCount >= 80)
 			remove(Entity.RemovalReason.DISCARDED);
+	}
+	
+	@Override
+	public boolean displayFireAnimation() {
+		return false;
 	}
 
 }

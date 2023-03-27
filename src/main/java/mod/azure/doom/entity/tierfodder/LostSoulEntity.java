@@ -11,6 +11,7 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.ai.DemonFlyControl;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -27,12 +28,15 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -46,6 +50,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
@@ -68,6 +73,7 @@ public class LostSoulEntity extends DemonEntity implements GeoEntity, SmartBrain
 	public LostSoulEntity(EntityType<? extends LostSoulEntity> type, Level world) {
 		super(type, world);
 		setMaxUpStep(4.0F);
+		moveControl = new DemonFlyControl(this);
 	}
 
 	@Override
@@ -158,7 +164,7 @@ public class LostSoulEntity extends DemonEntity implements GeoEntity, SmartBrain
 
 	@Override
 	public BrainActivityGroup<LostSoulEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new MoveToWalkTarget<>());
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>());
 	}
 
 	@Override
@@ -173,7 +179,7 @@ public class LostSoulEntity extends DemonEntity implements GeoEntity, SmartBrain
 
 	@Override
 	public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
-		return this.getBbWidth() * 1.0f * (this.getBbWidth() * 1.0f + livingEntity.getBbWidth());
+		return this.getBbWidth() * 1.5f * (this.getBbWidth() * 1.5f + livingEntity.getBbWidth());
 	}
 
 	@Override
@@ -212,7 +218,27 @@ public class LostSoulEntity extends DemonEntity implements GeoEntity, SmartBrain
 
 	@Override
 	public void travel(Vec3 movementInput) {
-		super.travel(movementInput);
+		if (isInWater()) {
+			moveRelative(0.02F, movementInput);
+			move(MoverType.SELF, getDeltaMovement());
+			this.setDeltaMovement(getDeltaMovement().scale(0.8F));
+		} else if (isInLava()) {
+			moveRelative(0.02F, movementInput);
+			move(MoverType.SELF, getDeltaMovement());
+			this.setDeltaMovement(getDeltaMovement().scale(0.5D));
+		} else {
+			final var ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
+			var f = 0.91F;
+			if (onGround) 
+				f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+			final var f1 = 0.16277137F / (f * f * f);
+			f = 0.91F;
+			if (onGround) 
+				f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+			moveRelative(onGround ? 0.1F * f1 : 0.02F, movementInput);
+			move(MoverType.SELF, getDeltaMovement());
+			this.setDeltaMovement(getDeltaMovement().scale(f));
+		}
 		if (tickCount % 10 == 0)
 			refreshDimensions();
 	}
@@ -262,6 +288,15 @@ public class LostSoulEntity extends DemonEntity implements GeoEntity, SmartBrain
 	@Override
 	public EntityDimensions getDimensions(Pose pose) {
 		return getVariant() == 3 ? EntityDimensions.scalable(1.0F, 1.5F) : super.getDimensions(pose);
+	}
+
+	@Override
+	protected PathNavigation createNavigation(Level worldIn) {
+		final FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
+		flyingpathnavigator.setCanOpenDoors(false);
+		flyingpathnavigator.setCanFloat(true);
+		flyingpathnavigator.setCanPassDoors(true);
+		return flyingpathnavigator;
 	}
 
 }
