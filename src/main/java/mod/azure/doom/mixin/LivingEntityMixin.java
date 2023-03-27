@@ -11,7 +11,6 @@ import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketsApi;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomItems;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -25,15 +24,13 @@ public class LivingEntityMixin {
 	@Inject(method = "checkTotemDeathProtection", at = @At(value = "HEAD"), cancellable = true)
 	private void tryUseTotem(DamageSource source, CallbackInfoReturnable<Boolean> ci) {
 		final var livingEntity = (LivingEntity) (Object) this;
-		if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY))
-			ci.setReturnValue(false);
-		else {
+		if (DoomConfig.enable_soulcube_effects) {
 			final var stack = TrinketsApi.getTrinketComponent(livingEntity).map(component -> {
 				final List<Tuple<SlotReference, ItemStack>> res = component.getEquipped(DoomItems.SOULCUBE);
 				return res.size() > 0 ? res.get(0).getB() : ItemStack.EMPTY;
 			}).orElse(ItemStack.EMPTY);
 
-			if (!stack.isEmpty() && DoomConfig.enable_soulcube_effects) {
+			if (!stack.isEmpty()) {
 				stack.hurtAndBreak(1, livingEntity, p -> p.broadcastBreakEvent(livingEntity.getUsedItemHand()));
 				livingEntity.setHealth(20.0F);
 				livingEntity.removeAllEffects();
