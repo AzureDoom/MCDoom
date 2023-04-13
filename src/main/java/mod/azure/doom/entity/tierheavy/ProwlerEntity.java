@@ -80,7 +80,7 @@ public class ProwlerEntity extends DemonEntity implements SmartBrainOwner<Prowle
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+			if (event.getAnimatable().getAttckingState() == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("attack", LoopType.PLAY_ONCE));
 			return PlayState.STOP;
 		}));

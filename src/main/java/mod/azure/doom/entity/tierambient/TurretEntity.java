@@ -47,7 +47,7 @@ public class TurretEntity extends DemonEntity implements SmartBrainOwner<TurretE
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+			if (event.getAnimatable().getAttckingState() == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}));

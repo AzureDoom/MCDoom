@@ -91,9 +91,9 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
 				if (level.isClientSide())
 					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.MANCUBUS_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (entityData.get(STATE) == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+			if (event.getAnimatable().getAttckingState() == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("firing", LoopType.PLAY_ONCE));
-			if (entityData.get(STATE) == 3 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+			if (event.getAnimatable().getAttckingState() == 3 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("ground", LoopType.PLAY_ONCE));
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {

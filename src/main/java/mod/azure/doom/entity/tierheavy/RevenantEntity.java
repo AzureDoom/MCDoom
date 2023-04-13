@@ -65,7 +65,7 @@ public class RevenantEntity extends DemonEntity implements SmartBrainOwner<Reven
 				return event.setAndContinue(DoomAnimationsDefault.DEATH);
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+			if (event.getAnimatable().getAttckingState() == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(DoomAnimationsDefault.MELEE);
 			return PlayState.STOP;
 		}));

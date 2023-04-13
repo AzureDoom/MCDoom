@@ -62,7 +62,7 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (entityData.get(DEATH_STATE) == 0 && event.isMoving() && entityData.get(STATE) < 1) {
+			if (entityData.get(DEATH_STATE) == 0 && event.isMoving() && event.getAnimatable().getAttckingState() < 1) {
 				event.getController().setAnimationSpeed(1.5);
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking_phaseone"));
 			}
@@ -70,7 +70,7 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death_phaseone"));
 			if (entityData.get(DEATH_STATE) == 1 && (dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death_phasetwo"));
-			if (entityData.get(DEATH_STATE) == 0 && entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+			if (entityData.get(DEATH_STATE) == 0 && event.getAnimatable().getAttckingState() == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("shield_plant"));
 			if (entityData.get(DEATH_STATE) == 1 && event.isMoving()) {
 				event.getController().setAnimationSpeed(1.5);
@@ -78,17 +78,17 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 			}
 			return event.setAndContinue(RawAnimation.begin().thenLoop(entityData.get(DEATH_STATE) == 0 ? "idle_phaseone" : "idle_phasetwo"));
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (entityData.get(DEATH_STATE) == 0 && entityData.get(STATE) == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+			if (entityData.get(DEATH_STATE) == 0 && event.getAnimatable().getAttckingState() == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("melee_phaseone", LoopType.PLAY_ONCE));
-			if (entityData.get(DEATH_STATE) == 0 && entityData.get(STATE) == 3 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+			if (entityData.get(DEATH_STATE) == 0 && event.getAnimatable().getAttckingState() == 3 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("melee_phaseone2", LoopType.PLAY_ONCE));
-			if (entityData.get(DEATH_STATE) == 0 && entityData.get(STATE) == 4 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+			if (entityData.get(DEATH_STATE) == 0 && event.getAnimatable().getAttckingState() == 4 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("melee_phaseone3", LoopType.PLAY_ONCE));
-			if (entityData.get(DEATH_STATE) == 1 && entityData.get(STATE) == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+			if (entityData.get(DEATH_STATE) == 1 && event.getAnimatable().getAttckingState() == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("melee_phasetwo", LoopType.PLAY_ONCE));
-			if (entityData.get(DEATH_STATE) == 1 && entityData.get(STATE) == 3 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+			if (entityData.get(DEATH_STATE) == 1 && event.getAnimatable().getAttckingState() == 3 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("melee_phasetwo2", LoopType.PLAY_ONCE));
-			if (entityData.get(DEATH_STATE) == 1 && entityData.get(STATE) == 4 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+			if (entityData.get(DEATH_STATE) == 1 && event.getAnimatable().getAttckingState() == 4 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("melee_phasetwo2", LoopType.PLAY_ONCE));
 			return PlayState.STOP;
 		}));

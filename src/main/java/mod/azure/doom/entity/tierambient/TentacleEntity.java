@@ -47,7 +47,7 @@ public class TentacleEntity extends DemonEntity implements SmartBrainOwner<Tenta
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			if (entityData.get(STATE) == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+			if (event.getAnimatable().getAttckingState() == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
 				return event.setAndContinue(DoomAnimationsDefault.DEATH);

@@ -71,7 +71,7 @@ public class BloodMaykrEntity extends DemonEntity implements SmartBrainOwner<Blo
 				return event.setAndContinue(DoomAnimationsDefault.DEATH);
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+			if (event.getAnimatable().getAttckingState() == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("attacking_weapon", LoopType.PLAY_ONCE));
 			return PlayState.STOP;
 		}));
@@ -134,7 +134,7 @@ public class BloodMaykrEntity extends DemonEntity implements SmartBrainOwner<Blo
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying())) {
+		if (this.getAttckingState() == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying())) {
 			setGlowingTag(true);
 		} else {
 			setGlowingTag(false);

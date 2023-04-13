@@ -5,10 +5,7 @@ import java.util.List;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
@@ -83,11 +80,9 @@ public class PainEntity extends DemonEntity implements SmartBrainOwner<PainEntit
 				return event.setAndContinue(DoomAnimationsDefault.WALKING);
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
 				return event.setAndContinue(DoomAnimationsDefault.DEATH);
+			if (event.getAnimatable().getAttckingState() == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+				return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
-		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
-			return PlayState.STOP;
 		}));
 	}
 
