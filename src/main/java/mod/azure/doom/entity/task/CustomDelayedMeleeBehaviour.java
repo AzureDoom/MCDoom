@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
+import mod.azure.doom.entity.tierheavy.Hellknight2016Entity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
@@ -41,16 +42,17 @@ public abstract class CustomDelayedMeleeBehaviour<E extends DemonEntity> extends
 			super.start(level, entity, gameTime);
 			doDelayedAction(entity);
 		}
-		if (!(entity instanceof IconofsinEntity) || !(entity instanceof MancubusEntity))
-			entity.setAttackingState(2);
-		if (entity instanceof MancubusEntity mancubusEntity) 
+		if (entity instanceof MancubusEntity mancubusEntity)
 			mancubusEntity.setAttackingState(3);
-		
+
 		if (entity instanceof IconofsinEntity iconEntity)
 			if (iconEntity.getHealth() < (iconEntity.getMaxHealth() * 0.50))
 				iconEntity.setAttackingState(4); // no armor
 			else
 				iconEntity.setAttackingState(3); // armor
+
+		if (!(entity instanceof IconofsinEntity) || !(entity instanceof MancubusEntity) || !(entity instanceof Hellknight2016Entity))
+			entity.setAttackingState(2);
 	}
 
 	@Override

@@ -1,44 +1,57 @@
 package mod.azure.doom.entity.tierheavy;
 
-import java.util.EnumSet;
+import java.util.List;
 
-import mod.azure.azurelib.animatable.GeoEntity;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.DoomAnimationsDefault;
+import mod.azure.doom.entity.task.DemonMeleeAttack;
 import mod.azure.doom.util.registry.DoomSounds;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
-public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
+public class Hellknight2016Entity extends DemonEntity implements SmartBrainOwner<Hellknight2016Entity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -49,22 +62,19 @@ public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving() && !isAggressive() && onGround)
-				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			if (isAggressive() && this.walkAnimation.speed() > 0.35F && onGround)
-				return event.setAndContinue(RawAnimation.begin().thenLoop("run"));
+			if (event.isMoving() && !isAggressive() && this.isOnGround())
+				return event.setAndContinue(DoomAnimationsDefault.WALKING);
+			if (isAggressive() && this.walkAnimation.speed() > 0.35F && this.isOnGround() && !this.swinging)
+				return event.setAndContinue(DoomAnimationsDefault.RUN);
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+				return event.setAndContinue(DoomAnimationsDefault.DEATH);
+			if ((!this.isOnGround() || this.swinging) && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().then("jumpattack", LoopType.PLAY_ONCE));
+			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
 				if (level.isClientSide())
 					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("jumpattack", LoopType.PLAY_ONCE));
-			return PlayState.STOP;
-		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("attack"))
 				if (level.isClientSide())
 					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
@@ -77,15 +87,68 @@ public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
+	protected void customServerAiStep() {
+		tickBrain(this);
+		super.customServerAiStep();
+	}
+
+	@Override
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
+
+	@Override
+	public List<ExtendedSensor<Hellknight2016Entity>> getSensors() {
+		return ObjectArrayList.of(new NearbyLivingEntitySensor<Hellknight2016Entity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<Hellknight2016Entity>());
+	}
+
+	@Override
+	public BrainActivityGroup<Hellknight2016Entity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>());
+	}
+
+	@Override
+	public BrainActivityGroup<Hellknight2016Entity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<Hellknight2016Entity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.75f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+	}
+
+	@Override
+	public BrainActivityGroup<Hellknight2016Entity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(1.25F), new DemonMeleeAttack<>(0));
+	}
+
+	@Override
+	public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
+		return this.getBbWidth() * 1.5f * (this.getBbWidth() * 1.5f + livingEntity.getBbWidth());
+	}
+
+	@Override
+	public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
+		var distance = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+		return distance <= this.getMeleeAttackRangeSqr(livingEntity);
+	}
+
+	@Override
 	protected void registerGoals() {
-		goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-		goalSelector.addGoal(3, new Hellknight2016Entity.AttackGoal(this, 1.5D));
-		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
-		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
-		targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
+//		goalSelector.addGoal(3, new Hellknight2016Entity.AttackGoal(this, 1.5D));
+	}
+
+	@Override
+	public void tick() {
+		super.tick();
+		if (this.getTarget() != null && !this.level.isClientSide()) {
+			if (this.getCommandSenderWorld().getEntities(this, new AABB(this.blockPosition()).inflate(3D)).contains(this.getTarget())) {
+				this.attackstatetimer++;
+				if (this.onGround && this.attackstatetimer >= 5) {
+					var vec3d2 = new Vec3(this.getTarget().getX() - this.getX(), 0.0, this.getTarget().getZ() - this.getZ());
+					vec3d2 = vec3d2.normalize().scale(0.8).add(this.getDeltaMovement().scale(0.4));
+					this.setDeltaMovement(vec3d2.x, 0.6F, vec3d2.z);
+					this.attackstatetimer = -80;
+				}
+			}
+		} else {
+			this.attackstatetimer = 0;
+		}
 	}
 
 	@Override
@@ -112,90 +175,6 @@ public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
 	@Override
 	protected int calculateFallDamage(float fallDistance, float damageMultiplier) {
 		return 0;
-	}
-
-	public class AttackGoal extends Goal {
-		private final Hellknight2016Entity entity;
-		private final double speedModifier;
-		private int attackTime;
-
-		public AttackGoal(Hellknight2016Entity zombieIn, double speedIn) {
-			entity = zombieIn;
-			setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Goal.Flag.JUMP));
-			speedModifier = speedIn;
-		}
-
-		@Override
-		public boolean canUse() {
-			return entity.getTarget() != null;
-		}
-
-		@Override
-		public boolean canContinueToUse() {
-			return canUse();
-		}
-
-		@Override
-		public void start() {
-			super.start();
-			entity.setAggressive(true);
-		}
-
-		@Override
-		public void stop() {
-			super.stop();
-			entity.setAggressive(false);
-			entity.setAttackingState(0);
-			attackTime = -1;
-		}
-
-		@Override
-		public void tick() {
-			final LivingEntity livingentity = entity.getTarget();
-			if (livingentity != null) {
-				final boolean inLineOfSight = entity.getSensing().hasLineOfSight(livingentity);
-				attackTime++;
-				entity.lookAt(livingentity, 30.0F, 30.0F);
-				final AABB aabb = new AABB(entity.blockPosition()).inflate(5D);
-				final AABB aabb2 = new AABB(entity.blockPosition()).inflate(3D);
-				if (inLineOfSight) {
-					entity.getNavigation().moveTo(livingentity, speedModifier);
-					if (entity.getCommandSenderWorld().getEntities(entity, aabb).contains(livingentity)) {
-						if (attackTime == 1) {
-							entity.setAttackingState(1);
-						}
-						if (attackTime == 4) {
-							final Vec3 vec3d = entity.getDeltaMovement();
-							Vec3 vec3d2 = new Vec3(livingentity.getX() - entity.getX(), 0.0, livingentity.getZ() - entity.getZ());
-							vec3d2 = vec3d2.normalize().scale(0.4).add(vec3d.scale(0.4));
-							entity.setDeltaMovement(vec3d2.x, 0.5F, vec3d2.z);
-							entity.lookAt(livingentity, 30.0F, 30.0F);
-						}
-						if (attackTime == 9) {
-							final AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(entity.level, entity.getX(), entity.getY(), entity.getZ());
-							areaeffectcloudentity.setParticle(ParticleTypes.CRIMSON_SPORE);
-							areaeffectcloudentity.setRadius(3.0F);
-							areaeffectcloudentity.setDuration(5);
-							areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
-							entity.getCommandSenderWorld().getEntities(entity, aabb2).forEach(e -> {
-								if (e instanceof LivingEntity) {
-									e.hurt(damageSources().mobAttack(entity), (float) DoomConfig.hellknight2016_melee_damage);
-									entity.level.addFreshEntity(areaeffectcloudentity);
-								}
-							});
-							livingentity.invulnerableTime = 0;
-						}
-						if (attackTime >= 13) {
-							attackTime = -5;
-							entity.setAttackingState(0);
-							entity.getNavigation().moveTo(livingentity, speedModifier);
-						}
-					}
-				} else {
-					--attackTime;
-				}
-			}
-		}
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
