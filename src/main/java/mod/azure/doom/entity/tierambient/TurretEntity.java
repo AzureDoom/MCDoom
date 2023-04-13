@@ -1,27 +1,42 @@
 package mod.azure.doom.entity.tierambient;
 
-import mod.azure.azurelib.animatable.GeoEntity;
+import java.util.List;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.projectiles.entity.CustomSmallFireballEntity;
+import mod.azure.doom.entity.DoomAnimationsDefault;
+import mod.azure.doom.entity.task.DemonProjectileAttack;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
-public class TurretEntity extends DemonEntity implements GeoEntity {
+public class TurretEntity extends DemonEntity implements SmartBrainOwner<TurretEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -33,8 +48,8 @@ public class TurretEntity extends DemonEntity implements GeoEntity {
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
 			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenLoop("attacking"));
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+				return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
+			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}));
 	}
 
@@ -57,69 +72,38 @@ public class TurretEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	protected void registerGoals() {
-		goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
-		goalSelector.addGoal(1, new TurretEntity.AttackGoal(this));
-		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
-		targetSelector.addGoal(2, new HurtByTargetGoal(this).setAlertOthers());
+	protected void customServerAiStep() {
+		tickBrain(this);
+		super.customServerAiStep();
 	}
 
-	static class AttackGoal extends Goal {
-		private final TurretEntity parentEntity;
-		protected int attackTimer = 0;
+	@Override
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
 
-		public AttackGoal(TurretEntity ghast) {
-			parentEntity = ghast;
-		}
+	@Override
+	public List<ExtendedSensor<TurretEntity>> getSensors() {
+		return ObjectArrayList.of(new NearbyLivingEntitySensor<TurretEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<TurretEntity>());
+	}
 
-		@Override
-		public boolean canUse() {
-			return parentEntity.getTarget() != null;
-		}
+	@Override
+	public BrainActivityGroup<TurretEntity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>());
+	}
 
-		@Override
-		public void start() {
-			super.start();
-			parentEntity.setAggressive(true);
-		}
+	@Override
+	public BrainActivityGroup<TurretEntity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<TurretEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+	}
 
-		@Override
-		public void stop() {
-			super.stop();
-			parentEntity.setAggressive(false);
-			parentEntity.setAttackingState(0);
-			attackTimer = -1;
-		}
+	@Override
+	public BrainActivityGroup<TurretEntity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new DemonProjectileAttack<>(7).attackDamage(DoomConfig.turret_ranged_damage).attackInterval(mob -> 80));
+	}
 
-		@Override
-		public void tick() {
-			final var livingentity = parentEntity.getTarget();
-			if (parentEntity.hasLineOfSight(livingentity)) {
-				final var world = parentEntity.level;
-				++attackTimer;
-				final var vector3d = parentEntity.getViewVector(1.0F);
-				final var x = livingentity.getX() - (parentEntity.getX() + vector3d.x * 2.0D);
-				final var y = livingentity.getY(0.5D) - (0.5D + parentEntity.getY(0.5D));
-				final var z = livingentity.getZ() - (parentEntity.getZ() + vector3d.z * 2.0D);
-				final var fireballentity = new CustomSmallFireballEntity(world, parentEntity, x, y, z, DoomConfig.turret_ranged_damage);
-				if (attackTimer == 10)
-					parentEntity.setAttackingState(1);
-				if (attackTimer == 20) {
-					fireballentity.setPos(parentEntity.getX() + vector3d.x, parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z);
-					world.addFreshEntity(fireballentity);
-				}
-				if (attackTimer >= 30) {
-					parentEntity.setAttackingState(0);
-					attackTimer = -40;
-				}
-			} else if (attackTimer > 0) {
-				--attackTimer;
-			}
-			parentEntity.lookAt(livingentity, 30.0F, 30.0F);
-		}
-
+	@Override
+	protected void registerGoals() {
 	}
 
 	protected boolean shouldDrown() {

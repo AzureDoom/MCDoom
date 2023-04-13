@@ -10,6 +10,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.tierambient.TurretEntity;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tierboss.MotherDemonEntity;
@@ -129,7 +130,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 		if (entity instanceof HellknightEntity || entity instanceof CacodemonEntity)
 			entity.shootFireball(this.target, damage, 0);
 
-		if (entity instanceof MechaZombieEntity || entity instanceof ImpEntity || entity instanceof GargoyleEntity)
+		if (entity instanceof MechaZombieEntity || entity instanceof ImpEntity || entity instanceof GargoyleEntity || entity instanceof TurretEntity)
 			entity.shootSmallFireball(this.target, damage);
 
 		if (entity instanceof ProwlerEntity prowlerEntity) {

@@ -1,6 +1,8 @@
 package mod.azure.doom.entity.tierambient;
 
-import mod.azure.azurelib.animatable.GeoEntity;
+import java.util.List;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
@@ -8,7 +10,7 @@ import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.DoomAnimationsDefault;
-import mod.azure.doom.entity.ai.goal.IgniteDemonGoal;
+import mod.azure.doom.entity.task.DemonMeleeAttack;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -23,21 +25,36 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
-public class CueBallEntity extends DemonEntity implements GeoEntity {
+public class CueBallEntity extends DemonEntity implements SmartBrainOwner<CueBallEntity> {
 
 	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(CueBallEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> FUSE_SPEED = SynchedEntityData.defineId(CueBallEntity.class, EntityDataSerializers.INT);
@@ -59,7 +76,7 @@ public class CueBallEntity extends DemonEntity implements GeoEntity {
 		controllers.add(new AnimationController<>(this, event -> {
 			if (event.isMoving())
 				return event.setAndContinue(DoomAnimationsDefault.WALK);
-			if (dead || getHealth() < 0.01 || isDeadOrDying())
+			if (dead || getHealth() < 0.01 || isDeadOrDying() && event.getAnimatable().getVariant() == 3)
 				return event.setAndContinue(DoomAnimationsDefault.DEATH);
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}));
@@ -71,7 +88,7 @@ public class CueBallEntity extends DemonEntity implements GeoEntity {
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, DoomConfig.cueball_health).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.3D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, DoomConfig.cueball_health).add(Attributes.ATTACK_DAMAGE, 3.0D).add(Attributes.MOVEMENT_SPEED, 0.3D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -82,17 +99,24 @@ public class CueBallEntity extends DemonEntity implements GeoEntity {
 	@Override
 	protected void tickDeath() {
 		++deathTime;
-		if (deathTime == 30) {
-			remove(RemovalReason.KILLED);
-			dropExperience();
-			if (!level.isClientSide && getVariant() == 1)
-				explode();
-			if (!level.isClientSide && getVariant() == 3) {
-				final var aabb = new AABB(blockPosition().above()).inflate(24D, 24D, 24D);
-				getLevel().getEntities(this, aabb).forEach(e -> {
-					if (e.isAlive() && e instanceof DemonEntity)
-						((LivingEntity) e).addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000, 1));
-				});
+		if (getVariant() != 3) {
+			if (deathTime == 30) {
+				remove(RemovalReason.KILLED);
+				dropExperience();
+				if (!level.isClientSide)
+					explode();
+			}
+		} else {
+			if (deathTime == 5) {
+				remove(RemovalReason.KILLED);
+				dropExperience();
+				if (!level.isClientSide) {
+					final var aabb = new AABB(blockPosition().above()).inflate(24D, 24D, 24D);
+					getLevel().getEntities(this, aabb).forEach(e -> {
+						if (e.isAlive() && e instanceof DemonEntity)
+							((LivingEntity) e).addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000, 1));
+					});
+				}
 			}
 		}
 	}
@@ -102,18 +126,49 @@ public class CueBallEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
+	protected void customServerAiStep() {
+		tickBrain(this);
+		super.customServerAiStep();
+	}
+
+	@Override
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
+
+	@Override
+	public List<ExtendedSensor<CueBallEntity>> getSensors() {
+		return ObjectArrayList.of(new NearbyLivingEntitySensor<CueBallEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<CueBallEntity>());
+	}
+
+	@Override
+	public BrainActivityGroup<CueBallEntity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>());
+	}
+
+	@Override
+	public BrainActivityGroup<CueBallEntity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<CueBallEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.75f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+	}
+
+	@Override
+	public BrainActivityGroup<CueBallEntity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(0.85F), new DemonMeleeAttack<>(0));
+	}
+
+	@Override
+	public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
+		return this.getBbWidth() * 1.5f * (this.getBbWidth() * 1.5f + livingEntity.getBbWidth());
+	}
+
+	@Override
+	public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
+		var distance = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+		return distance <= this.getMeleeAttackRangeSqr(livingEntity);
+	}
+
+	@Override
 	protected void registerGoals() {
-		goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
-		if (getVariant() != 3)
-			goalSelector.addGoal(2, new IgniteDemonGoal(this));
-		if (getVariant() != 3)
-			goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0, false));
-		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
-		targetSelector.addGoal(2, new HurtByTargetGoal(this).setAlertOthers());
-		goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
 	}
 
 	protected boolean shouldDrown() {

@@ -9,6 +9,7 @@ import com.mojang.datafixers.util.Pair;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.tierambient.CueBallEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
 import net.minecraft.server.level.ServerLevel;
@@ -78,15 +79,20 @@ public class DemonMeleeAttack<E extends DemonEntity> extends CustomDelayedMeleeB
 		if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
 			return;
 
-		if (entity instanceof IconofsinEntity iconEntity) { //damage and explode the world
+		if (entity instanceof IconofsinEntity iconEntity) { // damage and explode the world
 			iconEntity.doHurtTarget(this.target);
 			iconEntity.level.explode(entity, this.target.getX(), this.target.getY(), this.target.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
 			this.target.invulnerableTime = 0;
-		} else if (entity instanceof MancubusEntity mancubusEntity) { //summon flames around self
+		} else if (entity instanceof MancubusEntity mancubusEntity) { // summon flames around self
 			for (var j = 0; j < 5; ++j) {
 				float h2 = (float) Mth.atan2(target.getZ() - entity.getZ(), target.getX() - entity.getX()) + (float) j * (float) Math.PI * 0.4F;
 				mancubusEntity.spawnFlames(entity.getX() + (double) Mth.cos(h2) * 1.5D, entity.getZ() + (double) Mth.sin(h2) * 1.5D, Math.min(target.getY(), entity.getY()), Math.max(target.getY(), entity.getY()) + 1.0D, h2, 0);
 			}
+		} else if (entity instanceof CueBallEntity cueballEntity) {
+			if (cueballEntity.getVariant() != 3)
+				cueballEntity.setFuseSpeed(1);
+			else 
+				cueballEntity.doHurtTarget(this.target);
 		} else
 			entity.doHurtTarget(this.target);
 	}
