@@ -138,9 +138,9 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 		}
 
 		if (entity instanceof MancubusEntity mancubusEntity) {
-			if (mancubusEntity.distanceTo(target) < 6.0D && mancubusEntity.distanceTo(target) > 3.0D)
+			if (mancubusEntity.distanceTo(target) < 8.0D && mancubusEntity.distanceTo(target) > 3.0D) //shoot flames
 				mancubusEntity.shootMancubus(mancubusEntity, DoomConfig.mancubus_ranged_damage);
-			else 
+			else //shoot ball
 				mancubusEntity.shootBaron(mancubusEntity, DoomConfig.mancubus_ranged_damage, 0, 0, 0);
 		}
 
@@ -148,14 +148,14 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 			final var tentacleEntity = DoomEntities.TENTACLE.create(entity.level);
 			tentacleEntity.moveTo(this.target.getX(), this.target.getY(), this.target.getZ(), 0, 0);
 			entity.level.addFreshEntity(tentacleEntity);
-			if (entity.getHealth() <= entity.getMaxHealth() * 0.50) {
+			if (entity.getHealth() <= entity.getMaxHealth() * 0.50) { //summon flames
 				for (var l = 0; l < 32; ++l) {
 					final var f1 = (float) Mth.atan2(this.target.getZ() - entity.getZ(), this.target.getX() - entity.getX()) + l * (float) Math.PI * 0.4F;
 					for (var y = 0; y < 5; ++y)
 						motherdemonEntity.spawnFlames(this.target.getX() + (double) Mth.cos(f1) * this.target.getRandom().nextDouble() * 1.5D, this.target.getZ() + (double) Mth.sin(f1) * this.target.getRandom().nextDouble() * 1.5D, Math.min(this.target.getY(), this.target.getY()), Math.max(this.target.getY(), this.target.getY()) + 1.0D, f1, 0);
 				}
 				this.target.setDeltaMovement(this.target.getDeltaMovement().multiply(0.4f, 1.4f, 0.4f));
-			} else {
+			} else { //shoot fireballs
 				entity.shootFireball(this.target, DoomConfig.motherdemon_ranged_damage + (motherdemonEntity.getDeathState() == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0), 0);
 				entity.shootFireball(this.target, DoomConfig.motherdemon_ranged_damage + (motherdemonEntity.getDeathState() == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0), 3);
 				entity.shootFireball(this.target, DoomConfig.motherdemon_ranged_damage + (motherdemonEntity.getDeathState() == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0), -3);
@@ -170,7 +170,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 			var lost_soul = DoomEntities.LOST_SOUL.create(entity.level);
 			lost_soul.moveTo(painEntity.getX(), painEntity.getY(), painEntity.getZ(), 0, 0);
 			entity.level.addFreshEntity(lost_soul);
-			if (painEntity.getVariant() == 2) {
+			if (painEntity.getVariant() == 2) { //if doom 64, summon another
 				var lost_soul1 = DoomEntities.LOST_SOUL.create(entity.level);
 				lost_soul1.moveTo(painEntity.getX(), painEntity.getY(), painEntity.getZ(), 0, 0);
 				entity.level.addFreshEntity(lost_soul1);
@@ -179,9 +179,9 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 		}
 
 		if (entity instanceof ArchMakyrEntity archMakyrEntity) {
-			if (entity.getRandom().nextInt(0, 4) == 1)
+			if (entity.getRandom().nextInt(0, 4) == 1) // shoot fireball
 				entity.shootFireball(entity, DoomConfig.archmaykr_ranged_damage + (archMakyrEntity.getDeathState() == 1 ? DoomConfig.archmaykr_phaseone_damage_boost : archMakyrEntity.getDeathState() == 2 ? DoomConfig.archmaykr_phasetwo_damage_boost : archMakyrEntity.getDeathState() == 3 ? DoomConfig.archmaykr_phasethree_damage_boost : archMakyrEntity.getDeathState() == 4 ? DoomConfig.archmaykr_phasefour_damage_boost : 0), 0);
-			else {
+			else { //summon flames
 				for (var i = 1; i < 5; ++i) {
 					var f1 = (float) Mth.atan2(this.target.getZ() - entity.getZ(), this.target.getX() - entity.getX()) + (float) i * (float) Math.PI * 0.4F;
 					for (var y = 0; y < 5; ++y)
