@@ -14,7 +14,6 @@ public class IconAttackGoal extends Goal {
 	private final IconofsinEntity entity;
 	private double moveSpeedAmp = 1;
 	private int attackTime = -1;
-	private int summonTime = -1;
 	private AbstractRangedAttack attack;
 
 	public IconAttackGoal(IconofsinEntity mob, AbstractRangedAttack attack, double moveSpeedAmpIn) {
@@ -52,64 +51,33 @@ public class IconAttackGoal extends Goal {
 			this.entity.getNavigation().moveTo(livingentity, this.moveSpeedAmp);
 			SplittableRandom random = new SplittableRandom();
 			int randomAttack = random.nextInt(0, 4);
-			if (this.attackTime == 1) {
-				this.entity.setAttackingState(0);
-				this.summonTime++;
-			}
 			if (this.attackTime == 4) {
-				if (this.summonTime == 10) {
-					entity.spawnWave(random.nextInt(0, 11), livingentity); // Summons roughly 2 minutes
-					this.summonTime = -300;
-				}
 				if (randomAttack == 1) {// Summon Fire on target
-					for (int i = 1; i < 5; ++i) {
-						float f1 = (float) Mth.atan2(livingentity.getZ() - entity.getZ(),
-								livingentity.getX() - entity.getX()) + (float) i * (float) Math.PI * 0.4F;
-						for (int y = 0; y < 5; ++y) {
-							entity.spawnFlames(
-									livingentity.getX()
-											+ (double) Mth.cos(f1) * livingentity.getRandom().nextDouble() * 1.5D,
-									livingentity.getZ()
-											+ (double) Mth.sin(f1) * livingentity.getRandom().nextDouble() * 1.5D,
-									Math.min(livingentity.getY(), livingentity.getY()),
-									Math.max(livingentity.getY(), livingentity.getY()) + 1.0D, f1, 0);
+					for (var i = 1; i < 5; ++i) {
+						var f1 = (float) Mth.atan2(livingentity.getZ() - entity.getZ(), livingentity.getX() - entity.getX()) + (float) i * (float) Math.PI * 0.4F;
+						for (var y = 0; y < 5; ++y) {
+							entity.spawnFlames(livingentity.getX() + (double) Mth.cos(f1) * livingentity.getRandom().nextDouble() * 1.5D, livingentity.getZ() + (double) Mth.sin(f1) * livingentity.getRandom().nextDouble() * 1.5D, Math.min(livingentity.getY(), livingentity.getY()), Math.max(livingentity.getY(), livingentity.getY()) + 1.0D, f1, 0);
 						}
 					}
-
-					boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
-					entity.spawnLightSource(this.entity, isInsideWaterBlock);
-					if (entity.getHealth() < (entity.getMaxHealth() * 0.50)) {
+					if (entity.getHealth() < (entity.getMaxHealth() * 0.50))
 						this.entity.setAttackingState(6); // no armor
-					} else {
+					else
 						this.entity.setAttackingState(5); // armor
-					}
 				} else if (randomAttack == 2) { // shoots fireball
 					this.attack.shoot();
-
-					boolean isInsideWaterBlock = entity.level.isWaterAt(entity.blockPosition());
-					entity.spawnLightSource(this.entity, isInsideWaterBlock);
-					if (entity.getHealth() < (entity.getMaxHealth() * 0.50)) {
+					if (entity.getHealth() < (entity.getMaxHealth() * 0.50)) 
 						this.entity.setAttackingState(2); // no armor
-					} else {
+					else 
 						this.entity.setAttackingState(1); // armor
-					}
 				} else { // melee if in range to melee
-					if (entity.getHealth() < (entity.getMaxHealth() * 0.50)) {
+					if (entity.getHealth() < (entity.getMaxHealth() * 0.50)) 
 						this.entity.setAttackingState(4); // no armor
-					} else {
+					else 
 						this.entity.setAttackingState(3); // armor
-					}
 					this.entity.doHurtTarget(livingentity);
-					this.entity.level.explode(this.entity, livingentity.getX(), livingentity.getY(),
-							livingentity.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
+					this.entity.level.explode(this.entity, livingentity.getX(), livingentity.getY(), livingentity.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
 					livingentity.invulnerableTime = 0;
 				}
-			}
-			if (this.attackTime == 8) {
-				this.entity.setAttackingState(0);
-			}
-			if (this.attackTime >= 25) {
-				this.attackTime = -15;
 			}
 		}
 	}

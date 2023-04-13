@@ -670,4 +670,6 @@ public class DoomConfig extends MidnightConfig {
 
 	@Entry
 	public static double gorenest_health = 5;
+	@Entry
+	public static List<String> gorenest_wave_entries = Arrays.asList("doom:hellknight", "doom:possessed_scientist", "doom:imp", "doom:pinky", "doom:cacodemon", "doom:chaingunner", "doom:gargoyle", "doom:hellknight2016", "doom:lost_soul", "doom:possessed_soldier", "doom:shotgunguy", "doom:unwilling", "doom:zombieman", "doom:arachnotron", "doom:archvile", "doom:mechazombie", "doom:painelemental", "doom:mancubus");
 }

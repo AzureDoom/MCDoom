@@ -162,5 +162,10 @@ public class DoomFireEntity extends Entity implements GeoEntity {
 	public boolean hurt(DamageSource source, float amount) {
 		return source == damageSources().inWall() || source == damageSources().onFire() || source == damageSources().inFire() ? false : super.hurt(source, amount);
 	}
+	
+	@Override
+	public boolean displayFireAnimation() {
+		return false;
+	}
 
 }

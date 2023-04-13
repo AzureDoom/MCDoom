@@ -32,8 +32,8 @@ public class BarenBlastEntity extends AbstractHurtingProjectile implements GeoEn
 	private LivingEntity shooter;
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-	public BarenBlastEntity(EntityType<? extends BarenBlastEntity> p_i50160_1_, Level p_i50160_2_) {
-		super(p_i50160_1_, p_i50160_2_);
+	public BarenBlastEntity(EntityType<? extends BarenBlastEntity> entity, Level level) {
+		super(entity, level);
 	}
 
 	public void setDirectHitDamage(float directHitDamage) {
@@ -147,6 +147,11 @@ public class BarenBlastEntity extends AbstractHurtingProjectile implements GeoEn
 		super.tick();
 		if (tickCount >= 80)
 			remove(Entity.RemovalReason.DISCARDED);
+	}
+	
+	@Override
+	public boolean displayFireAnimation() {
+		return false;
 	}
 
 }

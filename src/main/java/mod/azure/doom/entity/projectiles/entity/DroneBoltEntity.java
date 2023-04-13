@@ -23,8 +23,8 @@ public class DroneBoltEntity extends AbstractHurtingProjectile {
 	private int ticksInAir;
 	private float directHitDamage = 2;
 
-	public DroneBoltEntity(EntityType<DroneBoltEntity> p_i50160_1_, Level p_i50160_2_) {
-		super(p_i50160_1_, p_i50160_2_);
+	public DroneBoltEntity(EntityType<DroneBoltEntity> entity, Level level) {
+		super(entity, level);
 	}
 
 	public DroneBoltEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, float directHitDamage) {

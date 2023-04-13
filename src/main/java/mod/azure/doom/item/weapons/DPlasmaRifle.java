@@ -55,21 +55,20 @@ public class DPlasmaRifle extends DoomBaseItem {
 				if (!playerentity.getCooldowns().isOnCooldown(this)) {
 					playerentity.getCooldowns().addCooldown(this, 2);
 					if (!worldIn.isClientSide) {
-						final EnergyCellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-						abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 0.15F * 3.0F, 1.0F);
-						abstractarrowentity.isNoGravity();
+						final var energycell = createArrow(worldIn, stack, playerentity);
+						energycell.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 0.15F * 3.0F, 1.0F);
+						worldIn.addFreshEntity(energycell);
+						energycell.isNoGravity();
 
 						stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
-						worldIn.addFreshEntity(abstractarrowentity);
 						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), DoomSounds.PLASMA_FIRING, SoundSource.PLAYERS, 1.0F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 						triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn), "shoot_controller", "firing_faster");
 					}
-					final boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
+					final var isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
 					spawnLightSource(entityLiving, isInsideWaterBlock);
 				}
-			} else {
+			} else
 				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), DoomSounds.EMPTY, SoundSource.PLAYERS, 1.0F, 1.5F);
-			}
 		}
 	}
 
@@ -86,19 +85,18 @@ public class DPlasmaRifle extends DoomBaseItem {
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		if (world.isClientSide) {
+		if (world.isClientSide)
 			if (((Player) entity).getMainHandItem().getItem() instanceof DPlasmaRifle && ClientInit.reload.consumeClick() && selected) {
-				final FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
+				final var passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.DPLASMARIFLE, passedData);
 			}
-		}
 	}
 
 	public EnergyCellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		final float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		final EnergyCellEntity arrowentity = new EnergyCellEntity(worldIn, shooter, DoomConfig.energycell_damage + j * 2.0F);
-		return arrowentity;
+		final var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		final var energycell = new EnergyCellEntity(worldIn, shooter, DoomConfig.energycell_damage + enchantlevel * 2.0F);
+		return energycell;
 	}
 
 	@Override
@@ -111,11 +109,13 @@ public class DPlasmaRifle extends DoomBaseItem {
 	@Override
 	public void createRenderer(Consumer<Object> consumer) {
 		consumer.accept(new RenderProvider() {
-			private final DPlamsaRifleRender renderer = new DPlamsaRifleRender();
+			private DPlamsaRifleRender renderer = null;
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return renderer;
+				if (renderer == null)
+					return new DPlamsaRifleRender();
+				return this.renderer;
 			}
 		});
 	}

@@ -166,5 +166,10 @@ public class FireProjectile extends AbstractHurtingProjectile {
 
 		return null;
 	}
+	
+	@Override
+	public boolean displayFireAnimation() {
+		return false;
+	}
 
 }

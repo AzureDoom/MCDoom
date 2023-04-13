@@ -148,4 +148,9 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements Ge
 		if (tickCount >= 80)
 			remove(Entity.RemovalReason.DISCARDED);
 	}
+	
+	@Override
+	public boolean displayFireAnimation() {
+		return false;
+	}
 }

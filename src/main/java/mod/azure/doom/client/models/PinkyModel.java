@@ -1,6 +1,5 @@
 package mod.azure.doom.client.models;
 
-import mod.azure.azurelib.constant.DataTickets;
 import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.doom.DoomMod;
@@ -28,14 +27,6 @@ public class PinkyModel extends GeoModel<PinkyEntity> {
 	@Override
 	public void setCustomAnimations(PinkyEntity animatable, long instanceId, AnimationState<PinkyEntity> animationState) {
 		super.setCustomAnimations(animatable, instanceId, animationState);
-
-		var head = getAnimationProcessor().getBone("neck");
-		var entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
-
-		if (head != null) {
-			head.setRotX((entityData.headPitch() + (animatable.getVariant() == 3 ? 90 : 30)) * ((float) Math.PI / 360F));
-			head.setRotY(entityData.netHeadYaw() * ((float) Math.PI / 500F));
-		}
 	}
 
 	@Override

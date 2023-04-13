@@ -2,7 +2,6 @@ package mod.azure.doom.item.weapons;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import io.netty.buffer.Unpooled;
 import mod.azure.doom.DoomMod;
@@ -36,12 +35,12 @@ public class Chainsaw extends Item {
 
 	public static void removeAmmo(Item ammo, Player playerEntity) {
 		if (!playerEntity.isCreative()) {
-			for (final ItemStack item : playerEntity.getInventory().offhand) {
+			for (final var item : playerEntity.getInventory().offhand) {
 				if (item.getItem() == ammo) {
 					item.shrink(1);
 					break;
 				}
-				for (final ItemStack item1 : playerEntity.getInventory().items) {
+				for (final var item1 : playerEntity.getInventory().items) {
 					if (item1.getItem() == ammo) {
 						item1.shrink(1);
 						break;
@@ -73,23 +72,22 @@ public class Chainsaw extends Item {
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-		final LivingEntity user = (LivingEntity) entityIn;
-		final Player player = (Player) entityIn;
+		final var user = (LivingEntity) entityIn;
+		final var player = (Player) entityIn;
 		if (player.getMainHandItem().sameItem(stack) && stack.getDamageValue() < stack.getMaxDamage() - 1 && !player.getCooldowns().isOnCooldown(this)) {
-			final AABB aabb = new AABB(entityIn.blockPosition().above()).inflate(1D, 1D, 1D);
+			final var aabb = new AABB(entityIn.blockPosition().above()).inflate(1D, 1D, 1D);
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDamage(user, e));
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDeathCheck(user, e, stack));
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> damageItem(user, stack));
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(this::addParticle);
 			worldIn.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_IDLE, SoundSource.PLAYERS, 0.05F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
-		if (worldIn.isClientSide) {
+		if (worldIn.isClientSide)
 			if (player.getMainHandItem().getItem() instanceof Chainsaw && ClientInit.reload.consumeClick() && isSelected) {
-				final FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
+				final var passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.CHAINSAW, passedData);
 			}
-		}
 	}
 
 	public static void reload(Player user, InteractionHand hand) {
@@ -111,15 +109,14 @@ public class Chainsaw extends Item {
 	}
 
 	private void doDeathCheck(LivingEntity user, Entity target, ItemStack stack) {
-		final Random rand = new Random();
-		final List<Item> givenList = Arrays.asList(DoomItems.CHAINGUN_BULLETS, DoomItems.SHOTGUN_SHELLS, DoomItems.ARGENT_BOLT, DoomItems.SHOTGUN_SHELLS, DoomItems.ENERGY_CELLS, DoomItems.ROCKET);
+		final var givenList = Arrays.asList(DoomItems.CHAINGUN_BULLETS, DoomItems.SHOTGUN_SHELLS, DoomItems.ARGENT_BOLT, DoomItems.SHOTGUN_SHELLS, DoomItems.ENERGY_CELLS, DoomItems.ROCKET);
 		if (target instanceof DemonEntity && !(target instanceof Player)) {
 			if (((LivingEntity) target).isDeadOrDying()) {
 				if (user instanceof Player playerentity) {
 					if (stack.getDamageValue() < stack.getMaxDamage() - 1 && !playerentity.getCooldowns().isOnCooldown(this)) {
-						for (final int i = 0; i < 5;) {
-							final int randomIndex = rand.nextInt(givenList.size());
-							final Item randomElement = givenList.get(randomIndex);
+						for (final var i = 0; i < 5;) {
+							final var randomIndex = user.getRandom().nextInt(givenList.size());
+							final var randomElement = givenList.get(randomIndex);
 							target.spawnAtLocation(randomElement);
 							break;
 						}
@@ -130,17 +127,15 @@ public class Chainsaw extends Item {
 	}
 
 	private void damageItem(LivingEntity user, ItemStack stack) {
-		final Player player = (Player) user;
-		if (!player.getAbilities().instabuild) {
+		final var player = (Player) user;
+		if (!player.getAbilities().instabuild)
 			stack.setDamageValue(stack.getDamageValue() + 1);
-		}
 		player.getCooldowns().addCooldown(this, 10);
 	}
 
 	private void addParticle(Entity target) {
-		if (target instanceof LivingEntity) {
+		if (target instanceof LivingEntity)
 			target.level.addParticle(DustParticleOptions.REDSTONE, target.getRandomX(0.5D), target.getRandomY(), target.getRandomZ(0.5D), 0.0D, 0D, 0D);
-		}
 	}
 
 }

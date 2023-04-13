@@ -124,7 +124,7 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 	protected void tickDespawn() {
 		++ticksInAir;
 		if (tickCount >= 40) 
-			remove(RemovalReason.KILLED);
+			this.remove(Entity.RemovalReason.DISCARDED);
 	}
 
 	@Override
@@ -154,6 +154,8 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 			setSpinning(false);
 		if (!isOnGround())
 			setSpinning(true);
+		if (tickCount >= 46 && !this.level.isClientSide())
+			this.remove(Entity.RemovalReason.DISCARDED);
 	}
 
 	@Override

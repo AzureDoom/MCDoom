@@ -1,21 +1,19 @@
 package mod.azure.doom.entity.tierheavy;
 
-import java.util.EnumSet;
-import java.util.SplittableRandom;
+import java.util.List;
 
-import mod.azure.azurelib.animatable.GeoEntity;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.DoomAnimationsDefault;
+import mod.azure.doom.entity.ai.DemonFloatControl;
 import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
-import mod.azure.doom.entity.ai.goal.RangedStaticAttackGoal;
-import mod.azure.doom.entity.attack.FireballAttack;
+import mod.azure.doom.entity.task.DemonProjectileAttack;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -33,44 +31,58 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.StayWithinDistanceOfAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
-public class CacodemonEntity extends DemonEntity implements Enemy, GeoEntity {
+public class CacodemonEntity extends DemonEntity implements SmartBrainOwner<CacodemonEntity> {
 
 	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(CacodemonEntity.class, EntityDataSerializers.INT);
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
 	public CacodemonEntity(EntityType<? extends CacodemonEntity> type, Level worldIn) {
 		super(type, worldIn);
-		moveControl = new CacodemonEntity.GhastMoveControl(this);
+		moveControl = new DemonFloatControl(this);
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			if (event.isMoving())
-				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
+				return event.setAndContinue(DoomAnimationsDefault.WALKING);
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+				return event.setAndContinue(DoomAnimationsDefault.DEATH);
+			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
 			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
+				return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
 			return PlayState.STOP;
 		}));
 	}
@@ -122,8 +134,7 @@ public class CacodemonEntity extends DemonEntity implements Enemy, GeoEntity {
 	@Override
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-		final SplittableRandom random = new SplittableRandom();
-		final int var = random.nextInt(0, 6);
+		final int var = this.getRandom().nextInt(0, 6);
 		setVariant(var);
 		return spawnDataIn;
 	}
@@ -133,15 +144,39 @@ public class CacodemonEntity extends DemonEntity implements Enemy, GeoEntity {
 	}
 
 	@Override
+	protected void customServerAiStep() {
+		tickBrain(this);
+		super.customServerAiStep();
+	}
+
+	@Override
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
+
+	@Override
+	public List<ExtendedSensor<CacodemonEntity>> getSensors() {
+		return ObjectArrayList.of(new NearbyLivingEntitySensor<CacodemonEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<CacodemonEntity>());
+	}
+
+	@Override
+	public BrainActivityGroup<CacodemonEntity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new StayWithinDistanceOfAttackTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
+	}
+
+	@Override
+	public BrainActivityGroup<CacodemonEntity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<CacodemonEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+	}
+
+	@Override
+	public BrainActivityGroup<CacodemonEntity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(DoomConfig.cacodemon_ranged_damage), new AnimatableMeleeAttack<>(20));
+	}
+
+	@Override
 	protected void registerGoals() {
-		goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
-		goalSelector.addGoal(7, new CacodemonEntity.LookAroundGoal(this));
-		goalSelector.addGoal(4, new RangedStaticAttackGoal(this, new FireballAttack(this, true).setDamage(DoomConfig.cacodemon_ranged_damage).setProjectileOriginOffset(1.5, 0.3, 1.5).setSound(DoomSounds.CACODEMON_AFFECTIONATE_SCREAM, 1.0F, 1.2F / (getRandom().nextFloat() * 0.2F + 0.9F)), 1));
-		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
-		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
-		targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
 	}
 
 	@Override
@@ -173,16 +208,14 @@ public class CacodemonEntity extends DemonEntity implements Enemy, GeoEntity {
 			move(MoverType.SELF, getDeltaMovement());
 			this.setDeltaMovement(getDeltaMovement().scale(0.5D));
 		} else {
-			final BlockPos ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
-			float f = 0.91F;
-			if (onGround) {
+			final var ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
+			var f = 0.91F;
+			if (onGround)
 				f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
-			}
-			final float f1 = 0.16277137F / (f * f * f);
+			final var f1 = 0.16277137F / (f * f * f);
 			f = 0.91F;
-			if (onGround) {
+			if (onGround)
 				f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
-			}
 			moveRelative(onGround ? 0.1F * f1 : 0.02F, movementInput);
 			move(MoverType.SELF, getDeltaMovement());
 			this.setDeltaMovement(getDeltaMovement().scale(f));
@@ -192,78 +225,6 @@ public class CacodemonEntity extends DemonEntity implements Enemy, GeoEntity {
 	@Override
 	public boolean onClimbable() {
 		return false;
-	}
-
-	static class LookAroundGoal extends Goal {
-		private final CacodemonEntity parentEntity;
-
-		public LookAroundGoal(CacodemonEntity ghast) {
-			parentEntity = ghast;
-			setFlags(EnumSet.of(Goal.Flag.LOOK));
-		}
-
-		@Override
-		public boolean canUse() {
-			return true;
-		}
-
-		@Override
-		public void tick() {
-			if (parentEntity.getTarget() == null) {
-				final Vec3 vec3d = parentEntity.getDeltaMovement();
-				parentEntity.yo = -((float) Mth.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
-				parentEntity.yBodyRot = parentEntity.getYRot();
-			} else {
-				final LivingEntity livingentity = parentEntity.getTarget();
-				if (livingentity.distanceToSqr(parentEntity) < 4096.0D) {
-					final double d1 = livingentity.getX() - parentEntity.getX();
-					final double d2 = livingentity.getZ() - parentEntity.getZ();
-					parentEntity.yo = -((float) Mth.atan2(d1, d2)) * (180F / (float) Math.PI);
-					parentEntity.yBodyRot = parentEntity.getYRot();
-				}
-			}
-
-		}
-	}
-
-	static class GhastMoveControl extends MoveControl {
-		private final CacodemonEntity parentEntity;
-		private int courseChangeCooldown;
-
-		public GhastMoveControl(CacodemonEntity cacodemonEntity) {
-			super(cacodemonEntity);
-			parentEntity = cacodemonEntity;
-		}
-
-		@Override
-		public void tick() {
-			if (operation == MoveControl.Operation.MOVE_TO) {
-				if (courseChangeCooldown-- <= 0) {
-					courseChangeCooldown += parentEntity.getRandom().nextInt(5) + 2;
-					Vec3 vector3d = new Vec3(wantedX - parentEntity.getX(), wantedY - parentEntity.getY(), wantedZ - parentEntity.getZ());
-					final double d0 = vector3d.length();
-					vector3d = vector3d.normalize();
-					if (canReach(vector3d, Mth.ceil(d0))) {
-						parentEntity.setDeltaMovement(parentEntity.getDeltaMovement().add(vector3d.scale(0.1D)));
-					} else {
-						operation = MoveControl.Operation.WAIT;
-					}
-				}
-
-			}
-		}
-
-		private boolean canReach(Vec3 p_220673_1_, int p_220673_2_) {
-			AABB axisalignedbb = parentEntity.getBoundingBox();
-
-			for (int i = 1; i < p_220673_2_; ++i) {
-				axisalignedbb = axisalignedbb.move(p_220673_1_);
-				if (!parentEntity.level.noCollision(parentEntity, axisalignedbb)) {
-					return false;
-				}
-			}
-			return true;
-		}
 	}
 
 	protected boolean shouldBurnInDay() {

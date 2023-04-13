@@ -3,7 +3,6 @@ package mod.azure.doom.entity.tierfodder;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
@@ -11,6 +10,7 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -46,7 +46,7 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
-public class ImpStoneEntity extends DemonEntity implements GeoEntity, SmartBrainOwner<ImpStoneEntity> {
+public class ImpStoneEntity extends DemonEntity implements SmartBrainOwner<ImpStoneEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -60,8 +60,8 @@ public class ImpStoneEntity extends DemonEntity implements GeoEntity, SmartBrain
 			if (event.isMoving() || (isAggressive() && !(dead || getHealth() < 0.01 || isDeadOrDying())))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("spinning"));
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+				return event.setAndContinue(DoomAnimationsDefault.DEATH);
+			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}));
 	}
 
@@ -81,7 +81,7 @@ public class ImpStoneEntity extends DemonEntity implements GeoEntity, SmartBrain
 
 	@Override
 	public void aiStep() {
-		if (level.isClientSide && (isAggressive() || !(walkAnimation.speed() > -0.15F && walkAnimation.speed() < 0.15F))) 
+		if (level.isClientSide && (isAggressive() || !(walkAnimation.speed() > -0.15F && walkAnimation.speed() < 0.15F)))
 			level.addParticle(ParticleTypes.SOUL_FIRE_FLAME, getRandomX(0.2D), getRandomY(), getRandomZ(0.5D), 0.0D, 0D, 0D);
 		super.aiStep();
 	}

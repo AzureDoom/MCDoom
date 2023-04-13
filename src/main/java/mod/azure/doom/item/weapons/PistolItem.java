@@ -8,6 +8,7 @@ import io.netty.buffer.Unpooled;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.animatable.client.RenderProvider;
+import mod.azure.azurelib.items.BaseGunItem;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.client.render.weapons.PistolRender;
@@ -52,21 +53,26 @@ public class PistolItem extends DoomBaseItem {
 			if (stack.getDamageValue() < stack.getMaxDamage() - 1) {
 				playerentity.getCooldowns().addCooldown(this, 5);
 				if (!worldIn.isClientSide) {
-					final BulletEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 1.0F * 3.0F, 1.0F);
-					abstractarrowentity.setParticle(1);
-					abstractarrowentity.isNoGravity();
-
+					var result = BaseGunItem.hitscanTrace(playerentity, 64, 1.0F);
+					var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+					if (result != null) {
+						if (result.getEntity()instanceof LivingEntity livingEntity)
+							livingEntity.hurt(playerentity.damageSources().playerAttack(playerentity), DoomConfig.bullet_damage + enchantlevel * 2.0F);
+					} else {
+						final var bullet = createArrow(worldIn, stack, playerentity);
+						bullet.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 1.0F * 3.0F, 1.0F);
+						bullet.setParticle(1);
+						bullet.isNoGravity();
+						worldIn.addFreshEntity(bullet);
+					}
 					stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
-					worldIn.addFreshEntity(abstractarrowentity);
 					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), DoomSounds.PISTOL_HIT, SoundSource.PLAYERS, 1.0F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 					triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn), "shoot_controller", "firing");
 				}
-				final boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
+				final var isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
 				spawnLightSource(entityLiving, isInsideWaterBlock);
-			} else {
+			} else
 				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), DoomSounds.EMPTY, SoundSource.PLAYERS, 1.0F, 1.5F);
-			}
 		}
 	}
 
@@ -83,37 +89,34 @@ public class PistolItem extends DoomBaseItem {
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		if (world.isClientSide) {
+		if (world.isClientSide)
 			if (((Player) entity).getMainHandItem().getItem() instanceof PistolItem && ClientInit.reload.consumeClick() && selected) {
-				final FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
+				final var passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.PISTOL, passedData);
 			}
-		}
 	}
 
 	public BulletEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		final float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		final BulletEntity arrowentity = new BulletEntity(worldIn, shooter, DoomConfig.bullet_damage + j * 2.0F);
-		return arrowentity;
+		final var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		final var bullet = new BulletEntity(worldIn, shooter, DoomConfig.bullet_damage + enchantlevel * 2.0F);
+		return bullet;
 	}
 
 	public static float getArrowVelocity(int charge) {
-		float f = charge / 20.0F;
+		var f = charge / 20.0F;
 		f = (f * f + f * 2.0F) / 3.0F;
-		if (f > 1.0F) {
+		if (f > 1.0F)
 			f = 1.0F;
-		}
 
 		return f;
 	}
 
 	public static float getPullProgress(int useTicks) {
-		float f = useTicks / 20.0F;
+		var f = useTicks / 20.0F;
 		f = (f * f + f * 2.0F) / 3.0F;
-		if (f > 1.0F) {
+		if (f > 1.0F)
 			f = 1.0F;
-		}
 
 		return f;
 	}
@@ -121,11 +124,13 @@ public class PistolItem extends DoomBaseItem {
 	@Override
 	public void createRenderer(Consumer<Object> consumer) {
 		consumer.accept(new RenderProvider() {
-			private final PistolRender renderer = new PistolRender();
+			private PistolRender renderer = null;
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return renderer;
+				if (renderer == null)
+					return new PistolRender();
+				return this.renderer;
 			}
 		});
 	}

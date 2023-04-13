@@ -32,8 +32,8 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
 	private LivingEntity shooter;
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-	public GladiatorMaceEntity(EntityType<? extends GladiatorMaceEntity> p_i50160_1_, Level p_i50160_2_) {
-		super(p_i50160_1_, p_i50160_2_);
+	public GladiatorMaceEntity(EntityType<? extends GladiatorMaceEntity> entity, Level level) {
+		super(entity, level);
 	}
 
 	public GladiatorMaceEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ) {

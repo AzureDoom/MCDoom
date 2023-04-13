@@ -8,6 +8,7 @@ import io.netty.buffer.Unpooled;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.animatable.client.RenderProvider;
+import mod.azure.azurelib.items.BaseGunItem;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.client.render.weapons.DSGRender;
@@ -54,18 +55,24 @@ public class DShotgun extends DoomBaseItem {
 			if (stack.getDamageValue() < stack.getMaxDamage() - 1) {
 				playerentity.getCooldowns().addCooldown(this, 10);
 				if (!worldIn.isClientSide) {
-					final ShotgunShellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 1.0F * 3.0F, 1.0F);
+					var result = BaseGunItem.hitscanTrace(playerentity, 64, 1.0F);
+					var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+					if (result != null) {
+						if (result.getEntity()instanceof LivingEntity livingEntity)
+							livingEntity.hurt(playerentity.damageSources().playerAttack(playerentity), DoomConfig.shotgun_damage + enchantlevel * 2.0F);
+					} else {
+						final var shell = createArrow(worldIn, stack, playerentity);
+						shell.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 1.0F * 3.0F, 1.0F);
+						worldIn.addFreshEntity(shell);
+					}
 					stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
-					worldIn.addFreshEntity(abstractarrowentity);
 					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), DoomSounds.SHOTGUN_SHOOT, SoundSource.PLAYERS, 1.0F, 1.5F);
 					triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn), "shoot_controller", "firing");
 				}
-				final boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
+				final var isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
 				spawnLightSource(entityLiving, isInsideWaterBlock);
-			} else {
+			} else
 				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), DoomSounds.EMPTY, SoundSource.PLAYERS, 1.0F, 1.5F);
-			}
 		}
 	}
 
@@ -82,19 +89,18 @@ public class DShotgun extends DoomBaseItem {
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		if (world.isClientSide) {
+		if (world.isClientSide)
 			if (((Player) entity).getMainHandItem().getItem() instanceof DShotgun && ClientInit.reload.consumeClick() && selected) {
-				final FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
+				final var passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.DSG, passedData);
 			}
-		}
 	}
 
 	public ShotgunShellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		final float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		final ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter, DoomConfig.shotgun_damage + j * 2.0F);
-		return arrowentity;
+		final var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		final var shell = new ShotgunShellEntity(worldIn, shooter, DoomConfig.shotgun_damage + enchantlevel * 2.0F);
+		return shell;
 	}
 
 	@Override
@@ -107,11 +113,13 @@ public class DShotgun extends DoomBaseItem {
 	@Override
 	public void createRenderer(Consumer<Object> consumer) {
 		consumer.accept(new RenderProvider() {
-			private final DSGRender renderer = new DSGRender();
+			private DSGRender renderer = null;
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return renderer;
+				if (renderer == null)
+					return new DSGRender();
+				return this.renderer;
 			}
 		});
 	}

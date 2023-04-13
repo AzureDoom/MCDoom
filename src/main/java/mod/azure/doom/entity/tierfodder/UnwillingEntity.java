@@ -3,7 +3,6 @@ package mod.azure.doom.entity.tierfodder;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.Animation.LoopType;
@@ -12,6 +11,7 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -48,7 +48,7 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
-public class UnwillingEntity extends DemonEntity implements GeoEntity, SmartBrainOwner<UnwillingEntity> {
+public class UnwillingEntity extends DemonEntity implements SmartBrainOwner<UnwillingEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -61,12 +61,12 @@ public class UnwillingEntity extends DemonEntity implements GeoEntity, SmartBrai
 		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			if (isDead)
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death2"));
+				return event.setAndContinue(DoomAnimationsDefault.DEATH2);
 			if (event.isMoving() && (!isDead || !this.swinging))
-				return event.setAndContinue(RawAnimation.begin().thenLoop("walk"));
+				return event.setAndContinue(DoomAnimationsDefault.WALK);
 			if (this.swinging && !isDead)
 				return event.setAndContinue(RawAnimation.begin().then("attack", LoopType.PLAY_ONCE));
-			return event.setAndContinue(isDead ? RawAnimation.begin().thenPlayAndHold("death2") : RawAnimation.begin().thenLoop("idle"));
+			return event.setAndContinue(isDead ? DoomAnimationsDefault.DEATH2 : DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
 				if (level.isClientSide())

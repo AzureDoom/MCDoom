@@ -1,31 +1,42 @@
 package mod.azure.doom.entity.tierboss;
 
+import java.util.List;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
-import mod.azure.doom.entity.attack.AbstractRangedAttack;
-import mod.azure.doom.entity.attack.AttackSound;
-import mod.azure.doom.entity.projectiles.entity.EnergyCellMobEntity;
+import mod.azure.doom.entity.DoomAnimationsDefault;
+import mod.azure.doom.entity.task.DemonProjectileAttack;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.ai.Brain;
+import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.StrafeTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
 public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 
@@ -34,60 +45,53 @@ public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 	}
 
 	@Override
-	protected void registerGoals() {
-		goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		goalSelector.addGoal(6, new RandomLookAroundGoal(this));
-		goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		goalSelector.addGoal(4, new RangedStrafeAttackGoal(this, new SpiderMastermind2016Entity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.2, 0.8).setDamage(DoomConfig.spider_mastermind_ranged_damage), 1.0D, 20, 30, 15, 15F, 1));
-		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
-		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
-		targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
-	}
-
-	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
+		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving())
-				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			if (dead || getHealth() < 0.01 || isDeadOrDying())
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+			if (event.isMoving() && !isDead && !this.swinging)
+				return event.setAndContinue(DoomAnimationsDefault.WALKING);
+			if (this.swinging && !isDead)
+				return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
+			return event.setAndContinue(isDead ? DoomAnimationsDefault.DEATH : DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (level.isClientSide)
+				if (level.isClientSide())
 					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.SPIDERDEMON_AMBIENT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
-			return PlayState.STOP;
-		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("attack"))
-				if (level.isClientSide)
+				if (level.isClientSide())
 					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PLASMA_FIRING, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		}));
 	}
 
-	public class FireballAttack extends AbstractRangedAttack {
+	@Override
+	protected void customServerAiStep() {
+		tickBrain(this);
+		super.customServerAiStep();
+	}
 
-		public FireballAttack(DemonEntity parentEntity, double xOffSetModifier, double entityHeightFraction, double zOffSetModifier, float damage) {
-			super(parentEntity, xOffSetModifier, entityHeightFraction, zOffSetModifier, damage);
-		}
+	@Override
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
 
-		public FireballAttack(DemonEntity parentEntity) {
-			super(parentEntity);
-		}
+	@Override
+	public List<ExtendedSensor<SpiderMastermindEntity>> getSensors() {
+		return ObjectArrayList.of(new NearbyLivingEntitySensor<SpiderMastermindEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<SpiderMastermindEntity>());
+	}
 
-		@Override
-		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(DoomSounds.PLASMA_FIRING, 1, 1);
-		}
+	@Override
+	public BrainActivityGroup<SpiderMastermindEntity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new StrafeTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
+	}
 
-		@Override
-		public Projectile getProjectile(Level world, double d2, double d3, double d4) {
-			return new EnergyCellMobEntity(world, parentEntity, d2, d3, d4, damage);
+	@Override
+	public BrainActivityGroup<SpiderMastermindEntity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<SpiderMastermindEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+	}
 
-		}
+	@Override
+	public BrainActivityGroup<SpiderMastermindEntity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 40), new AnimatableMeleeAttack<>(20));
 	}
 
 	@Override

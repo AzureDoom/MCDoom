@@ -78,10 +78,10 @@ public class SentinelHammerItem extends SwordItem implements GeoItem {
 		if (miner instanceof Player playerentity) {
 			if (stack.getDamageValue() < stack.getMaxDamage() - 1) {
 				if (playerentity.getMainHandItem().getItem() instanceof SentinelHammerItem) {
-					final AABB aabb = new AABB(miner.blockPosition().above()).inflate(5D, 5D, 5D);
+					final var aabb = new AABB(miner.blockPosition().above()).inflate(5D, 5D, 5D);
 					miner.getCommandSenderWorld().getEntities(miner, aabb).forEach(e -> doDamage(playerentity, e));
 					stack.hurtAndBreak(1, miner, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
-					final AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(miner.level, miner.getX(), playerentity.getY(), playerentity.getZ());
+					final var areaeffectcloudentity = new AreaEffectCloud(miner.level, miner.getX(), playerentity.getY(), playerentity.getZ());
 					areaeffectcloudentity.setParticle(ParticleTypes.CRIT);
 					areaeffectcloudentity.setRadius(5.0F);
 					areaeffectcloudentity.setDuration(20);
@@ -95,14 +95,13 @@ public class SentinelHammerItem extends SwordItem implements GeoItem {
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		final Player playerentity = (Player) entity;
-		if (world.isClientSide) {
+		final var playerentity = (Player) entity;
+		if (world.isClientSide) 
 			if (playerentity.getMainHandItem().getItem() instanceof SentinelHammerItem && ClientInit.reload.consumeClick() && selected) {
-				final FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
+				final var passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.SENTINELHAMMER, passedData);
 			}
-		}
 	}
 
 	public static void reload(Player user, InteractionHand hand) {
@@ -117,12 +116,12 @@ public class SentinelHammerItem extends SwordItem implements GeoItem {
 
 	public static void removeAmmo(Item ammo, Player Player) {
 		if (!Player.isCreative()) {
-			for (final ItemStack item : Player.getInventory().offhand) {
+			for (final var item : Player.getInventory().offhand) {
 				if (item.getItem() == ammo) {
 					item.shrink(1);
 					break;
 				}
-				for (final ItemStack item1 : Player.getInventory().items) {
+				for (final var item1 : Player.getInventory().items) {
 					if (item1.getItem() == ammo) {
 						item1.shrink(1);
 						break;
@@ -140,11 +139,13 @@ public class SentinelHammerItem extends SwordItem implements GeoItem {
 	@Override
 	public void createRenderer(Consumer<Object> consumer) {
 		consumer.accept(new RenderProvider() {
-			private final SentinelHammerRender renderer = new SentinelHammerRender();
+			private SentinelHammerRender renderer = null;
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return renderer;
+				if (renderer == null)
+					return new SentinelHammerRender();
+				return this.renderer;
 			}
 		});
 	}

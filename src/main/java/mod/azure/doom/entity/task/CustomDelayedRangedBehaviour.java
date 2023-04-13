@@ -3,17 +3,17 @@ package mod.azure.doom.entity.task;
 import java.util.function.Consumer;
 
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.tierheavy.MancubusEntity;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
-public abstract class CustomDelayedBehaviour<E extends DemonEntity> extends ExtendedBehaviour<E> {
+public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extends ExtendedBehaviour<E> {
 	protected final int delayTime;
 	protected long delayFinishedAt = 0;
 	protected Consumer<E> delayedCallback = entity -> {
 	};
 
-	public CustomDelayedBehaviour(int delayTicks) {
+	public CustomDelayedRangedBehaviour(int delayTicks) {
 		this.delayTime = delayTicks;
 
 		runFor(entity -> Math.max(delayTicks, 60));
@@ -25,7 +25,7 @@ public abstract class CustomDelayedBehaviour<E extends DemonEntity> extends Exte
 	 * @param callback The callback
 	 * @return this
 	 */
-	public final CustomDelayedBehaviour<E> whenActivating(Consumer<E> callback) {
+	public final CustomDelayedRangedBehaviour<E> whenActivating(Consumer<E> callback) {
 		this.delayedCallback = callback;
 
 		return this;
@@ -40,6 +40,10 @@ public abstract class CustomDelayedBehaviour<E extends DemonEntity> extends Exte
 			super.start(level, entity, gameTime);
 			doDelayedAction(entity);
 		}
+		if (entity instanceof MancubusEntity mancubusEntity)
+			mancubusEntity.setAttackingState(2);
+		else 
+			entity.setAttackingState(1);
 	}
 
 	@Override
@@ -47,6 +51,7 @@ public abstract class CustomDelayedBehaviour<E extends DemonEntity> extends Exte
 		super.stop(level, entity, gameTime);
 
 		this.delayFinishedAt = 0;
+		entity.setAttackingState(0);
 	}
 
 	@Override
@@ -58,7 +63,6 @@ public abstract class CustomDelayedBehaviour<E extends DemonEntity> extends Exte
 	protected final void tick(ServerLevel level, E entity, long gameTime) {
 		super.tick(level, entity, gameTime);
 
-		entity.swing(InteractionHand.MAIN_HAND);
 		if (this.delayFinishedAt <= gameTime) {
 			doDelayedAction(entity);
 			this.delayedCallback.accept(entity);

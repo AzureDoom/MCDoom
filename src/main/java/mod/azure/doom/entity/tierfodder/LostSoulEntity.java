@@ -3,15 +3,15 @@ package mod.azure.doom.entity.tierfodder;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.DemonFlyControl;
+import mod.azure.doom.entity.DoomAnimationsDefault;
+import mod.azure.doom.entity.ai.DemonFloatControl;
+import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -22,8 +22,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -63,7 +61,7 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
-public class LostSoulEntity extends DemonEntity implements GeoEntity, SmartBrainOwner<LostSoulEntity> {
+public class LostSoulEntity extends DemonEntity implements SmartBrainOwner<LostSoulEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(LostSoulEntity.class, EntityDataSerializers.INT);
@@ -73,15 +71,15 @@ public class LostSoulEntity extends DemonEntity implements GeoEntity, SmartBrain
 	public LostSoulEntity(EntityType<? extends LostSoulEntity> type, Level world) {
 		super(type, world);
 		setMaxUpStep(4.0F);
-		moveControl = new DemonFlyControl(this);
+		moveControl = new DemonFloatControl(this);
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			if (event.isMoving() || this.swinging)
-				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+				return event.setAndContinue(DoomAnimationsDefault.WALKING);
+			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}));
 	}
 
@@ -133,20 +131,6 @@ public class LostSoulEntity extends DemonEntity implements GeoEntity, SmartBrain
 	}
 
 	@Override
-	public void tick() {
-		super.tick();
-		if (this.isScreaming())
-			this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 7, 100, false, false));
-		if (this.isScreaming() && !this.isDeadOrDying()) {
-			screamingCounter++;
-			if (screamingCounter >= 28) {
-				screamingCounter = 0;
-				this.setScreamingStatus(false);
-			}
-		}
-	}
-
-	@Override
 	protected void customServerAiStep() {
 		tickBrain(this);
 		super.customServerAiStep();
@@ -175,6 +159,11 @@ public class LostSoulEntity extends DemonEntity implements GeoEntity, SmartBrain
 	@Override
 	public BrainActivityGroup<LostSoulEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(3.4F), new AnimatableMeleeAttack<>(0));
+	}
+
+	@Override
+	protected void registerGoals() {
+		goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 	}
 
 	@Override
@@ -229,11 +218,11 @@ public class LostSoulEntity extends DemonEntity implements GeoEntity, SmartBrain
 		} else {
 			final var ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
 			var f = 0.91F;
-			if (onGround) 
+			if (onGround)
 				f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
 			final var f1 = 0.16277137F / (f * f * f);
 			f = 0.91F;
-			if (onGround) 
+			if (onGround)
 				f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
 			moveRelative(onGround ? 0.1F * f1 : 0.02F, movementInput);
 			move(MoverType.SELF, getDeltaMovement());

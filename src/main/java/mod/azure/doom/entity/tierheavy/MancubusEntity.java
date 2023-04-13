@@ -1,8 +1,9 @@
 package mod.azure.doom.entity.tierheavy;
 
+import java.util.List;
 import java.util.SplittableRandom;
 
-import mod.azure.azurelib.animatable.GeoEntity;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.Animation.LoopType;
@@ -12,11 +13,10 @@ import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.MancubusFireAttackGoal;
-import mod.azure.doom.entity.attack.AbstractRangedAttack;
-import mod.azure.doom.entity.attack.AttackSound;
+import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
-import mod.azure.doom.entity.projectiles.entity.FireProjectile;
+import mod.azure.doom.entity.task.DemonMeleeAttack;
+import mod.azure.doom.entity.task.DemonProjectileAttack;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,23 +36,36 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.StrafeTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
-public class MancubusEntity extends DemonEntity implements GeoEntity {
+public class MancubusEntity extends DemonEntity implements SmartBrainOwner<MancubusEntity> {
 
 	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(MancubusEntity.class, EntityDataSerializers.INT);
 	private int attackTimer;
@@ -66,10 +79,10 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			if (event.isMoving())
-				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
+				return event.setAndContinue(DoomAnimationsDefault.WALKING);
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+				return event.setAndContinue(DoomAnimationsDefault.DEATH);
+			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
 				if (level.isClientSide())
@@ -78,8 +91,6 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 				if (level.isClientSide())
 					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.MANCUBUS_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
 			if (entityData.get(STATE) == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("firing", LoopType.PLAY_ONCE));
 			if (entityData.get(STATE) == 3 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
@@ -110,42 +121,38 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
+	protected void customServerAiStep() {
+		tickBrain(this);
+		super.customServerAiStep();
+	}
+
+	@Override
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
+
+	@Override
+	public List<ExtendedSensor<MancubusEntity>> getSensors() {
+		return ObjectArrayList.of(new NearbyLivingEntitySensor<MancubusEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<MancubusEntity>());
+	}
+
+	@Override
+	public BrainActivityGroup<MancubusEntity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new StrafeTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
+	}
+
+	@Override
+	public BrainActivityGroup<MancubusEntity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<MancubusEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.8f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+	}
+
+	@Override
+	public BrainActivityGroup<MancubusEntity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(0.85F), new DemonProjectileAttack<>(7).attackInterval(mob -> 120), new DemonMeleeAttack<>(20));
+	}
+
+	@Override
 	protected void registerGoals() {
-		goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
-		goalSelector.addGoal(8, new LookAtPlayerGoal(this, IronGolem.class, 8.0F));
-		goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		applyEntityAI();
-	}
-
-	protected void applyEntityAI() {
-		goalSelector.addGoal(4, new MancubusFireAttackGoal(this, new FireballAttack(this).setProjectileOriginOffset(0.1, 0.5, 0.1).setDamage(DoomConfig.mancubus_ranged_damage)));
-		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
-		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
-		targetSelector.addGoal(3, new HurtByTargetGoal(this).setAlertOthers());
-	}
-
-	public class FireballAttack extends AbstractRangedAttack {
-
-		public FireballAttack(MancubusEntity parentEntity, double xOffSetModifier, double entityHeightFraction, double zOffSetModifier, float damage) {
-			super(parentEntity, xOffSetModifier, entityHeightFraction, zOffSetModifier, damage);
-		}
-
-		public FireballAttack(MancubusEntity parentEntity) {
-			super(parentEntity);
-		}
-
-		@Override
-		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(SoundEvents.CAMPFIRE_CRACKLE, 1, 1);
-		}
-
-		@Override
-		public Projectile getProjectile(Level world, double d2, double d3, double d4) {
-			return new FireProjectile(world, parentEntity, d2, d3, d4, damage);
-
-		}
 	}
 
 	@Override
@@ -156,19 +163,18 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 	}
 
 	public void spawnFlames(double x, double z, double maxY, double y, float yaw, int warmup) {
-		BlockPos blockpos = BlockPos.containing(x, y, z);
-		boolean flag = false;
-		double d0 = 0.0D;
+		var blockpos = BlockPos.containing(x, y, z);
+		var flag = false;
+		var d0 = 0.0D;
 		do {
-			final BlockPos blockpos1 = blockpos.below();
-			final BlockState blockstate = level.getBlockState(blockpos1);
+			final var blockpos1 = blockpos.below();
+			final var blockstate = level.getBlockState(blockpos1);
 			if (blockstate.isFaceSturdy(level, blockpos1, Direction.UP)) {
 				if (!level.isEmptyBlock(blockpos)) {
-					final BlockState blockstate1 = level.getBlockState(blockpos);
-					final VoxelShape voxelshape = blockstate1.getCollisionShape(level, blockpos);
-					if (!voxelshape.isEmpty()) {
+					final var blockstate1 = level.getBlockState(blockpos);
+					final var voxelshape = blockstate1.getCollisionShape(level, blockpos);
+					if (!voxelshape.isEmpty())
 						d0 = voxelshape.max(Direction.Axis.Y);
-					}
 				}
 				flag = true;
 				break;
@@ -177,7 +183,7 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
-			final DoomFireEntity fang = new DoomFireEntity(level, x, blockpos.getY() + d0, z, yaw, 1, this, DoomConfig.mancubus_ranged_damage);
+			final var fang = new DoomFireEntity(level, x, blockpos.getY() + d0, z, yaw, 1, this, DoomConfig.mancubus_ranged_damage);
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
 			level.addFreshEntity(fang);
@@ -253,8 +259,8 @@ public class MancubusEntity extends DemonEntity implements GeoEntity {
 	@Override
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-		final SplittableRandom random = new SplittableRandom();
-		final int var = random.nextInt(0, 6);
+		final var random = new SplittableRandom();
+		final var var = random.nextInt(0, 6);
 		setVariant(var);
 		return spawnDataIn;
 	}

@@ -63,7 +63,7 @@ public class DarkLordCrucibleItem extends SwordItem implements GeoItem {
 		if (miner instanceof Player playerentity) {
 			if (stack.getDamageValue() < stack.getMaxDamage() - 1) {
 				if (playerentity.getMainHandItem().getItem() instanceof DarkLordCrucibleItem) {
-					final AABB aabb = new AABB(miner.blockPosition().above()).inflate(4D, 1D, 4D);
+					final var aabb = new AABB(miner.blockPosition().above()).inflate(4D, 1D, 4D);
 					miner.getCommandSenderWorld().getEntities(miner, aabb).forEach(e -> doDamage(playerentity, e));
 					stack.hurtAndBreak(1, miner, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
 				}
@@ -110,7 +110,7 @@ public class DarkLordCrucibleItem extends SwordItem implements GeoItem {
 		final Player playerentity = (Player) entity;
 		if (world.isClientSide)
 			if (playerentity.getMainHandItem().getItem() instanceof DarkLordCrucibleItem && ClientInit.reload.consumeClick() && selected) {
-				final FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
+				final var passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.DARKLORDCRUCIBLE, passedData);
 			}
@@ -123,12 +123,12 @@ public class DarkLordCrucibleItem extends SwordItem implements GeoItem {
 
 	public static void removeAmmo(Item ammo, Player playerEntity) {
 		if (!playerEntity.isCreative()) {
-			for (final ItemStack item : playerEntity.getInventory().offhand) {
+			for (final var item : playerEntity.getInventory().offhand) {
 				if (item.getItem() == ammo) {
 					item.shrink(1);
 					break;
 				}
-				for (final ItemStack item1 : playerEntity.getInventory().items) {
+				for (final var item1 : playerEntity.getInventory().items) {
 					if (item1.getItem() == ammo) {
 						item1.shrink(1);
 						break;
@@ -151,11 +151,13 @@ public class DarkLordCrucibleItem extends SwordItem implements GeoItem {
 	@Override
 	public void createRenderer(Consumer<Object> consumer) {
 		consumer.accept(new RenderProvider() {
-			private final DarkLordCrucibleRender renderer = new DarkLordCrucibleRender();
+			private DarkLordCrucibleRender renderer = null;
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return renderer;
+				if (renderer == null)
+					return new DarkLordCrucibleRender();
+				return this.renderer;
 			}
 		});
 	}

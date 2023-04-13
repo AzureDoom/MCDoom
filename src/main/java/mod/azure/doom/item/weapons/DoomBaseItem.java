@@ -24,8 +24,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class DoomBaseItem extends Item implements GeoItem {
 
@@ -50,12 +48,12 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 
 	public static void removeAmmo(Item ammo, Player playerEntity) {
 		if (!playerEntity.isCreative()) {
-			for (final ItemStack item : playerEntity.getInventory().offhand) {
+			for (final var item : playerEntity.getInventory().offhand) {
 				if (item.getItem() == ammo) {
 					item.shrink(1);
 					break;
 				}
-				for (final ItemStack item1 : playerEntity.getInventory().items) {
+				for (final var item1 : playerEntity.getInventory().items) {
 					if (item1.getItem() == ammo) {
 						item1.shrink(1);
 						break;
@@ -67,7 +65,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
-		final ItemStack itemStack = user.getItemInHand(hand);
+		final var itemStack = user.getItemInHand(hand);
 		user.startUsingItem(hand);
 		return InteractionResultHolder.consume(itemStack);
 	}
@@ -90,10 +88,10 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 				return;
 			entity.level.setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
 		} else if (checkDistance(lightBlockPos, entity.blockPosition(), 2)) {
-			final BlockEntity blockEntity = entity.level.getBlockEntity(lightBlockPos);
-			if (blockEntity instanceof TickingLightEntity) {
+			final var blockEntity = entity.level.getBlockEntity(lightBlockPos);
+			if (blockEntity instanceof TickingLightEntity)
 				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
-			} else
+			else
 				lightBlockPos = null;
 		} else
 			lightBlockPos = null;
@@ -107,17 +105,17 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 		if (blockPos == null)
 			return null;
 
-		final int[] offsets = new int[maxDistance * 2 + 1];
+		final var offsets = new int[maxDistance * 2 + 1];
 		offsets[0] = 0;
-		for (int i = 2; i <= maxDistance * 2; i += 2) {
+		for (var i = 2; i <= maxDistance * 2; i += 2) {
 			offsets[i - 1] = i / 2;
 			offsets[i] = -i / 2;
 		}
-		for (final int x : offsets)
-			for (final int y : offsets)
-				for (final int z : offsets) {
-					final BlockPos offsetPos = blockPos.offset(x, y, z);
-					final BlockState state = world.getBlockState(offsetPos);
+		for (final var x : offsets)
+			for (final var y : offsets)
+				for (final var z : offsets) {
+					final var offsetPos = blockPos.offset(x, y, z);
+					final var state = world.getBlockState(offsetPos);
 					if (state.isAir() || state.getBlock().equals(AzureLibMod.TICKING_LIGHT_BLOCK))
 						return offsetPos;
 				}

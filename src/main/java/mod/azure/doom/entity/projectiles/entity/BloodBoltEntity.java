@@ -32,13 +32,8 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
 	private float directHitDamage = 2;
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-	public BloodBoltEntity(EntityType<BloodBoltEntity> p_i50160_1_, Level p_i50160_2_) {
-		super(p_i50160_1_, p_i50160_2_);
-	}
-
-	@Override
-	public boolean displayFireAnimation() {
-		return false;
+	public BloodBoltEntity(EntityType<BloodBoltEntity> entity, Level level) {
+		super(entity, level);
 	}
 
 	public BloodBoltEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, float directHitDamage) {
@@ -147,6 +142,11 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
 		super.tick();
 		if (tickCount >= 80)
 			remove(Entity.RemovalReason.DISCARDED);
+	}
+	
+	@Override
+	public boolean displayFireAnimation() {
+		return false;
 	}
 
 }

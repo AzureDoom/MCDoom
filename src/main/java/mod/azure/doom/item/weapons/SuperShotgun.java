@@ -7,6 +7,7 @@ import io.netty.buffer.Unpooled;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.animatable.client.RenderProvider;
+import mod.azure.azurelib.items.BaseGunItem;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.client.render.weapons.SSGRender;
@@ -54,13 +55,25 @@ public class SuperShotgun extends DoomBaseItem {
 				if (playerentity.getMainHandItem().getItem() instanceof SuperShotgun) {
 					playerentity.getCooldowns().addCooldown(this, 24);
 					if (!worldIn.isClientSide) {
-						final ShotgunShellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-						abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot() + 1, 0.0F, 1.0F * 3.0F, 1.0F);
-						worldIn.addFreshEntity(abstractarrowentity);
-						final ShotgunShellEntity abstractarrowentity1 = createArrow(worldIn, stack, playerentity);
-						abstractarrowentity1.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot() - 1, 0.0F, 1.0F * 3.0F, 1.0F);
-						worldIn.addFreshEntity(abstractarrowentity1);
-
+						var result = BaseGunItem.hitscanTrace(playerentity, 64, 1.0F);
+						var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+						if (result != null) {
+							if (result.getEntity()instanceof LivingEntity livingEntity) {
+								livingEntity.invulnerableTime = 0;
+								livingEntity.setDeltaMovement(0, 0, 0);
+								livingEntity.hurt(playerentity.damageSources().playerAttack(playerentity), DoomConfig.shotgun_damage + enchantlevel * 2.0F);
+								livingEntity.invulnerableTime = 0;
+								livingEntity.setDeltaMovement(0, 0, 0);
+								livingEntity.hurt(playerentity.damageSources().playerAttack(playerentity), DoomConfig.shotgun_damage + enchantlevel * 2.0F);
+							}
+						} else {
+							final var abstractarrowentity = createArrow(worldIn, stack, playerentity);
+							abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot() + 1, 0.0F, 1.0F * 3.0F, 1.0F);
+							worldIn.addFreshEntity(abstractarrowentity);
+							final var abstractarrowentity1 = createArrow(worldIn, stack, playerentity);
+							abstractarrowentity1.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot() - 1, 0.0F, 1.0F * 3.0F, 1.0F);
+							worldIn.addFreshEntity(abstractarrowentity1);
+						}
 						stack.hurtAndBreak(2, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
 						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), DoomSounds.SUPER_SHOTGUN_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F);
 						triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn), "shoot_controller", "firing");
@@ -79,7 +92,7 @@ public class SuperShotgun extends DoomBaseItem {
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
 		if (world.isClientSide)
 			if (ClientInit.reload.consumeClick() && selected) {
-				final FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
+				final var passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.SUPERSHOTGUN, passedData);
 			}
@@ -89,12 +102,12 @@ public class SuperShotgun extends DoomBaseItem {
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-		final ItemStack stack = player.getOffhandItem();
+		final var stack = player.getOffhandItem();
 		if (stack.getDamageValue() < stack.getMaxDamage() - 2) {
 			if (!world.isClientSide() && stack.getItem() instanceof SuperShotgun) {
 				player.getCooldowns().addCooldown(this, 5);
 				if (!((PlayerProperties) player).hasMeatHook()) {
-					final MeatHookEntity hookshot = new MeatHookEntity(world, player);
+					final var hookshot = new MeatHookEntity(world, player);
 					hookshot.setProperties(stack, DoomConfig.max_meathook_distance, 10, player.getXRot(), player.getYRot(), 0f, 1.5f * (10 / 10));
 					hookshot.getEntityData().set(MeatHookEntity.FORCED_YAW, player.getYRot());
 					world.addFreshEntity(hookshot);
@@ -112,11 +125,10 @@ public class SuperShotgun extends DoomBaseItem {
 	}
 
 	public static float getArrowVelocity(int charge) {
-		float f = charge / 20.0F;
+		var f = charge / 20.0F;
 		f = (f * f + f * 2.0F) / 3.0F;
-		if (f > 1.0F) {
+		if (f > 1.0F)
 			f = 1.0F;
-		}
 
 		return f;
 	}
@@ -132,17 +144,16 @@ public class SuperShotgun extends DoomBaseItem {
 	}
 
 	public ShotgunShellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		final float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		final ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter, DoomConfig.shotgun_damage + j * 2.0F);
-		return arrowentity;
+		final var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		final var shell = new ShotgunShellEntity(worldIn, shooter, DoomConfig.shotgun_damage + enchantlevel * 2.0F);
+		return shell;
 	}
 
 	public static float getPullProgress(int useTicks) {
-		float f = useTicks / 20.0F;
+		var f = useTicks / 20.0F;
 		f = (f * f + f * 2.0F) / 3.0F;
-		if (f > 1.0F) {
+		if (f > 1.0F)
 			f = 1.0F;
-		}
 
 		return f;
 	}
@@ -150,11 +161,13 @@ public class SuperShotgun extends DoomBaseItem {
 	@Override
 	public void createRenderer(Consumer<Object> consumer) {
 		consumer.accept(new RenderProvider() {
-			private final SSGRender renderer = new SSGRender();
+			private SSGRender renderer = null;
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return renderer;
+				if (renderer == null)
+					return new SSGRender();
+				return this.renderer;
 			}
 		});
 	}

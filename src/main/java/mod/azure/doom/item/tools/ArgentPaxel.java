@@ -10,7 +10,6 @@ import com.google.common.collect.Maps;
 
 import mod.azure.doom.util.enums.DoomTier;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -19,7 +18,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -65,34 +63,31 @@ public class ArgentPaxel extends DiggerItem {
 
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
-		final Level world = context.getLevel();
-		final BlockPos blockPos = context.getClickedPos();
-		final Player player = context.getPlayer();
-		final BlockState blockstate = world.getBlockState(blockPos);
+		final var world = context.getLevel();
+		final var blockPos = context.getClickedPos();
+		final var player = context.getPlayer();
+		final var blockstate = world.getBlockState(blockPos);
 		BlockState resultToSet = null;
-		final Block strippedResult = BLOCK_STRIPPING_MAP.get(blockstate.getBlock());
+		final var strippedResult = BLOCK_STRIPPING_MAP.get(blockstate.getBlock());
 		if (strippedResult != null) {
 			world.playSound(player, blockPos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
 			resultToSet = strippedResult.defaultBlockState().setValue(RotatedPillarBlock.AXIS, blockstate.getValue(RotatedPillarBlock.AXIS));
 		} else if (context.getClickedFace() != Direction.DOWN) {
-			final BlockState foundResult = SHOVEL_LOOKUP.get(blockstate.getBlock());
+			final var foundResult = SHOVEL_LOOKUP.get(blockstate.getBlock());
 			if (foundResult != null && world.getBlockState(blockPos.above()).isAir()) {
 				world.playSound(player, blockPos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
 				resultToSet = foundResult;
-			} else if (blockstate.getBlock() instanceof CampfireBlock && blockstate.getValue(CampfireBlock.LIT)) {
+			} else if (blockstate.getBlock() instanceof CampfireBlock && blockstate.getValue(CampfireBlock.LIT))
 				resultToSet = blockstate.setValue(CampfireBlock.LIT, false);
-			}
 		}
-		if (resultToSet == null) {
+		if (resultToSet == null)
 			return InteractionResult.PASS;
-		}
 		if (!world.isClientSide()) {
 			world.setBlock(blockPos, resultToSet, 11);
-			if (player != null) {
+			if (player != null)
 				context.getItemInHand().hurtAndBreak(1, (LivingEntity) player, (Consumer<LivingEntity>) p -> {
 					p.broadcastBreakEvent(context.getHand());
 				});
-			}
 		}
 		return InteractionResult.SUCCESS;
 	}

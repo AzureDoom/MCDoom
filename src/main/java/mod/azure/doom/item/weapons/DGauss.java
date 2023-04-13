@@ -51,27 +51,26 @@ public class DGauss extends DoomBaseItem {
 			if (stack.getDamageValue() < stack.getMaxDamage() - 1) {
 				playerentity.getCooldowns().addCooldown(this, 17);
 				if (!worldIn.isClientSide) {
-					final ArgentBoltEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 1.0F, 1.0F);
+					final var bolt = createArrow(worldIn, stack, playerentity);
+					bolt.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 1.0F, 1.0F);
+					worldIn.addFreshEntity(bolt);
+
 					stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
-					worldIn.addFreshEntity(abstractarrowentity);
 					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), DoomSounds.BALLISTA_FIRING, SoundSource.PLAYERS, 1.0F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
 					triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn), "shoot_controller", "firing");
 				}
-				final boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
+				final var isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
 				spawnLightSource(entityLiving, isInsideWaterBlock);
-			} else {
+			} else
 				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), DoomSounds.EMPTY, SoundSource.PLAYERS, 1.0F, 1.5F);
-			}
 		}
 	}
 
 	public static float getArrowVelocity(int charge) {
-		float f = charge / 20.0F;
+		var f = charge / 20.0F;
 		f = (f * f + f * 2.0F) / 3.0F;
-		if (f > 1.0F) {
+		if (f > 1.0F)
 			f = 1.0F;
-		}
 
 		return f;
 	}
@@ -88,18 +87,17 @@ public class DGauss extends DoomBaseItem {
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		if (world.isClientSide) {
+		if (world.isClientSide)
 			if (((Player) entity).getMainHandItem().getItem() instanceof DGauss && ClientInit.reload.consumeClick() && selected) {
-				final FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
+				final var passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.DGAUSS, passedData);
 			}
-		}
 	}
 
 	public ArgentBoltEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		final ArgentBoltEntity arrowentity = new ArgentBoltEntity(worldIn, shooter);
-		return arrowentity;
+		final var bolt = new ArgentBoltEntity(worldIn, shooter);
+		return bolt;
 	}
 
 	@Override
@@ -112,11 +110,13 @@ public class DGauss extends DoomBaseItem {
 	@Override
 	public void createRenderer(Consumer<Object> consumer) {
 		consumer.accept(new RenderProvider() {
-			private final DGaussRender renderer = new DGaussRender();
+			private DGaussRender renderer = null;
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return renderer;
+				if (renderer == null)
+					return new DGaussRender();
+				return this.renderer;
 			}
 		});
 	}

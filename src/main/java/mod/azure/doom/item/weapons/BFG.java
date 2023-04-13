@@ -47,27 +47,26 @@ public class BFG extends DoomBaseItem {
 			if (stack.getDamageValue() < stack.getMaxDamage() - 1) {
 				playerentity.getCooldowns().addCooldown(this, 20);
 				if (!worldIn.isClientSide) {
-					final BFGEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 0.25F * 3.0F, 1.0F);
-					abstractarrowentity.isNoGravity();
+					final var bfg = createArrow(worldIn, stack, playerentity);
+					bfg.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 0.25F * 3.0F, 1.0F);
+					bfg.isNoGravity();
+					worldIn.addFreshEntity(bfg);
 
 					stack.hurtAndBreak(20, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
-					worldIn.addFreshEntity(abstractarrowentity);
 					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), DoomSounds.BFG_FIRING, SoundSource.PLAYERS, 1.0F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 					triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn), "shoot_controller", "firing");
 				}
-				final boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
+				final var isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
 				spawnLightSource(entityLiving, isInsideWaterBlock);
 			}
 		}
 	}
 
 	public static float getArrowVelocity(int charge) {
-		float f = charge / 20.0F;
+		var f = charge / 20.0F;
 		f = (f * f + f * 2.0F) / 3.0F;
-		if (f > 1.0F) {
+		if (f > 1.0F)
 			f = 1.0F;
-		}
 
 		return f;
 	}
@@ -84,18 +83,17 @@ public class BFG extends DoomBaseItem {
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		if (world.isClientSide) {
+		if (world.isClientSide)
 			if (((Player) entity).getMainHandItem().getItem() instanceof BFG && ClientInit.reload.consumeClick() && selected) {
-				final FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
+				final var passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.BFG, passedData);
 			}
-		}
 	}
 
 	public BFGEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		final BFGEntity arrowentity = new BFGEntity(worldIn, shooter);
-		return arrowentity;
+		final var bfg = new BFGEntity(worldIn, shooter);
+		return bfg;
 	}
 
 	public BFGEntity customeArrow(BFGEntity arrow) {
@@ -105,11 +103,13 @@ public class BFG extends DoomBaseItem {
 	@Override
 	public void createRenderer(Consumer<Object> consumer) {
 		consumer.accept(new RenderProvider() {
-			private final BFGRender renderer = new BFGRender();
+			private BFGRender renderer = null;
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return renderer;
+				if (renderer == null)
+					return new BFGRender();
+				return this.renderer;
 			}
 		});
 	}

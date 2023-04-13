@@ -30,9 +30,8 @@ public class InvisibleSphereItem extends Item {
 				livingEntityIn.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 1200, 1));
 				if (!playerentity.getAbilities().instabuild) {
 					stack.shrink(1);
-					if (stack.isEmpty()) {
+					if (stack.isEmpty())
 						playerentity.getInventory().removeItem(stack);
-					}
 				}
 			}
 		}
@@ -40,7 +39,7 @@ public class InvisibleSphereItem extends Item {
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
-		final ItemStack itemStack = user.getItemInHand(hand);
+		final var itemStack = user.getItemInHand(hand);
 		user.startUsingItem(hand);
 		return InteractionResultHolder.consume(itemStack);
 	}

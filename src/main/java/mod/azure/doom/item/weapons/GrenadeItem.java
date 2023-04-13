@@ -51,10 +51,10 @@ public class GrenadeItem extends Item implements GeoItem {
 		if (!user.getCooldowns().isOnCooldown(this)) {
 			user.getCooldowns().addCooldown(this, 25);
 			if (!world.isClientSide) {
-				final GrenadeEntity snowball = new GrenadeEntity(world, user);
-				snowball.shootFromRotation(user, user.getXRot(), user.getYRot(), 0.0F, 1.05F, 1.0F);
-				snowball.setBaseDamage(0);
-				world.addFreshEntity(snowball);
+				final var nade = new GrenadeEntity(world, user);
+				nade.shootFromRotation(user, user.getXRot(), user.getYRot(), 0.0F, 1.05F, 1.0F);
+				nade.setBaseDamage(0);
+				world.addFreshEntity(nade);
 			}
 			if (!user.getAbilities().instabuild) {
 				itemstack.shrink(1);
@@ -75,11 +75,13 @@ public class GrenadeItem extends Item implements GeoItem {
 	@Override
 	public void createRenderer(Consumer<Object> consumer) {
 		consumer.accept(new RenderProvider() {
-			private final GrenadeItemRender renderer = new GrenadeItemRender();
+			private GrenadeItemRender renderer = null;
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return renderer;
+				if (renderer == null)
+					return new GrenadeItemRender();
+				return this.renderer;
 			}
 		});
 	}

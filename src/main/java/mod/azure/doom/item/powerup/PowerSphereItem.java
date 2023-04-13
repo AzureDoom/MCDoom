@@ -28,9 +28,8 @@ public class PowerSphereItem extends Item {
 				livingEntityIn.heal(20);
 				if (!playerentity.getAbilities().instabuild) {
 					stack.shrink(1);
-					if (stack.isEmpty()) {
+					if (stack.isEmpty())
 						playerentity.getInventory().removeItem(stack);
-					}
 				}
 			}
 		}
@@ -38,7 +37,7 @@ public class PowerSphereItem extends Item {
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
-		final ItemStack itemStack = user.getItemInHand(hand);
+		final var itemStack = user.getItemInHand(hand);
 		user.startUsingItem(hand);
 		return InteractionResultHolder.consume(itemStack);
 	}

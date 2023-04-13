@@ -6,13 +6,12 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.task.ProjectileAttack;
+import mod.azure.doom.entity.DoomAnimationsDefault;
+import mod.azure.doom.entity.task.DemonProjectileAttack;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -60,10 +59,10 @@ public class PossessedScientistEntity extends DemonEntity implements GeoEntity, 
 		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			if (event.isMoving() && !isDead && !this.swinging)
-				return event.setAndContinue(RawAnimation.begin().thenLoop("walk"));
+				return event.setAndContinue(DoomAnimationsDefault.WALK);
 			if (this.swinging && !isDead)
-				return event.setAndContinue(RawAnimation.begin().then("attack", LoopType.PLAY_ONCE));
-			return event.setAndContinue(isDead ? RawAnimation.begin().thenPlayAndHold("death2") : RawAnimation.begin().thenLoop("idle"));
+				return event.setAndContinue(DoomAnimationsDefault.ATTACK);
+			return event.setAndContinue(isDead ? DoomAnimationsDefault.DEATH2 : DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
 				if (level.isClientSide())
@@ -113,7 +112,7 @@ public class PossessedScientistEntity extends DemonEntity implements GeoEntity, 
 
 	@Override
 	public BrainActivityGroup<PossessedScientistEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(0.75F), new ProjectileAttack<>(5).attackInterval(mob -> 80), new AnimatableMeleeAttack<>(0));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(0.75F), new DemonProjectileAttack<>(5).attackInterval(mob -> 80), new AnimatableMeleeAttack<>(0));
 	}
 
 	@Override

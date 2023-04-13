@@ -94,4 +94,9 @@ public class ChaingunMobEntity extends AbstractHurtingProjectile {
 		}
 		this.playSound(DoomSounds.CHAINGUN_SHOOT, 1.0F, 1.2F / (random.nextFloat() * 0.2F + 0.9F));
 	}
+	
+	@Override
+	public boolean displayFireAnimation() {
+		return false;
+	}
 }

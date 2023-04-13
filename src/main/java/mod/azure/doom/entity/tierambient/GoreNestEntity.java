@@ -1,7 +1,5 @@
 package mod.azure.doom.entity.tierambient;
 
-import java.util.Arrays;
-
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -10,11 +8,12 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -107,7 +106,7 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 		++spawnTimer;
 		final var aabb = new AABB(blockPosition()).inflate(64D);
 		final var i = level.getEntities(EntityTypeTest.forClass(DemonEntity.class), aabb, Entity::isAlive).size();
-		if (spawnTimer == 800 && i <= 15)
+		if (spawnTimer == 800 && i <= 15 && !this.isNoAi())
 			spawnWave();
 		if (spawnTimer >= 810)
 			spawnTimer = 0;
@@ -115,12 +114,15 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 	}
 
 	public void spawnWave() {
-		final var givenList = Arrays.asList(DoomEntities.HELLKNIGHT, DoomEntities.POSSESSEDSCIENTIST, DoomEntities.IMP, DoomEntities.PINKY, DoomEntities.CACODEMON, DoomEntities.CHAINGUNNER, DoomEntities.GARGOYLE, DoomEntities.HELLKNIGHT2016, DoomEntities.LOST_SOUL, DoomEntities.POSSESSEDSOLDIER, DoomEntities.SHOTGUNGUY, DoomEntities.UNWILLING, DoomEntities.ZOMBIEMAN, DoomEntities.ARACHNOTRON, DoomEntities.ARCHVILE, DoomEntities.MECHAZOMBIE, DoomEntities.PAIN, DoomEntities.MANCUBUS);
-		final var r = random.nextInt(-3, 3);
+		final var waveEntries = DoomConfig.gorenest_wave_entries;
+		final var r = this.getRandom().nextInt(-3, 3);
 
 		for (var k = 1; k < 5; ++k) {
-			for (int i = 0; i < 1; i++) {
-				final var waveentity = givenList.get(random.nextInt(givenList.size())).create(level);
+			for (var i = 0; i < 1; i++) {
+				final var randomIndex = getRandom().nextInt(waveEntries.size());
+				final var randomElement1 = new ResourceLocation(waveEntries.get(randomIndex));
+				final var randomElement = BuiltInRegistries.ENTITY_TYPE.get(randomElement1);
+				final var waveentity = randomElement.create(level);
 				waveentity.setPos(this.getX() + r, this.getY() + 0.5D, this.getZ() + r);
 				level.addFreshEntity(waveentity);
 			}

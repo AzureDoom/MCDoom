@@ -1,34 +1,50 @@
 package mod.azure.doom.entity.tierheavy;
 
-import mod.azure.azurelib.animatable.GeoEntity;
+import java.util.List;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
+import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
-public class WhiplashEntity extends DemonEntity implements GeoEntity {
+public class WhiplashEntity extends DemonEntity implements SmartBrainOwner<WhiplashEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -40,16 +56,14 @@ public class WhiplashEntity extends DemonEntity implements GeoEntity {
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 10, event -> {
 			if (event.isMoving() && hurtTime == 0 && !isAggressive())
-				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			if (event.isMoving() && hurtTime == 0 && isAggressive())
+				return event.setAndContinue(DoomAnimationsDefault.WALKING);
+			if (event.isMoving() && hurtTime == 0 && isAggressive() && !this.swinging)
 				return event.setAndContinue(RawAnimation.begin().thenLoop("attacking_moving"));
+			if (this.swinging && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+				return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
-		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
-			return PlayState.STOP;
+				return event.setAndContinue(DoomAnimationsDefault.DEATH);
+			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}));
 	}
 
@@ -68,14 +82,49 @@ public class WhiplashEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
+	protected void customServerAiStep() {
+		tickBrain(this);
+		super.customServerAiStep();
+	}
+
+	@Override
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
+
+	@Override
+	public List<ExtendedSensor<WhiplashEntity>> getSensors() {
+		return ObjectArrayList.of(new NearbyLivingEntitySensor<WhiplashEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<WhiplashEntity>());
+	}
+
+	@Override
+	public BrainActivityGroup<WhiplashEntity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>());
+	}
+
+	@Override
+	public BrainActivityGroup<WhiplashEntity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<WhiplashEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.75f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+	}
+
+	@Override
+	public BrainActivityGroup<WhiplashEntity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(1.75F), new AnimatableMeleeAttack<>(20));
+	}
+
+	@Override
+	public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
+		return this.getBbWidth() * 1.5f * (this.getBbWidth() * 1.5f + livingEntity.getBbWidth());
+	}
+
+	@Override
+	public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
+		var distance = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+		return distance <= this.getMeleeAttackRangeSqr(livingEntity);
+	}
+
+	@Override
 	protected void registerGoals() {
-		goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-		goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		goalSelector.addGoal(4, new DemonAttackGoal(this, 1.25D, 2));
-		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
-		targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {

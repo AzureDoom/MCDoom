@@ -19,6 +19,7 @@ import mod.azure.doom.entity.projectiles.entity.EnergyCellMobEntity;
 import mod.azure.doom.entity.projectiles.entity.FireProjectile;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -46,14 +47,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.phys.Vec3;
 
 public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, GeoEntity {
 
@@ -63,7 +62,7 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 	private static final UniformInt ANGER_TIME_RANGE = TimeUtil.rangeOfSeconds(20, 39);
 	private UUID targetUuid;
 	private BlockPos lightBlockPos = null;
-	public int screamingCounter = 0;
+	public int attackstatetimer = 0;
 
 	protected DemonEntity(EntityType<? extends Monster> type, Level worldIn) {
 		super(type, worldIn);
@@ -111,6 +110,18 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 		entityData.define(ANGER_TIME, 0);
 		entityData.define(STATE, 0);
 		entityData.define(SCREAM, false);
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
+		setAttackingState(compound.getInt("state"));
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putInt("state", getAttckingState());
 	}
 
 	@Override
@@ -219,16 +230,6 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 		return EntityPacket.createPacket(this);
 	}
 
-	public void shootBaron(Entity target, float damage) {
-		if (!this.level.isClientSide) {
-			if (this.getTarget() != null) {
-				var projectile = new BarenBlastEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
-				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
-				this.getCommandSenderWorld().addFreshEntity(projectile);
-			}
-		}
-	}
-
 	public void shootBloodBolt(Entity target, float damage) {
 		if (!this.level.isClientSide) {
 			if (this.getTarget() != null) {
@@ -299,6 +300,16 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 		}
 	}
 
+	public void shootBaron(Entity target, float damage, double offsetx, double offsety, double offsetz) {
+		if (!this.level.isClientSide) {
+			if (this.getTarget() != null) {
+				var projectile = new BarenBlastEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2)+ offsetx, this.getTarget().getY(0.5) - (this.getY(0.5)) + offsety, this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2) + offsetz, damage);
+				projectile.setPos(this.getX() + this.getViewVector(1.0F).x + offsetx, this.getY(0.5) + offsety, this.getZ() + this.getViewVector(1.0F).z + offsetz);
+				this.getCommandSenderWorld().addFreshEntity(projectile);
+			}
+		}
+	}
+
 	public void shootSmallFireball(Entity target, float damage) {
 		if (!this.level.isClientSide) {
 			if (this.getTarget() != null) {
@@ -312,16 +323,13 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 	public void throwPotion(LivingEntity target) {
 		if (!this.level.isClientSide) {
 			if (this.getTarget() != null) {
-				final Vec3 vec3 = target.getDeltaMovement();
-				final double d0 = target.getX() + vec3.x - this.getX();
-				final double d1 = target.getEyeY() - 1.1F - this.getY();
-				final double d2 = target.getZ() + vec3.z - this.getZ();
-				final double d3 = Math.sqrt(d0 * d0 + d2 * d2);
-				Potion potion = Potions.POISON;
-				final ThrownPotion thrownpotion = new ThrownPotion(level, this);
-				thrownpotion.setItem(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), potion));
+				final var d0 = target.getX() + target.getDeltaMovement().x - this.getX();
+				final var d1 = target.getEyeY() - 1.1F - this.getY();
+				final var d2 = target.getZ() + target.getDeltaMovement().z - this.getZ();
+				final var thrownpotion = new ThrownPotion(level, this);
+				thrownpotion.setItem(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), Potions.POISON));
 				thrownpotion.setXRot(thrownpotion.getXRot() - -20.0F);
-				thrownpotion.shoot(d0, d1 + d3 * 0.2D, d2, 0.75F, 8.0F);
+				thrownpotion.shoot(d0, d1 + Math.sqrt(d0 * d0 + d2 * d2) * 0.2D, d2, 0.75F, 8.0F);
 				thrownpotion.setPos(this.getX() + this.getViewVector(1.0F).x * 2, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
 				level.playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_THROW, getSoundSource(), 1.0F, 0.8F + random.nextFloat() * 0.4F);
 				this.getCommandSenderWorld().addFreshEntity(thrownpotion);

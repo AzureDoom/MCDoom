@@ -53,20 +53,21 @@ public class Unmaker extends DoomBaseItem {
 			if (stack.getDamageValue() < stack.getMaxDamage() - 1 && !playerentity.getCooldowns().isOnCooldown(this)) {
 				playerentity.getCooldowns().addCooldown(this, 5);
 				if (!worldIn.isClientSide) {
-					final UnmaykrBoltEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 1.0F * 3.0F, 1.0F);
-					final UnmaykrBoltEntity abstractarrowentity1 = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity1.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot() + 10, 0.0F, 1.0F * 3.0F, 1.0F);
-					final UnmaykrBoltEntity abstractarrowentity2 = createArrow(worldIn, stack, playerentity);
-					abstractarrowentity2.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot() - 10, 0.0F, 1.0F * 3.0F, 1.0F);
+					final var bolt = createArrow(worldIn, stack, playerentity);
+					bolt.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 1.0F * 3.0F, 1.0F);
+					final var bolt1 = createArrow(worldIn, stack, playerentity);
+					bolt1.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot() + 10, 0.0F, 1.0F * 3.0F, 1.0F);
+					final var bolt2 = createArrow(worldIn, stack, playerentity);
+					bolt2.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot() - 10, 0.0F, 1.0F * 3.0F, 1.0F);
+					worldIn.addFreshEntity(bolt);
+					worldIn.addFreshEntity(bolt1);
+					worldIn.addFreshEntity(bolt2);
+
 					stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
-					worldIn.addFreshEntity(abstractarrowentity);
-					worldIn.addFreshEntity(abstractarrowentity1);
-					worldIn.addFreshEntity(abstractarrowentity2);
 					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), DoomSounds.UNMAKYR_FIRE, SoundSource.PLAYERS, 1.0F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 					triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn), "shoot_controller", "firing");
 				}
-				final boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
+				final var isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
 				spawnLightSource(entityLiving, isInsideWaterBlock);
 			}
 		}
@@ -88,29 +89,30 @@ public class Unmaker extends DoomBaseItem {
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		if (world.isClientSide) {
+		if (world.isClientSide)
 			if (((Player) entity).getMainHandItem().getItem() instanceof Unmaker && ClientInit.reload.consumeClick() && selected) {
-				final FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
+				final var passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.UNMAKER, passedData);
 			}
-		}
 	}
 
 	public UnmaykrBoltEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		final float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		final UnmaykrBoltEntity arrowentity = new UnmaykrBoltEntity(worldIn, shooter, DoomConfig.unmaykr_damage + j * 2.0F);
-		return arrowentity;
+		final var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		final var bolt = new UnmaykrBoltEntity(worldIn, shooter, DoomConfig.unmaykr_damage + enchantlevel * 2.0F);
+		return bolt;
 	}
 
 	@Override
 	public void createRenderer(Consumer<Object> consumer) {
 		consumer.accept(new RenderProvider() {
-			private final UnmakerRender renderer = new UnmakerRender();
+			private UnmakerRender renderer = null;
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return renderer;
+				if (renderer == null)
+					return new UnmakerRender();
+				return this.renderer;
 			}
 		});
 	}

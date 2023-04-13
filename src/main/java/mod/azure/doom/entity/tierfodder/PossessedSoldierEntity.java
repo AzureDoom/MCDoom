@@ -5,14 +5,13 @@ import java.util.List;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.entity.ai.DemonFlyControl;
-import mod.azure.doom.entity.task.ProjectileAttack;
+import mod.azure.doom.entity.task.DemonProjectileAttack;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -79,12 +78,12 @@ public class PossessedSoldierEntity extends DemonEntity implements SmartBrainOwn
 		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			if (event.isMoving() && !isDead && !this.swinging)
-				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
+				return event.setAndContinue(DoomAnimationsDefault.WALKING);
 			if (this.swinging && !isDead)
-				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
+				return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
 			if (!isOnGround() && !onGround && getVariant() == 2 && !isDead)
-				return event.setAndContinue(RawAnimation.begin().thenLoop("flying"));
-			return event.setAndContinue(isDead ? RawAnimation.begin().thenPlayAndHold("death") : RawAnimation.begin().thenLoop("idle"));
+				return event.setAndContinue(DoomAnimationsDefault.FLYING);
+			return event.setAndContinue(isDead ? DoomAnimationsDefault.DEATH : DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
 				if (level.isClientSide())
@@ -166,7 +165,7 @@ public class PossessedSoldierEntity extends DemonEntity implements SmartBrainOwn
 
 	@Override
 	public BrainActivityGroup<PossessedSoldierEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new ProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(DoomConfig.possessed_soldier_ranged_damage), new AnimatableMeleeAttack<>(20));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(DoomConfig.possessed_soldier_ranged_damage), new AnimatableMeleeAttack<>(20));
 	}
 
 	@Override

@@ -4,10 +4,10 @@ import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.entity.ai.goal.IgniteDemonGoal;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -58,10 +58,10 @@ public class CueBallEntity extends DemonEntity implements GeoEntity {
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
 			if (event.isMoving())
-				return event.setAndContinue(RawAnimation.begin().thenLoop("walk"));
+				return event.setAndContinue(DoomAnimationsDefault.WALK);
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+				return event.setAndContinue(DoomAnimationsDefault.DEATH);
+			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}));
 	}
 

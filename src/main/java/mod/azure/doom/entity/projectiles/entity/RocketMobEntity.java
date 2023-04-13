@@ -32,8 +32,8 @@ public class RocketMobEntity extends AbstractHurtingProjectile implements GeoEnt
 	private LivingEntity shooter;
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-	public RocketMobEntity(EntityType<? extends RocketMobEntity> p_i50160_1_, Level p_i50160_2_) {
-		super(p_i50160_1_, p_i50160_2_);
+	public RocketMobEntity(EntityType<? extends RocketMobEntity> entity, Level level) {
+		super(entity, level);
 	}
 
 	public void setDirectHitDamage(float directHitDamage) {

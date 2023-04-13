@@ -37,7 +37,7 @@
 		"fabric": "*",
 		"minecraft": ">=1.19.4",
 		"java": ">=17",
-		"azurelib": ">=1.0.6",
+		"azurelib": ">=1.0.8",
 		"smartbrainlib": ">=1.9",
 		"trinkets": ">=3.6.0"
 	},

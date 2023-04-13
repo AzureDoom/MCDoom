@@ -8,14 +8,12 @@ import com.google.common.collect.ImmutableMap.Builder;
 
 import mod.azure.doom.util.enums.DoomTier;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -44,26 +42,24 @@ public class ArgentAxe extends DiggerItem {
 
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
-		final Level world = context.getLevel();
-		final BlockPos blockPos = context.getClickedPos();
-		final BlockState blockState = world.getBlockState(blockPos);
-		final Block block = BLOCK_STRIPPING_MAP.get(blockState.getBlock());
+		final var world = context.getLevel();
+		final var blockPos = context.getClickedPos();
+		final var blockState = world.getBlockState(blockPos);
+		final var block = BLOCK_STRIPPING_MAP.get(blockState.getBlock());
 		if (block != null) {
-			final Player playerEntity = context.getPlayer();
+			final var playerEntity = context.getPlayer();
 			world.playSound(playerEntity, blockPos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
 			if (!world.isClientSide) {
 				world.setBlock(blockPos, block.defaultBlockState().setValue(RotatedPillarBlock.AXIS, blockState.getValue(RotatedPillarBlock.AXIS)), 11);
-				if (playerEntity != null) {
+				if (playerEntity != null) 
 					context.getItemInHand().hurtAndBreak(1, (LivingEntity) playerEntity, (Consumer) p -> {
 						((LivingEntity) p).broadcastBreakEvent(context.getHand());
 					});
-				}
 			}
 
 			return InteractionResult.sidedSuccess(world.isClientSide);
-		} else {
+		} else 
 			return InteractionResult.PASS;
-		}
 	}
 
 	@Override
