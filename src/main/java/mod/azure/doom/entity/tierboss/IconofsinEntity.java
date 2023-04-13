@@ -82,23 +82,23 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 	public void registerControllers(ControllerRegistrar controllers) {
 		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving() && this.getDeathState() == 0)
+			if (event.isMoving() && event.getAnimatable().getDeathState() == 0)
 				return event.setAndContinue(DoomAnimationsDefault.WALKING);
-			if (isDead && this.getDeathState() == 0)
+			if (isDead && event.getAnimatable().getDeathState() == 0)
 				return event.setAndContinue(DoomAnimationsDefault.DEATH_PHASEONE);
-			if (isDead && this.getDeathState() == 1)
+			if (isDead && event.getAnimatable().getDeathState() == 1)
 				return event.setAndContinue(DoomAnimationsDefault.DEATH);
-			if (event.isMoving() && this.getDeathState() == 1)
+			if (event.isMoving() && event.getAnimatable().getDeathState() == 1)
 				return event.setAndContinue(DoomAnimationsDefault.WALKING_NOHELMET);
-			if ((this.getDeathState() == 1) || (!event.isMoving() && hurtMarked && this.getDeathState() == 1))
+			if ((event.getAnimatable().getDeathState() == 1) || (!event.isMoving() && hurtMarked && event.getAnimatable().getDeathState() == 1))
 				return event.setAndContinue(DoomAnimationsDefault.IDLE_NOHELMET);
-			if (this.getAttckingState() == 1 && this.getDeathState() == 0 && !isDead)
+			if (this.getAttckingState() == 1 && event.getAnimatable().getDeathState() == 0 && !isDead)
 				return event.setAndContinue(DoomAnimationsDefault.SUMMONED);
-			if (this.getAttckingState() == 1 && this.getDeathState() == 1 && !isDead)
+			if (this.getAttckingState() == 1 && event.getAnimatable().getDeathState() == 1 && !isDead)
 				return event.setAndContinue(DoomAnimationsDefault.SUMMONED_NOHELMET);
-			if (this.getAttckingState() == 2 && this.getDeathState() == 0 && !isDead)
+			if (this.getAttckingState() == 2 && event.getAnimatable().getDeathState() == 0 && !isDead)
 				return event.setAndContinue(DoomAnimationsDefault.STOMP);
-			if (this.getAttckingState() == 2 && this.getDeathState() == 1 && !isDead)
+			if (this.getAttckingState() == 2 && event.getAnimatable().getDeathState() == 1 && !isDead)
 				return event.setAndContinue(DoomAnimationsDefault.STOMP_NOHELMET);
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {

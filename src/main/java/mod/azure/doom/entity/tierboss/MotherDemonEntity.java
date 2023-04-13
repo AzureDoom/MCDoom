@@ -83,7 +83,7 @@ public class MotherDemonEntity extends DemonEntity implements SmartBrainOwner<Mo
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			if (this.swinging && !isDead)
 				return event.setAndContinue(DoomAnimationsDefault.FIRE);
-			return event.setAndContinue((isDead && this.getDeathState() == 5) ? DoomAnimationsDefault.DEATH : (isDead && this.getDeathState() < 5) ? DoomAnimationsDefault.DEATH_PHASEONE : DoomAnimationsDefault.MOVING);
+			return event.setAndContinue((isDead && event.getAnimatable().getDeathState() == 5) ? DoomAnimationsDefault.DEATH : (isDead && event.getAnimatable().getDeathState() < 5) ? DoomAnimationsDefault.DEATH_PHASEONE : DoomAnimationsDefault.MOVING);
 		}));
 	}
 

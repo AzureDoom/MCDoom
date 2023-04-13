@@ -188,8 +188,7 @@ public class ArchMakyrEntity extends DemonEntity implements SmartBrainOwner<Arch
 
 	@Override
 	public BrainActivityGroup<ArchMakyrEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(2.05F),
-				new DemonProjectileAttack<>(7).attackInterval(mob -> 240).attackDamage(DoomConfig.archmaykr_ranged_damage + (entityData.get(DEATH_STATE) == 1 ? DoomConfig.archmaykr_phaseone_damage_boost : entityData.get(DEATH_STATE) == 2 ? DoomConfig.archmaykr_phasetwo_damage_boost : entityData.get(DEATH_STATE) == 3 ? DoomConfig.archmaykr_phasethree_damage_boost : entityData.get(DEATH_STATE) == 4 ? DoomConfig.archmaykr_phasefour_damage_boost : 0)));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(2.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 240));
 	}
 
 	@Override
