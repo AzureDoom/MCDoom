@@ -33,9 +33,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class GunTableBlock extends Block implements EntityBlock {
 
 	public static final DirectionProperty FACING = BlockStateProperties.FACING;
-	private static final VoxelShape XBASE1 = Block.box(0, 0, -16, 16, 9, 32); 
+	private static final VoxelShape XBASE1 = Block.box(0, 0, -16, 16, 9, 32);
 	private static final VoxelShape XBASE2 = Block.box(2, 9, -14, 13, 25, 30);
-	private static final VoxelShape YBASE1 = Block.box(-16, 0, 0, 32, 9, 16); 
+	private static final VoxelShape YBASE1 = Block.box(-16, 0, 0, 32, 9, 16);
 	private static final VoxelShape YBASE2 = Block.box(-14, 9, 2, 30, 25, 13);
 	private static final VoxelShape X_AXIS_AABB = Shapes.or(XBASE1, XBASE2);
 	private static final VoxelShape Z_AXIS_AABB = Shapes.or(YBASE1, YBASE2);
@@ -43,7 +43,7 @@ public class GunTableBlock extends Block implements EntityBlock {
 
 	public GunTableBlock(BlockBehaviour.Properties settings) {
 		super(settings);
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.WEST));
+		registerDefaultState(stateDefinition.any().setValue(FACING, Direction.WEST));
 	}
 
 	@Override
@@ -57,10 +57,9 @@ public class GunTableBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-			BlockHitResult hit) {
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (!world.isClientSide) {
-			MenuProvider screenHandlerFactory = state.getMenuProvider(world, pos);
+			final MenuProvider screenHandlerFactory = state.getMenuProvider(world, pos);
 			if (screenHandlerFactory != null) {
 				player.openMenu(screenHandlerFactory);
 			}
@@ -76,7 +75,7 @@ public class GunTableBlock extends Block implements EntityBlock {
 	@Override
 	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
 		if (state.getBlock() != newState.getBlock()) {
-			BlockEntity blockEntity = world.getBlockEntity(pos);
+			final BlockEntity blockEntity = world.getBlockEntity(pos);
 			if (blockEntity instanceof GunBlockEntity) {
 				Containers.dropContents(world, pos, (GunBlockEntity) blockEntity);
 				world.updateNeighbourForOutputSignal(pos, this);
@@ -87,7 +86,7 @@ public class GunTableBlock extends Block implements EntityBlock {
 
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection());
+		return defaultBlockState().setValue(FACING, context.getHorizontalDirection());
 	}
 
 	@Override
@@ -107,16 +106,14 @@ public class GunTableBlock extends Block implements EntityBlock {
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-		Direction direction = state.getValue(FACING);
+		final Direction direction = state.getValue(FACING);
 		return direction.getAxis() == Direction.Axis.X ? X_AXIS_AABB : Z_AXIS_AABB;
 	}
 
 	@Override
 	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
-		Direction direction = (Direction) state.getValue(FACING);
-		return direction.getAxis() == Direction.Axis.X
-				? world.getBlockState(pos.south()).isAir() && world.getBlockState(pos.north()).isAir()
-				: world.getBlockState(pos.east()).isAir() && world.getBlockState(pos.west()).isAir();
+		final Direction direction = state.getValue(FACING);
+		return direction.getAxis() == Direction.Axis.X ? world.getBlockState(pos.south()).isAir() && world.getBlockState(pos.north()).isAir() : world.getBlockState(pos.east()).isAir() && world.getBlockState(pos.west()).isAir();
 	}
 
 }

@@ -1,14 +1,14 @@
 package mod.azure.doom.client.models;
 
-import mod.azure.doom.DoomMod;
-import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
 import mod.azure.azurelib.constant.DataTickets;
 import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
 import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.model.data.EntityModelData;
+import mod.azure.doom.DoomMod;
+import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 
 public class Baron2016Model extends GeoModel<BaronEntity> {
 
@@ -28,12 +28,11 @@ public class Baron2016Model extends GeoModel<BaronEntity> {
 	}
 
 	@Override
-	public void setCustomAnimations(BaronEntity animatable, long instanceId,
-			AnimationState<BaronEntity> animationState) {
+	public void setCustomAnimations(BaronEntity animatable, long instanceId, AnimationState<BaronEntity> animationState) {
 		super.setCustomAnimations(animatable, instanceId, animationState);
 
-		CoreGeoBone head = getAnimationProcessor().getBone("neck");
-		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+		final CoreGeoBone head = getAnimationProcessor().getBone("neck");
+		final EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
 
 		if (head != null) {
 			head.setRotX((entityData.headPitch() + 20) * ((float) Math.PI / 360F));

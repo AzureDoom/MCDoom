@@ -1,10 +1,10 @@
 package mod.azure.doom.client.models;
 
+import mod.azure.azurelib.model.GeoModel;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import mod.azure.azurelib.model.GeoModel;
 
 public class SummonerModel extends GeoModel<SummonerEntity> {
 
@@ -15,8 +15,7 @@ public class SummonerModel extends GeoModel<SummonerEntity> {
 
 	@Override
 	public ResourceLocation getTextureResource(SummonerEntity object) {
-		return new ResourceLocation(DoomMod.MODID,
-				"textures/entity/" + (object.getVariant() == 2 ? "summoner_red" : "summoner") + ".png");
+		return new ResourceLocation(DoomMod.MODID, "textures/entity/" + (object.getVariant() == 2 ? "summoner_red" : "summoner") + ".png");
 	}
 
 	@Override

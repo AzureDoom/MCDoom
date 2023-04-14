@@ -1,15 +1,15 @@
 package mod.azure.doom.client.models;
 
-import mod.azure.doom.DoomMod;
-import mod.azure.doom.entity.tierheavy.MancubusEntity;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import mod.azure.azurelib.constant.DataTickets;
 import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
 import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.model.data.EntityModelData;
+import mod.azure.doom.DoomMod;
+import mod.azure.doom.entity.tierheavy.MancubusEntity;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 public class MancubusModel extends GeoModel<MancubusEntity> {
 
@@ -18,22 +18,15 @@ public class MancubusModel extends GeoModel<MancubusEntity> {
 	public String d64 = "mancubus64";
 	public String d2016 = "mancubus2016";
 	public String d2016cyber = "cybermancubus2016";
-	
+
 	@Override
 	public ResourceLocation getModelResource(MancubusEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "geo/"
-				+ (object.getVariant() == 2 ? d64
-						: object.getVariant() == 3 ? d2016
-								: object.getVariant() == 4 ? classic : object.getVariant() == 5 ? d2016 : classic)
-				+ ".geo.json");
+		return new ResourceLocation(DoomMod.MODID, "geo/" + (object.getVariant() == 2 ? d64 : object.getVariant() == 3 ? d2016 : object.getVariant() == 4 ? classic : object.getVariant() == 5 ? d2016 : classic) + ".geo.json");
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(MancubusEntity object) {
-		return new ResourceLocation(DoomMod.MODID, "textures/entity/" + (object.getVariant() == 2 ? d64
-				: object.getVariant() == 3 ? d2016
-						: object.getVariant() == 4 ? classiccyber : object.getVariant() == 5 ? d2016cyber : classic)
-				+ ".png");
+		return new ResourceLocation(DoomMod.MODID, "textures/entity/" + (object.getVariant() == 2 ? d64 : object.getVariant() == 3 ? d2016 : object.getVariant() == 4 ? classiccyber : object.getVariant() == 5 ? d2016cyber : classic) + ".png");
 	}
 
 	@Override
@@ -42,12 +35,11 @@ public class MancubusModel extends GeoModel<MancubusEntity> {
 	}
 
 	@Override
-	public void setCustomAnimations(MancubusEntity animatable, long instanceId,
-			AnimationState<MancubusEntity> animationState) {
+	public void setCustomAnimations(MancubusEntity animatable, long instanceId, AnimationState<MancubusEntity> animationState) {
 		super.setCustomAnimations(animatable, instanceId, animationState);
 
-		CoreGeoBone head = getAnimationProcessor().getBone("head");
-		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+		final CoreGeoBone head = getAnimationProcessor().getBone("head");
+		final EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
 
 		if (head != null) {
 			head.setRotX(entityData.headPitch() * Mth.DEG_TO_RAD);

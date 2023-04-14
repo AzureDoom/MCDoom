@@ -1,28 +1,42 @@
 package mod.azure.doom.entity.tierambient;
 
-import mod.azure.doom.config.DoomConfig;
-import mod.azure.doom.entity.DemonEntity;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
-import mod.azure.azurelib.animatable.GeoEntity;
+import java.util.List;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.DoomAnimationsDefault;
+import mod.azure.doom.entity.task.DemonMeleeAttack;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.Brain;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
-public class TentacleEntity extends DemonEntity implements GeoEntity {
+public class TentacleEntity extends DemonEntity implements SmartBrainOwner<TentacleEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -33,32 +47,29 @@ public class TentacleEntity extends DemonEntity implements GeoEntity {
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenLoop("attacking"));
-			if (this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+			if (event.getAnimatable().getAttckingState() == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+				return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
+			if (dead || getHealth() < 0.01 || isDeadOrDying())
+				return event.setAndContinue(DoomAnimationsDefault.DEATH);
+			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}));
 	}
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.tentacle_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 1.0f).add(Attributes.MOVEMENT_SPEED, 0.0D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, DoomConfig.SERVER.tentacle_health.get()).add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.tentacle_melee_damage.get()).add(Attributes.KNOCKBACK_RESISTANCE, 1.0f).add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
 	protected void tickDeath() {
-		++this.deathTime;
-		if (this.deathTime == 30) {
-			this.remove(RemovalReason.KILLED);
-			this.dropExperience();
+		++deathTime;
+		if (deathTime == 30) {
+			remove(RemovalReason.KILLED);
+			dropExperience();
 		}
 	}
 
@@ -77,70 +88,38 @@ public class TentacleEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	protected void registerGoals() {
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractVillager.class, 8.0F));
-		this.goalSelector.addGoal(9, new TentacleEntity.AttackGoal(this));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
-		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
+	protected void customServerAiStep() {
+		tickBrain(this);
+		super.customServerAiStep();
 	}
 
-	static class AttackGoal extends Goal {
-		private final TentacleEntity entity;
-		public int cooldown;
+	@Override
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
 
-		public AttackGoal(TentacleEntity parentEntity) {
-			this.entity = parentEntity;
-		}
+	@Override
+	public List<ExtendedSensor<TentacleEntity>> getSensors() {
+		return ObjectArrayList.of(new NearbyLivingEntitySensor<TentacleEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<TentacleEntity>());
+	}
 
-		public boolean canUse() {
-			return this.entity.getTarget() != null;
-		}
+	@Override
+	public BrainActivityGroup<TentacleEntity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>());
+	}
 
-		public void start() {
-			this.cooldown = 0;
-			this.entity.setAttackingState(0);
-		}
+	@Override
+	public BrainActivityGroup<TentacleEntity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<TentacleEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+	}
 
-		@Override
-		public void stop() {
-			super.stop();
-			this.entity.setAttackingState(0);
-		}
+	@Override
+	public BrainActivityGroup<TentacleEntity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new DemonMeleeAttack<>(5).attackInterval(mob -> 40));
+	}
 
-		public void tick() {
-			LivingEntity livingentity = this.entity.getTarget();
-			if (livingentity != null) {
-				this.entity.lookAt(livingentity, 30.0F, 90.0F);
-				final AABB aabb2 = new AABB(this.entity.blockPosition()).inflate(2D);
-				if (this.entity.hasLineOfSight(livingentity)) {
-					++this.cooldown;
-					if (this.entity.getCommandSenderWorld().getEntities(this.entity, aabb2).contains(livingentity)) {
-						if (this.cooldown == 2) {
-							this.entity.getCommandSenderWorld().getEntities(this.entity, aabb2).forEach(e -> {
-								if ((e instanceof LivingEntity)) {
-									e.hurt(DamageSource.indirectMagic(this.entity, livingentity),
-											DoomConfig.SERVER.tentacle_melee_damage.get().floatValue());
-									livingentity.invulnerableTime = 0;
-								}
-							});
-							this.entity.setAttackingState(1);
-						}
-						if (this.cooldown >= 10) {
-							this.entity.setAttackingState(0);
-							this.cooldown = -5;
-						}
-					} else {
-						--this.cooldown;
-						this.entity.setAttackingState(0);
-					}
-				} else if (this.cooldown > 0) {
-					--this.cooldown;
-					this.entity.setAttackingState(0);
-				}
-			}
-		}
+	@Override
+	protected void registerGoals() {
 	}
 
 	protected boolean shouldDrown() {

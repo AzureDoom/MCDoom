@@ -5,22 +5,22 @@ import javax.annotation.Nullable;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
+import mod.azure.azurelib.cache.object.GeoBone;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.renderer.layer.BlockAndItemGeoLayer;
 import mod.azure.doom.client.models.ShotgunguyModel;
 import mod.azure.doom.entity.tierfodder.ShotgunguyEntity;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import mod.azure.azurelib.cache.object.GeoBone;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
-import mod.azure.azurelib.renderer.layer.BlockAndItemGeoLayer;
 
 public class ShotgunguyRender extends GeoEntityRenderer<ShotgunguyEntity> {
 
 	public ShotgunguyRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new ShotgunguyModel());
-		this.addRenderLayer(new BlockAndItemGeoLayer<>(this) {
+		addRenderLayer(new BlockAndItemGeoLayer<>(this) {
 			@Nullable
 			@Override
 			protected ItemStack getStackForBone(GeoBone bone, ShotgunguyEntity animatable) {
@@ -31,23 +31,19 @@ public class ShotgunguyRender extends GeoEntityRenderer<ShotgunguyEntity> {
 			}
 
 			@Override
-			protected ItemTransforms.TransformType getTransformTypeForStack(GeoBone bone, ItemStack stack,
-					ShotgunguyEntity animatable) {
+			protected ItemDisplayContext getTransformTypeForStack(GeoBone bone, ItemStack stack, ShotgunguyEntity animatable) {
 				return switch (bone.getName()) {
-				default -> ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND;
+				default -> ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
 				};
 			}
 
 			@Override
-			protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack,
-					ShotgunguyEntity animatable, MultiBufferSource bufferSource, float partialTick,
-					int packedLight, int packedOverlay) {
+			protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack, ShotgunguyEntity animatable, MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay) {
 				poseStack.mulPose(Axis.XP.rotationDegrees(-110));
 				poseStack.mulPose(Axis.YP.rotationDegrees(0));
 				poseStack.mulPose(Axis.ZP.rotationDegrees(0));
 				poseStack.translate(0.0D, 0.0D, -0.4D);
-				super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight,
-						packedOverlay);
+				super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
 			}
 		});
 	}

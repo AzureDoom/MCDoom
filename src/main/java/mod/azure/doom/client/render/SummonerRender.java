@@ -1,9 +1,9 @@
 package mod.azure.doom.client.render;
 
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mod.azure.doom.client.models.SummonerModel;
 import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 public class SummonerRender extends GeoEntityRenderer<SummonerEntity> {
 

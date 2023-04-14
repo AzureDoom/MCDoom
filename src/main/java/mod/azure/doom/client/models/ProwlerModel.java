@@ -1,15 +1,15 @@
 package mod.azure.doom.client.models;
 
-import mod.azure.doom.DoomMod;
-import mod.azure.doom.entity.tierheavy.ProwlerEntity;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import mod.azure.azurelib.constant.DataTickets;
 import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
 import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.model.data.EntityModelData;
+import mod.azure.doom.DoomMod;
+import mod.azure.doom.entity.tierheavy.ProwlerEntity;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 public class ProwlerModel extends GeoModel<ProwlerEntity> {
 
@@ -20,8 +20,7 @@ public class ProwlerModel extends GeoModel<ProwlerEntity> {
 
 	@Override
 	public ResourceLocation getTextureResource(ProwlerEntity object) {
-		return new ResourceLocation(DoomMod.MODID,
-				"textures/entity/" + (object.getVariant() == 2 ? "prowler_cursed" : "prowler") + ".png");
+		return new ResourceLocation(DoomMod.MODID, "textures/entity/" + (object.getVariant() == 2 ? "prowler_cursed" : "prowler") + ".png");
 	}
 
 	@Override
@@ -30,12 +29,11 @@ public class ProwlerModel extends GeoModel<ProwlerEntity> {
 	}
 
 	@Override
-	public void setCustomAnimations(ProwlerEntity animatable, long instanceId,
-			AnimationState<ProwlerEntity> animationState) {
+	public void setCustomAnimations(ProwlerEntity animatable, long instanceId, AnimationState<ProwlerEntity> animationState) {
 		super.setCustomAnimations(animatable, instanceId, animationState);
 
-		CoreGeoBone head = getAnimationProcessor().getBone("neck");
-		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+		final CoreGeoBone head = getAnimationProcessor().getBone("neck");
+		final EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
 
 		if (head != null) {
 			head.setRotX(entityData.headPitch() * Mth.DEG_TO_RAD);

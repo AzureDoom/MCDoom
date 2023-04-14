@@ -1,24 +1,25 @@
 package mod.azure.doom.entity.tierfodder;
 
-import java.util.SplittableRandom;
+import java.util.List;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
-import mod.azure.doom.entity.ai.goal.RangedStrafeAttackGoal;
-import mod.azure.doom.entity.attack.AbstractRangedAttack;
-import mod.azure.doom.entity.attack.AttackSound;
-import mod.azure.doom.entity.projectiles.entity.BarenBlastEntity;
+import mod.azure.doom.entity.DoomAnimationsDefault;
+import mod.azure.doom.entity.ai.DemonFlyControl;
+import mod.azure.doom.entity.task.DemonProjectileAttack;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -29,104 +30,99 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.StayWithinDistanceOfAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
-public class PossessedSoldierEntity extends DemonEntity implements GeoEntity {
+public class PossessedSoldierEntity extends DemonEntity implements SmartBrainOwner<PossessedSoldierEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(PossessedSoldierEntity.class,
-			EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(PossessedSoldierEntity.class, EntityDataSerializers.INT);
 	public int flameTimer;
 
 	public PossessedSoldierEntity(EntityType<PossessedSoldierEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
-		this.moveControl = new SoldierMoveControl(this);
+		moveControl = new DemonFlyControl(this);
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
+		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving())
-				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			if (!this.isOnGround() && !this.onGround && this.getVariant() == 2
-					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenLoop("flying"));
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+			if (event.isMoving() && !isDead && !this.swinging)
+				return event.setAndContinue(DoomAnimationsDefault.WALKING);
+			if (this.swinging && !isDead)
+				return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
+			if (!isOnGround() && !onGround && getVariant() == 2 && !isDead)
+				return event.setAndContinue(DoomAnimationsDefault.FLYING);
+			return event.setAndContinue(isDead ? DoomAnimationsDefault.DEATH : DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (this.level.isClientSide())
-					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(),
-							SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("attacking", LoopType.PLAY_ONCE));
-			return PlayState.STOP;
-		}).setSoundKeyframeHandler(event -> {
+				if (level.isClientSide())
+					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
 			if (event.getKeyframeData().getSound().matches("attack"))
-				if (this.level.isClientSide())
-					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PISTOL_HIT.get(),
-							SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level.isClientSide())
+					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PISTOL_HIT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		}));
 	}
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
-		this.entityData.define(VARIANT, 0);
+		entityData.define(VARIANT, 0);
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag) {
 		super.readAdditionalSaveData(tag);
-		this.setVariant(tag.getInt("Variant"));
+		setVariant(tag.getInt("Variant"));
 	}
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag tag) {
 		super.addAdditionalSaveData(tag);
-		tag.putInt("Variant", this.getVariant());
+		tag.putInt("Variant", getVariant());
 	}
 
 	public int getVariant() {
-		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 3);
+		return Mth.clamp(entityData.get(VARIANT), 1, 3);
 	}
 
 	public void setVariant(int variant) {
-		this.entityData.set(VARIANT, variant);
+		entityData.set(VARIANT, variant);
 	}
 
 	public int getVariants() {
@@ -134,175 +130,84 @@ public class PossessedSoldierEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
-			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-		SplittableRandom random = new SplittableRandom();
-		int var = random.nextInt(0, 4);
-		this.setVariant(var);
+		final var variant = getRandom().nextInt(0, 4);
+		setVariant(variant);
 		return spawnDataIn;
 	}
 
 	@Override
-	protected void registerGoals() {
-		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		this.goalSelector.addGoal(4,
-				new RangedStrafeAttackGoal(this, new PossessedSoldierEntity.FireballAttack(this)
-						.setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomConfig.SERVER.possessed_soldier_ranged_damage.get().floatValue()),
-						1.0D, 5, 30, 15, 15F, 1));
-		if (this.getVariant() == 2) {
-			this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
-		}
-		this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
-		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+	protected void customServerAiStep() {
+		tickBrain(this);
+		super.customServerAiStep();
 	}
 
+	@Override
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
+
+	@Override
+	public List<ExtendedSensor<PossessedSoldierEntity>> getSensors() {
+		return ObjectArrayList.of(new NearbyLivingEntitySensor<PossessedSoldierEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<PossessedSoldierEntity>());
+	}
+
+	@Override
+	public BrainActivityGroup<PossessedSoldierEntity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new StayWithinDistanceOfAttackTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
+	}
+
+	@Override
+	public BrainActivityGroup<PossessedSoldierEntity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<PossessedSoldierEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+	}
+
+	@Override
+	public BrainActivityGroup<PossessedSoldierEntity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(DoomConfig.SERVER.possessed_soldier_ranged_damage.get().floatValue()), new AnimatableMeleeAttack<>(20));
+	}
+
+	@Override
 	public void travel(Vec3 movementInput) {
-		if (this.isAggressive() && this.getVariant() == 2) {
-			if (this.isInWater()) {
-				this.moveRelative(0.02F, movementInput);
-				this.move(MoverType.SELF, this.getDeltaMovement());
-				this.setDeltaMovement(this.getDeltaMovement().scale((double) 0.8F));
-			} else if (this.isInLava()) {
-				this.moveRelative(0.02F, movementInput);
-				this.move(MoverType.SELF, this.getDeltaMovement());
-				this.setDeltaMovement(this.getDeltaMovement().scale(0.5D));
+		if (isAggressive() && getVariant() == 2) {
+			if (isInWater()) {
+				moveRelative(0.02F, movementInput);
+				move(MoverType.SELF, getDeltaMovement());
+				this.setDeltaMovement(getDeltaMovement().scale(0.8F));
+			} else if (isInLava()) {
+				moveRelative(0.02F, movementInput);
+				move(MoverType.SELF, getDeltaMovement());
+				this.setDeltaMovement(getDeltaMovement().scale(0.5D));
 			} else {
-				BlockPos ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
-				float f = 0.91F;
-				if (this.onGround) {
-					f = this.level.getBlockState(ground).getBlock().getFriction() * 0.91F;
-				}
-				float f1 = 0.16277137F / (f * f * f);
+				final var ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
+				var f = 0.91F;
+				if (onGround)
+					f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+				final var f1 = 0.16277137F / (f * f * f);
 				f = 0.91F;
-				if (this.onGround) {
-					f = this.level.getBlockState(ground).getBlock().getFriction() * 0.91F;
-				}
-				this.moveRelative(this.onGround ? 0.1F * f1 : 0.02F, movementInput);
-				this.move(MoverType.SELF, this.getDeltaMovement());
-				this.setDeltaMovement(this.getDeltaMovement().scale((double) f));
+				if (onGround)
+					f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+				moveRelative(onGround ? 0.1F * f1 : 0.02F, movementInput);
+				move(MoverType.SELF, getDeltaMovement());
+				this.setDeltaMovement(getDeltaMovement().scale(f));
 			}
-			this.calculateEntityAnimation(this, false);
 		} else {
 			super.travel(movementInput);
 		}
 	}
 
-	static class SoldierMoveControl extends MoveControl {
-		protected final PossessedSoldierEntity entity;
-		private int courseChangeCooldown;
-
-		public SoldierMoveControl(PossessedSoldierEntity entity) {
-			super(entity);
-			this.entity = entity;
-		}
-
-		public void tick() {
-			if (entity.isAggressive() && this.entity.getVariant() == 2) {
-				if (this.operation == MoveControl.Operation.MOVE_TO) {
-					if (this.courseChangeCooldown-- <= 0) {
-						this.courseChangeCooldown += this.entity.getRandom().nextInt(5) + 2;
-						Vec3 vector3d = new Vec3(this.wantedX - this.entity.getX(), this.wantedY - this.entity.getY(),
-								this.wantedZ - this.entity.getZ());
-						double d0 = vector3d.length();
-						vector3d = vector3d.normalize();
-						if (this.canReach(vector3d, Mth.ceil(d0))) {
-							this.entity.setDeltaMovement(this.entity.getDeltaMovement().add(vector3d.scale(0.1D)));
-						} else {
-							this.operation = MoveControl.Operation.WAIT;
-						}
-					}
-				} else {
-					this.operation = MoveControl.Operation.WAIT;
-					this.entity.setZza(0.0F);
-				}
-			} else {
-				if (this.operation == MoveControl.Operation.MOVE_TO) {
-					this.operation = MoveControl.Operation.WAIT;
-					double d0 = this.wantedX - this.entity.getX();
-					double d1 = this.wantedZ - this.entity.getZ();
-					double d2 = this.wantedY - this.entity.getY();
-					double d3 = d0 * d0 + d2 * d2 + d1 * d1;
-					if (d3 < (double) 2.5000003E-7F) {
-						this.entity.setZza(0.0F);
-						return;
-					}
-					float f9 = (float) (Mth.atan2(d1, d0) * (double) (180F / (float) Math.PI)) - 90.0F;
-					this.entity.setYRot(this.rotlerp(this.mob.getYRot(), f9, 90.0F));
-					this.entity.setSpeed((float) (0.25D));
-					BlockPos blockpos = this.mob.blockPosition();
-					BlockState blockstate = this.mob.level.getBlockState(blockpos);
-					VoxelShape voxelshape = blockstate.getCollisionShape(this.mob.level, blockpos);
-					if (d2 > (double) this.mob.getEyeHeight()
-							&& d0 * d0 + d1 * d1 < (double) Math.max(1.0F, this.mob.getBbWidth())
-							|| !voxelshape.isEmpty()
-									&& this.mob.getY() < voxelshape.max(Direction.Axis.Y) + (double) blockpos.getY()
-									&& !blockstate.is(BlockTags.DOORS) && !blockstate.is(BlockTags.FENCES)) {
-						this.operation = MoveControl.Operation.JUMPING;
-					}
-				} else if (this.operation == MoveControl.Operation.JUMPING) {
-					this.mob.setSpeed((float) (0.25D));
-					if (this.mob.isOnGround()) {
-						this.operation = MoveControl.Operation.WAIT;
-					}
-				} else {
-					this.operation = MoveControl.Operation.WAIT;
-					this.entity.setZza(0.0F);
-				}
-			}
-		}
-
-		private boolean canReach(Vec3 direction, int steps) {
-			AABB axisalignedbb = this.mob.getBoundingBox();
-			for (int i = 1; i < steps; ++i) {
-				axisalignedbb = axisalignedbb.move(direction);
-				if (!this.mob.level.noCollision(this.entity, axisalignedbb)) {
-					return false;
-				}
-			}
-			return true;
-		}
-	}
-
+	@Override
 	protected PathNavigation createNavigation(Level worldIn) {
-		FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
+		final var flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
 		flyingpathnavigator.setCanOpenDoors(false);
 		flyingpathnavigator.setCanFloat(true);
 		flyingpathnavigator.setCanPassDoors(true);
 		return flyingpathnavigator;
 	}
 
-	public class FireballAttack extends AbstractRangedAttack {
-
-		public FireballAttack(DemonEntity parentEntity, double xOffSetModifier, double entityHeightFraction,
-				double zOffSetModifier, float damage) {
-			super(parentEntity, xOffSetModifier, entityHeightFraction, zOffSetModifier, damage);
-		}
-
-		public FireballAttack(DemonEntity parentEntity) {
-			super(parentEntity);
-		}
-
-		@Override
-		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(DoomSounds.PLASMA_FIRING.get(), 1, 1);
-		}
-
-		@Override
-		public Projectile getProjectile(Level world, double d2, double d3, double d4) {
-			return new BarenBlastEntity(world, this.parentEntity, d2, d3, d4, damage);
-		}
-	}
-
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.possessed_soldier_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D)
-				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomConfig.SERVER.possessed_soldier_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override

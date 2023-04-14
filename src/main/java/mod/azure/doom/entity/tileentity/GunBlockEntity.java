@@ -6,7 +6,7 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.client.gui.weapons.GunTableScreenHandler;
+import mod.azure.doom.client.gui.GunTableScreenHandler;
 import mod.azure.doom.util.registry.DoomEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -38,9 +38,7 @@ public class GunBlockEntity extends BlockEntity implements ImplementedInventory,
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, event -> {
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
-		}));
+		controllers.add(new AnimationController<>(this, event -> event.setAndContinue(RawAnimation.begin().thenLoop("idle"))));
 	}
 
 	@Override

@@ -17,19 +17,14 @@ import net.minecraftforge.registries.RegistryObject;
 
 public record ModEntitySpawn(HolderSet<Biome> biomes, SpawnerData spawn) implements BiomeModifier {
 
-	public static DeferredRegister<Codec<? extends BiomeModifier>> SERIALIZER = DeferredRegister
-			.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, DoomMod.MODID);
+	public static DeferredRegister<Codec<? extends BiomeModifier>> SERIALIZER = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, DoomMod.MODID);
 
-	static RegistryObject<Codec<ModEntitySpawn>> DOOM_SPAWN_CODEC = SERIALIZER.register("mobspawns",
-			() -> RecordCodecBuilder.create(builder -> builder
-					.group(Biome.LIST_CODEC.fieldOf("biomes").forGetter(ModEntitySpawn::biomes),
-							SpawnerData.CODEC.fieldOf("spawn").forGetter(ModEntitySpawn::spawn))
-					.apply(builder, ModEntitySpawn::new)));
+	static RegistryObject<Codec<ModEntitySpawn>> DOOM_SPAWN_CODEC = SERIALIZER.register("mobspawns", () -> RecordCodecBuilder.create(builder -> builder.group(Biome.LIST_CODEC.fieldOf("biomes").forGetter(ModEntitySpawn::biomes), SpawnerData.CODEC.fieldOf("spawn").forGetter(ModEntitySpawn::spawn)).apply(builder, ModEntitySpawn::new)));
 
 	@Override
 	public void modify(Holder<Biome> biome, Phase phase, Builder builder) {
-		if (phase == Phase.ADD && this.biomes.contains(biome)) {
-			builder.getMobSpawnSettings().addSpawn(MobCategory.MONSTER, this.spawn);
+		if (phase == Phase.ADD && biomes.contains(biome)) {
+			builder.getMobSpawnSettings().addSpawn(MobCategory.MONSTER, spawn);
 		}
 	}
 

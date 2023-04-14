@@ -1,4 +1,4 @@
-package mod.azure.doom.client.gui.weapons;
+package mod.azure.doom.client.gui;
 
 import java.util.Optional;
 
@@ -29,8 +29,8 @@ public class GunTableOutputSlot extends Slot {
 
 	@Override
 	public ItemStack remove(int amount) {
-		if (this.hasItem()) {
-			this.removeCount += Math.min(amount, this.getItem().getCount());
+		if (hasItem()) {
+			removeCount += Math.min(amount, getItem().getCount());
 		}
 
 		return super.remove(amount);
@@ -38,47 +38,45 @@ public class GunTableOutputSlot extends Slot {
 
 	@Override
 	protected void onQuickCraft(ItemStack stack, int amount) {
-		this.removeCount += amount;
-		this.checkTakeAchievements(stack);
+		removeCount += amount;
+		checkTakeAchievements(stack);
 	}
 
 	@Override
 	protected void checkTakeAchievements(ItemStack stack) {
-		stack.onCraftedBy(this.player.level, this.player, this.removeCount);
-		this.removeCount = 0;
+		stack.onCraftedBy(player.level, player, removeCount);
+		removeCount = 0;
 	}
 
 	@Override
 	public void onTake(Player player, ItemStack stack) {
-		this.checkTakeAchievements(stack);
-		Optional<GunTableRecipe> optionalGunTableRecipe = player.level.getRecipeManager().getRecipeFor(Type.INSTANCE,
-				gunTableInventory, player.level);
+		checkTakeAchievements(stack);
+		final Optional<GunTableRecipe> optionalGunTableRecipe = player.level.getRecipeManager().getRecipeFor(Type.INSTANCE, gunTableInventory, player.level);
 		if (optionalGunTableRecipe.isPresent()) {
-			GunTableRecipe gunTableRecipe = optionalGunTableRecipe.get();
-			NonNullList<ItemStack> NonNullList = gunTableRecipe.getRemainingItems(gunTableInventory);
+			final GunTableRecipe gunTableRecipe = optionalGunTableRecipe.get();
+			final NonNullList<ItemStack> NonNullList = gunTableRecipe.getRemainingItems(gunTableInventory);
 
 			for (int i = 0; i < NonNullList.size(); ++i) {
-				ItemStack itemStack = this.gunTableInventory.getItem(i);
-				ItemStack itemStack2 = NonNullList.get(i);
+				ItemStack itemStack = gunTableInventory.getItem(i);
+				final ItemStack itemStack2 = NonNullList.get(i);
 				if (!itemStack.isEmpty()) {
-					this.gunTableInventory.removeItem(i, gunTableRecipe.countRequired(i));
-					itemStack = this.gunTableInventory.getItem(i);
+					gunTableInventory.removeItem(i, gunTableRecipe.countRequired(i));
+					itemStack = gunTableInventory.getItem(i);
 				}
 
 				if (!itemStack2.isEmpty()) {
 					if (itemStack.isEmpty()) {
-						this.gunTableInventory.setItem(i, itemStack2);
-					} else if (ItemStack.isSame(itemStack, itemStack2)
-							&& ItemStack.isSame(itemStack, itemStack2)) {
+						gunTableInventory.setItem(i, itemStack2);
+					} else if (ItemStack.isSame(itemStack, itemStack2) && ItemStack.isSame(itemStack, itemStack2)) {
 						itemStack2.shrink(itemStack.getCount());
-						this.gunTableInventory.setItem(i, itemStack2);
+						gunTableInventory.setItem(i, itemStack2);
 					} else if (!this.player.getInventory().add(itemStack2)) {
 						this.player.drop(itemStack2, false);
 					}
 				}
 			}
 		}
-		MinecraftForge.EVENT_BUS.post(new ItemCraftedEvent(player, stack, this.container));
-		this.setChanged();
+		MinecraftForge.EVENT_BUS.post(new ItemCraftedEvent(player, stack, container));
+		setChanged();
 	}
 }

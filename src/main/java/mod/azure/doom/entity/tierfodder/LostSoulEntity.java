@@ -1,11 +1,17 @@
 package mod.azure.doom.entity.tierfodder;
 
-import java.util.EnumSet;
-import java.util.SplittableRandom;
+import java.util.List;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.DemonAttackGoal;
+import mod.azure.doom.entity.DoomAnimationsDefault;
+import mod.azure.doom.entity.ai.DemonFloatControl;
+import mod.azure.doom.entity.ai.goal.RandomFlyConvergeOnTargetGoal;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -23,86 +29,89 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.util.AzureLibUtil;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
-public class LostSoulEntity extends DemonEntity implements GeoEntity {
+public class LostSoulEntity extends DemonEntity implements SmartBrainOwner<LostSoulEntity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-	protected static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(LostSoulEntity.class,
-			EntityDataSerializers.BYTE);
-	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(LostSoulEntity.class,
-			EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(LostSoulEntity.class, EntityDataSerializers.INT);
 	public int explosionPower = 1;
 	public int flameTimer;
 
 	public LostSoulEntity(EntityType<? extends LostSoulEntity> type, Level world) {
 		super(type, world);
-		this.moveControl = new LostSoulEntity.MoveHelperController(this);
-		this.maxUpStep = 4.0F;
+		setMaxUpStep(4.0F);
+		moveControl = new DemonFloatControl(this);
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving())
-				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+			if (event.isMoving() || this.swinging)
+				return event.setAndContinue(DoomAnimationsDefault.WALKING);
+			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}));
 	}
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
-		this.entityData.define(DATA_FLAGS_ID, (byte) 0);
-		this.entityData.define(VARIANT, 0);
+		entityData.define(VARIANT, 0);
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag) {
 		super.readAdditionalSaveData(tag);
-		this.setVariant(tag.getInt("Variant"));
+		setVariant(tag.getInt("Variant"));
 	}
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag tag) {
 		super.addAdditionalSaveData(tag);
-		tag.putInt("Variant", this.getVariant());
+		tag.putInt("Variant", getVariant());
 	}
 
 	public int getVariant() {
-		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 3);
+		return Mth.clamp(entityData.get(VARIANT), 1, 3);
 	}
 
 	public void setVariant(int variant) {
-		this.entityData.set(VARIANT, variant);
+		entityData.set(VARIANT, variant);
 	}
 
 	public int getVariants() {
@@ -110,128 +119,117 @@ public class LostSoulEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
-			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-		SplittableRandom random = new SplittableRandom();
-		int var = random.nextInt(0, 4);
-		this.setVariant(var);
+		final var variant = this.getRandom().nextInt(0, 4);
+		setVariant(variant);
 		return spawnDataIn;
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.lost_soul_health.get()).add(Attributes.FLYING_SPEED, 0.25D)
-				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.lost_soul_melee_damage.get()).add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomConfig.SERVER.lost_soul_health.get()).add(Attributes.FLYING_SPEED, 0.25D).add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.lost_soul_melee_damage.get()).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+	}
+
+	@Override
+	protected void customServerAiStep() {
+		tickBrain(this);
+		super.customServerAiStep();
+	}
+
+	@Override
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
+
+	@Override
+	public List<ExtendedSensor<LostSoulEntity>> getSensors() {
+		return ObjectArrayList.of(new NearbyLivingEntitySensor<LostSoulEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<LostSoulEntity>());
+	}
+
+	@Override
+	public BrainActivityGroup<LostSoulEntity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>());
+	}
+
+	@Override
+	public BrainActivityGroup<LostSoulEntity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<LostSoulEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.1f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+	}
+
+	@Override
+	public BrainActivityGroup<LostSoulEntity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(3.4F), new AnimatableMeleeAttack<>(0));
 	}
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		this.goalSelector.addGoal(8, new LostSoulEntity.LookAroundGoal(this));
-		this.goalSelector.addGoal(4, new DemonAttackGoal(this, 6.25D, 2));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
-		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
+		goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
+	}
+
+	@Override
+	public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
+		return this.getBbWidth() * 1.5f * (this.getBbWidth() * 1.5f + livingEntity.getBbWidth());
+	}
+
+	@Override
+	public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
+		var distance = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+		return distance <= this.getMeleeAttackRangeSqr(livingEntity);
 	}
 
 	@Override
 	protected void tickDeath() {
-		++this.deathTime;
-		if (this.deathTime == 5) {
-			this.remove(RemovalReason.KILLED);
-			this.dropExperience();
-			if (!this.level.isClientSide) {
-				this.explode();
-			}
+		++deathTime;
+		if (deathTime == 5) {
+			remove(RemovalReason.KILLED);
+			dropExperience();
+			if (!level.isClientSide)
+				explode();
 		}
 	}
 
 	protected void explode() {
-		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, Level.ExplosionInteraction.NONE);
-	}
-
-	private boolean getVexFlag(int p_190656_1_) {
-		int i = this.entityData.get(DATA_FLAGS_ID);
-		return (i & p_190656_1_) != 0;
-	}
-
-	private void setVexFlag(int p_190660_1_, boolean p_190660_2_) {
-		int i = this.entityData.get(DATA_FLAGS_ID);
-		if (p_190660_2_) {
-			i = i | p_190660_1_;
-		} else {
-			i = i & ~p_190660_1_;
-		}
-
-		this.entityData.set(DATA_FLAGS_ID, (byte) (i & 255));
-	}
-
-	public boolean isCharging() {
-		return this.getVexFlag(1);
-	}
-
-	public void setCharging(boolean charging) {
-		this.setVexFlag(1, charging);
+		level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, Level.ExplosionInteraction.NONE);
 	}
 
 	public boolean causeFallDamage(float distance, float damageMultiplier) {
 		return false;
 	}
 
+	@Override
 	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
 	}
 
+	@Override
 	public boolean onClimbable() {
 		return true;
 	}
 
-	protected PathNavigation createNavigation(Level worldIn) {
-		FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
-		flyingpathnavigator.setCanOpenDoors(false);
-		flyingpathnavigator.setCanFloat(true);
-		flyingpathnavigator.setCanPassDoors(true);
-		return flyingpathnavigator;
-	}
-
-	public void travel(Vec3 movementInput) {
-		if (this.isInWater()) {
-			this.moveRelative(0.02F, movementInput);
-			this.move(MoverType.SELF, this.getDeltaMovement());
-			this.setDeltaMovement(this.getDeltaMovement().scale((double) 0.8F));
-		} else if (this.isInLava()) {
-			this.moveRelative(0.02F, movementInput);
-			this.move(MoverType.SELF, this.getDeltaMovement());
-			this.setDeltaMovement(this.getDeltaMovement().scale(0.5D));
-		} else {
-			BlockPos ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
-			float f = 0.91F;
-			if (this.onGround) {
-				f = this.level.getBlockState(ground).getBlock().getFriction() * 0.91F;
-			}
-			float f1 = 0.16277137F / (f * f * f);
-			f = 0.91F;
-			if (this.onGround) {
-				f = this.level.getBlockState(ground).getBlock().getFriction() * 0.91F;
-			}
-			this.moveRelative(this.onGround ? 0.1F * f1 : 0.02F, movementInput);
-			this.move(MoverType.SELF, this.getDeltaMovement());
-			this.setDeltaMovement(this.getDeltaMovement().scale((double) f));
-		}
-		if (this.tickCount % 10 == 0) {
-			this.refreshDimensions();
-		}
-		this.calculateEntityAnimation(this, false);
-	}
-
 	@Override
-	protected void updateControlFlags() {
-		boolean flag = this.getTarget() != null && this.hasLineOfSight(this.getTarget());
-		this.goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
-		super.updateControlFlags();
+	public void travel(Vec3 movementInput) {
+		if (isInWater()) {
+			moveRelative(0.02F, movementInput);
+			move(MoverType.SELF, getDeltaMovement());
+			this.setDeltaMovement(getDeltaMovement().scale(0.8F));
+		} else if (isInLava()) {
+			moveRelative(0.02F, movementInput);
+			move(MoverType.SELF, getDeltaMovement());
+			this.setDeltaMovement(getDeltaMovement().scale(0.5D));
+		} else {
+			final var ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
+			var f = 0.91F;
+			if (onGround)
+				f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+			final var f1 = 0.16277137F / (f * f * f);
+			f = 0.91F;
+			if (onGround)
+				f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+			moveRelative(onGround ? 0.1F * f1 : 0.02F, movementInput);
+			move(MoverType.SELF, getDeltaMovement());
+			this.setDeltaMovement(getDeltaMovement().scale(f));
+		}
+		if (tickCount % 10 == 0)
+			refreshDimensions();
 	}
 
 	@Override
@@ -239,85 +237,13 @@ public class LostSoulEntity extends DemonEntity implements GeoEntity {
 		super.aiStep();
 		flameTimer = (flameTimer + 1) % 8;
 
-		boolean isInsideWaterBlock = this.level.isWaterAt(this.blockPosition());
+		final var isInsideWaterBlock = level.isWaterAt(blockPosition());
 		spawnLightSource(this, isInsideWaterBlock);
 	}
 
 	@Override
 	protected boolean shouldDespawnInPeaceful() {
 		return true;
-	}
-
-	static class MoveHelperController extends MoveControl {
-		private final LostSoulEntity parentEntity;
-		private int courseChangeCooldown;
-
-		public MoveHelperController(LostSoulEntity lostSoulEntity) {
-			super(lostSoulEntity);
-			this.parentEntity = lostSoulEntity;
-		}
-
-		public void tick() {
-			if (this.operation == MoveControl.Operation.MOVE_TO) {
-				if (this.courseChangeCooldown-- <= 0) {
-					this.courseChangeCooldown += this.parentEntity.getRandom().nextInt(5) + 2;
-					Vec3 vector3d = new Vec3(this.wantedX - this.parentEntity.getX(),
-							this.wantedY - this.parentEntity.getY(), this.wantedZ - this.parentEntity.getZ());
-					double d0 = vector3d.length();
-					vector3d = vector3d.normalize();
-					if (this.canReach(vector3d, Mth.ceil(d0))) {
-						this.parentEntity
-								.setDeltaMovement(this.parentEntity.getDeltaMovement().add(vector3d.scale(0.2D)));
-					} else {
-						this.operation = MoveControl.Operation.WAIT;
-					}
-				}
-
-			}
-		}
-
-		private boolean canReach(Vec3 p_220673_1_, int p_220673_2_) {
-			AABB axisalignedbb = this.parentEntity.getBoundingBox();
-
-			for (int i = 1; i < p_220673_2_; ++i) {
-				axisalignedbb = axisalignedbb.move(p_220673_1_);
-				if (!this.parentEntity.level.noCollision(this.parentEntity, axisalignedbb)) {
-					return false;
-				}
-			}
-
-			return true;
-		}
-	}
-
-	static class LookAroundGoal extends Goal {
-		private final LostSoulEntity parentEntity;
-
-		public LookAroundGoal(LostSoulEntity ghast) {
-			this.parentEntity = ghast;
-			this.setFlags(EnumSet.of(Goal.Flag.LOOK));
-		}
-
-		public boolean canUse() {
-			return true;
-		}
-
-		public void tick() {
-			if (this.parentEntity.getTarget() == null) {
-				Vec3 vec3d = this.parentEntity.getDeltaMovement();
-				this.parentEntity.yo = -((float) Mth.atan2(vec3d.x, vec3d.z)) * (180F / (float) Math.PI);
-				this.parentEntity.yBodyRot = this.parentEntity.getYRot();
-			} else {
-				LivingEntity livingentity = this.parentEntity.getTarget();
-				if (livingentity.distanceToSqr(this.parentEntity) < 4096.0D) {
-					double d1 = livingentity.getX() - this.parentEntity.getX();
-					double d2 = livingentity.getZ() - this.parentEntity.getZ();
-					this.parentEntity.yo = -((float) Mth.atan2(d1, d2)) * (180F / (float) Math.PI);
-					this.parentEntity.yBodyRot = this.parentEntity.getYRot();
-				}
-			}
-
-		}
 	}
 
 	protected boolean shouldBurnInDay() {
@@ -350,7 +276,16 @@ public class LostSoulEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	public EntityDimensions getDimensions(Pose pose) {
-		return this.getVariant() == 3 ? EntityDimensions.scalable(1.0F, 1.5F) : super.getDimensions(pose);
+		return getVariant() == 3 ? EntityDimensions.scalable(1.0F, 1.5F) : super.getDimensions(pose);
+	}
+
+	@Override
+	protected PathNavigation createNavigation(Level worldIn) {
+		final var flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
+		flyingpathnavigator.setCanOpenDoors(false);
+		flyingpathnavigator.setCanFloat(true);
+		flyingpathnavigator.setCanPassDoors(true);
+		return flyingpathnavigator;
 	}
 
 }

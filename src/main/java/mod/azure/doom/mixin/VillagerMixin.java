@@ -24,7 +24,7 @@ public abstract class VillagerMixin extends AbstractVillager {
 
 	@Inject(at = @At("RETURN"), method = "mobInteract", cancellable = true)
 	private void killVillager(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> ci) {
-		ItemStack itemStack = player.getItemInHand(hand);
+		final ItemStack itemStack = player.getItemInHand(hand);
 		if (itemStack.getItem() instanceof DoomBaseItem) {
 			ci.setReturnValue(InteractionResult.FAIL);
 		}

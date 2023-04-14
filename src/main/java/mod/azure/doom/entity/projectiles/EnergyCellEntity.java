@@ -1,10 +1,16 @@
 package mod.azure.doom.entity.projectiles;
 
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomParticles;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import mod.azure.doom.util.registry.DoomSounds;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -24,12 +30,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
 
@@ -38,20 +38,20 @@ public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
 	private int ticksInAir;
 	private float projectiledamage;
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-	public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();
+	public SoundEvent hitSound = getDefaultHitGroundSoundEvent();
 
 	public EnergyCellEntity(EntityType<? extends EnergyCellEntity> entityType, Level world) {
 		super(entityType, world);
-		this.pickup = AbstractArrow.Pickup.DISALLOWED;
+		pickup = AbstractArrow.Pickup.DISALLOWED;
 	}
 
 	public EnergyCellEntity(Level world, LivingEntity owner) {
-		super(ProjectilesEntityRegister.ENERGY_CELL.get(), owner, world);
+		super(DoomProjectiles.ENERGY_CELL.get(), owner, world);
 	}
 
 	public EnergyCellEntity(Level world, LivingEntity owner, float damage) {
-		super(ProjectilesEntityRegister.ENERGY_CELL.get(), owner, world);
-		this.projectiledamage = damage;
+		super(DoomProjectiles.ENERGY_CELL.get(), owner, world);
+		projectiledamage = damage;
 	}
 
 	protected EnergyCellEntity(EntityType<? extends EnergyCellEntity> type, double x, double y, double z, Level world) {
@@ -60,10 +60,9 @@ public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
 
 	protected EnergyCellEntity(EntityType<? extends EnergyCellEntity> type, LivingEntity owner, Level world) {
 		this(type, owner.getX(), owner.getEyeY() - 0.10000000149011612D, owner.getZ(), world);
-		this.setOwner(owner);
-		if (owner instanceof Player) {
-			this.pickup = AbstractArrow.Pickup.DISALLOWED;
-		}
+		setOwner(owner);
+		if (owner instanceof Player)
+			pickup = AbstractArrow.Pickup.DISALLOWED;
 	}
 
 	@Override
@@ -77,14 +76,12 @@ public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, event -> {
-			return PlayState.CONTINUE;
-		}));
+		controllers.add(new AnimationController<>(this, event -> PlayState.CONTINUE));
 	}
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override
@@ -94,42 +91,37 @@ public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
 
 	@Override
 	protected void tickDespawn() {
-		++this.ticksInAir;
-		if (this.tickCount >= 40) {
-			this.remove(RemovalReason.KILLED);
-		}
+		++ticksInAir;
+		if (tickCount >= 40)
+			remove(RemovalReason.KILLED);
 	}
 
 	@Override
 	public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
 		super.shoot(x, y, z, velocity, inaccuracy);
-		this.ticksInAir = 0;
+		ticksInAir = 0;
 	}
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
-		compound.putShort("life", (short) this.ticksInAir);
+		compound.putShort("life", (short) ticksInAir);
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
-		this.ticksInAir = compound.getShort("life");
+		ticksInAir = compound.getShort("life");
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
-		++this.ticksInAir;
-		if (this.ticksInAir >= 80) {
-			this.remove(Entity.RemovalReason.DISCARDED);
-		}
-		if (this.level.isClientSide()) {
-			double d2 = this.getX() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getBbWidth() * 0.5D;
-			double f2 = this.getZ() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getBbWidth() * 0.5D;
-			this.level.addParticle(DoomParticles.PLASMA.get(), true, d2, this.getY(), f2, 0, 0, 0);
-		}
+		++ticksInAir;
+		if (ticksInAir >= 80)
+			remove(Entity.RemovalReason.DISCARDED);
+		if (level.isClientSide())
+			level.addParticle(DoomParticles.PLASMA.get(), true, this.getX() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, this.getY(), this.getZ() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, 0, 0, 0);
 	}
 
 	public void initFromStack(ItemStack stack) {
@@ -139,14 +131,14 @@ public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
 
 	@Override
 	public boolean isNoGravity() {
-		if (this.isInWater())
+		if (isInWater())
 			return false;
 		return true;
 	}
 
 	@Override
 	public void setSoundEvent(SoundEvent soundIn) {
-		this.hitSound = soundIn;
+		hitSound = soundIn;
 	}
 
 	@Override
@@ -157,52 +149,40 @@ public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
 	@Override
 	protected void onHitBlock(BlockHitResult blockHitResult) {
 		super.onHitBlock(blockHitResult);
-		if (!this.level.isClientSide())
-			this.remove(Entity.RemovalReason.DISCARDED);
-		this.setSoundEvent(DoomSounds.PLASMA_HIT.get());
+		if (!level.isClientSide())
+			remove(Entity.RemovalReason.DISCARDED);
+		setSoundEvent(DoomSounds.PLASMA_HIT.get());
 	}
 
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
-		Entity entity = entityHitResult.getEntity();
-		if (entityHitResult.getType() != HitResult.Type.ENTITY
-				|| !((EntityHitResult) entityHitResult).getEntity().is(entity)) {
-			if (!this.level.isClientSide) {
-				this.remove(RemovalReason.KILLED);
-			}
-		}
-		Entity entity1 = this.getOwner();
+		final var entity = entityHitResult.getEntity();
+		if (entityHitResult.getType() != HitResult.Type.ENTITY || !entityHitResult.getEntity().is(entity))
+			if (!level.isClientSide)
+				remove(RemovalReason.KILLED);
+		final var entity1 = getOwner();
 		DamageSource damagesource;
-		if (entity1 == null) {
-			damagesource = DamageSource.arrow(this, this);
-		} else {
-			damagesource = DamageSource.arrow(this, entity1);
-			if (entity1 instanceof LivingEntity) {
+		if (entity1 == null)
+			damagesource = damageSources().arrow(this, this);
+		else {
+			damagesource = damageSources().arrow(this, entity1);
+			if (entity1 instanceof LivingEntity)
 				((LivingEntity) entity1).setLastHurtMob(entity);
-			}
 		}
 		if (entity.hurt(damagesource, projectiledamage)) {
-			if (entity instanceof LivingEntity) {
-				LivingEntity livingentity = (LivingEntity) entity;
-				if (!this.level.isClientSide && entity1 instanceof LivingEntity) {
+			if (entity instanceof LivingEntity livingentity) {
+				if (!level.isClientSide && entity1 instanceof LivingEntity) {
 					EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
 					EnchantmentHelper.doPostDamageEffects((LivingEntity) entity1, livingentity);
-					this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.5F,
-							Level.ExplosionInteraction.NONE);
-					this.remove(RemovalReason.KILLED);
+					level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.5F, Level.ExplosionInteraction.NONE);
+					remove(RemovalReason.KILLED);
 				}
-				this.doPostHurtEffects(livingentity);
-				if (entity1 != null && livingentity != entity1 && livingentity instanceof Player
-						&& entity1 instanceof ServerPlayer && !this.isSilent()) {
-					((ServerPlayer) entity1).connection
-							.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
-				}
+				doPostHurtEffects(livingentity);
+				if (entity1 != null && livingentity != entity1 && livingentity instanceof Player && entity1 instanceof ServerPlayer && !isSilent())
+					((ServerPlayer) entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
 			}
-		} else {
-			if (!this.level.isClientSide) {
-				this.remove(RemovalReason.KILLED);
-			}
-		}
+		} else if (!level.isClientSide)
+			remove(RemovalReason.KILLED);
 	}
 
 	@Override

@@ -10,7 +10,6 @@ import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tierboss.MotherDemonEntity;
-import mod.azure.doom.entity.tierboss.SpiderMastermind2016Entity;
 import mod.azure.doom.entity.tierboss.SpiderMastermindEntity;
 import mod.azure.doom.entity.tierfodder.ChaingunnerEntity;
 import mod.azure.doom.entity.tierfodder.GargoyleEntity;
@@ -60,102 +59,54 @@ public class ModEventSubscriber {
 	@SubscribeEvent
 	public static void onRegisterEvent(RegisterEvent event) {
 		event.register(ForgeRegistries.Keys.ENTITY_TYPES, helper -> {
-			SpawnPlacements.register(DoomEntities.GLADIATOR.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.ARCHVILE.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.LOST_SOUL.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.LOST_SOUL_ETERNAL.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.ZOMBIEMAN.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.SPIDERMASTERMIND.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.ARACHNOTRON.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.MANCUBUS.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.BARON.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.REVENANT.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.IMP.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.PINKY.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.SPECTRE.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.CACODEMON.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.CHAINGUNNER.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.MARAUDER.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.SHOTGUNGUY.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.PAIN.get(), SpawnPlacements.Type.IN_LAVA,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.HELLKNIGHT.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.HELLKNIGHT2016.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.CYBERDEMON.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.UNWILLING.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.POSSESSEDSCIENTIST.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.POSSESSEDSOLDIER.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.ICONOFSIN.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.GORE_NEST.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.MECHAZOMBIE.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.GARGOYLE.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.CUEBALL.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.PROWLER.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.DREADKNIGHT.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.IMP_STONE.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.POSSESSEDWORKER.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.DOOMHUNTER.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.WHIPLASH.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.FIREBARON.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.BARON2016.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.ARMORBARON.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.ARACHNOTRONETERNAL.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.MAYKRDRONE.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.SPIDERMASTERMIND2016.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.BLOODMAYKR.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.ARCHMAKER.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.TENTACLE.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.MOTHERDEMON.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.TURRET.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.SUMMONER.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
-			SpawnPlacements.register(DoomEntities.REVENANT2016.get(), SpawnPlacements.Type.ON_GROUND,
-					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.GLADIATOR.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.ARCHVILE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.LOST_SOUL.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.LOST_SOUL_ETERNAL.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.ZOMBIEMAN.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.SPIDERMASTERMIND.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.ARACHNOTRON.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.MANCUBUS.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.BARON.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.REVENANT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.IMP.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.PINKY.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.SPECTRE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.CACODEMON.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.CHAINGUNNER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.MARAUDER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.SHOTGUNGUY.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.PAIN.get(), SpawnPlacements.Type.IN_LAVA, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.HELLKNIGHT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.HELLKNIGHT2016.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.CYBERDEMON.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.UNWILLING.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.POSSESSEDSCIENTIST.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.POSSESSEDSOLDIER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.ICONOFSIN.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.GORE_NEST.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.MECHAZOMBIE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.GARGOYLE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.CUEBALL.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.PROWLER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.DREADKNIGHT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.IMP_STONE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.POSSESSEDWORKER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.DOOMHUNTER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.WHIPLASH.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.FIREBARON.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.BARON2016.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.ARMORBARON.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.ARACHNOTRONETERNAL.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.MAYKRDRONE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.SPIDERMASTERMIND2016.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.BLOODMAYKR.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.ARCHMAKER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.TENTACLE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.MOTHERDEMON.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.TURRET.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.SUMMONER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.REVENANT2016.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		});
 	}
 
@@ -200,7 +151,7 @@ public class ModEventSubscriber {
 		event.put(DoomEntities.ARMORBARON.get(), ArmoredBaronEntity.createMobAttributes().build());
 		event.put(DoomEntities.ARACHNOTRONETERNAL.get(), ArachnotronEntity.createMobAttributes().build());
 		event.put(DoomEntities.MAYKRDRONE.get(), MaykrDroneEntity.createMobAttributes().build());
-		event.put(DoomEntities.SPIDERMASTERMIND2016.get(), SpiderMastermind2016Entity.createMobAttributes().build());
+		event.put(DoomEntities.SPIDERMASTERMIND2016.get(), SpiderMastermindEntity.createMobAttributes().build());
 		event.put(DoomEntities.BLOODMAYKR.get(), BloodMaykrEntity.createMobAttributes().build());
 		event.put(DoomEntities.ARCHMAKER.get(), ArchMakyrEntity.createMobAttributes().build());
 		event.put(DoomEntities.FIREBARON.get(), FireBaronEntity.createMobAttributes().build());

@@ -3,10 +3,10 @@ package mod.azure.doom.recipes;
 import org.apache.commons.lang3.tuple.Pair;
 
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.client.gui.weapons.DoomGunInventory;
+import mod.azure.doom.client.gui.DoomGunInventory;
 import mod.azure.doom.util.registry.DoomRecipes;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -31,11 +31,11 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 	@Override
 	public boolean matches(DoomGunInventory inv, Level world) {
 		for (int i = 0; i < 5; i++) {
-			ItemStack slotStack = inv.getItem(i);
-			Pair<Ingredient, Integer> pair = ingredients[i];
-			Ingredient ingredient = pair.getLeft();
-			int count = pair.getRight();
-			if (slotStack.getCount() < count || !(ingredient.test(slotStack))) {
+			final ItemStack slotStack = inv.getItem(i);
+			final Pair<Ingredient, Integer> pair = ingredients[i];
+			final Ingredient ingredient = pair.getLeft();
+			final int count = pair.getRight();
+			if (slotStack.getCount() < count || !ingredient.test(slotStack)) {
 				return false;
 			}
 		}
@@ -51,8 +51,8 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 	}
 
 	@Override
-	public ItemStack assemble(DoomGunInventory inv) {
-		return this.getResultItem().copy();
+	public ItemStack assemble(DoomGunInventory inv, RegistryAccess var2) {
+		return getResultItem(var2).copy();
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 	}
 
 	@Override
-	public ItemStack getResultItem() {
+	public ItemStack getResultItem(RegistryAccess var1) {
 		return output;
 	}
 
@@ -87,8 +87,8 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 
 	@Override
 	public int compareTo(GunTableRecipe o) {
-		Item outputThis = getResultItem().getItem();
-		Item outputOther = o.getResultItem().getItem();
+		final var outputThis = output.getItem();
+		final var outputOther = o.output.getItem();
 		return ForgeRegistries.ITEMS.getKey(outputThis).compareTo(ForgeRegistries.ITEMS.getKey(outputOther));
 	}
 }

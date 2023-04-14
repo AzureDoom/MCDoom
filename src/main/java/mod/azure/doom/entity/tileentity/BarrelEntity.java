@@ -1,6 +1,6 @@
 package mod.azure.doom.entity.tileentity;
 
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -20,12 +20,11 @@ public class BarrelEntity extends Entity {
 	}
 
 	protected void explode() {
-		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 4.0F, true,
-				Level.ExplosionInteraction.NONE);
+		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 4.0F, true, Level.ExplosionInteraction.NONE);
 	}
 
 	public BarrelEntity(Level worldIn, double x, double y, double z, LivingEntity igniter) {
-		this(ProjectilesEntityRegister.BARREL.get(), worldIn);
+		this(DoomProjectiles.BARREL.get(), worldIn);
 		this.absMoveTo(x, y, z);
 		double d = level.random.nextDouble() * 6.2831854820251465D;
 		this.setDeltaMovement(-Math.sin(d) * 0.02D, 0.20000000298023224D, -Math.cos(d) * 0.02D);

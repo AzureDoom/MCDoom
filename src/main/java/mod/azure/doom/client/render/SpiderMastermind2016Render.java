@@ -1,9 +1,9 @@
 package mod.azure.doom.client.render;
 
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mod.azure.doom.client.models.SpiderMastermind2016Model;
 import mod.azure.doom.entity.tierboss.SpiderMastermind2016Entity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 public class SpiderMastermind2016Render extends GeoEntityRenderer<SpiderMastermind2016Entity> {
 

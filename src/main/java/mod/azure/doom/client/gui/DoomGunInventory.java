@@ -1,10 +1,10 @@
-package mod.azure.doom.client.gui.weapons;
+package mod.azure.doom.client.gui;
 
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
 
 public class DoomGunInventory implements Container {
 	private final GunTableScreenHandler container;
@@ -12,18 +12,18 @@ public class DoomGunInventory implements Container {
 	private final NonNullList<ItemStack> stacks;
 
 	public DoomGunInventory(GunTableScreenHandler container) {
-		this.stacks = NonNullList.withSize(6, ItemStack.EMPTY);
+		stacks = NonNullList.withSize(6, ItemStack.EMPTY);
 		this.container = container;
 	}
 
 	@Override
 	public int getContainerSize() {
-		return this.stacks.size();
+		return stacks.size();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		for (ItemStack stack : stacks) {
+		for (final ItemStack stack : stacks) {
 			if (!stack.isEmpty()) {
 				return false;
 			}
@@ -33,26 +33,26 @@ public class DoomGunInventory implements Container {
 
 	@Override
 	public ItemStack getItem(int slot) {
-		return this.stacks.get(slot);
+		return stacks.get(slot);
 	}
 
 	@Override
 	public ItemStack removeItem(int slot, int amount) {
-		ItemStack itemStack = ContainerHelper.removeItem(this.stacks, slot, amount);
+		final ItemStack itemStack = ContainerHelper.removeItem(stacks, slot, amount);
 		if (!itemStack.isEmpty() && slot != 5) {
-			this.container.onContentChanged(this);
+			container.onContentChanged(this);
 		}
 		return itemStack;
 	}
 
 	@Override
 	public ItemStack removeItemNoUpdate(int slot) {
-		return ContainerHelper.takeItem(this.stacks, slot);
+		return ContainerHelper.takeItem(stacks, slot);
 	}
 
 	@Override
 	public void setItem(int slot, ItemStack stack) {
-		this.stacks.set(slot, stack);
+		stacks.set(slot, stack);
 		if (slot != 5)
 			container.onContentChanged(this);
 	}
@@ -69,7 +69,7 @@ public class DoomGunInventory implements Container {
 
 	@Override
 	public void clearContent() {
-		this.stacks.clear();
+		stacks.clear();
 	}
 
 }

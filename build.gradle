@@ -30,7 +30,7 @@ import com.modrinth.minotaur.dependencies.ModDependency
 
 version = project.mod_version
 group = "mod.azure.doom"
-archivesBaseName = "MCDoom-Forge-1.19.3"
+archivesBaseName = "MCDoom-Forge-1.19.4"
 
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -42,7 +42,7 @@ mixin {
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
-    mappings channel: 'official', version: '1.19.3'
+    mappings channel: 'official', version: '1.19.4'
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
@@ -76,6 +76,7 @@ repositories {
     maven { url "https://maven.theillusivec4.top/" }
     maven { url "https://minecraft.curseforge.com/api/maven/" }
     maven { url 'https://dl.cloudsmith.io/public/azuredoom-mods/azurelib/maven/' }
+    maven { url 'https://dl.cloudsmith.io/public/tslat/sbl/maven/' }
     maven { url "https://maven.blamejared.com" }
 	maven { url "https://cfa2.cursemaven.com" }
 	maven { url "https://maven.shedaniel.me" }
@@ -84,15 +85,17 @@ repositories {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.3-44.1.7'
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.3-5.1.1.2")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.3-5.1.1.2:api")
-  	implementation fg.deobf('mod.azure.azurelib:azurelib-forge-1.19.3:1.0.3')
+    minecraft 'net.minecraftforge:forge:1.19.4-45.0.43'
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.4-5.1.4.3")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.4-5.1.4.3:api")
+  	implementation fg.deobf('mod.azure.azurelib:azurelib-forge-1.19.4:1.0.11')
 	annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:10.0.581")
-    implementation fg.deobf("curse.maven:reiw-521393:4167495")
-    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:9.0.94")
-    implementation fg.deobf("dev.architectury:architectury-forge:7.0.66")
+    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:11.0.597")
+    implementation fg.deobf("curse.maven:REIPC-521393:4403008")
+    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:10.0.96")
+    implementation fg.deobf("dev.architectury:architectury-forge:8.1.79")
+	implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-forge-1.19.4:1.9")
+	implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-common-1.19.4:1.9")
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -156,13 +159,14 @@ if (file('key.properties').exists()) {
         	releaseType = "${curse_release}"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
-        	addGameVersion("1.19.3")
+        	addGameVersion("1.19.4")
         	addGameVersion("Forge")
         	addGameVersion("Java 17")
 
         	relations {
             	requiredDependency 'curios'  
             	requiredDependency 'azurelib' 
+            	requiredDependency 'smartbrainlib'  
             	optionalDependency 'better-combat-by-daedelus' 
         	}
     	}
@@ -178,13 +182,14 @@ if (file('key.properties').exists()) {
 		token = modrinthProp.getProperty('modrinthKey')
 		projectId = 'Mfo4FiDF' 
 		versionNumber = project.mod_version 
-		versionName = 'Forge 1.19.3'
+		versionName = 'Forge 1.19.4'
 		uploadFile = jar 
 		changelog = rootProject.file("changelog.txt").text
-		gameVersions = ['1.19.3']
+		gameVersions = ['1.19.4']
 		loaders = ['forge']
 		dependencies { 
         	required.project "azurelib"
+        	required.project "smartbrainlib"
         	optional.project "better-combat"
    		}
 	}

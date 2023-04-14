@@ -1,28 +1,27 @@
 package mod.azure.doom.entity.projectiles.entity;
 
-import mod.azure.doom.config.DoomConfig;
-import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.tierboss.GladiatorEntity;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.network.NetworkHooks;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.tierboss.GladiatorEntity;
+import mod.azure.doom.util.registry.DoomProjectiles;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraftforge.network.NetworkHooks;
 
 public class GladiatorMaceEntity extends AbstractHurtingProjectile implements GeoEntity {
 
@@ -33,30 +32,27 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
 	private LivingEntity shooter;
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-	public GladiatorMaceEntity(EntityType<? extends GladiatorMaceEntity> p_i50160_1_, Level p_i50160_2_) {
-		super(p_i50160_1_, p_i50160_2_);
+	public GladiatorMaceEntity(EntityType<? extends GladiatorMaceEntity> entity, Level level) {
+		super(entity, level);
 	}
 
 	public GladiatorMaceEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ) {
-		super(ProjectilesEntityRegister.GLADIATOR_MACE.get(), shooter, accelX, accelY, accelZ, worldIn);
+		super(DoomProjectiles.GLADIATOR_MACE.get(), shooter, accelX, accelY, accelZ, worldIn);
 		this.shooter = shooter;
 	}
 
-	public GladiatorMaceEntity(Level worldIn, double x, double y, double z, double accelX, double accelY,
-			double accelZ) {
-		super(ProjectilesEntityRegister.GLADIATOR_MACE.get(), x, y, z, accelX, accelY, accelZ, worldIn);
+	public GladiatorMaceEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
+		super(DoomProjectiles.GLADIATOR_MACE.get(), x, y, z, accelX, accelY, accelZ, worldIn);
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, event -> {
-			return PlayState.CONTINUE;
-		}));
+		controllers.add(new AnimationController<>(this, event -> PlayState.CONTINUE));
 	}
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override
@@ -67,19 +63,19 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
 	@Override
 	public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
 		super.shoot(x, y, z, velocity, inaccuracy);
-		this.ticksInAir = 0;
+		ticksInAir = 0;
 	}
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
-		compound.putShort("life", (short) this.ticksInAir);
+		compound.putShort("life", (short) ticksInAir);
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
-		this.ticksInAir = compound.getShort("life");
+		ticksInAir = compound.getShort("life");
 	}
 
 	@Override
@@ -94,40 +90,35 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
 
 	@Override
 	public boolean isNoGravity() {
-		if (this.isInWater())
+		if (isInWater())
 			return false;
 		return true;
 	}
 
 	@Override
-	protected void onHit(HitResult hitResult) {
-		super.onHit(hitResult);
-		if (!this.level.isClientSide()) {
-			this.remove(Entity.RemovalReason.DISCARDED);
-		}
-		this.playSound(SoundEvents.NETHERITE_BLOCK_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+	protected void onHitBlock(BlockHitResult result) {
+		super.onHitBlock(result);
+		if (!level.isClientSide())
+			remove(Entity.RemovalReason.DISCARDED);
+		this.playSound(SoundEvents.NETHERITE_BLOCK_HIT, 1.0F, 1.2F / (random.nextFloat() * 0.2F + 0.9F));
 	}
 
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		super.onHitEntity(entityHitResult);
-		if (!this.level.isClientSide()) {
-			Entity entity = entityHitResult.getEntity();
-			Entity entity2 = this.getOwner();
+		if (!level.isClientSide()) {
+			final var entity = entityHitResult.getEntity();
+			final var entity2 = getOwner();
 			entity.setSecondsOnFire(5);
-			if (!(entity2 instanceof DemonEntity))
-				entity.hurt(DamageSource.mobAttack((LivingEntity) entity2),
-						DoomConfig.SERVER.gladiator_ranged_damage.get().floatValue()
-								+ (this.shooter.getEntityData().get(GladiatorEntity.DEATH_STATE) == 1
-										? DoomConfig.SERVER.gladiator_phaseone_damage_boost.get().floatValue()
-										: 0));
+			if (!(entity instanceof DemonEntity))
+				entity.hurt(damageSources().mobAttack((LivingEntity) entity2), (float) (DoomConfig.SERVER.gladiator_ranged_damage.get() + (shooter.getEntityData().get(GladiatorEntity.DEATH_STATE) == 1 ? DoomConfig.SERVER.gladiator_phaseone_damage_boost.get() : 0)));
 			if (entity2 instanceof LivingEntity) {
-				if (!(entity2 instanceof DemonEntity))
-					this.doEnchantDamageEffects((LivingEntity) entity2, entity);
-				this.remove(Entity.RemovalReason.DISCARDED);
+				if (!(entity instanceof DemonEntity))
+					doEnchantDamageEffects((LivingEntity) entity2, entity);
+				remove(Entity.RemovalReason.DISCARDED);
 			}
 		}
-		this.playSound(SoundEvents.NETHERITE_BLOCK_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+		this.playSound(SoundEvents.NETHERITE_BLOCK_HIT, 1.0F, 1.2F / (random.nextFloat() * 0.2F + 0.9F));
 	}
 
 	public LivingEntity getShooter() {
@@ -137,12 +128,12 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
 	public void setShooter(LivingEntity shooter) {
 		this.shooter = shooter;
 	}
-	
+
 	@Override
 	public void tick() {
 		super.tick();
-		if (this.tickCount >= 80) 
-			this.remove(Entity.RemovalReason.DISCARDED);
+		if (tickCount >= 80)
+			remove(Entity.RemovalReason.DISCARDED);
 	}
 
 }

@@ -16,9 +16,8 @@ import net.minecraft.world.item.ItemStack;
 public class WeaponRenderingMixin {
 
 	@Inject(method = "getArmPose", at = @At(value = "TAIL"), cancellable = true)
-	private static void tryItemPose(AbstractClientPlayer player, InteractionHand hand,
-			CallbackInfoReturnable<HumanoidModel.ArmPose> ci) {
-		ItemStack itemstack = player.getItemInHand(hand);
+	private static void tryItemPose(AbstractClientPlayer player, InteractionHand hand, CallbackInfoReturnable<HumanoidModel.ArmPose> ci) {
+		final ItemStack itemstack = player.getItemInHand(hand);
 		if (itemstack.getItem() instanceof DoomBaseItem) {
 			ci.setReturnValue(HumanoidModel.ArmPose.BOW_AND_ARROW);
 		}

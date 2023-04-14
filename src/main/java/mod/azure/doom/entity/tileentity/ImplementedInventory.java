@@ -10,8 +10,7 @@ import net.minecraft.world.item.ItemStack;
 public interface ImplementedInventory extends Container {
 
 	/**
-	 * Retrieves the item list of this inventory. Must return the same instance
-	 * every time it's called.
+	 * Retrieves the item list of this inventory. Must return the same instance every time it's called.
 	 */
 	NonNullList<ItemStack> getItems();
 
@@ -65,8 +64,7 @@ public interface ImplementedInventory extends Container {
 	 * Removes items from an inventory slot.
 	 * 
 	 * @param slot  The slot to remove from.
-	 * @param count How many items to remove. If there are less items in the slot
-	 *              than what are requested, takes all items in that slot.
+	 * @param count How many items to remove. If there are less items in the slot than what are requested, takes all items in that slot.
 	 */
 	@Override
 	default ItemStack removeItem(int slot, int count) {
@@ -91,9 +89,7 @@ public interface ImplementedInventory extends Container {
 	 * Replaces the current stack in an inventory slot with the provided stack.
 	 * 
 	 * @param slot  The inventory slot of which to replace the itemstack.
-	 * @param stack The replacing itemstack. If the stack is too big for this
-	 *              inventory ({@link Inventory#getMaxCountPerStack()}), it gets
-	 *              resized to this inventory's maximum amount.
+	 * @param stack The replacing itemstack. If the stack is too big for this inventory ({@link Inventory#getMaxCountPerStack()}), it gets resized to this inventory's maximum amount.
 	 */
 	@Override
 	default void setItem(int slot, ItemStack stack) {
@@ -112,9 +108,7 @@ public interface ImplementedInventory extends Container {
 	}
 
 	/**
-	 * Marks the state as dirty. Must be called after changes in the inventory, so
-	 * that the game can properly save the inventory contents and notify neighboring
-	 * blocks of inventory changes.
+	 * Marks the state as dirty. Must be called after changes in the inventory, so that the game can properly save the inventory contents and notify neighboring blocks of inventory changes.
 	 */
 	@Override
 	default void setChanged() {

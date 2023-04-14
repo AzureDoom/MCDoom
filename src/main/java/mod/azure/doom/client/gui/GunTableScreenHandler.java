@@ -1,4 +1,4 @@
-package mod.azure.doom.client.gui.weapons;
+package mod.azure.doom.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +26,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 	private final ContainerLevelAccess context;
 	@SuppressWarnings("unused")
 	private int recipeIndex;
+	private static Level level;
 
 	// client
 	public GunTableScreenHandler(int syncId, Inventory playerInventory) {
@@ -36,38 +37,36 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 	public GunTableScreenHandler(int syncId, Inventory playerInventory, ContainerLevelAccess context) {
 		super(DoomScreens.SCREEN_HANDLER_TYPE.get(), syncId);
 		this.playerInventory = playerInventory;
-		this.gunTableInventory = new DoomGunInventory(this);
+		gunTableInventory = new DoomGunInventory(this);
+		GunTableScreenHandler.level = playerInventory.player.level;
 		this.context = context;
-		this.addSlot(new Slot(this.gunTableInventory, 0, 155, 13));
-		this.addSlot(new Slot(this.gunTableInventory, 1, 175, 33));
-		this.addSlot(new Slot(this.gunTableInventory, 2, 135, 33));
-		this.addSlot(new Slot(this.gunTableInventory, 3, 142, 56));
-		this.addSlot(new Slot(this.gunTableInventory, 4, 168, 56));
-		this.addSlot(new GunTableOutputSlot(playerInventory.player, this.gunTableInventory, 5, 238, 38));
+		addSlot(new Slot(gunTableInventory, 0, 155, 13));
+		addSlot(new Slot(gunTableInventory, 1, 175, 33));
+		addSlot(new Slot(gunTableInventory, 2, 135, 33));
+		addSlot(new Slot(gunTableInventory, 3, 142, 56));
+		addSlot(new Slot(gunTableInventory, 4, 168, 56));
+		addSlot(new GunTableOutputSlot(playerInventory.player, gunTableInventory, 5, 238, 38));
 
 		int k;
 		for (k = 0; k < 3; ++k) {
 			for (int j = 0; j < 9; ++j) {
-				this.addSlot(new Slot(playerInventory, j + k * 9 + 9, 127 + j * 18, 84 + k * 18));
+				addSlot(new Slot(playerInventory, j + k * 9 + 9, 127 + j * 18, 84 + k * 18));
 			}
 		}
 
 		for (k = 0; k < 9; ++k) {
-			this.addSlot(new Slot(playerInventory, k, 127 + k * 18, 142));
+			addSlot(new Slot(playerInventory, k, 127 + k * 18, 142));
 		}
 
 	}
 
 	protected static void updateResult(int syncId, Level world, Player player, DoomGunInventory craftingInventory) {
 		if (!world.isClientSide()) {
-			ServerPlayer serverPlayerEntity = (ServerPlayer) player;
+			final ServerPlayer serverPlayerEntity = (ServerPlayer) player;
 			ItemStack itemStack = ItemStack.EMPTY;
-			Optional<GunTableRecipe> optional = world.getServer().getRecipeManager().getRecipeFor(Type.INSTANCE,
-					craftingInventory, world);
-			if (optional.isPresent()) {
-				GunTableRecipe craftingRecipe = optional.get();
-				itemStack = craftingRecipe.assemble(craftingInventory);
-			}
+			final Optional<GunTableRecipe> optional = world.getServer().getRecipeManager().getRecipeFor(Type.INSTANCE, craftingInventory, world);
+			if (optional.isPresent())
+				itemStack = optional.get().assemble(craftingInventory, level.registryAccess());
 
 			craftingInventory.setItem(5, itemStack);
 			serverPlayerEntity.connection.send(new ClientboundContainerSetSlotPacket(syncId, 0, 5, itemStack));
@@ -75,8 +74,8 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 	}
 
 	public void onContentChanged(Container inventory) {
-		this.context.execute((world, blockPos) -> {
-			updateResult(this.containerId, world, this.playerInventory.player, this.gunTableInventory);
+		context.execute((world, blockPos) -> {
+			updateResult(containerId, world, playerInventory.player, gunTableInventory);
 		});
 	}
 
@@ -85,30 +84,32 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 		return stillValid(context, player, DoomBlocks.GUN_TABLE.get());
 	}
 
+	@Override
 	public boolean canTakeItemForPickAll(ItemStack stack, Slot slot) {
 		return false;
 	}
 
+	@Override
 	public ItemStack quickMoveStack(Player player, int index) {
 		ItemStack itemStack = ItemStack.EMPTY;
-		Slot slot = this.slots.get(index);
+		final Slot slot = slots.get(index);
 		if (slot != null && slot.hasItem()) {
-			ItemStack itemStack2 = slot.getItem();
+			final ItemStack itemStack2 = slot.getItem();
 			itemStack = itemStack2.copy();
 			if (index == 2) {
-				if (!this.moveItemStackTo(itemStack2, 3, 39, true)) {
+				if (!moveItemStackTo(itemStack2, 3, 39, true)) {
 					return ItemStack.EMPTY;
 				}
 				slot.onQuickCraft(itemStack2, itemStack);
 			} else if (index != 0 && index != 1) {
 				if (index >= 3 && index < 30) {
-					if (!this.moveItemStackTo(itemStack2, 30, 39, false)) {
+					if (!moveItemStackTo(itemStack2, 30, 39, false)) {
 						return ItemStack.EMPTY;
 					}
-				} else if (index >= 30 && index < 39 && !this.moveItemStackTo(itemStack2, 3, 30, false)) {
+				} else if (index >= 30 && index < 39 && !moveItemStackTo(itemStack2, 3, 30, false)) {
 					return ItemStack.EMPTY;
 				}
-			} else if (!this.moveItemStackTo(itemStack2, 3, 39, false)) {
+			} else if (!moveItemStackTo(itemStack2, 3, 39, false)) {
 				return ItemStack.EMPTY;
 			}
 
@@ -129,8 +130,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 	}
 
 	public List<GunTableRecipe> getRecipes() {
-		List<GunTableRecipe> list = new ArrayList<>(
-				playerInventory.player.level.getRecipeManager().getAllRecipesFor(Type.INSTANCE));
+		final List<GunTableRecipe> list = new ArrayList<>(playerInventory.player.level.getRecipeManager().getAllRecipesFor(Type.INSTANCE));
 		list.sort(null);
 		return list;
 	}
@@ -141,13 +141,13 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 
 	public void switchTo(int recipeIndex) {
 		// index out of bounds
-		if (this.getRecipes().size() > recipeIndex) {
-			GunTableRecipe gunTableRecipe = getRecipes().get(recipeIndex);
+		if (getRecipes().size() > recipeIndex) {
+			final GunTableRecipe gunTableRecipe = getRecipes().get(recipeIndex);
 			for (int i = 0; i < 5; i++) {
-				ItemStack slotStack = gunTableInventory.getItem(i);
+				final ItemStack slotStack = gunTableInventory.getItem(i);
 				if (!slotStack.isEmpty()) {
 					// if all positions can't be filled, transfer nothing
-					if (!this.moveItemStackTo(slotStack, 6, 39, false)) {
+					if (!moveItemStackTo(slotStack, 6, 39, false)) {
 						return;
 					}
 					gunTableInventory.setItem(i, slotStack);
@@ -155,11 +155,11 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 			}
 
 			for (int i = 0; i < 5; i++) {
-				Ingredient ingredient = gunTableRecipe.getIngredientForSlot(i);
+				final Ingredient ingredient = gunTableRecipe.getIngredientForSlot(i);
 				if (!ingredient.isEmpty()) {
-					ItemStack[] possibleItems = ingredient.getItems();
+					final ItemStack[] possibleItems = ingredient.getItems();
 					if (possibleItems != null) {
-						ItemStack first = new ItemStack(possibleItems[0].getItem(), gunTableRecipe.countRequired(i));
+						final ItemStack first = new ItemStack(possibleItems[0].getItem(), gunTableRecipe.countRequired(i));
 						moveFromInventoryToPaymentSlot(i, first);
 					}
 				}
@@ -169,18 +169,18 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 
 	private void moveFromInventoryToPaymentSlot(int slot, ItemStack stack) {
 		if (!stack.isEmpty()) {
-			int ingCount = stack.getCount();
+			final int ingCount = stack.getCount();
 			for (int index = 6; index < 42; ++index) {
-				ItemStack slotStack = this.slots.get(index).getItem();
+				final ItemStack slotStack = slots.get(index).getItem();
 				if (!slotStack.isEmpty() && this.equals(stack, slotStack)) {
-					ItemStack invStack = this.gunTableInventory.getItem(slot);
-					int invStackCount = invStack.isEmpty() ? 0 : invStack.getCount();
-					int countToMove = Math.min(ingCount - invStackCount, slotStack.getCount());
-					ItemStack slotStackCopy = slotStack.copy();
-					int l = invStackCount + countToMove;
+					final ItemStack invStack = gunTableInventory.getItem(slot);
+					final int invStackCount = invStack.isEmpty() ? 0 : invStack.getCount();
+					final int countToMove = Math.min(ingCount - invStackCount, slotStack.getCount());
+					final ItemStack slotStackCopy = slotStack.copy();
+					final int l = invStackCount + countToMove;
 					slotStack.shrink(countToMove);
 					slotStackCopy.setCount(l);
-					this.gunTableInventory.setItem(slot, slotStackCopy);
+					gunTableInventory.setItem(slot, slotStackCopy);
 					if (l >= stack.getMaxStackSize()) {
 						break;
 					}
@@ -190,25 +190,25 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 	}
 
 	private boolean equals(ItemStack itemStack, ItemStack otherItemStack) {
-		return itemStack.getItem() == otherItemStack.getItem()
-				&& ItemStack.isSame(itemStack, otherItemStack);
+		return itemStack.getItem() == otherItemStack.getItem() && ItemStack.isSame(itemStack, otherItemStack);
 	}
 
+	@Override
 	public void removed(Player player) {
 		super.removed(player);
-		if (!this.playerInventory.player.level.isClientSide) {
+		if (!playerInventory.player.level.isClientSide) {
 			if (player.isAlive() && (!(player instanceof ServerPlayer) || !((ServerPlayer) player).hasDisconnected())) {
-				player.getInventory().placeItemBackInInventory(this.gunTableInventory.removeItemNoUpdate(0));
-				player.getInventory().placeItemBackInInventory(this.gunTableInventory.removeItemNoUpdate(1));
-				player.getInventory().placeItemBackInInventory(this.gunTableInventory.removeItemNoUpdate(2));
-				player.getInventory().placeItemBackInInventory(this.gunTableInventory.removeItemNoUpdate(3));
-				player.getInventory().placeItemBackInInventory(this.gunTableInventory.removeItemNoUpdate(4));
+				player.getInventory().placeItemBackInInventory(gunTableInventory.removeItemNoUpdate(0));
+				player.getInventory().placeItemBackInInventory(gunTableInventory.removeItemNoUpdate(1));
+				player.getInventory().placeItemBackInInventory(gunTableInventory.removeItemNoUpdate(2));
+				player.getInventory().placeItemBackInInventory(gunTableInventory.removeItemNoUpdate(3));
+				player.getInventory().placeItemBackInInventory(gunTableInventory.removeItemNoUpdate(4));
 			} else {
-				ItemStack itemStack0 = this.gunTableInventory.removeItemNoUpdate(0);
-				ItemStack itemStack1 = this.gunTableInventory.removeItemNoUpdate(1);
-				ItemStack itemStack2 = this.gunTableInventory.removeItemNoUpdate(2);
-				ItemStack itemStack3 = this.gunTableInventory.removeItemNoUpdate(3);
-				ItemStack itemStack4 = this.gunTableInventory.removeItemNoUpdate(4);
+				final ItemStack itemStack0 = gunTableInventory.removeItemNoUpdate(0);
+				final ItemStack itemStack1 = gunTableInventory.removeItemNoUpdate(1);
+				final ItemStack itemStack2 = gunTableInventory.removeItemNoUpdate(2);
+				final ItemStack itemStack3 = gunTableInventory.removeItemNoUpdate(3);
+				final ItemStack itemStack4 = gunTableInventory.removeItemNoUpdate(4);
 				if (!itemStack0.isEmpty()) {
 					player.drop(itemStack0, false);
 				}

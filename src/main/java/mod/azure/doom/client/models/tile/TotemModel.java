@@ -1,10 +1,10 @@
 package mod.azure.doom.client.models.tile;
 
+import mod.azure.azurelib.model.GeoModel;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tileentity.TotemEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import mod.azure.azurelib.model.GeoModel;
 
 public class TotemModel extends GeoModel<TotemEntity> {
 	@Override

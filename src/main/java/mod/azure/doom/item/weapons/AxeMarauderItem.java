@@ -17,7 +17,6 @@ import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -37,20 +36,16 @@ public class AxeMarauderItem extends SwordItem {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(Component.translatable("doom.marauder_axe1.text").withStyle(ChatFormatting.RED)
-				.withStyle(ChatFormatting.ITALIC));
-		tooltip.add(Component.translatable("doom.marauder_axe2.text").withStyle(ChatFormatting.RED)
-				.withStyle(ChatFormatting.ITALIC));
-		tooltip.add(Component.translatable("doom.marauder_axe3.text").withStyle(ChatFormatting.RED)
-				.withStyle(ChatFormatting.ITALIC));
+		tooltip.add(Component.translatable("doom.marauder_axe1.text").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.ITALIC));
+		tooltip.add(Component.translatable("doom.marauder_axe2.text").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.ITALIC));
+		tooltip.add(Component.translatable("doom.marauder_axe3.text").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 
 	@Override
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity miner) {
-		if (miner instanceof Player) {
-			Player playerentity = (Player) miner;
-			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
+		if (miner instanceof Player playerentity) {
+			if (stack.getDamageValue() < stack.getMaxDamage() - 1) {
 				if (playerentity.getMainHandItem().getItem() instanceof AxeMarauderItem) {
 					final AABB aabb = new AABB(miner.blockPosition().above()).inflate(4D, 1D, 4D);
 					miner.getCommandSenderWorld().getEntities(miner, aabb).forEach(e -> doDamage(playerentity, e));
@@ -58,24 +53,19 @@ public class AxeMarauderItem extends SwordItem {
 				}
 			}
 		}
-		return stack.getDamageValue() < (stack.getMaxDamage() - 1) ? true : false;
+		return stack.getDamageValue() < stack.getMaxDamage() - 1 ? true : false;
 	}
 
 	private void doDamage(LivingEntity user, final Entity target) {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
-			target.hurt(DamageSource.playerAttack((Player) user),
-					(target instanceof ArchMakyrEntity) || (target instanceof GladiatorEntity)
-							|| (target instanceof IconofsinEntity) || (target instanceof MotherDemonEntity)
-							|| (target instanceof SpiderMastermind2016Entity)
-							|| (target instanceof SpiderMastermindEntity) ? (DoomConfig.SERVER.marauder_axe_item_damage.get().floatValue() / 10F)
-									: DoomConfig.SERVER.marauder_axe_item_damage.get().floatValue());
+			target.hurt(user.damageSources().playerAttack((Player) user), target instanceof ArchMakyrEntity || target instanceof GladiatorEntity || target instanceof IconofsinEntity || target instanceof MotherDemonEntity || target instanceof SpiderMastermind2016Entity || target instanceof SpiderMastermindEntity ? DoomConfig.SERVER.marauder_axe_item_damage.get().floatValue() / 10F : DoomConfig.SERVER.marauder_axe_item_damage.get().floatValue());
 		}
 	}
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-		Player playerentity = (Player) entityIn;
+		final Player playerentity = (Player) entityIn;
 		if (worldIn.isClientSide) {
 			if (playerentity.getMainHandItem().getItem() instanceof AxeMarauderItem) {
 				while (Keybindings.RELOAD.consumeClick() && isSelected) {
@@ -87,8 +77,7 @@ public class AxeMarauderItem extends SwordItem {
 
 	public static void reload(Player user, InteractionHand hand) {
 		if (user.getItemInHand(hand).getItem() instanceof AxeMarauderItem) {
-			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
-					&& user.getInventory().countItem(DoomItems.ARGENT_BLOCK.get()) > 0) {
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0 && user.getInventory().countItem(DoomItems.ARGENT_BLOCK.get()) > 0) {
 				removeAmmo(DoomItems.ARGENT_BLOCK.get(), user);
 				user.getItemInHand(hand).hurtAndBreak(-5, user, s -> user.broadcastBreakEvent(hand));
 				user.getItemInHand(hand).setPopTime(3);
@@ -98,12 +87,12 @@ public class AxeMarauderItem extends SwordItem {
 
 	public static void removeAmmo(Item ammo, Player playerEntity) {
 		if (!playerEntity.isCreative()) {
-			for (ItemStack item : playerEntity.getInventory().offhand) {
+			for (final ItemStack item : playerEntity.getInventory().offhand) {
 				if (item.getItem() == ammo) {
 					item.shrink(1);
 					break;
 				}
-				for (ItemStack item1 : playerEntity.getInventory().items) {
+				for (final ItemStack item1 : playerEntity.getInventory().items) {
 					if (item1.getItem() == ammo) {
 						item1.shrink(1);
 						break;

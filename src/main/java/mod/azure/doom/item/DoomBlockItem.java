@@ -24,7 +24,7 @@ public abstract class DoomBlockItem extends BlockItem implements GeoItem {
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 }

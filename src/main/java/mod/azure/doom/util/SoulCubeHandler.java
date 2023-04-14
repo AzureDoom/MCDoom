@@ -37,7 +37,7 @@ public class SoulCubeHandler {
 		if (evt.getObject().getItem() != DoomItems.SOULCUBE.get()) {
 			return;
 		}
-		ICurio curio = new ICurio() {
+		final ICurio curio = new ICurio() {
 
 			@Override
 			public boolean canRightClickEquip() {
@@ -50,7 +50,7 @@ public class SoulCubeHandler {
 			}
 		};
 
-		ICapabilityProvider provider = new ICapabilityProvider() {
+		final ICapabilityProvider provider = new ICapabilityProvider() {
 			private final LazyOptional<ICurio> curioOpt = LazyOptional.of(() -> curio);
 
 			@Nonnull
@@ -70,28 +70,24 @@ public class SoulCubeHandler {
 	}
 
 	private boolean soulCube(LivingEntity livingEntity, DamageSource source) {
-		if (source.isBypassInvul()) {
-			return false;
-		}
-		for (ItemStack held : livingEntity.getHandSlots()) {
+		for (final ItemStack held : livingEntity.getHandSlots()) {
 			if (held.getItem() == DoomItems.SOULCUBE.get()) {
 				return false;
 			}
 		}
 		return CuriosApi.getCuriosHelper().findFirstCurio(livingEntity, DoomItems.SOULCUBE.get()).map(soulcube -> {
-			this.activateSoulCube(livingEntity, soulcube.stack());
+			activateSoulCube(livingEntity, soulcube.stack());
 			return true;
 		}).orElse(false);
 	}
 
 	private void activateSoulCube(LivingEntity livingEntity, ItemStack soulcube) {
-		ItemStack copy = soulcube.copy();
-		soulcube.hurtAndBreak(1, livingEntity, (entity) -> {
+		final ItemStack copy = soulcube.copy();
+		soulcube.hurtAndBreak(1, livingEntity, entity -> {
 			entity.broadcastBreakEvent(EquipmentSlot.MAINHAND);
 		});
 
-		if (livingEntity instanceof ServerPlayer) {
-			ServerPlayer serverPlayer = (ServerPlayer) livingEntity;
+		if (livingEntity instanceof ServerPlayer serverPlayer) {
 			CriteriaTriggers.USED_TOTEM.trigger(serverPlayer, copy);
 		}
 		if (livingEntity instanceof Player) {

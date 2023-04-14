@@ -34,15 +34,14 @@ public class DaisyItem extends Item {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(Component.translatable("doom.daisy1.text").withStyle(ChatFormatting.YELLOW)
-				.withStyle(ChatFormatting.ITALIC));
+		tooltip.add(Component.translatable("doom.daisy1.text").withStyle(ChatFormatting.YELLOW).withStyle(ChatFormatting.ITALIC));
 		tooltip.add(Component.translatable("doom.daisy2.text").withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 
 	@Override
 	public ICapabilityProvider initCapabilities(final ItemStack stack, CompoundTag unused) {
-		ICurio curio = new ICurio() {
+		final ICurio curio = new ICurio() {
 			@Override
 			public boolean canRightClickEquip() {
 				return true;
@@ -72,8 +71,7 @@ public class DaisyItem extends Item {
 
 			@Override
 			public void curioTick(String identifier, int index, LivingEntity livingEntity) {
-				if (livingEntity instanceof Player) {
-					Player player = ((Player) livingEntity);
+				if (livingEntity instanceof Player player) {
 					startPowers(player);
 				}
 			}

@@ -1,44 +1,57 @@
 package mod.azure.doom.entity.tierheavy;
 
-import java.util.EnumSet;
+import java.util.List;
 
-import mod.azure.doom.config.DoomConfig;
-import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.util.registry.DoomSounds;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
-import mod.azure.azurelib.animatable.GeoEntity;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.DoomAnimationsDefault;
+import mod.azure.doom.entity.task.DemonMeleeAttack;
+import mod.azure.doom.util.registry.DoomSounds;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.Brain;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
-public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
+public class Hellknight2016Entity extends DemonEntity implements SmartBrainOwner<Hellknight2016Entity> {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -49,45 +62,93 @@ public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving() && !this.isAggressive() && this.onGround)
-				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			if (this.isAggressive() && animationSpeedOld > 0.35F && this.onGround)
-				return event.setAndContinue(RawAnimation.begin().thenLoop("run"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+			if (event.isMoving() && !isAggressive() && this.isOnGround())
+				return event.setAndContinue(DoomAnimationsDefault.WALKING);
+			if (isAggressive() && this.walkAnimation.speed() > 0.35F && this.isOnGround() && !this.swinging)
+				return event.setAndContinue(DoomAnimationsDefault.RUN);
+			if (dead || getHealth() < 0.01 || isDeadOrDying())
+				return event.setAndContinue(DoomAnimationsDefault.DEATH);
+			if ((!this.isOnGround() || this.swinging) && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().then("jumpattack", LoopType.PLAY_ONCE));
+			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (this.level.isClientSide())
-					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(),
-							SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("jumpattack", LoopType.PLAY_ONCE));
-			return PlayState.STOP;
-		}).setSoundKeyframeHandler(event -> {
+				if (level.isClientSide())
+					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
 			if (event.getKeyframeData().getSound().matches("attack"))
-				if (this.level.isClientSide())
-					this.getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(),
-							SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level.isClientSide())
+					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		}));
 	}
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
+	}
+
+	@Override
+	protected void customServerAiStep() {
+		tickBrain(this);
+		super.customServerAiStep();
+	}
+
+	@Override
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
+
+	@Override
+	public List<ExtendedSensor<Hellknight2016Entity>> getSensors() {
+		return ObjectArrayList.of(new NearbyLivingEntitySensor<Hellknight2016Entity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<Hellknight2016Entity>());
+	}
+
+	@Override
+	public BrainActivityGroup<Hellknight2016Entity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>());
+	}
+
+	@Override
+	public BrainActivityGroup<Hellknight2016Entity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<Hellknight2016Entity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.75f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+	}
+
+	@Override
+	public BrainActivityGroup<Hellknight2016Entity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(1.25F), new DemonMeleeAttack<>(0));
+	}
+
+	@Override
+	public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
+		return this.getBbWidth() * 1.5f * (this.getBbWidth() * 1.5f + livingEntity.getBbWidth());
+	}
+
+	@Override
+	public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
+		var distance = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+		return distance <= this.getMeleeAttackRangeSqr(livingEntity);
 	}
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-		this.goalSelector.addGoal(3, new Hellknight2016Entity.AttackGoal(this, 1.5D));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
-		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
-		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this).setAlertOthers()));
+//		goalSelector.addGoal(3, new Hellknight2016Entity.AttackGoal(this, 1.5D));
+	}
+
+	@Override
+	public void tick() {
+		super.tick();
+		if (this.getTarget() != null && !this.level.isClientSide()) {
+			if (this.getCommandSenderWorld().getEntities(this, new AABB(this.blockPosition()).inflate(3D)).contains(this.getTarget())) {
+				this.attackstatetimer++;
+				if (this.onGround && this.attackstatetimer >= 5) {
+					var vec3d2 = new Vec3(this.getTarget().getX() - this.getX(), 0.0, this.getTarget().getZ() - this.getZ());
+					vec3d2 = vec3d2.normalize().scale(0.8).add(this.getDeltaMovement().scale(0.4));
+					this.setDeltaMovement(vec3d2.x, 0.6F, vec3d2.z);
+					this.attackstatetimer = -80;
+				}
+			}
+		} else {
+			this.attackstatetimer = 0;
+		}
 	}
 
 	@Override
@@ -97,17 +158,17 @@ public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
 
 	@Override
 	protected void updateControlFlags() {
-		boolean flag = this.getTarget() != null && this.hasLineOfSight(this.getTarget());
-		this.goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
+		final boolean flag = getTarget() != null && hasLineOfSight(getTarget());
+		goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
 		super.updateControlFlags();
 	}
 
 	@Override
 	protected void tickDeath() {
-		++this.deathTime;
-		if (this.deathTime == 30) {
-			this.remove(RemovalReason.KILLED);
-			this.dropExperience();
+		++deathTime;
+		if (deathTime == 30) {
+			remove(RemovalReason.KILLED);
+			dropExperience();
 		}
 	}
 
@@ -116,94 +177,8 @@ public class Hellknight2016Entity extends DemonEntity implements GeoEntity {
 		return 0;
 	}
 
-	public class AttackGoal extends Goal {
-		private final Hellknight2016Entity entity;
-		private final double speedModifier;
-		private int attackTime;
-
-		public AttackGoal(Hellknight2016Entity zombieIn, double speedIn) {
-			this.entity = zombieIn;
-			this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Goal.Flag.JUMP));
-			this.speedModifier = speedIn;
-		}
-
-		public boolean canUse() {
-			return this.entity.getTarget() != null;
-		}
-
-		public boolean canContinueToUse() {
-			return this.canUse();
-		}
-
-		public void start() {
-			super.start();
-			this.entity.setAggressive(true);
-		}
-
-		public void stop() {
-			super.stop();
-			this.entity.setAggressive(false);
-			this.entity.setAttackingState(0);
-			this.attackTime = -1;
-		}
-
-		public void tick() {
-			LivingEntity livingentity = this.entity.getTarget();
-			if (livingentity != null) {
-				boolean inLineOfSight = this.entity.getSensing().hasLineOfSight(livingentity);
-				this.attackTime++;
-				this.entity.lookAt(livingentity, 30.0F, 30.0F);
-				final AABB aabb = new AABB(this.entity.blockPosition()).inflate(5D);
-				final AABB aabb2 = new AABB(this.entity.blockPosition()).inflate(3D);
-				if (inLineOfSight) {
-					this.entity.getNavigation().moveTo(livingentity, this.speedModifier);
-					if (this.entity.getCommandSenderWorld().getEntities(this.entity, aabb).contains(livingentity)) {
-						if (this.attackTime == 1) {
-							this.entity.setAttackingState(1);
-						}
-						if (this.attackTime == 4) {
-							Vec3 vec3d = this.entity.getDeltaMovement();
-							Vec3 vec3d2 = new Vec3(livingentity.getX() - this.entity.getX(), 0.0,
-									livingentity.getZ() - this.entity.getZ());
-							vec3d2 = vec3d2.normalize().scale(0.4).add(vec3d.scale(0.4));
-							this.entity.setDeltaMovement(vec3d2.x, 0.5F, vec3d2.z);
-							this.entity.lookAt(livingentity, 30.0F, 30.0F);
-						}
-						if (this.attackTime == 9) {
-							AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(entity.level, entity.getX(),
-									entity.getY(), entity.getZ());
-							areaeffectcloudentity.setParticle(ParticleTypes.CRIMSON_SPORE);
-							areaeffectcloudentity.setRadius(3.0F);
-							areaeffectcloudentity.setDuration(5);
-							areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
-							this.entity.getCommandSenderWorld().getEntities(this.entity, aabb2).forEach(e -> {
-								if ((e instanceof LivingEntity)) {
-									e.hurt(DamageSource.mobAttack(this.entity),
-											((float) DoomConfig.SERVER.hellknight2016_melee_damage.get().floatValue()));
-									entity.level.addFreshEntity(areaeffectcloudentity);
-								}
-							});
-							livingentity.invulnerableTime = 0;
-						}
-						if (this.attackTime >= 13) {
-							this.attackTime = -5;
-							this.entity.setAttackingState(0);
-							this.entity.getNavigation().moveTo(livingentity, this.speedModifier);
-						}
-					}
-				} else {
-					--this.attackTime;
-				}
-			}
-		}
-	}
-
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.hellknight2016_health.get())
-				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.hellknight2016_melee_damage.get())
-				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomConfig.SERVER.hellknight2016_health.get()).add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.hellknight2016_melee_damage.get()).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	protected boolean shouldDrown() {

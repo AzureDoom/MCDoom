@@ -19,19 +19,19 @@ public class UnmakerLoadingPacket {
 	}
 
 	public UnmakerLoadingPacket(final FriendlyByteBuf packetBuffer) {
-		this.slot = packetBuffer.readInt();
+		slot = packetBuffer.readInt();
 	}
 
 	public void encode(final FriendlyByteBuf packetBuffer) {
-		packetBuffer.writeInt(this.slot);
+		packetBuffer.writeInt(slot);
 	}
 
 	public static void handle(UnmakerLoadingPacket packet, Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
-			NetworkEvent.Context context = ctx.get();
-			PacketListener handler = context.getNetworkManager().getPacketListener();
+			final NetworkEvent.Context context = ctx.get();
+			final PacketListener handler = context.getNetworkManager().getPacketListener();
 			if (handler instanceof ServerGamePacketListenerImpl) {
-				ServerPlayer playerEntity = ((ServerGamePacketListenerImpl) handler).player;
+				final ServerPlayer playerEntity = ((ServerGamePacketListenerImpl) handler).player;
 				Unmaker.reload(playerEntity, InteractionHand.MAIN_HAND);
 			}
 		});

@@ -1,9 +1,9 @@
 package mod.azure.doom.client.models.weapons;
 
+import mod.azure.azurelib.model.GeoModel;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.DarkLordCrucibleItem;
 import net.minecraft.resources.ResourceLocation;
-import mod.azure.azurelib.model.GeoModel;
 
 public class DarkLordCrucibleModel extends GeoModel<DarkLordCrucibleItem> {
 	@Override

@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import mod.azure.doom.entity.projectiles.MeatHookEntity;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -22,26 +22,26 @@ public class ClientPlayNetworkHandlerMixin {
 
 	@Inject(method = "handleAddEntity", at = @At("TAIL"))
 	private void onEntitySpawn(ClientboundAddEntityPacket packet, CallbackInfo callbackInfo) {
-		EntityType<?> type = packet.getType();
-		double x = packet.getX();
-		double y = packet.getY();
-		double z = packet.getZ();
+		final EntityType<?> type = packet.getType();
+		final double x = packet.getX();
+		final double y = packet.getY();
+		final double z = packet.getZ();
 		AbstractArrow entity = null;
 
-		if (type == ProjectilesEntityRegister.MEATHOOOK_ENTITY.get())
+		if (type == DoomProjectiles.MEATHOOOK_ENTITY.get())
 			entity = new MeatHookEntity(level, x, y, z);
 
 		if (entity != null) {
-			Entity owner = level.getEntity(packet.getData());
+			final Entity owner = level.getEntity(packet.getData());
 
 			if (owner != null)
 				entity.setOwner(owner);
 
-			int id = packet.getId();
+			final int id = packet.getId();
 			entity.syncPacketPositionCodec(x, y, z);
 			entity.absMoveTo(x, y, z);
-			entity.setYHeadRot((float) (packet.getXRot() * 360) / 256f);
-			entity.setYBodyRot((float) (packet.getYRot() * 360) / 256f);
+			entity.setYHeadRot(packet.getXRot() * 360 / 256f);
+			entity.setYBodyRot(packet.getYRot() * 360 / 256f);
 			entity.setId(id);
 			entity.setUUID(packet.getUUID());
 			level.addEntity(id, entity);

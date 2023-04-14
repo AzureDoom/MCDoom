@@ -20,7 +20,7 @@ public class GuntableBlockItem extends DoomBlockItem {
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return this.renderer;
+				return renderer;
 			}
 		});
 	}

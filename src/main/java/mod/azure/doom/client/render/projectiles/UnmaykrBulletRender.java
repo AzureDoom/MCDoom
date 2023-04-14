@@ -8,8 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class UnmaykrBulletRender extends ArrowRenderer<UnmaykrBoltEntity> {
 
-	private static final ResourceLocation ARGENT_BOLT_TEXTURE = new ResourceLocation(DoomMod.MODID,
-			"textures/entity/projectiles/argent_bolt.png");
+	private static final ResourceLocation ARGENT_BOLT_TEXTURE = new ResourceLocation(DoomMod.MODID, "textures/entity/projectiles/argent_bolt.png");
 
 	public UnmaykrBulletRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn);

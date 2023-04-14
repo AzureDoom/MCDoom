@@ -20,7 +20,7 @@ public class TotemBlockItem extends DoomBlockItem {
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return this.renderer;
+				return renderer;
 			}
 		});
 	}

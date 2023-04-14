@@ -3,7 +3,7 @@ package mod.azure.doom.client;
 import org.lwjgl.glfw.GLFW;
 
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.client.gui.weapons.GunTableScreen;
+import mod.azure.doom.client.gui.GunTableScreen;
 import mod.azure.doom.client.render.ArachonotronEternalRender;
 import mod.azure.doom.client.render.ArachonotronRender;
 import mod.azure.doom.client.render.ArchMaykrRender;
@@ -78,8 +78,8 @@ import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.registry.DoomBlocks;
 import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.DoomItems;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import mod.azure.doom.util.registry.DoomScreens;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -99,20 +99,20 @@ public class ClientModEventSubscriber {
 
 	@SubscribeEvent
 	public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
-		event.registerEntityRenderer(ProjectilesEntityRegister.GLADIATOR_MACE.get(), GladiatorMaceRender::new);
-		event.registerEntityRenderer(ProjectilesEntityRegister.MEATHOOOK_ENTITY.get(), MeatHookEntityRenderer::new);
-		event.registerEntityRenderer(ProjectilesEntityRegister.SHOTGUN_SHELL.get(), ShotgunShellRender::new);
-		event.registerEntityRenderer(ProjectilesEntityRegister.ARGENT_BOLT.get(), ArgentBoltRender::new);
-		event.registerEntityRenderer(ProjectilesEntityRegister.GRENADE.get(), GrenadeRender::new);
-		event.registerEntityRenderer(ProjectilesEntityRegister.DRONEBOLT_MOB.get(), DroneBoltRender::new);
-		event.registerEntityRenderer(ProjectilesEntityRegister.FIRE_MOB.get(), FireProjectileRender::new);
-		event.registerEntityRenderer(ProjectilesEntityRegister.UNMAYKR.get(), UnmaykrBulletRender::new);
-		event.registerEntityRenderer(ProjectilesEntityRegister.BULLETS.get(), BulletsRender::new);
-		event.registerEntityRenderer(ProjectilesEntityRegister.BFG_CELL.get(), BFGCellRender::new);
-		event.registerEntityRenderer(ProjectilesEntityRegister.ROCKET.get(), RocketRender::new);
-		event.registerEntityRenderer(ProjectilesEntityRegister.CHAINGUN_BULLET.get(), ChaingunBulletRender::new);
-		event.registerEntityRenderer(ProjectilesEntityRegister.BLOODBOLT_MOB.get(), BloodBoltRender::new);
-		event.registerEntityRenderer(ProjectilesEntityRegister.BARENBLAST.get(), BarenBlastRender::new);
+		event.registerEntityRenderer(DoomProjectiles.GLADIATOR_MACE.get(), GladiatorMaceRender::new);
+		event.registerEntityRenderer(DoomProjectiles.MEATHOOOK_ENTITY.get(), MeatHookEntityRenderer::new);
+		event.registerEntityRenderer(DoomProjectiles.SHOTGUN_SHELL.get(), ShotgunShellRender::new);
+		event.registerEntityRenderer(DoomProjectiles.ARGENT_BOLT.get(), ArgentBoltRender::new);
+		event.registerEntityRenderer(DoomProjectiles.GRENADE.get(), GrenadeRender::new);
+		event.registerEntityRenderer(DoomProjectiles.DRONEBOLT_MOB.get(), DroneBoltRender::new);
+		event.registerEntityRenderer(DoomProjectiles.FIRE_MOB.get(), FireProjectileRender::new);
+		event.registerEntityRenderer(DoomProjectiles.UNMAYKR.get(), UnmaykrBulletRender::new);
+		event.registerEntityRenderer(DoomProjectiles.BULLETS.get(), BulletsRender::new);
+		event.registerEntityRenderer(DoomProjectiles.BFG_CELL.get(), BFGCellRender::new);
+		event.registerEntityRenderer(DoomProjectiles.ROCKET.get(), RocketRender::new);
+		event.registerEntityRenderer(DoomProjectiles.CHAINGUN_BULLET.get(), ChaingunBulletRender::new);
+		event.registerEntityRenderer(DoomProjectiles.BLOODBOLT_MOB.get(), BloodBoltRender::new);
+		event.registerEntityRenderer(DoomProjectiles.BARENBLAST.get(), BarenBlastRender::new);
 		event.registerEntityRenderer(DoomEntities.LOST_SOUL.get(), LostSoulRender::new);
 		event.registerEntityRenderer(DoomEntities.LOST_SOUL_ETERNAL.get(), LostSoulEternalRender::new);
 		event.registerEntityRenderer(DoomEntities.IMP.get(), ImpRender::new);
@@ -135,15 +135,15 @@ public class ClientModEventSubscriber {
 		event.registerEntityRenderer(DoomEntities.ICONOFSIN.get(), IconofsinRender::new);
 		event.registerEntityRenderer(DoomEntities.POSSESSEDSCIENTIST.get(), PossessedScientistRender::new);
 		event.registerEntityRenderer(DoomEntities.POSSESSEDSOLDIER.get(), PossessedSoldierRender::new);
-		event.registerEntityRenderer(ProjectilesEntityRegister.ENERGY_CELL_MOB.get(), EnergyCellMobRender::new);
-		event.registerEntityRenderer(ProjectilesEntityRegister.ENERGY_CELL.get(), EnergyCellRender::new);
-		event.registerEntityRenderer(ProjectilesEntityRegister.ROCKET_MOB.get(), RocketMobRender::new);
-		event.registerEntityRenderer(ProjectilesEntityRegister.CHAINGUN_MOB.get(), ChaingunMobRender::new);
+		event.registerEntityRenderer(DoomProjectiles.ENERGY_CELL_MOB.get(), EnergyCellMobRender::new);
+		event.registerEntityRenderer(DoomProjectiles.ENERGY_CELL.get(), EnergyCellRender::new);
+		event.registerEntityRenderer(DoomProjectiles.ROCKET_MOB.get(), RocketMobRender::new);
+		event.registerEntityRenderer(DoomProjectiles.CHAINGUN_MOB.get(), ChaingunMobRender::new);
 		event.registerEntityRenderer(DoomEntities.GORE_NEST.get(), GoreNestRender::new);
 		event.registerEntityRenderer(DoomEntities.MECHAZOMBIE.get(), MechaZombieRender::new);
 		event.registerEntityRenderer(DoomEntities.GARGOYLE.get(), GargoyleRender::new);
 		event.registerEntityRenderer(DoomEntities.HELLKNIGHT2016.get(), Hellknight2016Render::new);
-		event.registerEntityRenderer(ProjectilesEntityRegister.FIRING.get(), ArchvileFiringRender::new);
+		event.registerEntityRenderer(DoomProjectiles.FIRING.get(), ArchvileFiringRender::new);
 		event.registerEntityRenderer(DoomEntities.SPECTRE.get(), SpectreRender::new);
 		event.registerEntityRenderer(DoomEntities.CUEBALL.get(), CueBallRender::new);
 		event.registerEntityRenderer(DoomEntities.PROWLER.get(), ProwlerRender::new);
@@ -167,15 +167,14 @@ public class ClientModEventSubscriber {
 		event.registerEntityRenderer(DoomEntities.REVENANT2016.get(), Revenant2016Render::new);
 		event.registerEntityRenderer(DoomEntities.GLADIATOR.get(), GladiatorRender::new);
 
-		event.registerEntityRenderer(ProjectilesEntityRegister.BARREL.get(), BarrelRender::new);
+		event.registerEntityRenderer(DoomProjectiles.BARREL.get(), BarrelRender::new);
 		event.registerBlockEntityRenderer(DoomEntities.TOTEM.get(), context -> new TotemRender());
 		event.registerBlockEntityRenderer(DoomEntities.GUN_TABLE_ENTITY.get(), context -> new GunCraftingRender());
 	}
 
 	@SubscribeEvent
 	public static void registerKeys(final RegisterKeyMappingsEvent event) {
-		Keybindings.RELOAD = new KeyMapping("key." + DoomMod.MODID + ".reload", GLFW.GLFW_KEY_R,
-				"key.category." + DoomMod.MODID);
+		Keybindings.RELOAD = new KeyMapping("key." + DoomMod.MODID + ".reload", GLFW.GLFW_KEY_R, "key.category." + DoomMod.MODID);
 		event.register(Keybindings.RELOAD);
 	}
 
@@ -184,80 +183,26 @@ public class ClientModEventSubscriber {
 		ItemBlockRenderTypes.setRenderLayer(DoomBlocks.JUMP_PAD.get(), RenderType.translucent());
 		MenuScreens.register(DoomScreens.SCREEN_HANDLER_TYPE.get(), GunTableScreen::new);
 		// Crucible
-		ItemProperties.register(DoomItems.CRUCIBLESWORD.get(), new ResourceLocation("broken"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return isUsable(itemStack) ? 0.0F : 1.0F;
-				});
+		ItemProperties.register(DoomItems.CRUCIBLESWORD.get(), new ResourceLocation("broken"), (itemStack, clientWorld, livingEntity, seed) -> (isUsable(itemStack) ? 0.0F : 1.0F));
 		// Marauder Axe
-		ItemProperties.register(DoomItems.AXE_OPEN.get(), new ResourceLocation("broken"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return isUsable(itemStack) ? 0.0F : 1.0F;
-				});
+		ItemProperties.register(DoomItems.AXE_OPEN.get(), new ResourceLocation("broken"), (itemStack, clientWorld, livingEntity, seed) -> (isUsable(itemStack) ? 0.0F : 1.0F));
 		// NonCenter
-		ItemProperties.register(DoomItems.SG.get(), new ResourceLocation("nocenter"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return nonCentered(itemStack) ? 1.0F : 0.0F;
-				});
-		ItemProperties.register(DoomItems.ROCKETLAUNCHER.get(), new ResourceLocation("nocenter"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return nonCentered(itemStack) ? 1.0F : 0.0F;
-				});
-		ItemProperties.register(DoomItems.PLASMAGUN.get(), new ResourceLocation("nocenter"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return nonCentered(itemStack) ? 1.0F : 0.0F;
-				});
-		ItemProperties.register(DoomItems.HEAVYCANNON.get(), new ResourceLocation("nocenter"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return nonCentered(itemStack) ? 1.0F : 0.0F;
-				});
-		ItemProperties.register(DoomItems.UNMAKER.get(), new ResourceLocation("nocenter"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return nonCentered(itemStack) ? 1.0F : 0.0F;
-				});
-		ItemProperties.register(DoomItems.UNMAYKR.get(), new ResourceLocation("nocenter"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return nonCentered(itemStack) ? 1.0F : 0.0F;
-				});
-		ItemProperties.register(DoomItems.CHAINGUN.get(), new ResourceLocation("nocenter"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return nonCentered(itemStack) ? 1.0F : 0.0F;
-				});
-		ItemProperties.register(DoomItems.BFG_ETERNAL.get(), new ResourceLocation("nocenter"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return nonCentered(itemStack) ? 1.0F : 0.0F;
-				});
-		ItemProperties.register(DoomItems.BALLISTA.get(), new ResourceLocation("nocenter"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return nonCentered(itemStack) ? 1.0F : 0.0F;
-				});
-		ItemProperties.register(DoomItems.SSG.get(), new ResourceLocation("nocenter"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return nonCentered(itemStack) ? 1.0F : 0.0F;
-				});
-		ItemProperties.register(DoomItems.PISTOL.get(), new ResourceLocation("nocenter"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return nonCentered(itemStack) ? 1.0F : 0.0F;
-				});
-		ItemProperties.register(DoomItems.DPLASMARIFLE.get(), new ResourceLocation("nocenter"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return nonCentered(itemStack) ? 1.0F : 0.0F;
-				});
-		ItemProperties.register(DoomItems.DGAUSS.get(), new ResourceLocation("nocenter"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return nonCentered(itemStack) ? 1.0F : 0.0F;
-				});
-		ItemProperties.register(DoomItems.DSG.get(), new ResourceLocation("nocenter"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return nonCentered(itemStack) ? 1.0F : 0.0F;
-				});
-		ItemProperties.register(DoomItems.CHAINSAW.get(), new ResourceLocation("stalled"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return isUsable(itemStack) ? 0.0F : 1.0F;
-				});
-		ItemProperties.register(DoomItems.CHAINSAW64.get(), new ResourceLocation("stalled"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return isUsable(itemStack) ? 0.0F : 1.0F;
-				});
+		ItemProperties.register(DoomItems.SG.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (nonCentered(itemStack) ? 1.0F : 0.0F));
+		ItemProperties.register(DoomItems.ROCKETLAUNCHER.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (nonCentered(itemStack) ? 1.0F : 0.0F));
+		ItemProperties.register(DoomItems.PLASMAGUN.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (nonCentered(itemStack) ? 1.0F : 0.0F));
+		ItemProperties.register(DoomItems.HEAVYCANNON.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (nonCentered(itemStack) ? 1.0F : 0.0F));
+		ItemProperties.register(DoomItems.UNMAKER.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (nonCentered(itemStack) ? 1.0F : 0.0F));
+		ItemProperties.register(DoomItems.UNMAYKR.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (nonCentered(itemStack) ? 1.0F : 0.0F));
+		ItemProperties.register(DoomItems.CHAINGUN.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (nonCentered(itemStack) ? 1.0F : 0.0F));
+		ItemProperties.register(DoomItems.BFG_ETERNAL.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (nonCentered(itemStack) ? 1.0F : 0.0F));
+		ItemProperties.register(DoomItems.BALLISTA.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (nonCentered(itemStack) ? 1.0F : 0.0F));
+		ItemProperties.register(DoomItems.SSG.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (nonCentered(itemStack) ? 1.0F : 0.0F));
+		ItemProperties.register(DoomItems.PISTOL.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (nonCentered(itemStack) ? 1.0F : 0.0F));
+		ItemProperties.register(DoomItems.DPLASMARIFLE.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (nonCentered(itemStack) ? 1.0F : 0.0F));
+		ItemProperties.register(DoomItems.DGAUSS.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (nonCentered(itemStack) ? 1.0F : 0.0F));
+		ItemProperties.register(DoomItems.DSG.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (nonCentered(itemStack) ? 1.0F : 0.0F));
+		ItemProperties.register(DoomItems.CHAINSAW.get(), new ResourceLocation("stalled"), (itemStack, clientWorld, livingEntity, seed) -> (isUsable(itemStack) ? 0.0F : 1.0F));
+		ItemProperties.register(DoomItems.CHAINSAW64.get(), new ResourceLocation("stalled"), (itemStack, clientWorld, livingEntity, seed) -> (isUsable(itemStack) ? 0.0F : 1.0F));
 	}
 
 	public static boolean isUsable(ItemStack stack) {

@@ -13,11 +13,11 @@ import net.minecraftforge.fml.common.Mod;
 public class LootHandler {
 	@SubscribeEvent
 	public static void lootLoad(LootTableLoadEvent evt) {
-		String prefix = "minecraft:chests/";
-		String name = evt.getName().toString();
+		final String prefix = "minecraft:chests/";
+		final String name = evt.getName().toString();
 
 		if (name.startsWith(prefix)) {
-			String file = name.substring(name.indexOf(prefix) + prefix.length());
+			final String file = name.substring(name.indexOf(prefix) + prefix.length());
 			switch (file) {
 			case "ruined_portal":
 			case "bastion_bridge":
@@ -39,7 +39,7 @@ public class LootHandler {
 	}
 
 	private static LootItem.Builder getInjectEntry(String name, int weight) {
-		ResourceLocation table = new ResourceLocation(DoomMod.MODID, "chests/" + name);
+		final ResourceLocation table = new ResourceLocation(DoomMod.MODID, "chests/" + name);
 		return LootTableReference.lootTableReference(table).setWeight(weight);
 	}
 }

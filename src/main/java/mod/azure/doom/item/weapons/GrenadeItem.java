@@ -40,16 +40,16 @@ public class GrenadeItem extends Item implements GeoItem {
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
-		ItemStack itemstack = user.getItemInHand(hand);
+		final ItemStack itemstack = user.getItemInHand(hand);
 		if (!user.getCooldowns().isOnCooldown(this)) {
 			user.getCooldowns().addCooldown(this, 25);
 			if (!world.isClientSide) {
-				GrenadeEntity snowball = new GrenadeEntity(world, user);
+				final GrenadeEntity snowball = new GrenadeEntity(world, user);
 				snowball.shootFromRotation(user, user.getXRot(), user.getYRot(), 0.0F, 1.05F, 1.0F);
 				snowball.setBaseDamage(0);
 				world.addFreshEntity(snowball);
@@ -65,10 +65,8 @@ public class GrenadeItem extends Item implements GeoItem {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(Component.translatable("doom.doomed_credit.text").withStyle(ChatFormatting.RED)
-				.withStyle(ChatFormatting.ITALIC));
-		tooltip.add(Component.translatable("doom.doomed_credit1.text").withStyle(ChatFormatting.RED)
-				.withStyle(ChatFormatting.ITALIC));
+		tooltip.add(Component.translatable("doom.doomed_credit.text").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.ITALIC));
+		tooltip.add(Component.translatable("doom.doomed_credit1.text").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 
@@ -79,7 +77,7 @@ public class GrenadeItem extends Item implements GeoItem {
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return this.renderer;
+				return renderer;
 			}
 		});
 	}

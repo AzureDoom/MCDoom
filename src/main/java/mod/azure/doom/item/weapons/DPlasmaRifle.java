@@ -45,44 +45,36 @@ public class DPlasmaRifle extends DoomBaseItem {
 
 	@Override
 	public void onUseTick(Level worldIn, LivingEntity entityLiving, ItemStack stack, int count) {
-		if (entityLiving instanceof Player) {
-			Player playerentity = (Player) entityLiving;
-			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)) {
+		if (entityLiving instanceof Player playerentity) {
+			if (stack.getDamageValue() < stack.getMaxDamage() - 1) {
 				if (!playerentity.getCooldowns().isOnCooldown(this)) {
 					playerentity.getCooldowns().addCooldown(this, 2);
 					if (!worldIn.isClientSide) {
-						EnergyCellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
-						abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(),
-								playerentity.getYRot(), 0.0F, 0.15F * 3.0F, 1.0F);
+						final EnergyCellEntity abstractarrowentity = createArrow(worldIn, stack, playerentity);
+						abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 0.15F * 3.0F, 1.0F);
 						abstractarrowentity.isNoGravity();
 
 						stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
 						worldIn.addFreshEntity(abstractarrowentity);
-						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-								DoomSounds.PLASMA_FIRING.get(), SoundSource.PLAYERS, 1.0F,
-								1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
-						triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn),
-								"shoot_controller", "firing_faster");
+						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), DoomSounds.PLASMA_FIRING.get(), SoundSource.PLAYERS, 1.0F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+						triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn), "shoot_controller", "firing_faster");
 					}
-					boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
+					final boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
 					spawnLightSource(entityLiving, isInsideWaterBlock);
 				}
 			} else {
-				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-						DoomSounds.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
+				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), DoomSounds.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}
 
 	public static void reload(Player user, InteractionHand hand) {
 		if (user.getItemInHand(hand).getItem() instanceof DPlasmaRifle) {
-			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
-					&& user.getInventory().countItem(DoomItems.ENERGY_CELLS.get()) > 0) {
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0 && user.getInventory().countItem(DoomItems.ENERGY_CELLS.get()) > 0) {
 				removeAmmo(DoomItems.ENERGY_CELLS.get(), user);
 				user.getItemInHand(hand).hurtAndBreak(-20, user, s -> user.broadcastBreakEvent(hand));
 				user.getItemInHand(hand).setPopTime(3);
-				user.getCommandSenderWorld().playSound((Player) null, user.getX(), user.getY(), user.getZ(),
-						DoomSounds.CLIPRELOAD.get(), SoundSource.PLAYERS, 1.00F, 1.0F);
+				user.getCommandSenderWorld().playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CLIPRELOAD.get(), SoundSource.PLAYERS, 1.00F, 1.0F);
 			}
 		}
 	}
@@ -96,18 +88,15 @@ public class DPlasmaRifle extends DoomBaseItem {
 	}
 
 	public EnergyCellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		float j = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		EnergyCellEntity arrowentity = new EnergyCellEntity(worldIn, shooter,
-				(DoomConfig.SERVER.energycell_damage.get().floatValue() + (j * 2.0F)));
+		final float j = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		final EnergyCellEntity arrowentity = new EnergyCellEntity(worldIn, shooter, DoomConfig.SERVER.energycell_damage.get().floatValue() + j * 2.0F);
 		return arrowentity;
 	}
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(Component.translatable("doom.doomed_credit.text").withStyle(ChatFormatting.RED)
-				.withStyle(ChatFormatting.ITALIC));
-		tooltip.add(Component.translatable("doom.doomed_credit1.text").withStyle(ChatFormatting.RED)
-				.withStyle(ChatFormatting.ITALIC));
+		tooltip.add(Component.translatable("doom.doomed_credit.text").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.ITALIC));
+		tooltip.add(Component.translatable("doom.doomed_credit1.text").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 
@@ -118,7 +107,7 @@ public class DPlasmaRifle extends DoomBaseItem {
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return this.renderer;
+				return renderer;
 			}
 		});
 	}

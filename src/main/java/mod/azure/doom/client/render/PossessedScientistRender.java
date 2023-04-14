@@ -5,22 +5,22 @@ import javax.annotation.Nullable;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
-import mod.azure.doom.client.models.PossessedScientistModel;
-import mod.azure.doom.entity.tierfodder.PossessedScientistEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mod.azure.azurelib.renderer.layer.BlockAndItemGeoLayer;
+import mod.azure.doom.client.models.PossessedScientistModel;
+import mod.azure.doom.entity.tierfodder.PossessedScientistEntity;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class PossessedScientistRender extends GeoEntityRenderer<PossessedScientistEntity> {
 
 	public PossessedScientistRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new PossessedScientistModel());
-		this.addRenderLayer(new BlockAndItemGeoLayer<>(this) {
+		addRenderLayer(new BlockAndItemGeoLayer<>(this) {
 			@Nullable
 			@Override
 			protected ItemStack getStackForBone(GeoBone bone, PossessedScientistEntity animatable) {
@@ -31,23 +31,19 @@ public class PossessedScientistRender extends GeoEntityRenderer<PossessedScienti
 			}
 
 			@Override
-			protected ItemTransforms.TransformType getTransformTypeForStack(GeoBone bone, ItemStack stack,
-					PossessedScientistEntity animatable) {
+			protected ItemDisplayContext getTransformTypeForStack(GeoBone bone, ItemStack stack, PossessedScientistEntity animatable) {
 				return switch (bone.getName()) {
-				default -> ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND;
+				default -> ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
 				};
 			}
 
 			@Override
-			protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack,
-					PossessedScientistEntity animatable, MultiBufferSource bufferSource, float partialTick,
-					int packedLight, int packedOverlay) {
+			protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack, PossessedScientistEntity animatable, MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay) {
 				poseStack.mulPose(Axis.XP.rotationDegrees(0));
 				poseStack.mulPose(Axis.YP.rotationDegrees(-30));
 				poseStack.mulPose(Axis.ZP.rotationDegrees(0));
 				poseStack.translate(0.02D, -0.8D, -0.1D);
-				super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight,
-						packedOverlay);
+				super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
 			}
 		});
 	}

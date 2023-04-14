@@ -1,15 +1,15 @@
 package mod.azure.doom.client.models;
 
-import mod.azure.doom.DoomMod;
-import mod.azure.doom.entity.tierfodder.ImpEntity;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import mod.azure.azurelib.constant.DataTickets;
 import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
 import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.model.data.EntityModelData;
+import mod.azure.doom.DoomMod;
+import mod.azure.doom.entity.tierfodder.ImpEntity;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 public class ImpModel extends GeoModel<ImpEntity> {
 
@@ -27,15 +27,12 @@ public class ImpModel extends GeoModel<ImpEntity> {
 
 	@Override
 	public ResourceLocation getModelResource(ImpEntity object) {
-		return object.getVariant() == 2 ? nightmareimp_model
-				: object.getVariant() == 3 ? nightmareimp_model
-						: object.getVariant() == 4 ? imp2016_model : classic_model;
+		return object.getVariant() == 2 ? nightmareimp_model : object.getVariant() == 3 ? nightmareimp_model : object.getVariant() == 4 ? imp2016_model : classic_model;
 	}
 
 	@Override
 	public ResourceLocation getTextureResource(ImpEntity object) {
-		return object.getVariant() == 2 ? nightmareimp_texture
-				: object.getVariant() == 3 ? d64_texture : object.getVariant() == 4 ? imp2016_texture : classic_texture;
+		return object.getVariant() == 2 ? nightmareimp_texture : object.getVariant() == 3 ? d64_texture : object.getVariant() == 4 ? imp2016_texture : classic_texture;
 	}
 
 	@Override
@@ -47,8 +44,8 @@ public class ImpModel extends GeoModel<ImpEntity> {
 	public void setCustomAnimations(ImpEntity animatable, long instanceId, AnimationState<ImpEntity> animationState) {
 		super.setCustomAnimations(animatable, instanceId, animationState);
 
-		CoreGeoBone head = getAnimationProcessor().getBone("head");
-		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+		final CoreGeoBone head = getAnimationProcessor().getBone("head");
+		final EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
 
 		if (head != null) {
 			head.setRotX((entityData.headPitch() - 5) * Mth.DEG_TO_RAD);

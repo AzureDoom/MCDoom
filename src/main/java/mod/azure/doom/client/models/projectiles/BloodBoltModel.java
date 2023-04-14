@@ -1,10 +1,10 @@
 package mod.azure.doom.client.models.projectiles;
 
+import mod.azure.azurelib.model.GeoModel;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.projectiles.entity.BloodBoltEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import mod.azure.azurelib.model.GeoModel;
 
 public class BloodBoltModel extends GeoModel<BloodBoltEntity> {
 	@Override
@@ -21,7 +21,7 @@ public class BloodBoltModel extends GeoModel<BloodBoltEntity> {
 	public ResourceLocation getAnimationResource(BloodBoltEntity animatable) {
 		return new ResourceLocation(DoomMod.MODID, "animations/bloodbolt.animation.json");
 	}
-	
+
 	@Override
 	public RenderType getRenderType(BloodBoltEntity animatable, ResourceLocation texture) {
 		return RenderType.entityTranslucent(getTextureResource(animatable));

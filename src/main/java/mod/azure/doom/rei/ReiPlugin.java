@@ -13,8 +13,7 @@ import net.minecraftforge.api.distmarker.Dist;
 @REIPlugin(value = Dist.CLIENT)
 public class ReiPlugin implements REIClientPlugin {
 
-	public static final CategoryIdentifier<DoomDisplay> CRAFTING = CategoryIdentifier
-			.of(new ResourceLocation(DoomMod.MODID, "crafting"));
+	public static final CategoryIdentifier<DoomDisplay> CRAFTING = CategoryIdentifier.of(new ResourceLocation(DoomMod.MODID, "crafting"));
 
 	@Override
 	public void registerCategories(CategoryRegistry registry) {

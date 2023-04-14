@@ -29,7 +29,7 @@ public class MaykrDoomArmor extends ArmorItem implements GeoItem {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-	public MaykrDoomArmor(ArmorMaterial materialIn, EquipmentSlot slot) {
+	public MaykrDoomArmor(ArmorMaterial materialIn, Type slot) {
 		super(materialIn, slot, new Item.Properties().stacksTo(1));
 	}
 
@@ -40,33 +40,29 @@ public class MaykrDoomArmor extends ArmorItem implements GeoItem {
 			private MaykrRender renderer;
 
 			@Override
-			public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack,
-					EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
-				if (this.renderer == null)
-					this.renderer = new MaykrRender();
+			public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
+				if (renderer == null)
+					renderer = new MaykrRender();
 
-				this.renderer.prepForRender(livingEntity, itemStack, equipmentSlot, original);
-				return this.renderer;
+				renderer.prepForRender(livingEntity, itemStack, equipmentSlot, original);
+				return renderer;
 			}
 		});
 	}
 
 	@Override
 	public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, 20, state -> {
-			return state.setAndContinue(RawAnimation.begin().thenLoop("idle"));
-		}));
+		controllers.add(new AnimationController<>(this, 20, state -> state.setAndContinue(RawAnimation.begin().thenLoop("idle"))));
 	}
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return this.cache;
+		return cache;
 	}
 
 	@Override
 	public void appendHoverText(ItemStack itemStack, Level level, List<Component> list, TooltipFlag tooltipFlag) {
-		list.add(Component.translatable("doom.makyrarmor.text").withStyle(ChatFormatting.YELLOW)
-				.withStyle(ChatFormatting.ITALIC));
+		list.add(Component.translatable("doom.makyrarmor.text").withStyle(ChatFormatting.YELLOW).withStyle(ChatFormatting.ITALIC));
 		super.appendHoverText(itemStack, level, list, tooltipFlag);
 	}
 

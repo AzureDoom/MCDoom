@@ -8,25 +8,8 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 
 public enum DoomTier implements Tier {
-	CHAINSAW(6, 600, 16.0F, 0.0F, 30, () -> {
-		return Ingredient.of(DoomItems.GAS_BARREL.get());
-	}), PISTOL(6, 600, 16.0F, 0.0F, 30, () -> {
-		return Ingredient.of(DoomItems.BULLETS.get());
-	}), BALLISTA(6, 600, 16.0F, 0.0F, 30, () -> {
-		return Ingredient.of(DoomItems.ARGENT_BOLT.get());
-	}), BFG(6, 600, 16.0F, 0.0F, 30, () -> {
-		return Ingredient.of(DoomItems.BFG_CELL.get());
-	}), CHAINGUN(6, 600, 16.0F, 0.0F, 30, () -> {
-		return Ingredient.of(DoomItems.CHAINGUN_BULLETS.get());
-	}), PLASMA(6, 600, 16.0F, 0.0F, 30, () -> {
-		return Ingredient.of(DoomItems.ENERGY_CELLS.get());
-	}), ROCKET(6, 600, 16.0F, 0.0F, 30, () -> {
-		return Ingredient.of(DoomItems.ROCKET.get());
-	}), SHOTGUN(6, 600, 16.0F, 0.0F, 30, () -> {
-		return Ingredient.of(DoomItems.SHOTGUN_SHELLS.get());
-	}), UNMAYKR(6, 600, 16.0F, 0.0F, 30, () -> {
-		return Ingredient.of(DoomItems.UNMAKRY_BOLT.get());
-	});
+	CHAINSAW(6, 600, 16.0F, 0.0F, 30, () -> Ingredient.of(DoomItems.GAS_BARREL.get())), PISTOL(6, 600, 16.0F, 0.0F, 30, () -> Ingredient.of(DoomItems.BULLETS.get())), BALLISTA(6, 600, 16.0F, 0.0F, 30, () -> Ingredient.of(DoomItems.ARGENT_BOLT.get())), BFG(6, 600, 16.0F, 0.0F, 30, () -> Ingredient.of(DoomItems.BFG_CELL.get())), CHAINGUN(6, 600, 16.0F, 0.0F, 30, () -> Ingredient.of(DoomItems.CHAINGUN_BULLETS.get())),
+	PLASMA(6, 600, 16.0F, 0.0F, 30, () -> Ingredient.of(DoomItems.ENERGY_CELLS.get())), ROCKET(6, 600, 16.0F, 0.0F, 30, () -> Ingredient.of(DoomItems.ROCKET.get())), SHOTGUN(6, 600, 16.0F, 0.0F, 30, () -> Ingredient.of(DoomItems.SHOTGUN_SHELLS.get())), UNMAYKR(6, 600, 16.0F, 0.0F, 30, () -> Ingredient.of(DoomItems.UNMAKRY_BOLT.get()));
 
 	private final int harvestLevel;
 	private final int maxUses;
@@ -35,38 +18,43 @@ public enum DoomTier implements Tier {
 	private final int enchantability;
 	private final LazyLoadedValue<Ingredient> repairMaterial;
 
-	private DoomTier(int harvestLevelIn, int maxUsesIn, float efficiencyIn, float attackDamageIn, int enchantabilityIn,
-			Supplier<Ingredient> repairMaterialIn) {
-		this.harvestLevel = harvestLevelIn;
-		this.maxUses = maxUsesIn;
-		this.efficiency = efficiencyIn;
-		this.attackDamage = attackDamageIn;
-		this.enchantability = enchantabilityIn;
-		this.repairMaterial = new LazyLoadedValue<>(repairMaterialIn);
+	private DoomTier(int harvestLevelIn, int maxUsesIn, float efficiencyIn, float attackDamageIn, int enchantabilityIn, Supplier<Ingredient> repairMaterialIn) {
+		harvestLevel = harvestLevelIn;
+		maxUses = maxUsesIn;
+		efficiency = efficiencyIn;
+		attackDamage = attackDamageIn;
+		enchantability = enchantabilityIn;
+		repairMaterial = new LazyLoadedValue<>(repairMaterialIn);
 	}
 
+	@Override
 	public int getUses() {
-		return this.maxUses;
+		return maxUses;
 	}
 
+	@Override
 	public float getSpeed() {
-		return this.efficiency;
+		return efficiency;
 	}
 
+	@Override
 	public float getAttackDamageBonus() {
-		return this.attackDamage;
+		return attackDamage;
 	}
 
+	@Override
 	public int getLevel() {
-		return this.harvestLevel;
+		return harvestLevel;
 	}
 
+	@Override
 	public int getEnchantmentValue() {
-		return this.enchantability;
+		return enchantability;
 	}
 
+	@Override
 	public Ingredient getRepairIngredient() {
-		return this.repairMaterial.get();
+		return repairMaterial.get();
 	}
 
 }

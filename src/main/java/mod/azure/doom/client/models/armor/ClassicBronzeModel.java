@@ -1,9 +1,9 @@
 package mod.azure.doom.client.models.armor;
 
+import mod.azure.azurelib.model.GeoModel;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.armor.ClassicBronzeDoomArmor;
 import net.minecraft.resources.ResourceLocation;
-import mod.azure.azurelib.model.GeoModel;
 
 public class ClassicBronzeModel extends GeoModel<ClassicBronzeDoomArmor> {
 	@Override

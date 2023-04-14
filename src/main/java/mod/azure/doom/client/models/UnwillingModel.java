@@ -1,15 +1,15 @@
 package mod.azure.doom.client.models;
 
-import mod.azure.doom.DoomMod;
-import mod.azure.doom.entity.tierfodder.UnwillingEntity;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import mod.azure.azurelib.constant.DataTickets;
 import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
 import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.model.data.EntityModelData;
+import mod.azure.doom.DoomMod;
+import mod.azure.doom.entity.tierfodder.UnwillingEntity;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 public class UnwillingModel extends GeoModel<UnwillingEntity> {
 
@@ -29,12 +29,11 @@ public class UnwillingModel extends GeoModel<UnwillingEntity> {
 	}
 
 	@Override
-	public void setCustomAnimations(UnwillingEntity animatable, long instanceId,
-			AnimationState<UnwillingEntity> animationState) {
+	public void setCustomAnimations(UnwillingEntity animatable, long instanceId, AnimationState<UnwillingEntity> animationState) {
 		super.setCustomAnimations(animatable, instanceId, animationState);
 
-		CoreGeoBone head = getAnimationProcessor().getBone("Head");
-		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+		final CoreGeoBone head = getAnimationProcessor().getBone("Head");
+		final EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
 
 		if (head != null) {
 			head.setRotX(entityData.headPitch() * Mth.DEG_TO_RAD);

@@ -18,8 +18,7 @@ import net.minecraft.world.level.Level;
 @Mixin(Player.class)
 public abstract class PlayerEntityMixin extends LivingEntity implements PlayerProperties {
 
-	private static final EntityDataAccessor<Boolean> MEATHOOK_TRACKER = SynchedEntityData.defineId(Player.class,
-			EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> MEATHOOK_TRACKER = SynchedEntityData.defineId(Player.class, EntityDataSerializers.BOOLEAN);
 
 	protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, Level world) {
 		super(entityType, world);

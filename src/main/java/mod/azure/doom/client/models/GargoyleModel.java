@@ -1,14 +1,14 @@
 package mod.azure.doom.client.models;
 
-import mod.azure.doom.DoomMod;
-import mod.azure.doom.entity.tierfodder.GargoyleEntity;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
 import mod.azure.azurelib.constant.DataTickets;
 import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
 import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.model.data.EntityModelData;
+import mod.azure.doom.DoomMod;
+import mod.azure.doom.entity.tierfodder.GargoyleEntity;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 
 public class GargoyleModel extends GeoModel<GargoyleEntity> {
 
@@ -31,12 +31,11 @@ public class GargoyleModel extends GeoModel<GargoyleEntity> {
 	}
 
 	@Override
-	public void setCustomAnimations(GargoyleEntity animatable, long instanceId,
-			AnimationState<GargoyleEntity> animationState) {
+	public void setCustomAnimations(GargoyleEntity animatable, long instanceId, AnimationState<GargoyleEntity> animationState) {
 		super.setCustomAnimations(animatable, instanceId, animationState);
 
-		CoreGeoBone head = getAnimationProcessor().getBone("head");
-		EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+		final CoreGeoBone head = getAnimationProcessor().getBone("head");
+		final EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
 
 		if (head != null) {
 			head.setRotY(entityData.netHeadYaw() * ((float) Math.PI / 340F));

@@ -1,9 +1,9 @@
 package mod.azure.doom.client.models.armor;
 
+import mod.azure.azurelib.model.GeoModel;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.armor.Mullet2DoomArmor;
 import net.minecraft.resources.ResourceLocation;
-import mod.azure.azurelib.model.GeoModel;
 
 public class Mullet2Model extends GeoModel<Mullet2DoomArmor> {
 	@Override

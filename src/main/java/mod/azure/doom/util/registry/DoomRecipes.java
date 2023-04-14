@@ -9,10 +9,8 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class DoomRecipes {
 
-	public static final DeferredRegister<RecipeSerializer<?>> SERIAL = DeferredRegister
-			.create(ForgeRegistries.RECIPE_SERIALIZERS, DoomMod.MODID);
+	public static final DeferredRegister<RecipeSerializer<?>> SERIAL = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, DoomMod.MODID);
 
-	public static final RegistryObject<RecipeSerializer<?>> GUN_TABLE_RECIPE_SERIALIZER = SERIAL.register("gun_table",
-			() -> new GunRecipeSerializer());
+	public static final RegistryObject<RecipeSerializer<?>> GUN_TABLE_RECIPE_SERIALIZER = SERIAL.register("gun_table", GunRecipeSerializer::new);
 
 }

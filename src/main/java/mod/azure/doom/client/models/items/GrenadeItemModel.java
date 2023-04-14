@@ -1,9 +1,9 @@
 package mod.azure.doom.client.models.items;
 
+import mod.azure.azurelib.model.GeoModel;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.weapons.GrenadeItem;
 import net.minecraft.resources.ResourceLocation;
-import mod.azure.azurelib.model.GeoModel;
 
 public class GrenadeItemModel extends GeoModel<GrenadeItem> {
 	@Override

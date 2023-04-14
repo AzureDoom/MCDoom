@@ -20,19 +20,8 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 
 public class HellChurchStructure extends Structure {
 
-	public static final Codec<HellChurchStructure> CODEC = RecordCodecBuilder
-			.<HellChurchStructure>mapCodec(instance -> instance.group(HellChurchStructure.settingsCodec(instance),
-					StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
-					ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name")
-							.forGetter(structure -> structure.startJigsawName),
-					Codec.intRange(0, 4).fieldOf("size").forGetter(structure -> structure.size),
-					HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
-					Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap")
-							.forGetter(structure -> structure.projectStartToHeightmap),
-					Codec.intRange(1, 128).fieldOf("max_distance_from_center")
-							.forGetter(structure -> structure.maxDistanceFromCenter))
-					.apply(instance, HellChurchStructure::new))
-			.codec();
+	public static final Codec<HellChurchStructure> CODEC = RecordCodecBuilder.<HellChurchStructure>mapCodec(instance -> instance.group(HellChurchStructure.settingsCodec(instance), StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool), ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName), Codec.intRange(0, 4).fieldOf("size").forGetter(structure -> structure.size),
+			HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight), Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> structure.projectStartToHeightmap), Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter)).apply(instance, HellChurchStructure::new)).codec();
 	private final Holder<StructureTemplatePool> startPool;
 	private final Optional<ResourceLocation> startJigsawName;
 	private final int size;
@@ -40,9 +29,7 @@ public class HellChurchStructure extends Structure {
 	private final Optional<Heightmap.Types> projectStartToHeightmap;
 	private final int maxDistanceFromCenter;
 
-	protected HellChurchStructure(StructureSettings config, Holder<StructureTemplatePool> startPool,
-			Optional<ResourceLocation> startJigsawName, int size, HeightProvider startHeight,
-			Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter) {
+	protected HellChurchStructure(StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName, int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter) {
 		super(config);
 		this.startPool = startPool;
 		this.startJigsawName = startJigsawName;
@@ -54,14 +41,11 @@ public class HellChurchStructure extends Structure {
 
 	@Override
 	public Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
-		int startY = this.startHeight.sample(context.random(),
-				new WorldGenerationContext(context.chunkGenerator(), context.heightAccessor()));
-		ChunkPos chunkPos = context.chunkPos();
-		BlockPos blockpos = new BlockPos(chunkPos.getMinBlockX(), startY, chunkPos.getMinBlockZ());
+		final int startY = startHeight.sample(context.random(), new WorldGenerationContext(context.chunkGenerator(), context.heightAccessor()));
+		final ChunkPos chunkPos = context.chunkPos();
+		final BlockPos blockpos = new BlockPos(chunkPos.getMinBlockX(), startY, chunkPos.getMinBlockZ());
 
-		Optional<GenerationStub> structurePiecesGenerator = JigsawPlacement.addPieces(context, this.startPool,
-				this.startJigsawName, this.size, blockpos, false, this.projectStartToHeightmap,
-				this.maxDistanceFromCenter);
+		final Optional<GenerationStub> structurePiecesGenerator = JigsawPlacement.addPieces(context, startPool, startJigsawName, size, blockpos, false, projectStartToHeightmap, maxDistanceFromCenter);
 		return structurePiecesGenerator;
 	}
 

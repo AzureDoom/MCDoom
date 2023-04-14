@@ -1,13 +1,12 @@
 package mod.azure.doom.entity.projectiles.entity;
 
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.util.registry.DoomProjectiles;
 import mod.azure.doom.util.registry.DoomSounds;
-import mod.azure.doom.util.registry.ProjectilesEntityRegister;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,38 +27,34 @@ public class ChaingunMobEntity extends AbstractHurtingProjectile {
 		super(p_i50160_1_, p_i50160_2_);
 	}
 
-	public ChaingunMobEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
-			float directHitDamage) {
-		super(ProjectilesEntityRegister.CHAINGUN_MOB.get(), shooter, accelX, accelY, accelZ, worldIn);
+	public ChaingunMobEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, float directHitDamage) {
+		super(DoomProjectiles.CHAINGUN_MOB.get(), shooter, accelX, accelY, accelZ, worldIn);
 		this.directHitDamage = directHitDamage;
 	}
 
 	public ChaingunMobEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-		super(ProjectilesEntityRegister.CHAINGUN_MOB.get(), x, y, z, accelX, accelY, accelZ, worldIn);
+		super(DoomProjectiles.CHAINGUN_MOB.get(), x, y, z, accelX, accelY, accelZ, worldIn);
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
-		if (this.tickCount >= 80)
-			this.remove(Entity.RemovalReason.DISCARDED);
-		if (this.level.isClientSide()) {
-			double x = this.getX() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
-			double z = this.getZ() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
-			this.level.addParticle(ParticleTypes.SMOKE, true, x, this.getY(), z, 0, 0, 0);
-		}
+		if (tickCount >= 80)
+			remove(Entity.RemovalReason.DISCARDED);
+		if (level.isClientSide())
+			level.addParticle(ParticleTypes.SMOKE, true, this.getX() + random.nextDouble() * getBbWidth() * 0.5D, this.getY(), this.getZ() + random.nextDouble() * getBbWidth() * 0.5D, 0, 0, 0);
 	}
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
-		compound.putShort("life", (short) this.ticksInAir);
+		compound.putShort("life", (short) ticksInAir);
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
-		this.ticksInAir = compound.getShort("life");
+		ticksInAir = compound.getShort("life");
 	}
 
 	@Override
@@ -78,7 +73,7 @@ public class ChaingunMobEntity extends AbstractHurtingProjectile {
 
 	@Override
 	public boolean isNoGravity() {
-		if (this.isInWater())
+		if (isInWater())
 			return false;
 		return true;
 	}
@@ -86,17 +81,22 @@ public class ChaingunMobEntity extends AbstractHurtingProjectile {
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		super.onHitEntity(entityHitResult);
-		if (!this.level.isClientSide()) {
-			Entity entity = entityHitResult.getEntity();
-			Entity entity2 = this.getOwner();
-			if (!(entity2 instanceof DemonEntity))
-				entity.hurt(DamageSource.mobAttack((LivingEntity) entity2), directHitDamage);
+		if (!level.isClientSide()) {
+			final var entity = entityHitResult.getEntity();
+			final var entity2 = getOwner();
+			if (!(entity instanceof DemonEntity))
+				entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
 			if (entity2 instanceof LivingEntity) {
-				if (!(entity2 instanceof DemonEntity))
-					this.doEnchantDamageEffects((LivingEntity) entity2, entity);
-				this.remove(Entity.RemovalReason.DISCARDED);
+				if (!(entity instanceof DemonEntity))
+					doEnchantDamageEffects((LivingEntity) entity2, entity);
+				remove(Entity.RemovalReason.DISCARDED);
 			}
 		}
-		this.playSound(DoomSounds.CHAINGUN_SHOOT.get(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+		this.playSound(DoomSounds.CHAINGUN_SHOOT.get(), 1.0F, 1.2F / (random.nextFloat() * 0.2F + 0.9F));
+	}
+
+	@Override
+	public boolean displayFireAnimation() {
+		return false;
 	}
 }

@@ -1,10 +1,10 @@
 package mod.azure.doom.client.models;
 
+import mod.azure.azurelib.model.GeoModel;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tiersuperheavy.CyberdemonEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import mod.azure.azurelib.model.GeoModel;
 
 public class CyberdemonModel extends GeoModel<CyberdemonEntity> {
 
@@ -26,14 +26,12 @@ public class CyberdemonModel extends GeoModel<CyberdemonEntity> {
 
 	@Override
 	public ResourceLocation getTextureResource(CyberdemonEntity object) {
-		return object.getVariant() == 2 ? c2016_texture
-				: object.getVariant() == 3 ? tyrant_texture : object.getVariant() == 4 ? d64_texture : classic_texture;
+		return object.getVariant() == 2 ? c2016_texture : object.getVariant() == 3 ? tyrant_texture : object.getVariant() == 4 ? d64_texture : classic_texture;
 	}
 
 	@Override
 	public ResourceLocation getAnimationResource(CyberdemonEntity object) {
-		return object.getVariant() == 2 ? c2016_animation
-				: object.getVariant() == 3 ? tyrant_animation : classic_animation;
+		return object.getVariant() == 2 ? c2016_animation : object.getVariant() == 3 ? tyrant_animation : classic_animation;
 	}
 
 	@Override

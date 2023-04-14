@@ -1,10 +1,10 @@
 package mod.azure.doom.client.models.projectiles;
 
+import mod.azure.azurelib.model.GeoModel;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.projectiles.MeatHookEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import mod.azure.azurelib.model.GeoModel;
 
 public class MeatHookEntityModel extends GeoModel<MeatHookEntity> {
 	@Override

@@ -9,8 +9,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -38,8 +36,7 @@ public class BarrelBlock extends Block {
 
 	public BarrelBlock(BlockBehaviour.Properties properties) {
 		super(properties);
-		this.registerDefaultState(
-				this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.valueOf(true)));
+		registerDefaultState(stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.valueOf(true)));
 	}
 
 	@Override
@@ -58,8 +55,7 @@ public class BarrelBlock extends Block {
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos,
-			boolean isMoving) {
+	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
 		onCaughtFire(state, worldIn, pos, null, null);
 		worldIn.removeBlock(pos, false);
 	}
@@ -67,8 +63,7 @@ public class BarrelBlock extends Block {
 	@Override
 	public void wasExploded(Level worldIn, BlockPos pos, Explosion explosionIn) {
 		if (!worldIn.isClientSide) {
-			BarrelEntity tntentity = new BarrelEntity(worldIn, (double) pos.getX() + 0.5D, (double) pos.getY(),
-					(double) pos.getZ() + 0.5D, explosionIn.getIndirectSourceEntity());
+			final BarrelEntity tntentity = new BarrelEntity(worldIn, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, explosionIn.getIndirectSourceEntity());
 			worldIn.addFreshEntity(tntentity);
 		}
 	}
@@ -76,9 +71,7 @@ public class BarrelBlock extends Block {
 	@Override
 	public void onCaughtFire(BlockState state, Level world, BlockPos pos, Direction face, LivingEntity igniter) {
 		if (!world.isClientSide) {
-			BarrelEntity tntentity = new BarrelEntity(world, (double) pos.getX() + 0.5D, (double) pos.getY(),
-					(double) pos.getZ() + 0.5D, igniter);
-			;
+			final BarrelEntity tntentity = new BarrelEntity(world, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, igniter);
 			world.addFreshEntity(tntentity);
 		}
 	}
@@ -93,10 +86,9 @@ public class BarrelBlock extends Block {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn,
-			BlockHitResult hit) {
-		ItemStack itemstack = player.getItemInHand(handIn);
-		Item item = itemstack.getItem();
+	public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+		final var itemstack = player.getItemInHand(handIn);
+		final var item = itemstack.getItem();
 		if (item != Items.FLINT_AND_STEEL && item != Items.FIRE_CHARGE) {
 			return super.use(state, worldIn, pos, player, handIn, hit);
 		} else {
@@ -104,12 +96,11 @@ public class BarrelBlock extends Block {
 			worldIn.setBlock(pos, Blocks.AIR.defaultBlockState(), 11);
 			if (!player.isCreative()) {
 				if (item == Items.FLINT_AND_STEEL) {
-					itemstack.hurtAndBreak(1, player, (player1) -> {
+					itemstack.hurtAndBreak(1, player, player1 -> {
 						player1.broadcastBreakEvent(handIn);
 					});
-				} else {
+				} else
 					itemstack.shrink(1);
-				}
 			}
 
 			return InteractionResult.sidedSuccess(worldIn.isClientSide);
@@ -119,8 +110,8 @@ public class BarrelBlock extends Block {
 	@Override
 	public void onProjectileHit(Level worldIn, BlockState state, BlockHitResult hit, Projectile projectile) {
 		if (!worldIn.isClientSide) {
-			Entity entity = projectile.getOwner();
-			BlockPos blockpos = hit.getBlockPos();
+			final Entity entity = projectile.getOwner();
+			final BlockPos blockpos = hit.getBlockPos();
 			onCaughtFire(state, worldIn, blockpos, null, entity instanceof LivingEntity ? (LivingEntity) entity : null);
 			worldIn.removeBlock(blockpos, false);
 		}
@@ -134,7 +125,7 @@ public class BarrelBlock extends Block {
 
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		return this.defaultBlockState().setValue(direction, context.getHorizontalDirection().getOpposite());
+		return defaultBlockState().setValue(direction, context.getHorizontalDirection().getOpposite());
 	}
 
 	@Override

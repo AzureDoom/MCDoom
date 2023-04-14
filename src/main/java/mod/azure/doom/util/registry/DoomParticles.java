@@ -16,17 +16,13 @@ import net.minecraftforge.registries.RegistryObject;
 @Mod.EventBusSubscriber(modid = DoomMod.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DoomParticles {
 
-	public static final DeferredRegister<ParticleType<?>> PARTICLES = DeferredRegister
-			.create(ForgeRegistries.PARTICLE_TYPES, DoomMod.MODID);
+	public static final DeferredRegister<ParticleType<?>> PARTICLES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, DoomMod.MODID);
 
-	public static final RegistryObject<SimpleParticleType> PLASMA = PARTICLES.register("plasma",
-			() -> new SimpleParticleType(true));
+	public static final RegistryObject<SimpleParticleType> PLASMA = PARTICLES.register("plasma", () -> new SimpleParticleType(true));
 
-	public static final RegistryObject<SimpleParticleType> PISTOL = PARTICLES.register("pistol",
-			() -> new SimpleParticleType(true));
+	public static final RegistryObject<SimpleParticleType> PISTOL = PARTICLES.register("pistol", () -> new SimpleParticleType(true));
 
-	public static final RegistryObject<SimpleParticleType> UNMAYKR = PARTICLES.register("unmaykr",
-			() -> new SimpleParticleType(true));
+	public static final RegistryObject<SimpleParticleType> UNMAYKR = PARTICLES.register("unmaykr", () -> new SimpleParticleType(true));
 
 	@SubscribeEvent
 	public static void registry(RegisterParticleProvidersEvent event) {
