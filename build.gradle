@@ -53,20 +53,21 @@ dependencies {
     modImplementation "curse.maven:SBL-661293:4312490-sources-4312491"
     modImplementation "maven.modrinth:midnightlib:1.0.0-fabric"
     shade group: 'maven.modrinth', name: 'midnightlib', version: '1.0.0-fabric'
-    modImplementation ("com.terraformersmc:modmenu:4.1.2)
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:9.1.595") {
+    modImplementation ("com.terraformersmc:modmenu:4.1.2")
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:9.1.591") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:9.1.595") {
+    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:9.1.591") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modApi("dev.architectury:architectury-fabric:6.5.77") {
+    modApi("dev.architectury:architectury-fabric:6.5.69") {
         exclude(group: "net.fabricmc.fabric-api")
     }
     modApi("me.shedaniel.cloth:cloth-config-fabric:8.2.88") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modImplementation "dev.emi:trinkets:3.4.2"
+    modImplementation "dev.emi:trinkets:3.4.1"
+    modImplementation "curse.maven:cardinal-components-318449:3954770"
 }
 
 shadowJar {

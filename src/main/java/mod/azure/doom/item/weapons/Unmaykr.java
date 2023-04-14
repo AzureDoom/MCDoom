@@ -37,7 +37,7 @@ public class Unmaykr extends DoomBaseItem {
 	public final String itemID;
 
 	public Unmaykr(String id) {
-		super(new Item.Properties().stacksTo(1).durability(9000));
+		super(new Item.Properties().stacksTo(1).durability(9000).tab(DoomMod.DoomWeaponItemGroup));
 		itemID = id;
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}

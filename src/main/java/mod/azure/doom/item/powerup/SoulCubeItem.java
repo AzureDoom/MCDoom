@@ -3,6 +3,7 @@ package mod.azure.doom.item.powerup;
 import java.util.List;
 
 import dev.emi.trinkets.api.TrinketItem;
+import mod.azure.doom.DoomMod;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -13,7 +14,7 @@ import net.minecraft.world.level.Level;
 public class SoulCubeItem extends TrinketItem {
 
 	public SoulCubeItem() {
-		super(new Item.Properties().stacksTo(1).durability(5));
+		super(new Item.Properties().stacksTo(1).durability(5).tab(DoomMod.DoomPowerUPItemGroup));
 	}
 
 	@Override

@@ -64,7 +64,7 @@ public class Hellknight2016Entity extends DemonEntity implements SmartBrainOwner
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			if (event.isMoving() && !isAggressive() && this.isOnGround())
 				return event.setAndContinue(DoomAnimationsDefault.WALKING);
-			if (isAggressive() && this.walkAnimation.speed() > 0.35F && this.isOnGround() && !this.swinging)
+			if (isAggressive() && this.animationSpeedOld > 0.35F && this.isOnGround() && !this.swinging)
 				return event.setAndContinue(DoomAnimationsDefault.RUN);
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
 				return event.setAndContinue(DoomAnimationsDefault.DEATH);

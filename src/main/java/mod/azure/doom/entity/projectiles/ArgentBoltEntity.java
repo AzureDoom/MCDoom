@@ -29,6 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -221,7 +222,7 @@ public class ArgentBoltEntity extends AbstractArrow {
 		final AABB aabb = new AABB(this.blockPosition().above()).inflate(2D, 2D, 2D);
 		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
 			if (e instanceof LivingEntity) {
-				e.hurt(damageSources().playerAttack((Player) this.shooter), DoomConfig.argent_bolt_damage);
+				e.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.argent_bolt_damage);
 			}
 		});
 	}
@@ -237,9 +238,9 @@ public class ArgentBoltEntity extends AbstractArrow {
 		Entity entity1 = this.getOwner();
 		DamageSource damagesource;
 		if (entity1 == null) {
-			damagesource = damageSources().arrow(this, this);
+			damagesource = DamageSource.arrow(this, this);
 		} else {
-			damagesource = damageSources().arrow(this, entity1);
+			damagesource = DamageSource.arrow(this, entity1);
 			if (entity1 instanceof LivingEntity) {
 				((LivingEntity) entity1).setLastHurtMob(entity);
 			}
@@ -250,7 +251,7 @@ public class ArgentBoltEntity extends AbstractArrow {
 				if (!this.level.isClientSide && entity1 instanceof LivingEntity) {
 					EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
 					EnchantmentHelper.doPostDamageEffects((LivingEntity) entity1, livingentity);
-					this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.5F, Level.ExplosionInteraction.NONE);
+					this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.5F, Explosion.BlockInteraction.NONE);
 					this.remove(RemovalReason.KILLED);
 				}
 				this.doPostHurtEffects(livingentity);

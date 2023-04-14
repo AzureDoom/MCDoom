@@ -163,7 +163,7 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
 	}
 
 	public void spawnFlames(double x, double z, double maxY, double y, float yaw, int warmup) {
-		var blockpos = BlockPos.containing(x, y, z);
+		var blockpos = new BlockPos(x, y, z);
 		var flag = false;
 		var d0 = 0.0D;
 		do {

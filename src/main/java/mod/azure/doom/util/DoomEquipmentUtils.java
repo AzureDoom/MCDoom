@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import mod.azure.doom.util.registry.DoomItems;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,7 +31,7 @@ public class DoomEquipmentUtils {
 	}
 
 	public static int compareItemsById(Item i1, Item i2) {
-		return BuiltInRegistries.ITEM.getKey(i1).compareTo(BuiltInRegistries.ITEM.getKey(i2));
+		return Registry.ITEM.getKey(i1).compareTo(Registry.ITEM.getKey(i2));
 	}
 
 	public static int generateRepairLevelCost(ItemStack repaired, int maxLevel) {
@@ -66,7 +66,7 @@ public class DoomEquipmentUtils {
 		for (final var encodedEnchant : encodedEnchants.split(",")) {
 			final var enchantItem = encodedEnchant.split(">");
 			final var enchantKey = enchantItem[0].split(":");
-			enchants.put(BuiltInRegistries.ENCHANTMENT.get(new ResourceLocation(enchantKey[0], enchantKey[1])), Integer.parseInt(enchantItem[1]));
+			enchants.put(Registry.ENCHANTMENT.get(new ResourceLocation(enchantKey[0], enchantKey[1])), Integer.parseInt(enchantItem[1]));
 		}
 		return enchants.isEmpty() ? null : enchants;
 	}
@@ -94,7 +94,7 @@ public class DoomEquipmentUtils {
 	public static CompoundTag getTagForEnchantments(ItemStack breakingStack, ItemStack ruinedStack) {
 		final Set<String> enchantmentStrings = new HashSet<>();
 		for (final var ench : EnchantmentHelper.getEnchantments(breakingStack).entrySet()) {
-			enchantmentStrings.add(BuiltInRegistries.ENCHANTMENT.getKey(ench.getKey()) + ">" + ench.getValue());
+			enchantmentStrings.add(Registry.ENCHANTMENT.getKey(ench.getKey()) + ">" + ench.getValue());
 		}
 		if (!enchantmentStrings.isEmpty()) {
 			var tag = ruinedStack.getTag();

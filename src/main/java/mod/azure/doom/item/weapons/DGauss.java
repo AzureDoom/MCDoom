@@ -36,7 +36,7 @@ public class DGauss extends DoomBaseItem {
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
 	public DGauss() {
-		super(new Item.Properties().stacksTo(1).durability(11));
+		super(new Item.Properties().stacksTo(1).durability(11).tab(DoomMod.DoomWeaponItemGroup));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 

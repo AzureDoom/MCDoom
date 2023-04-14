@@ -30,6 +30,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -45,7 +46,7 @@ public class ChainsawAnimated extends Item implements GeoItem {
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
 	public ChainsawAnimated() {
-		super(new Item.Properties().stacksTo(1).durability(601));
+		super(new Item.Properties().stacksTo(1).durability(601).tab(DoomMod.DoomWeaponItemGroup));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
@@ -131,7 +132,7 @@ public class ChainsawAnimated extends Item implements GeoItem {
 		if (target instanceof LivingEntity) {
 			target.setDeltaMovement(0, 0, 0);
 			target.invulnerableTime = 0;
-			target.hurt(user.damageSources().playerAttack((Player) user), DoomConfig.chainsaw_damage);
+			target.hurt(DamageSource.playerAttack((Player) user), DoomConfig.chainsaw_damage);
 			user.level.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_ATTACKING, SoundSource.PLAYERS, 0.3F, 1.0F / (user.level.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 	}

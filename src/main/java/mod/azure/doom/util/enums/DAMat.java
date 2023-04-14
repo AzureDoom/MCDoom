@@ -7,7 +7,7 @@ import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.LazyLoadedValue;
-import net.minecraft.world.item.ArmorItem.Type;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -61,13 +61,13 @@ public enum DAMat implements ArmorMaterial {
 	}
 
 	@Override
-	public int getDurabilityForType(Type slot) {
-		return BASE_DURABILITY[slot.getSlot().getIndex()] * this.durabilityMultiplier;
+	public int getDurabilityForSlot(EquipmentSlot slot) {
+		return BASE_DURABILITY[slot.getIndex()] * this.durabilityMultiplier;
 	}
 
 	@Override
-	public int getDefenseForType(Type slot) {
-		return this.protectionAmounts[slot.getSlot().getIndex()];
+	public int getDefenseForSlot(EquipmentSlot slot) {
+		return this.protectionAmounts[slot.getIndex()];
 	}
 
 	@Override

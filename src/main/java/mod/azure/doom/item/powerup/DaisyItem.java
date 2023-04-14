@@ -24,7 +24,7 @@ import net.minecraft.world.level.Level;
 public class DaisyItem extends TrinketItem {
 
 	public DaisyItem() {
-		super(new Item.Properties().stacksTo(1));
+		super(new Item.Properties().stacksTo(1).tab(DoomMod.DoomPowerUPItemGroup));
 	}
 
 	@Override

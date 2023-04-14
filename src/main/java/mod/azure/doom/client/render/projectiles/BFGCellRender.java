@@ -1,11 +1,10 @@
 package mod.azure.doom.client.render.projectiles;
 
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
@@ -68,8 +67,8 @@ public class BFGCellRender extends GeoEntityRenderer<BFGEntity> {
 			poseStack.translate(0.0f, entity.getEyeHeight(), 0.0f);
 			var Vec33 = this.fromLerpedPosition(livingEntity, (double) livingEntity.getBbHeight() * 0.5, partialTick).subtract(this.fromLerpedPosition(entity, entity.getEyeHeight(), partialTick));
 			Vec33 = Vec33.normalize();
-			poseStack.mulPose(Axis.YP.rotationDegrees((1.5707964f - (float) Math.atan2(Vec33.z, Vec33.x)) * 57.295776f));
-			poseStack.mulPose(Axis.XP.rotationDegrees((float) Math.acos(Vec33.y) * 57.295776f));
+			poseStack.mulPose(Vector3f.YP.rotationDegrees((1.5707964f - (float) Math.atan2(Vec33.z, Vec33.x)) * 57.295776f));
+			poseStack.mulPose(Vector3f.XP.rotationDegrees((float) Math.acos(Vec33.y) * 57.295776f));
 			var s = 64 + (int) (entity.getBeamProgress(partialTick) * entity.getBeamProgress(partialTick) * 191.0f);
 			var t = 32 + (int) (entity.getBeamProgress(partialTick) * entity.getBeamProgress(partialTick) * 191.0f);
 			var u = 128 - (int) (entity.getBeamProgress(partialTick) * entity.getBeamProgress(partialTick) * 64.0f);

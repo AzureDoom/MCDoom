@@ -32,7 +32,7 @@ public class BFG9000 extends DoomBaseItem {
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
 	public BFG9000() {
-		super(new Item.Properties().stacksTo(1).durability(401));
+		super(new Item.Properties().stacksTo(1).durability(401).tab(DoomMod.DoomWeaponItemGroup));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 

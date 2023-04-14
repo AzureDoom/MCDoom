@@ -22,6 +22,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -36,7 +37,7 @@ public class Shotgun extends DoomBaseItem {
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
 	public Shotgun() {
-		super(new Item.Properties().stacksTo(1).durability(51));
+		super(new Item.Properties().stacksTo(1).durability(51).tab(DoomMod.DoomWeaponItemGroup));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
@@ -55,7 +56,7 @@ public class Shotgun extends DoomBaseItem {
 					var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
 					if (result != null) {
 						if (result.getEntity()instanceof LivingEntity livingEntity)
-							livingEntity.hurt(playerentity.damageSources().playerAttack(playerentity), DoomConfig.shotgun_damage + enchantlevel * 2.0F);
+							livingEntity.hurt(DamageSource.playerAttack(playerentity), DoomConfig.shotgun_damage + enchantlevel * 2.0F);
 					} else {
 						final var shell = createArrow(worldIn, stack, playerentity);
 						shell.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 1.0F * 3.0F, 1.0F);

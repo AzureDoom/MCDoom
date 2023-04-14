@@ -47,7 +47,6 @@ import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
 import mod.azure.doom.entity.tileentity.BarrelEntity;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -108,14 +107,14 @@ public class DoomEntities {
 
 	private static <T extends Entity> EntityType<T> mob(String id, EntityType.EntityFactory<T> factory, float height, float width) {
 		final var type = FabricEntityTypeBuilder.<T>create(MobCategory.MONSTER, factory).dimensions(EntityDimensions.scalable(height, width)).fireImmune().trackedUpdateRate(1).trackRangeBlocks(90).build();
-		Registry.register(BuiltInRegistries.ENTITY_TYPE, DoomMod.modResource(id), type);
+		Registry.register(Registry.ENTITY_TYPE, DoomMod.modResource(id), type);
 
 		return type;
 	}
 
 	private static <T extends Entity> EntityType<T> blockentity(String id, EntityType.EntityFactory<T> factory, float height, float width) {
 		final var type = FabricEntityTypeBuilder.<T>create(MobCategory.MISC, factory).dimensions(EntityDimensions.scalable(height, width)).fireImmune().trackedUpdateRate(1).trackRangeBlocks(90).build();
-		Registry.register(BuiltInRegistries.ENTITY_TYPE, DoomMod.modResource(id), type);
+		Registry.register(Registry.ENTITY_TYPE, DoomMod.modResource(id), type);
 
 		return type;
 	}

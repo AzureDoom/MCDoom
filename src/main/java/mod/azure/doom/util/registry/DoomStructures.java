@@ -9,7 +9,6 @@ import mod.azure.doom.structures.HellChurchStructure;
 import mod.azure.doom.structures.IconStructure;
 import mod.azure.doom.structures.MotherdemonStructure;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
@@ -31,7 +30,7 @@ public class DoomStructures {
 	}
 
 	private static <S extends Structure> StructureType<S> register(ResourceLocation id, Codec<S> codec) {
-		return Registry.register(BuiltInRegistries.STRUCTURE_TYPE, id, () -> codec);
+		return Registry.register(Registry.STRUCTURE_TYPES, id, () -> codec);
 	}
 
 }

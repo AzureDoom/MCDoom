@@ -68,7 +68,7 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 	protected DemonEntity(EntityType<? extends Monster> type, Level worldIn) {
 		super(type, worldIn);
 		xpReward = (int) getMaxHealth();
-		setMaxUpStep(1.5f);
+		this.maxUpStep = 1.5F;
 	}
 
 	@Override
@@ -223,7 +223,7 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		return source == damageSources().inWall() || source == damageSources().onFire() || source == damageSources().inFire() ? false : super.hurt(source, amount);
+		return source == DamageSource.IN_WALL || source == DamageSource.ON_FIRE || source == DamageSource.IN_FIRE ? false : super.hurt(source, amount);
 	}
 
 	@Override

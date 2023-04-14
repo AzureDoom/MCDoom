@@ -2,6 +2,7 @@ package mod.azure.doom.item.powerup;
 
 import java.util.List;
 
+import mod.azure.doom.DoomMod;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -18,7 +19,7 @@ import net.minecraft.world.level.Level;
 public class PowerSphereItem extends Item {
 
 	public PowerSphereItem() {
-		super(new Item.Properties().stacksTo(64));
+		super(new Item.Properties().stacksTo(64).tab(DoomMod.DoomPowerUPItemGroup));
 	}
 
 	@Override

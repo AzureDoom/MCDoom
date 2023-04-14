@@ -8,9 +8,9 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
+import net.minecraft.core.Registry;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.resources.ResourceLocation;
@@ -88,7 +88,7 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	protected void actuallyHurt(DamageSource source, float damageAmount) {
-		if (source == damageSources().outOfWorld())
+		if (source == DamageSource.OUT_OF_WORLD)
 			remove(Entity.RemovalReason.KILLED);
 
 		if (!(source.getEntity() instanceof Player))
@@ -121,7 +121,7 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 			for (var i = 0; i < 1; i++) {
 				final var randomIndex = getRandom().nextInt(waveEntries.size());
 				final var randomElement1 = new ResourceLocation(waveEntries.get(randomIndex));
-				final var randomElement = BuiltInRegistries.ENTITY_TYPE.get(randomElement1);
+				final var randomElement = Registry.ENTITY_TYPE.get(randomElement1);
 				final var waveentity = randomElement.create(level);
 				waveentity.setPos(this.getX() + r, this.getY() + 0.5D, this.getZ() + r);
 				level.addFreshEntity(waveentity);

@@ -16,8 +16,8 @@ import mod.azure.doom.entity.task.DemonProjectileAttack;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -45,6 +45,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
@@ -138,7 +139,7 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 	@Override
 	public void die(DamageSource source) {
 		if (!level.isClientSide) {
-			if (source == damageSources().outOfWorld())
+			if (source == DamageSource.OUT_OF_WORLD)
 				setDeathState(1);
 			if (this.getDeathState() == 0) {
 				final var areaeffectcloudentity = new AreaEffectCloud(level, this.getX(), this.getY(), this.getZ());
@@ -213,7 +214,7 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 			for (var i = 0; i < 1; ++i) {
 				final var randomIndex = rand.nextInt(waveEntries.size());
 				final var randomElement1 = new ResourceLocation(waveEntries.get(randomIndex));
-				final var randomElement = BuiltInRegistries.ENTITY_TYPE.get(randomElement1);
+				final var randomElement = Registry.ENTITY_TYPE.get(randomElement1);
 				final var waveentity = randomElement.create(level);
 				waveentity.setPos(entity.getX() + r, entity.getY() + 0.5D, entity.getZ() + r);
 				level.addFreshEntity(waveentity);
@@ -222,7 +223,7 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 	}
 
 	public void spawnFlames(double x, double z, double maxY, double y, float yaw, int warmup) {
-		var blockpos = BlockPos.containing(x, y, z);
+		var blockpos = new BlockPos(x, y, z);
 		var flag = false;
 		var d0 = 0.0D;
 		do {
@@ -395,15 +396,15 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		return source == damageSources().inWall() || source == damageSources().onFire() || source == damageSources().inFire() ? false : super.hurt(source, amount);
+		return source == DamageSource.IN_WALL || source == DamageSource.ON_FIRE || source == DamageSource.IN_FIRE ? false : super.hurt(source, amount);
 	}
 
 	@Override
 	public boolean doHurtTarget(Entity target) {
 		level.broadcastEntityEvent(this, (byte) 4);
-		final var bl = target.hurt(damageSources().mobAttack(this), DoomConfig.icon_melee_damage + (this.getDeathState() == 1 ? DoomConfig.icon_phaseone_damage_boos : 0));
+		final var bl = target.hurt(DamageSource.mobAttack(this), DoomConfig.icon_melee_damage + (this.getDeathState() == 1 ? DoomConfig.icon_phaseone_damage_boos : 0));
 		if (bl) {
-			level.explode(this, target.getX(), target.getY(), target.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
+			level.explode(this, target.getX(), target.getY(), target.getZ(), 3.0F, false, Explosion.BlockInteraction.BREAK);
 			doEnchantDamageEffects(this, target);
 			target.invulnerableTime = 0;
 		}

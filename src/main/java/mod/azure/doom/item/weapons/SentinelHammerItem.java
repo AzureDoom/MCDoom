@@ -26,6 +26,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AreaEffectCloud;
@@ -45,7 +46,7 @@ public class SentinelHammerItem extends SwordItem implements GeoItem {
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
 	public SentinelHammerItem() {
-		super(DoomTier.DOOM_HIGHTEIR, 1, -2.5f, new Item.Properties().stacksTo(1).durability(DoomConfig.sentinelhammer_max_uses));
+		super(DoomTier.DOOM_HIGHTEIR, 1, -2.5f, new Item.Properties().stacksTo(1).durability(DoomConfig.sentinelhammer_max_uses).tab(DoomMod.DoomWeaponItemGroup));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
@@ -59,7 +60,7 @@ public class SentinelHammerItem extends SwordItem implements GeoItem {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
 			((LivingEntity) target).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 1000, 2));
-			target.hurt(user.damageSources().playerAttack((Player) user), DoomConfig.sentinelhammer_damage);
+			target.hurt(DamageSource.playerAttack((Player) user), DoomConfig.sentinelhammer_damage);
 		}
 	}
 

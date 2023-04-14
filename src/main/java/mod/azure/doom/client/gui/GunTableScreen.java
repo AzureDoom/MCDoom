@@ -107,8 +107,8 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 					this.renderIngredients(matrices, gunTableRecipe, xPos, n);
 
 					this.renderButtonArrows(matrices, gunTableRecipe, width + 20, n);
-					this.itemRenderer.renderAndDecorateFakeItem(matrices, output, width + 24 + 68, n);
-					this.itemRenderer.renderGuiItemDecorations(matrices, this.font, output, width + 24 + 68, n);
+					this.itemRenderer.renderAndDecorateFakeItem(output, width + 24 + 68, n);
+					this.itemRenderer.renderGuiItemDecorations(this.font, output, width + 24 + 68, n);
 					yPos += 20;
 					++m;
 				}
@@ -141,8 +141,8 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 			if (displayStacks.length > 0) {
 				var stack = new ItemStack(displayStacks[0].getItem(), gunTableRecipe.countRequired(i));
 				if (!stack.isEmpty()) {
-					this.itemRenderer.renderGuiItem(matrices, stack, x, y);
-					this.itemRenderer.renderGuiItemDecorations(matrices,this.font, stack, x, y);
+					this.itemRenderer.renderGuiItem(stack, x, y);
+					this.itemRenderer.renderGuiItemDecorations(this.font, stack, x, y);
 					x += 20;
 				}
 			}
@@ -192,7 +192,7 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 		final int index;
 
 		public RecipeButton(int x, int y, int index, Button.OnPress onPress) {
-			super(x, y, 112, 20, CommonComponents.EMPTY, onPress, DEFAULT_NARRATION);
+			super(x, y, 112, 20, CommonComponents.EMPTY, onPress);
 			this.index = index;
 			this.visible = false;
 		}
@@ -204,14 +204,14 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 		public void renderToolTip(PoseStack matrices, int mouseX, int mouseY) {
 			if (this.isHovered && menu.getRecipes().size() > this.index + scrollOff) {
 				ItemStack stack;
-				if (mouseX < this.getX() + 20) {
+				if (mouseX < this.x + 20) {
 					stack = menu.getRecipes().get(this.index + scrollOff).output;
 					renderTooltip(matrices, stack, mouseX, mouseY);
-				} else if (mouseX < this.getX() + 50 && mouseX > this.getX() + 30) {
+				} else if (mouseX < this.x + 50 && mouseX > this.x + 30) {
 					stack = menu.getRecipes().get(this.index + scrollOff).output;
 					if (!stack.isEmpty())
 						renderTooltip(matrices, stack, mouseX, mouseY);
-				} else if (mouseX > this.getX() + 65) {
+				} else if (mouseX > this.x + 65) {
 					stack = menu.getRecipes().get(this.index + scrollOff).output;
 					renderTooltip(matrices, stack, mouseX, mouseY);
 				}

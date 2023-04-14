@@ -180,7 +180,7 @@ public class PossessedSoldierEntity extends DemonEntity implements SmartBrainOwn
 				move(MoverType.SELF, getDeltaMovement());
 				this.setDeltaMovement(getDeltaMovement().scale(0.5D));
 			} else {
-				final var ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
+				final var ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
 				var f = 0.91F;
 				if (onGround)
 					f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;

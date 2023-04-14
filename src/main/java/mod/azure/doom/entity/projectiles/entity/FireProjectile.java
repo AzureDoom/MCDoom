@@ -10,6 +10,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -112,7 +113,7 @@ public class FireProjectile extends AbstractHurtingProjectile {
 			remove(RemovalReason.KILLED);
 			if (entity1 instanceof LivingEntity) {
 				if (!(entity instanceof DemonEntity)) {
-					entity.hurt(damageSources().mobAttack((LivingEntity) entity1), directHitDamage);
+					entity.hurt(DamageSource.mobAttack((LivingEntity) entity1), directHitDamage);
 					entity.setSecondsOnFire(15);
 					doEnchantDamageEffects((LivingEntity) entity1, entity);
 				}

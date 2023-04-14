@@ -2,7 +2,6 @@ package mod.azure.doom.util.registry;
 
 import mod.azure.doom.DoomMod;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 
 public class DoomSounds {
@@ -118,8 +117,8 @@ public class DoomSounds {
 	public static SoundEvent MOTHER_HURT;
 
 	static SoundEvent of(String id) {
-		final var sound = SoundEvent.createVariableRangeEvent(DoomMod.modResource(id));
-		Registry.register(BuiltInRegistries.SOUND_EVENT, DoomMod.modResource(id), sound);
+		final var sound = new SoundEvent(DoomMod.modResource(id));
+		Registry.register(Registry.SOUND_EVENT, DoomMod.modResource(id), sound);
 		return sound;
 	}
 

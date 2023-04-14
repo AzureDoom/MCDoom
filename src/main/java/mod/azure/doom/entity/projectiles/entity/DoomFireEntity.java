@@ -111,7 +111,7 @@ public class DoomFireEntity extends Entity implements GeoEntity {
 				return;
 
 			target.invulnerableTime = 0;
-			target.hurt(damageSources().indirectMagic(this, (LivingEntity) target), damage);
+			target.hurt(DamageSource.indirectMagic(this, (LivingEntity) target), damage);
 		}
 	}
 
@@ -131,7 +131,7 @@ public class DoomFireEntity extends Entity implements GeoEntity {
 			level.setBlockAndUpdate(blockPosition().above(), BaseFireBlock.getState(level, blockPosition().above()));
 		level.getEntities(this, new AABB(blockPosition().above()).inflate(1)).forEach(e -> {
 			if (e.isAlive() && !(e instanceof DemonEntity)) {
-				e.hurt(damageSources().onFire(), damage);
+				e.hurt(DamageSource.ON_FIRE, damage);
 				e.setRemainingFireTicks(60);
 			}
 		});
@@ -160,7 +160,7 @@ public class DoomFireEntity extends Entity implements GeoEntity {
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		return source == damageSources().inWall() || source == damageSources().onFire() || source == damageSources().inFire() ? false : super.hurt(source, amount);
+		return source == DamageSource.IN_WALL || source == DamageSource.ON_FIRE || source == DamageSource.IN_FIRE ? false : super.hurt(source, amount);
 	}
 	
 	@Override

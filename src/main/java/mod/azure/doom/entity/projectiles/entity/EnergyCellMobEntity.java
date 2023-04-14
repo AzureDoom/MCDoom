@@ -13,6 +13,7 @@ import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -113,7 +114,7 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements Ge
 			final var entity = entityHitResult.getEntity();
 			final var entity2 = getOwner();
 			if (!(entity instanceof DemonEntity))
-				entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
+				entity.hurt(DamageSource.mobAttack((LivingEntity) entity2), directHitDamage);
 			if (entity2 instanceof LivingEntity) {
 				if (!(entity instanceof DemonEntity))
 					doEnchantDamageEffects((LivingEntity) entity2, entity);
@@ -130,7 +131,7 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements Ge
 	private void doDamage(Entity user, Entity target) {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
-			target.hurt(damageSources().indirectMagic(this, target), directHitDamage);
+			target.hurt(DamageSource.indirectMagic(this, target), directHitDamage);
 		}
 	}
 

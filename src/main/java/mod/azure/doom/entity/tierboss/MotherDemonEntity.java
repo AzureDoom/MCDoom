@@ -117,7 +117,7 @@ public class MotherDemonEntity extends DemonEntity implements SmartBrainOwner<Mo
 	@Override
 	public void die(DamageSource source) {
 		if (!level.isClientSide) {
-			if (source == damageSources().outOfWorld())
+			if (source == DamageSource.OUT_OF_WORLD)
 				setDeathState(1);
 			if (entityData.get(DEATH_STATE) == 0) {
 				final var areaeffectcloudentity = new AreaEffectCloud(level, this.getX(), this.getY(), this.getZ());
@@ -206,7 +206,7 @@ public class MotherDemonEntity extends DemonEntity implements SmartBrainOwner<Mo
 	}
 
 	public void spawnFlames(double x, double z, double maxY, double y, float yaw, int warmup) {
-		var blockpos = BlockPos.containing(x, y, z);
+		var blockpos = new BlockPos(x, y, z);
 		var flag = false;
 		var d0 = 0.0D;
 		do {

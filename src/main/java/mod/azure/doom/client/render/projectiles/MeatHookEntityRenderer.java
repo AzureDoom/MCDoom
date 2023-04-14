@@ -2,7 +2,7 @@ package mod.azure.doom.client.render.projectiles;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
@@ -62,9 +62,9 @@ public class MeatHookEntityRenderer extends GeoEntityRenderer<MeatHookEntity> {
 		var length = Mth.sqrt(squaredLength);
 
 		poseStack.pushPose();
-		poseStack.mulPose(Axis.YP.rotation((float) (-Math.atan2(z, x)) - 1.5707964F));
-		poseStack.mulPose(Axis.XP.rotation((float) (-Math.atan2(lengthXY, y)) - 1.5707964F));
-		poseStack.mulPose(Axis.ZP.rotation(25));
+		poseStack.mulPose(Vector3f.YP.rotation((float) (-Math.atan2(z, x)) - 1.5707964F));
+		poseStack.mulPose(Vector3f.XP.rotation((float) (-Math.atan2(lengthXY, y)) - 1.5707964F));
+		poseStack.mulPose(Vector3f.ZP.rotation(25));
 		poseStack.pushPose();
 		poseStack.translate(0.015, -0.2, 0);
 
@@ -87,7 +87,7 @@ public class MeatHookEntityRenderer extends GeoEntityRenderer<MeatHookEntity> {
 		vertexConsumer.vertex(matrix4f, vertX2, vertY2, 0F).color(0, 0, 0, 255).uv(maxU, minV).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3f, 0.0F, -1.0F, 0.0F).endVertex();
 
 		poseStack.popPose();
-		poseStack.mulPose(Axis.ZP.rotation(90));
+		poseStack.mulPose(Vector3f.ZP.rotation(90));
 		poseStack.translate(-0.015, -0.2, 0);
 
 		entry = poseStack.last();

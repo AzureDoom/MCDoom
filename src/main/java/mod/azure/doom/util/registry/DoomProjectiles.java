@@ -25,7 +25,6 @@ import mod.azure.doom.entity.projectiles.entity.GladiatorMaceEntity;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -57,7 +56,7 @@ public class DoomProjectiles {
 
 	private static <T extends Entity> EntityType<T> projectile(EntityType.EntityFactory<T> factory, String id, float height, float width) {
 		final var type = FabricEntityTypeBuilder.<T>create(MobCategory.MISC, factory).dimensions(new EntityDimensions(height, width, true)).disableSummon().spawnableFarFromPlayer().trackRangeBlocks(90).trackedUpdateRate(1).build();
-		Registry.register(BuiltInRegistries.ENTITY_TYPE, DoomMod.modResource(id), type);
+		Registry.register(Registry.ENTITY_TYPE, DoomMod.modResource(id), type);
 		ENTITY_TYPES.add(type);
 		ENTITY_THAT_USE_ITEM_RENDERS.add(type);
 

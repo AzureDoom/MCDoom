@@ -2,6 +2,7 @@ package mod.azure.doom.item.ammo;
 
 import java.util.List;
 
+import mod.azure.doom.DoomMod;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -12,7 +13,7 @@ import net.minecraft.world.level.Level;
 public class ChaingunAmmo extends Item {
 
 	public ChaingunAmmo() {
-		super(new Item.Properties());
+		super(new Item.Properties().tab(DoomMod.DoomWeaponItemGroup));
 	}
 
 	@Override

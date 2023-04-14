@@ -35,7 +35,7 @@ public class RocketLauncher extends DoomBaseItem {
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
 	public RocketLauncher() {
-		super(new Item.Properties().stacksTo(1).durability(51));
+		super(new Item.Properties().stacksTo(1).durability(51).tab(DoomMod.DoomWeaponItemGroup));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 

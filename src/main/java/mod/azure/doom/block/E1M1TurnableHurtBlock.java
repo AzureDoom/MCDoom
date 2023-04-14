@@ -3,6 +3,7 @@ package mod.azure.doom.block;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -59,7 +60,7 @@ public class E1M1TurnableHurtBlock extends Block {
 	@Override
 	public void stepOn(Level worldIn, BlockPos pos, BlockState state, Entity entityIn) {
 		if (!entityIn.fireImmune() && entityIn instanceof LivingEntity && !EnchantmentHelper.hasFrostWalker((LivingEntity) entityIn))
-			entityIn.hurt(entityIn.damageSources().hotFloor(), 1.0F);
+			entityIn.hurt(DamageSource.HOT_FLOOR, 1.0F);
 		super.stepOn(worldIn, pos, state, entityIn);
 	}
 

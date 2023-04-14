@@ -56,7 +56,7 @@ public class BarrelBlock extends Block {
 	@Override
 	public void wasExploded(Level worldIn, BlockPos pos, Explosion explosionIn) {
 		if (!worldIn.isClientSide) {
-			var tntentity = new BarrelEntity(worldIn, (double) pos.getX() + 0.5D, (double) pos.getY(), (double) pos.getZ() + 0.5D, explosionIn.getIndirectSourceEntity());
+			var tntentity = new BarrelEntity(worldIn, (double) pos.getX() + 0.5D, (double) pos.getY(), (double) pos.getZ() + 0.5D, explosionIn.getSourceMob());
 			worldIn.addFreshEntity(tntentity);
 		}
 	}

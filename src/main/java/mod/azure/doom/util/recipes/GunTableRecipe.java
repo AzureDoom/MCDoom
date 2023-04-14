@@ -16,8 +16,7 @@ import com.google.gson.JsonSyntaxException;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.gui.DoomGunInventory;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -64,8 +63,8 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 	}
 
 	@Override
-	public ItemStack assemble(DoomGunInventory inv, RegistryAccess var2) {
-		return this.getResultItem(var2).copy();
+	public ItemStack assemble(DoomGunInventory inv) {
+		return this.getResultItem().copy();
 	}
 
 	@Override
@@ -74,7 +73,7 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 	}
 
 	@Override
-	public ItemStack getResultItem(RegistryAccess var1) {
+	public ItemStack getResultItem() {
 		return output;
 	}
 
@@ -105,7 +104,7 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 	public int compareTo(@NotNull GunTableRecipe o) {
 		var outputThis = output.getItem();
 		var outputOther = o.output.getItem();
-		return BuiltInRegistries.ITEM.getKey(outputThis).compareTo(BuiltInRegistries.ITEM.getKey(outputOther));
+		return Registry.ITEM.getKey(outputThis).compareTo(Registry.ITEM.getKey(outputOther));
 	}
 
 	public static class Serializer implements RecipeSerializer<GunTableRecipe> {

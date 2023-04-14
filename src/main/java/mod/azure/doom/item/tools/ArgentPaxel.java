@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Maps;
 
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.util.enums.DoomTier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -43,7 +44,7 @@ public class ArgentPaxel extends DiggerItem {
 	private static final List<TagKey<Block>> MINEABLE = ImmutableList.of(BlockTags.MINEABLE_WITH_AXE, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.MINEABLE_WITH_SHOVEL);
 
 	public ArgentPaxel() {
-		super(9, -2.4F, DoomTier.DOOM, BlockTags.MINEABLE_WITH_AXE, new Item.Properties().stacksTo(1));
+		super(9, -2.4F, DoomTier.DOOM, BlockTags.MINEABLE_WITH_AXE, new Item.Properties().stacksTo(1).tab(DoomMod.DoomWeaponItemGroup));
 	}
 
 	@Override

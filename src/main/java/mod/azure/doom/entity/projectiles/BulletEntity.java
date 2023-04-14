@@ -188,9 +188,9 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
 		var entity1 = this.getOwner();
 		DamageSource damagesource;
 		if (entity1 == null) {
-			damagesource = damageSources().arrow(this, this);
+			damagesource = DamageSource.arrow(this, this);
 		} else {
-			damagesource = damageSources().arrow(this, entity1);
+			damagesource = DamageSource.arrow(this, entity1);
 			if (entity1 instanceof LivingEntity)
 				((LivingEntity) entity1).setLastHurtMob(entity);
 		}

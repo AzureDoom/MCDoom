@@ -2,6 +2,7 @@ package mod.azure.doom.item;
 
 import java.util.List;
 
+import mod.azure.doom.DoomMod;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -12,7 +13,7 @@ import net.minecraft.world.level.Level;
 public class ArgentPlateItem extends Item {
 
 	public ArgentPlateItem() {
-		super(new Item.Properties().stacksTo(64));
+		super(new Item.Properties().stacksTo(64).tab(DoomMod.DoomPowerUPItemGroup));
 	}
 
 	@Override

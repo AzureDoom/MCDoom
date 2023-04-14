@@ -25,8 +25,8 @@ import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomProjectiles;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -35,6 +35,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -48,6 +49,7 @@ import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -68,7 +70,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 	List<? extends String> whitelistEntries = DoomConfig.bfg_damage_mob_whitelist;
 	int randomIndex = rand.nextInt(whitelistEntries.size());
 	ResourceLocation randomElement1 = new ResourceLocation(whitelistEntries.get(randomIndex));
-	EntityType<?> randomElement = BuiltInRegistries.ENTITY_TYPE.get(randomElement1);
+	EntityType<?> randomElement = Registry.ENTITY_TYPE.get(randomElement1);
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();
 
@@ -160,19 +162,19 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 			var listEntity = randomElement.tryCast(e);
 			if (!(e instanceof Player || e instanceof EnderDragon || e instanceof GoreNestEntity || e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity) && (e instanceof Monster || e instanceof Slime || e instanceof Phantom || e instanceof DemonEntity || e instanceof Shulker || e instanceof Hoglin || (e == listEntity))) {
 				if (e.isAlive()) {
-					e.hurt(damageSources().explosion(this, shooter), DoomConfig.bfgball_damage_aoe);
+					e.hurt(DamageSource.explosion(shooter), DoomConfig.bfgball_damage_aoe);
 					this.setTargetedEntity(e.getId());
 				}
 			}
 			if (e instanceof EnderDragon) {
 				if (e.isAlive()) {
-					((EnderDragon) e).head.hurt(damageSources().playerAttack((Player) this.shooter), DoomConfig.bfgball_damage_dragon * 0.3F);
+					((EnderDragon) e).head.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.bfgball_damage_dragon * 0.3F);
 					this.setTargetedEntity(e.getId());
 				}
 			}
 			if (e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity) {
 				if (e.isAlive()) {
-					e.hurt(damageSources().playerAttack((Player) this.shooter), DoomConfig.bfgball_damage_aoe * 0.1F);
+					e.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.bfgball_damage_aoe * 0.1F);
 				}
 			}
 		});
@@ -248,7 +250,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		if (!this.level.isClientSide) {
 			this.doDamage();
-			this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, DoomConfig.enable_block_breaking ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
+			this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, DoomConfig.enable_block_breaking ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE);
 			this.remove(RemovalReason.KILLED);
 		}
 		this.playSound(DoomSounds.BFG_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
@@ -259,7 +261,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
 			var listEntity = randomElement.tryCast(e);
 			if (!(e instanceof Player || e instanceof EnderDragon || e instanceof GoreNestEntity || e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity) && (e instanceof Monster || e instanceof Slime || e instanceof Phantom || e instanceof DemonEntity || e instanceof Shulker || e instanceof Hoglin || (e == listEntity))) {
-				e.hurt(damageSources().playerAttack((Player) this.shooter), DoomConfig.bfgball_damage);
+				e.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.bfgball_damage);
 				this.setTargetedEntity(e.getId());
 				if (!this.level.isClientSide) {
 					var list1 = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D));
@@ -279,10 +281,10 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 			}
 			if (e instanceof EnderDragon)
 				if (e.isAlive())
-					((EnderDragon) e).head.hurt(damageSources().playerAttack((Player) this.shooter), DoomConfig.bfgball_damage_dragon * 0.3F);
+					((EnderDragon) e).head.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.bfgball_damage_dragon * 0.3F);
 			if (e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity)
 				if (e.isAlive())
-					e.hurt(damageSources().playerAttack((Player) this.shooter), DoomConfig.bfgball_damage * 0.1F);
+					e.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.bfgball_damage * 0.1F);
 		});
 	}
 

@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 
 import com.google.common.collect.ImmutableMap.Builder;
 
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.util.enums.DoomTier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -32,7 +33,7 @@ public class ArgentAxe extends DiggerItem {
 			.build();
 
 	public ArgentAxe() {
-		super(8, -2.4F, DoomTier.DOOM, BlockTags.MINEABLE_WITH_AXE, new Item.Properties().stacksTo(1));
+		super(8, -2.4F, DoomTier.DOOM, BlockTags.MINEABLE_WITH_AXE, new Item.Properties().stacksTo(1).tab(DoomMod.DoomWeaponItemGroup));
 	}
 
 	@Override

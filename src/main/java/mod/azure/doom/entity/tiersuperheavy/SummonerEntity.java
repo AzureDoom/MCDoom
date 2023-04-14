@@ -19,7 +19,7 @@ import mod.azure.doom.entity.task.DemonProjectileAttack;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -144,7 +144,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 			for (var i = 0; i < 1; i++) {
 				final var randomIndex = getRandom().nextInt(waveEntries.size());
 				final var randomElement1 = new ResourceLocation(waveEntries.get(randomIndex));
-				final var randomElement = BuiltInRegistries.ENTITY_TYPE.get(randomElement1);
+				final var randomElement = Registry.ENTITY_TYPE.get(randomElement1);
 				final var waveentity = randomElement.create(level);
 				waveentity.setPos(this.getX() + r, this.getY() + 0.5D, this.getZ() + r);
 				level.addFreshEntity(waveentity);
@@ -195,7 +195,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 	}
 
 	public void spawnFlames(double x, double z, double maxY, double y, float yaw, int warmup) {
-		var blockpos = BlockPos.containing(x, y, z);
+		var blockpos = new BlockPos(x, y, z);
 		var flag = false;
 		var d0 = 0.0D;
 		do {
