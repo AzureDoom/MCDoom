@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.UnmaykrRender;
 import mod.azure.doom.config.DoomConfig;
@@ -32,7 +33,7 @@ public class Unmaykr extends DoomBaseItem {
 	public final String itemID;
 
 	public Unmaykr(String id) {
-		super(new Item.Properties().stacksTo(1).durability(9000));
+		super(new Item.Properties().stacksTo(1).durability(9000).tab(DoomMod.DoomWeaponItemGroup));
 		itemID = id;
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}

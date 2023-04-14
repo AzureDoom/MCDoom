@@ -37,6 +37,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
@@ -112,7 +113,7 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 	@Override
 	public void die(DamageSource source) {
 		if (!level.isClientSide) {
-			if (source == damageSources().outOfWorld())
+			if (source == DamageSource.OUT_OF_WORLD)
 				setDeathState(1);
 			if (this.getDeathState() == 0) {
 				final var areaeffectcloudentity = new AreaEffectCloud(level, this.getX(), this.getY(), this.getZ());
@@ -125,7 +126,7 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 				setLastHurtMob(getLastHurtByMob());
 				level.broadcastEntityEvent(this, (byte) 3);
 			}
-			if (this.getDeathState() == 1) 
+			if (this.getDeathState() == 1)
 				super.die(source);
 		}
 	}
@@ -193,9 +194,9 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 	public void aiStep() {
 		super.aiStep();
 		if (!level.isClientSide) {
-			if (this.getDeathState() == 0) 
+			if (this.getDeathState() == 0)
 				this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1000000, 0, false, false));
-			else 
+			else
 				removeEffect(MobEffects.DAMAGE_RESISTANCE);
 		}
 	}
@@ -225,7 +226,6 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(0.85F), new DemonProjectileAttack<>(30).attackInterval(mob -> 80), new DemonMeleeAttack<>(20));
 	}
 
-
 	@Override
 	protected void registerGoals() {
 	}
@@ -238,11 +238,11 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 	@Override
 	public boolean doHurtTarget(Entity target) {
 		level.broadcastEntityEvent(this, (byte) 4);
-		final var bl = target.hurt(damageSources().mobAttack(this), (float) DoomConfig.SERVER.gladiator_melee_damage.get().floatValue() + (this.getDeathState() == 1 ? DoomConfig.SERVER.gladiator_phaseone_damage_boost.get().floatValue() : 0));
+		final var bl = target.hurt(DamageSource.mobAttack(this), (float) DoomConfig.SERVER.gladiator_melee_damage.get().floatValue() + (this.getDeathState() == 1 ? DoomConfig.SERVER.gladiator_phaseone_damage_boost.get().floatValue() : 0));
 		if (bl) {
 			target.setDeltaMovement(target.getDeltaMovement().multiply(1.4f, 1.4f, 1.4f));
 			doEnchantDamageEffects(this, target);
-			level.explode(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
+			level.explode(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false, Explosion.BlockInteraction.BREAK);
 			target.invulnerableTime = 0;
 		}
 		return true;
@@ -250,11 +250,11 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 
 	public boolean tryAttack1(Entity target) {
 		level.broadcastEntityEvent(this, (byte) 4);
-		final var bl = target.hurt(damageSources().mobAttack(this), (float) DoomConfig.SERVER.gladiator_melee_damage.get().floatValue() + (this.getDeathState() == 1 ? DoomConfig.SERVER.gladiator_phaseone_damage_boost.get().floatValue() : 0));
+		final var bl = target.hurt(DamageSource.mobAttack(this), (float) DoomConfig.SERVER.gladiator_melee_damage.get().floatValue() + (this.getDeathState() == 1 ? DoomConfig.SERVER.gladiator_phaseone_damage_boost.get().floatValue() : 0));
 		if (bl) {
 			target.setDeltaMovement(target.getDeltaMovement().multiply(1.4f, 1.4f, 1.4f));
 			doEnchantDamageEffects(this, target);
-			level.explode(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
+			level.explode(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false, Explosion.BlockInteraction.BREAK);
 			target.invulnerableTime = 0;
 		}
 		return true;

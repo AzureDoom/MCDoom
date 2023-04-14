@@ -13,7 +13,6 @@ import mod.azure.doom.util.registry.DoomProjectiles;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -25,6 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -85,7 +85,7 @@ public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
@@ -163,9 +163,9 @@ public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
 		final var entity1 = getOwner();
 		DamageSource damagesource;
 		if (entity1 == null)
-			damagesource = damageSources().arrow(this, this);
+			damagesource = DamageSource.arrow(this, this);
 		else {
-			damagesource = damageSources().arrow(this, entity1);
+			damagesource = DamageSource.arrow(this, entity1);
 			if (entity1 instanceof LivingEntity)
 				((LivingEntity) entity1).setLastHurtMob(entity);
 		}
@@ -174,7 +174,7 @@ public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
 				if (!level.isClientSide && entity1 instanceof LivingEntity) {
 					EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
 					EnchantmentHelper.doPostDamageEffects((LivingEntity) entity1, livingentity);
-					level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.5F, Level.ExplosionInteraction.NONE);
+					level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.5F, Explosion.BlockInteraction.NONE);
 					remove(RemovalReason.KILLED);
 				}
 				doPostHurtEffects(livingentity);

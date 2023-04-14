@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.RocketLauncherRender;
 import mod.azure.doom.config.DoomConfig;
@@ -30,7 +31,7 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 public class RocketLauncher extends DoomBaseItem {
 
 	public RocketLauncher() {
-		super(new Item.Properties().stacksTo(1).durability(51));
+		super(new Item.Properties().stacksTo(1).durability(51).tab(DoomMod.DoomWeaponItemGroup));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 

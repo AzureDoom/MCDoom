@@ -21,7 +21,6 @@ import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -68,7 +67,7 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 	protected DemonEntity(EntityType<? extends Monster> type, Level worldIn) {
 		super(type, worldIn);
 		xpReward = (int) getMaxHealth();
-		setMaxUpStep(1.5f);
+		this.maxUpStep = 1.5F;
 	}
 
 	@Override
@@ -223,11 +222,11 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		return source == damageSources().inWall() || source == damageSources().onFire() || source == damageSources().inFire() ? false : super.hurt(source, amount);
+		return source == DamageSource.IN_WALL || source == DamageSource.ON_FIRE || source == DamageSource.IN_FIRE ? false : super.hurt(source, amount);
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
@@ -304,7 +303,7 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 	public void shootBaron(Entity target, float damage, double offsetx, double offsety, double offsetz) {
 		if (!this.level.isClientSide) {
 			if (this.getTarget() != null) {
-				var projectile = new BarenBlastEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2)+ offsetx, this.getTarget().getY(0.5) - (this.getY(0.5)) + offsety, this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2) + offsetz, damage);
+				var projectile = new BarenBlastEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2) + offsetx, this.getTarget().getY(0.5) - (this.getY(0.5)) + offsety, this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2) + offsetz, damage);
 				projectile.setPos(this.getX() + this.getViewVector(1.0F).x + offsetx, this.getY(0.5) + offsety, this.getZ() + this.getViewVector(1.0F).z + offsetz);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}

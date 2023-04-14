@@ -9,7 +9,6 @@ import mod.azure.doom.util.registry.DoomProjectiles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -64,7 +63,7 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
@@ -201,9 +200,9 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 		final var entity1 = getOwner();
 		DamageSource damagesource;
 		if (entity1 == null)
-			damagesource = damageSources().indirectMagic(this, this);
+			damagesource = DamageSource.indirectMagic(this, this);
 		else {
-			damagesource = damageSources().indirectMagic(this, entity1);
+			damagesource = DamageSource.indirectMagic(this, entity1);
 			if (entity1 instanceof LivingEntity)
 				((LivingEntity) entity1).setLastHurtMob(entity);
 		}

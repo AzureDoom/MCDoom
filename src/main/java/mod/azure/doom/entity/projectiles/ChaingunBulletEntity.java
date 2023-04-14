@@ -12,7 +12,6 @@ import mod.azure.doom.util.registry.DoomProjectiles;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -87,7 +86,7 @@ public class ChaingunBulletEntity extends AbstractArrow implements GeoEntity {
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
@@ -165,9 +164,9 @@ public class ChaingunBulletEntity extends AbstractArrow implements GeoEntity {
 		var entity1 = this.getOwner();
 		DamageSource damagesource;
 		if (entity1 == null)
-			damagesource = damageSources().arrow(this, this);
+			damagesource = DamageSource.arrow(this, this);
 		else {
-			damagesource = damageSources().arrow(this, entity1);
+			damagesource = DamageSource.arrow(this, entity1);
 			if (entity1 instanceof LivingEntity)
 				((LivingEntity) entity1).setLastHurtMob(entity);
 		}

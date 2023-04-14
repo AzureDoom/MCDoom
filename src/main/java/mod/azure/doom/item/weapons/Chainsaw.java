@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
@@ -17,6 +18,7 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -29,7 +31,7 @@ import net.minecraft.world.phys.AABB;
 public class Chainsaw extends Item {
 
 	public Chainsaw() {
-		super(new Item.Properties().stacksTo(1).durability(601));
+		super(new Item.Properties().stacksTo(1).durability(601).tab(DoomMod.DoomWeaponItemGroup));
 	}
 
 	public static void removeAmmo(Item ammo, Player playerEntity) {
@@ -99,7 +101,7 @@ public class Chainsaw extends Item {
 	private void doDamage(LivingEntity user, final Entity target) {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
-			target.hurt(user.damageSources().playerAttack((Player) user), DoomConfig.SERVER.chainsaw_damage.get().floatValue());
+			target.hurt(DamageSource.playerAttack((Player) user), DoomConfig.SERVER.chainsaw_damage.get().floatValue());
 			user.level.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_ATTACKING.get(), SoundSource.PLAYERS, 0.3F, 1.0F / (user.level.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 	}

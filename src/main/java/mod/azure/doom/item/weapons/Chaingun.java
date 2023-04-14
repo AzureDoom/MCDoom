@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.items.BaseGunItem;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.ChaingunRender;
 import mod.azure.doom.config.DoomConfig;
@@ -16,6 +17,7 @@ import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -29,7 +31,7 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 public class Chaingun extends DoomBaseItem {
 
 	public Chaingun() {
-		super(new Item.Properties().stacksTo(1).durability(201));
+		super(new Item.Properties().stacksTo(1).durability(201).tab(DoomMod.DoomWeaponItemGroup));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
@@ -49,7 +51,7 @@ public class Chaingun extends DoomBaseItem {
 						var enchantlevel = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
 						if (result != null) {
 							if (result.getEntity()instanceof LivingEntity livingEntity)
-								livingEntity.hurt(playerentity.damageSources().playerAttack(playerentity), DoomConfig.SERVER.chaingun_bullet_damage.get().floatValue() + enchantlevel * 2.0F);
+								livingEntity.hurt(DamageSource.playerAttack(playerentity), DoomConfig.SERVER.chaingun_bullet_damage.get().floatValue() + enchantlevel * 2.0F);
 						} else {
 							final var bullet = createArrow(worldIn, stack, playerentity);
 							bullet.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 1.0F * 3.0F, 1.0F);

@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.BallistaRender;
 import mod.azure.doom.entity.projectiles.ArgentBoltEntity;
@@ -27,7 +28,7 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 public class Ballista extends DoomBaseItem {
 
 	public Ballista() {
-		super(new Item.Properties().stacksTo(1).durability(11));
+		super(new Item.Properties().stacksTo(1).durability(11).tab(DoomMod.DoomWeaponItemGroup));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 

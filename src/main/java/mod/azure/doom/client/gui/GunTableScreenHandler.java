@@ -26,7 +26,6 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 	private final ContainerLevelAccess context;
 	@SuppressWarnings("unused")
 	private int recipeIndex;
-	private static Level level;
 
 	// client
 	public GunTableScreenHandler(int syncId, Inventory playerInventory) {
@@ -38,7 +37,6 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 		super(DoomScreens.SCREEN_HANDLER_TYPE.get(), syncId);
 		this.playerInventory = playerInventory;
 		gunTableInventory = new DoomGunInventory(this);
-		GunTableScreenHandler.level = playerInventory.player.level;
 		this.context = context;
 		addSlot(new Slot(gunTableInventory, 0, 155, 13));
 		addSlot(new Slot(gunTableInventory, 1, 175, 33));
@@ -65,8 +63,10 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 			final ServerPlayer serverPlayerEntity = (ServerPlayer) player;
 			ItemStack itemStack = ItemStack.EMPTY;
 			final Optional<GunTableRecipe> optional = world.getServer().getRecipeManager().getRecipeFor(Type.INSTANCE, craftingInventory, world);
-			if (optional.isPresent())
-				itemStack = optional.get().assemble(craftingInventory, level.registryAccess());
+			if (optional.isPresent()) {
+				var craftingRecipe = optional.get();
+				itemStack = craftingRecipe.assemble(craftingInventory);
+			}
 
 			craftingInventory.setItem(5, itemStack);
 			serverPlayerEntity.connection.send(new ClientboundContainerSetSlotPacket(syncId, 0, 5, itemStack));

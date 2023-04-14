@@ -22,7 +22,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.Explosion;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class DemonMeleeAttack<E extends DemonEntity> extends CustomDelayedMeleeBehaviour<E> {
@@ -84,7 +84,7 @@ public class DemonMeleeAttack<E extends DemonEntity> extends CustomDelayedMeleeB
 
 		if (entity instanceof IconofsinEntity iconEntity) { // damage and explode the world
 			iconEntity.doHurtTarget(this.target);
-			iconEntity.level.explode(entity, this.target.getX(), this.target.getY(), this.target.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
+			iconEntity.level.explode(entity, this.target.getX(), this.target.getY(), this.target.getZ(), 3.0F, false, Explosion.BlockInteraction.BREAK);
 			this.target.invulnerableTime = 0;
 		} else if (entity instanceof MancubusEntity mancubusEntity) { // summon flames around self
 			for (var j = 0; j < 5; ++j) {

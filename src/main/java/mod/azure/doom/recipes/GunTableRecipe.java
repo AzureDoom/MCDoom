@@ -5,7 +5,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.gui.DoomGunInventory;
 import mod.azure.doom.util.registry.DoomRecipes;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -51,8 +50,8 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 	}
 
 	@Override
-	public ItemStack assemble(DoomGunInventory inv, RegistryAccess var2) {
-		return getResultItem(var2).copy();
+	public ItemStack assemble(DoomGunInventory inv) {
+		return this.getResultItem().copy();
 	}
 
 	@Override
@@ -61,7 +60,7 @@ public class GunTableRecipe implements Recipe<DoomGunInventory>, Comparable<GunT
 	}
 
 	@Override
-	public ItemStack getResultItem(RegistryAccess var1) {
+	public ItemStack getResultItem() {
 		return output;
 	}
 

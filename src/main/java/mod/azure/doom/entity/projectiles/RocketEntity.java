@@ -16,10 +16,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -27,6 +27,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -92,7 +93,7 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
@@ -240,8 +241,8 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
 	public void doDamage() {
 		level.getEntities(this, new AABB(blockPosition().above()).inflate(4)).forEach(e -> {
 			if (e instanceof LivingEntity)
-				e.hurt(damageSources().playerAttack((Player) shooter), projectiledamage);
-			level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 0.0F, Level.ExplosionInteraction.NONE);
+				e.hurt(DamageSource.playerAttack((Player) shooter), projectiledamage);
+			level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 0.0F, Explosion.BlockInteraction.NONE);
 		});
 
 	}

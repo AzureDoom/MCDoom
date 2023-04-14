@@ -1,11 +1,10 @@
 package mod.azure.doom.client.render.projectiles;
 
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
@@ -83,8 +82,8 @@ public class BFGCellRender extends GeoEntityRenderer<BFGEntity> {
 			Vec33 = Vec33.normalize();
 			final float n = (float) Math.acos(Vec33.y);
 			final float o = (float) Math.atan2(Vec33.z, Vec33.x);
-			poseStack.mulPose(Axis.YP.rotationDegrees((1.5707964f - o) * 57.295776f));
-			poseStack.mulPose(Axis.XP.rotationDegrees(n * 57.295776f));
+			poseStack.mulPose(Vector3f.YP.rotationDegrees((1.5707964f - o) * 57.295776f));
+			poseStack.mulPose(Vector3f.XP.rotationDegrees(n * 57.295776f));
 			final float q = j * 0.05f * -1.5f;
 			final float r = h * h;
 			final int s = 64 + (int) (r * 191.0f);

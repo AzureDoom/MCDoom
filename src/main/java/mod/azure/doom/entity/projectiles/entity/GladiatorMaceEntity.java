@@ -12,8 +12,8 @@ import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.util.registry.DoomProjectiles;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -84,7 +84,7 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
@@ -111,7 +111,7 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
 			final var entity2 = getOwner();
 			entity.setSecondsOnFire(5);
 			if (!(entity instanceof DemonEntity))
-				entity.hurt(damageSources().mobAttack((LivingEntity) entity2), (float) (DoomConfig.SERVER.gladiator_ranged_damage.get() + (shooter.getEntityData().get(GladiatorEntity.DEATH_STATE) == 1 ? DoomConfig.SERVER.gladiator_phaseone_damage_boost.get() : 0)));
+				entity.hurt(DamageSource.mobAttack((LivingEntity) entity2), (float) (DoomConfig.SERVER.gladiator_ranged_damage.get() + (shooter.getEntityData().get(GladiatorEntity.DEATH_STATE) == 1 ? DoomConfig.SERVER.gladiator_phaseone_damage_boost.get() : 0)));
 			if (entity2 instanceof LivingEntity) {
 				if (!(entity instanceof DemonEntity))
 					doEnchantDamageEffects((LivingEntity) entity2, entity);

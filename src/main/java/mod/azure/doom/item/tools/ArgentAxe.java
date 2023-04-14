@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 public class ArgentAxe extends AxeItem {
 
 	public ArgentAxe() {
-		super(DoomMod.ARGENT_TIER, 6, -2.4F, new Item.Properties().stacksTo(1));
+		super(DoomMod.ARGENT_TIER, 6, -2.4F, new Item.Properties().stacksTo(1).tab(DoomMod.DoomWeaponItemGroup));
 	}
 
 	@Override

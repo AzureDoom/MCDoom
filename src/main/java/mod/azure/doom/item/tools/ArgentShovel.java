@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 public class ArgentShovel extends ShovelItem {
 
 	public ArgentShovel() {
-		super(DoomMod.ARGENT_TIER, 4, -2.4F, new Item.Properties().stacksTo(1));
+		super(DoomMod.ARGENT_TIER, 4, -2.4F, new Item.Properties().stacksTo(1).tab(DoomMod.DoomWeaponItemGroup));
 	}
 
 	@Override

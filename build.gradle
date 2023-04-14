@@ -93,7 +93,7 @@ dependencies {
     implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:9.1.595")
     implementation fg.deobf("curse.maven:REIPC-521393:4402999")
     implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:8.2.88")
-    implementation fg.deobf("dev.architectury:architectury-forge:6.5.77)
+    implementation fg.deobf("dev.architectury:architectury-forge:6.5.77")
     implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-forge-1.19.2:1.9")
     implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-common-1.19.2:1.9")
 }

@@ -11,6 +11,7 @@ import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.render.armors.Mullet1Render;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.model.HumanoidModel;
@@ -29,8 +30,8 @@ public class MulletDoomArmor extends ArmorItem implements GeoItem {
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-	public MulletDoomArmor(ArmorMaterial materialIn, Type slot) {
-		super(materialIn, slot, new Item.Properties().stacksTo(1));
+	public MulletDoomArmor(ArmorMaterial materialIn, EquipmentSlot slot) {
+		super(materialIn, slot, new Item.Properties().stacksTo(1).tab(DoomMod.DoomArmorItemGroup));
 	}
 
 	// Create our armor model/renderer for Fabric and return it

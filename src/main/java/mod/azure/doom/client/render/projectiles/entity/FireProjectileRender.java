@@ -1,7 +1,7 @@
 package mod.azure.doom.client.render.projectiles.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.projectiles.entity.FireProjectile;
@@ -33,10 +33,10 @@ public class FireProjectileRender extends EntityRenderer<FireProjectile> {
 	@Override
 	public void render(FireProjectile persistentProjectileEntity, float f, float g, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i) {
 		matrixStack.pushPose();
-		matrixStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(g, persistentProjectileEntity.yRotO, persistentProjectileEntity.getYRot()) - 90.0F));
-		matrixStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(g, persistentProjectileEntity.xRotO, persistentProjectileEntity.getXRot())));
+		matrixStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(g, persistentProjectileEntity.yRotO, persistentProjectileEntity.getYRot()) - 90.0F));
+		matrixStack.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(g, persistentProjectileEntity.xRotO, persistentProjectileEntity.getXRot())));
 
-		matrixStack.mulPose(Axis.XP.rotationDegrees(45.0F));
+		matrixStack.mulPose(Vector3f.XP.rotationDegrees(45.0F));
 		matrixStack.scale(0.05625F, 0.05625F, 0.05625F);
 		matrixStack.translate(-4.0D, 0.0D, 0.0D);
 
