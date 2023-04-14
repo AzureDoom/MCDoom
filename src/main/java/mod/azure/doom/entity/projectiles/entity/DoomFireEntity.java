@@ -131,7 +131,7 @@ public class DoomFireEntity extends Entity implements GeoEntity {
 			level.setBlockAndUpdate(blockPosition().above(), BaseFireBlock.getState(level, blockPosition().above()));
 		level.getEntities(this, new AABB(blockPosition().above()).inflate(1)).forEach(e -> {
 			if (e.isAlive() && !(e instanceof DemonEntity)) {
-				e.hurt(damageSources().indirectMagic(e, getCaster()), damage);
+				e.hurt(damageSources().onFire(), damage);
 				e.setRemainingFireTicks(60);
 			}
 		});
