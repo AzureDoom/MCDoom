@@ -68,6 +68,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
     modImplementation "dev.emi:trinkets:3.6.0"
+    modImplementation "curse.maven:cardinal-components-318449:4160617"
 }
 
 shadowJar {
