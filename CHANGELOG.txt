@@ -1,3 +1,5 @@
-v.4.3.11
+v.5.0.0
 
-- Fix Dark Crucible not reloading.
+- Fixed Soul Cube Mixin.
+- Rewrote mob AI to use SmartBrainLib.
+- Moved Gore Nest spawn entries to config.
