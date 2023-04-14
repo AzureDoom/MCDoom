@@ -6,7 +6,7 @@ import mod.azure.azurelib.animatable.GeoBlockEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.registry.ModRegistry;
@@ -35,7 +35,7 @@ public class TotemEntity extends BlockEntity implements GeoBlockEntity {
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, event -> PlayState.CONTINUE));
+		controllers.add(new AnimationController<>(this, event -> event.setAndContinue(RawAnimation.begin().thenLoop("idle"))));
 	}
 
 	public static void tick(Level world, BlockPos pos, BlockState state, TotemEntity blockEntity) {
