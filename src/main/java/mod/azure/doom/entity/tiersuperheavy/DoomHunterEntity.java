@@ -1,6 +1,8 @@
 package mod.azure.doom.entity.tiersuperheavy;
 
-import mod.azure.azurelib.animatable.GeoEntity;
+import java.util.List;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
@@ -8,8 +10,10 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
-import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
+import mod.azure.doom.entity.task.DemonMeleeAttack;
+import mod.azure.doom.entity.task.DemonProjectileAttack;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,23 +34,35 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.WrappedGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.StrafeTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
-public class DoomHunterEntity extends DemonEntity implements GeoEntity {
+public class DoomHunterEntity extends DemonEntity implements SmartBrainOwner<DoomHunterEntity> {
 
 	public int flameTimer;
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
@@ -59,20 +75,20 @@ public class DoomHunterEntity extends DemonEntity implements GeoEntity {
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if ((dead || getHealth() < 0.01 || isDeadOrDying()) && entityData.get(DEATH_STATE) == 1)
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
+			if ((dead || getHealth() < 0.01 || isDeadOrDying()) && event.getAnimatable().getDeathState() == 1)
+				return event.setAndContinue(DoomAnimationsDefault.DEATH);
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("sled_death"));
-			if (event.isMoving() && hurtDuration < 0)
-				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			if (entityData.get(STATE) == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+			if (event.isMoving() && hurtDuration < 0 && event.getAnimatable().getAttckingState() == 0)
+				return event.setAndContinue(DoomAnimationsDefault.WALKING);
+			if (event.getAnimatable().getAttckingState() == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("rockets"));
-			if (entityData.get(STATE) == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+			if (event.getAnimatable().getAttckingState() == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("flamethrower"));
-			if (entityData.get(STATE) == 3 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+			if (event.getAnimatable().getAttckingState() == 3 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("chainsaw"));
 			event.getController().setAnimationSpeed(0.5);
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("phasechange"))
 				if (level.isClientSide())
@@ -86,105 +102,53 @@ public class DoomHunterEntity extends DemonEntity implements GeoEntity {
 	}
 
 	@Override
-	protected void registerGoals() {
-		goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		goalSelector.addGoal(6, new RandomLookAroundGoal(this));
-		goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		goalSelector.addGoal(4, new DoomHunterEntity.AttackGoal(this));
-		targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
-		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
+	protected void customServerAiStep() {
+		tickBrain(this);
+		super.customServerAiStep();
 	}
 
-	static class AttackGoal extends Goal {
-		private final DoomHunterEntity parentEntity;
-		protected int attackTimer = 0;
+	@Override
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
 
-		public AttackGoal(DoomHunterEntity ghast) {
-			parentEntity = ghast;
-		}
+	@Override
+	public List<ExtendedSensor<DoomHunterEntity>> getSensors() {
+		return ObjectArrayList.of(new NearbyLivingEntitySensor<DoomHunterEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<DoomHunterEntity>());
+	}
 
-		@Override
-		public boolean canUse() {
-			return parentEntity.getTarget() != null;
-		}
+	@Override
+	public BrainActivityGroup<DoomHunterEntity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new StrafeTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
+	}
 
-		@Override
-		public void start() {
-			super.start();
-			parentEntity.setAggressive(true);
-			parentEntity.setAttackingState(0);
-		}
+	@Override
+	public BrainActivityGroup<DoomHunterEntity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<DoomHunterEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+	}
 
-		@Override
-		public void stop() {
-			super.stop();
-			parentEntity.setAggressive(false);
-			parentEntity.setAttackingState(0);
-			attackTimer = -1;
-		}
+	@Override
+	public BrainActivityGroup<DoomHunterEntity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80), new DemonMeleeAttack<>(5));
+	}
 
-		@Override
-		public void tick() {
-			final LivingEntity livingentity = parentEntity.getTarget();
-			if (parentEntity.hasLineOfSight(livingentity)) {
-				final Level world = parentEntity.level;
-				++attackTimer;
-				final Vec3 vector3d = parentEntity.getViewVector(1.0F);
-				final double d0 = Math.min(livingentity.getY(), livingentity.getY());
-				final double d1 = Math.max(livingentity.getY(), livingentity.getY()) + 1.0D;
-				final double d2 = livingentity.getX() - (parentEntity.getX() + vector3d.x * 2.0D);
-				final double d3 = livingentity.getY(0.5D) - (0.5D + parentEntity.getY(0.5D));
-				final double d4 = livingentity.getZ() - (parentEntity.getZ() + vector3d.z * 2.0D);
-				final float f = (float) Mth.atan2(livingentity.getZ() - parentEntity.getZ(), livingentity.getX() - parentEntity.getX());
-				final RocketMobEntity fireballentity = new RocketMobEntity(world, parentEntity, d2, d3, d4, DoomConfig.doomhunter_ranged_damage + (parentEntity.entityData.get(DEATH_STATE) == 1 ? DoomConfig.doomhunter_extra_phase_two_damage : 0));
-				parentEntity.getNavigation().moveTo(livingentity, parentEntity.getDeathState() == 0 ? 0.75 : 1.0);
-				if (attackTimer == 15) {
-					if (parentEntity.distanceTo(livingentity) >= 3.0D) {
-						if (parentEntity.entityData.get(DEATH_STATE) == 1) {
-							for (int l = 0; l < 16; ++l) {
-								final double d5 = 1.25D * (l + 1);
-								final int j = 1 * l;
-								parentEntity.spawnFlames(parentEntity.getX() + Mth.cos(f) * d5, parentEntity.getZ() + Mth.sin(f) * d5, d0, d1, f, j);
-								parentEntity.setAttackingState(2);
-							}
-						}
-						if (parentEntity.entityData.get(DEATH_STATE) == 0) {
-							fireballentity.setPos(parentEntity.getX() + vector3d.x * 2.0D, parentEntity.getY(0.5D) + 0.5D, fireballentity.getZ() + vector3d.z * 2.0D);
-							world.addFreshEntity(fireballentity);
-							parentEntity.setAttackingState(1);
-						}
-					} else {
-						parentEntity.setAttackingState(3);
-						parentEntity.doHurtTarget(livingentity);
-					}
-				}
-				if (attackTimer >= 35) {
-					parentEntity.setAttackingState(0);
-					attackTimer = -15;
-				}
-			} else if (attackTimer > 0) {
-				--attackTimer;
-			}
-			parentEntity.lookAt(livingentity, 30.0F, 30.0F);
-		}
-
+	@Override
+	protected void registerGoals() {
 	}
 
 	public void spawnFlames(double x, double z, double maxY, double y, float yaw, int warmup) {
-		BlockPos blockpos = BlockPos.containing(x, y, z);
-		boolean flag = false;
-		double d0 = 0.0D;
+		var blockpos = BlockPos.containing(x, y, z);
+		var flag = false;
+		var d0 = 0.0D;
 		do {
-			final BlockPos blockpos1 = blockpos.below();
-			final BlockState blockstate = level.getBlockState(blockpos1);
+			final var blockpos1 = blockpos.below();
+			final var blockstate = level.getBlockState(blockpos1);
 			if (blockstate.isFaceSturdy(level, blockpos1, Direction.UP)) {
 				if (!level.isEmptyBlock(blockpos)) {
-					final BlockState blockstate1 = level.getBlockState(blockpos);
-					final VoxelShape voxelshape = blockstate1.getCollisionShape(level, blockpos);
-					if (!voxelshape.isEmpty()) {
+					final var blockstate1 = level.getBlockState(blockpos);
+					final var voxelshape = blockstate1.getCollisionShape(level, blockpos);
+					if (!voxelshape.isEmpty())
 						d0 = voxelshape.max(Direction.Axis.Y);
-					}
 				}
 				flag = true;
 				break;
@@ -193,7 +157,7 @@ public class DoomHunterEntity extends DemonEntity implements GeoEntity {
 		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
-			final DoomFireEntity fang = new DoomFireEntity(level, x, blockpos.getY() + d0, z, yaw, 1, this, DoomConfig.doomhunter_ranged_damage + (entityData.get(DEATH_STATE) == 1 ? DoomConfig.doomhunter_extra_phase_two_damage : 0));
+			final var fang = new DoomFireEntity(level, x, blockpos.getY() + d0, z, yaw, 1, this, DoomConfig.doomhunter_ranged_damage + (this.getDeathState() == 1 ? DoomConfig.doomhunter_extra_phase_two_damage : 0));
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
 			level.addFreshEntity(fang);
@@ -247,9 +211,9 @@ public class DoomHunterEntity extends DemonEntity implements GeoEntity {
 		flameTimer = (flameTimer + 1) % 8;
 		++tickCount;
 		if (!level.isClientSide) {
-			if (entityData.get(DEATH_STATE) == 0) {
+			if (this.getDeathState() == 0) {
 				this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000000, 1));
-			} else if (entityData.get(DEATH_STATE) == 1) {
+			} else if (this.getDeathState() == 1) {
 				removeEffect(MobEffects.DAMAGE_BOOST);
 				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 10000000, 2));
 			}
@@ -258,18 +222,18 @@ public class DoomHunterEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	public int getArmorValue() {
-		return entityData.get(DEATH_STATE) == 1 ? 0 : (int) (getHealth() / getMaxHealth() * 100);
+		return this.getDeathState() == 1 ? 0 : (int) (getHealth() / getMaxHealth() * 100);
 	}
 
 	@Override
 	protected void tickDeath() {
 		++deathTime;
-		if (deathTime == 80 && entityData.get(DEATH_STATE) == 0) {
+		if (deathTime == 80 && this.getDeathState() == 0) {
 			setHealth(getMaxHealth());
 			setDeathState(1);
 			deathTime = 0;
 		}
-		if (deathTime == 40 && entityData.get(DEATH_STATE) == 1) {
+		if (deathTime == 40 && this.getDeathState() == 1) {
 			remove(Entity.RemovalReason.KILLED);
 			dropExperience();
 		}
@@ -289,20 +253,18 @@ public class DoomHunterEntity extends DemonEntity implements GeoEntity {
 			if (source == damageSources().outOfWorld()) {
 				setDeathState(1);
 			}
-			if (entityData.get(DEATH_STATE) == 0) {
-				final AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(level, this.getX(), this.getY(), this.getZ());
+			if (this.getDeathState() == 0) {
+				final var areaeffectcloudentity = new AreaEffectCloud(level, this.getX(), this.getY(), this.getZ());
 				areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
 				areaeffectcloudentity.setRadius(3.0F);
 				areaeffectcloudentity.setDuration(55);
 				areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
 				level.addFreshEntity(areaeffectcloudentity);
-				goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
 				setLastHurtMob(getLastHurtByMob());
 				level.broadcastEntityEvent(this, (byte) 3);
 			}
-			if (entityData.get(DEATH_STATE) == 1) {
+			if (this.getDeathState() == 1)
 				super.die(source);
-			}
 		}
 	}
 

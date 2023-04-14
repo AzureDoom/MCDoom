@@ -34,18 +34,25 @@ import mod.azure.doom.entity.tierheavy.PainEntity;
 import mod.azure.doom.entity.tierheavy.ProwlerEntity;
 import mod.azure.doom.entity.tierheavy.Revenant2016Entity;
 import mod.azure.doom.entity.tierheavy.RevenantEntity;
+import mod.azure.doom.entity.tiersuperheavy.ArchvileEntity;
 import mod.azure.doom.entity.tiersuperheavy.BaronEntity;
 import mod.azure.doom.entity.tiersuperheavy.CyberdemonEntity;
+import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
 import mod.azure.doom.entity.tiersuperheavy.FireBaronEntity;
 import mod.azure.doom.entity.tiersuperheavy.MarauderEntity;
+import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
 import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
+import net.minecraft.world.phys.AABB;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedRangedBehaviour<E> {
@@ -113,7 +120,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 		if (entity instanceof BloodMaykrEntity)
 			entity.shootBloodBolt(this.target, damage);
 
-		if (entity instanceof SpiderMastermindEntity || entity instanceof ChaingunnerEntity || entity instanceof ShotgunguyEntity || entity instanceof ZombiemanEntity || entity instanceof MarauderEntity)
+		if (entity instanceof SpiderMastermindEntity || entity instanceof ChaingunnerEntity || entity instanceof ShotgunguyEntity || entity instanceof ZombiemanEntity)
 			entity.shootChaingun(this.target, entity instanceof ChaingunnerEntity ? DoomConfig.chaingun_bullet_damage : damage);
 
 		if (entity instanceof SpiderMastermind2016Entity || entity instanceof ArachnotronEntity)
@@ -138,10 +145,50 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 			prowlerEntity.teleport();
 		}
 
+		if (entity instanceof MarauderEntity marauderEntity) {
+			marauderEntity.shootChaingun(this.target, DoomConfig.marauder_ssgdamage);
+			marauderEntity.teleport();
+		}
+
+		if (entity instanceof ArchvileEntity archvileEntity) {
+			archvileEntity.getCommandSenderWorld().getEntities(entity, new AABB(archvileEntity.blockPosition().above()).inflate(24D, 24D, 24D)).forEach(e -> {
+				if (e instanceof Mob mob)
+					mob.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000, 1));
+			});
+			archvileEntity.teleportRandomly();
+			final double d = Math.min(this.target.getY(), archvileEntity.getY());
+			final double e = Math.max(this.target.getY(), archvileEntity.getY()) + 1.0D;
+			final float f = (float) Mth.atan2(this.target.getZ() - archvileEntity.getZ(), this.target.getX() - archvileEntity.getX());
+			if (archvileEntity.distanceTo(target) < 8.0D) { // shoot flames
+				for (var j = 0; j < 15; ++j) {
+					float h = f + j * 3.1415927F * 0.4F;
+					archvileEntity.spawnFlames(entity.getX() + Mth.cos(h) * 1.5D, entity.getZ() + Mth.sin(h) * 1.5D, d, e, h, 0);
+				}
+
+				for (var j = 0; j < 18; ++j) {
+					float h = f + j * 3.1415927F * 2.0F / 8.0F + 1.2566371F;
+					archvileEntity.spawnFlames(entity.getX() + Mth.cos(h) * 2.5D, entity.getZ() + Mth.sin(h) * 2.5D, d, e, h, 3);
+				}
+			} else // shoot ball
+				for (var j = 0; j < 26; ++j) {
+					final double l1 = 1.25D * (j + 1);
+					archvileEntity.spawnFlames(entity.getX() + Mth.cos(f) * l1, entity.getZ() + Mth.sin(f) * l1, d, e, f, 32);
+				}
+		}
+
+		if (entity instanceof SummonerEntity summonerEntity) {
+			if (summonerEntity.getRandom().nextInt(0, 40) >= 17) // spawn flames
+				for (var j = 0; j < 16; ++j)
+					summonerEntity.spawnFlames(entity.getX() + Mth.cos((float) Mth.atan2(this.target.getZ() - entity.getZ(), this.target.getX() - summonerEntity.getX())) * (1.25D * (j + 1)), entity.getZ() + Mth.sin((float) Mth.atan2(this.target.getZ() - entity.getZ(), this.target.getX() - summonerEntity.getX())) * (1.25D * (j + 1)), Math.min(this.target.getY(), summonerEntity.getY()), Math.max(this.target.getY(), summonerEntity.getY()) + 1.0D,
+							(float) Mth.atan2(this.target.getZ() - entity.getZ(), this.target.getX() - summonerEntity.getX()), 32);
+			else // spawn wave
+				summonerEntity.spawnWave();
+		}
+
 		if (entity instanceof MancubusEntity mancubusEntity) {
-			if (mancubusEntity.distanceTo(target) < 8.0D && mancubusEntity.distanceTo(target) > 3.0D) //shoot flames
+			if (mancubusEntity.distanceTo(target) < 8.0D && mancubusEntity.distanceTo(target) > 3.0D) // shoot flames
 				mancubusEntity.shootMancubus(mancubusEntity, DoomConfig.mancubus_ranged_damage);
-			else //shoot ball
+			else // shoot ball
 				mancubusEntity.shootBaron(mancubusEntity, DoomConfig.mancubus_ranged_damage, 0, 0, 0);
 		}
 
@@ -149,14 +196,14 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 			final var tentacleEntity = DoomEntities.TENTACLE.create(entity.level);
 			tentacleEntity.moveTo(this.target.getX(), this.target.getY(), this.target.getZ(), 0, 0);
 			entity.level.addFreshEntity(tentacleEntity);
-			if (entity.getHealth() <= entity.getMaxHealth() * 0.50) { //summon flames
+			if (entity.getHealth() <= entity.getMaxHealth() * 0.50) { // summon flames
 				for (var l = 0; l < 32; ++l) {
 					final var f1 = (float) Mth.atan2(this.target.getZ() - entity.getZ(), this.target.getX() - entity.getX()) + l * (float) Math.PI * 0.4F;
 					for (var y = 0; y < 5; ++y)
 						motherdemonEntity.spawnFlames(this.target.getX() + (double) Mth.cos(f1) * this.target.getRandom().nextDouble() * 1.5D, this.target.getZ() + (double) Mth.sin(f1) * this.target.getRandom().nextDouble() * 1.5D, Math.min(this.target.getY(), this.target.getY()), Math.max(this.target.getY(), this.target.getY()) + 1.0D, f1, 0);
 				}
 				this.target.setDeltaMovement(this.target.getDeltaMovement().multiply(0.4f, 1.4f, 0.4f));
-			} else { //shoot fireballs
+			} else { // shoot fireballs
 				entity.shootFireball(this.target, DoomConfig.motherdemon_ranged_damage + (motherdemonEntity.getDeathState() == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0), 0);
 				entity.shootFireball(this.target, DoomConfig.motherdemon_ranged_damage + (motherdemonEntity.getDeathState() == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0), 3);
 				entity.shootFireball(this.target, DoomConfig.motherdemon_ranged_damage + (motherdemonEntity.getDeathState() == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0), -3);
@@ -166,12 +213,22 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 		if (entity instanceof PossessedScientistEntity)
 			entity.throwPotion(this.target);
 
+		if (entity instanceof DoomHunterEntity doomHunterEntity) {
+			if (doomHunterEntity.getDeathState() == 1)
+				for (int l = 0; l < 16; ++l)
+					doomHunterEntity.spawnFlames(doomHunterEntity.getX() + Mth.cos((float) Mth.atan2(this.target.getZ() - doomHunterEntity.getZ(), this.target.getX() - doomHunterEntity.getX())) * 1.25D * (l + 1), doomHunterEntity.getZ() + Mth.sin((float) Mth.atan2(this.target.getZ() - doomHunterEntity.getZ(), this.target.getX() - doomHunterEntity.getX())) * 1.25D * (l + 1), Math.min(this.target.getY(), this.target.getY()), Math.max(this.target.getY(), this.target.getY()) + 1.0D,
+							(float) Mth.atan2(this.target.getZ() - doomHunterEntity.getZ(), this.target.getX() - doomHunterEntity.getX()), l);
+			if (doomHunterEntity.getDeathState() == 0) {
+				doomHunterEntity.shootRocket(this.target, DoomConfig.doomhunter_ranged_damage + (doomHunterEntity.getDeathState() == 1 ? DoomConfig.doomhunter_extra_phase_two_damage : 0));
+			}
+		}
+
 		if (entity instanceof PainEntity painEntity) {
 			entity.playSound(DoomSounds.PAIN_HURT, 1.0F, 1.0F);
 			var lost_soul = DoomEntities.LOST_SOUL.create(entity.level);
 			lost_soul.moveTo(painEntity.getX(), painEntity.getY(), painEntity.getZ(), 0, 0);
 			entity.level.addFreshEntity(lost_soul);
-			if (painEntity.getVariant() == 2) { //if doom 64, summon another
+			if (painEntity.getVariant() == 2) { // if doom 64, summon another
 				var lost_soul1 = DoomEntities.LOST_SOUL.create(entity.level);
 				lost_soul1.moveTo(painEntity.getX(), painEntity.getY(), painEntity.getZ(), 0, 0);
 				entity.level.addFreshEntity(lost_soul1);
@@ -182,7 +239,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 		if (entity instanceof ArchMakyrEntity archMakyrEntity) {
 			if (entity.getRandom().nextInt(0, 4) == 1) // shoot fireball
 				entity.shootFireball(entity, DoomConfig.archmaykr_ranged_damage + (archMakyrEntity.getDeathState() == 1 ? DoomConfig.archmaykr_phaseone_damage_boost : archMakyrEntity.getDeathState() == 2 ? DoomConfig.archmaykr_phasetwo_damage_boost : archMakyrEntity.getDeathState() == 3 ? DoomConfig.archmaykr_phasethree_damage_boost : archMakyrEntity.getDeathState() == 4 ? DoomConfig.archmaykr_phasefour_damage_boost : 0), 0);
-			else { //summon flames
+			else { // summon flames
 				for (var i = 1; i < 5; ++i) {
 					var f1 = (float) Mth.atan2(this.target.getZ() - entity.getZ(), this.target.getX() - entity.getX()) + (float) i * (float) Math.PI * 0.4F;
 					for (var y = 0; y < 5; ++y)
@@ -197,16 +254,15 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 			if (randomAttack == 1) {// Summon Fire on target
 				for (var i = 1; i < 5; ++i) {
 					var f1 = (float) Mth.atan2(this.target.getZ() - entity.getZ(), this.target.getX() - entity.getX()) + (float) i * (float) Math.PI * 0.4F;
-					for (var y = 0; y < 5; ++y) {
+					for (var y = 0; y < 5; ++y)
 						iconEntity.spawnFlames(this.target.getX() + (double) Mth.cos(f1) * this.target.getRandom().nextDouble() * 1.5D, this.target.getZ() + (double) Mth.sin(f1) * this.target.getRandom().nextDouble() * 1.5D, Math.min(this.target.getY(), this.target.getY()), Math.max(this.target.getY(), this.target.getY()) + 1.0D, f1, 0);
-					}
 				}
 				if (entity.getHealth() < (entity.getMaxHealth() * 0.50))
 					entity.setAttackingState(6); // no armor
 				else
 					entity.setAttackingState(5); // armor
 			} else { // shoots fireball
-				entity.shootFireball(entity, DoomConfig.icon_melee_damage + (iconEntity.getDeathState() == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0), 0);
+				entity.shootFireball(entity, DoomConfig.icon_melee_damage + (iconEntity.getDeathState() == 1 ? DoomConfig.icon_phaseone_damage_boos : 0), 0);
 				if (entity.getHealth() < (entity.getMaxHealth() * 0.50))
 					entity.setAttackingState(2); // no armor
 				else

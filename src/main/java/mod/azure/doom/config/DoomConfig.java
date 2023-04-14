@@ -508,6 +508,8 @@ public class DoomConfig extends MidnightConfig {
 	public static double summoner_health = 100;
 	@Entry
 	public static float summoner_ranged_damage = 3;
+	@Entry
+	public static List<String> summoner__wave_entries = Arrays.asList("doom:imp", "doom:lost_soul", "doom:stone_imp");
 
 	@Entry
 	public static double prowler_health = 15;
