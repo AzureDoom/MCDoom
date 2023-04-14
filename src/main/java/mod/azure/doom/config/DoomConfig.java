@@ -71,6 +71,7 @@ public class DoomConfig {
 
 		public final ConfigValue<Double> summoner_health;
 		public final ConfigValue<Double> summoner_ranged_damage;
+		public final ConfigValue<List<? extends String>> summoner__wave_entries;
 
 		public final ConfigValue<Double> prowler_health;
 		public final ConfigValue<Double> prowler_melee_damage;
@@ -410,6 +411,9 @@ public class DoomConfig {
 			builder.push("Mob Settings:Summoner");
 			this.summoner_health = builder.translation("text.doom.config.summoner_health").defineInRange("Sets Summoner Max Health", 100, 1, Double.MAX_VALUE);
 			this.summoner_ranged_damage = builder.translation("text.doom.config.summoner_ranged_damage").defineInRange("Sets Summoner Ranged Damage", 3, 1, Double.MAX_VALUE);
+			this.summoner__wave_entries = builder.comment("Summoner Wave Mobs List").translation("text.doom.config.summoner__wave_entries").defineList("Summoner Wave Mobs List",
+					Lists.newArrayList("doom:imp", "doom:lost_soul", "doom:stone_imp"),
+					o -> o instanceof String);
 			builder.pop();
 
 			builder.push("Mob Settings:Maykr Drone");
