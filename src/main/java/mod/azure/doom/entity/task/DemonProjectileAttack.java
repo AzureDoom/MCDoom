@@ -12,6 +12,7 @@ import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierambient.TurretEntity;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
+import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tierboss.MotherDemonEntity;
 import mod.azure.doom.entity.tierboss.SpiderMastermind2016Entity;
@@ -43,10 +44,12 @@ import mod.azure.doom.entity.tiersuperheavy.MarauderEntity;
 import mod.azure.doom.entity.tiersuperheavy.SummonerEntity;
 import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.DoomSounds;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
@@ -268,6 +271,19 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 				else
 					entity.setAttackingState(1); // armor
 			}
+		}
+
+		if (entity instanceof GladiatorEntity gladiatorEntity) {
+			if (gladiatorEntity.getDeathState() == 0) {
+				var areaeffectcloudentity = new AreaEffectCloud(gladiatorEntity.level, gladiatorEntity.getX(), gladiatorEntity.getY(), gladiatorEntity.getZ());
+				areaeffectcloudentity.setParticle(ParticleTypes.SOUL_FIRE_FLAME);
+				areaeffectcloudentity.setRadius(3.0F);
+				areaeffectcloudentity.setDuration(10);
+				areaeffectcloudentity.setPos(gladiatorEntity.getX(), gladiatorEntity.getY(), gladiatorEntity.getZ());
+				entity.level.addFreshEntity(areaeffectcloudentity);
+				gladiatorEntity.shootFireball(this.target, DoomConfig.gladiator_ranged_damage + (gladiatorEntity.getDeathState() == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0), 0);
+			} else
+				gladiatorEntity.shootMace(this.target);
 		}
 	}
 

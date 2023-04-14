@@ -3,8 +3,11 @@ package mod.azure.doom.entity.task;
 import java.util.function.Consumer;
 
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
 public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extends ExtendedBehaviour<E> {
@@ -42,7 +45,14 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 		}
 		if (entity instanceof MancubusEntity mancubusEntity)
 			mancubusEntity.setAttackingState(2);
-		else 
+		else if (entity instanceof GladiatorEntity gladiatorEntity) {
+			if (gladiatorEntity.getDeathState() == 0) {
+				gladiatorEntity.setAttackingState(1);
+				gladiatorEntity.setTextureState(2);
+			} else 
+				gladiatorEntity.setAttackingState(4);
+			gladiatorEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 100, false, false));
+		} else
 			entity.setAttackingState(1);
 	}
 
@@ -52,6 +62,8 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 
 		this.delayFinishedAt = 0;
 		entity.setAttackingState(0);
+		if (entity instanceof GladiatorEntity gladiatorEntity)
+			gladiatorEntity.setTextureState(0);
 	}
 
 	@Override

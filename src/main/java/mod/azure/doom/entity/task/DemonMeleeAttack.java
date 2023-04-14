@@ -10,11 +10,14 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierambient.CueBallEntity;
+import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -91,8 +94,16 @@ public class DemonMeleeAttack<E extends DemonEntity> extends CustomDelayedMeleeB
 		} else if (entity instanceof CueBallEntity cueballEntity) {
 			if (cueballEntity.getVariant() != 3)
 				cueballEntity.setFuseSpeed(1);
-			else 
+			else
 				cueballEntity.doHurtTarget(this.target);
+		} else if (entity instanceof GladiatorEntity gladiatorEntity) {
+			var areaeffectcloudentity = new AreaEffectCloud(entity.level, entity.getX(), entity.getY(), entity.getZ());
+			areaeffectcloudentity.setParticle(ParticleTypes.SMOKE);
+			areaeffectcloudentity.setRadius(3.0F);
+			areaeffectcloudentity.setDuration(55);
+			areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
+			gladiatorEntity.level.addFreshEntity(areaeffectcloudentity);
+			gladiatorEntity.doHurtTarget(this.target);
 		} else
 			entity.doHurtTarget(this.target);
 	}

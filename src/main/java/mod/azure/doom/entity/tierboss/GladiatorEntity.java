@@ -1,20 +1,18 @@
 package mod.azure.doom.entity.tierboss;
 
-import mod.azure.azurelib.animatable.GeoEntity;
+import java.util.List;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
-import mod.azure.doom.entity.ai.goal.RangedStrafeGladiatorAttackGoal;
-import mod.azure.doom.entity.attack.AbstractDoubleRangedAttack;
-import mod.azure.doom.entity.attack.AttackSound;
-import mod.azure.doom.entity.projectiles.entity.CustomFireballEntity;
-import mod.azure.doom.entity.projectiles.entity.GladiatorMaceEntity;
+import mod.azure.doom.entity.task.DemonMeleeAttack;
+import mod.azure.doom.entity.task.DemonProjectileAttack;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -25,7 +23,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -34,21 +31,36 @@ import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.StrafeTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
-public class GladiatorEntity extends DemonEntity implements GeoEntity {
+public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<GladiatorEntity> {
 
 	public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(GladiatorEntity.class, EntityDataSerializers.INT);
 	public static final EntityDataAccessor<Integer> TEXTURE = SynchedEntityData.defineId(GladiatorEntity.class, EntityDataSerializers.INT);
@@ -76,8 +88,6 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 				event.getController().setAnimationSpeed(1.5);
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking_phasetwo"));
 			}
-			return event.setAndContinue(RawAnimation.begin().thenLoop(event.getAnimatable().getDeathState() == 0 ? "idle_phaseone" : "idle_phasetwo"));
-		})).add(new AnimationController<>(this, "attackController", 0, event -> {
 			if (event.getAnimatable().getDeathState() == 0 && event.getAnimatable().getAttckingState() == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("melee_phaseone", LoopType.PLAY_ONCE));
 			if (event.getAnimatable().getDeathState() == 0 && event.getAnimatable().getAttckingState() == 3 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
@@ -90,7 +100,7 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 				return event.setAndContinue(RawAnimation.begin().then("melee_phasetwo2", LoopType.PLAY_ONCE));
 			if (event.getAnimatable().getDeathState() == 1 && event.getAnimatable().getAttckingState() == 4 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("melee_phasetwo2", LoopType.PLAY_ONCE));
-			return PlayState.STOP;
+			return event.setAndContinue(RawAnimation.begin().thenLoop(event.getAnimatable().getDeathState() == 0 ? "idle_phaseone" : "idle_phasetwo"));
 		}));
 	}
 
@@ -104,8 +114,8 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 		if (!level.isClientSide) {
 			if (source == damageSources().outOfWorld())
 				setDeathState(1);
-			if (entityData.get(DEATH_STATE) == 0) {
-				final AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(level, this.getX(), this.getY(), this.getZ());
+			if (this.getDeathState() == 0) {
+				final var areaeffectcloudentity = new AreaEffectCloud(level, this.getX(), this.getY(), this.getZ());
 				areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
 				areaeffectcloudentity.setRadius(3.0F);
 				areaeffectcloudentity.setDuration(55);
@@ -115,21 +125,20 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 				setLastHurtMob(getLastHurtByMob());
 				level.broadcastEntityEvent(this, (byte) 3);
 			}
-			if (entityData.get(DEATH_STATE) == 1) {
+			if (this.getDeathState() == 1) 
 				super.die(source);
-			}
 		}
 	}
 
 	@Override
 	protected void tickDeath() {
 		++deathTime;
-		if (deathTime == 80 && entityData.get(DEATH_STATE) == 0) {
+		if (deathTime == 80 && this.getDeathState() == 0) {
 			setHealth(getMaxHealth());
 			setDeathState(1);
 			deathTime = 0;
 		}
-		if (deathTime == 40 && entityData.get(DEATH_STATE) == 1) {
+		if (deathTime == 40 && this.getDeathState() == 1) {
 			remove(Entity.RemovalReason.KILLED);
 			dropExperience();
 		}
@@ -184,50 +193,41 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 	public void aiStep() {
 		super.aiStep();
 		if (!level.isClientSide) {
-			if (entityData.get(DEATH_STATE) == 0) {
+			if (this.getDeathState() == 0) 
 				this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1000000, 0, false, false));
-			} else {
+			else 
 				removeEffect(MobEffects.DAMAGE_RESISTANCE);
-			}
 		}
 	}
 
 	@Override
-	protected void registerGoals() {
-		goalSelector.addGoal(4, new RangedStrafeGladiatorAttackGoal(this, new FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomConfig.gladiator_ranged_damage + (entityData.get(DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0)).setSound(SoundEvents.FIRECHARGE_USE, 1.0F, 1.4F + getRandom().nextFloat() * 0.35F)));
-		goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
-		goalSelector.addGoal(6, new LookAtPlayerGoal(this, LivingEntity.class, 8.0F));
-		goalSelector.addGoal(6, new RandomLookAroundGoal(this));
-		targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
-		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
 	}
 
-	public class FireballAttack extends AbstractDoubleRangedAttack {
+	@Override
+	public List<ExtendedSensor<GladiatorEntity>> getSensors() {
+		return ObjectArrayList.of(new NearbyLivingEntitySensor<GladiatorEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<GladiatorEntity>());
+	}
 
-		public FireballAttack(DemonEntity parentEntity, double xOffSetModifier, double entityHeightFraction, double zOffSetModifier, float damage) {
-			super(parentEntity, xOffSetModifier, entityHeightFraction, zOffSetModifier, damage);
-		}
+	@Override
+	public BrainActivityGroup<GladiatorEntity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new StrafeTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
+	}
 
-		public FireballAttack(DemonEntity parentEntity) {
-			super(parentEntity);
-		}
+	@Override
+	public BrainActivityGroup<GladiatorEntity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<GladiatorEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.75f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+	}
 
-		@Override
-		public AttackSound getDefaultAttackSound() {
-			return new AttackSound(DoomSounds.BALLISTA_FIRING, 1, 1);
-		}
+	@Override
+	public BrainActivityGroup<GladiatorEntity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(0.85F), new DemonProjectileAttack<>(30).attackInterval(mob -> 80).attackDamage(DoomConfig.cyberdemon_ranged_damage), new DemonMeleeAttack<>(20));
+	}
 
-		@Override
-		public Projectile getProjectile(Level world, double d2, double d3, double d4) {
-			return new CustomFireballEntity(world, parentEntity, d2, d3, d4, damage);
 
-		}
-
-		@Override
-		public Projectile getProjectile2(Level world, double d2, double d3, double d4) {
-			return new GladiatorMaceEntity(world, parentEntity, d2, d3, d4);
-		}
+	@Override
+	protected void registerGoals() {
 	}
 
 	@Override
@@ -238,7 +238,7 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 	@Override
 	public boolean doHurtTarget(Entity target) {
 		level.broadcastEntityEvent(this, (byte) 4);
-		final boolean bl = target.hurt(damageSources().mobAttack(this), (float) DoomConfig.gladiator_melee_damage + (entityData.get(DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
+		final var bl = target.hurt(damageSources().mobAttack(this), (float) DoomConfig.gladiator_melee_damage + (this.getDeathState() == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
 		if (bl) {
 			target.setDeltaMovement(target.getDeltaMovement().multiply(1.4f, 1.4f, 1.4f));
 			doEnchantDamageEffects(this, target);
@@ -250,7 +250,7 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 
 	public boolean tryAttack1(Entity target) {
 		level.broadcastEntityEvent(this, (byte) 4);
-		final boolean bl = target.hurt(damageSources().mobAttack(this), (float) DoomConfig.gladiator_melee_damage + (entityData.get(DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
+		final var bl = target.hurt(damageSources().mobAttack(this), (float) DoomConfig.gladiator_melee_damage + (this.getDeathState() == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
 		if (bl) {
 			target.setDeltaMovement(target.getDeltaMovement().multiply(1.4f, 1.4f, 1.4f));
 			doEnchantDamageEffects(this, target);
@@ -298,6 +298,7 @@ public class GladiatorEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	protected void customServerAiStep() {
+		tickBrain(this);
 		super.customServerAiStep();
 		bossInfo.setProgress(getHealth() / getMaxHealth());
 	}

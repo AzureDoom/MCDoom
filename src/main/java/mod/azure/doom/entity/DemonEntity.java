@@ -17,6 +17,7 @@ import mod.azure.doom.entity.projectiles.entity.CustomSmallFireballEntity;
 import mod.azure.doom.entity.projectiles.entity.DroneBoltEntity;
 import mod.azure.doom.entity.projectiles.entity.EnergyCellMobEntity;
 import mod.azure.doom.entity.projectiles.entity.FireProjectile;
+import mod.azure.doom.entity.projectiles.entity.GladiatorMaceEntity;
 import mod.azure.doom.entity.projectiles.entity.RocketMobEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -314,6 +315,16 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 		if (!this.level.isClientSide) {
 			if (this.getTarget() != null) {
 				var projectile = new CustomSmallFireballEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
+				this.getCommandSenderWorld().addFreshEntity(projectile);
+			}
+		}
+	}
+
+	public void shootMace(Entity target) {
+		if (!this.level.isClientSide) {
+			if (this.getTarget() != null) {
+				var projectile = new GladiatorMaceEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2));
 				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
