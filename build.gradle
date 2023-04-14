@@ -9,7 +9,7 @@ buildscript {
 
 plugins {
     id 'fabric-loom' version '1.1-SNAPSHOT'
-	id 'maven-publish'
+    id 'maven-publish'
     id 'com.github.johnrengelman.shadow' version '7.1.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.modrinth.minotaur" version "2.+"
@@ -27,17 +27,17 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-	maven { url "https://cfa2.cursemaven.com" }
+    maven { url "https://cfa2.cursemaven.com" }
     maven { url "https://maven.shedaniel.me/" }
     maven { url 'https://dl.cloudsmith.io/public/azuredoom-mods/azurelib/maven/' }
     maven { url 'https://dl.cloudsmith.io/public/tslat/sbl/maven/' }
     maven { url 'https://maven.blamejared.com' }
     maven { url 'https://plugins.gradle.org/m2/' }
-	maven { url 'https://maven.terraformersmc.com/' }
-	maven { url 'https://ladysnake.jfrog.io/artifactory/mods' }
-	maven { url 'https://maven.kosmx.dev/' }
-	maven { url 'https://jitpack.io' }
-	maven { url 'https://api.modrinth.com/maven' }
+    maven { url 'https://maven.terraformersmc.com/' }
+    maven { url 'https://ladysnake.jfrog.io/artifactory/mods' }
+    maven { url 'https://maven.kosmx.dev/' }
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://api.modrinth.com/maven' }
 }
 
 configurations {
@@ -45,29 +45,28 @@ configurations {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-  	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.19.4:1.0.8'
-	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-1.19.4:1.9"
-	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-1.19.4:1.9"
-	modImplementation "maven.modrinth:midnightlib:1.2.0-fabric"
-    shade group: 'maven.modrinth', name: 'midnightlib', version: '1.2.0-fabric'
-	modImplementation ("com.terraformersmc:modmenu:6.1.0-rc.4")
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:11.0.597") {
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modImplementation 'mod.azure.azurelib:azurelib-fabric-1.19.2:1.0.16'
+    modImplementation "curse.maven:SBL-661293:4312490-sources-4312491"
+    modImplementation "maven.modrinth:midnightlib:1.0.0-fabric"
+    shade group: 'maven.modrinth', name: 'midnightlib', version: '1.0.0-fabric'
+    modImplementation ("com.terraformersmc:modmenu:4.1.2)
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:9.1.595") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:11.0.597") {
+    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:9.1.595") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modApi("dev.architectury:architectury-fabric:8.1.73") {
+    modApi("dev.architectury:architectury-fabric:6.5.77") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modApi("me.shedaniel.cloth:cloth-config-fabric:10.0.96") {
+    modApi("me.shedaniel.cloth:cloth-config-fabric:8.2.88") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modImplementation "dev.emi:trinkets:3.6.0"
+    modImplementation "dev.emi:trinkets:3.4.2"
 }
 
 shadowJar {
@@ -81,9 +80,9 @@ shadowJar {
 processResources {
     inputs.property "version", project.version
 
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
 }
 
 processResources {
@@ -140,17 +139,17 @@ if (file('key.properties').exists()) {
         	releaseType = "${curse_release}"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
-			addGameVersion("1.19.4")
-			addGameVersion("Fabric")
-			addGameVersion("Quilt")
-			addGameVersion("Java 17")
+        	addGameVersion("1.19.2")
+        	addGameVersion("Fabric")
+        	addGameVersion("Quilt")
+        	addGameVersion("Java 17")
 
         	relations {
-            	requiredDependency 'fabric-api'  
-            	requiredDependency 'azurelib'  
-            	requiredDependency 'trinkets'  
-            	requiredDependency 'smartbrainlib'  
-            	optionalDependency 'better-combat-by-daedelus' 
+            		requiredDependency 'fabric-api'  
+            		requiredDependency 'azurelib'  
+            		requiredDependency 'trinkets'  
+            		requiredDependency 'smartbrainlib'  
+        		optionalDependency 'better-combat-by-daedelus' 
         	}
         	mainArtifact(remapJar)
 
@@ -174,18 +173,18 @@ if (file('key.properties').exists()) {
 		token = modrinthProp.getProperty('modrinthKey')
 		projectId = 'Mfo4FiDF' 
 		versionNumber = project.mod_version 
-		versionName = 'Fabric/Quilt 1.19.4'
+		versionName = 'Fabric/Quilt 1.19.2'
 		uploadFile = remapJar 
 		changelog = rootProject.file("changelog.txt").text
-		gameVersions = ['1.19.4']
+		gameVersions = ['1.19.2']
 		loaders = ['fabric','quilt']
 		dependencies { 
-        	required.project "azurelib"
-        	required.project "trinkets"
-        	required.project "fabric-api"
-        	required.project "smartbrainlib"
-        	optional.project "better-combat"
-            optional.project "modmenu"
+        		required.project "azurelib"
+        		required.project "trinkets"
+        		required.project "fabric-api"
+        		required.project "smartbrainlib"
+        		optional.project "better-combat"
+        		optional.project "modmenu"
    		}
 	}
 }
