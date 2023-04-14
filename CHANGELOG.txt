@@ -1,5 +1,3 @@
-v.5.0.0
+v.5.0.1
 
-- Fixed Soul Cube Mixin.
-- Rewrote mob AI to use SmartBrainLib.
-- Moved Gore Nest spawn entries to config.
+- Fixes Totem Size.
