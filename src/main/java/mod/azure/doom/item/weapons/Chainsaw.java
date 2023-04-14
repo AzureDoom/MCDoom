@@ -115,7 +115,7 @@ public class Chainsaw extends Item {
 			if (((LivingEntity) target).isDeadOrDying()) {
 				if (user instanceof Player playerentity) {
 					if (stack.getDamageValue() < stack.getMaxDamage() - 1 && !playerentity.getCooldowns().isOnCooldown(this)) {
-						for (final var i = 0; i < 5;) {
+						for (var i = 0; i < 5;) {
 							final var randomIndex = user.getRandom().nextInt(givenList.size());
 							final var randomElement = givenList.get(randomIndex);
 							target.spawnAtLocation(randomElement);
