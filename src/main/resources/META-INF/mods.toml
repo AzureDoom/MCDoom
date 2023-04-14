@@ -29,8 +29,8 @@ Adds Doom into Minecraft
     ordering="NONE"
     side="BOTH"
 [[dependencies.doom]]
-    modId="azurelib"
+    modId="smartbrainlib"
     mandatory=true 
-    versionRange="[1.0.11,)" 
+    versionRange="[1.9,)" 
     ordering="NONE"
     side="BOTH"
