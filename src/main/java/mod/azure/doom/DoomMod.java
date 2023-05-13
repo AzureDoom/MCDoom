@@ -87,8 +87,8 @@ public class DoomMod {
 	}
 
 	private void enqueueIMC(InterModEnqueueEvent event) {
-		InterModComms.sendTo("curios", SlotTypeMessage.MODIFY_TYPE, () -> SlotTypePreset.CHARM.getMessageBuilder().build());
-		InterModComms.sendTo("curios", SlotTypeMessage.MODIFY_TYPE, () -> SlotTypePreset.BELT.getMessageBuilder().build());
+		InterModComms.sendTo("curios", SlotTypeMessage.MODIFY_TYPE, () -> SlotTypePreset.CHARM.getMessageBuilder().size(1).build());
+		InterModComms.sendTo("curios", SlotTypeMessage.MODIFY_TYPE, () -> SlotTypePreset.BELT.getMessageBuilder().size(1).build());
 	}
 
 	public static final ResourceLocation modResource(String name) {
