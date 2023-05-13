@@ -74,7 +74,7 @@ shadowJar {
     configurations = [project.configurations.shade]
     from sourceSets.main.output
     duplicatesStrategy = 'exclude'
-    relocate 'eu.midnightdust', 'mod.azure.doom.shadowed.midnightlib'
+    relocate 'dev.toma.configuration', 'mod.azure.doom.shadowed.configuration'
     classifier 'dev'
 }
 
