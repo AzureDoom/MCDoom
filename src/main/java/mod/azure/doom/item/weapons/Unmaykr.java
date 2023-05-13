@@ -10,7 +10,6 @@ import mod.azure.azurelib.animatable.client.RenderProvider;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.client.render.weapons.UnmaykrRender;
-import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.UnmaykrBoltEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
@@ -99,7 +98,7 @@ public class Unmaykr extends DoomBaseItem {
 
 	public UnmaykrBoltEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
 		final var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		final var bolt = new UnmaykrBoltEntity(worldIn, shooter, DoomConfig.unmaykr_damage + enchantlevel * 2.0F);
+		final var bolt = new UnmaykrBoltEntity(worldIn, shooter, DoomMod.config.unmaykr_damage + enchantlevel * 2.0F);
 		return bolt;
 	}
 

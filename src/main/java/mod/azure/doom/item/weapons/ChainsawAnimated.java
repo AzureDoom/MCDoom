@@ -17,7 +17,6 @@ import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.client.render.weapons.ChainsawRender;
-import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
@@ -132,7 +131,7 @@ public class ChainsawAnimated extends Item implements GeoItem {
 		if (target instanceof LivingEntity) {
 			target.setDeltaMovement(0, 0, 0);
 			target.invulnerableTime = 0;
-			target.hurt(DamageSource.playerAttack((Player) user), DoomConfig.chainsaw_damage);
+			target.hurt(DamageSource.playerAttack((Player) user), DoomMod.config.chainsaw_damage);
 			user.level.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_ATTACKING, SoundSource.PLAYERS, 0.3F, 1.0F / (user.level.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 	}

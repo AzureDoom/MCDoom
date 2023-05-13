@@ -11,7 +11,6 @@ import mod.azure.azurelib.animatable.client.RenderProvider;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.client.render.weapons.DPlamsaRifleRender;
-import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.EnergyCellEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
@@ -95,7 +94,7 @@ public class DPlasmaRifle extends DoomBaseItem {
 
 	public EnergyCellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
 		final var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		final var energycell = new EnergyCellEntity(worldIn, shooter, DoomConfig.energycell_damage + enchantlevel * 2.0F);
+		final var energycell = new EnergyCellEntity(worldIn, shooter, DoomMod.config.energycell_damage + enchantlevel * 2.0F);
 		return energycell;
 	}
 

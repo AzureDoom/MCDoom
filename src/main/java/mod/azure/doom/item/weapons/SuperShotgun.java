@@ -11,7 +11,6 @@ import mod.azure.azurelib.items.BaseGunItem;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.client.render.weapons.SSGRender;
-import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.MeatHookEntity;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import mod.azure.doom.util.PlayerProperties;
@@ -62,10 +61,10 @@ public class SuperShotgun extends DoomBaseItem {
 							if (result.getEntity()instanceof LivingEntity livingEntity) {
 								livingEntity.invulnerableTime = 0;
 								livingEntity.setDeltaMovement(0, 0, 0);
-								livingEntity.hurt(DamageSource.playerAttack(playerentity), DoomConfig.shotgun_damage + enchantlevel * 2.0F);
+								livingEntity.hurt(DamageSource.playerAttack(playerentity), DoomMod.config.shotgun_damage + enchantlevel * 2.0F);
 								livingEntity.invulnerableTime = 0;
 								livingEntity.setDeltaMovement(0, 0, 0);
-								livingEntity.hurt(DamageSource.playerAttack(playerentity), DoomConfig.shotgun_damage + enchantlevel * 2.0F);
+								livingEntity.hurt(DamageSource.playerAttack(playerentity), DoomMod.config.shotgun_damage + enchantlevel * 2.0F);
 							}
 						} else {
 							final var abstractarrowentity = createArrow(worldIn, stack, playerentity);
@@ -109,7 +108,7 @@ public class SuperShotgun extends DoomBaseItem {
 				player.getCooldowns().addCooldown(this, 5);
 				if (!((PlayerProperties) player).hasMeatHook()) {
 					final var hookshot = new MeatHookEntity(world, player);
-					hookshot.setProperties(stack, DoomConfig.max_meathook_distance, 10, player.getXRot(), player.getYRot(), 0f, 1.5f * (10 / 10));
+					hookshot.setProperties(stack, DoomMod.config.max_meathook_distance, 10, player.getXRot(), player.getYRot(), 0f, 1.5f * (10 / 10));
 					hookshot.getEntityData().set(MeatHookEntity.FORCED_YAW, player.getYRot());
 					world.addFreshEntity(hookshot);
 				}
@@ -146,7 +145,7 @@ public class SuperShotgun extends DoomBaseItem {
 
 	public ShotgunShellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
 		final var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		final var shell = new ShotgunShellEntity(worldIn, shooter, DoomConfig.shotgun_damage + enchantlevel * 2.0F);
+		final var shell = new ShotgunShellEntity(worldIn, shooter, DoomMod.config.shotgun_damage + enchantlevel * 2.0F);
 		return shell;
 	}
 

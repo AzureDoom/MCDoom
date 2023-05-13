@@ -9,7 +9,7 @@ import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.task.DemonMeleeAttack;
 import mod.azure.doom.entity.task.DemonProjectileAttack;
@@ -126,7 +126,7 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 				setLastHurtMob(getLastHurtByMob());
 				level.broadcastEntityEvent(this, (byte) 3);
 			}
-			if (this.getDeathState() == 1) 
+			if (this.getDeathState() == 1)
 				super.die(source);
 		}
 	}
@@ -194,9 +194,9 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 	public void aiStep() {
 		super.aiStep();
 		if (!level.isClientSide) {
-			if (this.getDeathState() == 0) 
+			if (this.getDeathState() == 0)
 				this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1000000, 0, false, false));
-			else 
+			else
 				removeEffect(MobEffects.DAMAGE_RESISTANCE);
 		}
 	}
@@ -223,9 +223,8 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 
 	@Override
 	public BrainActivityGroup<GladiatorEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(0.85F), new DemonProjectileAttack<>(30).attackInterval(mob -> 80).attackDamage(DoomConfig.cyberdemon_ranged_damage), new DemonMeleeAttack<>(20));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(0.85F), new DemonProjectileAttack<>(30).attackInterval(mob -> 80).attackDamage(DoomMod.config.cyberdemon_ranged_damage), new DemonMeleeAttack<>(20));
 	}
-
 
 	@Override
 	protected void registerGoals() {
@@ -239,7 +238,7 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 	@Override
 	public boolean doHurtTarget(Entity target) {
 		level.broadcastEntityEvent(this, (byte) 4);
-		final var bl = target.hurt(DamageSource.mobAttack(this), (float) DoomConfig.gladiator_melee_damage + (this.getDeathState() == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
+		final var bl = target.hurt(DamageSource.mobAttack(this), (float) DoomMod.config.gladiator_melee_damage + (this.getDeathState() == 1 ? DoomMod.config.gladiator_phaseone_damage_boost : 0));
 		if (bl) {
 			target.setDeltaMovement(target.getDeltaMovement().multiply(1.4f, 1.4f, 1.4f));
 			doEnchantDamageEffects(this, target);
@@ -251,7 +250,7 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 
 	public boolean tryAttack1(Entity target) {
 		level.broadcastEntityEvent(this, (byte) 4);
-		final var bl = target.hurt(DamageSource.mobAttack(this), (float) DoomConfig.gladiator_melee_damage + (this.getDeathState() == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
+		final var bl = target.hurt(DamageSource.mobAttack(this), (float) DoomMod.config.gladiator_melee_damage + (this.getDeathState() == 1 ? DoomMod.config.gladiator_phaseone_damage_boost : 0));
 		if (bl) {
 			target.setDeltaMovement(target.getDeltaMovement().multiply(1.4f, 1.4f, 1.4f));
 			doEnchantDamageEffects(this, target);
@@ -262,7 +261,7 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.MAX_HEALTH, DoomConfig.gladiator_health).add(Attributes.ATTACK_DAMAGE, DoomConfig.gladiator_melee_damage).add(Attributes.KNOCKBACK_RESISTANCE, 0.9f).add(Attributes.ATTACK_KNOCKBACK, 1.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.MAX_HEALTH, DoomMod.config.gladiator_health).add(Attributes.ATTACK_DAMAGE, DoomMod.config.gladiator_melee_damage).add(Attributes.KNOCKBACK_RESISTANCE, 0.9f).add(Attributes.ATTACK_KNOCKBACK, 1.0D);
 	}
 
 	@Override

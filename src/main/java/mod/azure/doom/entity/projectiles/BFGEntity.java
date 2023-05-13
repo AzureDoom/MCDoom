@@ -1,5 +1,6 @@
 package mod.azure.doom.entity.projectiles;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -14,7 +15,7 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.entities.TickingLightEntity;
 import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierambient.GoreNestEntity;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
@@ -67,7 +68,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 	private int idleTicks = 0;
 	private int beamTicks;
 	Random rand = new Random();
-	List<? extends String> whitelistEntries = DoomConfig.bfg_damage_mob_whitelist;
+	List<? extends String> whitelistEntries = Arrays.asList(DoomMod.config.bfg_damage_mob_whitelist);
 	int randomIndex = rand.nextInt(whitelistEntries.size());
 	ResourceLocation randomElement1 = new ResourceLocation(whitelistEntries.get(randomIndex));
 	EntityType<?> randomElement = Registry.ENTITY_TYPE.get(randomElement1);
@@ -162,19 +163,19 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 			var listEntity = randomElement.tryCast(e);
 			if (!(e instanceof Player || e instanceof EnderDragon || e instanceof GoreNestEntity || e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity) && (e instanceof Monster || e instanceof Slime || e instanceof Phantom || e instanceof DemonEntity || e instanceof Shulker || e instanceof Hoglin || (e == listEntity))) {
 				if (e.isAlive()) {
-					e.hurt(DamageSource.explosion(shooter), DoomConfig.bfgball_damage_aoe);
+					e.hurt(DamageSource.explosion(shooter), DoomMod.config.bfgball_damage_aoe);
 					this.setTargetedEntity(e.getId());
 				}
 			}
 			if (e instanceof EnderDragon) {
 				if (e.isAlive()) {
-					((EnderDragon) e).head.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.bfgball_damage_dragon * 0.3F);
+					((EnderDragon) e).head.hurt(DamageSource.playerAttack((Player) this.shooter), DoomMod.config.bfgball_damage_dragon * 0.3F);
 					this.setTargetedEntity(e.getId());
 				}
 			}
 			if (e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity) {
 				if (e.isAlive()) {
-					e.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.bfgball_damage_aoe * 0.1F);
+					e.hurt(DamageSource.playerAttack((Player) this.shooter), DoomMod.config.bfgball_damage_aoe * 0.1F);
 				}
 			}
 		});
@@ -250,7 +251,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		if (!this.level.isClientSide) {
 			this.doDamage();
-			this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, DoomConfig.enable_block_breaking ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE);
+			this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, DoomMod.config.enable_block_breaking ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE);
 			this.remove(RemovalReason.KILLED);
 		}
 		this.playSound(DoomSounds.BFG_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
@@ -261,7 +262,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
 			var listEntity = randomElement.tryCast(e);
 			if (!(e instanceof Player || e instanceof EnderDragon || e instanceof GoreNestEntity || e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity) && (e instanceof Monster || e instanceof Slime || e instanceof Phantom || e instanceof DemonEntity || e instanceof Shulker || e instanceof Hoglin || (e == listEntity))) {
-				e.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.bfgball_damage);
+				e.hurt(DamageSource.playerAttack((Player) this.shooter), DoomMod.config.bfgball_damage);
 				this.setTargetedEntity(e.getId());
 				if (!this.level.isClientSide) {
 					var list1 = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D));
@@ -281,10 +282,10 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 			}
 			if (e instanceof EnderDragon)
 				if (e.isAlive())
-					((EnderDragon) e).head.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.bfgball_damage_dragon * 0.3F);
+					((EnderDragon) e).head.hurt(DamageSource.playerAttack((Player) this.shooter), DoomMod.config.bfgball_damage_dragon * 0.3F);
 			if (e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity)
 				if (e.isAlive())
-					e.hurt(DamageSource.playerAttack((Player) this.shooter), DoomConfig.bfgball_damage * 0.1F);
+					e.hurt(DamageSource.playerAttack((Player) this.shooter), DoomMod.config.bfgball_damage * 0.1F);
 		});
 	}
 

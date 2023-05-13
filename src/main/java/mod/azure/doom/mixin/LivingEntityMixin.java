@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketsApi;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.damagesource.DamageSource;
@@ -24,7 +24,7 @@ public class LivingEntityMixin {
 	@Inject(method = "checkTotemDeathProtection", at = @At(value = "HEAD"), cancellable = true)
 	private void tryUseTotem(DamageSource source, CallbackInfoReturnable<Boolean> ci) {
 		final var livingEntity = (LivingEntity) (Object) this;
-		if (DoomConfig.enable_soulcube_effects) {
+		if (DoomMod.config.enable_soulcube_effects) {
 			final var stack = TrinketsApi.getTrinketComponent(livingEntity).map(component -> {
 				final List<Tuple<SlotReference, ItemStack>> res = component.getEquipped(DoomItems.SOULCUBE);
 				return res.size() > 0 ? res.get(0).getB() : ItemStack.EMPTY;

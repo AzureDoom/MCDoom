@@ -8,7 +8,7 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierheavy.CacodemonEntity;
 import mod.azure.doom.util.registry.DoomProjectiles;
 import mod.azure.doom.util.registry.DoomSounds;
@@ -65,7 +65,7 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 		this(type, owner.getX(), owner.getEyeY() - 0.10000000149011612D, owner.getZ(), world);
 		setOwner(owner);
 		shooter = owner;
-		if (owner instanceof Player) 
+		if (owner instanceof Player)
 			pickup = AbstractArrow.Pickup.DISALLOWED;
 	}
 
@@ -124,7 +124,7 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 	@Override
 	protected void tickDespawn() {
 		++ticksInAir;
-		if (tickCount >= 40) 
+		if (tickCount >= 40)
 			this.remove(Entity.RemovalReason.DISCARDED);
 	}
 
@@ -199,7 +199,7 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 	private void doDamage(Entity user, Entity target) {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
-			target.hurt(DamageSource.indirectMagic(this, target), DoomConfig.grenade_damage);
+			target.hurt(DamageSource.indirectMagic(this, target), DoomMod.config.grenade_damage);
 		}
 	}
 

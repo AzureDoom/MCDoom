@@ -11,7 +11,6 @@ import mod.azure.azurelib.items.BaseGunItem;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.client.render.weapons.HeavyCannonRender;
-import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.BulletEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
@@ -56,7 +55,7 @@ public class HeavyCannon extends DoomBaseItem {
 					var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
 					if (result != null) {
 						if (result.getEntity()instanceof LivingEntity livingEntity)
-							livingEntity.hurt(DamageSource.playerAttack(playerentity), DoomConfig.bullet_damage + enchantlevel * 2.0F);
+							livingEntity.hurt(DamageSource.playerAttack(playerentity), DoomMod.config.bullet_damage + enchantlevel * 2.0F);
 					} else {
 						final var bullet = createArrow(worldIn, stack, playerentity);
 						bullet.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 1.0F * 3.0F, 1.0F);
@@ -98,7 +97,7 @@ public class HeavyCannon extends DoomBaseItem {
 
 	public BulletEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
 		final var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		final var bullet = new BulletEntity(worldIn, shooter, DoomConfig.bullet_damage + enchantlevel * 2.0F);
+		final var bullet = new BulletEntity(worldIn, shooter, DoomMod.config.bullet_damage + enchantlevel * 2.0F);
 		return bullet;
 	}
 

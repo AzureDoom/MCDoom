@@ -1,6 +1,6 @@
 package mod.azure.doom.entity.projectiles.entity;
 
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -39,7 +39,7 @@ public class CustomFireballEntity extends LargeFireball {
 	protected void onHitBlock(BlockHitResult result) {
 		super.onHitBlock(result);
 		if (!this.level.isClientSide()) {
-			var bl = DoomConfig.enable_block_breaking;
+			var bl = DoomMod.config.enable_block_breaking;
 			this.level.explode(null, this.getX(), this.getY(), this.getZ(), 1, true, bl ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE);
 			this.discard();
 		}

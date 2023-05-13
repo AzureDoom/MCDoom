@@ -8,7 +8,7 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
@@ -157,7 +157,7 @@ public class DoomHunterEntity extends DemonEntity implements SmartBrainOwner<Doo
 		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
-			final var fang = new DoomFireEntity(level, x, blockpos.getY() + d0, z, yaw, 1, this, DoomConfig.doomhunter_ranged_damage + (this.getDeathState() == 1 ? DoomConfig.doomhunter_extra_phase_two_damage : 0));
+			final var fang = new DoomFireEntity(level, x, blockpos.getY() + d0, z, yaw, 1, this, DoomMod.config.doomhunter_ranged_damage + (this.getDeathState() == 1 ? DoomMod.config.doomhunter_extra_phase_two_damage : 0));
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
 			level.addFreshEntity(fang);
@@ -165,7 +165,7 @@ public class DoomHunterEntity extends DemonEntity implements SmartBrainOwner<Doo
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomConfig.doomhunter_health).add(Attributes.FLYING_SPEED, 2.25D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.ATTACK_DAMAGE, DoomConfig.doomhunter_melee_damage).add(Attributes.MOVEMENT_SPEED, 0.55D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomMod.config.doomhunter_health).add(Attributes.FLYING_SPEED, 2.25D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.ATTACK_DAMAGE, DoomMod.config.doomhunter_melee_damage).add(Attributes.MOVEMENT_SPEED, 0.55D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	public boolean causeFallDamage(float distance, float damageMultiplier) {

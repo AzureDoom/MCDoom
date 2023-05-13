@@ -8,7 +8,7 @@ import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.entity.ai.DemonFloatControl;
@@ -286,7 +286,7 @@ public class ArchMakyrEntity extends DemonEntity implements SmartBrainOwner<Arch
 	}
 
 	public static Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MOVEMENT_SPEED, 0.55D).add(Attributes.FLYING_SPEED, 0.25D).add(Attributes.MAX_HEALTH, DoomConfig.archmaykr_health).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 1.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MOVEMENT_SPEED, 0.55D).add(Attributes.FLYING_SPEED, 0.25D).add(Attributes.MAX_HEALTH, DoomMod.config.archmaykr_health).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 1.0D);
 	}
 
 	@Override
@@ -400,7 +400,7 @@ public class ArchMakyrEntity extends DemonEntity implements SmartBrainOwner<Arch
 		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
-			final var fire = new DoomFireEntity(level, x, blockpos.getY() + d0, z, yaw, 1, this, DoomConfig.archmaykr_ranged_damage + (entityData.get(DEATH_STATE) == 1 ? DoomConfig.archmaykr_phaseone_damage_boost : entityData.get(DEATH_STATE) == 2 ? DoomConfig.archmaykr_phasetwo_damage_boost : entityData.get(DEATH_STATE) == 3 ? DoomConfig.archmaykr_phasethree_damage_boost : entityData.get(DEATH_STATE) == 4 ? DoomConfig.archmaykr_phasefour_damage_boost : 0));
+			final var fire = new DoomFireEntity(level, x, blockpos.getY() + d0, z, yaw, 1, this, DoomMod.config.archmaykr_ranged_damage + (entityData.get(DEATH_STATE) == 1 ? DoomMod.config.archmaykr_phaseone_damage_boost : entityData.get(DEATH_STATE) == 2 ? DoomMod.config.archmaykr_phasetwo_damage_boost : entityData.get(DEATH_STATE) == 3 ? DoomMod.config.archmaykr_phasethree_damage_boost : entityData.get(DEATH_STATE) == 4 ? DoomMod.config.archmaykr_phasefour_damage_boost : 0));
 			fire.setSecondsOnFire(tickCount);
 			fire.setInvisible(false);
 			level.addFreshEntity(fire);

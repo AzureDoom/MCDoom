@@ -1,5 +1,6 @@
 package mod.azure.doom.entity.tiersuperheavy;
 
+import java.util.Arrays;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -10,7 +11,7 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
@@ -129,7 +130,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 
 	@Override
 	public BrainActivityGroup<SummonerEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(DoomConfig.baron_ranged_damage), new DemonMeleeAttack<>(5));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(DoomMod.config.baron_ranged_damage), new DemonMeleeAttack<>(5));
 	}
 
 	@Override
@@ -137,7 +138,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 	}
 
 	public void spawnWave() {
-		final var waveEntries = DoomConfig.summoner__wave_entries;
+		final var waveEntries = Arrays.asList(DoomMod.config.summoner__wave_entries);
 		final var r = this.getRandom().nextInt(-3, 3);
 
 		for (var k = 1; k < 5; ++k) {
@@ -157,7 +158,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 		tickBrain(this);
 		if (level.isDay() && tickCount >= targetChangeTime + 600) {
 			final var f = getLightLevelDependentMagicValue();
-			if (f > 0.5F && level.canSeeSky(blockPosition()) && random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) 
+			if (f > 0.5F && level.canSeeSky(blockPosition()) && random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F)
 				setTarget((LivingEntity) null);
 		}
 
@@ -215,7 +216,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
-			final var fang = new DoomFireEntity(level, x, blockpos.getY() + d0, z, yaw, 1, this, DoomConfig.summoner_ranged_damage);
+			final var fang = new DoomFireEntity(level, x, blockpos.getY() + d0, z, yaw, 1, this, DoomMod.config.summoner_ranged_damage);
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
 			level.addFreshEntity(fang);
@@ -274,7 +275,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomConfig.summoner_health).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomMod.config.summoner_health).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	protected boolean shouldDrown() {

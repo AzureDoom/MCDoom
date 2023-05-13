@@ -8,7 +8,7 @@ buildscript {
 }
 
 plugins {
-    id 'fabric-loom' version '1.1-SNAPSHOT'
+    id 'fabric-loom' version '1.0-SNAPSHOT'
     id 'maven-publish'
     id 'com.github.johnrengelman.shadow' version '7.1.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
@@ -51,16 +51,16 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation 'mod.azure.azurelib:azurelib-fabric-1.19.2:1.0.16'
     modImplementation "curse.maven:SBL-661293:4312490-sources-4312491"
-    modImplementation "maven.modrinth:midnightlib:1.0.0-fabric"
-    shade group: 'maven.modrinth', name: 'midnightlib', version: '1.0.0-fabric'
-    modImplementation ("com.terraformersmc:modmenu:4.1.2")
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:9.1.591") {
+    modImplementation "maven.modrinth:configuration:nGocYE6n"
+    shade group: 'maven.modrinth', name: 'configuration', version: 'nGocYE6n'
+    modImplementation "maven.modrinth:modmenu:4.2.0-beta.2"
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:9.1.595") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:9.1.591") {
+    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:9.1.595") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modApi("dev.architectury:architectury-fabric:6.5.69") {
+    modApi("dev.architectury:architectury-fabric:6.5.82") {
         exclude(group: "net.fabricmc.fabric-api")
     }
     modApi("me.shedaniel.cloth:cloth-config-fabric:8.2.88") {
