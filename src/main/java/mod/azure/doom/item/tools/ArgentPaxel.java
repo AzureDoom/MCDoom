@@ -37,7 +37,7 @@ public class ArgentPaxel extends DiggerItem {
 	private static final Set<ToolAction> PAXEL_ACTIONS = Stream.of(ToolActions.PICKAXE_DIG, ToolActions.AXE_DIG, ToolActions.AXE_STRIP, ToolActions.AXE_SCRAPE, ToolActions.AXE_WAX_OFF, ToolActions.SHOVEL_DIG, ToolActions.SHOVEL_FLATTEN).collect(Collectors.toCollection(Sets::newIdentityHashSet));
 
 	public ArgentPaxel() {
-		super(8, -2.4F, DoomMod.ARGENT_TIER, BlockTags.MINEABLE_WITH_PICKAXE, new Item.Properties().stacksTo(1));
+		super(8, -2.4F, DoomMod.ARGENT_TIER, DoomMod.PAXEL_BLOCKS, new Item.Properties().stacksTo(1));
 	}
 
 	@Override
