@@ -14,11 +14,13 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.Block;
 
 public class DoomMod implements ModInitializer {
 
@@ -54,6 +56,7 @@ public class DoomMod implements ModInitializer {
 	public static final CreativeModeTab DoomPowerUPItemGroup = FabricItemGroupBuilder.build(new ResourceLocation(MODID, "powerup"), () -> new ItemStack(DoomItems.SOULCUBE));
 	public static final CreativeModeTab DoomWeaponItemGroup = FabricItemGroupBuilder.build(new ResourceLocation(MODID, "weapons"), () -> new ItemStack(DoomItems.BFG_ETERNAL));
 	public static final RecipeSerializer<GunTableRecipe> GUN_TABLE_RECIPE_SERIALIZER = Registry.register(Registry.RECIPE_SERIALIZER, new ResourceLocation(MODID, "gun_table"), new GunTableRecipe.Serializer());
+	public static final TagKey<Block> PAXEL_BLOCKS = TagKey.create(Registry.BLOCK_REGISTRY, DoomMod.modResource("paxel_blocks"));
 
 	@Override
 	public void onInitialize() {
