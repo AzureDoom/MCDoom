@@ -18,6 +18,7 @@ import mod.azure.doom.util.registry.DoomScreens;
 import mod.azure.doom.util.registry.DoomSounds;
 import mod.azure.doom.util.registry.DoomStructures;
 import mod.azure.doom.util.registry.ModEntitySpawn;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -48,6 +49,7 @@ public class DoomMod {
 	public static DoomMod instance;
 	public static final String MODID = "doom";
 	public static final TagKey<Block> ARGENT_TAG = BlockTags.create(new ResourceLocation(MODID, "needs_argent_tool"));
+	public static final TagKey<Block> PAXEL_BLOCKS = TagKey.create(Registry.BLOCK_REGISTRY, DoomMod.modResource("paxel_blocks"));
 	public static final Tier ARGENT_TIER = TierSortingRegistry.registerTier(new ForgeTier(17, 5000, 18, 3.0F, 30, ARGENT_TAG, () -> Ingredient.of(DoomItems.ARGENT_BLOCK.get())), new ResourceLocation(MODID, "argent"), List.of(Tiers.NETHERITE), List.of());
 	public static final Tier DOOM_HIGHTEIR = TierSortingRegistry.registerTier(new ForgeTier(17, 0, 30, -1.9F, 0, ARGENT_TAG, () -> Ingredient.of(DoomItems.ARGENT_BLOCK.get())), new ResourceLocation(MODID, "doom_highertier"), List.of(Tiers.NETHERITE), List.of());
 
@@ -85,6 +87,10 @@ public class DoomMod {
 	private void enqueueIMC(InterModEnqueueEvent event) {
 		InterModComms.sendTo("curios", SlotTypeMessage.MODIFY_TYPE, () -> SlotTypePreset.CHARM.getMessageBuilder().build());
 		InterModComms.sendTo("curios", SlotTypeMessage.MODIFY_TYPE, () -> SlotTypePreset.BELT.getMessageBuilder().build());
+	}
+
+	public static final ResourceLocation modResource(String name) {
+		return new ResourceLocation(MODID, name);
 	}
 
 	public static final CreativeModeTab DoomWeaponItemGroup = (new CreativeModeTab("weapons") {
