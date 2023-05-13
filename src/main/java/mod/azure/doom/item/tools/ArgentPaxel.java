@@ -4,18 +4,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Maps;
 
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.util.enums.DoomTier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DiggerItem;
@@ -39,11 +37,8 @@ public class ArgentPaxel extends DiggerItem {
 			.put(Blocks.BIRCH_LOG, Blocks.STRIPPED_BIRCH_LOG).put(Blocks.JUNGLE_WOOD, Blocks.STRIPPED_JUNGLE_WOOD).put(Blocks.JUNGLE_LOG, Blocks.STRIPPED_JUNGLE_LOG).put(Blocks.SPRUCE_WOOD, Blocks.STRIPPED_SPRUCE_WOOD).put(Blocks.SPRUCE_LOG, Blocks.STRIPPED_SPRUCE_LOG).put(Blocks.WARPED_STEM, Blocks.STRIPPED_WARPED_STEM).put(Blocks.WARPED_HYPHAE, Blocks.STRIPPED_WARPED_HYPHAE).put(Blocks.CRIMSON_STEM, Blocks.STRIPPED_CRIMSON_STEM).put(Blocks.CRIMSON_HYPHAE, Blocks.STRIPPED_CRIMSON_HYPHAE)
 			.build();
 
-	@SuppressWarnings("unused")
-	private static final List<TagKey<Block>> MINEABLE = ImmutableList.of(BlockTags.MINEABLE_WITH_AXE, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.MINEABLE_WITH_SHOVEL);
-
 	public ArgentPaxel() {
-		super(9, -2.4F, DoomTier.DOOM, BlockTags.MINEABLE_WITH_AXE, new Item.Properties().stacksTo(1));
+		super(9, -2.4F, DoomTier.DOOM, DoomMod.PAXEL_BLOCKS, new Item.Properties().stacksTo(1));
 	}
 
 	@Override
@@ -54,9 +49,8 @@ public class ArgentPaxel extends DiggerItem {
 	@Override
 	public boolean isCorrectToolForDrops(BlockState state) {
 		final Block block = state.getBlock();
-		if (block == Blocks.SNOW || block == Blocks.SNOW_BLOCK) {
+		if (block == Blocks.SNOW || block == Blocks.SNOW_BLOCK)
 			return true;
-		}
 		final Material material = state.getMaterial();
 		return material == Material.STONE || material == Material.METAL;
 	}
