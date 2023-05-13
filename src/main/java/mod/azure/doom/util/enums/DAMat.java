@@ -12,9 +12,9 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 
 public enum DAMat implements ArmorMaterial {
-	DOOM_ARMOR("doomweapon:doom_armor", 500, new int[] { DoomConfig.SERVER.doom_armor_head_stat.get(), DoomConfig.SERVER.doom_armor_leggings_stat.get(), DoomConfig.SERVER.doom_armor_chestplate_stat.get(), DoomConfig.SERVER.doom_armor_boots_stat.get() }, 40, SoundEvents.ARMOR_EQUIP_GENERIC, DoomConfig.SERVER.doom_armor_toughness.get().floatValue(), DoomConfig.SERVER.doom_armor_knockbackResistance.get().floatValue(), () -> Ingredient.of(DoomItems.ARGENT_ENERGY.get()));
+	DOOM_ARMOR("doomweapon:doom_armor", 500, new int[] { DoomConfig.SERVER.doom_armor_boots_stat.get(), DoomConfig.SERVER.doom_armor_leggings_stat.get(), DoomConfig.SERVER.doom_armor_chestplate_stat.get(), DoomConfig.SERVER.doom_armor_head_stat.get() }, 40, SoundEvents.ARMOR_EQUIP_GENERIC, DoomConfig.SERVER.doom_armor_toughness.get().floatValue(), DoomConfig.SERVER.doom_armor_knockbackResistance.get().floatValue(), () -> Ingredient.of(DoomItems.ARGENT_ENERGY.get()));
 
-	private static final int[] BASE_DURABILITY = { 13, 15, 16, 11 };
+	private static final int[] BASE_DURABILITY = { DoomConfig.SERVER.doom_armor_boots_stat.get(), DoomConfig.SERVER.doom_armor_leggings_stat.get(), DoomConfig.SERVER.doom_armor_chestplate_stat.get(), DoomConfig.SERVER.doom_armor_head_stat.get() };
 	private final String name;
 	private final int durabilityMultiplier;
 	private final int[] protectionAmounts;
