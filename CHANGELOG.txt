@@ -1,3 +1,4 @@
 v.5.0.4
 
 - Fixed Armor stats configs for head and boots being switched.
+- Moved from Midnight Lib to Configuration

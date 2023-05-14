@@ -22,9 +22,6 @@
 		"client": [
 			"mod.azure.doom.client.ClientInit"
 		],
-		"modmenu": [
-			"mod.azure.doom.config.ModMenuDoom"
-		],
 		"rei_client": [
 			"mod.azure.doom.rei.ReiPlugin"
 		]
