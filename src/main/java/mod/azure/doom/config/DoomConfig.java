@@ -1,7 +1,7 @@
 package mod.azure.doom.config;
 
-import dev.toma.configuration.config.Config;
-import dev.toma.configuration.config.Configurable;
+import mod.azure.azurelib.config.Config;
+import mod.azure.azurelib.config.Configurable;
 import mod.azure.doom.DoomMod;
 
 @Config(id = DoomMod.MODID)

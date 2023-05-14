@@ -1,4 +1,3 @@
-v.5.0.4
+v.5.0.4HF
 
-- Fixed Armor stats configs for head and boots being switched.
-- Moved from Midnight Lib to Configuration
+- Updated required AzureLib to fix crashing at startup.

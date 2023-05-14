@@ -1,7 +1,7 @@
 package mod.azure.doom;
 
-import dev.toma.configuration.Configuration;
-import dev.toma.configuration.config.format.ConfigFormats;
+import mod.azure.azurelib.AzureLibMod;
+import mod.azure.azurelib.config.format.ConfigFormats;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.recipes.GunTableRecipe;
 import mod.azure.doom.util.registry.DoomBlocks;
@@ -317,7 +317,7 @@ public class DoomMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		config = Configuration.registerConfig(DoomConfig.class, ConfigFormats.json()).getConfigInstance();
+		config = AzureLibMod.registerConfig(DoomConfig.class, ConfigFormats.json()).getConfigInstance();
 		ModRegistry.initialize();
 		DataTrackers.MEATHOOK_TRACKER.getId();
 		FuelRegistry.INSTANCE.add(DoomItems.ARGENT_ENERGY, 32767);
