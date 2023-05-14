@@ -49,11 +49,11 @@ dependencies {
     mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-  	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.19.4:1.0.8'
 	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-1.19.4:1.9"
 	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-1.19.4:1.9"
-	modImplementation "maven.modrinth:midnightlib:1.3.0-fabric"
-    shade group: 'maven.modrinth', name: 'midnightlib', version: '1.3.0-fabric'
+  	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.19.4:1.0.12'
+	modImplementation 'dev.toma.configuration:Configuration:2.1.0'
+    shade group: 'dev.toma', name: 'configuration', version: '2.1.0'
 	modImplementation ("com.terraformersmc:modmenu:6.1.0-rc.4")
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:11.0.597") {
         exclude(group: "net.fabricmc.fabric-api")
@@ -75,7 +75,7 @@ shadowJar {
     configurations = [project.configurations.shade]
     from sourceSets.main.output
     duplicatesStrategy = 'exclude'
-    relocate 'eu.midnightdust', 'mod.azure.doom.shadowed.midnightlib'
+    relocate 'dev.toma', 'mod.azure.doom.shadowed.configuration'
     classifier 'dev'
 }
 

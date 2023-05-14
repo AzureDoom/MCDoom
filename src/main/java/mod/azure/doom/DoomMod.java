@@ -1,6 +1,7 @@
 package mod.azure.doom;
 
-import eu.midnightdust.lib.config.MidnightConfig;
+import dev.toma.configuration.Configuration;
+import dev.toma.configuration.config.format.ConfigFormats;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.util.recipes.GunTableRecipe;
 import mod.azure.doom.util.registry.DoomBlocks;
@@ -26,6 +27,7 @@ import net.minecraft.world.level.block.Block;
 
 public class DoomMod implements ModInitializer {
 
+	public static DoomConfig config;
 	public static final String MODID = "doom";
 	public static RecipeType<GunTableRecipe> GUN_TABLE_RECIPE;
 	public static final ResourceLocation BFG = new ResourceLocation(MODID, "bfg");
@@ -312,12 +314,12 @@ public class DoomMod implements ModInitializer {
 	}).build();
 	public static final RecipeSerializer<GunTableRecipe> GUN_TABLE_RECIPE_SERIALIZER = Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(MODID, "gun_table"), new GunTableRecipe.Serializer());
 	public static final TagKey<Block> PAXEL_BLOCKS = TagKey.create(Registries.BLOCK, DoomMod.modResource("paxel_blocks"));
-	
+
 	@Override
 	public void onInitialize() {
+		config = Configuration.registerConfig(DoomConfig.class, ConfigFormats.json()).getConfigInstance();
 		ModRegistry.initialize();
 		DataTrackers.MEATHOOK_TRACKER.getId();
-		MidnightConfig.init(MODID, DoomConfig.class);
 		FuelRegistry.INSTANCE.add(DoomItems.ARGENT_ENERGY, 32767);
 	}
 

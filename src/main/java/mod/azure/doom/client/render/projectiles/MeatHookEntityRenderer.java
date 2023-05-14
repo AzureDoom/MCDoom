@@ -9,7 +9,6 @@ import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mod.azure.azurelib.util.RenderUtils;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.models.projectiles.MeatHookEntityModel;
-import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.MeatHookEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -43,7 +42,7 @@ public class MeatHookEntityRenderer extends GeoEntityRenderer<MeatHookEntity> {
 		if (hookshot.getOwner()instanceof Player player) {
 			poseStack.pushPose();
 			var bodyYawToRads = Math.toRadians(player.yBodyRot);
-			var radius = DoomConfig.enable_noncenter ? 0.8D : 0.0D;
+			var radius = DoomMod.config.enable_noncenter ? 0.8D : 0.0D;
 			var startX = player.getX() + radius * Math.cos(bodyYawToRads);
 			var startY = player.getY() + (player.getBbHeight() / 3D);
 			var startZ = player.getZ() + radius * Math.sin(bodyYawToRads);

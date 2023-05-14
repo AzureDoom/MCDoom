@@ -1,7 +1,7 @@
 package mod.azure.doom.entity.projectiles.entity;
 
 import mod.azure.azurelib.network.packet.EntityPacket;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.registry.DoomProjectiles;
 import mod.azure.doom.util.registry.DoomSounds;
@@ -75,7 +75,7 @@ public class DroneBoltEntity extends AbstractHurtingProjectile {
 	}
 
 	protected void explode() {
-		level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, false, DoomConfig.enable_block_breaking ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
+		level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, false, DoomMod.config.enable_block_breaking ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
 	}
 
 	@Override

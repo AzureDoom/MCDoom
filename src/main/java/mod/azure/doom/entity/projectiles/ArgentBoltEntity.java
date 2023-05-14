@@ -3,7 +3,7 @@ package mod.azure.doom.entity.projectiles;
 import mod.azure.azurelib.AzureLibMod;
 import mod.azure.azurelib.entities.TickingLightEntity;
 import mod.azure.azurelib.network.packet.EntityPacket;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomProjectiles;
@@ -221,7 +221,7 @@ public class ArgentBoltEntity extends AbstractArrow {
 		final AABB aabb = new AABB(this.blockPosition().above()).inflate(2D, 2D, 2D);
 		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
 			if (e instanceof LivingEntity) {
-				e.hurt(damageSources().playerAttack((Player) this.shooter), DoomConfig.argent_bolt_damage);
+				e.hurt(damageSources().playerAttack((Player) this.shooter), DoomMod.config.argent_bolt_damage);
 			}
 		});
 	}
@@ -244,7 +244,7 @@ public class ArgentBoltEntity extends AbstractArrow {
 				((LivingEntity) entity1).setLastHurtMob(entity);
 			}
 		}
-		if (entity.hurt(damagesource, DoomConfig.argent_bolt_damage)) {
+		if (entity.hurt(damagesource, DoomMod.config.argent_bolt_damage)) {
 			if (entity instanceof LivingEntity) {
 				LivingEntity livingentity = (LivingEntity) entity;
 				if (!this.level.isClientSide && entity1 instanceof LivingEntity) {

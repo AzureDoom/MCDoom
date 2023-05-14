@@ -9,7 +9,7 @@ import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.task.DemonMeleeAttack;
 import mod.azure.doom.entity.task.DemonProjectileAttack;
@@ -122,16 +122,16 @@ public class FireBaronEntity extends DemonEntity implements SmartBrainOwner<Fire
 
 	@Override
 	public BrainActivityGroup<FireBaronEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(DoomConfig.baron_ranged_damage), new DemonMeleeAttack<>(5));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(DoomMod.config.baron_ranged_damage), new DemonMeleeAttack<>(5));
 	}
 
 	@Override
 	protected void registerGoals() {
-//		goalSelector.addGoal(4, new RangedStrafeAttackGoal(this, new FireBaronEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomConfig.baron_ranged_damage), 1.1, 2));
+//		goalSelector.addGoal(4, new RangedStrafeAttackGoal(this, new FireBaronEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.8, 0.8).setDamage(DoomMod.config.baron_ranged_damage), 1.1, 2));
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomConfig.baron_health).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomMod.config.baron_health).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override

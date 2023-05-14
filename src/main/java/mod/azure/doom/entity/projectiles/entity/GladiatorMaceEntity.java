@@ -7,7 +7,7 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.util.registry.DoomProjectiles;
@@ -111,7 +111,7 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
 			final var entity2 = getOwner();
 			entity.setSecondsOnFire(5);
 			if (!(entity instanceof DemonEntity))
-				entity.hurt(damageSources().mobAttack((LivingEntity) entity2), DoomConfig.gladiator_ranged_damage + (shooter.getEntityData().get(GladiatorEntity.DEATH_STATE) == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0));
+				entity.hurt(damageSources().mobAttack((LivingEntity) entity2), DoomMod.config.gladiator_ranged_damage + (shooter.getEntityData().get(GladiatorEntity.DEATH_STATE) == 1 ? DoomMod.config.gladiator_phaseone_damage_boost : 0));
 			if (entity2 instanceof LivingEntity) {
 				if (!(entity instanceof DemonEntity))
 					doEnchantDamageEffects((LivingEntity) entity2, entity);

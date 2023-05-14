@@ -10,7 +10,6 @@ import mod.azure.azurelib.animatable.client.RenderProvider;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.client.render.weapons.RocketLauncherRender;
-import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.RocketEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
@@ -104,7 +103,7 @@ public class RocketLauncher extends DoomBaseItem {
 
 	public RocketEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
 		final var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		final var rocket = new RocketEntity(worldIn, shooter, DoomConfig.rocket_damage + enchantlevel * 2.0F);
+		final var rocket = new RocketEntity(worldIn, shooter, DoomMod.config.rocket_damage + enchantlevel * 2.0F);
 		return rocket;
 	}
 

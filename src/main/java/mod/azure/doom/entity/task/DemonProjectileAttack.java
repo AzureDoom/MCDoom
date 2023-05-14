@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.datafixers.util.Pair;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierambient.TurretEntity;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
@@ -124,7 +124,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 			entity.shootBloodBolt(this.target, damage);
 
 		if (entity instanceof SpiderMastermindEntity || entity instanceof ChaingunnerEntity || entity instanceof ShotgunguyEntity || entity instanceof ZombiemanEntity)
-			entity.shootChaingun(this.target, entity instanceof ChaingunnerEntity ? DoomConfig.chaingun_bullet_damage : damage);
+			entity.shootChaingun(this.target, entity instanceof ChaingunnerEntity ? DoomMod.config.chaingun_bullet_damage : damage);
 
 		if (entity instanceof SpiderMastermind2016Entity || entity instanceof ArachnotronEntity)
 			entity.shootEnergyCell(this.target, damage);
@@ -149,7 +149,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 		}
 
 		if (entity instanceof MarauderEntity marauderEntity) {
-			marauderEntity.shootChaingun(this.target, DoomConfig.marauder_ssgdamage);
+			marauderEntity.shootChaingun(this.target, DoomMod.config.marauder_ssgdamage);
 			marauderEntity.teleport();
 		}
 
@@ -190,9 +190,9 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 
 		if (entity instanceof MancubusEntity mancubusEntity) {
 			if (mancubusEntity.distanceTo(target) < 8.0D && mancubusEntity.distanceTo(target) > 3.0D) // shoot flames
-				mancubusEntity.shootMancubus(mancubusEntity, DoomConfig.mancubus_ranged_damage);
+				mancubusEntity.shootMancubus(mancubusEntity, DoomMod.config.mancubus_ranged_damage);
 			else // shoot ball
-				mancubusEntity.shootBaron(mancubusEntity, DoomConfig.mancubus_ranged_damage, 0, 0, 0);
+				mancubusEntity.shootBaron(mancubusEntity, DoomMod.config.mancubus_ranged_damage, 0, 0, 0);
 		}
 
 		if (entity instanceof MotherDemonEntity motherdemonEntity) {
@@ -207,9 +207,9 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 				}
 				this.target.setDeltaMovement(this.target.getDeltaMovement().multiply(0.4f, 1.4f, 0.4f));
 			} else { // shoot fireballs
-				entity.shootFireball(this.target, DoomConfig.motherdemon_ranged_damage + (motherdemonEntity.getDeathState() == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0), 0);
-				entity.shootFireball(this.target, DoomConfig.motherdemon_ranged_damage + (motherdemonEntity.getDeathState() == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0), 3);
-				entity.shootFireball(this.target, DoomConfig.motherdemon_ranged_damage + (motherdemonEntity.getDeathState() == 1 ? DoomConfig.motherdemon_phaseone_damage_boos : 0), -3);
+				entity.shootFireball(this.target, DoomMod.config.motherdemon_ranged_damage + (motherdemonEntity.getDeathState() == 1 ? DoomMod.config.motherdemon_phaseone_damage_boos : 0), 0);
+				entity.shootFireball(this.target, DoomMod.config.motherdemon_ranged_damage + (motherdemonEntity.getDeathState() == 1 ? DoomMod.config.motherdemon_phaseone_damage_boos : 0), 3);
+				entity.shootFireball(this.target, DoomMod.config.motherdemon_ranged_damage + (motherdemonEntity.getDeathState() == 1 ? DoomMod.config.motherdemon_phaseone_damage_boos : 0), -3);
 			}
 		}
 
@@ -222,7 +222,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 					doomHunterEntity.spawnFlames(doomHunterEntity.getX() + Mth.cos((float) Mth.atan2(this.target.getZ() - doomHunterEntity.getZ(), this.target.getX() - doomHunterEntity.getX())) * 1.25D * (l + 1), doomHunterEntity.getZ() + Mth.sin((float) Mth.atan2(this.target.getZ() - doomHunterEntity.getZ(), this.target.getX() - doomHunterEntity.getX())) * 1.25D * (l + 1), Math.min(this.target.getY(), this.target.getY()), Math.max(this.target.getY(), this.target.getY()) + 1.0D,
 							(float) Mth.atan2(this.target.getZ() - doomHunterEntity.getZ(), this.target.getX() - doomHunterEntity.getX()), l);
 			if (doomHunterEntity.getDeathState() == 0) {
-				doomHunterEntity.shootRocket(this.target, DoomConfig.doomhunter_ranged_damage + (doomHunterEntity.getDeathState() == 1 ? DoomConfig.doomhunter_extra_phase_two_damage : 0));
+				doomHunterEntity.shootRocket(this.target, DoomMod.config.doomhunter_ranged_damage + (doomHunterEntity.getDeathState() == 1 ? DoomMod.config.doomhunter_extra_phase_two_damage : 0));
 			}
 		}
 
@@ -241,7 +241,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 
 		if (entity instanceof ArchMakyrEntity archMakyrEntity) {
 			if (entity.getRandom().nextInt(0, 4) == 1) // shoot fireball
-				entity.shootFireball(entity, DoomConfig.archmaykr_ranged_damage + (archMakyrEntity.getDeathState() == 1 ? DoomConfig.archmaykr_phaseone_damage_boost : archMakyrEntity.getDeathState() == 2 ? DoomConfig.archmaykr_phasetwo_damage_boost : archMakyrEntity.getDeathState() == 3 ? DoomConfig.archmaykr_phasethree_damage_boost : archMakyrEntity.getDeathState() == 4 ? DoomConfig.archmaykr_phasefour_damage_boost : 0), 0);
+				entity.shootFireball(entity, DoomMod.config.archmaykr_ranged_damage + (archMakyrEntity.getDeathState() == 1 ? DoomMod.config.archmaykr_phaseone_damage_boost : archMakyrEntity.getDeathState() == 2 ? DoomMod.config.archmaykr_phasetwo_damage_boost : archMakyrEntity.getDeathState() == 3 ? DoomMod.config.archmaykr_phasethree_damage_boost : archMakyrEntity.getDeathState() == 4 ? DoomMod.config.archmaykr_phasefour_damage_boost : 0), 0);
 			else { // summon flames
 				for (var i = 1; i < 5; ++i) {
 					var f1 = (float) Mth.atan2(this.target.getZ() - entity.getZ(), this.target.getX() - entity.getX()) + (float) i * (float) Math.PI * 0.4F;
@@ -265,7 +265,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 				else
 					entity.setAttackingState(5); // armor
 			} else { // shoots fireball
-				entity.shootFireball(entity, DoomConfig.icon_melee_damage + (iconEntity.getDeathState() == 1 ? DoomConfig.icon_phaseone_damage_boos : 0), 0);
+				entity.shootFireball(entity, DoomMod.config.icon_melee_damage + (iconEntity.getDeathState() == 1 ? DoomMod.config.icon_phaseone_damage_boos : 0), 0);
 				if (entity.getHealth() < (entity.getMaxHealth() * 0.50))
 					entity.setAttackingState(2); // no armor
 				else
@@ -281,7 +281,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 				areaeffectcloudentity.setDuration(10);
 				areaeffectcloudentity.setPos(gladiatorEntity.getX(), gladiatorEntity.getY(), gladiatorEntity.getZ());
 				entity.level.addFreshEntity(areaeffectcloudentity);
-				gladiatorEntity.shootFireball(this.target, DoomConfig.gladiator_ranged_damage + (gladiatorEntity.getDeathState() == 1 ? DoomConfig.gladiator_phaseone_damage_boost : 0), 0);
+				gladiatorEntity.shootFireball(this.target, DoomMod.config.gladiator_ranged_damage + (gladiatorEntity.getDeathState() == 1 ? DoomMod.config.gladiator_phaseone_damage_boost : 0), 0);
 			} else
 				gladiatorEntity.shootMace(this.target);
 		}

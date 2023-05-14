@@ -11,7 +11,6 @@ import mod.azure.azurelib.items.BaseGunItem;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.client.render.weapons.SGRender;
-import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
@@ -55,7 +54,7 @@ public class Shotgun extends DoomBaseItem {
 					var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
 					if (result != null) {
 						if (result.getEntity()instanceof LivingEntity livingEntity)
-							livingEntity.hurt(playerentity.damageSources().playerAttack(playerentity), DoomConfig.shotgun_damage + enchantlevel * 2.0F);
+							livingEntity.hurt(playerentity.damageSources().playerAttack(playerentity), DoomMod.config.shotgun_damage + enchantlevel * 2.0F);
 					} else {
 						final var shell = createArrow(worldIn, stack, playerentity);
 						shell.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 1.0F * 3.0F, 1.0F);
@@ -105,7 +104,7 @@ public class Shotgun extends DoomBaseItem {
 
 	public ShotgunShellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
 		final var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		final var shell = new ShotgunShellEntity(worldIn, shooter, DoomConfig.shotgun_damage + enchantlevel * 2.0F);
+		final var shell = new ShotgunShellEntity(worldIn, shooter, DoomMod.config.shotgun_damage + enchantlevel * 2.0F);
 		return shell;
 	}
 

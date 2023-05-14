@@ -1,6 +1,6 @@
 package mod.azure.doom.client;
 
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
@@ -73,6 +73,6 @@ public class ModelProviderinit {
 	}
 
 	private static boolean nonCentered(ItemStack stack) {
-		return DoomConfig.enable_noncenter;
+		return DoomMod.config.enable_noncenter;
 	}
 }

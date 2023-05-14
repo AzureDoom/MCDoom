@@ -8,7 +8,7 @@ import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.entity.task.DemonMeleeAttack;
@@ -119,16 +119,16 @@ public class CyberdemonEntity extends DemonEntity implements SmartBrainOwner<Cyb
 
 	@Override
 	public BrainActivityGroup<CyberdemonEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(0.85F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(DoomConfig.cyberdemon_ranged_damage), new DemonMeleeAttack<>(5));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(0.85F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(DoomMod.config.cyberdemon_ranged_damage), new DemonMeleeAttack<>(5));
 	}
 
 	@Override
 	protected void registerGoals() {
-//		goalSelector.addGoal(4, new RangedStrafeAttackGoal(this, new CyberdemonEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.4, 0.8).setDamage(DoomConfig.cyberdemon_ranged_damage), 1.1, 1));
+//		goalSelector.addGoal(4, new RangedStrafeAttackGoal(this, new CyberdemonEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.4, 0.8).setDamage(DoomMod.config.cyberdemon_ranged_damage), 1.1, 1));
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomConfig.cyberdemon_health).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomMod.config.cyberdemon_health).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override

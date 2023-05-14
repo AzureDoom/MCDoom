@@ -3,7 +3,6 @@ package mod.azure.doom.util.registry;
 import mod.azure.azurelib.AzureLib;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.gui.GunTableScreenHandler;
-import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tileentity.GunBlockEntity;
 import mod.azure.doom.entity.tileentity.IconBlockEntity;
 import mod.azure.doom.entity.tileentity.TotemEntity;
@@ -43,7 +42,7 @@ public class ModRegistry {
 		AzureLib.initialize();
 		PacketHandler.registerMessages();
 		DoomStructures.registerStructureFeatures();
-		if (DoomConfig.enable_all_villager_trades)
+		if (DoomMod.config.enable_all_villager_trades)
 			ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> DoomVillagerTrades.addTrades());
 		LootTableEvents.MODIFY.register((resourceManager, lootManager, id, supplier, setter) -> {
 			if (DoomLoot.BASTION_BRIDGE.equals(id) || DoomLoot.BASTION_HOGLIN_STABLE.equals(id) || DoomLoot.BASTION_OTHER.equals(id) || DoomLoot.BASTION_TREASURE.equals(id) || DoomLoot.NETHER_BRIDGE.equals(id) || DoomLoot.RUINED_PORTAL.equals(id) || DoomLoot.SPAWN_BONUS_CHEST.equals(id)) {

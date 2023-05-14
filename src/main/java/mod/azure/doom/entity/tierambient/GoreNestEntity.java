@@ -1,12 +1,14 @@
 package mod.azure.doom.entity.tierambient;
 
+import java.util.Arrays;
+
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -78,7 +80,7 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, DoomConfig.gorenest_health).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, DoomMod.config.gorenest_health).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -114,7 +116,7 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 	}
 
 	public void spawnWave() {
-		final var waveEntries = DoomConfig.gorenest_wave_entries;
+		final var waveEntries = Arrays.asList(DoomMod.config.gorenest_wave_entries);
 		final var r = this.getRandom().nextInt(-3, 3);
 
 		for (var k = 1; k < 5; ++k) {

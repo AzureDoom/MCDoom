@@ -2,7 +2,7 @@ package mod.azure.doom.util.enums;
 
 import java.util.function.Supplier;
 
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -12,9 +12,9 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 
 public enum DAMat implements ArmorMaterial {
-	DOOM_ARMOR("doom_armor", 500, new int[] { DoomConfig.doom_armor_head_stat, DoomConfig.doom_armor_leggings_stat, DoomConfig.doom_armor_chestplate_stat, DoomConfig.doom_armor_boots_stat }, 40, SoundEvents.ARMOR_EQUIP_GENERIC, DoomConfig.doom_armor_toughness, DoomConfig.doom_armor_knockbackResistance, () -> Ingredient.of(DoomItems.ARGENT_ENERGY));
+	DOOM_ARMOR("doom_armor", 500, new int[] { DoomMod.config.doom_armor_boots_stat, DoomMod.config.doom_armor_leggings_stat, DoomMod.config.doom_armor_chestplate_stat, DoomMod.config.doom_armor_head_stat }, 40, SoundEvents.ARMOR_EQUIP_GENERIC, DoomMod.config.doom_armor_toughness, DoomMod.config.doom_armor_knockbackResistance, () -> Ingredient.of(DoomItems.ARGENT_ENERGY));
 
-	private static final int[] BASE_DURABILITY = { 13, 15, 16, 11 };
+	private static final int[] BASE_DURABILITY = { DoomMod.config.doom_armor_boots_stat, DoomMod.config.doom_armor_leggings_stat, DoomMod.config.doom_armor_chestplate_stat, DoomMod.config.doom_armor_head_stat };
 	private final String name;
 	private final int durabilityMultiplier;
 	private final int[] protectionAmounts;
