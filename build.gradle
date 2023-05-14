@@ -53,7 +53,7 @@ dependencies {
 	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-1.19.4:1.9"
   	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.19.4:1.0.12'
 	modImplementation 'dev.toma.configuration:Configuration:2.1.0'
-    shade group: 'dev.toma', name: 'configuration', version: '2.1.0'
+    shade group: 'dev.toma.configuration', name: 'Configuration', version: '2.1.0'
 	modImplementation ("com.terraformersmc:modmenu:6.1.0-rc.4")
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:11.0.597") {
         exclude(group: "net.fabricmc.fabric-api")
