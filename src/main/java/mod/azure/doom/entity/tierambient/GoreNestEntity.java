@@ -107,8 +107,8 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 		}
 		++spawnTimer;
 		final var aabb = new AABB(blockPosition()).inflate(64D);
-		final var i = level.getEntities(EntityTypeTest.forClass(DemonEntity.class), aabb, Entity::isAlive).size();
-		if (spawnTimer == 800 && i <= 15 && !this.isNoAi())
+		final var entityCount = level.getEntities(EntityTypeTest.forClass(DemonEntity.class), aabb, Entity::isAlive).size();
+		if (spawnTimer == 800 && entityCount <= 15 && !this.isNoAi())
 			spawnWave();
 		if (spawnTimer >= 810)
 			spawnTimer = 0;
@@ -117,17 +117,12 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 
 	public void spawnWave() {
 		final var waveEntries = Arrays.asList(DoomMod.config.gorenest_wave_entries);
-		final var r = this.getRandom().nextInt(-3, 3);
+		final var random = this.getRandom().nextInt(-3, 3);
 
 		for (var k = 1; k < 5; ++k) {
-			for (var i = 0; i < 1; i++) {
-				final var randomIndex = getRandom().nextInt(waveEntries.size());
-				final var randomElement1 = new ResourceLocation(waveEntries.get(randomIndex));
-				final var randomElement = BuiltInRegistries.ENTITY_TYPE.get(randomElement1);
-				final var waveentity = randomElement.create(level);
-				waveentity.setPos(this.getX() + r, this.getY() + 0.5D, this.getZ() + r);
-				level.addFreshEntity(waveentity);
-			}
+			final var waveentity = BuiltInRegistries.ENTITY_TYPE.get(new ResourceLocation(waveEntries.get(getRandom().nextInt(waveEntries.size())))).create(level);
+			waveentity.setPos(this.getX() + random, this.getY() + 0.5D, this.getZ() + random);
+			level.addFreshEntity(waveentity);
 		}
 	}
 
