@@ -23,7 +23,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -40,7 +39,7 @@ public class TotemBlock extends BaseEntityBlock implements EntityBlock {
 	private static final VoxelShape Z_AXIS_AABB = Shapes.or(Y_LENGTH1, Y_LENGTH2);
 
 	public TotemBlock() {
-		super(FabricBlockSettings.of(Material.METAL).sounds(SoundType.BONE_BLOCK).nonOpaque().requiresTool().strength(3, 3).luminance(15));
+		super(FabricBlockSettings.of().sounds(SoundType.BONE_BLOCK).nonOpaque().requiresTool().strength(3, 3).luminance(15));
 	}
 
 	@Override

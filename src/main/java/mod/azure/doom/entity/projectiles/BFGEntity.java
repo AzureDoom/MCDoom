@@ -152,7 +152,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 			idleTicks = 0;
 		if (idleOpt <= 0 || idleTicks < idleOpt)
 			super.tick();
-		var isInsideWaterBlock = level.isWaterAt(blockPosition());
+		var isInsideWaterBlock = level().isWaterAt(blockPosition());
 		spawnLightSource(isInsideWaterBlock);
 		if (this.tickCount >= 80)
 			this.remove(Entity.RemovalReason.DISCARDED);
@@ -181,12 +181,12 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 
 	private void spawnLightSource(boolean isInWaterBlock) {
 		if (lightBlockPos == null) {
-			lightBlockPos = findFreeSpace(level, blockPosition(), 2);
+			lightBlockPos = findFreeSpace(level(), blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			level.setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
+			level().setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
 		} else if (checkDistance(lightBlockPos, blockPosition(), 2)) {
-			var blockEntity = level.getBlockEntity(lightBlockPos);
+			var blockEntity = level().getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity)
 				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
 			else
@@ -241,15 +241,15 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 	@Override
 	protected void onHitBlock(BlockHitResult blockHitResult) {
 		super.onHitBlock(blockHitResult);
-		if (!this.level.isClientSide())
+		if (!this.level().isClientSide())
 			this.remove(Entity.RemovalReason.DISCARDED);
 	}
 
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
-		if (!this.level.isClientSide) {
+		if (!this.level().isClientSide) {
 			this.doDamage();
-			this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, DoomMod.config.enable_block_breaking ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
+			this.level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, DoomMod.config.enable_block_breaking ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
 			this.remove(RemovalReason.KILLED);
 		}
 		this.playSound(DoomSounds.BFG_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
@@ -262,9 +262,9 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 			if (!(e instanceof Player || e instanceof EnderDragon || e instanceof GoreNestEntity || e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity) && (e instanceof Monster || e instanceof Slime || e instanceof Phantom || e instanceof DemonEntity || e instanceof Shulker || e instanceof Hoglin || (e == listEntity))) {
 				e.hurt(damageSources().playerAttack((Player) this.shooter), DoomMod.config.bfgball_damage);
 				this.setTargetedEntity(e.getId());
-				if (!this.level.isClientSide) {
-					var list1 = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D));
-					var areaeffectcloudentity = new AreaEffectCloud(e.level, e.getX(), e.getY(), e.getZ());
+				if (!this.level().isClientSide) {
+					var list1 = this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D));
+					var areaeffectcloudentity = new AreaEffectCloud(e.level(), e.getX(), e.getY(), e.getZ());
 					areaeffectcloudentity.setParticle(ParticleTypes.TOTEM_OF_UNDYING);
 					areaeffectcloudentity.setRadius(3.0F);
 					areaeffectcloudentity.setDuration(10);
@@ -275,7 +275,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 								areaeffectcloudentity.setPos(e.getX(), e.getEyeY(), e.getZ());
 						}
 					}
-					e.level.addFreshEntity(areaeffectcloudentity);
+					e.level().addFreshEntity(areaeffectcloudentity);
 				}
 			}
 			if (e instanceof EnderDragon)
@@ -305,11 +305,11 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 	public LivingEntity getTargetedEntity() {
 		if (!this.hasTargetedEntity()) {
 			return null;
-		} else if (this.level.isClientSide) {
+		} else if (this.level().isClientSide) {
 			if (this.cachedBeamTarget != null)
 				return this.cachedBeamTarget;
 			else {
-				var entity = this.level.getEntity(this.entityData.get(TARGET_ENTITY));
+				var entity = this.level().getEntity(this.entityData.get(TARGET_ENTITY));
 				if (entity instanceof LivingEntity) {
 					this.cachedBeamTarget = (LivingEntity) entity;
 					return this.cachedBeamTarget;

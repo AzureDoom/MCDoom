@@ -104,8 +104,8 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (level.isClientSide())
-					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.CYBERDEMON_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.CYBERDEMON_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		}));
 	}
 
@@ -138,19 +138,19 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 
 	@Override
 	public void die(DamageSource source) {
-		if (!level.isClientSide) {
-			if (source == damageSources().outOfWorld())
+		if (!level().isClientSide) {
+			if (source == damageSources().fellOutOfWorld())
 				setDeathState(1);
 			if (this.getDeathState() == 0) {
-				final var areaeffectcloudentity = new AreaEffectCloud(level, this.getX(), this.getY(), this.getZ());
+				final var areaeffectcloudentity = new AreaEffectCloud(level(), this.getX(), this.getY(), this.getZ());
 				areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
 				areaeffectcloudentity.setRadius(3.0F);
 				areaeffectcloudentity.setDuration(55);
 				areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
-				level.addFreshEntity(areaeffectcloudentity);
+				level().addFreshEntity(areaeffectcloudentity);
 				goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
 				setLastHurtMob(getLastHurtByMob());
-				level.broadcastEntityEvent(this, (byte) 3);
+				level().broadcastEntityEvent(this, (byte) 3);
 			}
 			if (this.getDeathState() == 1)
 				super.die(source);
@@ -215,9 +215,9 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 				final var randomIndex = rand.nextInt(waveEntries.size());
 				final var randomElement1 = new ResourceLocation(waveEntries.get(randomIndex));
 				final var randomElement = BuiltInRegistries.ENTITY_TYPE.get(randomElement1);
-				final var waveentity = randomElement.create(level);
+				final var waveentity = randomElement.create(level());
 				waveentity.setPos(entity.getX() + r, entity.getY() + 0.5D, entity.getZ() + r);
-				level.addFreshEntity(waveentity);
+				level().addFreshEntity(waveentity);
 			}
 		}
 	}
@@ -228,11 +228,11 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 		var d0 = 0.0D;
 		do {
 			final var blockpos1 = blockpos.below();
-			final var blockstate = level.getBlockState(blockpos1);
-			if (blockstate.isFaceSturdy(level, blockpos1, Direction.UP)) {
-				if (!level.isEmptyBlock(blockpos)) {
-					final var blockstate1 = level.getBlockState(blockpos);
-					final var voxelshape = blockstate1.getCollisionShape(level, blockpos);
+			final var blockstate = level().getBlockState(blockpos1);
+			if (blockstate.isFaceSturdy(level(), blockpos1, Direction.UP)) {
+				if (!level().isEmptyBlock(blockpos)) {
+					final var blockstate1 = level().getBlockState(blockpos);
+					final var voxelshape = blockstate1.getCollisionShape(level(), blockpos);
 					if (!voxelshape.isEmpty())
 						d0 = voxelshape.max(Direction.Axis.Y);
 				}
@@ -243,10 +243,10 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
-			final var fang = new DoomFireEntity(level, x, blockpos.getY() + d0, z, yaw, 1, this, DoomMod.config.icon_melee_damage + (this.getDeathState() == 1 ? DoomMod.config.motherdemon_phaseone_damage_boos : 0));
+			final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, yaw, 1, this, DoomMod.config.icon_melee_damage + (this.getDeathState() == 1 ? DoomMod.config.motherdemon_phaseone_damage_boos : 0));
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
-			level.addFreshEntity(fang);
+			level().addFreshEntity(fang);
 		}
 	}
 
@@ -345,7 +345,7 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 	public void aiStep() {
 		super.aiStep();
 		++tickCount;
-		if (!level.isClientSide) {
+		if (!level().isClientSide) {
 			if (this.getDeathState() == 0)
 				this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000000, 1));
 			else if (this.getDeathState() == 1) {
@@ -353,7 +353,7 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 10000000, 2));
 				this.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 10000000, 1));
 			}
-			if (!level.dimensionType().respawnAnchorWorks()) {
+			if (!level().dimensionType().respawnAnchorWorks()) {
 				this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 10000000, 3));
 				if (tickCount % 2400 == 0)
 					heal(40F);
@@ -401,10 +401,10 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 
 	@Override
 	public boolean doHurtTarget(Entity target) {
-		level.broadcastEntityEvent(this, (byte) 4);
+		level().broadcastEntityEvent(this, (byte) 4);
 		final var bl = target.hurt(damageSources().mobAttack(this), DoomMod.config.icon_melee_damage + (this.getDeathState() == 1 ? DoomMod.config.icon_phaseone_damage_boos : 0));
 		if (bl) {
-			level.explode(this, target.getX(), target.getY(), target.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
+			level().explode(this, target.getX(), target.getY(), target.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
 			doEnchantDamageEffects(this, target);
 			target.invulnerableTime = 0;
 		}

@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 
 public class ArgentPaxel extends DiggerItem {
 
@@ -44,15 +43,6 @@ public class ArgentPaxel extends DiggerItem {
 	@Override
 	public float getDestroySpeed(ItemStack stack, BlockState state) {
 		return 30;
-	}
-
-	@Override
-	public boolean isCorrectToolForDrops(BlockState state) {
-		final Block block = state.getBlock();
-		if (block == Blocks.SNOW || block == Blocks.SNOW_BLOCK)
-			return true;
-		final Material material = state.getMaterial();
-		return material == Material.STONE || material == Material.METAL;
 	}
 
 	@Override

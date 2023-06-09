@@ -26,7 +26,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -44,7 +43,7 @@ public class GunTableBlock extends Block implements EntityBlock {
 	public static final BooleanProperty light = RedstoneTorchBlock.LIT;
 
 	public GunTableBlock() {
-		super(FabricBlockSettings.of(Material.METAL).sounds(SoundType.METAL).strength(4.0f).nonOpaque());
+		super(FabricBlockSettings.of().sounds(SoundType.METAL).strength(4.0f).nonOpaque());
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.WEST));
 	}
 

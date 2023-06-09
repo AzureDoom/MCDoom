@@ -7,4 +7,4 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = 'mcdoom-fabric-1.19'
+rootProject.name = 'mcdoom-fabric-1.20'

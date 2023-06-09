@@ -85,11 +85,11 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (level.isClientSide())
-					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 			if (event.getKeyframeData().getSound().matches("talk"))
-				if (level.isClientSide())
-					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.MANCUBUS_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.MANCUBUS_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
 			if (event.getAnimatable().getAttckingState() == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("firing", LoopType.PLAY_ONCE));
@@ -98,11 +98,11 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("attack"))
-				if (level.isClientSide())
-					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.ROCKET_FIRING, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.ROCKET_FIRING, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 			if (event.getKeyframeData().getSound().matches("flames"))
-				if (level.isClientSide())
-					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.FIRECHARGE_USE, SoundSource.HOSTILE, 0.25F, 1.0F, true);
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.FIRECHARGE_USE, SoundSource.HOSTILE, 0.25F, 1.0F, true);
 		}));
 	}
 
@@ -168,11 +168,11 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
 		var d0 = 0.0D;
 		do {
 			final var blockpos1 = blockpos.below();
-			final var blockstate = level.getBlockState(blockpos1);
-			if (blockstate.isFaceSturdy(level, blockpos1, Direction.UP)) {
-				if (!level.isEmptyBlock(blockpos)) {
-					final var blockstate1 = level.getBlockState(blockpos);
-					final var voxelshape = blockstate1.getCollisionShape(level, blockpos);
+			final var blockstate = level().getBlockState(blockpos1);
+			if (blockstate.isFaceSturdy(level(), blockpos1, Direction.UP)) {
+				if (!level().isEmptyBlock(blockpos)) {
+					final var blockstate1 = level().getBlockState(blockpos);
+					final var voxelshape = blockstate1.getCollisionShape(level(), blockpos);
 					if (!voxelshape.isEmpty())
 						d0 = voxelshape.max(Direction.Axis.Y);
 				}
@@ -183,10 +183,10 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
 		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
-			final var fang = new DoomFireEntity(level, x, blockpos.getY() + d0, z, yaw, 1, this, DoomMod.config.mancubus_ranged_damage);
+			final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, yaw, 1, this, DoomMod.config.mancubus_ranged_damage);
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
-			level.addFreshEntity(fang);
+			level().addFreshEntity(fang);
 		}
 	}
 

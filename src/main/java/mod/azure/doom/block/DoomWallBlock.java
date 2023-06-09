@@ -31,7 +31,6 @@ import net.minecraft.world.level.block.state.pattern.BlockPattern;
 import net.minecraft.world.level.block.state.pattern.BlockPatternBuilder;
 import net.minecraft.world.level.block.state.predicate.BlockStatePredicate;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.Material;
 
 public class DoomWallBlock extends BaseEntityBlock {
 
@@ -41,7 +40,7 @@ public class DoomWallBlock extends BaseEntityBlock {
 	private static BlockPattern iconPatternFull;
 
 	public DoomWallBlock() {
-		super(FabricBlockSettings.of(Material.METAL).sounds(SoundType.BONE_BLOCK));
+		super(FabricBlockSettings.of().sounds(SoundType.BONE_BLOCK));
 		this.registerDefaultState(this.stateDefinition.any().setValue(light, Boolean.valueOf(true)));
 	}
 

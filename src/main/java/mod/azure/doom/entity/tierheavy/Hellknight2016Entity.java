@@ -62,22 +62,22 @@ public class Hellknight2016Entity extends DemonEntity implements SmartBrainOwner
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving() && !isAggressive() && this.isOnGround())
+			if (event.isMoving() && !isAggressive() && this.onGround())
 				return event.setAndContinue(DoomAnimationsDefault.WALKING);
-			if (isAggressive() && this.walkAnimation.speed() > 0.35F && this.isOnGround() && !this.swinging)
+			if (isAggressive() && this.walkAnimation.speed() > 0.35F && this.onGround() && !this.swinging)
 				return event.setAndContinue(DoomAnimationsDefault.RUN);
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
 				return event.setAndContinue(DoomAnimationsDefault.DEATH);
-			if ((!this.isOnGround() || this.swinging) && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+			if ((!this.onGround() || this.swinging) && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("jumpattack", LoopType.PLAY_ONCE));
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (level.isClientSide())
-					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 			if (event.getKeyframeData().getSound().matches("attack"))
-				if (level.isClientSide())
-					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		}));
 	}
 
@@ -136,10 +136,10 @@ public class Hellknight2016Entity extends DemonEntity implements SmartBrainOwner
 	@Override
 	public void tick() {
 		super.tick();
-		if (this.getTarget() != null && !this.level.isClientSide()) {
+		if (this.getTarget() != null && !this.level().isClientSide()) {
 			if (this.getCommandSenderWorld().getEntities(this, new AABB(this.blockPosition()).inflate(3D)).contains(this.getTarget())) {
 				this.attackstatetimer++;
-				if (this.onGround && this.attackstatetimer >= 5) {
+				if (this.onGround() && this.attackstatetimer >= 5) {
 					var vec3d2 = new Vec3(this.getTarget().getX() - this.getX(), 0.0, this.getTarget().getZ() - this.getZ());
 					vec3d2 = vec3d2.normalize().scale(0.8).add(this.getDeltaMovement().scale(0.4));
 					this.setDeltaMovement(vec3d2.x, 0.6F, vec3d2.z);

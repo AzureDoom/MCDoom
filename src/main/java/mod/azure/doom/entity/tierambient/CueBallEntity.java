@@ -103,16 +103,16 @@ public class CueBallEntity extends DemonEntity implements SmartBrainOwner<CueBal
 			if (deathTime == 30) {
 				remove(RemovalReason.KILLED);
 				dropExperience();
-				if (!level.isClientSide)
+				if (!level().isClientSide)
 					explode();
 			}
 		} else {
 			if (deathTime == 5) {
 				remove(RemovalReason.KILLED);
 				dropExperience();
-				if (!level.isClientSide) {
+				if (!level().isClientSide) {
 					final var aabb = new AABB(blockPosition().above()).inflate(24D, 24D, 24D);
-					getLevel().getEntities(this, aabb).forEach(e -> {
+					level().getEntities(this, aabb).forEach(e -> {
 						if (e.isAlive() && e instanceof DemonEntity)
 							((LivingEntity) e).addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000, 1));
 					});
@@ -122,7 +122,7 @@ public class CueBallEntity extends DemonEntity implements SmartBrainOwner<CueBal
 	}
 
 	protected void explode() {
-		level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, Level.ExplosionInteraction.NONE);
+		level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, Level.ExplosionInteraction.NONE);
 	}
 
 	@Override
@@ -188,10 +188,10 @@ public class CueBallEntity extends DemonEntity implements SmartBrainOwner<CueBal
 	public void aiStep() {
 		super.aiStep();
 		flameTimer = (flameTimer + 1) % 2;
-		if (level.isClientSide)
+		if (level().isClientSide)
 			if (getVariant() == 3)
 				for (var i = 0; i < 2; ++i)
-					level.addParticle(ParticleTypes.PORTAL, getRandomX(0.5D), getRandomY() - 0.25D, getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), (random.nextDouble() - 0.5D) * 2.0D);
+					level().addParticle(ParticleTypes.PORTAL, getRandomX(0.5D), getRandomY() - 0.25D, getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), (random.nextDouble() - 0.5D) * 2.0D);
 
 		if (isAlive() && getVariant() != 3) {
 			int i;

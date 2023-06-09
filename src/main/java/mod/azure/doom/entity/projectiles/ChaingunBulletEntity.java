@@ -122,8 +122,8 @@ public class ChaingunBulletEntity extends AbstractArrow implements GeoEntity {
 		++this.ticksInAir;
 		if (this.ticksInAir >= 80)
 			this.remove(Entity.RemovalReason.DISCARDED);
-		if (this.level.isClientSide())
-			this.level.addParticle(ParticleTypes.SMOKE, true, this.getX() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D, this.getY(), this.getZ() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D, 0, 0, 0);
+		if (this.level().isClientSide())
+			this.level().addParticle(ParticleTypes.SMOKE, true, this.getX() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D, this.getY(), this.getZ() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D, 0, 0, 0);
 	}
 
 	public void initFromStack(ItemStack stack) {
@@ -151,7 +151,7 @@ public class ChaingunBulletEntity extends AbstractArrow implements GeoEntity {
 	@Override
 	protected void onHitBlock(BlockHitResult blockHitResult) {
 		super.onHitBlock(blockHitResult);
-		if (!this.level.isClientSide())
+		if (!this.level().isClientSide())
 			this.remove(Entity.RemovalReason.DISCARDED);
 		this.setSoundEvent(SoundEvents.ARMOR_EQUIP_IRON);
 	}
@@ -160,7 +160,7 @@ public class ChaingunBulletEntity extends AbstractArrow implements GeoEntity {
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		var entity = entityHitResult.getEntity();
 		if (entityHitResult.getType() != HitResult.Type.ENTITY || !((EntityHitResult) entityHitResult).getEntity().is(entity))
-			if (!this.level.isClientSide)
+			if (!this.level().isClientSide)
 				this.remove(RemovalReason.KILLED);
 		var entity1 = this.getOwner();
 		DamageSource damagesource;
@@ -174,7 +174,7 @@ public class ChaingunBulletEntity extends AbstractArrow implements GeoEntity {
 		if (entity.hurt(damagesource, projectiledamage)) {
 			if (entity instanceof LivingEntity) {
 				var livingentity = (LivingEntity) entity;
-				if (!this.level.isClientSide && entity1 instanceof LivingEntity) {
+				if (!this.level().isClientSide && entity1 instanceof LivingEntity) {
 					EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
 					EnchantmentHelper.doPostDamageEffects((LivingEntity) entity1, livingentity);
 					this.remove(RemovalReason.KILLED);
@@ -184,7 +184,7 @@ public class ChaingunBulletEntity extends AbstractArrow implements GeoEntity {
 					((ServerPlayer) entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
 			}
 		} else {
-			if (!this.level.isClientSide)
+			if (!this.level().isClientSide)
 				this.remove(RemovalReason.KILLED);
 		}
 	}

@@ -127,17 +127,17 @@ public class ProwlerEntity extends DemonEntity implements SmartBrainOwner<Prowle
 
 	@Override
 	public void aiStep() {
-		if (level.isClientSide) {
+		if (level().isClientSide) {
 			if (getVariant() == 1)
 				for (var i = 0; i < 2; ++i)
-					level.addParticle(ParticleTypes.PORTAL, getRandomX(0.5D), getRandomY() - 0.25D, getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), (random.nextDouble() - 0.5D) * 2.0D);
+					level().addParticle(ParticleTypes.PORTAL, getRandomX(0.5D), getRandomY() - 0.25D, getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), (random.nextDouble() - 0.5D) * 2.0D);
 			else
 				for (var i = 0; i < 2; ++i)
-					level.addParticle(ParticleTypes.COMPOSTER, getRandomX(0.5D), getRandomY() - 0.25D, getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), (random.nextDouble() - 0.5D) * 2.0D);
+					level().addParticle(ParticleTypes.COMPOSTER, getRandomX(0.5D), getRandomY() - 0.25D, getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), (random.nextDouble() - 0.5D) * 2.0D);
 		}
 		jumping = false;
-		if (!level.isClientSide)
-			updatePersistentAnger((ServerLevel) level, true);
+		if (!level().isClientSide)
+			updatePersistentAnger((ServerLevel) level(), true);
 
 		super.aiStep();
 	}
@@ -145,9 +145,9 @@ public class ProwlerEntity extends DemonEntity implements SmartBrainOwner<Prowle
 	@Override
 	protected void customServerAiStep() {
 		tickBrain(this);
-		if (level.isDay() && tickCount >= targetChangeTime + 600) {
+		if (level().isDay() && tickCount >= targetChangeTime + 600) {
 			final var f = getLightLevelDependentMagicValue();
-			if (f > 0.5F && level.canSeeSky(blockPosition()) && random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
+			if (f > 0.5F && level().canSeeSky(blockPosition()) && random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
 				setTarget((LivingEntity) null);
 				this.teleport();
 			}
@@ -156,7 +156,7 @@ public class ProwlerEntity extends DemonEntity implements SmartBrainOwner<Prowle
 	}
 
 	public boolean teleport() {
-		if (!level.isClientSide() && isAlive())
+		if (!level().isClientSide() && isAlive())
 			return this.teleport(this.getX() + (random.nextDouble() - 0.5D) * 16.0D, this.getY() + (random.nextInt(64) - 16), this.getZ() + (random.nextDouble() - 0.5D) * 16.0D);
 		else
 			return false;
@@ -165,15 +165,13 @@ public class ProwlerEntity extends DemonEntity implements SmartBrainOwner<Prowle
 	private boolean teleport(double x, double y, double z) {
 		final var blockpos$mutableblockpos = new BlockPos.MutableBlockPos(x, y, z);
 
-		while (blockpos$mutableblockpos.getY() > level.getMinBuildHeight() && !level.getBlockState(blockpos$mutableblockpos).getMaterial().blocksMotion())
+		while (blockpos$mutableblockpos.getY() > level().getMinBuildHeight() && !level().getBlockState(blockpos$mutableblockpos).blocksMotion()) 
 			blockpos$mutableblockpos.move(Direction.DOWN);
 
-		final var blockstate = level.getBlockState(blockpos$mutableblockpos);
-		final var flag = blockstate.getMaterial().blocksMotion();
-		final var flag1 = blockstate.getFluidState().is(FluidTags.WATER);
-		if (flag && !flag1)
+		final var blockstate = level().getBlockState(blockpos$mutableblockpos);
+		if (blockstate.blocksMotion() && !blockstate.getFluidState().is(FluidTags.WATER)) 
 			return randomTeleport(x, y, z, true);
-		else
+		else 
 			return false;
 	}
 

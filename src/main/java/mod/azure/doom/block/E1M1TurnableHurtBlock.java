@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
 
 public class E1M1TurnableHurtBlock extends Block {
 
@@ -26,7 +25,7 @@ public class E1M1TurnableHurtBlock extends Block {
 	public static final BooleanProperty light = RedstoneTorchBlock.LIT;
 
 	public E1M1TurnableHurtBlock() {
-		super(FabricBlockSettings.of(Material.METAL).sounds(SoundType.BONE_BLOCK));
+		super(FabricBlockSettings.of().sounds(SoundType.BONE_BLOCK));
 		this.registerDefaultState(this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.valueOf(true)));
 	}
 

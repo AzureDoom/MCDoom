@@ -103,7 +103,7 @@ public class RocketMobEntity extends AbstractHurtingProjectile implements GeoEnt
 	@Override
 	protected void onHitBlock(BlockHitResult result) {
 		super.onHitBlock(result);
-		if (!level.isClientSide()) {
+		if (!level().isClientSide()) {
 			explode();
 			remove(Entity.RemovalReason.DISCARDED);
 		}
@@ -113,7 +113,7 @@ public class RocketMobEntity extends AbstractHurtingProjectile implements GeoEnt
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		super.onHitEntity(entityHitResult);
-		if (!level.isClientSide()) {
+		if (!level().isClientSide()) {
 			final var entity = entityHitResult.getEntity();
 			final var entity2 = getOwner();
 			entity.setSecondsOnFire(5);
@@ -129,10 +129,10 @@ public class RocketMobEntity extends AbstractHurtingProjectile implements GeoEnt
 	}
 
 	protected void explode() {
-		level.getEntities(this, new AABB(blockPosition().above()).inflate(4)).forEach(e -> {
+		level().getEntities(this, new AABB(blockPosition().above()).inflate(4)).forEach(e -> {
 			if (e instanceof LivingEntity)
 				e.hurt(damageSources().sonicBoom(this), directHitDamage);
-			level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 0.0F, Level.ExplosionInteraction.NONE);
+			level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 0.0F, Level.ExplosionInteraction.NONE);
 		});
 	}
 

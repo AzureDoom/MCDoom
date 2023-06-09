@@ -181,12 +181,12 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 
 	public void spawnLightSource(Entity entity, boolean isInWaterBlock) {
 		if (lightBlockPos == null) {
-			lightBlockPos = findFreeSpace(entity.level, entity.blockPosition(), 2);
+			lightBlockPos = findFreeSpace(entity.level(), entity.blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			entity.level.setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
+			entity.level().setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
 		} else if (checkDistance(lightBlockPos, entity.blockPosition(), 2)) {
-			var blockEntity = entity.level.getBlockEntity(lightBlockPos);
+			var blockEntity = entity.level().getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity)
 				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
 			else
@@ -232,9 +232,9 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 	}
 
 	public void shootBloodBolt(Entity target, float damage) {
-		if (!this.level.isClientSide) {
+		if (!this.level().isClientSide) {
 			if (this.getTarget() != null) {
-				var projectile = new BloodBoltEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				var projectile = new BloodBoltEntity(level(), this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
 				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
@@ -242,9 +242,9 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 	}
 
 	public void shootBolt(Entity target, float damage) {
-		if (!this.level.isClientSide) {
+		if (!this.level().isClientSide) {
 			if (this.getTarget() != null) {
-				var projectile = new DroneBoltEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				var projectile = new DroneBoltEntity(level(), this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
 				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
@@ -252,9 +252,9 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 	}
 
 	public void shootChaingun(Entity target, float damage) {
-		if (!this.level.isClientSide) {
+		if (!this.level().isClientSide) {
 			if (this.getTarget() != null) {
-				var projectile = new ChaingunMobEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				var projectile = new ChaingunMobEntity(level(), this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
 				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
@@ -262,9 +262,9 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 	}
 
 	public void shootEnergyCell(Entity target, float damage) {
-		if (!this.level.isClientSide) {
+		if (!this.level().isClientSide) {
 			if (this.getTarget() != null) {
-				var projectile = new EnergyCellMobEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				var projectile = new EnergyCellMobEntity(level(), this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
 				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
@@ -272,9 +272,9 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 	}
 
 	public void shootMancubus(Entity target, float damage) {
-		if (!this.level.isClientSide) {
+		if (!this.level().isClientSide) {
 			if (this.getTarget() != null) {
-				var projectile = new FireProjectile(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				var projectile = new FireProjectile(level(), this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
 				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
@@ -282,9 +282,9 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 	}
 
 	public void shootRocket(Entity target, float damage) {
-		if (!this.level.isClientSide) {
+		if (!this.level().isClientSide) {
 			if (this.getTarget() != null) {
-				var projectile = new RocketMobEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				var projectile = new RocketMobEntity(level(), this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
 				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
@@ -292,9 +292,9 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 	}
 
 	public void shootFireball(Entity target, float damage, int offset) {
-		if (!this.level.isClientSide) {
+		if (!this.level().isClientSide) {
 			if (this.getTarget() != null) {
-				var projectile = new CustomFireballEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				var projectile = new CustomFireballEntity(level(), this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
 				projectile.setPos((this.getX() + this.getViewVector(1.0F).x) + offset, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
@@ -302,9 +302,9 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 	}
 
 	public void shootBaron(Entity target, float damage, double offsetx, double offsety, double offsetz) {
-		if (!this.level.isClientSide) {
+		if (!this.level().isClientSide) {
 			if (this.getTarget() != null) {
-				var projectile = new BarenBlastEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2)+ offsetx, this.getTarget().getY(0.5) - (this.getY(0.5)) + offsety, this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2) + offsetz, damage);
+				var projectile = new BarenBlastEntity(level(), this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2)+ offsetx, this.getTarget().getY(0.5) - (this.getY(0.5)) + offsety, this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2) + offsetz, damage);
 				projectile.setPos(this.getX() + this.getViewVector(1.0F).x + offsetx, this.getY(0.5) + offsety, this.getZ() + this.getViewVector(1.0F).z + offsetz);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
@@ -312,9 +312,9 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 	}
 
 	public void shootSmallFireball(Entity target, float damage) {
-		if (!this.level.isClientSide) {
+		if (!this.level().isClientSide) {
 			if (this.getTarget() != null) {
-				var projectile = new CustomSmallFireballEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
+				var projectile = new CustomSmallFireballEntity(level(), this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2), damage);
 				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
@@ -322,9 +322,9 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 	}
 
 	public void shootMace(Entity target) {
-		if (!this.level.isClientSide) {
+		if (!this.level().isClientSide) {
 			if (this.getTarget() != null) {
-				var projectile = new GladiatorMaceEntity(level, this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2));
+				var projectile = new GladiatorMaceEntity(level(), this, this.getTarget().getX() - (this.getX() + this.getViewVector(1.0F).x * 2), this.getTarget().getY(0.5) - (this.getY(0.5)), this.getTarget().getZ() - (this.getZ() + this.getViewVector(1.0F).z * 2));
 				projectile.setPos(this.getX() + this.getViewVector(1.0F).x, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z);
 				this.getCommandSenderWorld().addFreshEntity(projectile);
 			}
@@ -332,17 +332,17 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 	}
 
 	public void throwPotion(LivingEntity target) {
-		if (!this.level.isClientSide) {
+		if (!this.level().isClientSide) {
 			if (this.getTarget() != null) {
 				final var d0 = target.getX() + target.getDeltaMovement().x - this.getX();
 				final var d1 = target.getEyeY() - 1.1F - this.getY();
 				final var d2 = target.getZ() + target.getDeltaMovement().z - this.getZ();
-				final var thrownpotion = new ThrownPotion(level, this);
+				final var thrownpotion = new ThrownPotion(level(), this);
 				thrownpotion.setItem(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), Potions.POISON));
 				thrownpotion.setXRot(thrownpotion.getXRot() - -20.0F);
 				thrownpotion.shoot(d0, d1 + Math.sqrt(d0 * d0 + d2 * d2) * 0.2D, d2, 0.75F, 8.0F);
 				thrownpotion.setPos(this.getX() + this.getViewVector(1.0F).x * 2, this.getY(0.5), this.getZ() + this.getViewVector(1.0F).z * 2);
-				level.playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_THROW, getSoundSource(), 1.0F, 0.8F + random.nextFloat() * 0.4F);
+				level().playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_THROW, getSoundSource(), 1.0F, 0.8F + random.nextFloat() * 0.4F);
 				this.getCommandSenderWorld().addFreshEntity(thrownpotion);
 				this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 10, false, false));
 			}

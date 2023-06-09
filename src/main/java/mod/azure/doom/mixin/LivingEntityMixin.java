@@ -36,7 +36,7 @@ public class LivingEntityMixin {
 				livingEntity.removeAllEffects();
 				livingEntity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 4));
 				livingEntity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 100, 4));
-				livingEntity.level.broadcastEntityEvent(livingEntity, (byte) 95);
+				livingEntity.level().broadcastEntityEvent(livingEntity, (byte) 95);
 				ci.setReturnValue(true);
 			}
 		}

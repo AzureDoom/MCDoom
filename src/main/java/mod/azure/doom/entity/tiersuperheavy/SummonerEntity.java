@@ -46,7 +46,6 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.state.BlockState;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
@@ -88,8 +87,8 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (level.isClientSide())
-					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PHANTOM_SWOOP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PHANTOM_SWOOP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
 			if (event.getAnimatable().getAttckingState() == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().then("summon", LoopType.PLAY_ONCE));
@@ -98,8 +97,8 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("attack"))
-				if (level.isClientSide())
-					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.ARCHVILE_SCREAM, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.ARCHVILE_SCREAM, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		}));
 	}
 
@@ -146,9 +145,9 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 				final var randomIndex = getRandom().nextInt(waveEntries.size());
 				final var randomElement1 = new ResourceLocation(waveEntries.get(randomIndex));
 				final var randomElement = BuiltInRegistries.ENTITY_TYPE.get(randomElement1);
-				final var waveentity = randomElement.create(level);
+				final var waveentity = randomElement.create(level());
 				waveentity.setPos(this.getX() + r, this.getY() + 0.5D, this.getZ() + r);
-				level.addFreshEntity(waveentity);
+				level().addFreshEntity(waveentity);
 			}
 		}
 	}
@@ -156,9 +155,9 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 	@Override
 	protected void customServerAiStep() {
 		tickBrain(this);
-		if (level.isDay() && tickCount >= targetChangeTime + 600) {
+		if (level().isDay() && tickCount >= targetChangeTime + 600) {
 			final var f = getLightLevelDependentMagicValue();
-			if (f > 0.5F && level.canSeeSky(blockPosition()) && random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) 
+			if (f > 0.5F && level().canSeeSky(blockPosition()) && random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) 
 				setTarget((LivingEntity) null);
 		}
 
@@ -166,7 +165,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 	}
 
 	protected boolean teleportRandomly() {
-		if (!level.isClientSide() && isAlive()) {
+		if (!level().isClientSide() && isAlive()) {
 			final double d0 = this.getX() + (random.nextDouble() - 0.5D) * 10.0D;
 			final double d1 = this.getY() + (random.nextInt(64) - 10);
 			final double d2 = this.getZ() + (random.nextDouble() - 0.5D) * 10.0D;
@@ -177,22 +176,16 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 	}
 
 	private boolean teleport(double x, double y, double z) {
-		final BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos(x, y, z);
+		final var blockpos$mutableblockpos = new BlockPos.MutableBlockPos(x, y, z);
 
-		while (blockpos$mutableblockpos.getY() > level.getMinBuildHeight() && !level.getBlockState(blockpos$mutableblockpos).getMaterial().blocksMotion()) {
+		while (blockpos$mutableblockpos.getY() > level().getMinBuildHeight() && !level().getBlockState(blockpos$mutableblockpos).blocksMotion()) 
 			blockpos$mutableblockpos.move(Direction.DOWN);
-		}
 
-		final BlockState blockstate = level.getBlockState(blockpos$mutableblockpos);
-		final boolean flag = blockstate.getMaterial().blocksMotion();
-		final boolean flag1 = blockstate.getFluidState().is(FluidTags.WATER);
-		if (flag && !flag1) {
-			final boolean flag2 = randomTeleport(x, y, z, true);
-
-			return flag2;
-		} else {
+		final var blockstate = level().getBlockState(blockpos$mutableblockpos);
+		if (blockstate.blocksMotion() && !blockstate.getFluidState().is(FluidTags.WATER)) 
+			return randomTeleport(x, y, z, true);
+		else 
 			return false;
-		}
 	}
 
 	public void spawnFlames(double x, double z, double maxY, double y, float yaw, int warmup) {
@@ -201,11 +194,11 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 		var d0 = 0.0D;
 		do {
 			final var blockpos1 = blockpos.below();
-			final var blockstate = level.getBlockState(blockpos1);
-			if (blockstate.isFaceSturdy(level, blockpos1, Direction.UP)) {
-				if (!level.isEmptyBlock(blockpos)) {
-					final var blockstate1 = level.getBlockState(blockpos);
-					final var voxelshape = blockstate1.getCollisionShape(level, blockpos);
+			final var blockstate = level().getBlockState(blockpos1);
+			if (blockstate.isFaceSturdy(level(), blockpos1, Direction.UP)) {
+				if (!level().isEmptyBlock(blockpos)) {
+					final var blockstate1 = level().getBlockState(blockpos);
+					final var voxelshape = blockstate1.getCollisionShape(level(), blockpos);
 					if (!voxelshape.isEmpty())
 						d0 = voxelshape.max(Direction.Axis.Y);
 				}
@@ -216,10 +209,10 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
-			final var fang = new DoomFireEntity(level, x, blockpos.getY() + d0, z, yaw, 1, this, DoomMod.config.summoner_ranged_damage);
+			final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, yaw, 1, this, DoomMod.config.summoner_ranged_damage);
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
-			level.addFreshEntity(fang);
+			level().addFreshEntity(fang);
 		}
 	}
 

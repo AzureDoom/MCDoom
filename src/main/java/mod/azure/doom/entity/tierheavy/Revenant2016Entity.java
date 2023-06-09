@@ -184,15 +184,15 @@ public class Revenant2016Entity extends DemonEntity implements SmartBrainOwner<R
 			} else {
 				final BlockPos ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
 				float f = 0.91F;
-				if (onGround) {
-					f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+				if (onGround()) {
+					f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
 				}
 				final float f1 = 0.16277137F / (f * f * f);
 				f = 0.91F;
-				if (onGround) {
-					f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+				if (onGround()) {
+					f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
 				}
-				moveRelative(onGround ? 0.1F * f1 : 0.02F, movementInput);
+				moveRelative(onGround() ? 0.1F * f1 : 0.02F, movementInput);
 				move(MoverType.SELF, getDeltaMovement());
 				this.setDeltaMovement(getDeltaMovement().scale(f));
 			}

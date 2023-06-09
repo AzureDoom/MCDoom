@@ -174,16 +174,16 @@ public class PainEntity extends DemonEntity implements SmartBrainOwner<PainEntit
 		if (deathTime == 30) {
 			remove(RemovalReason.KILLED);
 			dropExperience();
-			if (!level.isClientSide()) {
-				final var lost_soul = DoomEntities.LOST_SOUL.create(level);
+			if (!level().isClientSide()) {
+				final var lost_soul = DoomEntities.LOST_SOUL.create(level());
 				lost_soul.moveTo(this.getX(), this.getY(), this.getZ(), 0, 0);
-				level.addFreshEntity(lost_soul);
-				final var lost_soul1 = DoomEntities.LOST_SOUL.create(level);
+				level().addFreshEntity(lost_soul);
+				final var lost_soul1 = DoomEntities.LOST_SOUL.create(level());
 				lost_soul1.moveTo(this.getX(), this.getY(), this.getZ(), 0, 0);
-				level.addFreshEntity(lost_soul1);
-				final var lost_soul2 = DoomEntities.LOST_SOUL.create(level);
+				level().addFreshEntity(lost_soul1);
+				final var lost_soul2 = DoomEntities.LOST_SOUL.create(level());
 				lost_soul2.moveTo(this.getX(), this.getY(), this.getZ(), 0, 0);
-				level.addFreshEntity(lost_soul2);
+				level().addFreshEntity(lost_soul2);
 			}
 		}
 	}
@@ -218,13 +218,13 @@ public class PainEntity extends DemonEntity implements SmartBrainOwner<PainEntit
 		} else {
 			final var ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
 			var f = 0.91F;
-			if (onGround) 
-				f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+			if (onGround()) 
+				f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
 			final var f1 = 0.16277137F / (f * f * f);
 			f = 0.91F;
-			if (onGround) 
-				f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
-			moveRelative(onGround ? 0.1F * f1 : 0.02F, movementInput);
+			if (onGround()) 
+				f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
+			moveRelative(onGround() ? 0.1F * f1 : 0.02F, movementInput);
 			move(MoverType.SELF, getDeltaMovement());
 			this.setDeltaMovement(getDeltaMovement().scale(f));
 		}

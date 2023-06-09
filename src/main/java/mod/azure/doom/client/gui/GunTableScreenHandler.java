@@ -24,6 +24,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 	private final ContainerLevelAccess context;
 	@SuppressWarnings("unused")
 	private int recipeIndex;
+	@SuppressWarnings("unused")
 	private static Level level;
 
 	// client
@@ -36,7 +37,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 		super(ModRegistry.SCREEN_HANDLER_TYPE, syncId);
 		this.playerInventory = playerInventory;
 		this.gunTableInventory = new DoomGunInventory(this);
-		GunTableScreenHandler.level = playerInventory.player.level;
+		GunTableScreenHandler.level = playerInventory.player.level();
 		this.context = context;
 		this.addSlot(new Slot(this.gunTableInventory, 0, 155, 13));
 		this.addSlot(new Slot(this.gunTableInventory, 1, 175, 33));
@@ -60,7 +61,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 			var itemStack = ItemStack.EMPTY;
 			var optional = world.getServer().getRecipeManager().getRecipeFor(Type.INSTANCE, craftingInventory, world);
 			if (optional.isPresent())
-				itemStack = optional.get().assemble(craftingInventory, level.registryAccess());
+				itemStack = optional.get().assemble(craftingInventory, player.level().registryAccess());
 
 			craftingInventory.setItem(5, itemStack);
 			serverPlayerEntity.connection.send(new ClientboundContainerSetSlotPacket(syncId, 0, 5, itemStack));
@@ -116,7 +117,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 	}
 
 	public List<GunTableRecipe> getRecipes() {
-		var list = new ArrayList<>(playerInventory.player.level.getRecipeManager().getAllRecipesFor(Type.INSTANCE));
+		var list = new ArrayList<>(playerInventory.player.level().getRecipeManager().getAllRecipesFor(Type.INSTANCE));
 		list.sort(null);
 		return list;
 	}
@@ -170,12 +171,12 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 	}
 
 	private boolean equals(ItemStack itemStack, ItemStack otherItemStack) {
-		return itemStack.getItem() == otherItemStack.getItem() && ItemStack.isSame(itemStack, otherItemStack);
+		return itemStack.getItem() == otherItemStack.getItem() && ItemStack.isSameItem(itemStack, otherItemStack);
 	}
 
 	public void removed(Player player) {
 		super.removed(player);
-		if (!this.playerInventory.player.level.isClientSide) {
+		if (!this.playerInventory.player.level().isClientSide) {
 			if (player.isAlive() && (!(player instanceof ServerPlayer) || !((ServerPlayer) player).hasDisconnected())) {
 				player.getInventory().placeItemBackInInventory(this.gunTableInventory.removeItemNoUpdate(0));
 				player.getInventory().placeItemBackInInventory(this.gunTableInventory.removeItemNoUpdate(1));

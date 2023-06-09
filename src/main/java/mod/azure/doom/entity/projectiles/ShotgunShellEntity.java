@@ -115,8 +115,8 @@ public class ShotgunShellEntity extends AbstractArrow implements GeoEntity {
 		++ticksInAir;
 		if (ticksInAir >= 80)
 			remove(Entity.RemovalReason.DISCARDED);
-		if (level.isClientSide())
-			level.addParticle(ParticleTypes.SMOKE, true, this.getX() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, this.getY(), this.getZ() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, 0, 0, 0);
+		if (level().isClientSide())
+			level().addParticle(ParticleTypes.SMOKE, true, this.getX() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, this.getY(), this.getZ() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, 0, 0, 0);
 	}
 
 	@Override
@@ -151,7 +151,7 @@ public class ShotgunShellEntity extends AbstractArrow implements GeoEntity {
 	@Override
 	protected void onHitBlock(BlockHitResult blockHitResult) {
 		super.onHitBlock(blockHitResult);
-		if (!level.isClientSide())
+		if (!level().isClientSide())
 			remove(Entity.RemovalReason.DISCARDED);
 		setSoundEvent(SoundEvents.ARMOR_EQUIP_IRON);
 	}
@@ -160,7 +160,7 @@ public class ShotgunShellEntity extends AbstractArrow implements GeoEntity {
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		final var entity = entityHitResult.getEntity();
 		if (entityHitResult.getType() != HitResult.Type.ENTITY || !entityHitResult.getEntity().is(entity))
-			if (!level.isClientSide)
+			if (!level().isClientSide)
 				remove(RemovalReason.KILLED);
 		final var entity1 = getOwner();
 		DamageSource damagesource;
@@ -173,7 +173,7 @@ public class ShotgunShellEntity extends AbstractArrow implements GeoEntity {
 		}
 		if (entity.hurt(damagesource, shelldamage)) {
 			if (entity instanceof LivingEntity livingentity) {
-				if (!level.isClientSide && entity1 instanceof LivingEntity) {
+				if (!level().isClientSide && entity1 instanceof LivingEntity) {
 					EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
 					EnchantmentHelper.doPostDamageEffects((LivingEntity) entity1, livingentity);
 					remove(RemovalReason.KILLED);
@@ -182,7 +182,7 @@ public class ShotgunShellEntity extends AbstractArrow implements GeoEntity {
 				if (entity1 != null && livingentity != entity1 && livingentity instanceof Player && entity1 instanceof ServerPlayer && !isSilent())
 					((ServerPlayer) entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
 			}
-		} else if (!level.isClientSide)
+		} else if (!level().isClientSide)
 			remove(RemovalReason.KILLED);
 	}
 

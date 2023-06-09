@@ -18,7 +18,7 @@ public class CustomSmallFireballEntity extends SmallFireball {
 
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
-		if (!level.isClientSide()) {
+		if (!level().isClientSide()) {
 			final var entity = entityHitResult.getEntity();
 			final var entity2 = getOwner();
 			if (!(entity instanceof DemonEntity))

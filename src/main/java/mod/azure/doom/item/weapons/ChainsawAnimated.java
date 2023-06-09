@@ -77,7 +77,7 @@ public class ChainsawAnimated extends Item implements GeoItem {
 	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
 		final var user = (LivingEntity) entityIn;
 		final var player = (Player) entityIn;
-		if (player.getMainHandItem().sameItem(stack) && stack.getDamageValue() < stack.getMaxDamage() - 1 && !player.getCooldowns().isOnCooldown(this)) {
+		if (player.getMainHandItem().getItem() instanceof ChainsawAnimated && stack.getDamageValue() < stack.getMaxDamage() - 1 && !player.getCooldowns().isOnCooldown(this)) {
 			final var aabb = new AABB(entityIn.blockPosition().above()).inflate(1D, 1D, 1D);
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDamage(user, e));
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDeathCheck(user, e, stack));
@@ -131,7 +131,7 @@ public class ChainsawAnimated extends Item implements GeoItem {
 			target.setDeltaMovement(0, 0, 0);
 			target.invulnerableTime = 0;
 			target.hurt(user.damageSources().playerAttack((Player) user), DoomMod.config.chainsaw_damage);
-			user.level.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_ATTACKING, SoundSource.PLAYERS, 0.3F, 1.0F / (user.level.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+			user.level().playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_ATTACKING, SoundSource.PLAYERS, 0.3F, 1.0F / (user.level().random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 	}
 
@@ -141,7 +141,8 @@ public class ChainsawAnimated extends Item implements GeoItem {
 			if (((LivingEntity) target).isDeadOrDying()) {
 				if (user instanceof Player playerentity) {
 					if (stack.getDamageValue() < stack.getMaxDamage() - 1 && !playerentity.getCooldowns().isOnCooldown(this)) {
-						for (final var i = 0; i < 5;) {
+						for (@SuppressWarnings("unused")
+						final var i = 0; i < 5;) {
 							final var randomIndex = user.getRandom().nextInt(givenList.size());
 							final var randomElement = givenList.get(randomIndex);
 							target.spawnAtLocation(randomElement);
@@ -162,7 +163,7 @@ public class ChainsawAnimated extends Item implements GeoItem {
 
 	private void addParticle(Entity target) {
 		if (target instanceof LivingEntity)
-			target.level.addParticle(ParticleTypes.CRIMSON_SPORE, target.getRandomX(0.5D), target.getRandomY(), target.getRandomZ(0.5D), 0.0D, 0D, 0D);
+			target.level().addParticle(ParticleTypes.CRIMSON_SPORE, target.getRandomX(0.5D), target.getRandomY(), target.getRandomZ(0.5D), 0.0D, 0D, 0D);
 	}
 
 	@Override

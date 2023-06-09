@@ -77,7 +77,7 @@ public class SuperShotgun extends DoomBaseItem {
 						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), DoomSounds.SUPER_SHOTGUN_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F);
 						triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn), "shoot_controller", "firing");
 					}
-					final boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
+					final boolean isInsideWaterBlock = playerentity.level().isWaterAt(playerentity.blockPosition());
 					spawnLightSource(entityLiving, isInsideWaterBlock);
 				}
 			} else {
@@ -89,7 +89,7 @@ public class SuperShotgun extends DoomBaseItem {
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		if (world.isClientSide)
+		if (world.isClientSide) 
 			if (ClientInit.reload.consumeClick() && selected) {
 				final var passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
@@ -138,6 +138,7 @@ public class SuperShotgun extends DoomBaseItem {
 				removeAmmo(DoomItems.SHOTGUN_SHELLS, user);
 				user.getItemInHand(hand).hurtAndBreak(-4, user, s -> user.broadcastBreakEvent(hand));
 				user.getItemInHand(hand).setPopTime(3);
+				user.level().playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.EMPTY, SoundSource.PLAYERS, 1.0F, 1.5F);
 			}
 		}
 	}

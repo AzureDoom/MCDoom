@@ -72,8 +72,8 @@ public class DoomFireEntity extends Entity implements GeoEntity {
 
 	@Nullable
 	public LivingEntity getCaster() {
-		if (caster == null && casterUuid != null && level instanceof ServerLevel) {
-			final var entity = ((ServerLevel) level).getEntity(casterUuid);
+		if (caster == null && casterUuid != null && level() instanceof ServerLevel) {
+			final var entity = ((ServerLevel) level()).getEntity(casterUuid);
 			if (entity instanceof LivingEntity)
 				caster = (LivingEntity) entity;
 		}
@@ -102,7 +102,7 @@ public class DoomFireEntity extends Entity implements GeoEntity {
 	}
 
 	protected void explode() {
-		level.getEntities(this, new AABB(blockPosition().above()).inflate(8)).forEach(e -> doDamage(this, e));
+		level().getEntities(this, new AABB(blockPosition().above()).inflate(8)).forEach(e -> doDamage(this, e));
 	}
 
 	private void doDamage(Entity user, Entity target) {
@@ -120,16 +120,16 @@ public class DoomFireEntity extends Entity implements GeoEntity {
 		super.tick();
 		if (--warmupDelayTicks < 0) {
 			if (!sentSpikeEvent) {
-				level.broadcastEntityEvent(this, (byte) 4);
+				level().broadcastEntityEvent(this, (byte) 4);
 				sentSpikeEvent = true;
 			}
 
 			if (--lifeTicks < 0)
 				remove(RemovalReason.KILLED);
 		}
-		if (isAlive() && level.getBlockState(blockPosition().above()).isAir())
-			level.setBlockAndUpdate(blockPosition().above(), BaseFireBlock.getState(level, blockPosition().above()));
-		level.getEntities(this, new AABB(blockPosition().above()).inflate(1)).forEach(e -> {
+		if (isAlive() && level().getBlockState(blockPosition().above()).isAir())
+			level().setBlockAndUpdate(blockPosition().above(), BaseFireBlock.getState(level(), blockPosition().above()));
+		level().getEntities(this, new AABB(blockPosition().above()).inflate(1)).forEach(e -> {
 			if (e.isAlive() && !(e instanceof DemonEntity)) {
 				e.hurt(damageSources().onFire(), damage);
 				e.setRemainingFireTicks(60);

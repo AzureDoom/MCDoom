@@ -36,11 +36,11 @@ public abstract class HeldItemRendererMixin {
 		final var clientPlayerEntity = minecraft.player;
 		final var itemStack = clientPlayerEntity.getMainHandItem();
 		final var itemStack2 = clientPlayerEntity.getOffhandItem();
-		if (mainHandItem.getItem() instanceof DoomBaseItem && itemStack.getItem() instanceof DoomBaseItem && ItemStack.isSame(mainHandItem, itemStack)) {
+		if (mainHandItem.getItem() instanceof DoomBaseItem && itemStack.getItem() instanceof DoomBaseItem && ItemStack.isSameItem(mainHandItem, itemStack)) {
 			mainHandHeight = 1;
 			mainHandItem = itemStack;
 		}
-		if (offHandItem.getItem() instanceof DoomBaseItem && itemStack2.getItem() instanceof DoomBaseItem && ItemStack.isSame(offHandItem, itemStack2)) {
+		if (offHandItem.getItem() instanceof DoomBaseItem && itemStack2.getItem() instanceof DoomBaseItem && ItemStack.isSameItem(offHandItem, itemStack2)) {
 			offHandHeight = 1;
 			offHandItem = itemStack2;
 		}

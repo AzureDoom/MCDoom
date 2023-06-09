@@ -68,7 +68,7 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 
 	@Override
 	protected boolean shouldKeepRunning(E entity) {
-		return this.delayFinishedAt >= entity.level.getGameTime();
+		return this.delayFinishedAt >= entity.level().getGameTime();
 	}
 
 	@Override

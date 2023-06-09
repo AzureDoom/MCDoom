@@ -91,8 +91,8 @@ public class DoomHunterEntity extends DemonEntity implements SmartBrainOwner<Doo
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("phasechange"))
-				if (level.isClientSide())
-					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.DOOMHUNTER_PHASECHANGE, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.DOOMHUNTER_PHASECHANGE, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		}));
 	}
 
@@ -142,11 +142,11 @@ public class DoomHunterEntity extends DemonEntity implements SmartBrainOwner<Doo
 		var d0 = 0.0D;
 		do {
 			final var blockpos1 = blockpos.below();
-			final var blockstate = level.getBlockState(blockpos1);
-			if (blockstate.isFaceSturdy(level, blockpos1, Direction.UP)) {
-				if (!level.isEmptyBlock(blockpos)) {
-					final var blockstate1 = level.getBlockState(blockpos);
-					final var voxelshape = blockstate1.getCollisionShape(level, blockpos);
+			final var blockstate = level().getBlockState(blockpos1);
+			if (blockstate.isFaceSturdy(level(), blockpos1, Direction.UP)) {
+				if (!level().isEmptyBlock(blockpos)) {
+					final var blockstate1 = level().getBlockState(blockpos);
+					final var voxelshape = blockstate1.getCollisionShape(level(), blockpos);
 					if (!voxelshape.isEmpty())
 						d0 = voxelshape.max(Direction.Axis.Y);
 				}
@@ -157,10 +157,10 @@ public class DoomHunterEntity extends DemonEntity implements SmartBrainOwner<Doo
 		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
-			final var fang = new DoomFireEntity(level, x, blockpos.getY() + d0, z, yaw, 1, this, DoomMod.config.doomhunter_ranged_damage + (this.getDeathState() == 1 ? DoomMod.config.doomhunter_extra_phase_two_damage : 0));
+			final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, yaw, 1, this, DoomMod.config.doomhunter_ranged_damage + (this.getDeathState() == 1 ? DoomMod.config.doomhunter_extra_phase_two_damage : 0));
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
-			level.addFreshEntity(fang);
+			level().addFreshEntity(fang);
 		}
 	}
 
@@ -210,7 +210,7 @@ public class DoomHunterEntity extends DemonEntity implements SmartBrainOwner<Doo
 		super.aiStep();
 		flameTimer = (flameTimer + 1) % 8;
 		++tickCount;
-		if (!level.isClientSide) {
+		if (!level().isClientSide) {
 			if (this.getDeathState() == 0) {
 				this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000000, 1));
 			} else if (this.getDeathState() == 1) {
@@ -249,19 +249,19 @@ public class DoomHunterEntity extends DemonEntity implements SmartBrainOwner<Doo
 
 	@Override
 	public void die(DamageSource source) {
-		if (!level.isClientSide) {
-			if (source == damageSources().outOfWorld()) {
+		if (!level().isClientSide) {
+			if (source == damageSources().fellOutOfWorld()) {
 				setDeathState(1);
 			}
 			if (this.getDeathState() == 0) {
-				final var areaeffectcloudentity = new AreaEffectCloud(level, this.getX(), this.getY(), this.getZ());
+				final var areaeffectcloudentity = new AreaEffectCloud(level(), this.getX(), this.getY(), this.getZ());
 				areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
 				areaeffectcloudentity.setRadius(3.0F);
 				areaeffectcloudentity.setDuration(55);
 				areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
-				level.addFreshEntity(areaeffectcloudentity);
+				level().addFreshEntity(areaeffectcloudentity);
 				setLastHurtMob(getLastHurtByMob());
-				level.broadcastEntityEvent(this, (byte) 3);
+				level().broadcastEntityEvent(this, (byte) 3);
 			}
 			if (this.getDeathState() == 1)
 				super.die(source);

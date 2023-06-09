@@ -20,7 +20,6 @@ import net.minecraft.client.gui.screens.MenuScreens;
 public class ClientInit implements ClientModInitializer {
 
 	public static KeyMapping reload = new KeyMapping("key.doom.reload", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, "category.doom.binds");
-	public static KeyMapping yeethook = new KeyMapping("key.doom.yeethook", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, "category.doom.binds");
 
 	@Override
 	public void onInitializeClient() {
@@ -28,7 +27,6 @@ public class ClientInit implements ClientModInitializer {
 		DoomRenderRegistry.init();
 		MenuScreens.register(ModRegistry.SCREEN_HANDLER_TYPE, GunTableScreen::new);
 		KeyBindingHelper.registerKeyBinding(reload);
-		KeyBindingHelper.registerKeyBinding(yeethook);
 		ParticleFactoryRegistry.getInstance().register(DoomParticles.PLASMA, PlasmaParticle.Factory::new);
 		ParticleFactoryRegistry.getInstance().register(DoomParticles.PISTOL, PlasmaParticle.Factory::new);
 		ParticleFactoryRegistry.getInstance().register(DoomParticles.UNMAYKR, PlasmaParticle.Factory::new);

@@ -183,13 +183,13 @@ public class LostSoulEntity extends DemonEntity implements SmartBrainOwner<LostS
 		if (deathTime == 5) {
 			remove(RemovalReason.KILLED);
 			dropExperience();
-			if (!level.isClientSide)
+			if (!level().isClientSide)
 				explode();
 		}
 	}
 
 	protected void explode() {
-		level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, Level.ExplosionInteraction.NONE);
+		level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, Level.ExplosionInteraction.NONE);
 	}
 
 	public boolean causeFallDamage(float distance, float damageMultiplier) {
@@ -218,13 +218,13 @@ public class LostSoulEntity extends DemonEntity implements SmartBrainOwner<LostS
 		} else {
 			final var ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
 			var f = 0.91F;
-			if (onGround)
-				f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+			if (onGround())
+				f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
 			final var f1 = 0.16277137F / (f * f * f);
 			f = 0.91F;
-			if (onGround)
-				f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
-			moveRelative(onGround ? 0.1F * f1 : 0.02F, movementInput);
+			if (onGround())
+				f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
+			moveRelative(onGround() ? 0.1F * f1 : 0.02F, movementInput);
 			move(MoverType.SELF, getDeltaMovement());
 			this.setDeltaMovement(getDeltaMovement().scale(f));
 		}
@@ -237,7 +237,7 @@ public class LostSoulEntity extends DemonEntity implements SmartBrainOwner<LostS
 		super.aiStep();
 		flameTimer = (flameTimer + 1) % 8;
 
-		final var isInsideWaterBlock = level.isWaterAt(blockPosition());
+		final var isInsideWaterBlock = level().isWaterAt(blockPosition());
 		spawnLightSource(this, isInsideWaterBlock);
 	}
 

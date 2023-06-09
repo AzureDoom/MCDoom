@@ -133,20 +133,20 @@ public class ArgentBoltEntity extends AbstractArrow {
 		++this.ticksInAir;
 		if (this.ticksInAir >= 80)
 			this.remove(Entity.RemovalReason.DISCARDED);
-		var isInsideWaterBlock = level.isWaterAt(blockPosition());
+		var isInsideWaterBlock = level().isWaterAt(blockPosition());
 		spawnLightSource(isInsideWaterBlock);
-		if (this.level.isClientSide())
-			this.level.addParticle(this.useParticle() ? ParticleTypes.ANGRY_VILLAGER : ParticleTypes.FLASH, true, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+		if (this.level().isClientSide())
+			this.level().addParticle(this.useParticle() ? ParticleTypes.ANGRY_VILLAGER : ParticleTypes.FLASH, true, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
 	}
 
 	private void spawnLightSource(boolean isInWaterBlock) {
 		if (lightBlockPos == null) {
-			lightBlockPos = findFreeSpace(level, blockPosition(), 2);
+			lightBlockPos = findFreeSpace(level(), blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			level.setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
+			level().setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
 		} else if (checkDistance(lightBlockPos, blockPosition(), 2)) {
-			var blockEntity = level.getBlockEntity(lightBlockPos);
+			var blockEntity = level().getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity)
 				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
 			else
@@ -206,13 +206,13 @@ public class ArgentBoltEntity extends AbstractArrow {
 	@Override
 	public void remove(RemovalReason reason) {
 		if (this.useParticle()) {
-			AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
+			AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level(), this.getX(), this.getY(), this.getZ());
 			areaeffectcloudentity.setParticle(ParticleTypes.LAVA);
 			areaeffectcloudentity.setRadius(6);
 			areaeffectcloudentity.setDuration(1);
 			areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
-			this.level.addFreshEntity(areaeffectcloudentity);
-			level.playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0F, 1.5F);
+			this.level().addFreshEntity(areaeffectcloudentity);
+			level().playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0F, 1.5F);
 		}
 		super.remove(reason);
 	}
@@ -230,7 +230,7 @@ public class ArgentBoltEntity extends AbstractArrow {
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		Entity entity = entityHitResult.getEntity();
 		if (entityHitResult.getType() != HitResult.Type.ENTITY || !((EntityHitResult) entityHitResult).getEntity().is(entity)) {
-			if (!this.level.isClientSide) {
+			if (!this.level().isClientSide) {
 				this.remove(RemovalReason.KILLED);
 			}
 		}
@@ -247,10 +247,10 @@ public class ArgentBoltEntity extends AbstractArrow {
 		if (entity.hurt(damagesource, DoomMod.config.argent_bolt_damage)) {
 			if (entity instanceof LivingEntity) {
 				LivingEntity livingentity = (LivingEntity) entity;
-				if (!this.level.isClientSide && entity1 instanceof LivingEntity) {
+				if (!this.level().isClientSide && entity1 instanceof LivingEntity) {
 					EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
 					EnchantmentHelper.doPostDamageEffects((LivingEntity) entity1, livingentity);
-					this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.5F, Level.ExplosionInteraction.NONE);
+					this.level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.5F, Level.ExplosionInteraction.NONE);
 					this.remove(RemovalReason.KILLED);
 				}
 				this.doPostHurtEffects(livingentity);
@@ -259,7 +259,7 @@ public class ArgentBoltEntity extends AbstractArrow {
 				}
 			}
 		} else {
-			if (!this.level.isClientSide) {
+			if (!this.level().isClientSide) {
 				this.remove(RemovalReason.KILLED);
 			}
 		}
@@ -268,7 +268,7 @@ public class ArgentBoltEntity extends AbstractArrow {
 	@Override
 	protected void onHitBlock(BlockHitResult blockHitResult) {
 		super.onHitBlock(blockHitResult);
-		if (!this.level.isClientSide())
+		if (!this.level().isClientSide())
 			this.remove(Entity.RemovalReason.DISCARDED);
 		this.setSoundEvent(SoundEvents.ARMOR_EQUIP_IRON);
 	}

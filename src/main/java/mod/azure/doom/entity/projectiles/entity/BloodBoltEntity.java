@@ -102,7 +102,7 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
 	@Override
 	protected void onHitBlock(BlockHitResult result) {
 		super.onHitBlock(result);
-		if (!level.isClientSide()) {
+		if (!level().isClientSide()) {
 			explode();
 			remove(Entity.RemovalReason.DISCARDED);
 		}
@@ -112,7 +112,7 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		super.onHitEntity(entityHitResult);
-		if (!level.isClientSide()) {
+		if (!level().isClientSide()) {
 			final var entity = entityHitResult.getEntity();
 			final var entity2 = getOwner();
 			if (!(entity instanceof DemonEntity))
@@ -127,7 +127,7 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
 	}
 
 	protected void explode() {
-		level.getEntities(this, new AABB(blockPosition().above()).inflate(8)).forEach(e -> doDamage(this, e));
+		level().getEntities(this, new AABB(blockPosition().above()).inflate(8)).forEach(e -> doDamage(this, e));
 	}
 
 	private void doDamage(Entity user, Entity target) {

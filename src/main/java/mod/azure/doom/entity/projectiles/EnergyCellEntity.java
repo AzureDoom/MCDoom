@@ -120,8 +120,8 @@ public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
 		++ticksInAir;
 		if (ticksInAir >= 80)
 			remove(Entity.RemovalReason.DISCARDED);
-		if (level.isClientSide())
-			level.addParticle(DoomParticles.PLASMA, true, this.getX() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, this.getY(), this.getZ() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, 0, 0, 0);
+		if (level().isClientSide())
+			level().addParticle(DoomParticles.PLASMA, true, this.getX() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, this.getY(), this.getZ() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, 0, 0, 0);
 	}
 
 	public void initFromStack(ItemStack stack) {
@@ -149,7 +149,7 @@ public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
 	@Override
 	protected void onHitBlock(BlockHitResult blockHitResult) {
 		super.onHitBlock(blockHitResult);
-		if (!level.isClientSide())
+		if (!level().isClientSide())
 			remove(Entity.RemovalReason.DISCARDED);
 		setSoundEvent(DoomSounds.PLASMA_HIT);
 	}
@@ -158,7 +158,7 @@ public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		final var entity = entityHitResult.getEntity();
 		if (entityHitResult.getType() != HitResult.Type.ENTITY || !entityHitResult.getEntity().is(entity))
-			if (!level.isClientSide)
+			if (!level().isClientSide)
 				remove(RemovalReason.KILLED);
 		final var entity1 = getOwner();
 		DamageSource damagesource;
@@ -171,17 +171,17 @@ public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
 		}
 		if (entity.hurt(damagesource, projectiledamage)) {
 			if (entity instanceof LivingEntity livingentity) {
-				if (!level.isClientSide && entity1 instanceof LivingEntity) {
+				if (!level().isClientSide && entity1 instanceof LivingEntity) {
 					EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
 					EnchantmentHelper.doPostDamageEffects((LivingEntity) entity1, livingentity);
-					level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.5F, Level.ExplosionInteraction.NONE);
+					level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.5F, Level.ExplosionInteraction.NONE);
 					remove(RemovalReason.KILLED);
 				}
 				doPostHurtEffects(livingentity);
 				if (entity1 != null && livingentity != entity1 && livingentity instanceof Player && entity1 instanceof ServerPlayer && !isSilent())
 					((ServerPlayer) entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
 			}
-		} else if (!level.isClientSide)
+		} else if (!level().isClientSide)
 			remove(RemovalReason.KILLED);
 	}
 
