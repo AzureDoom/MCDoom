@@ -7,7 +7,6 @@ import mod.azure.azurelib.items.AzureSpawnEgg;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.item.ArgentEnergyItem;
 import mod.azure.doom.item.ArgentPlateItem;
-import mod.azure.doom.item.E1M1MusicDisc;
 import mod.azure.doom.item.UnopenedItem;
 import mod.azure.doom.item.ammo.ArgentBolt;
 import mod.azure.doom.item.ammo.BFGCell;
@@ -86,6 +85,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.RecordItem;
 
 public class DoomItems {
 
@@ -138,8 +139,8 @@ public class DoomItems {
 	public static ChainsawAnimated CHAINSAW_ETERNAL;
 	public static SentinelHammerItem SENTINELHAMMER;
 	public static DarkLordCrucibleItem DARKLORDCRUCIBLE;
-	public static E1M1MusicDisc E1M1_MUSIC_DISC;
-	public static E1M1MusicDisc GEOF_MUSIC_DISC;
+	public static RecordItem E1M1_MUSIC_DISC;
+	public static RecordItem GEOF_MUSIC_DISC;
 
 	// Spawn Eggs
 	public static AzureSpawnEgg ARACHNOTRON_SPAWN_EGG;
@@ -361,8 +362,8 @@ public class DoomItems {
 		CHAINSAW_ETERNAL = item("chainsaweternal", new ChainsawAnimated());
 		SENTINELHAMMER = item("sentinelhammer", new SentinelHammerItem());
 		DARKLORDCRUCIBLE = item("darklordcrucible", new DarkLordCrucibleItem());
-		E1M1_MUSIC_DISC = item("e1m1_music_disc", new E1M1MusicDisc(DoomSounds.E1M1));
-		GEOF_MUSIC_DISC = item("netherambient_geoffplaysguitar_music_disc", new E1M1MusicDisc(DoomSounds.NETHERAMBIENT_GEOFFPLAYSGUITAR));
+		E1M1_MUSIC_DISC = item("e1m1_music_disc", new RecordItem(166, DoomSounds.E1M1, new Item.Properties().stacksTo(1).rarity(Rarity.RARE), 60));
+		GEOF_MUSIC_DISC = item("netherambient_geoffplaysguitar_music_disc", new RecordItem(167, DoomSounds.NETHERAMBIENT_GEOFFPLAYSGUITAR, new Item.Properties().stacksTo(1).rarity(Rarity.RARE), 60));
 	}
 
 	public static void initEggs() {

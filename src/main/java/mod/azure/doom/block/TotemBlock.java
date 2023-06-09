@@ -59,11 +59,6 @@ public class TotemBlock extends BaseEntityBlock implements EntityBlock {
 	}
 
 	@Override
-	public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
-		return 15;
-	}
-
-	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
 		builder.add(FACING, light);
 	}

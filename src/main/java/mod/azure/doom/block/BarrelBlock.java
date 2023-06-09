@@ -108,11 +108,6 @@ public class BarrelBlock extends Block {
 	}
 
 	@Override
-	public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
-		return 10;
-	}
-
-	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		return this.defaultBlockState().setValue(direction, context.getHorizontalDirection().getOpposite());
 	}

@@ -1,10 +1,8 @@
 package mod.azure.doom.block;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
@@ -45,11 +43,6 @@ public class E1M1TurnableBlock extends Block {
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(direction, light);
-	}
-
-	@Override
-	public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
-		return 15;
 	}
 
 }
