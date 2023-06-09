@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "doom:e1m1_music_disc"
+    "doom:e1m1_music_disc",
+    "doom:netherambient_geoffplaysguitar_music_disc"
   ]
 }
