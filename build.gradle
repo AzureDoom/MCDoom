@@ -63,6 +63,7 @@ dependencies {
     }
     modImplementation "dev.emi:trinkets:3.7.0"
     modImplementation "curse.maven:cardinal-components-318449:4547791"
+    modImplementation "curse.maven:cardinal-components-318449:4576292"
 }
 
 processResources {
