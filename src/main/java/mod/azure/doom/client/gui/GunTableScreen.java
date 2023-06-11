@@ -58,7 +58,7 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 	}
 
 	protected void renderLabels(GuiGraphics matrices, int mouseX, int mouseY) {
-		matrices.drawString(this.font, this.title, (75 + this.imageWidth / 2 - this.font.width(this.title) / 2), 6, 4210752, true);
+		matrices.drawString(this.font, this.title, (75 + this.imageWidth / 2 - this.font.width(this.title) / 2), 6, 4210752, false);
 	}
 
 	protected void renderBg(GuiGraphics matrices, float delta, int mouseX, int mouseY) {
@@ -187,11 +187,10 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		this.scrolling = false;
-		int i = (this.width - this.imageWidth) / 2;
-		int j = (this.height - this.imageHeight) / 2;
-		if (this.canScroll(this.menu.getRecipes().size()) && mouseX > (double) (i + 94) && mouseX < (double) (i + 94 + 6) && mouseY > (double) (j + 18) && mouseY <= (double) (j + 18 + 139 + 1)) {
+		var i = (this.width - this.imageWidth) / 2;
+		var j = (this.height - this.imageHeight) / 2;
+		if (this.canScroll(this.menu.getRecipes().size()) && mouseX > (double) (i + 94) && mouseX < (double) (i + 94 + 6) && mouseY > (double) (j + 18) && mouseY <= (double) (j + 18 + 139 + 1))
 			this.scrolling = true;
-		}
 
 		return super.mouseClicked(mouseX, mouseY, button);
 	}
