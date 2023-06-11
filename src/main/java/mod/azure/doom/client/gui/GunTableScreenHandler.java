@@ -61,7 +61,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 			var itemStack = ItemStack.EMPTY;
 			var optional = world.getServer().getRecipeManager().getRecipeFor(Type.INSTANCE, craftingInventory, world);
 			if (optional.isPresent())
-				itemStack = optional.get().assemble(craftingInventory, player.level().registryAccess());
+				itemStack = optional.get().assemble(craftingInventory, level.registryAccess());
 
 			craftingInventory.setItem(5, itemStack);
 			serverPlayerEntity.connection.send(new ClientboundContainerSetSlotPacket(syncId, 0, 5, itemStack));
@@ -171,7 +171,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 	}
 
 	private boolean equals(ItemStack itemStack, ItemStack otherItemStack) {
-		return itemStack.getItem() == otherItemStack.getItem() && ItemStack.isSameItem(itemStack, otherItemStack);
+		return itemStack.getItem() == otherItemStack.getItem() && ItemStack.isSameItemSameTags(itemStack, otherItemStack);
 	}
 
 	public void removed(Player player) {

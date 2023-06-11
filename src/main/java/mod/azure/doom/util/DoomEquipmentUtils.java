@@ -107,6 +107,7 @@ public class DoomEquipmentUtils {
 	}
 
 	public static boolean isVanillaItemStackBreaking(ItemStack breakingStack, Item vanillaItem) {
-		return !new ItemStack(vanillaItem).isEmpty() && breakingStack.is(vanillaItem.asItem()) && breakingStack.getMaxDamage() - breakingStack.getDamageValue() <= 0;
+		var item = new ItemStack(vanillaItem);
+		return !item.isEmpty() && breakingStack.is(item.getItem()) && breakingStack.getMaxDamage() - breakingStack.getDamageValue() <= 0;
 	}
 }
