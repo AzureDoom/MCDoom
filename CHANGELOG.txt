@@ -1,3 +1,4 @@
-v.6.0.0
+v.6.0.1
 
-- Updated to 1.20!
+- Fixes bold name in crafting menu.
+- Fixes crafting not working.
