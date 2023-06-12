@@ -196,9 +196,9 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 		}
 
 		if (entity instanceof MotherDemonEntity motherdemonEntity) {
-			final var tentacleEntity = DoomEntities.TENTACLE.get().create(entity.level);
+			final var tentacleEntity = DoomEntities.TENTACLE.get().create(entity.level());
 			tentacleEntity.moveTo(this.target.getX(), this.target.getY(), this.target.getZ(), 0, 0);
-			entity.level.addFreshEntity(tentacleEntity);
+			entity.level().addFreshEntity(tentacleEntity);
 			if (entity.getHealth() <= entity.getMaxHealth() * 0.50) { // summon flames
 				for (var l = 0; l < 32; ++l) {
 					final var f1 = (float) Mth.atan2(this.target.getZ() - entity.getZ(), this.target.getX() - entity.getX()) + l * (float) Math.PI * 0.4F;
@@ -228,15 +228,15 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 
 		if (entity instanceof PainEntity painEntity) {
 			entity.playSound(DoomSounds.PAIN_HURT.get(), 1.0F, 1.0F);
-			var lost_soul = DoomEntities.LOST_SOUL.get().create(entity.level);
+			var lost_soul = DoomEntities.LOST_SOUL.get().create(entity.level());
 			lost_soul.moveTo(painEntity.getX(), painEntity.getY(), painEntity.getZ(), 0, 0);
-			entity.level.addFreshEntity(lost_soul);
+			entity.level().addFreshEntity(lost_soul);
 			if (painEntity.getVariant() == 2) { // if doom 64, summon another
-				var lost_soul1 = DoomEntities.LOST_SOUL.get().create(entity.level);
+				var lost_soul1 = DoomEntities.LOST_SOUL.get().create(entity.level());
 				lost_soul1.moveTo(painEntity.getX(), painEntity.getY(), painEntity.getZ(), 0, 0);
-				entity.level.addFreshEntity(lost_soul1);
+				entity.level().addFreshEntity(lost_soul1);
 			}
-			entity.spawnLightSource(entity, entity.level.isWaterAt(entity.blockPosition()));
+			entity.spawnLightSource(entity, entity.level().isWaterAt(entity.blockPosition()));
 		}
 
 		if (entity instanceof ArchMakyrEntity archMakyrEntity) {
@@ -276,12 +276,12 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 
 		if (entity instanceof GladiatorEntity gladiatorEntity) {
 			if (gladiatorEntity.getDeathState() == 0) {
-				var areaeffectcloudentity = new AreaEffectCloud(gladiatorEntity.level, gladiatorEntity.getX(), gladiatorEntity.getY(), gladiatorEntity.getZ());
+				var areaeffectcloudentity = new AreaEffectCloud(gladiatorEntity.level(), gladiatorEntity.getX(), gladiatorEntity.getY(), gladiatorEntity.getZ());
 				areaeffectcloudentity.setParticle(ParticleTypes.SOUL_FIRE_FLAME);
 				areaeffectcloudentity.setRadius(3.0F);
 				areaeffectcloudentity.setDuration(10);
 				areaeffectcloudentity.setPos(gladiatorEntity.getX(), gladiatorEntity.getY(), gladiatorEntity.getZ());
-				entity.level.addFreshEntity(areaeffectcloudentity);
+				entity.level().addFreshEntity(areaeffectcloudentity);
 				gladiatorEntity.shootFireball(this.target, DoomConfig.SERVER.gladiator_ranged_damage.get().floatValue() + (gladiatorEntity.getDeathState() == 1 ? DoomConfig.SERVER.gladiator_phaseone_damage_boost.get().floatValue() : 0), 0);
 			} else
 				gladiatorEntity.shootMace(this.target);

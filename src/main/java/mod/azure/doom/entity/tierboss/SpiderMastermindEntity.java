@@ -71,11 +71,11 @@ public class SpiderMastermindEntity extends DemonEntity implements SmartBrainOwn
 			return event.setAndContinue(isDead ? DoomAnimationsDefault.DEATH : DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (level.isClientSide())
-					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.SPIDERDEMON_AMBIENT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.SPIDERDEMON_AMBIENT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
 			if (event.getKeyframeData().getSound().matches("attack"))
-				if (level.isClientSide())
-					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PLASMA_FIRING.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PLASMA_FIRING.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		}));
 	}
 

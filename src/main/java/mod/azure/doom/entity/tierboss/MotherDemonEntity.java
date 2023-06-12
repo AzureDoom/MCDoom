@@ -116,19 +116,19 @@ public class MotherDemonEntity extends DemonEntity implements SmartBrainOwner<Mo
 
 	@Override
 	public void die(DamageSource source) {
-		if (!level.isClientSide) {
-			if (source == damageSources().outOfWorld())
+		if (!level().isClientSide) {
+			if (source == damageSources().genericKill())
 				setDeathState(1);
 			if (entityData.get(DEATH_STATE) == 0) {
-				final var areaeffectcloudentity = new AreaEffectCloud(level, this.getX(), this.getY(), this.getZ());
+				final var areaeffectcloudentity = new AreaEffectCloud(level(), this.getX(), this.getY(), this.getZ());
 				areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
 				areaeffectcloudentity.setRadius(3.0F);
 				areaeffectcloudentity.setDuration(55);
 				areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
-				level.addFreshEntity(areaeffectcloudentity);
+				level().addFreshEntity(areaeffectcloudentity);
 				goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
 				setLastHurtMob(getLastHurtByMob());
-				level.broadcastEntityEvent(this, (byte) 3);
+				level().broadcastEntityEvent(this, (byte) 3);
 			}
 			if (entityData.get(DEATH_STATE) == 1)
 				super.die(source);
@@ -211,11 +211,11 @@ public class MotherDemonEntity extends DemonEntity implements SmartBrainOwner<Mo
 		var d0 = 0.0D;
 		do {
 			final var blockpos1 = blockpos.below();
-			final var blockstate = level.getBlockState(blockpos1);
-			if (blockstate.isFaceSturdy(level, blockpos1, Direction.UP)) {
-				if (!level.isEmptyBlock(blockpos)) {
-					final var blockstate1 = level.getBlockState(blockpos);
-					final var voxelshape = blockstate1.getCollisionShape(level, blockpos);
+			final var blockstate = level().getBlockState(blockpos1);
+			if (blockstate.isFaceSturdy(level(), blockpos1, Direction.UP)) {
+				if (!level().isEmptyBlock(blockpos)) {
+					final var blockstate1 = level().getBlockState(blockpos);
+					final var voxelshape = blockstate1.getCollisionShape(level(), blockpos);
 					if (!voxelshape.isEmpty())
 						d0 = voxelshape.max(Direction.Axis.Y);
 				}
@@ -226,10 +226,10 @@ public class MotherDemonEntity extends DemonEntity implements SmartBrainOwner<Mo
 		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
-			final var fang = new DoomFireEntity(level, x, blockpos.getY() + d0, z, yaw, 1, this, DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue() + (entityData.get(DEATH_STATE) == 1 ? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue() : 0));
+			final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, yaw, 1, this, DoomConfig.SERVER.motherdemon_ranged_damage.get().floatValue() + (entityData.get(DEATH_STATE) == 1 ? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue() : 0));
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
-			level.addFreshEntity(fang);
+			level().addFreshEntity(fang);
 		}
 	}
 

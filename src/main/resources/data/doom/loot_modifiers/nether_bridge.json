@@ -1,0 +1,12 @@
+{
+	"type": "doom:roll_extra_tables",
+	"conditions": [
+		{
+			"condition": "forge:loot_table_id",
+			"loot_table_id": "minecraft:chests/nether_bridge"
+		}
+	],
+	"tables": [
+		"doom:chests/nether_bridge"
+	]
+}

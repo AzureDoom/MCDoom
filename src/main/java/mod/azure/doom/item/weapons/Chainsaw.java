@@ -73,7 +73,7 @@ public class Chainsaw extends Item {
 	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
 		final LivingEntity user = (LivingEntity) entityIn;
 		final Player player = (Player) entityIn;
-		if (player.getMainHandItem().sameItem(stack) && stack.getDamageValue() < stack.getMaxDamage() - 1 && !player.getCooldowns().isOnCooldown(this)) {
+		if (player.getMainHandItem().getItem() instanceof Chainsaw && stack.getDamageValue() < stack.getMaxDamage() - 1 && !player.getCooldowns().isOnCooldown(this)) {
 			final AABB aabb = new AABB(entityIn.blockPosition().above()).inflate(1D, 1D, 1D);
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDamage(user, e));
 			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDeathCheck(user, e, stack));
@@ -100,7 +100,7 @@ public class Chainsaw extends Item {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
 			target.hurt(user.damageSources().playerAttack((Player) user), DoomConfig.SERVER.chainsaw_damage.get().floatValue());
-			user.level.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_ATTACKING.get(), SoundSource.PLAYERS, 0.3F, 1.0F / (user.level.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
+			user.level().playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_ATTACKING.get(), SoundSource.PLAYERS, 0.3F, 1.0F / (user.level().random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 	}
 
@@ -133,7 +133,7 @@ public class Chainsaw extends Item {
 
 	private void addParticle(Entity target) {
 		if (target instanceof LivingEntity) {
-			target.level.addParticle(DustParticleOptions.REDSTONE, target.getRandomX(0.5D), target.getRandomY(), target.getRandomZ(0.5D), 0.0D, 0D, 0D);
+			target.level().addParticle(DustParticleOptions.REDSTONE, target.getRandomX(0.5D), target.getRandomY(), target.getRandomZ(0.5D), 0.0D, 0D, 0D);
 		}
 	}
 

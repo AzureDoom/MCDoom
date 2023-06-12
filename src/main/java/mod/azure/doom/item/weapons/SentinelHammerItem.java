@@ -77,12 +77,12 @@ public class SentinelHammerItem extends SwordItem implements GeoItem {
 					final AABB aabb = new AABB(miner.blockPosition().above()).inflate(5D, 5D, 5D);
 					miner.getCommandSenderWorld().getEntities(miner, aabb).forEach(e -> doDamage(playerentity, e));
 					stack.hurtAndBreak(1, miner, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
-					final AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(miner.level, miner.getX(), playerentity.getY(), playerentity.getZ());
+					final AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(miner.level(), miner.getX(), playerentity.getY(), playerentity.getZ());
 					areaeffectcloudentity.setParticle(ParticleTypes.CRIT);
 					areaeffectcloudentity.setRadius(5.0F);
 					areaeffectcloudentity.setDuration(20);
 					areaeffectcloudentity.setPos(playerentity.getX(), playerentity.getY(), playerentity.getZ());
-					playerentity.level.addFreshEntity(areaeffectcloudentity);
+					playerentity.level().addFreshEntity(areaeffectcloudentity);
 				}
 			}
 		}

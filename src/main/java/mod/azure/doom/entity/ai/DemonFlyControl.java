@@ -48,13 +48,13 @@ public class DemonFlyControl extends MoveControl {
 			entity.setYRot(rotlerp(mob.getYRot(), f9, 90.0F));
 			entity.setSpeed((float) 0.25D);
 			final var blockpos = mob.blockPosition();
-			final var blockstate = mob.level.getBlockState(blockpos);
-			final var voxelshape = blockstate.getCollisionShape(mob.level, blockpos);
+			final var blockstate = mob.level().getBlockState(blockpos);
+			final var voxelshape = blockstate.getCollisionShape(mob.level(), blockpos);
 			if (d2 > mob.getEyeHeight() && d0 * d0 + d1 * d1 < Math.max(1.0F, mob.getBbWidth()) || !voxelshape.isEmpty() && mob.getY() < voxelshape.max(Direction.Axis.Y) + blockpos.getY() && !blockstate.is(BlockTags.DOORS) && !blockstate.is(BlockTags.FENCES))
 				operation = MoveControl.Operation.JUMPING;
 		} else if (operation == MoveControl.Operation.JUMPING) {
 			mob.setSpeed((float) 0.25D);
-			if (mob.isOnGround())
+			if (mob.onGround())
 				operation = MoveControl.Operation.WAIT;
 		} else {
 			operation = MoveControl.Operation.WAIT;
@@ -66,7 +66,7 @@ public class DemonFlyControl extends MoveControl {
 		var axisalignedbb = mob.getBoundingBox();
 		for (var i = 1; i < steps; ++i) {
 			axisalignedbb = axisalignedbb.move(direction);
-			if (!mob.level.noCollision(entity, axisalignedbb))
+			if (!mob.level().noCollision(entity, axisalignedbb))
 				return false;
 		}
 		return true;

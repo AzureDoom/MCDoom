@@ -88,7 +88,7 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	protected void actuallyHurt(DamageSource source, float damageAmount) {
-		if (source == damageSources().outOfWorld())
+		if (source == damageSources().genericKill())
 			remove(Entity.RemovalReason.KILLED);
 
 		if (!(source.getEntity() instanceof Player))
@@ -99,13 +99,13 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 
 	@Override
 	public void aiStep() {
-		if (level.isClientSide) {
-			level.addParticle(DustParticleOptions.REDSTONE, getRandomX(0.5D), getRandomY(), getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), (random.nextDouble() - 0.5D) * 2.0D);
-			level.addParticle(ParticleTypes.SOUL, getRandomX(0.2D), getRandomY(), getRandomZ(0.5D), 0.0D, 0D, 0D);
+		if (level().isClientSide) {
+			level().addParticle(DustParticleOptions.REDSTONE, getRandomX(0.5D), getRandomY(), getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), (random.nextDouble() - 0.5D) * 2.0D);
+			level().addParticle(ParticleTypes.SOUL, getRandomX(0.2D), getRandomY(), getRandomZ(0.5D), 0.0D, 0D, 0D);
 		}
 		++spawnTimer;
 		final var aabb = new AABB(blockPosition()).inflate(64D);
-		final var entityCount = level.getEntities(EntityTypeTest.forClass(DemonEntity.class), aabb, Entity::isAlive).size();
+		final var entityCount = level().getEntities(EntityTypeTest.forClass(DemonEntity.class), aabb, Entity::isAlive).size();
 		if (spawnTimer == 800 && entityCount <= 15 && !this.isNoAi())
 			spawnWave();
 		if (spawnTimer >= 810)
@@ -118,9 +118,9 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 		final var random = this.getRandom().nextInt(-3, 3);
 
 		for (var k = 1; k < 5; ++k) {
-			final var waveentity = BuiltInRegistries.ENTITY_TYPE.get(new ResourceLocation(waveEntries.get(getRandom().nextInt(waveEntries.size())))).create(level);
+			final var waveentity = BuiltInRegistries.ENTITY_TYPE.get(new ResourceLocation(waveEntries.get(getRandom().nextInt(waveEntries.size())))).create(level());
 			waveentity.setPos(this.getX() + random, this.getY() + 0.5D, this.getZ() + random);
-			level.addFreshEntity(waveentity);
+			level().addFreshEntity(waveentity);
 		}
 	}
 

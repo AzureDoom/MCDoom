@@ -59,7 +59,7 @@ public class DPlasmaRifle extends DoomBaseItem {
 						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), DoomSounds.PLASMA_FIRING.get(), SoundSource.PLAYERS, 1.0F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 						triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn), "shoot_controller", "firing_faster");
 					}
-					final boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
+					final boolean isInsideWaterBlock = playerentity.level().isWaterAt(playerentity.blockPosition());
 					spawnLightSource(entityLiving, isInsideWaterBlock);
 				}
 			} else {

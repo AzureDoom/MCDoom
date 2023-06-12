@@ -109,14 +109,14 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 
 	@Override
 	public void remove(RemovalReason reason) {
-		final var areaeffectcloudentity = new AreaEffectCloud(level, this.getX(), this.getY(), this.getZ());
+		final var areaeffectcloudentity = new AreaEffectCloud(level(), this.getX(), this.getY(), this.getZ());
 		areaeffectcloudentity.setParticle(ParticleTypes.FLAME);
 		areaeffectcloudentity.setRadius(6);
 		areaeffectcloudentity.setDuration(1);
 		areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
-		level.addFreshEntity(areaeffectcloudentity);
+		level().addFreshEntity(areaeffectcloudentity);
 		explode();
-		level.playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0F, 1.5F);
+		level().playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0F, 1.5F);
 		super.remove(reason);
 	}
 
@@ -152,9 +152,9 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 		super.tick();
 		if (getDeltaMovement().x == 0)
 			setSpinning(false);
-		if (!isOnGround())
+		if (!onGround())
 			setSpinning(true);
-		if (tickCount >= 46 && !this.level.isClientSide())
+		if (tickCount >= 46 && !this.level().isClientSide())
 			this.remove(Entity.RemovalReason.DISCARDED);
 	}
 
@@ -171,7 +171,7 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 	@Override
 	protected void onHitBlock(BlockHitResult blockHitResult) {
 		super.onHitBlock(blockHitResult);
-		if (!level.isClientSide())
+		if (!level().isClientSide())
 			if (tickCount >= 46)
 				remove(Entity.RemovalReason.DISCARDED);
 	}
@@ -179,7 +179,7 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		final var entity = entityHitResult.getEntity();
-		if (!level.isClientSide()) {
+		if (!level().isClientSide()) {
 			if (entity instanceof CacodemonEntity) {
 				entity.hurt(damageSources().playerAttack((Player) shooter), ((LivingEntity) entity).getMaxHealth());
 				remove(Entity.RemovalReason.DISCARDED);
@@ -192,7 +192,7 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 	}
 
 	protected void explode() {
-		level.getEntities(this, new AABB(blockPosition().above()).inflate(8)).forEach(e -> doDamage(this, e));
+		level().getEntities(this, new AABB(blockPosition().above()).inflate(8)).forEach(e -> doDamage(this, e));
 	}
 
 	private void doDamage(Entity user, Entity target) {

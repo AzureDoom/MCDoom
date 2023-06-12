@@ -72,8 +72,8 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (level.isClientSide())
-					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
 			if (event.getAnimatable().getAttckingState() == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
@@ -82,8 +82,8 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("attack"))
-				if (level.isClientSide())
-					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.SUPER_SHOTGUN_SHOOT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.SUPER_SHOTGUN_SHOOT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		}));
 	}
 
@@ -136,15 +136,15 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
 
 	@Override
 	public void aiStep() {
-		if (level.isClientSide) {
+		if (level().isClientSide) {
 			for (int i = 0; i < 2; ++i) {
-				level.addParticle(ParticleTypes.PORTAL, getRandomX(0.5D), getRandomY() - 0.25D, getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), (random.nextDouble() - 0.5D) * 2.0D);
+				level().addParticle(ParticleTypes.PORTAL, getRandomX(0.5D), getRandomY() - 0.25D, getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), (random.nextDouble() - 0.5D) * 2.0D);
 			}
 		}
 
 		jumping = false;
-		if (!level.isClientSide) {
-			updatePersistentAnger((ServerLevel) level, true);
+		if (!level().isClientSide) {
+			updatePersistentAnger((ServerLevel) level(), true);
 		}
 
 		super.aiStep();
@@ -153,9 +153,9 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
 	@Override
 	protected void customServerAiStep() {
 		tickBrain(this);
-		if (level.isDay() && tickCount >= targetChangeTime + 600) {
+		if (level().isDay() && tickCount >= targetChangeTime + 600) {
 			final var f = getLightLevelDependentMagicValue();
-			if (f > 0.5F && level.canSeeSky(blockPosition()) && random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F)
+			if (f > 0.5F && level().canSeeSky(blockPosition()) && random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F)
 				setTarget((LivingEntity) null);
 		}
 
@@ -163,7 +163,7 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
 	}
 
 	public boolean teleport() {
-		if (!level.isClientSide() && isAlive()) {
+		if (!level().isClientSide() && isAlive()) {
 			final double d0 = this.getX() + (random.nextDouble() - 0.5D) * 12.0D;
 			final double d1 = this.getY() + (random.nextInt(64) - 32);
 			final double d2 = this.getZ() + (random.nextDouble() - 0.5D) * 12.0D;
@@ -176,12 +176,12 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
 	private boolean teleport(double x, double y, double z) {
 		final BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos(x, y, z);
 
-		while (blockpos$mutableblockpos.getY() > level.getMinBuildHeight() && !level.getBlockState(blockpos$mutableblockpos).getMaterial().blocksMotion()) {
+		while (blockpos$mutableblockpos.getY() > level().getMinBuildHeight() && !level().getBlockState(blockpos$mutableblockpos).blocksMotion()) {
 			blockpos$mutableblockpos.move(Direction.DOWN);
 		}
 
-		final BlockState blockstate = level.getBlockState(blockpos$mutableblockpos);
-		final boolean flag = blockstate.getMaterial().blocksMotion();
+		final BlockState blockstate = level().getBlockState(blockpos$mutableblockpos);
+		final boolean flag = blockstate.blocksMotion();
 		final boolean flag1 = blockstate.getFluidState().is(FluidTags.WATER);
 		if (flag && !flag1) {
 			final boolean flag2 = randomTeleport(x, y, z, true);

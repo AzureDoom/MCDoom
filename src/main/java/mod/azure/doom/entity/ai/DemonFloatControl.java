@@ -36,7 +36,7 @@ public class DemonFloatControl extends MoveControl {
 
 		for (var i = 1; i < p_220673_2_; ++i) {
 			axisalignedbb = axisalignedbb.move(p_220673_1_);
-			if (!demon.level.noCollision(demon, axisalignedbb))
+			if (!demon.level().noCollision(demon, axisalignedbb))
 				return false;
 		}
 

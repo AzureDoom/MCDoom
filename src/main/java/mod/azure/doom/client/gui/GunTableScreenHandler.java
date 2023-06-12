@@ -38,7 +38,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 		super(DoomScreens.SCREEN_HANDLER_TYPE.get(), syncId);
 		this.playerInventory = playerInventory;
 		gunTableInventory = new DoomGunInventory(this);
-		GunTableScreenHandler.level = playerInventory.player.level;
+		GunTableScreenHandler.level = playerInventory.player.level();
 		this.context = context;
 		addSlot(new Slot(gunTableInventory, 0, 155, 13));
 		addSlot(new Slot(gunTableInventory, 1, 175, 33));
@@ -130,7 +130,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 	}
 
 	public List<GunTableRecipe> getRecipes() {
-		final List<GunTableRecipe> list = new ArrayList<>(playerInventory.player.level.getRecipeManager().getAllRecipesFor(Type.INSTANCE));
+		final List<GunTableRecipe> list = new ArrayList<>(playerInventory.player.level().getRecipeManager().getAllRecipesFor(Type.INSTANCE));
 		list.sort(null);
 		return list;
 	}
@@ -190,13 +190,13 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
 	}
 
 	private boolean equals(ItemStack itemStack, ItemStack otherItemStack) {
-		return itemStack.getItem() == otherItemStack.getItem() && ItemStack.isSame(itemStack, otherItemStack);
+		return itemStack.getItem() == otherItemStack.getItem() && ItemStack.isSameItemSameTags(itemStack, otherItemStack);
 	}
 
 	@Override
 	public void removed(Player player) {
 		super.removed(player);
-		if (!playerInventory.player.level.isClientSide) {
+		if (!playerInventory.player.level().isClientSide) {
 			if (player.isAlive() && (!(player instanceof ServerPlayer) || !((ServerPlayer) player).hasDisconnected())) {
 				player.getInventory().placeItemBackInInventory(gunTableInventory.removeItemNoUpdate(0));
 				player.getInventory().placeItemBackInInventory(gunTableInventory.removeItemNoUpdate(1));

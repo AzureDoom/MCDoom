@@ -44,14 +44,14 @@ public class GunTableOutputSlot extends Slot {
 
 	@Override
 	protected void checkTakeAchievements(ItemStack stack) {
-		stack.onCraftedBy(player.level, player, removeCount);
+		stack.onCraftedBy(player.level(), player, removeCount);
 		removeCount = 0;
 	}
 
 	@Override
 	public void onTake(Player player, ItemStack stack) {
 		checkTakeAchievements(stack);
-		final Optional<GunTableRecipe> optionalGunTableRecipe = player.level.getRecipeManager().getRecipeFor(Type.INSTANCE, gunTableInventory, player.level);
+		final Optional<GunTableRecipe> optionalGunTableRecipe = player.level().getRecipeManager().getRecipeFor(Type.INSTANCE, gunTableInventory, player.level());
 		if (optionalGunTableRecipe.isPresent()) {
 			final GunTableRecipe gunTableRecipe = optionalGunTableRecipe.get();
 			final NonNullList<ItemStack> NonNullList = gunTableRecipe.getRemainingItems(gunTableInventory);
@@ -65,9 +65,9 @@ public class GunTableOutputSlot extends Slot {
 				}
 
 				if (!itemStack2.isEmpty()) {
-					if (itemStack.isEmpty()) {
+					if (itemStack.isEmpty())
 						gunTableInventory.setItem(i, itemStack2);
-					} else if (ItemStack.isSame(itemStack, itemStack2) && ItemStack.isSame(itemStack, itemStack2)) {
+					else if (ItemStack.isSameItem(itemStack, itemStack2) && ItemStack.isSameItemSameTags(itemStack, itemStack2)) {
 						itemStack2.shrink(itemStack.getCount());
 						gunTableInventory.setItem(i, itemStack2);
 					} else if (!this.player.getInventory().add(itemStack2)) {

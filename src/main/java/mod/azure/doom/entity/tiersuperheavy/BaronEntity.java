@@ -73,11 +73,11 @@ public class BaronEntity extends DemonEntity implements SmartBrainOwner<BaronEnt
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (level.isClientSide())
-					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
 			if (event.getKeyframeData().getSound().matches("attack"))
-				if (level.isClientSide())
-					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.BARON_AMBIENT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.BARON_AMBIENT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		}));
 	}
 

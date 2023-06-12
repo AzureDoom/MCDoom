@@ -3,4 +3,4 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = 'mcdoom-forge-1.19'
+rootProject.name = 'mcdoom-forge-1.20'

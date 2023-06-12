@@ -67,7 +67,7 @@ public class DroneBoltEntity extends AbstractHurtingProjectile {
 	@Override
 	protected void onHitBlock(BlockHitResult result) {
 		super.onHitBlock(result);
-		if (!level.isClientSide()) {
+		if (!level().isClientSide()) {
 			explode();
 			remove(Entity.RemovalReason.DISCARDED);
 		}
@@ -75,13 +75,13 @@ public class DroneBoltEntity extends AbstractHurtingProjectile {
 	}
 
 	protected void explode() {
-		level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, false, DoomConfig.SERVER.enable_block_breaking.get() ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
+		level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, false, DoomConfig.SERVER.enable_block_breaking.get() ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
 	}
 
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		super.onHitEntity(entityHitResult);
-		if (!level.isClientSide()) {
+		if (!level().isClientSide()) {
 			final var entity = entityHitResult.getEntity();
 			final var entity2 = getOwner();
 			if (!(entity instanceof DemonEntity))

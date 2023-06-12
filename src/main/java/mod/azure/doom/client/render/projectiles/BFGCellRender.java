@@ -71,7 +71,7 @@ public class BFGCellRender extends GeoEntityRenderer<BFGEntity> {
 		final LivingEntity livingEntity = entity.getTargetedEntity();
 		if (livingEntity != null) {
 			final float h = entity.getBeamProgress(partialTick);
-			final float j = entity.level.getGameTime() + partialTick;
+			final float j = entity.level().getGameTime() + partialTick;
 			final float k = j * 0.5f % 1.0f;
 			final float l = entity.getEyeHeight();
 			poseStack.pushPose();

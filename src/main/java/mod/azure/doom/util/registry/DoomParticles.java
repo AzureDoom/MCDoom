@@ -26,9 +26,9 @@ public class DoomParticles {
 
 	@SubscribeEvent
 	public static void registry(RegisterParticleProvidersEvent event) {
-		event.register(PISTOL.get(), PlasmaParticle.Factory::new);
-		event.register(PLASMA.get(), PlasmaParticle.Factory::new);
-		event.register(UNMAYKR.get(), UnmaykrBoltParticle.Factory::new);
+		event.registerSpriteSet(PISTOL.get(), PlasmaParticle.Factory::new);
+		event.registerSpriteSet(PLASMA.get(), PlasmaParticle.Factory::new);
+		event.registerSpriteSet(UNMAYKR.get(), UnmaykrBoltParticle.Factory::new);
 	}
 
 }

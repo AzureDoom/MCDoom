@@ -3,12 +3,12 @@ package mod.azure.doom.client.gui;
 import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.recipes.GunTableRecipe;
 import mod.azure.doom.util.packets.DoomCraftingPacket;
 import mod.azure.doom.util.packets.DoomPacketHandler;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -58,22 +58,21 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 	}
 
 	@Override
-	protected void renderLabels(PoseStack matrices, int mouseX, int mouseY) {
-		font.draw(matrices, title, 65 + imageWidth / 2 - font.width(title) / 2, 6.0F, 4210752);
+	protected void renderLabels(GuiGraphics matrices, int mouseX, int mouseY) {
+		matrices.drawString(this.font, this.title, (75 + this.imageWidth / 2 - this.font.width(this.title) / 2), 6, 4210752, false);
 	}
 
 	@Override
-	protected void renderBg(PoseStack matrices, float delta, int mouseX, int mouseY) {
+	protected void renderBg(GuiGraphics matrices, float delta, int mouseX, int mouseY) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		final int i = (width - imageWidth) / 2 - 5;
 		final int j = (height - imageHeight) / 2;
-		blit(matrices, i, j, 0, 0.0F, 0.0F, imageWidth, imageHeight, 512, 256);
-
+		matrices.blit(TEXTURE, i, j, 0, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 512, 256);
 	}
 
-	private void renderScroller(PoseStack matrices, int x, int y, List<GunTableRecipe> tradeOffers) {
+	private void renderScroller(GuiGraphics matrices, int x, int y, List<GunTableRecipe> tradeOffers) {
 		final int i = tradeOffers.size() + 1 - 7;
 		if (i > 1) {
 			final int j = 139 - (27 + (i - 1) * 139 / i);
@@ -83,15 +82,15 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 				m = 113;
 			}
 
-			blit(matrices, x + 113, y + 18 + m, 0, 0.0F, 199.0F, 6, 27, 512, 256);
+			matrices.blit(TEXTURE, x + 113, y + 18 + m, 0, 0.0F, 199.0F, 6, 27, 512, 256);
 		} else {
-			blit(matrices, x + 113, y + 18, 0, 6.0F, 199.0F, 6, 27, 512, 256);
+			matrices.blit(TEXTURE, x + 113, y + 18, 0, 6.0F, 199.0F, 6, 27, 512, 256);
 		}
 
 	}
 
 	@Override
-	public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphics matrices, int mouseX, int mouseY, float delta) {
 		renderBackground(matrices);
 		super.render(matrices, mouseX, mouseY, delta);
 		final List<GunTableRecipe> tradeOfferList = menu.getRecipes();
@@ -100,7 +99,6 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 			final int j = (height - imageHeight) / 2;
 			int yPos = j + 17;
 			final int xPos = i + 3;
-			matrices.pushPose();
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 			RenderSystem.setShaderTexture(0, TEXTURE);
 			renderScroller(matrices, i, j, tradeOfferList);
@@ -110,13 +108,13 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 				if (canScroll(tradeOfferList.size()) && (m < scrollOff || m >= 7 + scrollOff)) {
 					++m;
 				} else {
-					final ItemStack output = gunTableRecipe.output;
-					final int n = yPos + 2;
-					renderIngredients(matrices, gunTableRecipe, xPos, n);
+					ItemStack output = gunTableRecipe.output;
+					int n = yPos + 2;
+					this.renderIngredients(matrices, gunTableRecipe, xPos, n);
 
-					renderButtonArrows(matrices, gunTableRecipe, i + 20, n);
-					itemRenderer.renderAndDecorateFakeItem(matrices, output, i + 24 + 68, n);
-					itemRenderer.renderGuiItemDecorations(matrices, font, output, i + 24 + 68, n);
+					this.renderArrow(matrices, gunTableRecipe, i + 22, n);
+					matrices.renderFakeItem(output, i + 24 + 68, n);
+					matrices.renderItemDecorations(this.font, output, i + 24 + 68, n);
 					yPos += 20;
 					++m;
 				}
@@ -129,30 +127,27 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 
 				widgetButtonPage.visible = widgetButtonPage.index < menu.getRecipes().size();
 			}
-
-			matrices.popPose();
 			RenderSystem.enableDepthTest();
 		}
 
 		this.renderTooltip(matrices, mouseX, mouseY);
 	}
 
-	public void renderButtonArrows(PoseStack matrices, GunTableRecipe tradeOffer, int x, int y) {
+	private void renderArrow(GuiGraphics matrices, GunTableRecipe tradeOffer, int x, int y) {
 		RenderSystem.enableBlend();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, TEXTURE);
-		blit(matrices, x + 5 + 35 + 20, y + 3, 0, 15.0F, 171.0F, 10, 9, 512, 256);
 
 	}
 
-	private void renderIngredients(PoseStack matrices, GunTableRecipe gunTableRecipe, int x, int y) {
+	private void renderIngredients(GuiGraphics matrices, GunTableRecipe gunTableRecipe, int x, int y) {
 		for (int i = 0; i < 5; i++) {
 			final ItemStack[] displayStacks = gunTableRecipe.getIngredientForSlot(i).getItems();
 			if (displayStacks.length > 0) {
 				final ItemStack stack = new ItemStack(displayStacks[0].getItem(), gunTableRecipe.countRequired(i));
 				if (!stack.isEmpty()) {
-					itemRenderer.renderGuiItem(matrices, stack, x, y);
-					itemRenderer.renderGuiItemDecorations(matrices, font, stack, x, y);
+					matrices.renderFakeItem(stack, x, y);
+					matrices.renderItemDecorations(this.font, stack, x, y);
 					x += 20;
 				}
 			}
@@ -215,20 +210,20 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 			return index;
 		}
 
-		public void renderToolTip(PoseStack matrices, int mouseX, int mouseY) {
-			if (isHovered && menu.getRecipes().size() > index + scrollOff) {
+		public void renderToolTip(GuiGraphics matrices, int mouseX, int mouseY) {
+			if (this.isHovered && menu.getRecipes().size() > this.index + scrollOff) {
 				ItemStack stack;
-				if (mouseX < getX() + 20) {
-					stack = menu.getRecipes().get(index + scrollOff).output;
-					renderTooltip(matrices, stack, mouseX, mouseY);
-				} else if (mouseX < getX() + 50 && mouseX > getX() + 30) {
-					stack = menu.getRecipes().get(index + scrollOff).output;
+				if (mouseX < this.getX() + 20) {
+					stack = menu.getRecipes().get(this.index + scrollOff).output;
+					renderTooltip(matrices, mouseX, mouseY);
+				} else if (mouseX < this.getX() + 50 && mouseX > this.getX() + 30) {
+					stack = menu.getRecipes().get(this.index + scrollOff).output;
 					if (!stack.isEmpty()) {
-						renderTooltip(matrices, stack, mouseX, mouseY);
+						renderTooltip(matrices, mouseX, mouseY);
 					}
-				} else if (mouseX > getX() + 65) {
-					stack = menu.getRecipes().get(index + scrollOff).output;
-					renderTooltip(matrices, stack, mouseX, mouseY);
+				} else if (mouseX > this.getX() + 65) {
+					stack = menu.getRecipes().get(this.index + scrollOff).output;
+					renderTooltip(matrices, mouseX, mouseY);
 				}
 			}
 		}

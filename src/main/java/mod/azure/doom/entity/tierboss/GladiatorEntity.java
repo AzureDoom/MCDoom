@@ -111,19 +111,19 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 
 	@Override
 	public void die(DamageSource source) {
-		if (!level.isClientSide) {
-			if (source == damageSources().outOfWorld())
+		if (!level().isClientSide) {
+			if (source == damageSources().genericKill())
 				setDeathState(1);
 			if (this.getDeathState() == 0) {
-				final var areaeffectcloudentity = new AreaEffectCloud(level, this.getX(), this.getY(), this.getZ());
+				final var areaeffectcloudentity = new AreaEffectCloud(level(), this.getX(), this.getY(), this.getZ());
 				areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
 				areaeffectcloudentity.setRadius(3.0F);
 				areaeffectcloudentity.setDuration(55);
 				areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
-				level.addFreshEntity(areaeffectcloudentity);
+				level().addFreshEntity(areaeffectcloudentity);
 				goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
 				setLastHurtMob(getLastHurtByMob());
-				level.broadcastEntityEvent(this, (byte) 3);
+				level().broadcastEntityEvent(this, (byte) 3);
 			}
 			if (this.getDeathState() == 1) 
 				super.die(source);
@@ -192,7 +192,7 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 	@Override
 	public void aiStep() {
 		super.aiStep();
-		if (!level.isClientSide) {
+		if (!level().isClientSide) {
 			if (this.getDeathState() == 0) 
 				this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1000000, 0, false, false));
 			else 
@@ -237,24 +237,24 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 
 	@Override
 	public boolean doHurtTarget(Entity target) {
-		level.broadcastEntityEvent(this, (byte) 4);
+		level().broadcastEntityEvent(this, (byte) 4);
 		final var bl = target.hurt(damageSources().mobAttack(this), (float) DoomConfig.SERVER.gladiator_melee_damage.get().floatValue() + (this.getDeathState() == 1 ? DoomConfig.SERVER.gladiator_phaseone_damage_boost.get().floatValue() : 0));
 		if (bl) {
 			target.setDeltaMovement(target.getDeltaMovement().multiply(1.4f, 1.4f, 1.4f));
 			doEnchantDamageEffects(this, target);
-			level.explode(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
+			level().explode(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
 			target.invulnerableTime = 0;
 		}
 		return true;
 	}
 
 	public boolean tryAttack1(Entity target) {
-		level.broadcastEntityEvent(this, (byte) 4);
+		level().broadcastEntityEvent(this, (byte) 4);
 		final var bl = target.hurt(damageSources().mobAttack(this), (float) DoomConfig.SERVER.gladiator_melee_damage.get().floatValue() + (this.getDeathState() == 1 ? DoomConfig.SERVER.gladiator_phaseone_damage_boost.get().floatValue() : 0));
 		if (bl) {
 			target.setDeltaMovement(target.getDeltaMovement().multiply(1.4f, 1.4f, 1.4f));
 			doEnchantDamageEffects(this, target);
-			level.explode(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
+			level().explode(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
 			target.invulnerableTime = 0;
 		}
 		return true;

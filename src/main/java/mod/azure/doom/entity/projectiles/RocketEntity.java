@@ -133,20 +133,20 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
 		++ticksInAir;
 		if (ticksInAir >= 80)
 			remove(Entity.RemovalReason.DISCARDED);
-		final var isInsideWaterBlock = level.isWaterAt(blockPosition());
+		final var isInsideWaterBlock = level().isWaterAt(blockPosition());
 		spawnLightSource(isInsideWaterBlock);
-		if (level.isClientSide())
-			level.addParticle(ParticleTypes.SMOKE, true, this.getX() + random.nextDouble() * getBbWidth() * 0.5D, this.getY(), this.getZ() + random.nextDouble() * getBbWidth() * 0.5D, 0, 0, 0);
+		if (level().isClientSide())
+			level().addParticle(ParticleTypes.SMOKE, true, this.getX() + random.nextDouble() * getBbWidth() * 0.5D, this.getY(), this.getZ() + random.nextDouble() * getBbWidth() * 0.5D, 0, 0, 0);
 	}
 
 	private void spawnLightSource(boolean isInWaterBlock) {
 		if (lightBlockPos == null) {
-			lightBlockPos = findFreeSpace(level, blockPosition(), 2);
+			lightBlockPos = findFreeSpace(level(), blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			level.setBlockAndUpdate(lightBlockPos, AzureBlocks.TICKING_LIGHT_BLOCK.get().defaultBlockState());
+			level().setBlockAndUpdate(lightBlockPos, AzureBlocks.TICKING_LIGHT_BLOCK.get().defaultBlockState());
 		} else if (checkDistance(lightBlockPos, blockPosition(), 2)) {
-			final var blockEntity = level.getBlockEntity(lightBlockPos);
+			final var blockEntity = level().getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity)
 				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
 			else
@@ -205,20 +205,20 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
 
 	@Override
 	public void remove(RemovalReason reason) {
-		final var areaeffectcloudentity = new AreaEffectCloud(level, this.getX(), this.getY(), this.getZ());
+		final var areaeffectcloudentity = new AreaEffectCloud(level(), this.getX(), this.getY(), this.getZ());
 		areaeffectcloudentity.setParticle(ParticleTypes.LAVA);
 		areaeffectcloudentity.setRadius(6);
 		areaeffectcloudentity.setDuration(1);
 		areaeffectcloudentity.absMoveTo(this.getX(), this.getY(), this.getZ());
-		level.addFreshEntity(areaeffectcloudentity);
-		level.playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0F, 1.5F);
+		level().addFreshEntity(areaeffectcloudentity);
+		level().playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0F, 1.5F);
 		super.remove(reason);
 	}
 
 	@Override
 	protected void onHitBlock(BlockHitResult blockHitResult) {
 		super.onHitBlock(blockHitResult);
-		if (!level.isClientSide()) {
+		if (!level().isClientSide()) {
 			doDamage();
 			remove(Entity.RemovalReason.DISCARDED);
 		}
@@ -226,7 +226,7 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
 
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
-		if (!level.isClientSide()) {
+		if (!level().isClientSide()) {
 			doDamage();
 			remove(Entity.RemovalReason.DISCARDED);
 		}
@@ -238,10 +238,10 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
 	}
 
 	public void doDamage() {
-		level.getEntities(this, new AABB(blockPosition().above()).inflate(4)).forEach(e -> {
+		level().getEntities(this, new AABB(blockPosition().above()).inflate(4)).forEach(e -> {
 			if (e instanceof LivingEntity)
 				e.hurt(damageSources().playerAttack((Player) shooter), projectiledamage);
-			level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 0.0F, Level.ExplosionInteraction.NONE);
+			level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 0.0F, Level.ExplosionInteraction.NONE);
 		});
 
 	}

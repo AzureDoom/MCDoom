@@ -90,9 +90,9 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
 			setYRot(entityData.get(FORCED_YAW));
 
 			if (isPulling && tickCount % 2 == 0)
-				level.playSound(null, getOwner().blockPosition(), SoundEvents.CHAIN_PLACE, SoundSource.PLAYERS, 1F, 1F);
+				level().playSound(null, getOwner().blockPosition(), SoundEvents.CHAIN_PLACE, SoundSource.PLAYERS, 1F, 1F);
 
-			if (!level.isClientSide()) {
+			if (!level().isClientSide()) {
 				if (owner.isDeadOrDying() || !((PlayerProperties) owner).hasMeatHook() || owner.distanceTo(this) > maxRange)
 					kill();
 
@@ -140,7 +140,7 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
 
 	@Override
 	public void kill() {
-		if (!level.isClientSide() && getOwner()instanceof final Player owner) {
+		if (!level().isClientSide() && getOwner()instanceof final Player owner) {
 			((PlayerProperties) owner).setHasMeatHook(false);
 			owner.setNoGravity(false);
 		}
@@ -173,14 +173,14 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
 		super.onHitBlock(blockHitResult);
 		isPulling = true;
 
-		if (!level.isClientSide() && getOwner()instanceof final Player owner && hookedEntity == null) {
+		if (!level().isClientSide() && getOwner()instanceof final Player owner && hookedEntity == null) {
 			owner.setNoGravity(true);
 		}
 	}
 
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
-		if (!level.isClientSide() && getOwner()instanceof final Player owner && entityHitResult.getEntity() != owner) {
+		if (!level().isClientSide() && getOwner()instanceof final Player owner && entityHitResult.getEntity() != owner) {
 			if ((entityHitResult.getEntity() instanceof LivingEntity || entityHitResult.getEntity() instanceof EnderDragonPart) && hookedEntity == null) {
 				hookedEntity = entityHitResult.getEntity();
 				entityData.set(HOOKED_ENTITY_ID, hookedEntity.getId() + 1);
@@ -199,7 +199,7 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
 		isPulling = tag.getBoolean("isPulling");
 		stack = ItemStack.of(tag.getCompound("hookshotItem"));
 
-		if (level.getEntity(tag.getInt("owner"))instanceof final Player owner)
+		if (level().getEntity(tag.getInt("owner"))instanceof final Player owner)
 			setOwner(owner);
 	}
 

@@ -84,7 +84,7 @@ public class DemonMeleeAttack<E extends DemonEntity> extends CustomDelayedMeleeB
 
 		if (entity instanceof IconofsinEntity iconEntity) { // damage and explode the world
 			iconEntity.doHurtTarget(this.target);
-			iconEntity.level.explode(entity, this.target.getX(), this.target.getY(), this.target.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
+			iconEntity.level().explode(entity, this.target.getX(), this.target.getY(), this.target.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
 			this.target.invulnerableTime = 0;
 		} else if (entity instanceof MancubusEntity mancubusEntity) { // summon flames around self
 			for (var j = 0; j < 5; ++j) {
@@ -97,12 +97,12 @@ public class DemonMeleeAttack<E extends DemonEntity> extends CustomDelayedMeleeB
 			else
 				cueballEntity.doHurtTarget(this.target);
 		} else if (entity instanceof GladiatorEntity gladiatorEntity) {
-			var areaeffectcloudentity = new AreaEffectCloud(entity.level, entity.getX(), entity.getY(), entity.getZ());
+			var areaeffectcloudentity = new AreaEffectCloud(entity.level(), entity.getX(), entity.getY(), entity.getZ());
 			areaeffectcloudentity.setParticle(ParticleTypes.SMOKE);
 			areaeffectcloudentity.setRadius(3.0F);
 			areaeffectcloudentity.setDuration(55);
 			areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
-			gladiatorEntity.level.addFreshEntity(areaeffectcloudentity);
+			gladiatorEntity.level().addFreshEntity(areaeffectcloudentity);
 			gladiatorEntity.doHurtTarget(this.target);
 		} else
 			entity.doHurtTarget(this.target);

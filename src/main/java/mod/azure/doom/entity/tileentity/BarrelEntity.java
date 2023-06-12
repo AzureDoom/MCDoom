@@ -20,13 +20,13 @@ public class BarrelEntity extends Entity {
 	}
 
 	protected void explode() {
-		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 4.0F, true, Level.ExplosionInteraction.NONE);
+		this.level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 4.0F, true, Level.ExplosionInteraction.NONE);
 	}
 
 	public BarrelEntity(Level worldIn, double x, double y, double z, LivingEntity igniter) {
 		this(DoomProjectiles.BARREL.get(), worldIn);
 		this.absMoveTo(x, y, z);
-		double d = level.random.nextDouble() * 6.2831854820251465D;
+		double d = level().random.nextDouble() * 6.2831854820251465D;
 		this.setDeltaMovement(-Math.sin(d) * 0.02D, 0.20000000298023224D, -Math.cos(d) * 0.02D);
 		this.xo = x;
 		this.yo = y;
@@ -40,7 +40,7 @@ public class BarrelEntity extends Entity {
 
 	public void tick() {
 		this.remove(Entity.RemovalReason.DISCARDED);
-		if (!this.level.isClientSide()) {
+		if (!this.level().isClientSide()) {
 			this.explode();
 		}
 	}

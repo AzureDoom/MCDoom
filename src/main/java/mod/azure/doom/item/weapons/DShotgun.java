@@ -64,7 +64,7 @@ public class DShotgun extends DoomBaseItem {
 					worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), DoomSounds.SHOTGUN_SHOOT.get(), SoundSource.PLAYERS, 1.0F, 1.5F);
 					triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn), "shoot_controller", "firing");
 				}
-				final boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
+				final boolean isInsideWaterBlock = playerentity.level().isWaterAt(playerentity.blockPosition());
 				spawnLightSource(entityLiving, isInsideWaterBlock);
 			} else {
 				worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), DoomSounds.EMPTY.get(), SoundSource.PLAYERS, 1.0F, 1.5F);

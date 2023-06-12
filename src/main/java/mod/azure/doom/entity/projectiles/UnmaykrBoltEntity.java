@@ -114,20 +114,20 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 		++ticksInAir;
 		if (ticksInAir >= 80)
 			remove(Entity.RemovalReason.DISCARDED);
-		final var isInsideWaterBlock = level.isWaterAt(blockPosition());
+		final var isInsideWaterBlock = level().isWaterAt(blockPosition());
 		spawnLightSource(isInsideWaterBlock);
-		if (level.isClientSide())
-			level.addParticle(DoomParticles.UNMAYKR.get(), true, this.getX() + random.nextDouble() * getBbWidth() * 0.5D, this.getY(), this.getZ() + random.nextDouble() * getBbWidth() * 0.5D, 0, 0, 0);
+		if (level().isClientSide())
+			level().addParticle(DoomParticles.UNMAYKR.get(), true, this.getX() + random.nextDouble() * getBbWidth() * 0.5D, this.getY(), this.getZ() + random.nextDouble() * getBbWidth() * 0.5D, 0, 0, 0);
 	}
 
 	private void spawnLightSource(boolean isInWaterBlock) {
 		if (lightBlockPos == null) {
-			lightBlockPos = findFreeSpace(level, blockPosition(), 2);
+			lightBlockPos = findFreeSpace(level(), blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			level.setBlockAndUpdate(lightBlockPos, AzureBlocks.TICKING_LIGHT_BLOCK.get().defaultBlockState());
+			level().setBlockAndUpdate(lightBlockPos, AzureBlocks.TICKING_LIGHT_BLOCK.get().defaultBlockState());
 		} else if (checkDistance(lightBlockPos, blockPosition(), 2)) {
-			final var blockEntity = level.getBlockEntity(lightBlockPos);
+			final var blockEntity = level().getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity)
 				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
 			else
@@ -187,7 +187,7 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 	@Override
 	protected void onHitBlock(BlockHitResult blockHitResult) {
 		super.onHitBlock(blockHitResult);
-		if (!level.isClientSide())
+		if (!level().isClientSide())
 			remove(Entity.RemovalReason.DISCARDED);
 		setSoundEvent(SoundEvents.ARMOR_EQUIP_IRON);
 	}
@@ -196,7 +196,7 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		final var entity = entityHitResult.getEntity();
 		if (entityHitResult.getType() != HitResult.Type.ENTITY || !entityHitResult.getEntity().is(entity))
-			if (!level.isClientSide)
+			if (!level().isClientSide)
 				remove(RemovalReason.KILLED);
 		final var entity1 = getOwner();
 		DamageSource damagesource;
@@ -209,7 +209,7 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 		}
 		if (entity.hurt(damagesource, projectiledamage)) {
 			if (entity instanceof LivingEntity livingentity) {
-				if (!level.isClientSide && entity1 instanceof LivingEntity) {
+				if (!level().isClientSide && entity1 instanceof LivingEntity) {
 					EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
 					EnchantmentHelper.doPostDamageEffects((LivingEntity) entity1, livingentity);
 					remove(RemovalReason.KILLED);
@@ -218,7 +218,7 @@ public class UnmaykrBoltEntity extends AbstractArrow {
 				if (entity1 != null && livingentity != entity1 && livingentity instanceof Player && entity1 instanceof ServerPlayer && !isSilent())
 					((ServerPlayer) entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
 			}
-		} else if (!level.isClientSide)
+		} else if (!level().isClientSide)
 			remove(RemovalReason.KILLED);
 	}
 

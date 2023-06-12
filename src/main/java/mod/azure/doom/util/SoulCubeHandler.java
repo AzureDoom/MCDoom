@@ -94,7 +94,7 @@ public class SoulCubeHandler {
 			livingEntity.setHealth(20.0F);
 			livingEntity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 4));
 			livingEntity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 100, 4));
-			livingEntity.level.broadcastEntityEvent(livingEntity, (byte) 90);
+			livingEntity.level().broadcastEntityEvent(livingEntity, (byte) 90);
 			if (soulcube.isEmpty() && ModList.get().isLoaded("pmmo")) {
 				PMMOCompat.awardMagicXp((Player) livingEntity, copy);
 			}

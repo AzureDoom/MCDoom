@@ -98,7 +98,7 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
 	@Override
 	protected void onHitBlock(BlockHitResult result) {
 		super.onHitBlock(result);
-		if (!level.isClientSide())
+		if (!level().isClientSide())
 			remove(Entity.RemovalReason.DISCARDED);
 		this.playSound(SoundEvents.NETHERITE_BLOCK_HIT, 1.0F, 1.2F / (random.nextFloat() * 0.2F + 0.9F));
 	}
@@ -106,7 +106,7 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		super.onHitEntity(entityHitResult);
-		if (!level.isClientSide()) {
+		if (!level().isClientSide()) {
 			final var entity = entityHitResult.getEntity();
 			final var entity2 = getOwner();
 			entity.setSecondsOnFire(5);

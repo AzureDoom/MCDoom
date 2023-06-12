@@ -41,8 +41,8 @@ public class ChaingunMobEntity extends AbstractHurtingProjectile {
 		super.tick();
 		if (tickCount >= 80)
 			remove(Entity.RemovalReason.DISCARDED);
-		if (level.isClientSide())
-			level.addParticle(ParticleTypes.SMOKE, true, this.getX() + random.nextDouble() * getBbWidth() * 0.5D, this.getY(), this.getZ() + random.nextDouble() * getBbWidth() * 0.5D, 0, 0, 0);
+		if (level().isClientSide())
+			level().addParticle(ParticleTypes.SMOKE, true, this.getX() + random.nextDouble() * getBbWidth() * 0.5D, this.getY(), this.getZ() + random.nextDouble() * getBbWidth() * 0.5D, 0, 0, 0);
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class ChaingunMobEntity extends AbstractHurtingProjectile {
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		super.onHitEntity(entityHitResult);
-		if (!level.isClientSide()) {
+		if (!level().isClientSide()) {
 			final var entity = entityHitResult.getEntity();
 			final var entity2 = getOwner();
 			if (!(entity instanceof DemonEntity))

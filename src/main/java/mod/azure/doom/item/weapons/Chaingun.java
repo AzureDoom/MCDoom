@@ -57,7 +57,7 @@ public class Chaingun extends DoomBaseItem {
 							worldIn.addFreshEntity(bullet);
 						}
 						stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
-						final boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
+						final boolean isInsideWaterBlock = playerentity.level().isWaterAt(playerentity.blockPosition());
 						spawnLightSource(entityLiving, isInsideWaterBlock);
 					}
 				} else {

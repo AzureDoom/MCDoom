@@ -81,16 +81,16 @@ public class PossessedSoldierEntity extends DemonEntity implements SmartBrainOwn
 				return event.setAndContinue(DoomAnimationsDefault.WALKING);
 			if (this.swinging && !isDead)
 				return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
-			if (!isOnGround() && !onGround && getVariant() == 2 && !isDead)
+			if (!onGround() && !onGround() && getVariant() == 2 && !isDead)
 				return event.setAndContinue(DoomAnimationsDefault.FLYING);
 			return event.setAndContinue(isDead ? DoomAnimationsDefault.DEATH : DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
-				if (level.isClientSide())
-					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
 			if (event.getKeyframeData().getSound().matches("attack"))
-				if (level.isClientSide())
-					getLevel().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PISTOL_HIT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PISTOL_HIT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
 		}));
 	}
 
@@ -182,13 +182,13 @@ public class PossessedSoldierEntity extends DemonEntity implements SmartBrainOwn
 			} else {
 				final var ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
 				var f = 0.91F;
-				if (onGround)
-					f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+				if (onGround())
+					f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
 				final var f1 = 0.16277137F / (f * f * f);
 				f = 0.91F;
-				if (onGround)
-					f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
-				moveRelative(onGround ? 0.1F * f1 : 0.02F, movementInput);
+				if (onGround())
+					f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
+				moveRelative(onGround() ? 0.1F * f1 : 0.02F, movementInput);
 				move(MoverType.SELF, getDeltaMovement());
 				this.setDeltaMovement(getDeltaMovement().scale(f));
 			}

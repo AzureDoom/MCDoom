@@ -30,7 +30,7 @@ import com.modrinth.minotaur.dependencies.ModDependency
 
 version = project.mod_version
 group = "mod.azure.doom"
-archivesBaseName = "MCDoom-Forge-1.19.4"
+archivesBaseName = "MCDoom-Forge-1.20"
 
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -42,7 +42,7 @@ mixin {
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
-    mappings channel: 'official', version: '1.19.4'
+    mappings channel: 'official', version: '1.20'
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
@@ -50,7 +50,7 @@ minecraft {
             property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
             arg "-mixin.config=doom.mixins.json"
             workingDirectory project.file('run')
-            taskName 'doomforge1.19_client'
+            taskName 'doomforge1.20_client'
             mods {
                 doomweapon {
                     source sourceSets.main
@@ -62,7 +62,7 @@ minecraft {
             property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
             arg "-mixin.config=doom.mixins.json"
             workingDirectory project.file('run')
-            taskName 'doomforge1.19_server'
+            taskName 'doomforge1.20_server'
             mods {
                 doomweapon {
                     source sourceSets.main
@@ -85,17 +85,17 @@ repositories {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.4-45.0.43'
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.4-5.1.4.3")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.4-5.1.4.3:api")
-  	implementation fg.deobf('mod.azure.azurelib:azurelib-forge-1.19.4:1.0.11')
+    minecraft 'net.minecraftforge:forge:1.20-46.0.14'
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.2.0-beta.2+1.20")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.2.0-beta.2+1.20:api")
+  	implementation fg.deobf('mod.azure.azurelib:azurelib-forge-1.20:1.0.11')
 	annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:11.0.597")
-    implementation fg.deobf("curse.maven:REIPC-521393:4403008")
-    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:10.0.96")
-    implementation fg.deobf("dev.architectury:architectury-forge:8.1.79")
-	implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-forge-1.19.4:1.9")
-	implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-common-1.19.4:1.9")
+    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:12.0.623")
+    implementation fg.deobf("curse.maven:REIPC-521393:4580904")
+    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:11.0.99")
+    implementation fg.deobf("dev.architectury:architectury-forge:9.0.7")
+	implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-forge-1.20:1.11")
+	implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-common-1.20:1.11")
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -159,7 +159,7 @@ if (file('key.properties').exists()) {
         	releaseType = "${curse_release}"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
-        	addGameVersion("1.19.4")
+        	addGameVersion("1.20")
         	addGameVersion("Forge")
         	addGameVersion("Java 17")
 
@@ -182,10 +182,10 @@ if (file('key.properties').exists()) {
 		token = modrinthProp.getProperty('modrinthKey')
 		projectId = 'Mfo4FiDF' 
 		versionNumber = project.mod_version 
-		versionName = 'Forge 1.19.4'
+		versionName = 'Forge 1.20'
 		uploadFile = jar 
 		changelog = rootProject.file("changelog.txt").text
-		gameVersions = ['1.19.4']
+		gameVersions = ['1.20']
 		loaders = ['forge']
 		dependencies { 
         	required.project "azurelib"

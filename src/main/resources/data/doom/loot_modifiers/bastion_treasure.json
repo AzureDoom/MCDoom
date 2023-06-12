@@ -1,0 +1,12 @@
+{
+	"type": "doom:roll_extra_tables",
+	"conditions": [
+		{
+			"condition": "forge:loot_table_id",
+			"loot_table_id": "minecraft:chests/bastion_treasure"
+		}
+	],
+	"tables": [
+		"doom:chests/bastion_treasure"
+	]
+}

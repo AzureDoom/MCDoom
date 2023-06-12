@@ -81,11 +81,11 @@ public class FireProjectile extends AbstractHurtingProjectile {
 		++ticksInAir;
 		if (ticksInAir >= 40) 
 			remove(Entity.RemovalReason.DISCARDED);
-		final var isInsideWaterBlock = level.isWaterAt(blockPosition());
+		final var isInsideWaterBlock = level().isWaterAt(blockPosition());
 		spawnLightSource(isInsideWaterBlock);
-		if (level.isClientSide()) {
-			level.addParticle(ParticleTypes.FLAME, true, this.getX() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, this.getY(), this.getZ() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, 0, 0, 0);
-			level.addParticle(ParticleTypes.SMOKE, true, this.getX() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, this.getY(), this.getZ() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, 0, 0, 0);
+		if (level().isClientSide()) {
+			level().addParticle(ParticleTypes.FLAME, true, this.getX() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, this.getY(), this.getZ() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, 0, 0, 0);
+			level().addParticle(ParticleTypes.SMOKE, true, this.getX() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, this.getY(), this.getZ() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, 0, 0, 0);
 		}
 	}
 
@@ -93,20 +93,20 @@ public class FireProjectile extends AbstractHurtingProjectile {
 	protected void onHitBlock(BlockHitResult blockHitResult) {
 		super.onHitBlock(blockHitResult);
 		final var blockpos = blockHitResult.getBlockPos().relative(blockHitResult.getDirection());
-		if (!level.isClientSide) {
+		if (!level().isClientSide) {
 			return;
 		}
 		final var entity = getOwner();
-		if (!(entity instanceof Mob) || level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
-			if (level.isEmptyBlock(blockpos)) 
-				level.setBlockAndUpdate(blockpos, BaseFireBlock.getState(level, blockpos));
+		if (!(entity instanceof Mob) || level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
+			if (level().isEmptyBlock(blockpos)) 
+				level().setBlockAndUpdate(blockpos, BaseFireBlock.getState(level(), blockpos));
 		}
 	}
 
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		super.onHitEntity(entityHitResult);
-		if (!level.isClientSide) {
+		if (!level().isClientSide) {
 			final var entity = entityHitResult.getEntity();
 			final var entity1 = getOwner();
 			remove(RemovalReason.KILLED);
@@ -127,12 +127,12 @@ public class FireProjectile extends AbstractHurtingProjectile {
 
 	private void spawnLightSource(boolean isInWaterBlock) {
 		if (lightBlockPos == null) {
-			lightBlockPos = findFreeSpace(level, blockPosition(), 2);
+			lightBlockPos = findFreeSpace(level(), blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			level.setBlockAndUpdate(lightBlockPos, AzureBlocks.TICKING_LIGHT_BLOCK.get().defaultBlockState());
+			level().setBlockAndUpdate(lightBlockPos, AzureBlocks.TICKING_LIGHT_BLOCK.get().defaultBlockState());
 		} else if (checkDistance(lightBlockPos, blockPosition(), 2)) {
-			final var blockEntity = level.getBlockEntity(lightBlockPos);
+			final var blockEntity = level().getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity) 
 				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
 			else
