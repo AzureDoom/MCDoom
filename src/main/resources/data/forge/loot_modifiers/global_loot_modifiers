@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "entries": [
+    "doom:ruined_portal",
+    "doom:bastion_bridge",
+    "doom:bastion_hoglin_stable",
+    "doom:bastion_other",
+    "doom:bastion_treasure",
+    "doom:nether_bridge",
+    "doom:spawn_bonus_chest"
+  ]
+}
