@@ -1,3 +1,4 @@
-v.5.0.4
+v.5.0.5
 
-- Fixed Armor stats configs for head and boots being switched.
+- Updated zh_cn.json - chrysoljq
+- Added Argent Pickaxe and Paxel to Forge pickaxe tags.
