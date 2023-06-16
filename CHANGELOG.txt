@@ -1,3 +1,4 @@
-v.6.0.2
+v.6.0.3
 
-- Updated to 1.20.1
+- Updated zh_cn.json - chrysoljq
+- Added Argent Pickaxe and Paxel to Forge pickaxe tags.
