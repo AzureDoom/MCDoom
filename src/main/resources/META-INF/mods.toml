@@ -1,36 +1,40 @@
 modLoader="javafml"
-loaderVersion="[47,)"
-license="CC-BY-NC-4.0"
-[[mods]]
-modId="doom"
-version="${file.jarVersion}"
-displayName="Doom Mod"
-logoFile="icon.png"
-authors="AzureDoomC" 
-description='''
-Adds Doom into Minecraft
-'''
-[[dependencies.doom]]
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+[[mods]] 
+modId="${mod_id}" 
+version="${mod_version}"
+displayName="${mod_name}" 
+logoFile="icon.png" 
+authors="${mod_authors}"
+description='''${mod_description}'''
+[[dependencies.${mod_id}]]
+    modId="forge" 
+    mandatory=true 
+    versionRange="${neo_version_range}"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.${mod_id}]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.${mod_id}]]
     modId="azurelib"
     mandatory=true
     versionRange="[1.0.15,)"
     ordering="BEFORE"
     side="BOTH"
-[[dependencies.doom]]
-    modId="forge"
-    mandatory=true 
-    versionRange="[47.0.0,)" 
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.doom]]
+[[dependencies.${mod_id}]]
     modId="curios"
     mandatory=true 
     versionRange="[5.2.0-beta.1+1.20,)" 
     ordering="NONE"
     side="BOTH"
-[[dependencies.doom]]
+[[dependencies.${mod_id}]]
     modId="smartbrainlib"
     mandatory=true 
     versionRange="[1.11,)" 
     ordering="NONE"
-    side="BOTH"
+    side="BOTH"    

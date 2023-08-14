@@ -1,6 +1,8 @@
 {
-    "pack": {
-        "description": "MCDoom resources",
-        "pack_format": 10
-    }
+  "pack": {
+    "description": {
+      "text": "${mod_id} resources"
+    },
+    "pack_format": ${pack_format_number}
+  }
 }

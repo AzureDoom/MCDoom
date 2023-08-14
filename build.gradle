@@ -1,133 +1,135 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net/' }
-		maven { url  = 'https://plugins.gradle.org/m2/' }
-        jcenter()
-        mavenCentral()
-        gradlePluginPortal()
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.4.0'
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-        classpath "com.modrinth.minotaur:Minotaur:2.+"
-    }
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.neoforged.gradle' version '[6.0.18,6.2)'
+    id 'org.spongepowered.mixin' version '0.7.+'
+    id "com.modrinth.minotaur" version "2.+"
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
-
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-apply plugin: 'com.matthewprenger.cursegradle'
-apply plugin: 'java'
-apply plugin: 'org.spongepowered.mixin'
-apply plugin: "com.modrinth.minotaur"
-
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 import com.modrinth.minotaur.dependencies.ModDependency
 
-version = project.mod_version
-group = "mod.azure.doom"
-archivesBaseName = "MCDoom-Forge-1.20.1"
+version = mod_version
+group = mod_group_id
 
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
-mixin {
-    add sourceSets.main, "doom.refmap.json"
+base {
+    archivesName = archivesBaseName
 }
 
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
-
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-    mappings channel: 'official', version: '1.20.1'
+    mappings channel: mapping_channel, version: mapping_version
+    copyIdeResources = true
+    generateRunFolders = true
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
     runs {
-        client {
+        configureEach {
+            workingDirectory project.file("run/${it.name}")
             properties 'mixin.env.remapRefMap': 'true'
             property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
             arg "-mixin.config=doom.mixins.json"
-            workingDirectory project.file('run')
-            taskName 'doomforge1.20_client'
             mods {
-                doomweapon {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
         }
+
+        client {
+            property 'forge.enabledGameTestNamespaces', mod_id
+            taskName 'mcdoom-forge-1.20_client'
+        }
+
         server {
-            properties 'mixin.env.remapRefMap': 'true'
-            property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
-            arg "-mixin.config=doom.mixins.json"
-            workingDirectory project.file('run')
-            taskName 'doomforge1.20_server'
-            mods {
-                doomweapon {
-                    source sourceSets.main
-                }
-            }
+            property 'forge.enabledGameTestNamespaces', mod_id
+            args '--nogui'
+            taskName 'mcdoom-forge-1.20_server'
         }
     }
 }
 
-repositories {
-    maven { url "https://maven.theillusivec4.top/" }
-    maven { url "https://minecraft.curseforge.com/api/maven/" }
-    maven { url 'https://dl.cloudsmith.io/public/azuredoom-mods/azurelib/maven/' }
-    maven { url 'https://dl.cloudsmith.io/public/tslat/sbl/maven/' }
-    maven { url "https://maven.blamejared.com" }
-	maven { url "https://cfa2.cursemaven.com" }
-	maven { url "https://maven.shedaniel.me" }
+mixin { 
+    add sourceSets.main, "doom.refmap.json"
+    config "doom.mixins.json"
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+repositories {
+    maven { url "https://dl.cloudsmith.io/public/azuredoom-mods/azurelib/maven/" }
+    maven { url "https://maven.theillusivec4.top/" }
+    maven { url "https://minecraft.curseforge.com/api/maven/" }
+    maven { url "https://dl.cloudsmith.io/public/tslat/sbl/maven/" }
+    maven { url "https://maven.blamejared.com" }
+	maven { url "https://cfa2.cursemaven.com" }
+	maven { url "https://maven.shedaniel.me" }
+    mavenCentral()
+}
+
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.20.1-47.0.0'
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.2.0-beta.2+1.20")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.2.0-beta.2+1.20:api")
-  	implementation fg.deobf('mod.azure.azurelib:azurelib-forge-1.20.1:1.0.15')
+    minecraft "net.neoforged:forge:${minecraft_version}-${neo_version}"
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.2.0-beta.3+1.20.1")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.2.0-beta.3+1.20.1:api")
+  	implementation fg.deobf('mod.azure.azurelib:azurelib-forge-1.20.1:1.0.20')
 	annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:12.0.625")
-    implementation fg.deobf("curse.maven:REIPC-521393:4580904")
-    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:11.0.99")
-    implementation fg.deobf("dev.architectury:architectury-forge:9.0.7")
+    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:12.0.645")
+    implementation fg.deobf("curse.maven:REIPC-521393:4611912")
+    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:11.1.106")
+    implementation fg.deobf("dev.architectury:architectury-forge:9.1.12")
 	implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-forge-1.20:1.11")
 	implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-common-1.20:1.11")
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
+tasks.withType(ProcessResources).configureEach {
+    var replaceProperties = [
+            minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
+            neo_version         : neo_version, neo_version_range: neo_version_range,
+            loader_version_range: loader_version_range,
+            mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+            mod_authors         : mod_authors, mod_description: mod_description, pack_format_number: pack_format_number,
+    ]
+    inputs.properties replaceProperties
 
-jar {
-    manifest {
-        attributes([
-            "Specification-Title": "doom",
-            "Specification-Vendor": "azuredoom",
-            "Specification-Version": "1", // We are version 1 of ourselves
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"azuredoom",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-            "MixinConfigs": "doom.mixins.json"
-        ])
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties + [project: project]
     }
 }
 
-jar.finalizedBy('reobfJar')
+tasks.named('jar', Jar).configure {
+    manifest {
+        attributes([
+                'Specification-Title'     : mod_id,
+                'Specification-Vendor'    : "AzureDoom",
+                'Specification-Version'   : '1', // We are version 1 of ourselves
+                'Implementation-Title'    : project.name,
+                'Implementation-Version'  : project.jar.archiveVersion,
+                'Implementation-Vendor'   : "AzureDoom",
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+    finalizedBy 'reobfJar'
+}
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        register('mavenJava', MavenPublication) {
             artifact jar
         }
     }
     repositories {
         maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
+            url "file://${project.projectDir}/mcmodsrepo"
         }
     }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
 
 processResources {
@@ -160,7 +162,7 @@ if (file('key.properties').exists()) {
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
         	addGameVersion("1.20.1")
-        	addGameVersion("Forge")
+        	addGameVersion("NeoForge")
         	addGameVersion("Java 17")
 
         	relations {
@@ -186,7 +188,7 @@ if (file('key.properties').exists()) {
 		uploadFile = jar 
 		changelog = rootProject.file("changelog.txt").text
 		gameVersions = ['1.20.1']
-		loaders = ['forge']
+		loaders = ['neoforge']
 		dependencies { 
         	required.project "azurelib"
         	required.project "smartbrainlib"
