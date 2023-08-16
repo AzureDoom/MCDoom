@@ -64,7 +64,7 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 		this(type, owner.getX(), owner.getEyeY() - 0.10000000149011612D, owner.getZ(), world);
 		setOwner(owner);
 		shooter = owner;
-		if (owner instanceof Player) 
+		if (owner instanceof Player)
 			pickup = AbstractArrow.Pickup.DISALLOWED;
 	}
 
@@ -123,7 +123,7 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 	@Override
 	protected void tickDespawn() {
 		++ticksInAir;
-		if (tickCount >= 40) 
+		if (tickCount >= 40)
 			this.remove(Entity.RemovalReason.DISCARDED);
 	}
 
@@ -199,6 +199,7 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
 			target.hurt(damageSources().indirectMagic(this, target), DoomConfig.SERVER.grenade_damage.get().floatValue());
+			target.setDeltaMovement(target.getDeltaMovement().add(1.0, 0.6, 1.0));
 		}
 	}
 
