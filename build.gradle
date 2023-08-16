@@ -192,6 +192,7 @@ if (file('key.properties').exists()) {
 		dependencies { 
         	required.project "azurelib"
         	required.project "smartbrainlib"
+        	required.project "curios"
         	optional.project "better-combat"
    		}
 	}
