@@ -83,16 +83,12 @@ public class DoomConfig {
 	public double max_meathook_distance = 32;
 
 	@Configurable
-	public String[] imp_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
-	@Configurable
 	public int imp_spawn_weight = 15;
 	@Configurable
 	public int imp_min_group = 1;
 	@Configurable
 	public int imp_max_group = 4;
 
-	@Configurable
-	public String[] pinky_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
 	@Configurable
 	public int pinky_spawn_weight = 15;
 	@Configurable
@@ -101,16 +97,12 @@ public class DoomConfig {
 	public int pinky_max_group = 4;
 
 	@Configurable
-	public String[] spectre_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
-	@Configurable
 	public int spectre_spawn_weight = 15;
 	@Configurable
 	public int spectre_min_group = 2;
 	@Configurable
 	public int spectre_max_group = 4;
 
-	@Configurable
-	public String[] lost_soul_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
 	@Configurable
 	public int lost_soul_spawn_weight = 25;
 	@Configurable
@@ -119,16 +111,12 @@ public class DoomConfig {
 	public int lost_soul_max_group = 3;
 
 	@Configurable
-	public String[] cacodemon_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
-	@Configurable
 	public int cacodemon_spawn_weight = 4;
 	@Configurable
 	public int cacodemon_min_group = 1;
 	@Configurable
 	public int cacodemon_max_group = 2;
 
-	@Configurable
-	public String[] archvile_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
 	@Configurable
 	public int archvile_spawn_weight = 4;
 	@Configurable
@@ -137,16 +125,12 @@ public class DoomConfig {
 	public int archvile_max_group = 2;
 
 	@Configurable
-	public String[] baron_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
-	@Configurable
 	public int baron_spawn_weight = 4;
 	@Configurable
 	public int baron_min_group = 1;
 	@Configurable
 	public int baron_max_group = 1;
 
-	@Configurable
-	public String[] mancubus_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
 	@Configurable
 	public int mancubus_spawn_weight = 4;
 	@Configurable
@@ -155,16 +139,12 @@ public class DoomConfig {
 	public int mancubus_max_group = 1;
 
 	@Configurable
-	public String[] revenant_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
-	@Configurable
 	public int revenant_spawn_weight = 4;
 	@Configurable
 	public int revenant_min_group = 1;
 	@Configurable
 	public int revenant_max_group = 4;
 
-	@Configurable
-	public String[] zombieman_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
 	@Configurable
 	public int zombieman_spawn_weight = 15;
 	@Configurable
@@ -173,16 +153,12 @@ public class DoomConfig {
 	public int zombieman_max_group = 4;
 
 	@Configurable
-	public String[] arachnotron_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
-	@Configurable
 	public int arachnotron_spawn_weight = 15;
 	@Configurable
 	public int arachnotron_min_group = 1;
 	@Configurable
 	public int arachnotron_max_group = 4;
 
-	@Configurable
-	public String[] gargoyle_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
 	@Configurable
 	public int gargoyle_spawn_weight = 15;
 	@Configurable
@@ -191,16 +167,12 @@ public class DoomConfig {
 	public int gargoyle_max_group = 4;
 
 	@Configurable
-	public String[] chaingunner_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
-	@Configurable
 	public int chaingunner_spawn_weight = 15;
 	@Configurable
 	public int chaingunner_min_group = 1;
 	@Configurable
 	public int chaingunner_max_group = 4;
 
-	@Configurable
-	public String[] shotgunguy_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
 	@Configurable
 	public int shotgunguy_spawn_weight = 15;
 	@Configurable
@@ -209,16 +181,12 @@ public class DoomConfig {
 	public int shotgunguy_max_group = 4;
 
 	@Configurable
-	public String[] marauder_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
-	@Configurable
 	public int marauder_spawn_weight = 3;
 	@Configurable
 	public int marauder_min_group = 1;
 	@Configurable
 	public int marauder_max_group = 1;
 
-	@Configurable
-	public String[] pain_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
 	@Configurable
 	public int pain_spawn_weight = 4;
 	@Configurable
@@ -227,16 +195,12 @@ public class DoomConfig {
 	public int pain_max_group = 2;
 
 	@Configurable
-	public String[] hellknight_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
-	@Configurable
 	public int hellknight_spawn_weight = 4;
 	@Configurable
 	public int hellknight_min_group = 1;
 	@Configurable
 	public int hellknight_max_group = 2;
 
-	@Configurable
-	public String[] hellknight2016_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
 	@Configurable
 	public int hellknight2016_spawn_weight = 4;
 	@Configurable
@@ -245,16 +209,12 @@ public class DoomConfig {
 	public int hellknight2016_max_group = 2;
 
 	@Configurable
-	public String[] cyberdemon_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
-	@Configurable
 	public int cyberdemon_spawn_weight = 4;
 	@Configurable
 	public int cyberdemon_min_group = 1;
 	@Configurable
 	public int cyberdemon_max_group = 2;
 
-	@Configurable
-	public String[] unwilling_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
 	@Configurable
 	public int unwilling_spawn_weight = 15;
 	@Configurable
@@ -263,16 +223,12 @@ public class DoomConfig {
 	public int unwilling_max_group = 4;
 
 	@Configurable
-	public String[] possessed_scientist_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
-	@Configurable
 	public int possessed_scientist_spawn_weight = 15;
 	@Configurable
 	public int possessed_scientist_min_group = 1;
 	@Configurable
 	public int possessed_scientist_max_group = 4;
 
-	@Configurable
-	public String[] possessed_soldier_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
 	@Configurable
 	public int possessed_soldier_spawn_weight = 15;
 	@Configurable
@@ -281,16 +237,12 @@ public class DoomConfig {
 	public int possessed_soldier_max_group = 4;
 
 	@Configurable
-	public String[] mechazombie_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
-	@Configurable
 	public int mechazombie_spawn_weight = 15;
 	@Configurable
 	public int mechazombie_min_group = 1;
 	@Configurable
 	public int mechazombie_max_group = 4;
 
-	@Configurable
-	public String[] cueball_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
 	@Configurable
 	public int cueball_spawn_weight = 15;
 	@Configurable
@@ -299,16 +251,12 @@ public class DoomConfig {
 	public int cueball_max_group = 2;
 
 	@Configurable
-	public String[] prowler_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
-	@Configurable
 	public int prowler_spawn_weight = 15;
 	@Configurable
 	public int prowler_min_group = 1;
 	@Configurable
 	public int prowler_max_group = 2;
 
-	@Configurable
-	public String[] impstone_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
 	@Configurable
 	public int impstone_spawn_weight = 15;
 	@Configurable
@@ -317,16 +265,12 @@ public class DoomConfig {
 	public int impstone_max_group = 2;
 
 	@Configurable
-	public String[] gorenest_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
-	@Configurable
 	public int gorenest_spawn_weight = 4;
 	@Configurable
 	public int gorenest_min_group = 1;
 	@Configurable
 	public int gorenest_max_group = 1;
 
-	@Configurable
-	public String[] tentacle_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
 	@Configurable
 	public int tentacle_spawn_weight = 4;
 	@Configurable
@@ -335,16 +279,12 @@ public class DoomConfig {
 	public int tentacle_max_group = 1;
 
 	@Configurable
-	public String[] turret_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
-	@Configurable
 	public int turret_spawn_weight = 4;
 	@Configurable
 	public int turret_min_group = 1;
 	@Configurable
 	public int turret_max_group = 4;
 
-	@Configurable
-	public String[] spider_mastermind_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
 	@Configurable
 	public int spider_mastermind_spawn_weight = 4;
 	@Configurable
@@ -353,16 +293,12 @@ public class DoomConfig {
 	public int spider_mastermind_max_group = 1;
 
 	@Configurable
-	public String[] whiplash_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
-	@Configurable
 	public int whiplash_spawn_weight = 4;
 	@Configurable
 	public int whiplash_min_group = 1;
 	@Configurable
 	public int whiplash_max_group = 1;
 
-	@Configurable
-	public String[] doomhunter_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
 	@Configurable
 	public int doomhunter_spawn_weight = 4;
 	@Configurable
@@ -371,16 +307,12 @@ public class DoomConfig {
 	public int doomhunter_max_group = 1;
 
 	@Configurable
-	public String[] possessed_worker_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
-	@Configurable
 	public int possessed_worker_spawn_weight = 15;
 	@Configurable
 	public int possessed_worker_min_group = 1;
 	@Configurable
 	public int possessed_worker_max_group = 4;
 
-	@Configurable
-	public String[] armoredbaron_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
 	@Configurable
 	public int armoredbaron_spawn_weight = 4;
 	@Configurable
@@ -389,17 +321,12 @@ public class DoomConfig {
 	public int armoredbaron_max_group = 1;
 
 	@Configurable
-	public String[] summoner_biomes = { "minecraft:nether_wastes", "minecraft:soul_sand_valley", "minecraft:crimson_forest", "minecraft:warped_forest", "minecraft:basalt_deltas" };
-	@Configurable
 	public int summoner_spawn_weight = 4;
 	@Configurable
 	public int summoner_min_group = 1;
 	@Configurable
 	public int summoner_max_group = 2;
 
-	@Configurable
-
-	public String[] motherdemon_biomes = { "" };
 	@Configurable
 	public int motherdemon_spawn_weight = 1;
 	@Configurable
@@ -408,8 +335,6 @@ public class DoomConfig {
 	public int motherdemon_max_group = 1;
 
 	@Configurable
-	public String[] maykrdrone_biomes = { "minecraft:small_end_islands", "minecraft:end_midlands", "minecraft:end_barrens", "minecraft:end_highlands" };
-	@Configurable
 	public int maykrdrone_spawn_weight = 15;
 	@Configurable
 	public int maykrdrone_min_group = 1;
@@ -417,16 +342,12 @@ public class DoomConfig {
 	public int maykrdrone_max_group = 2;
 
 	@Configurable
-	public String[] bloodmaykr_biomes = { "minecraft:small_end_islands", "minecraft:end_midlands", "minecraft:end_barrens", "minecraft:end_highlands" };
-	@Configurable
 	public int bloodmaykr_spawn_weight = 6;
 	@Configurable
 	public int bloodmaykr_min_group = 1;
 	@Configurable
 	public int bloodmaykr_max_group = 2;
 
-	@Configurable
-	public String[] archmaykr_biomes = { "" };
 	@Configurable
 	public int archmaykr_spawn_weight = 1;
 	@Configurable
