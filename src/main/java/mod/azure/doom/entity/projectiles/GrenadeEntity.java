@@ -199,6 +199,7 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
 			target.hurt(damageSources().indirectMagic(this, target), DoomMod.config.grenade_damage);
+			target.setDeltaMovement(target.getDeltaMovement().add(1.0, 0.6, 1.0));
 		}
 	}
 
