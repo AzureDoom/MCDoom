@@ -16,7 +16,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.RedstoneTorchBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SoundType;
@@ -24,7 +23,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
@@ -41,10 +39,9 @@ public class GunTableBlock extends Block implements EntityBlock {
 	private static final VoxelShape YBASE2 = Block.box(-14, 9, 2, 30, 25, 13);
 	private static final VoxelShape X_AXIS_AABB = Shapes.or(XBASE1, XBASE2);
 	private static final VoxelShape Z_AXIS_AABB = Shapes.or(YBASE1, YBASE2);
-	public static final BooleanProperty light = RedstoneTorchBlock.LIT;
 
 	public GunTableBlock() {
-		super(FabricBlockSettings.of(Material.METAL).sounds(SoundType.METAL).strength(4.0f).nonOpaque());
+		super(FabricBlockSettings.of(Material.METAL).sounds(SoundType.METAL).strength(4.0f).luminance(15).nonOpaque());
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.WEST));
 	}
 
@@ -97,7 +94,7 @@ public class GunTableBlock extends Block implements EntityBlock {
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		builder.add(FACING, light);
+		builder.add(FACING);
 	}
 
 	@Override
