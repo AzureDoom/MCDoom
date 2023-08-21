@@ -1,4 +1,5 @@
-v.5.0.5
+v.5.0.6
 
-- Updated zh_cn.json - chrysoljq
-- Added Argent Pickaxe and Paxel to Forge pickaxe tags.
+- Fixes Archmaykr Structures spawning incorrectly. 
+- Added Argent Hoe and Paxel to Forge hoe tag.
+- Archmaykr flight tweaked.
