@@ -30,7 +30,6 @@ repositories {
     maven { url 'https://maven.blamejared.com' }
     maven { url 'https://plugins.gradle.org/m2/' }
 	maven { url 'https://maven.terraformersmc.com/' }
-	maven { url 'https://ladysnake.jfrog.io/artifactory/mods' }
 	maven { url 'https://maven.kosmx.dev/' }
 	maven { url 'https://jitpack.io' }
 	maven { url 'https://api.modrinth.com/maven' }
@@ -61,8 +60,10 @@ dependencies {
     modApi("me.shedaniel.cloth:cloth-config-fabric:10.0.96") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modImplementation "dev.emi:trinkets:3.6.0"
-    modImplementation "curse.maven:cardinal-components-318449:4160617"
+    modImplementation "curse.maven:trinkets-341284:4441758"
+    modImplementation "curse.maven:cardinal-components-318449:4160616"
+    modImplementation "curse.maven:cardinal-components-base-318449:4160617"
+    modImplementation "curse.maven:cardinal-components-entity-318449:4160620"
 }
 
 processResources {
