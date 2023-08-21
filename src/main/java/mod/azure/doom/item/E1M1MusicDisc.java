@@ -11,7 +11,7 @@ import net.minecraft.world.item.RecordItem;
 public class E1M1MusicDisc extends RecordItem {
 
 	public E1M1MusicDisc(Supplier<SoundEvent> soundSupplier) {
-		super(1, soundSupplier, new Item.Properties().stacksTo(1).rarity(Rarity.RARE), 60);
+		super(1, soundSupplier, new Item.Properties().stacksTo(1).rarity(Rarity.RARE), 600);
 	}
 
 	@Override
