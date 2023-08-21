@@ -1,3 +1,4 @@
-v.5.0.6
+v.5.0.8
 
-- Updated zh_cn.json - chrysoljq
+- Fixes Archmaykr Structures spawning incorrectly. 
+- Archmaykr flight tweaked.
