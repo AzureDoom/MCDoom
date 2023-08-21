@@ -3,7 +3,6 @@ package mod.azure.doom.util.registry;
 import com.mojang.serialization.Codec;
 
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.structures.ArchMaykrStructure;
 import mod.azure.doom.structures.GladiatorStructure;
 import mod.azure.doom.structures.HellChurchStructure;
 import mod.azure.doom.structures.IconStructure;
@@ -12,6 +11,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 
 public class DoomStructures {
 
@@ -26,7 +26,7 @@ public class DoomStructures {
 		ICON_FIGHT = register(DoomMod.modResource("icon_fight"), IconStructure.CODEC);
 		GLADIATOR_FIGHT = register(DoomMod.modResource("gladiator_fight"), GladiatorStructure.CODEC);
 		MOTHERDEMON = register(DoomMod.modResource("motherdemon1a"), MotherdemonStructure.CODEC);
-		ARCHMAYKR = register(DoomMod.modResource("archmakyr"), ArchMaykrStructure.CODEC);
+		ARCHMAYKR = register(DoomMod.modResource("archmakyr"), JigsawStructure.CODEC);
 	}
 
 	private static <S extends Structure> StructureType<S> register(ResourceLocation id, Codec<S> codec) {
