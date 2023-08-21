@@ -40,13 +40,13 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
-import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -54,6 +54,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
@@ -240,10 +241,28 @@ public class ArchMakyrEntity extends DemonEntity implements SmartBrainOwner<Arch
 	}
 
 	@Override
-	protected void updateControlFlags() {
-		final boolean flag = getTarget() != null && hasLineOfSight(getTarget());
-		goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
-		super.updateControlFlags();
+	public void travel(Vec3 movementInput) {
+		if (isInWater()) {
+			moveRelative(0.02F, movementInput);
+			move(MoverType.SELF, getDeltaMovement());
+			this.setDeltaMovement(getDeltaMovement().scale(0.8F));
+		} else if (isInLava()) {
+			moveRelative(0.02F, movementInput);
+			move(MoverType.SELF, getDeltaMovement());
+			this.setDeltaMovement(getDeltaMovement().scale(0.5D));
+		} else {
+			final var ground = new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
+			var f = 0.91F;
+			if (onGround)
+				f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+			final var f1 = 0.16277137F / (f * f * f);
+			f = 0.91F;
+			if (onGround)
+				f = level.getBlockState(ground).getBlock().getFriction() * 0.91F;
+			moveRelative(onGround ? 0.1F * f1 : 0.02F, movementInput);
+			move(MoverType.SELF, getDeltaMovement());
+			this.setDeltaMovement(getDeltaMovement().scale(f));
+		}
 	}
 
 	@Override
