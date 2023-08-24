@@ -3,6 +3,7 @@ package mod.azure.doom.item.weapons;
 import java.util.List;
 import java.util.function.Consumer;
 
+import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
@@ -12,7 +13,6 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.DarkLordCrucibleRender;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;

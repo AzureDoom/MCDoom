@@ -2,8 +2,8 @@ package mod.azure.doom.item.weapons;
 
 import java.util.List;
 
+import mod.azure.azurelib.Keybindings;
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;

@@ -2,9 +2,9 @@ package mod.azure.doom.item.weapons;
 
 import java.util.function.Consumer;
 
+import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
-import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.BallistaRender;
 import mod.azure.doom.entity.projectiles.ArgentBoltEntity;
 import mod.azure.doom.util.enums.DoomTier;

@@ -75,7 +75,7 @@ dependencies {
     minecraft "net.neoforged:forge:${minecraft_version}-${neo_version}"
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.2.0-beta.3+1.20.1")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.2.0-beta.3+1.20.1:api")
-  	implementation fg.deobf('mod.azure.azurelib:azurelib-forge-1.20.1:1.0.20')
+  	implementation fg.deobf('mod.azure.azurelib:azurelib-neo-1.20.1:1.0.25')
 	annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
     implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:12.0.645")
     implementation fg.deobf("curse.maven:REIPC-521393:4611912")

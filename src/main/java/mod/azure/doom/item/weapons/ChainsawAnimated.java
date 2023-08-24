@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
+import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
@@ -12,7 +13,6 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.ChainsawRender;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;

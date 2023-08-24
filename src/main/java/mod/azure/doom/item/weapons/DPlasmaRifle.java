@@ -3,9 +3,9 @@ package mod.azure.doom.item.weapons;
 import java.util.List;
 import java.util.function.Consumer;
 
+import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
-import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.DPlamsaRifleRender;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.EnergyCellEntity;

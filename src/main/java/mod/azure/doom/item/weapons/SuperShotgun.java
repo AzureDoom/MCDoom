@@ -2,10 +2,10 @@ package mod.azure.doom.item.weapons;
 
 import java.util.function.Consumer;
 
+import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.items.BaseGunItem;
-import mod.azure.doom.client.Keybindings;
 import mod.azure.doom.client.render.weapons.SSGRender;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.MeatHookEntity;

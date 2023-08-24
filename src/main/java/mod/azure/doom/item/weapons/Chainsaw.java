@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import mod.azure.doom.client.Keybindings;
+import mod.azure.azurelib.Keybindings;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.enums.DoomTier;

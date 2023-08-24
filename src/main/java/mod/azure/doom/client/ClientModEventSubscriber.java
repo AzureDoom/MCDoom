@@ -1,7 +1,5 @@
 package mod.azure.doom.client;
 
-import org.lwjgl.glfw.GLFW;
-
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.gui.GunTableScreen;
 import mod.azure.doom.client.render.ArachonotronEternalRender;
@@ -80,7 +78,6 @@ import mod.azure.doom.util.registry.DoomEntities;
 import mod.azure.doom.util.registry.DoomItems;
 import mod.azure.doom.util.registry.DoomProjectiles;
 import mod.azure.doom.util.registry.DoomScreens;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -89,7 +86,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -170,12 +166,6 @@ public class ClientModEventSubscriber {
 		event.registerEntityRenderer(DoomProjectiles.BARREL.get(), BarrelRender::new);
 		event.registerBlockEntityRenderer(DoomEntities.TOTEM.get(), context -> new TotemRender());
 		event.registerBlockEntityRenderer(DoomEntities.GUN_TABLE_ENTITY.get(), context -> new GunCraftingRender());
-	}
-
-	@SubscribeEvent
-	public static void registerKeys(final RegisterKeyMappingsEvent event) {
-		Keybindings.RELOAD = new KeyMapping("key." + DoomMod.MODID + ".reload", GLFW.GLFW_KEY_R, "key.category." + DoomMod.MODID);
-		event.register(Keybindings.RELOAD);
 	}
 
 	@SubscribeEvent
