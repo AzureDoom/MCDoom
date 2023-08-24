@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import io.netty.buffer.Unpooled;
+import mod.azure.azurelib.Keybindings;
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
@@ -82,7 +82,7 @@ public class Chainsaw extends Item {
 			worldIn.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_IDLE, SoundSource.PLAYERS, 0.05F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 		if (worldIn.isClientSide)
-			if (player.getMainHandItem().getItem() instanceof Chainsaw && ClientInit.reload.consumeClick() && isSelected) {
+			if (player.getMainHandItem().getItem() instanceof Chainsaw && Keybindings.RELOAD.consumeClick() && isSelected) {
 				final var passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.CHAINSAW, passedData);

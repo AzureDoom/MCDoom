@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import io.netty.buffer.Unpooled;
+import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.animatable.client.RenderProvider;
@@ -15,7 +16,6 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.client.render.weapons.ChainsawRender;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.enums.DoomTier;
@@ -87,7 +87,7 @@ public class ChainsawAnimated extends Item implements GeoItem {
 		if (isSelected && stack.getMaxDamage() < stack.getMaxDamage() - 1)
 			worldIn.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_IDLE, SoundSource.PLAYERS, 0.05F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		if (worldIn.isClientSide)
-			if (player.getMainHandItem().getItem() instanceof ChainsawAnimated && ClientInit.reload.consumeClick() && isSelected) {
+			if (player.getMainHandItem().getItem() instanceof ChainsawAnimated && Keybindings.RELOAD.consumeClick() && isSelected) {
 				final var passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.CHAINSAW_ETERNAL, passedData);

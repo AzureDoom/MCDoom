@@ -1,42 +1,32 @@
 {
-	"schemaVersion": 1,
-	"id": "doom",
-	"version": "${version}",
-	"name": "Doom Fabric",
-	"description": "This is my Fabric port of my Forge Doom mod!",
-	"authors": [
-		"AzureDoomC"
-	],
-	"contact": {
-		"homepage": "https://www.curseforge.com/minecraft/mc-mods/azuredooms-doom-mod-fabric/",
-		"issues": "https://github.com/AzureDoom/MCDoom/issues",
-		"sources": "https://github.com/AzureDoom/MCDoom/"
-	},
-	"license": "CC-BY-NC-4.0",
-	"icon": "assets/doom/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"mod.azure.doom.DoomMod"
-		],
-		"client": [
-			"mod.azure.doom.client.ClientInit"
-		],
-		"rei_client": [
-			"mod.azure.doom.rei.ReiPlugin"
-		]
-	},
-	"mixins": [
-		"doom.mixins.json"
-	],
-	"depends": {
-		"fabricloader": ">=0.14.21",
-		"fabric": "*",
-		"minecraft": ">=1.20",
-		"java": ">=17",
-		"azurelib": ">=1.0.15",
-		"smartbrainlib": ">=1.11",
-		"trinkets": ">=3.7.0"
-	},
-	"accessWidener": "doom.accesswidener"
+  "schemaVersion" : 1,
+  "id" : "doom",
+  "version" : "${version}",
+  "name" : "Doom Fabric",
+  "description" : "This is my Fabric port of my Forge Doom mod!",
+  "authors" : [ "AzureDoomC" ],
+  "contact" : {
+    "homepage" : "https://www.curseforge.com/minecraft/mc-mods/azuredooms-doom-mod-fabric/",
+    "issues" : "https://github.com/AzureDoom/MCDoom/issues",
+    "sources" : "https://github.com/AzureDoom/MCDoom/"
+  },
+  "license" : "CC-BY-NC-4.0",
+  "icon" : "assets/doom/icon.png",
+  "environment" : "*",
+  "entrypoints" : {
+    "main" : [ "mod.azure.doom.DoomMod" ],
+    "client" : [ "mod.azure.doom.client.ClientInit" ],
+    "rei_client" : [ "mod.azure.doom.rei.ReiPlugin" ]
+  },
+  "mixins" : [ "doom.mixins.json" ],
+  "depends" : {
+    "fabricloader" : ">=0.14.21",
+    "fabric" : "*",
+    "minecraft" : ">=1.20",
+    "java" : ">=17",
+    "azurelib" : ">=1.0.25",
+    "smartbrainlib" : ">=1.11",
+    "trinkets" : ">=3.7.0"
+  },
+  "accessWidener" : "doom.accesswidener"
 }

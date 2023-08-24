@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import io.netty.buffer.Unpooled;
+import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.animatable.client.RenderProvider;
@@ -14,7 +15,6 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.client.render.weapons.SentinelHammerRender;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.registry.DoomItems;
@@ -96,7 +96,7 @@ public class SentinelHammerItem extends SwordItem implements GeoItem {
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
 		final var playerentity = (Player) entity;
 		if (world.isClientSide) 
-			if (playerentity.getMainHandItem().getItem() instanceof SentinelHammerItem && ClientInit.reload.consumeClick() && selected) {
+			if (playerentity.getMainHandItem().getItem() instanceof SentinelHammerItem && Keybindings.RELOAD.consumeClick() && selected) {
 				final var passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.SENTINELHAMMER, passedData);

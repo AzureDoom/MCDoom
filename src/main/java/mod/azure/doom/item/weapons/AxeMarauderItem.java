@@ -3,8 +3,8 @@ package mod.azure.doom.item.weapons;
 import java.util.List;
 
 import io.netty.buffer.Unpooled;
+import mod.azure.azurelib.Keybindings;
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
@@ -68,7 +68,7 @@ public class AxeMarauderItem extends SwordItem {
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
 		final Player playerentity = (Player) entity;
 		if (world.isClientSide)
-			if (playerentity.getMainHandItem().getItem() instanceof AxeMarauderItem && ClientInit.reload.consumeClick() && selected) {
+			if (playerentity.getMainHandItem().getItem() instanceof AxeMarauderItem && Keybindings.RELOAD.consumeClick() && selected) {
 				final var passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.MARAUDERAXE, passedData);

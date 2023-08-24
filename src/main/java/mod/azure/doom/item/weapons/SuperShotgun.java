@@ -4,12 +4,12 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import io.netty.buffer.Unpooled;
+import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.animatable.client.RenderProvider;
 import mod.azure.azurelib.items.BaseGunItem;
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.client.render.weapons.SSGRender;
 import mod.azure.doom.entity.projectiles.MeatHookEntity;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
@@ -90,7 +90,7 @@ public class SuperShotgun extends DoomBaseItem {
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
 		if (world.isClientSide) 
-			if (ClientInit.reload.consumeClick() && selected) {
+			if (Keybindings.RELOAD.consumeClick() && selected) {
 				final var passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.SUPERSHOTGUN, passedData);

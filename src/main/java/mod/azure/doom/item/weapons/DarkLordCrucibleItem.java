@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import io.netty.buffer.Unpooled;
+import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.animatable.client.RenderProvider;
@@ -15,7 +16,6 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.client.render.weapons.DarkLordCrucibleRender;
 import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
@@ -108,7 +108,7 @@ public class DarkLordCrucibleItem extends SwordItem implements GeoItem {
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
 		final Player playerentity = (Player) entity;
 		if (world.isClientSide)
-			if (playerentity.getMainHandItem().getItem() instanceof DarkLordCrucibleItem && ClientInit.reload.consumeClick() && selected) {
+			if (playerentity.getMainHandItem().getItem() instanceof DarkLordCrucibleItem && Keybindings.RELOAD.consumeClick() && selected) {
 				final var passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.DARKLORDCRUCIBLE, passedData);

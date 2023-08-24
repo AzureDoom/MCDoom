@@ -4,11 +4,11 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import io.netty.buffer.Unpooled;
+import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.animatable.client.RenderProvider;
 import mod.azure.doom.DoomMod;
-import mod.azure.doom.client.ClientInit;
 import mod.azure.doom.client.render.weapons.BFGRender;
 import mod.azure.doom.entity.projectiles.BFGEntity;
 import mod.azure.doom.util.enums.DoomTier;
@@ -84,7 +84,7 @@ public class BFG extends DoomBaseItem {
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
 		if (world.isClientSide)
-			if (((Player) entity).getMainHandItem().getItem() instanceof BFG && ClientInit.reload.consumeClick() && selected) {
+			if (((Player) entity).getMainHandItem().getItem() instanceof BFG && Keybindings.RELOAD.consumeClick() && selected) {
 				final var passedData = new FriendlyByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
 				ClientPlayNetworking.send(DoomMod.BFG, passedData);
