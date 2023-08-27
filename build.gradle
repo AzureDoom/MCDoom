@@ -1,11 +1,5 @@
-buildscript {
-    repositories {
-    	maven { url  = 'https://plugins.gradle.org/m2/' }
-    }
-}
-
 plugins {
-    id 'fabric-loom' version '1.1-SNAPSHOT'
+    id 'fabric-loom' version '1.3-SNAPSHOT'
 	id 'maven-publish'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.modrinth.minotaur" version "2.+"
@@ -23,8 +17,8 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-	maven { url "https://cfa2.cursemaven.com" }
-    maven { url "https://maven.shedaniel.me/" }
+	maven { url 'https://cfa2.cursemaven.com' }
+    maven { url 'https://maven.shedaniel.me/' }
     maven { url 'https://dl.cloudsmith.io/public/azuredoom-mods/azurelib/maven/' }
     maven { url 'https://dl.cloudsmith.io/public/tslat/sbl/maven/' }
     maven { url 'https://maven.blamejared.com' }
@@ -33,12 +27,7 @@ repositories {
 	maven { url 'https://maven.kosmx.dev/' }
 	maven { url 'https://jitpack.io' }
 	maven { url 'https://api.modrinth.com/maven' }
-	maven {url = "https://maven.kyrptonaught.dev"}
-    maven { url "https://maven.wispforest.io" }
-}
-
-configurations {
-    shade
+	maven { url 'https://maven.kyrptonaught.dev' }
 }
 
 dependencies {
@@ -46,28 +35,20 @@ dependencies {
     mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-1.20:1.11"
-	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-1.20:1.11"
-  	modImplementation 'mod.azure.azurelib:azurelib-fabric-1.20.1:1.0.25'
-	modImplementation ("com.terraformersmc:modmenu:7.0.0-beta.2")
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:12.0.622") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:12.0.622") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    modApi("dev.architectury:architectury-fabric:9.0.7") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    modApi("me.shedaniel.cloth:cloth-config-fabric:11.0.99") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
+	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-1.20:${project.sbl_version}"
+	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-1.20:${project.sbl_version}"
+  	modImplementation "mod.azure.azurelib:azurelib-fabric-1.20.1:${project.azurelib_version}"
+	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}"
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+    modApi "dev.architectury:architectury-fabric:${project.arch_version}"
+    modApi "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_version}"
     modImplementation "curse.maven:trinkets-341284:4657534"
     modImplementation "curse.maven:cardinal-components-318449:4547791"
     modImplementation "curse.maven:cardinal-components-base-318449:4576292"
     modImplementation "curse.maven:cardinal-components-entity-318449:4547795"
-    modImplementation 'net.kyrptonaught:customportalapi:0.0.1-beta64-1.20'
-    include 'net.kyrptonaught:customportalapi:0.0.1-beta64-1.20'
+    modImplementation "net.kyrptonaught:customportalapi:${project.customportalsapi}"
+    include "net.kyrptonaught:customportalapi:${project.customportalsapi}"
     modImplementation "curse.maven:worldedit-225608:4586218"
 }
 
@@ -124,7 +105,7 @@ if (file('key.properties').exists()) {
         	releaseType = "${curse_release}"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
-			addGameVersion("1.20.1")
+			addGameVersion("${minecraft_version}")
 			addGameVersion("Fabric")
 			addGameVersion("Quilt")
 			addGameVersion("Java 17")
@@ -143,7 +124,6 @@ if (file('key.properties').exists()) {
         	}
     	}
     	options {
-    		//debug = true
         	forgeGradleIntegration = false
     	}
     }
@@ -156,9 +136,8 @@ if (file('key.properties').exists()) {
 		modrinthProp.load(secretPropsFile.newInputStream())
 		
 		token = modrinthProp.getProperty('modrinthKey')
-		projectId = 'Mfo4FiDF' 
+		projectId = project.modrinth_id
 		versionNumber = project.mod_version 
-		versionName = 'Fabric/Quilt 1.20.1'
 		uploadFile = remapJar 
 		changelog = rootProject.file("changelog.txt").text
 		gameVersions = ['1.20.1']

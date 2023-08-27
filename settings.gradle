@@ -5,6 +5,7 @@ pluginManagement {
             url = 'https://maven.fabricmc.net/'
         }
         gradlePluginPortal()
+    	maven { url  = 'https://plugins.gradle.org/m2/' }
     }
 }
 rootProject.name = 'mcdoom-fabric-1.20'
