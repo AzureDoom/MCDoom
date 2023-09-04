@@ -25,7 +25,7 @@ public class E1M1TurnableHurtBlock extends Block {
 	public static final BooleanProperty light = RedstoneTorchBlock.LIT;
 
 	public E1M1TurnableHurtBlock() {
-		super(FabricBlockSettings.of().sounds(SoundType.BONE_BLOCK));
+		super(FabricBlockSettings.of().sounds(SoundType.METAL).luminance(15));
 		this.registerDefaultState(this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.valueOf(true)));
 	}
 

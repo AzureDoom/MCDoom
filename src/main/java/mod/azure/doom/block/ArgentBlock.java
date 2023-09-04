@@ -7,6 +7,6 @@ import net.minecraft.world.level.block.SoundType;
 public class ArgentBlock extends Block {
 
 	public ArgentBlock() {
-		super(FabricBlockSettings.of().sounds(SoundType.METAL));
+		super(FabricBlockSettings.of().sounds(SoundType.METAL).luminance(15));
 	}
 }

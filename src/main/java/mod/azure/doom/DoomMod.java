@@ -262,6 +262,9 @@ public class DoomMod implements ModInitializer {
 					entries.accept(DoomBlocks.E1M1_24);
 					entries.accept(DoomBlocks.E1M1_25);
 					entries.accept(DoomBlocks.E1M1_26);
+					entries.accept(DoomBlocks.E1M1_27);
+					entries.accept(DoomBlocks.E1M1_28);
+					entries.accept(DoomBlocks.E1M1_29);
 					entries.accept(DoomBlocks.ICON_WALL1);
 					entries.accept(DoomBlocks.ICON_WALL2);
 					entries.accept(DoomBlocks.ICON_WALL3);

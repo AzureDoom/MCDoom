@@ -50,6 +50,10 @@ public class DoomBlocks {
 	public static final Block E1M1_24 = new E1M1TurnableBlock();
 	public static final Block E1M1_25 = new E1M1TurnableBlock();
 	public static final Block E1M1_26 = new E1M1TurnableBlock();
+	public static final Block E1M1_27 = new E1M1StairsBlock(E1M1_5.defaultBlockState(), BlockBehaviour.Properties.copy(E1M1_5));
+	public static final Block E1M1_28 = new E1M1StairsBlock(E1M1_5.defaultBlockState(), BlockBehaviour.Properties.copy(E1M1_5));
+	public static final Block E1M1_29 = new E1M1StairsBlock(E1M1_5.defaultBlockState(), BlockBehaviour.Properties.copy(E1M1_5));
+
 
 	public static final Block DOOM_SAND = new DoomSandBlock();
 	public static final Block ARGENT_BLOCK = new ArgentBlock();
@@ -174,5 +178,11 @@ public class DoomBlocks {
 		Registry.register(BuiltInRegistries.ITEM, DoomMod.modResource("e1m1_block25"), new BlockItem(E1M1_25, new Item.Properties()));
 		Registry.register(BuiltInRegistries.BLOCK, DoomMod.modResource("e1m1_block26"), E1M1_26);
 		Registry.register(BuiltInRegistries.ITEM, DoomMod.modResource("e1m1_block26"), new BlockItem(E1M1_26, new Item.Properties()));
+		Registry.register(BuiltInRegistries.BLOCK, DoomMod.modResource("e1m1_block27"), E1M1_27);
+		Registry.register(BuiltInRegistries.ITEM, DoomMod.modResource("e1m1_block27"), new BlockItem(E1M1_27, new Item.Properties()));
+		Registry.register(BuiltInRegistries.BLOCK, DoomMod.modResource("e1m1_block28"), E1M1_28);
+		Registry.register(BuiltInRegistries.ITEM, DoomMod.modResource("e1m1_block28"), new BlockItem(E1M1_28, new Item.Properties()));
+		Registry.register(BuiltInRegistries.BLOCK, DoomMod.modResource("e1m1_block29"), E1M1_29);
+		Registry.register(BuiltInRegistries.ITEM, DoomMod.modResource("e1m1_block29"), new BlockItem(E1M1_29, new Item.Properties()));
 	}
 }

@@ -40,7 +40,7 @@ public class DoomWallBlock extends BaseEntityBlock {
 	private static BlockPattern iconPatternFull;
 
 	public DoomWallBlock() {
-		super(FabricBlockSettings.of().sounds(SoundType.BONE_BLOCK));
+		super(FabricBlockSettings.of().sounds(SoundType.METAL).luminance(15));
 		this.registerDefaultState(this.stateDefinition.any().setValue(light, Boolean.valueOf(true)));
 	}
 
