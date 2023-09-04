@@ -31,7 +31,7 @@ public class DoomBlocks {
 
 	public static final RegistryObject<Block> ARGENT_BLOCK = BLOCKS.register("argent_block", () -> new ArgentBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F).sound(SoundType.METAL)));
 
-	public static final RegistryObject<Block> ARGENT_LAMP_BLOCK = BLOCKS.register("argent_lamp_block", () -> new ArgentLampBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F).sound(SoundType.BONE_BLOCK)));
+	public static final RegistryObject<Block> ARGENT_LAMP_BLOCK = BLOCKS.register("argent_lamp_block", () -> new ArgentLampBlock());
 
 	public static final RegistryObject<Block> DOOM_SAND = BLOCKS.register("doom_sand", () -> new DoomSandBlock(Block.Properties.of().explosionResistance(30).strength(4.0F).sound(SoundType.STONE)));
 
@@ -54,30 +54,34 @@ public class DoomBlocks {
 	public static final RegistryObject<Block> ICON_WALL15 = BLOCKS.register("icon_wall15", () -> new DoomWallBlock(Block.Properties.of().explosionResistance(30).strength(4.0F).sound(SoundType.STONE)));
 	public static final RegistryObject<Block> ICON_WALL16 = BLOCKS.register("icon_wall16", () -> new DoomWallBlock(Block.Properties.of().explosionResistance(30).strength(4.0F).sound(SoundType.STONE)));
 
-	public static final RegistryObject<Block> E1M1_1 = BLOCKS.register("e1m1_block1", () -> new ArgentLampBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_2 = BLOCKS.register("e1m1_block2", () -> new ArgentLampBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_3 = BLOCKS.register("e1m1_block3", () -> new ArgentLampBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_4 = BLOCKS.register("e1m1_block4", () -> new ArgentLampBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_5 = BLOCKS.register("e1m1_block5", () -> new ArgentLampBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_6 = BLOCKS.register("e1m1_block6", () -> new ArgentLampBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
+	public static final RegistryObject<Block> E1M1_1 = BLOCKS.register("e1m1_block1", () -> new ArgentLampBlock());
+	public static final RegistryObject<Block> E1M1_2 = BLOCKS.register("e1m1_block2", () -> new ArgentLampBlock());
+	public static final RegistryObject<Block> E1M1_3 = BLOCKS.register("e1m1_block3", () -> new ArgentLampBlock());
+	public static final RegistryObject<Block> E1M1_4 = BLOCKS.register("e1m1_block4", () -> new ArgentLampBlock());
+	public static final RegistryObject<Block> E1M1_5 = BLOCKS.register("e1m1_block5", () -> new ArgentLampBlock());
+	public static final RegistryObject<Block> E1M1_6 = BLOCKS.register("e1m1_block6", () -> new ArgentLampBlock());
 	public static final RegistryObject<Block> E1M1_7 = BLOCKS.register("e1m1_block7", () -> new E1M1StairsBlock(E1M1_5.get().defaultBlockState(), BlockBehaviour.Properties.copy(E1M1_5.get())));
 	public static final RegistryObject<Block> E1M1_8 = BLOCKS.register("e1m1_block8", () -> new E1M1StairsBlock(E1M1_4.get().defaultBlockState(), BlockBehaviour.Properties.copy(E1M1_4.get())));
-	public static final RegistryObject<Block> E1M1_9 = BLOCKS.register("e1m1_block9", () -> new E1M1TurnableBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_10 = BLOCKS.register("e1m1_block10", () -> new E1M1TurnableBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_11 = BLOCKS.register("e1m1_block11", () -> new E1M1TurnableHurtBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_12 = BLOCKS.register("e1m1_block12", () -> new E1M1TurnableBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_13 = BLOCKS.register("e1m1_block13", () -> new E1M1TurnableBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_14 = BLOCKS.register("e1m1_block14", () -> new E1M1TurnableBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_15 = BLOCKS.register("e1m1_block15", () -> new E1M1TurnableBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_16 = BLOCKS.register("e1m1_block16", () -> new E1M1TurnableBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_17 = BLOCKS.register("e1m1_block17", () -> new E1M1TurnableBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_18 = BLOCKS.register("e1m1_block18", () -> new E1M1TurnableBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_19 = BLOCKS.register("e1m1_block19", () -> new E1M1TurnableBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_20 = BLOCKS.register("e1m1_block20", () -> new E1M1TurnableBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_21 = BLOCKS.register("e1m1_block21", () -> new E1M1TurnableBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_22 = BLOCKS.register("e1m1_block22", () -> new E1M1TurnableBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_23 = BLOCKS.register("e1m1_block23", () -> new E1M1TurnableBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_24 = BLOCKS.register("e1m1_block24", () -> new E1M1TurnableBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_25 = BLOCKS.register("e1m1_block25", () -> new E1M1TurnableBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
-	public static final RegistryObject<Block> E1M1_26 = BLOCKS.register("e1m1_block26", () -> new E1M1TurnableBlock(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F)));
+	public static final RegistryObject<Block> E1M1_9 = BLOCKS.register("e1m1_block9", () -> new E1M1TurnableBlock());
+	public static final RegistryObject<Block> E1M1_10 = BLOCKS.register("e1m1_block10", () -> new E1M1TurnableBlock());
+	public static final RegistryObject<Block> E1M1_11 = BLOCKS.register("e1m1_block11", () -> new E1M1TurnableHurtBlock());
+	public static final RegistryObject<Block> E1M1_12 = BLOCKS.register("e1m1_block12", () -> new E1M1TurnableBlock());
+	public static final RegistryObject<Block> E1M1_13 = BLOCKS.register("e1m1_block13", () -> new E1M1TurnableBlock());
+	public static final RegistryObject<Block> E1M1_14 = BLOCKS.register("e1m1_block14", () -> new E1M1TurnableBlock());
+	public static final RegistryObject<Block> E1M1_15 = BLOCKS.register("e1m1_block15", () -> new E1M1TurnableBlock());
+	public static final RegistryObject<Block> E1M1_16 = BLOCKS.register("e1m1_block16", () -> new E1M1TurnableBlock());
+	public static final RegistryObject<Block> E1M1_17 = BLOCKS.register("e1m1_block17", () -> new E1M1TurnableBlock());
+	public static final RegistryObject<Block> E1M1_18 = BLOCKS.register("e1m1_block18", () -> new E1M1TurnableBlock());
+	public static final RegistryObject<Block> E1M1_19 = BLOCKS.register("e1m1_block19", () -> new E1M1TurnableBlock());
+	public static final RegistryObject<Block> E1M1_20 = BLOCKS.register("e1m1_block20", () -> new E1M1TurnableBlock());
+	public static final RegistryObject<Block> E1M1_21 = BLOCKS.register("e1m1_block21", () -> new E1M1TurnableBlock());
+	public static final RegistryObject<Block> E1M1_22 = BLOCKS.register("e1m1_block22", () -> new E1M1TurnableBlock());
+	public static final RegistryObject<Block> E1M1_23 = BLOCKS.register("e1m1_block23", () -> new E1M1TurnableBlock());
+	public static final RegistryObject<Block> E1M1_24 = BLOCKS.register("e1m1_block24", () -> new E1M1TurnableBlock());
+	public static final RegistryObject<Block> E1M1_25 = BLOCKS.register("e1m1_block25", () -> new E1M1TurnableBlock());
+	public static final RegistryObject<Block> E1M1_26 = BLOCKS.register("e1m1_block26", () -> new E1M1TurnableBlock());
+	public static final RegistryObject<Block> E1M1_27 = BLOCKS.register("e1m1_block27", () -> new E1M1StairsBlock(E1M1_5.get().defaultBlockState(), BlockBehaviour.Properties.copy(E1M1_5.get())));
+	public static final RegistryObject<Block> E1M1_28 = BLOCKS.register("e1m1_block28", () -> new E1M1StairsBlock(E1M1_5.get().defaultBlockState(), BlockBehaviour.Properties.copy(E1M1_5.get())));
+	public static final RegistryObject<Block> E1M1_29 = BLOCKS.register("e1m1_block29", () -> new E1M1StairsBlock(E1M1_5.get().defaultBlockState(), BlockBehaviour.Properties.copy(E1M1_5.get())));
+
 }

@@ -1,5 +1,7 @@
 package mod.azure.doom.block;
 
+import java.util.function.ToIntFunction;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
@@ -13,6 +15,7 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RedstoneTorchBlock;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -24,8 +27,8 @@ public class E1M1TurnableHurtBlock extends Block {
 	public static final DirectionProperty direction = HorizontalDirectionalBlock.FACING;
 	public static final BooleanProperty light = RedstoneTorchBlock.LIT;
 
-	public E1M1TurnableHurtBlock(BlockBehaviour.Properties properties) {
-		super(properties);
+	public E1M1TurnableHurtBlock() {
+		super(BlockBehaviour.Properties.of().explosionResistance(30).strength(4.0F).sound(SoundType.METAL).lightLevel(litBlockEmission()));
 		registerDefaultState(stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.valueOf(true)));
 	}
 
@@ -52,6 +55,12 @@ public class E1M1TurnableHurtBlock extends Block {
 	@Override
 	public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
 		return 15;
+	}
+
+	private static ToIntFunction<BlockState> litBlockEmission() {
+		return (p_50763_) -> {
+			return 15;
+		};
 	}
 
 	@Override

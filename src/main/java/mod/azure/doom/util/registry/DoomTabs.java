@@ -201,6 +201,9 @@ public class DoomTabs {
 		entries.accept(DoomBlocks.E1M1_24.get());
 		entries.accept(DoomBlocks.E1M1_25.get());
 		entries.accept(DoomBlocks.E1M1_26.get());
+//		entries.accept(DoomBlocks.E1M1_27.get());
+//		entries.accept(DoomBlocks.E1M1_28.get());
+//		entries.accept(DoomBlocks.E1M1_29.get());
 		entries.accept(DoomBlocks.ICON_WALL1.get());
 		entries.accept(DoomBlocks.ICON_WALL2.get());
 		entries.accept(DoomBlocks.ICON_WALL3.get());
