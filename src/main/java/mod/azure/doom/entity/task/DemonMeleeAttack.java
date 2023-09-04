@@ -12,16 +12,22 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierambient.CueBallEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
+import mod.azure.doom.entity.tierheavy.Hellknight2016Entity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
@@ -70,6 +76,8 @@ public class DemonMeleeAttack<E extends DemonEntity> extends CustomDelayedMeleeB
 	@Override
 	protected void stop(E entity) {
 		this.target = null;
+		if (entity instanceof Hellknight2016Entity hellknight)
+			hellknight.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, this.delayTime, 100, false, false));
 	}
 
 	@Override
@@ -104,6 +112,12 @@ public class DemonMeleeAttack<E extends DemonEntity> extends CustomDelayedMeleeB
 			areaeffectcloudentity.setPos(entity.getX(), entity.getY(), entity.getZ());
 			gladiatorEntity.level().addFreshEntity(areaeffectcloudentity);
 			gladiatorEntity.doHurtTarget(this.target);
+		} else if (entity instanceof Hellknight2016Entity marauderEntity) {
+			final var aabb = marauderEntity.getBoundingBox().inflate(16);
+			final var checkBlocking = TargetingConditions.forCombat().range(3.0D).selector(target -> !target.getUseItem().is(Items.SHIELD));
+			marauderEntity.level().getNearbyEntities(LivingEntity.class, checkBlocking, marauderEntity, aabb).forEach(target -> {
+				target.hurt(marauderEntity.damageSources().mobAttack(marauderEntity), (float) marauderEntity.getAttributeValue(Attributes.ATTACK_DAMAGE));
+			});
 		} else
 			entity.doHurtTarget(this.target);
 	}

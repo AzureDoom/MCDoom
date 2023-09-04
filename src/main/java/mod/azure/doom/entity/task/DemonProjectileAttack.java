@@ -164,7 +164,6 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 			marauderEntity.level().getNearbyEntities(LivingEntity.class, checkBlocking, marauderEntity, aabb).stream().findFirst().ifPresent(target -> {
 				target.hurt(marauderEntity.damageSources().mobAttack(marauderEntity), damage);
 			});
-//			marauderEntity.teleport();
 		}
 
 		if (entity instanceof ArchvileEntity archvileEntity) {

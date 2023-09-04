@@ -12,6 +12,7 @@ import mod.azure.doom.entity.tiersuperheavy.MarauderEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
 public abstract class CustomDelayedMeleeBehaviour<E extends DemonEntity> extends ExtendedBehaviour<E> {
@@ -47,6 +48,8 @@ public abstract class CustomDelayedMeleeBehaviour<E extends DemonEntity> extends
 			super.start(level, entity, gameTime);
 			doDelayedAction(entity);
 		}
+		if (!(entity instanceof GladiatorEntity))
+			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 100, false, false));
 		if (entity instanceof MancubusEntity mancubusEntity)
 			mancubusEntity.setAttackingState(3);
 		if (entity instanceof DoomHunterEntity doomHunterEntity)
@@ -67,6 +70,14 @@ public abstract class CustomDelayedMeleeBehaviour<E extends DemonEntity> extends
 			entity.setAttackingState(2);
 		if (entity instanceof MarauderEntity marauderEntity) 
 			marauderEntity.triggerAnim("livingController", "attacking");
+		if (entity instanceof Hellknight2016Entity hellknight2016) {
+			hellknight2016.triggerAnim("livingController", "attack");
+			if (hellknight2016.getTarget() != null && !hellknight2016.level().isClientSide()) {
+				var vec3d2 = new Vec3(hellknight2016.getTarget().getX() - hellknight2016.getX(), 0.0, hellknight2016.getTarget().getZ() - hellknight2016.getZ());
+				vec3d2 = vec3d2.normalize().scale(0.8).add(hellknight2016.getDeltaMovement().scale(0.4));
+				hellknight2016.setDeltaMovement(vec3d2.x, 0.6F, vec3d2.z);
+			}
+		}
 	}
 
 	@Override

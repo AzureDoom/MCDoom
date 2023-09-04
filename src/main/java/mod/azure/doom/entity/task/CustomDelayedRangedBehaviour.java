@@ -5,7 +5,6 @@ import java.util.function.Consumer;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
-import mod.azure.doom.entity.tiersuperheavy.MarauderEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -44,7 +43,6 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 			super.start(level, entity, gameTime);
 			doDelayedAction(entity);
 		}
-		entity.getNavigation().stop();
 		if (entity instanceof MancubusEntity mancubusEntity)
 			mancubusEntity.setAttackingState(2);
 		else if (entity instanceof GladiatorEntity gladiatorEntity) {
@@ -56,8 +54,8 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 			gladiatorEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 100, false, false));
 		} else
 			entity.setAttackingState(1);
-		if (entity instanceof MarauderEntity marauderEntity)
-			marauderEntity.triggerAnim("livingController", "ranged");
+		entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, this.delayTime, 100, false, false));
+		entity.triggerAnim("livingController", "ranged");
 	}
 
 	@Override
