@@ -75,10 +75,10 @@ public class Chainsaw extends Item {
 		final Player player = (Player) entityIn;
 		if (player.getMainHandItem().getItem() instanceof Chainsaw && stack.getDamageValue() < stack.getMaxDamage() - 1 && !player.getCooldowns().isOnCooldown(this)) {
 			final AABB aabb = new AABB(entityIn.blockPosition().above()).inflate(1D, 1D, 1D);
-			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDamage(user, e));
-			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDeathCheck(user, e, stack));
-			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> damageItem(user, stack));
-			entityIn.getCommandSenderWorld().getEntities(user, aabb).forEach(this::addParticle);
+			entityIn.level().getEntities(user, aabb).forEach(e -> doDamage(user, e));
+			entityIn.level().getEntities(user, aabb).forEach(e -> doDeathCheck(user, e, stack));
+			entityIn.level().getEntities(user, aabb).forEach(e -> damageItem(user, stack));
+			entityIn.level().getEntities(user, aabb).forEach(this::addParticle);
 			worldIn.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_IDLE.get(), SoundSource.PLAYERS, 0.05F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 		if (worldIn.isClientSide)

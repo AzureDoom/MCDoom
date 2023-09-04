@@ -77,10 +77,10 @@ public class ChainsawAnimated extends Item implements GeoItem {
 		final Player player = (Player) entity;
 		if (player.getMainHandItem().getItem() instanceof ChainsawAnimated && stack.getDamageValue() < stack.getMaxDamage() - 1 && !player.getCooldowns().isOnCooldown(this)) {
 			final AABB aabb = new AABB(entity.blockPosition().above()).inflate(1D, 1D, 1D);
-			entity.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDamage(user, e));
-			entity.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> doDeathCheck(user, e, stack));
-			entity.getCommandSenderWorld().getEntities(user, aabb).forEach(e -> damageItem(user, stack));
-			entity.getCommandSenderWorld().getEntities(user, aabb).forEach(this::addParticle);
+			entity.level().getEntities(user, aabb).forEach(e -> doDamage(user, e));
+			entity.level().getEntities(user, aabb).forEach(e -> doDeathCheck(user, e, stack));
+			entity.level().getEntities(user, aabb).forEach(e -> damageItem(user, stack));
+			entity.level().getEntities(user, aabb).forEach(this::addParticle);
 		}
 		if (selected && stack.getMaxDamage() < stack.getMaxDamage() - 1) {
 			world.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_IDLE.get(), SoundSource.PLAYERS, 0.05F, 1.0F / (world.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
