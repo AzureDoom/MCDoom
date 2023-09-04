@@ -43,17 +43,19 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 			super.start(level, entity, gameTime);
 			doDelayedAction(entity);
 		}
+		entity.getNavigation().stop();
 		if (entity instanceof MancubusEntity mancubusEntity)
 			mancubusEntity.setAttackingState(2);
 		else if (entity instanceof GladiatorEntity gladiatorEntity) {
 			if (gladiatorEntity.getDeathState() == 0) {
 				gladiatorEntity.setAttackingState(1);
 				gladiatorEntity.setTextureState(2);
-			} else 
+			} else
 				gladiatorEntity.setAttackingState(4);
 			gladiatorEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 100, false, false));
 		} else
 			entity.setAttackingState(1);
+		entity.triggerAnim("livingController", "ranged");
 	}
 
 	@Override
@@ -61,7 +63,6 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 		super.stop(level, entity, gameTime);
 
 		this.delayFinishedAt = 0;
-		entity.setAttackingState(0);
 		if (entity instanceof GladiatorEntity gladiatorEntity)
 			gladiatorEntity.setTextureState(0);
 	}
@@ -79,6 +80,7 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 			doDelayedAction(entity);
 			this.delayedCallback.accept(entity);
 		}
+		entity.getNavigation().stop();
 	}
 
 	/**

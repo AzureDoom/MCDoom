@@ -256,7 +256,7 @@
 		},
 		"ranged": {
 			"loop": "hold_on_last_frame",
-			"animation_length": 5.44,
+			"animation_length": 1.44,
 			"bones": {
 				"lArm": {
 					"rotation": {
