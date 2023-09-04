@@ -8,6 +8,7 @@ import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tierheavy.Hellknight2016Entity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
 import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
+import mod.azure.doom.entity.tiersuperheavy.MarauderEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -64,6 +65,8 @@ public abstract class CustomDelayedMeleeBehaviour<E extends DemonEntity> extends
 
 		if (!(entity instanceof IconofsinEntity) || !(entity instanceof MancubusEntity) || !(entity instanceof Hellknight2016Entity) || !(entity instanceof DoomHunterEntity))
 			entity.setAttackingState(2);
+		if (entity instanceof MarauderEntity marauderEntity) 
+			marauderEntity.triggerAnim("livingController", "attacking");
 	}
 
 	@Override

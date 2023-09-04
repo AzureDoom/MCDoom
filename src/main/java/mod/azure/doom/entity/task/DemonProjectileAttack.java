@@ -55,6 +55,8 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
@@ -102,6 +104,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 	@Override
 	protected void stop(E entity) {
 		this.target = null;
+		entity.setAttackingState(0);
 	}
 
 	@Override
@@ -114,6 +117,8 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 		if (!entity.getSensing().hasLineOfSight(this.target) || entity.isWithinMeleeAttackRange(this.target))
 			return;
 
+		BehaviorUtils.lookAtEntity(entity, this.target);
+
 		if (entity instanceof PossessedSoldierEntity || entity instanceof BaronEntity || entity instanceof FireBaronEntity)
 			entity.shootBaron(this.target, damage, 0, 0, 0);
 
@@ -123,8 +128,13 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 		if (entity instanceof BloodMaykrEntity)
 			entity.shootBloodBolt(this.target, damage);
 
-		if (entity instanceof SpiderMastermindEntity || entity instanceof ChaingunnerEntity || entity instanceof ShotgunguyEntity || entity instanceof ZombiemanEntity)
-			entity.shootChaingun(this.target, entity instanceof ChaingunnerEntity ? DoomConfig.SERVER.chaingun_bullet_damage.get().floatValue() : damage);
+		if (entity instanceof SpiderMastermindEntity || entity instanceof ChaingunnerEntity || entity instanceof ShotgunguyEntity || entity instanceof ZombiemanEntity) {
+			final var aabb = entity.getBoundingBox().inflate(16, 16, 16);
+			final var checkBlocking = TargetingConditions.forCombat().range(16.0D).selector(target -> !target.getUseItem().is(Items.SHIELD));
+			entity.level().getNearbyEntities(LivingEntity.class, checkBlocking, entity, aabb).stream().findFirst().ifPresent(target -> {
+				target.hurt(entity.damageSources().mobAttack(entity), entity instanceof ChaingunnerEntity ? DoomConfig.SERVER.chaingun_bullet_damage.get().floatValue() : damage);
+			});
+		}
 
 		if (entity instanceof SpiderMastermind2016Entity || entity instanceof ArachnotronEntity)
 			entity.shootEnergyCell(this.target, damage);
@@ -149,8 +159,12 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 		}
 
 		if (entity instanceof MarauderEntity marauderEntity) {
-			marauderEntity.shootChaingun(this.target, DoomConfig.SERVER.marauder_ssgdamage.get().floatValue());
-			marauderEntity.teleport();
+			final var aabb = marauderEntity.getBoundingBox().inflate(16, 16, 16);
+			final var checkBlocking = TargetingConditions.forCombat().range(16.0D).selector(target -> !target.getUseItem().is(Items.SHIELD));
+			marauderEntity.level().getNearbyEntities(LivingEntity.class, checkBlocking, marauderEntity, aabb).stream().findFirst().ifPresent(target -> {
+				target.hurt(marauderEntity.damageSources().mobAttack(marauderEntity), damage);
+			});
+//			marauderEntity.teleport();
 		}
 
 		if (entity instanceof ArchvileEntity archvileEntity) {

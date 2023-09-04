@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
+import mod.azure.doom.entity.tiersuperheavy.MarauderEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -43,17 +44,20 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 			super.start(level, entity, gameTime);
 			doDelayedAction(entity);
 		}
+		entity.getNavigation().stop();
 		if (entity instanceof MancubusEntity mancubusEntity)
 			mancubusEntity.setAttackingState(2);
 		else if (entity instanceof GladiatorEntity gladiatorEntity) {
 			if (gladiatorEntity.getDeathState() == 0) {
 				gladiatorEntity.setAttackingState(1);
 				gladiatorEntity.setTextureState(2);
-			} else 
+			} else
 				gladiatorEntity.setAttackingState(4);
 			gladiatorEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 100, false, false));
 		} else
 			entity.setAttackingState(1);
+		if (entity instanceof MarauderEntity marauderEntity)
+			marauderEntity.triggerAnim("livingController", "ranged");
 	}
 
 	@Override
@@ -61,7 +65,6 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 		super.stop(level, entity, gameTime);
 
 		this.delayFinishedAt = 0;
-		entity.setAttackingState(0);
 		if (entity instanceof GladiatorEntity gladiatorEntity)
 			gladiatorEntity.setTextureState(0);
 	}
@@ -79,6 +82,7 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 			doDelayedAction(entity);
 			this.delayedCallback.accept(entity);
 		}
+		entity.getNavigation().stop();
 	}
 
 	/**
