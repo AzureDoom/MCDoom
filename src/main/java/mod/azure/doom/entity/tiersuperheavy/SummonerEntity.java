@@ -9,7 +9,6 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
@@ -86,20 +85,13 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 				return event.setAndContinue(DoomAnimationsDefault.DEATH);
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("walk"))
-				if (level().isClientSide())
-					level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PHANTOM_SWOOP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (event.getAnimatable().getAttckingState() == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("summon", LoopType.PLAY_ONCE));
-			if (event.getAnimatable().getAttckingState() == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(DoomAnimationsDefault.MELEE);
-			return PlayState.STOP;
-		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("attack"))
 				if (level().isClientSide())
 					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.ARCHVILE_SCREAM, SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		}));
+			if (event.getKeyframeData().getSound().matches("walk"))
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PHANTOM_SWOOP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+		}).triggerableAnim("ranged", RawAnimation.begin().then("summon", LoopType.PLAY_ONCE)).triggerableAnim("attacking", DoomAnimationsDefault.MELEE));
 	}
 
 	@Override
@@ -157,7 +149,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 		tickBrain(this);
 		if (level().isDay() && tickCount >= targetChangeTime + 600) {
 			final var f = getLightLevelDependentMagicValue();
-			if (f > 0.5F && level().canSeeSky(blockPosition()) && random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) 
+			if (f > 0.5F && level().canSeeSky(blockPosition()) && random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F)
 				setTarget((LivingEntity) null);
 		}
 
@@ -178,13 +170,13 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 	private boolean teleport(double x, double y, double z) {
 		final var blockpos$mutableblockpos = new BlockPos.MutableBlockPos(x, y, z);
 
-		while (blockpos$mutableblockpos.getY() > level().getMinBuildHeight() && !level().getBlockState(blockpos$mutableblockpos).blocksMotion()) 
+		while (blockpos$mutableblockpos.getY() > level().getMinBuildHeight() && !level().getBlockState(blockpos$mutableblockpos).blocksMotion())
 			blockpos$mutableblockpos.move(Direction.DOWN);
 
 		final var blockstate = level().getBlockState(blockpos$mutableblockpos);
-		if (blockstate.blocksMotion() && !blockstate.getFluidState().is(FluidTags.WATER)) 
+		if (blockstate.blocksMotion() && !blockstate.getFluidState().is(FluidTags.WATER))
 			return randomTeleport(x, y, z, true);
-		else 
+		else
 			return false;
 	}
 

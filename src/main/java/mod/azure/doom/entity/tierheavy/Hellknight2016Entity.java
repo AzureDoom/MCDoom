@@ -29,8 +29,6 @@ import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
@@ -68,8 +66,6 @@ public class Hellknight2016Entity extends DemonEntity implements SmartBrainOwner
 				return event.setAndContinue(DoomAnimationsDefault.RUN);
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
 				return event.setAndContinue(DoomAnimationsDefault.DEATH);
-			if ((!this.onGround() || this.swinging) && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("jumpattack", LoopType.PLAY_ONCE));
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
@@ -78,7 +74,7 @@ public class Hellknight2016Entity extends DemonEntity implements SmartBrainOwner
 			if (event.getKeyframeData().getSound().matches("attack"))
 				if (level().isClientSide())
 					level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		}));
+		}).triggerableAnim("attack", RawAnimation.begin().then("jumpattack", LoopType.PLAY_ONCE)));
 	}
 
 	@Override
@@ -114,7 +110,7 @@ public class Hellknight2016Entity extends DemonEntity implements SmartBrainOwner
 
 	@Override
 	public BrainActivityGroup<Hellknight2016Entity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(1.25F), new DemonMeleeAttack<>(0));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(1.75F), new DemonMeleeAttack<>(15));
 	}
 
 	@Override
@@ -126,29 +122,6 @@ public class Hellknight2016Entity extends DemonEntity implements SmartBrainOwner
 	public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
 		var distance = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
 		return distance <= this.getMeleeAttackRangeSqr(livingEntity);
-	}
-
-	@Override
-	protected void registerGoals() {
-//		goalSelector.addGoal(3, new Hellknight2016Entity.AttackGoal(this, 1.5D));
-	}
-
-	@Override
-	public void tick() {
-		super.tick();
-		if (this.getTarget() != null && !this.level().isClientSide()) {
-			if (this.getCommandSenderWorld().getEntities(this, new AABB(this.blockPosition()).inflate(3D)).contains(this.getTarget())) {
-				this.attackstatetimer++;
-				if (this.onGround() && this.attackstatetimer >= 5) {
-					var vec3d2 = new Vec3(this.getTarget().getX() - this.getX(), 0.0, this.getTarget().getZ() - this.getZ());
-					vec3d2 = vec3d2.normalize().scale(0.8).add(this.getDeltaMovement().scale(0.4));
-					this.setDeltaMovement(vec3d2.x, 0.6F, vec3d2.z);
-					this.attackstatetimer = -80;
-				}
-			}
-		} else {
-			this.attackstatetimer = 0;
-		}
 	}
 
 	@Override

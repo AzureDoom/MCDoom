@@ -43,7 +43,8 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 			super.start(level, entity, gameTime);
 			doDelayedAction(entity);
 		}
-		entity.getNavigation().stop();
+		if (!(entity instanceof GladiatorEntity)) 
+			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 100, false, false));
 		if (entity instanceof MancubusEntity mancubusEntity)
 			mancubusEntity.setAttackingState(2);
 		else if (entity instanceof GladiatorEntity gladiatorEntity) {

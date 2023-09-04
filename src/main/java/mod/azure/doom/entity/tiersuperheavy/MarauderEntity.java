@@ -105,7 +105,7 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
 
 	@Override
 	public BrainActivityGroup<MarauderEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F).stopIf(entity -> this.getAttckingState() > 1), new DemonProjectileAttack<>(10).attackInterval(mob -> 40).attackDamage(DoomMod.config.marauder_ssgdamage), new DemonMeleeAttack<>(5));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F).stopIf(entity -> this.getAttckingState() > 1), new DemonProjectileAttack<>(10).attackInterval(mob -> 90).attackDamage(DoomMod.config.marauder_ssgdamage), new DemonMeleeAttack<>(5));
 	}
 
 	@Override
