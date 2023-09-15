@@ -61,7 +61,7 @@ mixin {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-    maven { url "https://dl.cloudsmith.io/public/azuredoom-mods/azurelib/maven/" }
+	maven { url 'https://libs.azuredoom.com:4443/mods'}
     maven { url "https://maven.theillusivec4.top/" }
     maven { url "https://minecraft.curseforge.com/api/maven/" }
     maven { url "https://dl.cloudsmith.io/public/tslat/sbl/maven/" }
@@ -73,16 +73,17 @@ repositories {
 
 dependencies {
     minecraft "net.neoforged:forge:${minecraft_version}-${neo_version}"
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.2.0-beta.3+1.20.1")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.2.0-beta.3+1.20.1:api")
-  	implementation fg.deobf('mod.azure.azurelib:azurelib-neo-1.20.1:1.0.25')
-	annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:12.0.645")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+  	implementation fg.deobf("mod.azure.azurelib:azurelib-neo-${minecraft_version}:${azurelib_version}")
+  	implementation fg.deobf("net.kyrptonaught.customportalapi:customportalapi-reforged:${customportalsapi}")
+	annotationProcessor "org.spongepowered:mixin:0.8.4:processor"
+    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${rei_version}")
     implementation fg.deobf("curse.maven:REIPC-521393:4611912")
-    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:11.1.106")
-    implementation fg.deobf("dev.architectury:architectury-forge:9.1.12")
-	implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-forge-1.20:1.11")
-	implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-common-1.20:1.11")
+    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_version}")
+    implementation fg.deobf("dev.architectury:architectury-forge:${arch_version}")
+	implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-forge-1.20:${sbl_version}")
+	implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-common-1.20:${sbl_version}")
 }
 
 tasks.withType(ProcessResources).configureEach {
@@ -104,11 +105,11 @@ tasks.named('jar', Jar).configure {
     manifest {
         attributes([
                 'Specification-Title'     : mod_id,
-                'Specification-Vendor'    : "AzureDoom",
-                'Specification-Version'   : '1', // We are version 1 of ourselves
+                'Specification-Vendor'    : mod_authors,
+                'Specification-Version'   : '1',
                 'Implementation-Title'    : project.name,
                 'Implementation-Version'  : project.jar.archiveVersion,
-                'Implementation-Vendor'   : "AzureDoom",
+                'Implementation-Vendor'   : mod_authors,
                 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
@@ -129,7 +130,7 @@ publishing {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    options.encoding = 'UTF-8'
 }
 
 processResources {
@@ -161,7 +162,6 @@ if (file('key.properties').exists()) {
         	releaseType = "${curse_release}"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
-        	addGameVersion("1.20.1")
         	addGameVersion("NeoForge")
         	addGameVersion("Java 17")
 
@@ -169,6 +169,7 @@ if (file('key.properties').exists()) {
             	requiredDependency 'curios'  
             	requiredDependency 'azurelib' 
             	requiredDependency 'smartbrainlib'  
+            	requiredDependency 'custom-portal-api-reforged'  
             	optionalDependency 'better-combat-by-daedelus' 
         	}
     	}
@@ -182,17 +183,16 @@ if (file('key.properties').exists()) {
 		modrinthProp.load(secretPropsFile.newInputStream())
 		
 		token = modrinthProp.getProperty('modrinthKey')
-		projectId = 'Mfo4FiDF' 
+		projectId = project.modrinth_id
 		versionNumber = project.mod_version 
-		versionName = 'Forge 1.20.1'
 		uploadFile = jar 
 		changelog = rootProject.file("changelog.txt").text
-		gameVersions = ['1.20.1']
 		loaders = ['neoforge']
 		dependencies { 
         	required.project "azurelib"
         	required.project "smartbrainlib"
         	required.project "curios"
+        	required.project "custom-portal-api-reforged"
         	optional.project "better-combat"
    		}
 	}

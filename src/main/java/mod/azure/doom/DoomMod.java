@@ -19,6 +19,7 @@ import mod.azure.doom.util.registry.DoomSounds;
 import mod.azure.doom.util.registry.DoomStructures;
 import mod.azure.doom.util.registry.DoomTabs;
 import mod.azure.doom.util.registry.ModEntitySpawn;
+import net.kyrptonaught.customportalapi.api.CustomPortalBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -77,6 +78,7 @@ public class DoomMod {
 
 	private void setup(final FMLCommonSetupEvent event) {
 		DoomPacketHandler.register();
+		CustomPortalBuilder.beginPortal().frameBlock(DoomBlocks.E1M1_1.get()).lightWithItem(DoomItems.ARGENT_ENERGY.get()).destDimID(DoomMod.modResource("doom_hell")).tintColor(139, 0, 0).registerPortal();
 	}
 
 	public static final ResourceLocation modResource(String name) {
