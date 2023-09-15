@@ -1,6 +1,7 @@
 {
 	"replace": "false",
 	"values": [
-		"minecraft:eroded_badlands"
+		"minecraft:eroded_badlands",
+		"doom:doom_hell"
 	]
 }

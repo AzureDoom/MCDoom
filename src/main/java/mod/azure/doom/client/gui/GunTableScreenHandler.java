@@ -19,13 +19,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class GunTableScreenHandler extends AbstractContainerMenu {
-	private final Inventory playerInventory;
-	private final DoomGunInventory gunTableInventory;
-	private final ContainerLevelAccess context;
-	@SuppressWarnings("unused")
-	private int recipeIndex;
-	@SuppressWarnings("unused")
-	private static Level level;
+	protected final Inventory playerInventory;
+	protected final DoomGunInventory gunTableInventory;
+	protected final ContainerLevelAccess context;
+	protected int recipeIndex;
+	protected static Level level;
 
 	// client
 	public GunTableScreenHandler(int syncId, Inventory playerInventory) {

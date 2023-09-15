@@ -12,6 +12,7 @@ import mod.azure.doom.util.MobAttributes;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.kyrptonaught.customportalapi.api.CustomPortalBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.flag.FeatureFlags;
@@ -55,5 +56,6 @@ public class ModRegistry {
 		GUN_TABLE_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, DoomMod.modResource("guntable"), FabricBlockEntityTypeBuilder.create(GunBlockEntity::new, DoomBlocks.GUN_TABLE).build(null));
 		SCREEN_HANDLER_TYPE = new MenuType<>(GunTableScreenHandler::new, FeatureFlags.VANILLA_SET);
 		Registry.register(BuiltInRegistries.MENU, DoomMod.modResource("guntable_screen_type"), SCREEN_HANDLER_TYPE);
+		CustomPortalBuilder.beginPortal().frameBlock(DoomBlocks.E1M1_1).lightWithItem(DoomItems.ARGENT_ENERGY).destDimID(DoomMod.modResource("doom_hell")).tintColor(139, 0, 0).registerPortal();
 	}
 }
