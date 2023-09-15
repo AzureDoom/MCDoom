@@ -28,15 +28,12 @@ public class MarauderModel extends GeoModel<MarauderEntity> {
 
 	@Override
 	public void setCustomAnimations(MarauderEntity animatable, long instanceId, AnimationState<MarauderEntity> animationState) {
+		var head = getAnimationProcessor().getBone("bone");
+
+		if (head != null) 
+			head.setRotY(animationState.getData(DataTickets.ENTITY_MODEL_DATA).netHeadYaw() * Mth.DEG_TO_RAD);
+		
 		super.setCustomAnimations(animatable, instanceId, animationState);
-
-		var head = getAnimationProcessor().getBone("head");
-		var entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
-
-		if (head != null) {
-			head.setRotX(entityData.headPitch() * Mth.DEG_TO_RAD);
-			head.setRotY(entityData.netHeadYaw() * Mth.DEG_TO_RAD);
-		}
 	}
 
 	@Override

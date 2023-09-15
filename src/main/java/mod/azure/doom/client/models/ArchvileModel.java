@@ -1,10 +1,14 @@
 package mod.azure.doom.client.models;
 
+import mod.azure.azurelib.constant.DataTickets;
+import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
+import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.tiersuperheavy.ArchvileEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 public class ArchvileModel extends GeoModel<ArchvileEntity> {
 
@@ -29,5 +33,21 @@ public class ArchvileModel extends GeoModel<ArchvileEntity> {
 	@Override
 	public RenderType getRenderType(ArchvileEntity animatable, ResourceLocation texture) {
 		return RenderType.entityTranslucent(getTextureResource(animatable));
+	}
+
+	@Override
+	public void setCustomAnimations(ArchvileEntity animatable, long instanceId, AnimationState<ArchvileEntity> animationState) {
+		CoreGeoBone body1 = getAnimationProcessor().getBone("thighs");
+		CoreGeoBone body2 = getAnimationProcessor().getBone("root");
+
+		if (animatable.getVariant() == 1)
+			if (body1 != null)
+				body1.setRotY(animationState.getData(DataTickets.ENTITY_MODEL_DATA).netHeadYaw() * Mth.DEG_TO_RAD);
+
+		if (animatable.getVariant() == 2)
+			if (body2 != null)
+				body2.setRotY(animationState.getData(DataTickets.ENTITY_MODEL_DATA).netHeadYaw() * Mth.DEG_TO_RAD);
+
+		super.setCustomAnimations(animatable, instanceId, animationState);
 	}
 }
