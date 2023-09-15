@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
+import mod.azure.doom.entity.tiersuperheavy.ArchvileEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -43,6 +44,10 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 			super.start(level, entity, gameTime);
 			doDelayedAction(entity);
 		}
+		if (!(entity instanceof GladiatorEntity) || !(entity instanceof ArchvileEntity))
+			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 100, false, false));
+		if (entity instanceof ArchvileEntity)
+			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120, 100, false, false));
 		if (entity instanceof MancubusEntity mancubusEntity)
 			mancubusEntity.setAttackingState(2);
 		else if (entity instanceof GladiatorEntity gladiatorEntity) {
@@ -54,7 +59,6 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 			gladiatorEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 100, false, false));
 		} else
 			entity.setAttackingState(1);
-		entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, this.delayTime, 100, false, false));
 		entity.triggerAnim("livingController", "ranged");
 	}
 

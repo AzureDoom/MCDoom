@@ -129,9 +129,10 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 			entity.shootBloodBolt(this.target, damage);
 
 		if (entity instanceof SpiderMastermindEntity || entity instanceof ChaingunnerEntity || entity instanceof ShotgunguyEntity || entity instanceof ZombiemanEntity) {
-			final var aabb = entity.getBoundingBox().inflate(16, 16, 16);
-			final var checkBlocking = TargetingConditions.forCombat().range(16.0D).selector(target -> !target.getUseItem().is(Items.SHIELD));
+			final var aabb = entity.getBoundingBox().inflate(16);
+			final var checkBlocking = TargetingConditions.forCombat().range(16).selector(target -> !target.getUseItem().is(Items.SHIELD));
 			entity.level().getNearbyEntities(LivingEntity.class, checkBlocking, entity, aabb).stream().findFirst().ifPresent(target -> {
+				BehaviorUtils.lookAtEntity(entity, target);
 				target.hurt(entity.damageSources().mobAttack(entity), entity instanceof ChaingunnerEntity ? DoomConfig.SERVER.chaingun_bullet_damage.get().floatValue() : damage);
 			});
 		}
@@ -159,9 +160,10 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 		}
 
 		if (entity instanceof MarauderEntity marauderEntity) {
-			final var aabb = marauderEntity.getBoundingBox().inflate(16, 16, 16);
-			final var checkBlocking = TargetingConditions.forCombat().range(16.0D).selector(target -> !target.getUseItem().is(Items.SHIELD));
+			final var aabb = marauderEntity.getBoundingBox().inflate(16);
+			final var checkBlocking = TargetingConditions.forCombat().range(16).selector(target -> !target.getUseItem().is(Items.SHIELD));
 			marauderEntity.level().getNearbyEntities(LivingEntity.class, checkBlocking, marauderEntity, aabb).stream().findFirst().ifPresent(target -> {
+				BehaviorUtils.lookAtEntity(marauderEntity, target);
 				target.hurt(marauderEntity.damageSources().mobAttack(marauderEntity), damage);
 			});
 		}
@@ -171,7 +173,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 				if (e instanceof Mob mob)
 					mob.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000, 1));
 			});
-			archvileEntity.teleportRandomly();
+//			archvileEntity.teleportRandomly();
 			final double d = Math.min(this.target.getY(), archvileEntity.getY());
 			final double e = Math.max(this.target.getY(), archvileEntity.getY()) + 1.0D;
 			final float f = (float) Mth.atan2(this.target.getZ() - archvileEntity.getZ(), this.target.getX() - archvileEntity.getX());

@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
@@ -86,15 +85,10 @@ public class ArchvileEntity extends DemonEntity implements SmartBrainOwner<Archv
 			if (event.getKeyframeData().getSound().matches("walk"))
 				if (level().isClientSide())
 					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (event.getAnimatable().getAttckingState() == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
-			return PlayState.STOP;
-		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("attack"))
 				if (level().isClientSide())
 					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.ARCHVILE_SCREAM.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		}));
+		}).triggerableAnim("ranged", DoomAnimationsDefault.ATTACKING));
 	}
 
 	@Override
@@ -202,7 +196,7 @@ public class ArchvileEntity extends DemonEntity implements SmartBrainOwner<Archv
 
 	@Override
 	public BrainActivityGroup<ArchvileEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(DoomConfig.SERVER.baron_ranged_damage.get().floatValue()), new DemonMeleeAttack<>(5));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(5).attackInterval(mob -> 100).attackDamage(DoomConfig.SERVER.baron_ranged_damage.get().floatValue()), new DemonMeleeAttack<>(5));
 	}
 
 	@Override
