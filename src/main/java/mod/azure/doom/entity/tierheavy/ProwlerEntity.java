@@ -6,13 +6,13 @@ import java.util.SplittableRandom;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.DoomAnimationsDefault;
+import mod.azure.doom.entity.task.DemonMeleeAttack;
 import mod.azure.doom.entity.task.DemonProjectileAttack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -44,7 +44,6 @@ import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
@@ -75,15 +74,13 @@ public class ProwlerEntity extends DemonEntity implements SmartBrainOwner<Prowle
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
 			if (event.isMoving() && hurtTime == 0)
-				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
+				return event.setAndContinue(DoomAnimationsDefault.WALKING);
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+				return event.setAndContinue(DoomAnimationsDefault.DEATH);
+			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			if (event.getAnimatable().getAttckingState() == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("attack", LoopType.PLAY_ONCE));
 			return PlayState.STOP;
-		}));
+		}).triggerableAnim("ranged", DoomAnimationsDefault.ATTACK).triggerableAnim("melee", DoomAnimationsDefault.MELEE));
 	}
 
 	@Override
@@ -122,7 +119,7 @@ public class ProwlerEntity extends DemonEntity implements SmartBrainOwner<Prowle
 
 	@Override
 	public BrainActivityGroup<ProwlerEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackDamage(DoomMod.config.prowler_ranged_damage).attackInterval(mob -> 80), new AnimatableMeleeAttack<>(20));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackDamage(DoomMod.config.prowler_ranged_damage).attackInterval(mob -> 80), new DemonMeleeAttack<>(5));
 	}
 
 	@Override
