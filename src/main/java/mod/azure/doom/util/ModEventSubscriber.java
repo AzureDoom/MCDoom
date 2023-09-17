@@ -26,6 +26,7 @@ import mod.azure.doom.entity.tierfodder.ZombiemanEntity;
 import mod.azure.doom.entity.tierheavy.ArachnotronEntity;
 import mod.azure.doom.entity.tierheavy.BloodMaykrEntity;
 import mod.azure.doom.entity.tierheavy.CacodemonEntity;
+import mod.azure.doom.entity.tierheavy.CarcassEntity;
 import mod.azure.doom.entity.tierheavy.Hellknight2016Entity;
 import mod.azure.doom.entity.tierheavy.HellknightEntity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
@@ -107,6 +108,7 @@ public class ModEventSubscriber {
 			SpawnPlacements.register(DoomEntities.TURRET.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 			SpawnPlacements.register(DoomEntities.SUMMONER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 			SpawnPlacements.register(DoomEntities.REVENANT2016.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
+			SpawnPlacements.register(DoomEntities.CARCASS.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		});
 	}
 
@@ -160,5 +162,6 @@ public class ModEventSubscriber {
 		event.put(DoomEntities.TURRET.get(), TurretEntity.createMobAttributes().build());
 		event.put(DoomEntities.SUMMONER.get(), SummonerEntity.createMobAttributes().build());
 		event.put(DoomEntities.REVENANT2016.get(), Revenant2016Entity.createMobAttributes().build());
+		event.put(DoomEntities.CARCASS.get(), CarcassEntity.createMobAttributes().build());
 	}
 }

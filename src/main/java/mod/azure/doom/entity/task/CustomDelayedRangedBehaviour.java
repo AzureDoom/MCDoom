@@ -44,8 +44,8 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 			super.start(level, entity, gameTime);
 			doDelayedAction(entity);
 		}
-		if (!(entity instanceof GladiatorEntity) || !(entity instanceof ArchvileEntity))
-			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 100, false, false));
+//		if (!(entity instanceof GladiatorEntity) || !(entity instanceof ArchvileEntity))
+//			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 100, false, false));
 		if (entity instanceof ArchvileEntity)
 			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120, 100, false, false));
 		if (entity instanceof MancubusEntity mancubusEntity)
@@ -60,6 +60,7 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 		} else
 			entity.setAttackingState(1);
 		entity.triggerAnim("livingController", "ranged");
+		entity.triggerAnim("attackController", "ranged");
 	}
 
 	@Override

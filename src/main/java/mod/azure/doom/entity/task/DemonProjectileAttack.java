@@ -29,6 +29,7 @@ import mod.azure.doom.entity.tierfodder.ZombiemanEntity;
 import mod.azure.doom.entity.tierheavy.ArachnotronEntity;
 import mod.azure.doom.entity.tierheavy.BloodMaykrEntity;
 import mod.azure.doom.entity.tierheavy.CacodemonEntity;
+import mod.azure.doom.entity.tierheavy.CarcassEntity;
 import mod.azure.doom.entity.tierheavy.HellknightEntity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
 import mod.azure.doom.entity.tierheavy.PainEntity;
@@ -151,7 +152,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 		if (entity instanceof HellknightEntity || entity instanceof CacodemonEntity)
 			entity.shootFireball(this.target, damage, 0);
 
-		if (entity instanceof MechaZombieEntity || entity instanceof ImpEntity || entity instanceof GargoyleEntity || entity instanceof TurretEntity)
+		if (entity instanceof MechaZombieEntity || entity instanceof ImpEntity || entity instanceof GargoyleEntity || entity instanceof TurretEntity || entity instanceof CarcassEntity)
 			entity.shootSmallFireball(this.target, damage);
 
 		if (entity instanceof ProwlerEntity prowlerEntity) {

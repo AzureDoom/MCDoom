@@ -178,6 +178,10 @@ public class DoomConfig {
 		public final ConfigValue<Double> turret_health;
 		public final ConfigValue<Double> turret_ranged_damage;
 
+		public final ConfigValue<Double> carcass_health;
+		public final ConfigValue<Double> carcass_ranged_damage;
+		public final ConfigValue<Double> carcass_melee_damage;
+
 		public final ConfigValue<Double> icon_health;
 		public final ConfigValue<Double> icon_melee_damage;
 		public final ConfigValue<Double> icon_phaseone_damage_boos;
@@ -234,9 +238,15 @@ public class DoomConfig {
 			max_meathook_distance = builder.translation("text.doom.config.max_meathook_distance").defineInRange("Max Meathook Distance", 32, 1, Double.MAX_VALUE);
 			builder.pop();
 
+			builder.push("Mob Settings:Carcass");
+			carcass_health = builder.translation("text.doom.config.carcass_health").comment("Sets Carcass Max Health").defineInRange("Sets Carcass Max health", 40, 1, Double.MAX_VALUE);
+			carcass_melee_damage = builder.translation("text.doom.config.carcass_melee_damage").defineInRange("Sets Carcass Melee Damage", 6, 1, Double.MAX_VALUE);
+			carcass_ranged_damage = builder.translation("text.doom.config.carcass_ranged_damage").defineInRange("Sets Carcass Ranged Damage", 6, 1, Double.MAX_VALUE);
+			builder.pop();
+
 			builder.push("Mob Settings:Imps");
 			imp_health = builder.translation("text.doom.config.imp_health").comment("Sets Imp Max Health").defineInRange("Sets Imp Max health", 30, 1, Double.MAX_VALUE);
-			imp_ranged_damage = builder.translation("text.doom.config.imp_ranged_damage").defineInRange("Sets Imp Ranged Damage damage", 4, 1, Double.MAX_VALUE);
+			imp_ranged_damage = builder.translation("text.doom.config.imp_ranged_damage").defineInRange("Sets Imp Ranged ", 4, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Pinky");
@@ -256,12 +266,12 @@ public class DoomConfig {
 
 			builder.push("Mob Settings:Cacodemon");
 			cacodemon_health = builder.translation("text.doom.config.cacodemon_health").defineInRange("Sets Cacodemon Max Health", 80, 1, Double.MAX_VALUE);
-			cacodemon_ranged_damage = builder.translation("text.doom.config.cacodemon_ranged_damage").comment("Sets Cacodemon Ranged Damage").defineInRange("Sets Cacodemon Ranged Damage damage", 5, 1, Double.MAX_VALUE);
+			cacodemon_ranged_damage = builder.translation("text.doom.config.cacodemon_ranged_damage").comment("Sets Cacodemon Ranged Damage").defineInRange("Sets Cacodemon Ranged ", 5, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Archvile");
 			archvile_health = builder.translation("text.doom.config.archvile_health").defineInRange("Sets Archvile Max Health", 100, 1, Double.MAX_VALUE);
-			archvile_ranged_damage = builder.translation("text.doom.config.archvile_ranged_damage").defineInRange("Sets Archvile Ranged Damage damage", 5, 1, Double.MAX_VALUE);
+			archvile_ranged_damage = builder.translation("text.doom.config.archvile_ranged_damage").defineInRange("Sets Archvile Ranged ", 5, 1, Double.MAX_VALUE);
 			builder.pop();
 
 			builder.push("Mob Settings:Baron of Hell");

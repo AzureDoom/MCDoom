@@ -162,6 +162,7 @@ if (file('key.properties').exists()) {
         	releaseType = "${curse_release}"
         	changelogType = 'text'
         	changelog = file('CHANGELOG.txt')
+        	addGameVersion("Forge")
         	addGameVersion("NeoForge")
         	addGameVersion("Java 17")
 
@@ -187,7 +188,7 @@ if (file('key.properties').exists()) {
 		versionNumber = project.mod_version 
 		uploadFile = jar 
 		changelog = rootProject.file("changelog.txt").text
-		loaders = ['neoforge']
+		loaders = ['neoforge', 'forge']
 		dependencies { 
         	required.project "azurelib"
         	required.project "smartbrainlib"

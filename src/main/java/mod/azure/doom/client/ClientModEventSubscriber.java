@@ -12,6 +12,7 @@ import mod.azure.doom.client.render.BaronRender;
 import mod.azure.doom.client.render.BarrelRender;
 import mod.azure.doom.client.render.BloodMaykrRender;
 import mod.azure.doom.client.render.CacodemonRender;
+import mod.azure.doom.client.render.CarcassRender;
 import mod.azure.doom.client.render.ChaingunnerRender;
 import mod.azure.doom.client.render.CueBallRender;
 import mod.azure.doom.client.render.CyberdemonRender;
@@ -162,6 +163,7 @@ public class ClientModEventSubscriber {
 		event.registerEntityRenderer(DoomEntities.SUMMONER.get(), SummonerRender::new);
 		event.registerEntityRenderer(DoomEntities.REVENANT2016.get(), Revenant2016Render::new);
 		event.registerEntityRenderer(DoomEntities.GLADIATOR.get(), GladiatorRender::new);
+		event.registerEntityRenderer(DoomEntities.CARCASS.get(), CarcassRender::new);
 
 		event.registerEntityRenderer(DoomProjectiles.BARREL.get(), BarrelRender::new);
 		event.registerBlockEntityRenderer(DoomEntities.TOTEM.get(), context -> new TotemRender());

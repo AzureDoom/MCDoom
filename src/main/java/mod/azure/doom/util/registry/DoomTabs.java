@@ -34,6 +34,7 @@ public class DoomTabs {
 		entries.accept(DoomItems.ARACHNOTRONETERNAL_SPAWN_EGG.get());
 		entries.accept(DoomItems.BLOOD_MAYKR_SPAWN_EGG.get());
 		entries.accept(DoomItems.CACODEMON_SPAWN_EGG.get());
+		entries.accept(DoomItems.CARCASS_SPAWN_EGG.get());
 		entries.accept(DoomItems.HELLKNIGHT_SPAWN_EGG.get());
 		entries.accept(DoomItems.HELLKNIGHT2016_SPAWN_EGG.get());
 		entries.accept(DoomItems.MANCUBUS_SPAWN_EGG.get());

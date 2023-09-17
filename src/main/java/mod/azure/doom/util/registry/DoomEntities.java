@@ -26,6 +26,7 @@ import mod.azure.doom.entity.tierfodder.ZombiemanEntity;
 import mod.azure.doom.entity.tierheavy.ArachnotronEntity;
 import mod.azure.doom.entity.tierheavy.BloodMaykrEntity;
 import mod.azure.doom.entity.tierheavy.CacodemonEntity;
+import mod.azure.doom.entity.tierheavy.CarcassEntity;
 import mod.azure.doom.entity.tierheavy.Hellknight2016Entity;
 import mod.azure.doom.entity.tierheavy.HellknightEntity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
@@ -162,5 +163,7 @@ public class DoomEntities {
 	public static final RegistryObject<EntityType<GladiatorEntity>> GLADIATOR = ENTITY_TYPES.register("gladiator", () -> EntityType.Builder.of(GladiatorEntity::new, MobCategory.MONSTER).sized(1.7f, 4.2F).fireImmune().clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "gladiator").toString()));
 
 	public static final RegistryObject<EntityType<LostSoulEntity>> LOST_SOUL_ETERNAL = ENTITY_TYPES.register("lost_soul_eternal", () -> EntityType.Builder.<LostSoulEntity>of(LostSoulEntity::new, MobCategory.MISC).sized(1.50F, 1.50F).clientTrackingRange(9).build(new ResourceLocation(DoomMod.MODID, "lost_soul_eternal").toString()));
+
+	public static final RegistryObject<EntityType<CarcassEntity>> CARCASS = ENTITY_TYPES.register("carcass", () -> EntityType.Builder.of(CarcassEntity::new, MobCategory.MONSTER).sized(0.6f, 1.95F).clientTrackingRange(9).fireImmune().build(new ResourceLocation(DoomMod.MODID, "carcass").toString()));
 
 }

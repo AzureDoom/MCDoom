@@ -216,6 +216,7 @@ public class DoomItems {
 	public static final RegistryObject<Item> SUMMONER_SPAWN_EGG = ITEMS.register("summoner_spawn_egg", () -> new ForgeSpawnEggItem(DoomEntities.SUMMONER, 11022961, 11035249, new Item.Properties()));
 	public static final RegistryObject<Item> REVENANT2016_SPAWN_EGG = ITEMS.register("revenant2016_spawn_egg", () -> new ForgeSpawnEggItem(DoomEntities.REVENANT2016, 11022961, 11035249, new Item.Properties()));
 	public static final RegistryObject<Item> GLADIATOR_SPAWN_EGG = ITEMS.register("gladiator_spawn_egg", () -> new ForgeSpawnEggItem(DoomEntities.GLADIATOR, 11022961, 11035249, new Item.Properties()));
+	public static final RegistryObject<Item> CARCASS_SPAWN_EGG = ITEMS.register("carcass_spawn_egg", () -> new ForgeSpawnEggItem(DoomEntities.CARCASS, 0xe4c7be, 0x5a575a, new Item.Properties()));
 
 	// WEAPONS AND TOOLS
 	public static final RegistryObject<Item> CRUCIBLESWORD = ITEMS.register("cruciblesword", SwordCrucibleItem::new);
