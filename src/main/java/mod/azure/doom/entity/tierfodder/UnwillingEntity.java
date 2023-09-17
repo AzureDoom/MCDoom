@@ -5,13 +5,13 @@ import java.util.List;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.DoomAnimationsDefault;
+import mod.azure.doom.entity.task.DemonMeleeAttack;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -32,7 +32,6 @@ import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
@@ -64,14 +63,14 @@ public class UnwillingEntity extends DemonEntity implements SmartBrainOwner<Unwi
 				return event.setAndContinue(DoomAnimationsDefault.DEATH2);
 			if (event.isMoving() && (!isDead || !this.swinging))
 				return event.setAndContinue(DoomAnimationsDefault.WALK);
-			if (this.swinging && !isDead)
-				return event.setAndContinue(RawAnimation.begin().then("attack", LoopType.PLAY_ONCE));
 			return event.setAndContinue(isDead ? DoomAnimationsDefault.DEATH2 : DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
 				if (level().isClientSide())
 					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		}));
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
+			return PlayState.STOP;
+		}).triggerableAnim("melee", DoomAnimationsDefault.ATTACK));
 	}
 
 	@Override
@@ -107,7 +106,7 @@ public class UnwillingEntity extends DemonEntity implements SmartBrainOwner<Unwi
 
 	@Override
 	public BrainActivityGroup<UnwillingEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(0.75f), new AnimatableMeleeAttack<>(0));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(0.75f), new DemonMeleeAttack<>(5));
 	}
 
 	@Override

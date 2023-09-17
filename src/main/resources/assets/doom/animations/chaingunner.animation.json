@@ -244,16 +244,29 @@
 			}
 		},
 		"ranged": {
-			"animation_length": 0.04,
+			"animation_length": 0.5,
 			"bones": {
 				"bipedRightArm_flat": {
 					"rotation": {
-						"vector": [-40.12074, 32.79775, 32.73241]
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [-40.12074, 32.79775, 32.73241]
+						}
 					}
 				},
-				"bipedLeftArm_flat": {
+				"bipedLeftArm_flat_0": {
 					"rotation": {
-						"vector": [-10, 0, 0]
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, 0, 0]
+						},
+						"0.5": {
+							"vector": [0, 0, 0]
+						}
 					}
 				}
 			},
@@ -262,7 +275,27 @@
 					"effect": "attack"
 				}
 			}
+		},
+		"melee": {
+			"animation_length": 0.5,
+			"bones": {
+				"bipedLeftArm_flat": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [-49.13788, -21.4894, -17.5835],
+							"easing": "easeInOutQuad"
+						},
+						"0.5": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				}
+			}
 		}
 	},
-	"geckolib_format_version": 2
+	"azurelib_format_version": 2
 }

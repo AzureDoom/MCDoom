@@ -90,6 +90,7 @@ public class DemonMeleeAttack<E extends DemonEntity> extends CustomDelayedMeleeB
 		if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
 			return;
 
+		BehaviorUtils.lookAtEntity(entity, this.target);
 		if (entity instanceof IconofsinEntity iconEntity) { // damage and explode the world
 			iconEntity.doHurtTarget(this.target);
 			iconEntity.level().explode(entity, this.target.getX(), this.target.getY(), this.target.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);

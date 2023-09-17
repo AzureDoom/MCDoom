@@ -242,22 +242,18 @@
 			}
 		},
 		"attack": {
-			"animation_length": 2.04,
+			"animation_length": 0.48,
 			"bones": {
 				"left_arm": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.52": {
+						"0.24": {
 							"vector": [-72.5, 0, 0],
 							"easing": "easeInSine"
 						},
-						"1.56": {
-							"vector": [-72.5, 0, 0],
-							"easing": "easeInSine"
-						},
-						"2.04": {
+						"0.48": {
 							"vector": [0, 0, 0],
 							"easing": "easeInSine"
 						}
@@ -346,6 +342,35 @@
 						"1.04": {
 							"vector": [12.5, 0, 0],
 							"easing": "easeInOutSine"
+						}
+					}
+				}
+			}
+		},
+		"melee": {
+			"animation_length": 0.5,
+			"bones": {
+				"right_arm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [-51.04342, 24.1782, 18.32252]
+						},
+						"0.5": {
+							"vector": [0, 0, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [1, -4, 0]
+						},
+						"0.5": {
+							"vector": [0, 0, 0]
 						}
 					}
 				}

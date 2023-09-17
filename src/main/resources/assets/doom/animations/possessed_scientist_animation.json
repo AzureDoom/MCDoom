@@ -130,13 +130,8 @@
 		},
 		"attack": {
 			"loop": true,
-			"animation_length": 2,
+			"animation_length": 0.5,
 			"bones": {
-				"Right_arm": {
-					"rotation": {
-						"vector": [-75, 0, "Math.cos(query.anim_time * 180) * -2.5"]
-					}
-				},
 				"Right_forearm": {
 					"rotation": {
 						"vector": ["Math.cos(query.anim_time * 180) * -5", 0, 0]
@@ -144,7 +139,12 @@
 				},
 				"Left_arm": {
 					"rotation": {
-						"vector": [-75, 0, "Math.cos(query.anim_time * 180) * 2.5"]
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [-75, 0, "Math.cos(query.anim_time * 180) * 2.5"]
+						}
 					}
 				}
 			},

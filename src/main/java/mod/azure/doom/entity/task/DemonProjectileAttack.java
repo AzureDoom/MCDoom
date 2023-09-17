@@ -118,6 +118,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 		if (!entity.getSensing().hasLineOfSight(this.target) || entity.isWithinMeleeAttackRange(this.target))
 			return;
 
+		BehaviorUtils.lookAtEntity(entity, this.target);
 		if (entity instanceof PossessedSoldierEntity || entity instanceof BaronEntity || entity instanceof FireBaronEntity)
 			entity.shootBaron(this.target, damage, 0, 0, 0);
 
