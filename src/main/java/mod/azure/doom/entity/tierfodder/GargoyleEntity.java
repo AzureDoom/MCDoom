@@ -12,6 +12,7 @@ import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.entity.ai.DemonFlyControl;
+import mod.azure.doom.entity.task.DemonMeleeAttack;
 import mod.azure.doom.entity.task.DemonProjectileAttack;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
@@ -35,7 +36,6 @@ import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
@@ -71,12 +71,12 @@ public class GargoyleEntity extends DemonEntity implements SmartBrainOwner<Gargo
 				return event.setAndContinue(DoomAnimationsDefault.WALKING);
 			if (isAggressive() && !this.swinging && event.isMoving() && !isDead)
 				return event.setAndContinue(DoomAnimationsDefault.FLYING);
-			if (this.swinging && !isDead)
-				return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
 			if (!event.isCurrentAnimation(DoomAnimationsDefault.FLYING) && !isDead && !event.isCurrentAnimation(DoomAnimationsDefault.WALKING) && !event.isCurrentAnimation(DoomAnimationsDefault.ATTACKING))
 				return event.setAndContinue(DoomAnimationsDefault.IDLE);
 			return PlayState.CONTINUE;
-		}));
+		}).triggerableAnim("death", DoomAnimationsDefault.DEATH)).add(new AnimationController<>(this, "attackController", 0, event -> {
+			return PlayState.STOP;
+		}).triggerableAnim("death", DoomAnimationsDefault.DEATH).triggerableAnim("ranged", DoomAnimationsDefault.ATTACKING).triggerableAnim("melee", DoomAnimationsDefault.ATTACKING));
 	}
 
 	@Override
@@ -87,6 +87,8 @@ public class GargoyleEntity extends DemonEntity implements SmartBrainOwner<Gargo
 	@Override
 	protected void tickDeath() {
 		++deathTime;
+		this.triggerAnim("livingController", "death");
+		this.triggerAnim("attackController", "death");
 		if (deathTime == 50) {
 			remove(RemovalReason.KILLED);
 			dropExperience();
@@ -121,7 +123,12 @@ public class GargoyleEntity extends DemonEntity implements SmartBrainOwner<Gargo
 
 	@Override
 	public BrainActivityGroup<GargoyleEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(DoomConfig.SERVER.gargoyle_ranged_damage.get().floatValue()), new AnimatableMeleeAttack<>(20));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(DoomConfig.SERVER.gargoyle_ranged_damage.get().floatValue()), new DemonMeleeAttack<>(5));
+	}
+
+	@Override
+	public double getMeleeAttackRangeSqr(LivingEntity entity) {
+		return (double) (this.getBbWidth() * 1.5F * this.getBbWidth() * 1.5F + entity.getBbWidth());
 	}
 
 	@Override
@@ -171,7 +178,7 @@ public class GargoyleEntity extends DemonEntity implements SmartBrainOwner<Gargo
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomConfig.SERVER.gargoyle_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.FLYING_SPEED, 0.25D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomConfig.SERVER.gargoyle_health.get()).add(Attributes.ATTACK_DAMAGE, 3.0D).add(Attributes.FLYING_SPEED, 0.25D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
