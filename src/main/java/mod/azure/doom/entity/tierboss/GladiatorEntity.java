@@ -5,12 +5,13 @@ import java.util.List;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
+import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.entity.task.DemonMeleeAttack;
 import mod.azure.doom.entity.task.DemonProjectileAttack;
 import mod.azure.doom.util.registry.DoomSounds;
@@ -23,6 +24,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -82,26 +84,18 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death_phaseone"));
 			if (event.getAnimatable().getDeathState() == 1 && (dead || getHealth() < 0.01 || isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death_phasetwo"));
-			if (event.getAnimatable().getDeathState() == 0 && event.getAnimatable().getAttckingState() == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenLoop("shield_plant"));
 			if (event.getAnimatable().getDeathState() == 1 && event.isMoving()) {
 				event.getController().setAnimationSpeed(1.5);
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking_phasetwo"));
 			}
-			if (event.getAnimatable().getDeathState() == 0 && event.getAnimatable().getAttckingState() == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("melee_phaseone", LoopType.PLAY_ONCE));
-			if (event.getAnimatable().getDeathState() == 0 && event.getAnimatable().getAttckingState() == 3 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("melee_phaseone2", LoopType.PLAY_ONCE));
-			if (event.getAnimatable().getDeathState() == 0 && event.getAnimatable().getAttckingState() == 4 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("melee_phaseone3", LoopType.PLAY_ONCE));
-			if (event.getAnimatable().getDeathState() == 1 && event.getAnimatable().getAttckingState() == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("melee_phasetwo", LoopType.PLAY_ONCE));
-			if (event.getAnimatable().getDeathState() == 1 && event.getAnimatable().getAttckingState() == 3 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("melee_phasetwo2", LoopType.PLAY_ONCE));
-			if (event.getAnimatable().getDeathState() == 1 && event.getAnimatable().getAttckingState() == 4 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("melee_phasetwo2", LoopType.PLAY_ONCE));
 			return event.setAndContinue(RawAnimation.begin().thenLoop(event.getAnimatable().getDeathState() == 0 ? "idle_phaseone" : "idle_phasetwo"));
-		}));
+		}).setSoundKeyframeHandler(event -> {
+			if (event.getKeyframeData().getSound().matches("walk"))
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
+			return PlayState.STOP;
+		}).triggerableAnim("ranged", DoomAnimationsDefault.SHIELD).triggerableAnim("mace", DoomAnimationsDefault.MELEE_PHASETWOTHREE).triggerableAnim("meleeone", DoomAnimationsDefault.MELEE_PHASEONE).triggerableAnim("meleetwo", DoomAnimationsDefault.MELEE_PHASEONETWO).triggerableAnim("melee2one", DoomAnimationsDefault.MELEE_PHASETWOONE).triggerableAnim("melee2two", DoomAnimationsDefault.MELEE_PHASETWOTWO));
 	}
 
 	@Override
@@ -168,9 +162,8 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
-		if (hasCustomName()) {
+		if (hasCustomName()) 
 			bossInfo.setName(getDisplayName());
-		}
 		setTextureState(compound.getInt("Texture"));
 		setDeathState(compound.getInt("Phase"));
 	}
@@ -179,7 +172,7 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 	public void addAdditionalSaveData(CompoundTag tag) {
 		super.addAdditionalSaveData(tag);
 		tag.putInt("Phase", getDeathState());
-		tag.putInt("Texture", getDeathState());
+		tag.putInt("Texture", getTextureState());
 	}
 
 	@Override
@@ -222,7 +215,7 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 
 	@Override
 	public BrainActivityGroup<GladiatorEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(0.85F), new DemonProjectileAttack<>(30).attackInterval(mob -> 80), new DemonMeleeAttack<>(20));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(0.85F), new DemonProjectileAttack<>(30).attackInterval(mob -> 80), new DemonMeleeAttack<>(5));
 	}
 
 

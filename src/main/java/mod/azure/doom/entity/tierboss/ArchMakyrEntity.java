@@ -6,6 +6,7 @@ import java.util.Random;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
@@ -92,10 +93,10 @@ public class ArchMakyrEntity extends DemonEntity implements SmartBrainOwner<Arch
 	public void registerControllers(ControllerRegistrar controllers) {
 		var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (this.getAttckingState() == 1 && !isDead)
-				return event.setAndContinue(DoomAnimationsDefault.ATTACKING_AOE);
 			return event.setAndContinue((isDead && this.getDeathState() == 5) ? DoomAnimationsDefault.DEATH : (isDead && this.getDeathState() < 5) ? DoomAnimationsDefault.DEATH_PHASEONE : DoomAnimationsDefault.FLYING);
-		}));
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
+			return PlayState.STOP;
+		}).triggerableAnim("ranged", DoomAnimationsDefault.ATTACKING_AOE));
 	}
 
 	@Override

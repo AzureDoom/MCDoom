@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
+import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
 import mod.azure.doom.entity.tiersuperheavy.ArchvileEntity;
 import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
@@ -53,15 +54,15 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 			mancubusEntity.setAttackingState(2);
 		else if (entity instanceof GladiatorEntity gladiatorEntity) {
 			if (gladiatorEntity.getDeathState() == 0) {
-				gladiatorEntity.setAttackingState(1);
+				entity.triggerAnim("attackController", "ranged");
 				gladiatorEntity.setTextureState(2);
 			} else
-				gladiatorEntity.setAttackingState(4);
+				entity.triggerAnim("attackController", "mace");
 			gladiatorEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 100, false, false));
 		} else
 			entity.setAttackingState(1);
 		entity.triggerAnim("livingController", "ranged");
-		if (!(entity instanceof DoomHunterEntity))
+		if (!(entity instanceof DoomHunterEntity || entity instanceof GladiatorEntity))
 			entity.triggerAnim("attackController", "ranged");
 		if (entity instanceof DoomHunterEntity hunter) {
 			if (hunter.getDeathState() == 1)
@@ -69,6 +70,11 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 			if (hunter.getDeathState() == 0)
 				hunter.triggerAnim("attackController", "rocket");
 		}
+		if (entity instanceof IconofsinEntity iconEntity)
+			if (iconEntity.getDeathState() == 0)
+				iconEntity.triggerAnim("attackController", "phaseoneranged");
+			else
+				iconEntity.triggerAnim("attackController", "phasetworanged");
 	}
 
 	@Override

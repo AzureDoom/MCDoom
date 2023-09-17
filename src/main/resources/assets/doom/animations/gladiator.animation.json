@@ -2291,7 +2291,7 @@
 		},
 		"melee_phasetwo3": {
 			"loop": true,
-			"animation_length": 0.68,
+			"animation_length": 1.44,
 			"bones": {
 				"torso": {
 					"rotation": {
@@ -2305,22 +2305,22 @@
 				},
 				"left_arm": {
 					"rotation": {
-						"0.0": {
+						"0.76": {
 							"vector": [0, 0, "5+Math.cos(query.anim_time * 180) * -2.5"]
 						},
-						"0.16": {
+						"0.92": {
 							"vector": [-97.5, -32.5, "5+Math.cos(query.anim_time * 180) * -2.5"],
 							"easing": "easeInOutSine"
 						},
-						"0.36": {
+						"1.12": {
 							"vector": [-20.13447, -48.67787, "-28.0949+Math.cos(query.anim_time * 180) * -2.5"],
 							"easing": "easeInOutSine"
 						},
-						"0.52": {
+						"1.28": {
 							"vector": [-97.5, -32.5, "5+Math.cos(query.anim_time * 180) * -2.5"],
 							"easing": "easeInOutSine"
 						},
-						"0.68": {
+						"1.44": {
 							"vector": [0, 0, "5+Math.cos(query.anim_time * 180) * -2.5"],
 							"easing": "easeInOutSine"
 						}
@@ -2388,13 +2388,13 @@
 				},
 				"mace1": {
 					"scale": {
-						"0.0": {
+						"0.76": {
 							"vector": [1, 1, 1]
 						},
-						"0.36": {
+						"1.12": {
 							"vector": [1, 1, 1]
 						},
-						"0.4": {
+						"1.16": {
 							"vector": [0, 0, 0]
 						}
 					}

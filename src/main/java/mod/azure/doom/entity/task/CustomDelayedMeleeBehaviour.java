@@ -56,15 +56,26 @@ public abstract class CustomDelayedMeleeBehaviour<E extends DemonEntity> extends
 			doomHunterEntity.setAttackingState(3);
 		
 		if (entity instanceof GladiatorEntity gladiatorEntity) {
-			gladiatorEntity.setAttackingState(3);
+			if (gladiatorEntity.getDeathState() == 0)
+				gladiatorEntity.triggerAnim("attackController", switch (gladiatorEntity.getRandom().nextInt(2)) {
+				case 0 -> "meleeone";
+				case 1 -> "meleetwo";
+				default -> "meleeone";
+				});
+			else
+				gladiatorEntity.triggerAnim("attackController", switch (gladiatorEntity.getRandom().nextInt(2)) {
+				case 0 -> "melee2one";
+				case 1 -> "melee2two";
+				default -> "melee2one";
+				});
 			gladiatorEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 100, false, false));
 		}
 
 		if (entity instanceof IconofsinEntity iconEntity)
-			if (iconEntity.getHealth() < (iconEntity.getMaxHealth() * 0.50))
-				iconEntity.setAttackingState(4); // no armor
+			if (iconEntity.getDeathState() == 0)
+				iconEntity.triggerAnim("attackController", "phaseonestomp");
 			else
-				iconEntity.setAttackingState(3); // armor
+				iconEntity.triggerAnim("attackController", "phasetwostomp");
 
 		if (!(entity instanceof IconofsinEntity) || !(entity instanceof MancubusEntity) || !(entity instanceof Hellknight2016Entity) || !(entity instanceof DoomHunterEntity))
 			entity.setAttackingState(2);

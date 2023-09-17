@@ -129,7 +129,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 		if (entity instanceof BloodMaykrEntity)
 			entity.shootBloodBolt(this.target, damage);
 
-		if (entity instanceof SpiderMastermindEntity || entity instanceof ChaingunnerEntity || entity instanceof ShotgunguyEntity || entity instanceof ZombiemanEntity) {
+		if (entity instanceof ChaingunnerEntity || entity instanceof ShotgunguyEntity || entity instanceof ZombiemanEntity) {
 			final var aabb = entity.getBoundingBox().inflate(16);
 			final var checkBlocking = TargetingConditions.forCombat().range(16).selector(target -> !target.getUseItem().is(Items.SHIELD));
 			entity.level().getNearbyEntities(LivingEntity.class, checkBlocking, entity, aabb).stream().findFirst().ifPresent(target -> {
@@ -138,7 +138,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
 			});
 		}
 
-		if (entity instanceof SpiderMastermind2016Entity || entity instanceof ArachnotronEntity)
+		if (entity instanceof SpiderMastermindEntity || entity instanceof SpiderMastermind2016Entity || entity instanceof ArachnotronEntity)
 			entity.shootEnergyCell(this.target, damage);
 
 		if (entity instanceof Revenant2016Entity || entity instanceof RevenantEntity) {
