@@ -49,6 +49,7 @@ public abstract class CustomDelayedMeleeBehaviour<E extends DemonEntity> extends
 			doDelayedAction(entity);
 		}
 		entity.triggerAnim("attackController", "melee");
+		entity.triggerAnim("livingController", "melee");
 		if (entity instanceof MancubusEntity mancubusEntity)
 			mancubusEntity.setAttackingState(3);
 		if (entity instanceof DoomHunterEntity doomHunterEntity)
