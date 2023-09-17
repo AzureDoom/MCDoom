@@ -1027,6 +1027,38 @@
 				}
 			}
 		},
+		"melee": {
+			"loop": true,
+			"animation_length": 0.48,
+			"bones": {
+				"leftArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.24": {
+							"vector": [-31.19114, -47.91219, 18.29334]
+						},
+						"0.48": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"bone13": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.24": {
+							"vector": [27.5, 0, 0]
+						},
+						"0.48": {
+							"vector": [0, 0, 0]
+						}
+					}
+				}
+			}
+		},
 		"firing": {
 			"loop": true,
 			"animation_length": 1.72,

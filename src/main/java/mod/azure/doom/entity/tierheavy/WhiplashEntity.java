@@ -5,12 +5,14 @@ import java.util.List;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.DoomAnimationsDefault;
+import mod.azure.doom.entity.task.DemonMeleeAttack;
 import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
@@ -28,7 +30,6 @@ import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
@@ -59,12 +60,12 @@ public class WhiplashEntity extends DemonEntity implements SmartBrainOwner<Whipl
 				return event.setAndContinue(DoomAnimationsDefault.WALKING);
 			if (event.isMoving() && hurtTime == 0 && isAggressive() && !this.swinging)
 				return event.setAndContinue(RawAnimation.begin().thenLoop("attacking_moving"));
-			if (this.swinging && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
 				return event.setAndContinue(DoomAnimationsDefault.DEATH);
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
-		}));
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
+			return PlayState.STOP;
+		}).triggerableAnim("melee", DoomAnimationsDefault.ATTACKING));
 	}
 
 	@Override
@@ -109,7 +110,7 @@ public class WhiplashEntity extends DemonEntity implements SmartBrainOwner<Whipl
 
 	@Override
 	public BrainActivityGroup<WhiplashEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(1.75F), new AnimatableMeleeAttack<>(20));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(1.75F), new DemonMeleeAttack<>(5));
 	}
 
 	@Override
