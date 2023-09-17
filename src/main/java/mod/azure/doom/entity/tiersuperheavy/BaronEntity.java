@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
@@ -66,19 +67,18 @@ public class BaronEntity extends DemonEntity implements SmartBrainOwner<BaronEnt
 				return event.setAndContinue(DoomAnimationsDefault.WALKING);
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
 				return event.setAndContinue(DoomAnimationsDefault.DEATH);
-			if (event.getAnimatable().getAttckingState() == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(DoomAnimationsDefault.MELEE);
-			if (event.getAnimatable().getAttckingState() == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(DoomAnimationsDefault.RANGED);
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
 				if (level().isClientSide())
 					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
+			return PlayState.STOP;
+		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("attack"))
 				if (level().isClientSide())
 					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.BARON_AMBIENT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		}));
+		}).triggerableAnim("melee", DoomAnimationsDefault.MELEE).triggerableAnim("ranged", DoomAnimationsDefault.RANGED));
 	}
 
 	@Override
@@ -153,7 +153,7 @@ public class BaronEntity extends DemonEntity implements SmartBrainOwner<BaronEnt
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomMod.config.baron_health).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomMod.config.baron_health).add(Attributes.ATTACK_DAMAGE, 3.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override

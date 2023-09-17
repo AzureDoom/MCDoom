@@ -8,6 +8,7 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
@@ -64,19 +65,18 @@ public class FireBaronEntity extends DemonEntity implements SmartBrainOwner<Fire
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking_fireborne"));
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death_fireborne"));
-			if (event.getAnimatable().getAttckingState() == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("melee_fireborne", LoopType.PLAY_ONCE));
-			if (event.getAnimatable().getAttckingState() == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("ranged_fireborne", LoopType.PLAY_ONCE));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle_fireborne"));
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
 				if (level().isClientSide())
 					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
+			return PlayState.STOP;
+		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("attack"))
 				if (level().isClientSide())
 					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.BARON_AMBIENT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		}));
+		}).triggerableAnim("melee", RawAnimation.begin().then("melee_fireborne", LoopType.PLAY_ONCE)).triggerableAnim("ranged", RawAnimation.begin().then("ranged_fireborne", LoopType.PLAY_ONCE)));
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class FireBaronEntity extends DemonEntity implements SmartBrainOwner<Fire
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomMod.config.baron_health).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomMod.config.baron_health).add(Attributes.ATTACK_DAMAGE, 5.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override

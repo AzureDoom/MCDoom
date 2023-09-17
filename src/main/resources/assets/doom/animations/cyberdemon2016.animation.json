@@ -389,20 +389,20 @@
 			}
 		},
 		"melee": {
-			"animation_length": 2.08,
+			"animation_length": 0.84,
 			"bones": {
 				"rshoulder": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 5]
 						},
-						"0.52": {
+						"0.2": {
 							"vector": [-52.5, 0, 7.5]
 						},
-						"1.04": {
+						"0.4": {
 							"vector": [-55, -50, 3.33]
 						},
-						"2.08": {
+						"0.84": {
 							"vector": [0, 0, 5]
 						}
 					}

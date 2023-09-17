@@ -1001,7 +1001,6 @@
 			}
 		},
 		"flamethrower": {
-			"loop": true,
 			"animation_length": 1.76,
 			"bones": {
 				"rShoulder": {
@@ -1496,7 +1495,6 @@
 			}
 		},
 		"chainsaw": {
-			"loop": true,
 			"animation_length": 1.76,
 			"bones": {
 				"bone": {
@@ -1983,7 +1981,6 @@
 			}
 		},
 		"rockets": {
-			"loop": true,
 			"animation_length": 1.44,
 			"bones": {
 				"base": {
