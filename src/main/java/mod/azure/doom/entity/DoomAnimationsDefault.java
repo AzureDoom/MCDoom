@@ -30,6 +30,13 @@ public class DoomAnimationsDefault {
 	public static final RawAnimation CHIANSAW = RawAnimation.begin().then("chainsaw", LoopType.PLAY_ONCE);
 	public static final RawAnimation ROCKETS = RawAnimation.begin().then("rockets", LoopType.PLAY_ONCE);
 	public static final RawAnimation FLAMETHROWER = RawAnimation.begin().then("flamethrower", LoopType.PLAY_ONCE);
+	public static final RawAnimation SHIELD = RawAnimation.begin().then("shield_plant", LoopType.PLAY_ONCE);
+	public static final RawAnimation MELEE_PHASEONE = RawAnimation.begin().then("melee_phaseone", LoopType.PLAY_ONCE);
+	public static final RawAnimation MELEE_PHASEONETWO = RawAnimation.begin().then("melee_phaseone2", LoopType.PLAY_ONCE);
+	public static final RawAnimation MELEE_PHASEONETHREE = RawAnimation.begin().then("melee_phaseone3", LoopType.PLAY_ONCE);
+	public static final RawAnimation MELEE_PHASETWOONE = RawAnimation.begin().then("melee_phasetwo", LoopType.PLAY_ONCE);
+	public static final RawAnimation MELEE_PHASETWOTWO = RawAnimation.begin().then("melee_phasetwo2", LoopType.PLAY_ONCE);
+	public static final RawAnimation MELEE_PHASETWOTHREE = RawAnimation.begin().then("melee_phasetwo3", LoopType.PLAY_ONCE);
 
 	public static final RawAnimation DEATH = RawAnimation.begin().thenPlayAndHold("death");
 	public static final RawAnimation DEATH2 = RawAnimation.begin().thenPlayAndHold("death2");

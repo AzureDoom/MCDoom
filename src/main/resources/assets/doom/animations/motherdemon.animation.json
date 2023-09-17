@@ -354,7 +354,7 @@
 			}
 		},
 		"shooting": {
-			"animation_length": 2.6,
+			"animation_length": 0.48,
 			"bones": {
 				"chest": {
 					"position": {
@@ -366,7 +366,7 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.52": {
+						"0.24": {
 							"vector": [-36, 30, 0],
 							"easing": "easeInOutSine"
 						}
@@ -377,7 +377,7 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.52": {
+						"0.24": {
 							"vector": [-36, -30, 0],
 							"easing": "easeInOutSine"
 						}
@@ -388,7 +388,7 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.52": {
+						"0.24": {
 							"vector": [-36, 30, 0],
 							"easing": "easeInOutSine"
 						}
@@ -399,7 +399,7 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.52": {
+						"0.24": {
 							"vector": [-36, -30, 0],
 							"easing": "easeInOutSine"
 						}
@@ -408,7 +408,7 @@
 			}
 		},
 		"fire": {
-			"animation_length": 2,
+			"animation_length": 0.52,
 			"bones": {
 				"chest": {
 					"position": {
@@ -420,7 +420,7 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.52": {
+						"0.24": {
 							"vector": [-65, -32.5, 0],
 							"easing": "easeInOutSine"
 						}
@@ -431,7 +431,7 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.52": {
+						"0.24": {
 							"vector": [-65, 32.5, 0],
 							"easing": "easeInOutSine"
 						}
@@ -442,7 +442,7 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.52": {
+						"0.24": {
 							"vector": [-65, -15, 0],
 							"easing": "easeInOutSine"
 						}
@@ -453,7 +453,7 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.52": {
+						"0.24": {
 							"vector": [-65, 15, 0],
 							"easing": "easeInOutSine"
 						}

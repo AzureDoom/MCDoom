@@ -6,6 +6,7 @@ import java.util.List;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.DoomMod;
@@ -93,20 +94,15 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 				return event.setAndContinue(DoomAnimationsDefault.WALKING_NOHELMET);
 			if ((event.getAnimatable().getDeathState() == 1) || (!event.isMoving() && hurtMarked && event.getAnimatable().getDeathState() == 1))
 				return event.setAndContinue(DoomAnimationsDefault.IDLE_NOHELMET);
-			if (this.getAttckingState() == 1 && event.getAnimatable().getDeathState() == 0 && !isDead)
-				return event.setAndContinue(DoomAnimationsDefault.SUMMONED);
-			if (this.getAttckingState() == 1 && event.getAnimatable().getDeathState() == 1 && !isDead)
-				return event.setAndContinue(DoomAnimationsDefault.SUMMONED_NOHELMET);
-			if (this.getAttckingState() == 2 && event.getAnimatable().getDeathState() == 0 && !isDead)
-				return event.setAndContinue(DoomAnimationsDefault.STOMP);
-			if (this.getAttckingState() == 2 && event.getAnimatable().getDeathState() == 1 && !isDead)
-				return event.setAndContinue(DoomAnimationsDefault.STOMP_NOHELMET);
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
 				if (level().isClientSide())
 					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.CYBERDEMON_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		}));
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
+			return PlayState.STOP;
+		}).triggerableAnim("phaseoneranged", DoomAnimationsDefault.SUMMONED).triggerableAnim("phasetworanged", DoomAnimationsDefault.SUMMONED_NOHELMET)
+				.triggerableAnim("phaseonestomp", DoomAnimationsDefault.STOMP).triggerableAnim("phasetwostomp", DoomAnimationsDefault.STOMP_NOHELMET));
 	}
 
 	@Override
@@ -203,7 +199,7 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 
 	@Override
 	public BrainActivityGroup<IconofsinEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(20).attackInterval(mob -> 240), new DemonMeleeAttack<>(20));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(5).attackInterval(mob -> 240), new DemonMeleeAttack<>(5));
 	}
 
 	public void spawnWave(int WaveAmount, LivingEntity entity) {
