@@ -269,6 +269,8 @@
 	"entity.doom.summoner": "Summoner",
 	"entity.doom.revenant2016": "Revenant 2016",
 	"entity.doom.gladiator": "Gladiator",
+	"entity.doom.carcass": "Carcass",
+	"item.doom.carcass_spawn_egg": "Carcass Spawn Egg",
 	"item.doom.gladiator_spawn_egg": "Gladiator Spawn Egg",
 	"item.doom.revenant2016_spawn_egg": "Revenant 2016 Spawn Egg",
 	"item.doom.summoner_spawn_egg": "Summoner Spawn Egg",

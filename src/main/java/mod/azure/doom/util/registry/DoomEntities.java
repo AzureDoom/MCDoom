@@ -26,6 +26,7 @@ import mod.azure.doom.entity.tierfodder.ZombiemanEntity;
 import mod.azure.doom.entity.tierheavy.ArachnotronEntity;
 import mod.azure.doom.entity.tierheavy.BloodMaykrEntity;
 import mod.azure.doom.entity.tierheavy.CacodemonEntity;
+import mod.azure.doom.entity.tierheavy.CarcassEntity;
 import mod.azure.doom.entity.tierheavy.Hellknight2016Entity;
 import mod.azure.doom.entity.tierheavy.HellknightEntity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
@@ -105,6 +106,7 @@ public class DoomEntities {
 	public static EntityType<SummonerEntity> SUMMONER;
 	public static EntityType<Revenant2016Entity> REVENANT2016;
 	public static EntityType<GladiatorEntity> GLADIATOR;
+	public static EntityType<CarcassEntity> CARCASS;
 
 	private static <T extends Entity> EntityType<T> mob(String id, EntityType.EntityFactory<T> factory, float height, float width) {
 		final var type = FabricEntityTypeBuilder.<T>create(MobCategory.MONSTER, factory).dimensions(EntityDimensions.scalable(height, width)).fireImmune().trackedUpdateRate(1).trackRangeBlocks(90).build();
@@ -121,6 +123,7 @@ public class DoomEntities {
 	}
 
 	public static void initialize() {
+		CARCASS = mob("carcass", CarcassEntity::new, 0.6f, 1.95F);
 		BARREL = blockentity("barrel", BarrelEntity::new, 0.98F, 0.98F);
 		IMP = mob("imp", ImpEntity::new, 0.6f, 1.95F);
 		PINKY = mob("pinky", PinkyEntity::new, 1.7f, 2.2F);

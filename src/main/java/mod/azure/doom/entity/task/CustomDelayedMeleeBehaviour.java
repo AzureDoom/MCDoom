@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
+import mod.azure.doom.entity.tierheavy.CarcassEntity;
 import mod.azure.doom.entity.tierheavy.Hellknight2016Entity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
 import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
@@ -48,8 +49,8 @@ public abstract class CustomDelayedMeleeBehaviour<E extends DemonEntity> extends
 			super.start(level, entity, gameTime);
 			doDelayedAction(entity);
 		}
-		if (!(entity instanceof GladiatorEntity))
-			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 100, false, false));
+		if (entity instanceof CarcassEntity carcass)
+			carcass.triggerAnim("attackController", "melee");
 		if (entity instanceof MancubusEntity mancubusEntity)
 			mancubusEntity.setAttackingState(3);
 

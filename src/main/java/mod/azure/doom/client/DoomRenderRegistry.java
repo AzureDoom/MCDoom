@@ -10,6 +10,7 @@ import mod.azure.doom.client.render.BaronRender;
 import mod.azure.doom.client.render.BarrelRender;
 import mod.azure.doom.client.render.BloodMaykrRender;
 import mod.azure.doom.client.render.CacodemonRender;
+import mod.azure.doom.client.render.CarcassRender;
 import mod.azure.doom.client.render.ChaingunnerRender;
 import mod.azure.doom.client.render.CueBallRender;
 import mod.azure.doom.client.render.CyberdemonRender;
@@ -180,6 +181,8 @@ public class DoomRenderRegistry {
 		EntityRendererRegistry.register(DoomEntities.REVENANT2016, (ctx) -> new Revenant2016Render(ctx));
 
 		EntityRendererRegistry.register(DoomEntities.GLADIATOR, (ctx) -> new GladiatorRender(ctx));
+
+		EntityRendererRegistry.register(DoomEntities.CARCASS, (ctx) -> new CarcassRender(ctx));
 
 		EntityRendererRegistry.register(DoomProjectiles.ARGENT_BOLT, (ctx) -> new ArgentBoltRender(ctx));
 

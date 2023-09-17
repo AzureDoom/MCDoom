@@ -190,6 +190,7 @@ public class DoomItems {
 	public static AzureSpawnEgg SUMMONER_SPAWN_EGG;
 	public static AzureSpawnEgg REVENANT2016_SPAWN_EGG;
 	public static AzureSpawnEgg GLADIATOR_SPAWN_EGG;
+	public static AzureSpawnEgg CARCASS_SPAWN_EGG;
 
 	// Armor
 	public static DoomArmor DOOM_HELMET;
@@ -414,6 +415,7 @@ public class DoomItems {
 		SUMMONER_SPAWN_EGG = item("summoner_spawn_egg", new AzureSpawnEgg(DoomEntities.SUMMONER, 11022961, 11035249));
 		REVENANT2016_SPAWN_EGG = item("revenant2016_spawn_egg", new AzureSpawnEgg(DoomEntities.REVENANT2016, 11022961, 11035249));
 		GLADIATOR_SPAWN_EGG = item("gladiator_spawn_egg", new AzureSpawnEgg(DoomEntities.GLADIATOR, 11022961, 11035249));
+		CARCASS_SPAWN_EGG = item("carcass_spawn_egg", new AzureSpawnEgg(DoomEntities.CARCASS, 0xe4c7be, 0x5a575a));
 	}
 
 	public static void initArmor() {

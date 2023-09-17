@@ -93,6 +93,7 @@ public class DoomMod implements ModInitializer {
 					entries.accept(DoomItems.ARACHNOTRONETERNAL_SPAWN_EGG);
 					entries.accept(DoomItems.BLOOD_MAYKR_SPAWN_EGG);
 					entries.accept(DoomItems.CACODEMON_SPAWN_EGG);
+					entries.accept(DoomItems.CARCASS_SPAWN_EGG);
 					entries.accept(DoomItems.HELLKNIGHT_SPAWN_EGG);
 					entries.accept(DoomItems.HELLKNIGHT2016_SPAWN_EGG);
 					entries.accept(DoomItems.MANCUBUS_SPAWN_EGG);

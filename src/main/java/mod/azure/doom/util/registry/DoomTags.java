@@ -16,6 +16,7 @@ public class DoomTags {
 	public static final TagKey<Biome> ARMOREDBARON_BIOMES = TagKey.create(Registries.BIOME, DoomMod.modResource("armoredbaron_biomes"));
 	public static final TagKey<Biome> BARON_BIOMES = TagKey.create(Registries.BIOME, DoomMod.modResource("baron_biomes"));
 	public static final TagKey<Biome> CACODEMON_BIOMES = TagKey.create(Registries.BIOME, DoomMod.modResource("cacodemon_biomes"));
+	public static final TagKey<Biome> CARCASS_BIOMES = TagKey.create(Registries.BIOME, DoomMod.modResource("carcass_biomes"));
 	public static final TagKey<Biome> CHAINGUNNER_BIOMES = TagKey.create(Registries.BIOME, DoomMod.modResource("chaingunner_biomes"));
 	public static final TagKey<Biome> CUEBALL_BIOMES = TagKey.create(Registries.BIOME, DoomMod.modResource("cueball_biomes"));
 	public static final TagKey<Biome> CYBERDEMON_BIOMES = TagKey.create(Registries.BIOME, DoomMod.modResource("cyberdemon_biomes"));

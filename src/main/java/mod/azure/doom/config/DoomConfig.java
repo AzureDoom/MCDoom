@@ -356,8 +356,6 @@ public class DoomConfig {
 	public int archmaykr_max_group = 1;
 
 	@Configurable
-	public String[] gladiator_biomes = { "" };
-	@Configurable
 	public int gladiator_spawn_weight = 1;
 	@Configurable
 	public int gladiator_min_group = 1;
@@ -591,6 +589,20 @@ public class DoomConfig {
 	public double mechazombie_health = 25;
 	@Configurable
 	public float mechazombie_ranged_damage = 3;
+
+
+	@Configurable
+	public double carcass_health = 40;
+	@Configurable
+	public double carcass_melee_damage = 6;
+	@Configurable
+	public float carcass_ranged_damage = 6;
+	@Configurable
+	public int carcass_spawn_weight = 15;
+	@Configurable
+	public int carcass_min_group = 1;
+	@Configurable
+	public int carcass_max_group = 1;
 
 	@Configurable
 	public double gorenest_health = 5;

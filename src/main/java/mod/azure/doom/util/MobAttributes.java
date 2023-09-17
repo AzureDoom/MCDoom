@@ -24,6 +24,7 @@ import mod.azure.doom.entity.tierfodder.ZombiemanEntity;
 import mod.azure.doom.entity.tierheavy.ArachnotronEntity;
 import mod.azure.doom.entity.tierheavy.BloodMaykrEntity;
 import mod.azure.doom.entity.tierheavy.CacodemonEntity;
+import mod.azure.doom.entity.tierheavy.CarcassEntity;
 import mod.azure.doom.entity.tierheavy.Hellknight2016Entity;
 import mod.azure.doom.entity.tierheavy.HellknightEntity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
@@ -96,5 +97,6 @@ public class MobAttributes {
 		FabricDefaultAttributeRegistry.register(DoomEntities.TURRET, TurretEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.SUMMONER, SummonerEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(DoomEntities.REVENANT2016, Revenant2016Entity.createMobAttributes());
+		FabricDefaultAttributeRegistry.register(DoomEntities.CARCASS, CarcassEntity.createMobAttributes());
 	}
 }

@@ -63,6 +63,7 @@ public class MobSpawn {
 		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(DoomTags.BARON_BIOMES, context)), MobCategory.MONSTER, DoomEntities.FIREBARON, DoomMod.config.baron_spawn_weight, DoomMod.config.baron_min_group, DoomMod.config.baron_max_group);
 		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(DoomTags.ARMOREDBARON_BIOMES, context)), MobCategory.MONSTER, DoomEntities.ARMORBARON, DoomMod.config.armoredbaron_spawn_weight, DoomMod.config.armoredbaron_min_group, DoomMod.config.armoredbaron_max_group);
 		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(DoomTags.TURRET_BIOMES, context)), MobCategory.MONSTER, DoomEntities.TURRET, DoomMod.config.turret_spawn_weight, DoomMod.config.turret_min_group, DoomMod.config.turret_max_group);
+		BiomeModifications.addSpawn(BiomeSelectors.all().and(context -> parseBiomes(DoomTags.CARCASS_BIOMES, context)), MobCategory.MONSTER, DoomEntities.CARCASS, DoomMod.config.carcass_spawn_weight, DoomMod.config.carcass_min_group, DoomMod.config.carcass_max_group);
 		SpawnPlacements.register(DoomEntities.GLADIATOR, SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnPlacements.register(DoomEntities.ARCHVILE, SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
 		SpawnPlacements.register(DoomEntities.ZOMBIEMAN, SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DemonEntity::canSpawnInDark);
