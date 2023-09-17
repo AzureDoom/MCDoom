@@ -5,6 +5,7 @@ import java.util.List;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
@@ -81,19 +82,15 @@ public class DoomHunterEntity extends DemonEntity implements SmartBrainOwner<Doo
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("sled_death"));
 			if (event.isMoving() && hurtDuration < 0 && event.getAnimatable().getAttckingState() == 0)
 				return event.setAndContinue(DoomAnimationsDefault.WALKING);
-			if (event.getAnimatable().getAttckingState() == 1 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenLoop("rockets"));
-			if (event.getAnimatable().getAttckingState() == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenLoop("flamethrower"));
-			if (event.getAnimatable().getAttckingState() == 3 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenLoop("chainsaw"));
 			event.getController().setAnimationSpeed(0.5);
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("phasechange"))
 				if (level().isClientSide())
 					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.DOOMHUNTER_PHASECHANGE.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		}));
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
+			return PlayState.STOP;
+		}).triggerableAnim("melee", DoomAnimationsDefault.CHIANSAW).triggerableAnim("rocket", DoomAnimationsDefault.ROCKETS).triggerableAnim("flames", DoomAnimationsDefault.FLAMETHROWER));
 	}
 
 	@Override
@@ -129,7 +126,7 @@ public class DoomHunterEntity extends DemonEntity implements SmartBrainOwner<Doo
 
 	@Override
 	public BrainActivityGroup<DoomHunterEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80), new DemonMeleeAttack<>(5));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80), new DemonMeleeAttack<>(5).attackInterval(mob -> 80));
 	}
 
 	@Override

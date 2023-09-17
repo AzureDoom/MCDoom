@@ -26,6 +26,9 @@ public class DoomAnimationsDefault {
 	public static final RawAnimation STOMP = RawAnimation.begin().then("stomp", LoopType.PLAY_ONCE);
 	public static final RawAnimation STOMP_NOHELMET = RawAnimation.begin().then("stomp_nohelmet", LoopType.PLAY_ONCE);
 	public static final RawAnimation MELEE = RawAnimation.begin().then("melee", LoopType.PLAY_ONCE);
+	public static final RawAnimation CHIANSAW = RawAnimation.begin().then("chainsaw", LoopType.PLAY_ONCE);
+	public static final RawAnimation ROCKETS = RawAnimation.begin().then("rockets", LoopType.PLAY_ONCE);
+	public static final RawAnimation FLAMETHROWER = RawAnimation.begin().then("flamethrower", LoopType.PLAY_ONCE);
 
 	public static final RawAnimation DEATH = RawAnimation.begin().thenPlayAndHold("death");
 	public static final RawAnimation DEATH2 = RawAnimation.begin().thenPlayAndHold("death2");

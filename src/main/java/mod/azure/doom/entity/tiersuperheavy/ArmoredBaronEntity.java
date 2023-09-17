@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.Animation.LoopType;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
@@ -61,17 +62,18 @@ public class ArmoredBaronEntity extends DemonEntity implements SmartBrainOwner<A
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking_armor"));
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death_armor"));
-			if (event.getAnimatable().getAttckingState() == 2 && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().then("melee_armor", LoopType.PLAY_ONCE));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle_armor"));
 		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("walk"))
 				if (level().isClientSide())
 					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.CYBERDEMON_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+		})).add(new AnimationController<>(this, "attackController", 0, event -> {
+			return PlayState.STOP;
+		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("attack"))
 				if (level().isClientSide())
 					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.BARON_AMBIENT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		}));
+		}).triggerableAnim("melee", RawAnimation.begin().then("melee_armor", LoopType.PLAY_ONCE)));
 	}
 
 	@Override

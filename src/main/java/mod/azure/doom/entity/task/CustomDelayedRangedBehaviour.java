@@ -6,6 +6,7 @@ import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.tierboss.GladiatorEntity;
 import mod.azure.doom.entity.tierheavy.MancubusEntity;
 import mod.azure.doom.entity.tiersuperheavy.ArchvileEntity;
+import mod.azure.doom.entity.tiersuperheavy.DoomHunterEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -60,7 +61,14 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
 		} else
 			entity.setAttackingState(1);
 		entity.triggerAnim("livingController", "ranged");
-		entity.triggerAnim("attackController", "ranged");
+		if (!(entity instanceof DoomHunterEntity))
+			entity.triggerAnim("attackController", "ranged");
+		if (entity instanceof DoomHunterEntity hunter) {
+			if (hunter.getDeathState() == 1)
+				hunter.triggerAnim("attackController", "flames");
+			if (hunter.getDeathState() == 0)
+				hunter.triggerAnim("attackController", "rocket");
+		}
 	}
 
 	@Override
