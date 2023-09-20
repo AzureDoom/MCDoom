@@ -28,7 +28,7 @@ public class MarauderModel extends GeoModel<MarauderEntity> {
 
 	@Override
 	public void setCustomAnimations(MarauderEntity animatable, long instanceId, AnimationState<MarauderEntity> animationState) {
-		var head = getAnimationProcessor().getBone("bone");
+		var head = getAnimationProcessor().getBone("h_head_furious");
 
 		if (head != null) 
 			head.setRotY(animationState.getData(DataTickets.ENTITY_MODEL_DATA).netHeadYaw() * Mth.DEG_TO_RAD);

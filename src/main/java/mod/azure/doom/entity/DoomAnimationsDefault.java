@@ -3,10 +3,11 @@ package mod.azure.doom.entity;
 import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.RawAnimation;
 
-public class DoomAnimationsDefault {
+public record DoomAnimationsDefault() {
 
 	public static final RawAnimation FLYING = RawAnimation.begin().thenLoop("flying");
 	public static final RawAnimation IDLE = RawAnimation.begin().thenLoop("idle");
+	public static final RawAnimation SPAWN = RawAnimation.begin().then("spawn", LoopType.PLAY_ONCE);
 	public static final RawAnimation IDLE_NOHELMET = RawAnimation.begin().then("idle_nohelmet", LoopType.PLAY_ONCE);
 
 	public static final RawAnimation RUN = RawAnimation.begin().thenLoop("run");

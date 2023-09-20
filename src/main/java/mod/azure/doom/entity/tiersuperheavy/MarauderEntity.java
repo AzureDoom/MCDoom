@@ -5,7 +5,10 @@ import java.util.List;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
@@ -16,11 +19,18 @@ import mod.azure.doom.util.registry.DoomSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
@@ -54,6 +64,7 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
 
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private int targetChangeTime;
+	public static final EntityDataAccessor<Boolean> SPAWN = SynchedEntityData.defineId(MarauderEntity.class, EntityDataSerializers.BOOLEAN);
 
 	public MarauderEntity(EntityType<MarauderEntity> entityType, Level worldIn) {
 		super(entityType, worldIn);
@@ -62,8 +73,12 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving() && event.getAnimatable().getAttckingState() == 0)
-				return event.setAndContinue(DoomAnimationsDefault.WALKING);
+			if (event.getAnimatable().isSpawn() == true)
+				return event.setAndContinue(DoomAnimationsDefault.SPAWN);
+			if (event.isMoving() && this.walkAnimation.speed() <= 0.35F)
+				return event.setAndContinue(DoomAnimationsDefault.WALK);
+			if (this.walkAnimation.speed() > 0.35F)
+				return event.setAndContinue(DoomAnimationsDefault.RUN);
 			if (dead || getHealth() < 0.01 || isDeadOrDying())
 				return event.setAndContinue(DoomAnimationsDefault.DEATH);
 			return event.setAndContinue(DoomAnimationsDefault.IDLE);
@@ -71,10 +86,25 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
 			if (event.getKeyframeData().getSound().matches("walk"))
 				if (level().isClientSide())
 					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+			if (event.getKeyframeData().getSound().matches("axe"))
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.CRUCIBLE_AXE_RIGHT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+			if (event.getKeyframeData().getSound().matches("portal"))
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PORTAL_AMBIENT, SoundSource.AMBIENT, 0.7F, 1.0F, false);
+		}).triggerableAnim("death", DoomAnimationsDefault.DEATH)).add(new AnimationController<>(this, "attackController", 0, event -> {
+			return PlayState.STOP;
+		}).setSoundKeyframeHandler(event -> {
 			if (event.getKeyframeData().getSound().matches("attack"))
 				if (level().isClientSide())
 					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.SUPER_SHOTGUN_SHOOT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		}).triggerableAnim("ranged", DoomAnimationsDefault.RANGED).triggerableAnim("attacking", DoomAnimationsDefault.ATTACKING));
+			if (event.getKeyframeData().getSound().matches("axe_hit"))
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.CRUCIBLE_STAB, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+			if (event.getKeyframeData().getSound().matches("slash"))
+				if (level().isClientSide())
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.CRUCIBLE_AXE_LEFT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+		}).triggerableAnim("ranged", RawAnimation.begin().then("shoot", LoopType.PLAY_ONCE)).triggerableAnim("death", DoomAnimationsDefault.DEATH).triggerableAnim("slash", RawAnimation.begin().then("energy_slash", LoopType.PLAY_ONCE)).triggerableAnim("cut", RawAnimation.begin().then("axe_cut", LoopType.PLAY_ONCE)).triggerableAnim("hook", RawAnimation.begin().then("hook", LoopType.PLAY_ONCE)).triggerableAnim("melee", RawAnimation.begin().then("axe_attack", LoopType.PLAY_ONCE)));
 	}
 
 	@Override
@@ -94,22 +124,67 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
 
 	@Override
 	public BrainActivityGroup<MarauderEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>().stopIf(entity -> this.getAttckingState() > 1));
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>().startCondition(entity -> !this.isSpawn()), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>().startCondition(entity -> !this.isSpawn()));
 	}
 
 	@Override
 	public BrainActivityGroup<MarauderEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<MarauderEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()),
-				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f).stopIf(entity -> this.getAttckingState() > 1), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<MarauderEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().startCondition(target -> !this.isSpawn() && !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>().startCondition(entity -> !this.isSpawn())),
+				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.5f).startCondition(entity -> !this.isSpawn()), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
 	public BrainActivityGroup<MarauderEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F).stopIf(entity -> this.getAttckingState() > 1), new DemonProjectileAttack<>(10).attackInterval(mob -> 90).attackDamage(DoomMod.config.marauder_ssgdamage), new DemonMeleeAttack<>(5));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.5F).startCondition(entity -> !this.isSpawn()), new DemonProjectileAttack<>(10).attackInterval(mob -> 90).attackDamage(DoomMod.config.marauder_ssgdamage), new DemonMeleeAttack<>(10));
+	}
+
+	public boolean isSpawn() {
+		return this.entityData.get(SPAWN).booleanValue();
+	}
+
+	public void setSpawnState(boolean state) {
+		this.entityData.set(SPAWN, Boolean.valueOf(state));
 	}
 
 	@Override
-	protected void registerGoals() {
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		entityData.define(SPAWN, false);
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag nbt) {
+		super.addAdditionalSaveData(nbt);
+		nbt.putBoolean("isSpawn", this.isSpawn());
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundTag nbt) {
+		super.readAdditionalSaveData(nbt);
+		setSpawnState(nbt.getBoolean("isSpawn"));
+	}
+
+	@Override
+	public void tick() {
+		super.tick();
+		if (this.tickCount <= 1)
+			this.setSpawnState(true);
+		if (this.isSpawn() == true && this.tickCount > 280) {
+			this.setSpawnState(false);
+			this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 100, false, false));
+		}
+	}
+
+	@Override
+	protected void tickDeath() {
+		super.tickDeath();
+		this.triggerAnim("attackController", "death");
+		this.triggerAnim("livingController", "death");
+	}
+
+	@Override
+	public boolean hurt(DamageSource source, float amount) {
+		return isSpawn() && source != damageSources().genericKill() ? false : super.hurt(source, amount);
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
@@ -127,17 +202,13 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
 
 	@Override
 	public void aiStep() {
-		if (level().isClientSide) {
-			for (int i = 0; i < 2; ++i) {
-				level().addParticle(ParticleTypes.PORTAL, getRandomX(0.5D), getRandomY() - 0.25D, getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), (random.nextDouble() - 0.5D) * 2.0D);
-			}
-		}
-
+		if (level().isClientSide)
+			if (!this.isSpawn())
+				for (var i = 0; i < 2; ++i)
+					level().addParticle(ParticleTypes.PORTAL, getRandomX(0.5D), getRandomY() - 0.25D, getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), (random.nextDouble() - 0.5D) * 2.0D);
 		jumping = false;
-		if (!level().isClientSide) {
+		if (!level().isClientSide)
 			updatePersistentAnger((ServerLevel) level(), true);
-		}
-
 		super.aiStep();
 	}
 
@@ -154,7 +225,7 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
 	}
 
 	public boolean teleport() {
-		if (!level().isClientSide() && isAlive()) {
+		if (!level().isClientSide() && isAlive() && !this.isSpawn()) {
 			final double d0 = this.getX() + (random.nextDouble() - 0.5D) * 12.0D;
 			final double d1 = this.getY() + (random.nextInt(64) - 32);
 			final double d2 = this.getZ() + (random.nextDouble() - 0.5D) * 12.0D;
@@ -167,13 +238,13 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
 	private boolean teleport(double x, double y, double z) {
 		final var blockpos$mutableblockpos = new BlockPos.MutableBlockPos(x, y, z);
 
-		while (blockpos$mutableblockpos.getY() > level().getMinBuildHeight() && !level().getBlockState(blockpos$mutableblockpos).blocksMotion()) 
+		while (blockpos$mutableblockpos.getY() > level().getMinBuildHeight() && !level().getBlockState(blockpos$mutableblockpos).blocksMotion())
 			blockpos$mutableblockpos.move(Direction.DOWN);
 
 		final var blockstate = level().getBlockState(blockpos$mutableblockpos);
-		if (blockstate.blocksMotion() && !blockstate.getFluidState().is(FluidTags.WATER)) 
+		if (blockstate.blocksMotion() && !blockstate.getFluidState().is(FluidTags.WATER))
 			return randomTeleport(x, y, z, true);
-		else 
+		else
 			return false;
 	}
 
