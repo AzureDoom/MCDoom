@@ -49,12 +49,22 @@ public abstract class CustomDelayedMeleeBehaviour<E extends DemonEntity> extends
 			doDelayedAction(entity);
 		}
 		entity.triggerAnim("attackController", "melee");
-		entity.triggerAnim("livingController", "melee");
+		if (!(entity instanceof MarauderEntity))
+			entity.triggerAnim("livingController", "melee");
+		if (entity instanceof MarauderEntity marauder) {
+			marauder.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 100, false, false));
+			marauder.triggerAnim("attackController", switch (marauder.getRandom().nextInt(3)) {
+			case 0 -> "cut";
+			case 1 -> "cut";
+			case 2 -> "hook";
+			default -> "cut";
+			});
+		}
 		if (entity instanceof MancubusEntity mancubusEntity)
 			mancubusEntity.setAttackingState(3);
 		if (entity instanceof DoomHunterEntity doomHunterEntity)
 			doomHunterEntity.setAttackingState(3);
-		
+
 		if (entity instanceof GladiatorEntity gladiatorEntity) {
 			if (gladiatorEntity.getDeathState() == 0)
 				gladiatorEntity.triggerAnim("attackController", switch (gladiatorEntity.getRandom().nextInt(2)) {
@@ -79,7 +89,7 @@ public abstract class CustomDelayedMeleeBehaviour<E extends DemonEntity> extends
 
 		if (!(entity instanceof IconofsinEntity) || !(entity instanceof MancubusEntity) || !(entity instanceof Hellknight2016Entity) || !(entity instanceof DoomHunterEntity))
 			entity.setAttackingState(2);
-		if (entity instanceof MarauderEntity marauderEntity) 
+		if (entity instanceof MarauderEntity marauderEntity)
 			marauderEntity.triggerAnim("livingController", "attacking");
 		if (entity instanceof Hellknight2016Entity hellknight2016) {
 			hellknight2016.triggerAnim("livingController", "attack");
