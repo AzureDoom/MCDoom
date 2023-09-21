@@ -1,4 +1,17 @@
-v.6.0.3
+v.6.0.5
 
-- Updated zh_cn.json - chrysoljq
-- Added Argent Pickaxe and Paxel to Forge pickaxe tags.
+## This mod is now a NeoForge mod, if it works with Forge: Great. If it doesn't, it doesn't ##
+
+- Fixes Archmaykr Structures spawning incorrectly. 
+- Moves the mod back to a loot handler system instead of the trash that is Loot Modifiers. 
+- Updates es_mx.json
+- Adds a new WIP Hell Dim that will spawn only Doom mobs.
+	- New Mod required due to this on Forge: 
+		Modrinth: https://modrinth.com/mod/custom-portal-api-reforged
+		CurseForge: https://legacy.curseforge.com/minecraft/mc-mods/custom-portal-api-reforged
+	- Gladiator and Motherdemon structures moved to this dim.
+- Grenades now add movement to damaged mobs.
+- Archmaykr flight tweaked.
+- Added Carcass.
+- Animations all updated to trigger system and properly melee.
+- Marauder updated with https://builtbybit.com/resources/dreadnought-boss.32177/
