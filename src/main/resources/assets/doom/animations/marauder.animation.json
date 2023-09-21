@@ -220,6 +220,16 @@
 					"scale": {
 						"vector": [0, 0, 0]
 					}
+				},
+				"eyes_attack": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"eyes_normal": {
+					"scale": {
+						"vector": [1, 1, 1]
+					}
 				}
 			}
 		},
@@ -505,6 +515,11 @@
 					"scale": {
 						"vector": [0, 0, 0]
 					}
+				},
+				"eyes_attack": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
 				}
 			},
 			"sound_effects": {
@@ -720,6 +735,11 @@
 					}
 				},
 				"dreadnought_portal": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"eyes_attack": {
 					"scale": {
 						"vector": [0, 0, 0]
 					}
@@ -1355,6 +1375,11 @@
 					"scale": {
 						"vector": [0, 0, 0]
 					}
+				},
+				"eyes_normal": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
 				}
 			},
 			"sound_effects": {
@@ -1652,6 +1677,11 @@
 					"scale": {
 						"vector": [0, 0, 0]
 					}
+				},
+				"eyes_normal": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
 				}
 			},
 			"sound_effects": {
@@ -1935,6 +1965,11 @@
 					}
 				},
 				"dreadnought_portal": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"eyes_normal": {
 					"scale": {
 						"vector": [0, 0, 0]
 					}
@@ -2420,6 +2455,11 @@
 					"scale": {
 						"vector": [0, 0, 0]
 					}
+				},
+				"eyes_normal": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
 				}
 			},
 			"sound_effects": {
@@ -2861,6 +2901,11 @@
 					"scale": {
 						"vector": [0, 0, 0]
 					}
+				},
+				"eyes_normal": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
 				}
 			},
 			"sound_effects": {
@@ -3219,6 +3264,11 @@
 					}
 				},
 				"dreadnought_portal": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"eyes_attack": {
 					"scale": {
 						"vector": [0, 0, 0]
 					}
@@ -6277,6 +6327,11 @@
 						"8.0": {
 							"vector": [0, -1440, 0]
 						}
+					}
+				},
+				"eyes_attack": {
+					"scale": {
+						"vector": [0, 0, 0]
 					}
 				}
 			},

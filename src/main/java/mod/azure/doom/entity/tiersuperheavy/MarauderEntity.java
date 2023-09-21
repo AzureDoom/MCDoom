@@ -91,7 +91,7 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
 					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.CRUCIBLE_AXE_RIGHT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
 			if (event.getKeyframeData().getSound().matches("portal"))
 				if (level().isClientSide())
-					level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PORTAL_AMBIENT, SoundSource.AMBIENT, 0.7F, 1.0F, false);
+					level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PORTAL_AMBIENT, SoundSource.AMBIENT, 0.5F, 1.0F, false);
 		}).triggerableAnim("death", DoomAnimationsDefault.DEATH)).add(new AnimationController<>(this, "attackController", 0, event -> {
 			return PlayState.STOP;
 		}).setSoundKeyframeHandler(event -> {
@@ -192,12 +192,10 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
 	}
 
 	public boolean isLookingAtMe(Player player) {
-		final Vec3 vector3d = player.getViewVector(1.0F).normalize();
-		Vec3 vector3d1 = new Vec3(this.getX() - player.getX(), getEyeY() - player.getEyeY(), this.getZ() - player.getZ());
-		final double d0 = vector3d1.length();
+		final var vector3d = player.getViewVector(1.0F).normalize();
+		var vector3d1 = new Vec3(this.getX() - player.getX(), getEyeY() - player.getEyeY(), this.getZ() - player.getZ());
 		vector3d1 = vector3d1.normalize();
-		final double d1 = vector3d.dot(vector3d1);
-		return d1 > 1.0D - 0.025D / d0 ? player.hasLineOfSight(this) : false;
+		return vector3d.dot(vector3d1) > 1.0D - 0.025D / vector3d1.length() ? player.hasLineOfSight(this) : false;
 	}
 
 	@Override
@@ -220,19 +218,17 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
 			if (f > 0.5F && level().canSeeSky(blockPosition()) && random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F)
 				setTarget((LivingEntity) null);
 		}
-
 		super.customServerAiStep();
 	}
 
 	public boolean teleport() {
 		if (!level().isClientSide() && isAlive() && !this.isSpawn()) {
-			final double d0 = this.getX() + (random.nextDouble() - 0.5D) * 12.0D;
-			final double d1 = this.getY() + (random.nextInt(64) - 32);
-			final double d2 = this.getZ() + (random.nextDouble() - 0.5D) * 12.0D;
+			final var d0 = this.getX() + (random.nextDouble() - 0.5D) * 12.0D;
+			final var d1 = this.getY() + (random.nextInt(64) - 32);
+			final var d2 = this.getZ() + (random.nextDouble() - 0.5D) * 12.0D;
 			return this.teleport(d0, d1, d2);
-		} else {
+		} else 
 			return false;
-		}
 	}
 
 	private boolean teleport(double x, double y, double z) {
