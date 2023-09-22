@@ -27,7 +27,6 @@ repositories {
 	maven { url 'https://maven.kosmx.dev/' }
 	maven { url 'https://jitpack.io' }
 	maven { url 'https://api.modrinth.com/maven' }
-	maven { url 'https://maven.kyrptonaught.dev' }
 }
 
 dependencies {
