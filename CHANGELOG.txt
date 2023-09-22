@@ -1,12 +1,3 @@
-v.6.0.5
+v.6.0.5a
 
-- Fixes Archmaykr Structures spawning incorrectly. 
-- Updates es_mx.json
-- Adds a new WIP Hell Dim that will spawn only Doom mobs.
-	- Gladiator and Motherdemon structures moved to this dim.
-- Grenades now add movement to damaged mobs.
-- Moved spawn config to biome tags
-- Archmaykr flight tweaked.
-- Added Carcass.
-- Animations all updated to trigger system and properly melee.
-- Marauder updated with https://builtbybit.com/resources/dreadnought-boss.32177/
+- Fixes issue with Connector and CustomPortalsAPI with a forked bundled version.
