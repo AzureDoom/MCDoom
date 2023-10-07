@@ -1,10 +1,12 @@
 package mod.azure.doom.item.weapons;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
+import mod.azure.azurelib.animatable.client.RenderProvider;
 import mod.azure.doom.client.render.weapons.UnmaykrRender;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.UnmaykrBoltEntity;
@@ -25,10 +27,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 public class Unmaykr extends DoomBaseItem {
 
+	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 	public final String itemID;
 
 	public Unmaykr(String id) {
@@ -96,8 +98,8 @@ public class Unmaykr extends DoomBaseItem {
 	}
 
 	@Override
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		consumer.accept(new IClientItemExtensions() {
+	public void createRenderer(Consumer<Object> consumer) {
+		consumer.accept(new RenderProvider() {
 			private final UnmaykrRender renderer = new UnmaykrRender();
 
 			@Override
@@ -105,5 +107,10 @@ public class Unmaykr extends DoomBaseItem {
 				return renderer;
 			}
 		});
+	}
+
+	@Override
+	public Supplier<Object> getRenderProvider() {
+		return renderProvider;
 	}
 }

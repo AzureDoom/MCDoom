@@ -2,10 +2,12 @@ package mod.azure.doom.item.armor;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
 
 import mod.azure.azurelib.animatable.GeoItem;
+import mod.azure.azurelib.animatable.client.RenderProvider;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.AnimationController;
@@ -23,24 +25,28 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 public class MaykrDoomArmor extends ArmorItem implements GeoItem {
 
+	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
 	public MaykrDoomArmor(ArmorMaterial materialIn, Type slot) {
 		super(materialIn, slot, new Item.Properties().stacksTo(1));
 	}
 
-	// Create our armor model/renderer for Fabric and return it
 	@Override
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		consumer.accept(new IClientItemExtensions() {
+	public Supplier<Object> getRenderProvider() {
+		return renderProvider;
+	}
+
+	@Override
+	public void createRenderer(Consumer<Object> consumer) {
+		consumer.accept(new RenderProvider() {
 			private MaykrRender renderer;
 
 			@Override
-			public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
+			public @NotNull HumanoidModel<LivingEntity> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<LivingEntity> original) {
 				if (renderer == null)
 					renderer = new MaykrRender();
 

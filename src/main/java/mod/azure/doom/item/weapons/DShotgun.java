@@ -2,10 +2,12 @@ package mod.azure.doom.item.weapons;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
+import mod.azure.azurelib.animatable.client.RenderProvider;
 import mod.azure.azurelib.items.BaseGunItem;
 import mod.azure.doom.client.render.weapons.DSGRender;
 import mod.azure.doom.config.DoomConfig;
@@ -30,9 +32,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 public class DShotgun extends DoomBaseItem {
+
+	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
 	public DShotgun() {
 		super(new Item.Properties().stacksTo(1).durability(51));
@@ -105,8 +108,8 @@ public class DShotgun extends DoomBaseItem {
 	}
 
 	@Override
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		consumer.accept(new IClientItemExtensions() {
+	public void createRenderer(Consumer<Object> consumer) {
+		consumer.accept(new RenderProvider() {
 			private final DSGRender renderer = new DSGRender();
 
 			@Override
@@ -114,6 +117,11 @@ public class DShotgun extends DoomBaseItem {
 				return renderer;
 			}
 		});
+	}
+
+	@Override
+	public Supplier<Object> getRenderProvider() {
+		return renderProvider;
 	}
 
 }

@@ -4,10 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
+import mod.azure.azurelib.animatable.client.RenderProvider;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
@@ -35,10 +37,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 public class ChainsawAnimated extends Item implements GeoItem {
 
+	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
 	public ChainsawAnimated() {
@@ -167,8 +169,8 @@ public class ChainsawAnimated extends Item implements GeoItem {
 	}
 
 	@Override
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		consumer.accept(new IClientItemExtensions() {
+	public void createRenderer(Consumer<Object> consumer) {
+		consumer.accept(new RenderProvider() {
 			private final ChainsawRender renderer = new ChainsawRender();
 
 			@Override
@@ -176,6 +178,11 @@ public class ChainsawAnimated extends Item implements GeoItem {
 				return renderer;
 			}
 		});
+	}
+
+	@Override
+	public Supplier<Object> getRenderProvider() {
+		return renderProvider;
 	}
 
 }

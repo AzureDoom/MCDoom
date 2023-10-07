@@ -1,10 +1,12 @@
 package mod.azure.doom.item.weapons;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
+import mod.azure.azurelib.animatable.client.RenderProvider;
 import mod.azure.doom.client.render.weapons.BFG9000Render;
 import mod.azure.doom.entity.projectiles.BFGEntity;
 import mod.azure.doom.util.enums.DoomTier;
@@ -22,9 +24,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 public class BFG9000 extends DoomBaseItem {
+
+	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
 	public BFG9000() {
 		super(new Item.Properties().stacksTo(1).durability(401));
@@ -95,8 +98,8 @@ public class BFG9000 extends DoomBaseItem {
 	}
 
 	@Override
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		consumer.accept(new IClientItemExtensions() {
+	public void createRenderer(Consumer<Object> consumer) {
+		consumer.accept(new RenderProvider() {
 			private final BFG9000Render renderer = new BFG9000Render();
 
 			@Override
@@ -104,5 +107,10 @@ public class BFG9000 extends DoomBaseItem {
 				return renderer;
 			}
 		});
+	}
+
+	@Override
+	public Supplier<Object> getRenderProvider() {
+		return renderProvider;
 	}
 }

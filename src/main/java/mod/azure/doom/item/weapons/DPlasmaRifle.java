@@ -2,10 +2,12 @@ package mod.azure.doom.item.weapons;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
+import mod.azure.azurelib.animatable.client.RenderProvider;
 import mod.azure.doom.client.render.weapons.DPlamsaRifleRender;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.EnergyCellEntity;
@@ -29,9 +31,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 public class DPlasmaRifle extends DoomBaseItem {
+
+	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
 	public DPlasmaRifle() {
 		super(new Item.Properties().stacksTo(1).durability(401));
@@ -101,8 +104,8 @@ public class DPlasmaRifle extends DoomBaseItem {
 	}
 
 	@Override
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		consumer.accept(new IClientItemExtensions() {
+	public void createRenderer(Consumer<Object> consumer) {
+		consumer.accept(new RenderProvider() {
 			private final DPlamsaRifleRender renderer = new DPlamsaRifleRender();
 
 			@Override
@@ -110,5 +113,10 @@ public class DPlasmaRifle extends DoomBaseItem {
 				return renderer;
 			}
 		});
+	}
+
+	@Override
+	public Supplier<Object> getRenderProvider() {
+		return renderProvider;
 	}
 }

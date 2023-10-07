@@ -1,11 +1,12 @@
 package mod.azure.doom.item.weapons;
 
-import java.util.Random;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
+import mod.azure.azurelib.animatable.client.RenderProvider;
 import mod.azure.azurelib.items.BaseGunItem;
 import mod.azure.doom.client.render.weapons.PistolRender;
 import mod.azure.doom.config.DoomConfig;
@@ -27,11 +28,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 public class PistolItem extends DoomBaseItem {
 
-	protected final Random random = new Random();
+	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
 	public PistolItem() {
 		super(new Item.Properties().stacksTo(1).durability(201));
@@ -119,8 +119,8 @@ public class PistolItem extends DoomBaseItem {
 	}
 
 	@Override
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		consumer.accept(new IClientItemExtensions() {
+	public void createRenderer(Consumer<Object> consumer) {
+		consumer.accept(new RenderProvider() {
 			private final PistolRender renderer = new PistolRender();
 
 			@Override
@@ -128,5 +128,10 @@ public class PistolItem extends DoomBaseItem {
 				return renderer;
 			}
 		});
+	}
+
+	@Override
+	public Supplier<Object> getRenderProvider() {
+		return renderProvider;
 	}
 }
