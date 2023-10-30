@@ -1,6 +1,6 @@
-v.6.0.6
+v.6.0.7
 
 ## This mod is now a NeoForge mod, if it works with Forge: Great. If it doesn't, it doesn't ##
 
-- Updates Armor and Items for newest AzureLib changes. 
-- Sets required AzureLib version to 1.0.32.
+- Sets required AzureLib version to 2.0.0.
+- Updates LightBlock code to AzureLib 2.0.0 changes.
