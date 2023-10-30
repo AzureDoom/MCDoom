@@ -1,6 +1,6 @@
 package mod.azure.doom.entity.projectiles;
 
-import mod.azure.azurelib.AzureLibMod.AzureBlocks;
+import mod.azure.azurelib.NeoForgeAzureLibMod.AzureBlocks;
 import mod.azure.azurelib.entities.TickingLightEntity;
 import mod.azure.doom.entity.tierboss.IconofsinEntity;
 import mod.azure.doom.util.registry.DoomItems;

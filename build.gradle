@@ -2,10 +2,11 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle' version '[6.0.18,6.2)'
+    id 'net.neoforged.gradle' version '[6.0,6.2)'
     id 'org.spongepowered.mixin' version '0.7.+'
     id "com.modrinth.minotaur" version "2.+"
     id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id "me.modmuss50.mod-publish-plugin" version "0.4.0"
 }
 
 import groovy.json.JsonSlurper
@@ -75,7 +76,7 @@ dependencies {
     minecraft "net.neoforged:forge:${minecraft_version}-${neo_version}"
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
-  	implementation fg.deobf("mod.azure.azurelib:azurelib-neo-${minecraft_version}:${azurelib_version}")
+    implementation fg.deobf("mod.azure.azurelib:azurelib-neo-${minecraft_version}:${azurelib_version}")
   	implementation fg.deobf("net.kyrptonaught.customportalapi:customportalapi-reforged:${customportalsapi}")
 	annotationProcessor "org.spongepowered:mixin:0.8.4:processor"
     implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${rei_version}")
@@ -83,7 +84,6 @@ dependencies {
     implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_version}")
     implementation fg.deobf("dev.architectury:architectury-forge:${arch_version}")
 	implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-forge-1.20:${sbl_version}")
-	implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-common-1.20:${sbl_version}")
 }
 
 tasks.withType(ProcessResources).configureEach {

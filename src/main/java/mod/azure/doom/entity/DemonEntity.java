@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
 
-import mod.azure.azurelib.AzureLibMod.AzureBlocks;
+import mod.azure.azurelib.NeoForgeAzureLibMod.AzureBlocks;
 import mod.azure.azurelib.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.entities.TickingLightEntity;

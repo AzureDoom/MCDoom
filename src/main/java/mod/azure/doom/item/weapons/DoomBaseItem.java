@@ -2,7 +2,7 @@ package mod.azure.doom.item.weapons;
 
 import java.util.List;
 
-import mod.azure.azurelib.AzureLibMod.AzureBlocks;
+import mod.azure.azurelib.NeoForgeAzureLibMod.AzureBlocks;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;

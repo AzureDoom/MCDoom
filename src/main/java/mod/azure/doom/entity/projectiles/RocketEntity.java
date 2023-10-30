@@ -1,6 +1,6 @@
 package mod.azure.doom.entity.projectiles;
 
-import mod.azure.azurelib.AzureLibMod.AzureBlocks;
+import mod.azure.azurelib.NeoForgeAzureLibMod.AzureBlocks;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
