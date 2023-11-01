@@ -2,7 +2,6 @@ package mod.azure.doom.item.weapons;
 
 import java.util.List;
 
-import mod.azure.azurelib.AzureLibMod;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
@@ -12,6 +11,7 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.entities.TickingLightEntity;
+import mod.azure.azurelib.platform.Services;
 import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -86,7 +86,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 			lightBlockPos = findFreeSpace(entity.level(), entity.blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			entity.level().setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
+			entity.level().setBlockAndUpdate(lightBlockPos, Services.PLATFORM.getTickingLightBlock().defaultBlockState());
 		} else if (checkDistance(lightBlockPos, entity.blockPosition(), 2)) {
 			final var blockEntity = entity.level().getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity)
@@ -116,7 +116,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
 				for (final var z : offsets) {
 					final var offsetPos = blockPos.offset(x, y, z);
 					final var state = world.getBlockState(offsetPos);
-					if (state.isAir() || state.getBlock().equals(AzureLibMod.TICKING_LIGHT_BLOCK))
+					if (state.isAir() || state.getBlock().equals(Services.PLATFORM.getTickingLightBlock()))
 						return offsetPos;
 				}
 
