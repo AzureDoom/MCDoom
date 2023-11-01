@@ -9,9 +9,9 @@ plugins {
     id "me.modmuss50.mod-publish-plugin" version "0.4.0"
 }
 
-import groovy.json.JsonSlurper
+
 import groovy.json.JsonOutput
-import com.modrinth.minotaur.dependencies.ModDependency
+import groovy.json.JsonSlurper
 
 version = mod_version
 group = mod_group_id
@@ -54,7 +54,7 @@ minecraft {
     }
 }
 
-mixin { 
+mixin {
     add sourceSets.main, "doom.refmap.json"
     config "doom.mixins.json"
 }
@@ -62,13 +62,13 @@ mixin {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-	maven { url 'https://libs.azuredoom.com:4443/mods'}
+    maven { url 'https://libs.azuredoom.com:4443/mods' }
     maven { url "https://maven.theillusivec4.top/" }
     maven { url "https://minecraft.curseforge.com/api/maven/" }
     maven { url "https://dl.cloudsmith.io/public/tslat/sbl/maven/" }
     maven { url "https://maven.blamejared.com" }
-	maven { url "https://cfa2.cursemaven.com" }
-	maven { url "https://maven.shedaniel.me" }
+    maven { url "https://cfa2.cursemaven.com" }
+    maven { url "https://maven.shedaniel.me" }
     mavenCentral()
 }
 
@@ -77,13 +77,13 @@ dependencies {
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     implementation fg.deobf("mod.azure.azurelib:azurelib-neo-${minecraft_version}:${azurelib_version}")
-  	implementation fg.deobf("net.kyrptonaught.customportalapi:customportalapi-reforged:${customportalsapi}")
-	annotationProcessor "org.spongepowered:mixin:0.8.4:processor"
+    implementation fg.deobf("net.kyrptonaught.customportalapi:customportalapi-reforged:${customportalsapi}")
+    annotationProcessor "org.spongepowered:mixin:0.8.4:processor"
     implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${rei_version}")
     implementation fg.deobf("curse.maven:REIPC-521393:4611912")
     implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_version}")
     implementation fg.deobf("dev.architectury:architectury-forge:${arch_version}")
-	implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-forge-1.20:${sbl_version}")
+    implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-neoforge-${minecraft_version}:${sbl_version}")
 }
 
 tasks.withType(ProcessResources).configureEach {
@@ -134,11 +134,11 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 processResources {
-	doLast {
+    doLast {
         def jsonMinifyStart = System.currentTimeMillis()
         def jsonMinified = 0
         def jsonBytesSaved = 0
-        fileTree(dir: outputs.files.asPath, include: '**/*.json').each { 
+        fileTree(dir: outputs.files.asPath, include: '**/*.json').each {
             File file = it
             jsonMinified++
             def oldLength = file.length()
@@ -152,49 +152,49 @@ processResources {
 if (file('key.properties').exists()) {
     curseforge {
 
-    	def curseProp = new Properties()
-    	File secretPropsFile = file("key.properties")
-    	curseProp.load(secretPropsFile.newInputStream())
+        def curseProp = new Properties()
+        File secretPropsFile = file("key.properties")
+        curseProp.load(secretPropsFile.newInputStream())
 
-    	project {
-        	apiKey = curseProp.getProperty('curseKey')
-        	id = "${curse_id}"
-        	releaseType = "${curse_release}"
-        	changelogType = 'text'
-        	changelog = file('CHANGELOG.txt')
-        	addGameVersion("Forge")
-        	addGameVersion("NeoForge")
-        	addGameVersion("Java 17")
+        project {
+            apiKey = curseProp.getProperty('curseKey')
+            id = "${curse_id}"
+            releaseType = "${curse_release}"
+            changelogType = 'text'
+            changelog = file('CHANGELOG.txt')
+            addGameVersion("Forge")
+            addGameVersion("NeoForge")
+            addGameVersion("Java 17")
 
-        	relations {
-            	requiredDependency 'curios'  
-            	requiredDependency 'azurelib' 
-            	requiredDependency 'smartbrainlib'  
-            	requiredDependency 'custom-portal-api-reforged'  
-            	optionalDependency 'better-combat-by-daedelus' 
-        	}
-    	}
+            relations {
+                requiredDependency 'curios'
+                requiredDependency 'azurelib'
+                requiredDependency 'smartbrainlib'
+                requiredDependency 'custom-portal-api-reforged'
+                optionalDependency 'better-combat-by-daedelus'
+            }
+        }
     }
 }
 
 if (file('key.properties').exists()) {
-	modrinth {
-		def modrinthProp = new Properties()
-		File secretPropsFile = file("key.properties")
-		modrinthProp.load(secretPropsFile.newInputStream())
-		
-		token = modrinthProp.getProperty('modrinthKey')
-		projectId = project.modrinth_id
-		versionNumber = project.mod_version 
-		uploadFile = jar 
-		changelog = rootProject.file("changelog.txt").text
-		loaders = ['neoforge', 'forge']
-		dependencies { 
-        	required.project "azurelib"
-        	required.project "smartbrainlib"
-        	required.project "curios"
-        	required.project "custom-portal-api-reforged"
-        	optional.project "better-combat"
-   		}
-	}
+    modrinth {
+        def modrinthProp = new Properties()
+        File secretPropsFile = file("key.properties")
+        modrinthProp.load(secretPropsFile.newInputStream())
+
+        token = modrinthProp.getProperty('modrinthKey')
+        projectId = project.modrinth_id
+        versionNumber = project.mod_version
+        uploadFile = jar
+        changelog = rootProject.file("changelog.txt").text
+        loaders = ['neoforge', 'forge']
+        dependencies {
+            required.project "azurelib"
+            required.project "smartbrainlib"
+            required.project "curios"
+            required.project "custom-portal-api-reforged"
+            optional.project "better-combat"
+        }
+    }
 }
