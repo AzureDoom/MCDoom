@@ -23,7 +23,7 @@ description='''${mod_description}'''
 [[dependencies.${mod_id}]]
     modId="azurelib"
     mandatory=true
-    versionRange="[2.0.0,)"
+    versionRange="[2.0.3,)"
     ordering="BEFORE"
     side="BOTH"
 [[dependencies.${mod_id}]]
