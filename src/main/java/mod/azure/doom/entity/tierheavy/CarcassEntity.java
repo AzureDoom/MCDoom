@@ -1,14 +1,12 @@
 package mod.azure.doom.entity.tierheavy;
 
-import java.util.List;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.entity.task.DemonMeleeAttack;
@@ -45,89 +43,92 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
+import java.util.List;
+
 public class CarcassEntity extends DemonEntity implements SmartBrainOwner<CarcassEntity> {
 
-	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-	
-	public CarcassEntity(EntityType<? extends Monster> type, Level worldIn) {
-		super(type, worldIn);
-	}
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-	@Override
-	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving() && !this.isAggressive())
-				return event.setAndContinue(DoomAnimationsDefault.WALKING);
-			if (event.isMoving() && this.isAggressive())
-				return event.setAndContinue(DoomAnimationsDefault.RUN);
-			if (dead || getHealth() < 0.01 || isDeadOrDying())
-				return event.setAndContinue(DoomAnimationsDefault.DEATH);
-			return event.setAndContinue(DoomAnimationsDefault.IDLE);
-		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			return PlayState.STOP;
-		}).triggerableAnim("melee", DoomAnimationsDefault.MELEE).triggerableAnim("ranged", DoomAnimationsDefault.RANGED));
-	}
+    public CarcassEntity(EntityType<? extends Monster> type, Level worldIn) {
+        super(type, worldIn);
+    }
 
-	@Override
-	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return cache;
-	}
+    @Override
+    public void registerControllers(ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+            if (event.isMoving() && !this.isAggressive())
+                return event.setAndContinue(DoomAnimationsDefault.WALKING);
+            if (event.isMoving() && this.isAggressive())
+                return event.setAndContinue(DoomAnimationsDefault.RUN);
+            if (dead || getHealth() < 0.01 || isDeadOrDying())
+                return event.setAndContinue(DoomAnimationsDefault.DEATH);
+            return event.setAndContinue(DoomAnimationsDefault.IDLE);
+        })).add(new AnimationController<>(this, "attackController", 0, event -> {
+            return PlayState.STOP;
+        }).triggerableAnim("melee", DoomAnimationsDefault.MELEE).triggerableAnim("ranged", DoomAnimationsDefault.RANGED));
+    }
 
-	@Override
-	protected void tickDeath() {
-		++deathTime;
-		if (deathTime == 50) {
-			remove(RemovalReason.KILLED);
-			dropExperience();
-		}
-	}
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
 
-	@Override
-	protected void customServerAiStep() {
-		tickBrain(this);
-		super.customServerAiStep();
-	}
+    @Override
+    protected void tickDeath() {
+        ++deathTime;
+        if (deathTime == 50) {
+            remove(RemovalReason.KILLED);
+            dropExperience();
+        }
+    }
 
-	@Override
-	protected Brain.Provider<?> brainProvider() {
-		return new SmartBrainProvider<>(this);
-	}
+    @Override
+    protected void customServerAiStep() {
+        tickBrain(this);
+        super.customServerAiStep();
+    }
 
-	@Override
-	public List<ExtendedSensor<CarcassEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyLivingEntitySensor<CarcassEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<CarcassEntity>());
-	}
+    @Override
+    protected Brain.Provider<?> brainProvider() {
+        return new SmartBrainProvider<>(this);
+    }
 
-	@Override
-	public BrainActivityGroup<CarcassEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new StrafeTarget<>().speedMod(0.25F), new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>());
-	}
+    @Override
+    public List<ExtendedSensor<CarcassEntity>> getSensors() {
+        return ObjectArrayList.of(new NearbyLivingEntitySensor<CarcassEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<CarcassEntity>());
+    }
 
-	@Override
-	public BrainActivityGroup<CarcassEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<CarcassEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), 
-				new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), 
-				new SetRandomLookTarget<>()), 
-				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.9f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
-	}
+    @Override
+    public BrainActivityGroup<CarcassEntity> getCoreTasks() {
+        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new StrafeTarget<>().speedMod(0.25F), new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>());
+    }
 
-	@Override
-	public BrainActivityGroup<CarcassEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), 
-				new SetWalkTargetToAttackTarget<>().speedMod(1.25F), 
-				new DemonProjectileAttack<>(7).attackInterval(mob -> 20).attackDamage(DoomConfig.SERVER.carcass_ranged_damage.get().floatValue()), new DemonMeleeAttack<>(5));
-	}
+    @Override
+    public BrainActivityGroup<CarcassEntity> getIdleTasks() {
+        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<CarcassEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()),
+                        new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()),
+                        new SetRandomLookTarget<>()),
+                new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.9f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+    }
 
-	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
-				.add(Attributes.MAX_HEALTH, DoomConfig.SERVER.carcass_health.get()).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f)
-				.add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.carcass_melee_damage.get()).add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);	}
+    @Override
+    public BrainActivityGroup<CarcassEntity> getFightTasks() {
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, entity) -> 1.25F),
+                new DemonProjectileAttack<>(7).attackInterval(mob -> 20).attackDamage(DoomMod.config.carcass_ranged_damage), new DemonMeleeAttack<>(5));
+    }
 
-	@Override
-	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
-		return 1.0F;
-	}
+    public static AttributeSupplier.Builder createMobAttributes() {
+        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
+                .add(Attributes.MAX_HEALTH, DoomMod.config.carcass_health).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f)
+                .add(Attributes.ATTACK_DAMAGE, DoomMod.config.carcass_melee_damage).add(Attributes.MOVEMENT_SPEED, 0.25D)
+                .add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+    }
+
+    @Override
+    protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
+        return 1.0F;
+    }
 
 
 }

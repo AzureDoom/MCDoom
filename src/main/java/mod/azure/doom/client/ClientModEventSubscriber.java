@@ -202,6 +202,6 @@ public class ClientModEventSubscriber {
 	}
 
 	public static boolean nonCentered(ItemStack stack) {
-		return DoomConfig.SERVER.enable_noncenter.get();
+		return DoomMod.config.enable_noncenter;
 	}
 }

@@ -1,15 +1,12 @@
 package mod.azure.doom.item.weapons;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.animatable.client.RenderProvider;
 import mod.azure.azurelib.items.BaseGunItem;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.render.weapons.SSGRender;
-import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.MeatHookEntity;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import mod.azure.doom.util.PlayerProperties;
@@ -31,6 +28,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class SuperShotgun extends DoomBaseItem {
 
@@ -59,10 +59,10 @@ public class SuperShotgun extends DoomBaseItem {
 							if (result.getEntity()instanceof LivingEntity livingEntity) {
 								livingEntity.invulnerableTime = 0;
 								livingEntity.setDeltaMovement(0, 0, 0);
-								livingEntity.hurt(playerentity.damageSources().playerAttack(playerentity), DoomConfig.SERVER.shotgun_damage.get().floatValue() + enchantlevel * 2.0F);
+								livingEntity.hurt(playerentity.damageSources().playerAttack(playerentity), DoomMod.config.shotgun_damage + enchantlevel * 2.0F);
 								livingEntity.invulnerableTime = 0;
 								livingEntity.setDeltaMovement(0, 0, 0);
-								livingEntity.hurt(playerentity.damageSources().playerAttack(playerentity), DoomConfig.SERVER.shotgun_damage.get().floatValue() + enchantlevel * 2.0F);
+								livingEntity.hurt(playerentity.damageSources().playerAttack(playerentity), DoomMod.config.shotgun_damage + enchantlevel * 2.0F);
 							}
 						} else {
 							final var abstractarrowentity = createArrow(worldIn, stack, playerentity);
@@ -104,7 +104,7 @@ public class SuperShotgun extends DoomBaseItem {
 				player.getCooldowns().addCooldown(this, 5);
 				if (!((PlayerProperties) player).hasMeatHook()) {
 					final MeatHookEntity hookshot = new MeatHookEntity(world, player);
-					hookshot.setProperties(stack, DoomConfig.SERVER.max_meathook_distance.get(), 10, player.getXRot(), player.getYRot(), 0f, 1.5f * (10 / 10));
+					hookshot.setProperties(stack, DoomMod.config.max_meathook_distance, 10, player.getXRot(), player.getYRot(), 0f, 1.5f * (10 / 10));
 					hookshot.getEntityData().set(MeatHookEntity.FORCED_YAW, player.getYRot());
 					world.addFreshEntity(hookshot);
 				}
@@ -142,7 +142,7 @@ public class SuperShotgun extends DoomBaseItem {
 
 	public ShotgunShellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
 		final float j = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		final ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter, DoomConfig.SERVER.shotgun_damage.get().floatValue() + j * 2.0F);
+		final ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter, DoomMod.config.shotgun_damage + j * 2.0F);
 		return arrowentity;
 	}
 

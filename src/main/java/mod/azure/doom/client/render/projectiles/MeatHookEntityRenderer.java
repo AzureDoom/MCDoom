@@ -48,7 +48,7 @@ public class MeatHookEntityRenderer extends GeoEntityRenderer<MeatHookEntity> {
 		if (hookshot.getOwner()instanceof final Player player) {
 			poseStack.pushPose();
 			final double bodyYawToRads = Math.toRadians(player.yBodyRot);
-			final double radius = DoomConfig.SERVER.enable_noncenter.get() ? 0.8D : 0.0D;
+			final double radius = DoomMod.config.enable_noncenter ? 0.8D : 0.0D;
 			final double startX = player.getX() + radius * Math.cos(bodyYawToRads);
 			final double startY = player.getY() + player.getBbHeight() / 3D;
 			final double startZ = player.getZ() + radius * Math.sin(bodyYawToRads);

@@ -1,14 +1,12 @@
 package mod.azure.doom.entity.tiersuperheavy;
 
-import java.util.List;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.entity.task.DemonMeleeAttack;
@@ -51,146 +49,148 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
+import java.util.List;
+
 public class BaronEntity extends DemonEntity implements SmartBrainOwner<BaronEntity> {
 
-	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(BaronEntity.class, EntityDataSerializers.INT);
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(BaronEntity.class, EntityDataSerializers.INT);
 
-	public BaronEntity(EntityType<? extends BaronEntity> entityType, Level worldIn) {
-		super(entityType, worldIn);
-	}
+    public BaronEntity(EntityType<? extends BaronEntity> entityType, Level worldIn) {
+        super(entityType, worldIn);
+    }
 
-	@Override
-	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving() && event.getAnimatable().getAttckingState() == 0)
-				return event.setAndContinue(DoomAnimationsDefault.WALKING);
-			if (dead || getHealth() < 0.01 || isDeadOrDying())
-				return event.setAndContinue(DoomAnimationsDefault.DEATH);
-			return event.setAndContinue(DoomAnimationsDefault.IDLE);
-		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("walk"))
-				if (level().isClientSide())
-					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		})).add(new AnimationController<>(this, "attackController", 0, event -> {
-			return PlayState.STOP;
-		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("attack"))
-				if (level().isClientSide())
-					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.BARON_AMBIENT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		}).triggerableAnim("melee", DoomAnimationsDefault.MELEE).triggerableAnim("ranged", DoomAnimationsDefault.RANGED));
-	}
+    @Override
+    public void registerControllers(ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+            if (event.isMoving() && event.getAnimatable().getAttckingState() == 0)
+                return event.setAndContinue(DoomAnimationsDefault.WALKING);
+            if (dead || getHealth() < 0.01 || isDeadOrDying())
+                return event.setAndContinue(DoomAnimationsDefault.DEATH);
+            return event.setAndContinue(DoomAnimationsDefault.IDLE);
+        }).setSoundKeyframeHandler(event -> {
+            if (event.getKeyframeData().getSound().matches("walk"))
+                if (level().isClientSide())
+                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+        })).add(new AnimationController<>(this, "attackController", 0, event -> {
+            return PlayState.STOP;
+        }).setSoundKeyframeHandler(event -> {
+            if (event.getKeyframeData().getSound().matches("attack"))
+                if (level().isClientSide())
+                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.BARON_AMBIENT.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+        }).triggerableAnim("melee", DoomAnimationsDefault.MELEE).triggerableAnim("ranged", DoomAnimationsDefault.RANGED));
+    }
 
-	@Override
-	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return cache;
-	}
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
 
-	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(VARIANT, 0);
-	}
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        entityData.define(VARIANT, 0);
+    }
 
-	@Override
-	public void readAdditionalSaveData(CompoundTag tag) {
-		super.readAdditionalSaveData(tag);
-		setVariant(tag.getInt("Variant"));
-	}
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        setVariant(tag.getInt("Variant"));
+    }
 
-	@Override
-	public void addAdditionalSaveData(CompoundTag tag) {
-		super.addAdditionalSaveData(tag);
-		tag.putInt("Variant", getVariant());
-	}
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putInt("Variant", getVariant());
+    }
 
-	public int getVariant() {
-		return Mth.clamp(entityData.get(VARIANT), 1, 3);
-	}
+    public int getVariant() {
+        return Mth.clamp(entityData.get(VARIANT), 1, 3);
+    }
 
-	public void setVariant(int variant) {
-		entityData.set(VARIANT, variant);
-	}
+    public void setVariant(int variant) {
+        entityData.set(VARIANT, variant);
+    }
 
-	public int getVariants() {
-		return 3;
-	}
+    public int getVariants() {
+        return 3;
+    }
 
-	@Override
-	protected void customServerAiStep() {
-		tickBrain(this);
-		super.customServerAiStep();
-	}
+    @Override
+    protected void customServerAiStep() {
+        tickBrain(this);
+        super.customServerAiStep();
+    }
 
-	@Override
-	protected Brain.Provider<?> brainProvider() {
-		return new SmartBrainProvider<>(this);
-	}
+    @Override
+    protected Brain.Provider<?> brainProvider() {
+        return new SmartBrainProvider<>(this);
+    }
 
-	@Override
-	public List<ExtendedSensor<BaronEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyLivingEntitySensor<BaronEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<BaronEntity>());
-	}
+    @Override
+    public List<ExtendedSensor<BaronEntity>> getSensors() {
+        return ObjectArrayList.of(new NearbyLivingEntitySensor<BaronEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<BaronEntity>());
+    }
 
-	@Override
-	public BrainActivityGroup<BaronEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new StrafeTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
-	}
+    @Override
+    public BrainActivityGroup<BaronEntity> getCoreTasks() {
+        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new StrafeTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
+    }
 
-	@Override
-	public BrainActivityGroup<BaronEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<BaronEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
-	}
+    @Override
+    public BrainActivityGroup<BaronEntity> getIdleTasks() {
+        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<BaronEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+    }
 
-	@Override
-	public BrainActivityGroup<BaronEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(DoomConfig.SERVER.baron_ranged_damage.get().floatValue()), new DemonMeleeAttack<>(5));
-	}
+    @Override
+    public BrainActivityGroup<BaronEntity> getFightTasks() {
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod((owner, entity) -> 1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(DoomMod.config.baron_ranged_damage), new DemonMeleeAttack<>(5));
+    }
 
-	@Override
-	protected void registerGoals() {
-//		goalSelector.addGoal(4, new RangedStrafeAttackGoal(this, new BaronEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.4, 0.8).setDamage(DoomConfig.SERVER.baron_ranged_damage), 1.2, 2));
-	}
+    @Override
+    protected void registerGoals() {
+//		goalSelector.addGoal(4, new RangedStrafeAttackGoal(this, new BaronEntity.FireballAttack(this).setProjectileOriginOffset(0.8, 0.4, 0.8).setDamage(DoomMod.config.baron_ranged_damage), 1.2, 2));
+    }
 
-	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomConfig.SERVER.baron_health.get()).add(Attributes.ATTACK_DAMAGE, 3.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
-	}
+    public static AttributeSupplier.Builder createMobAttributes() {
+        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomMod.config.baron_health).add(Attributes.ATTACK_DAMAGE, 3.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+    }
 
-	@Override
-	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-		super.onSyncedDataUpdated(key);
-	}
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        super.onSyncedDataUpdated(key);
+    }
 
-	@Override
-	public void tick() {
-		super.tick();
-	}
+    @Override
+    public void tick() {
+        super.tick();
+    }
 
-	@Override
-	public void aiStep() {
-		super.aiStep();
-	}
+    @Override
+    public void aiStep() {
+        super.aiStep();
+    }
 
-	protected boolean shouldDrown() {
-		return false;
-	}
+    protected boolean shouldDrown() {
+        return false;
+    }
 
-	protected boolean shouldBurnInDay() {
-		return false;
-	}
+    protected boolean shouldBurnInDay() {
+        return false;
+    }
 
-	@Override
-	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return DoomSounds.BARON_HURT.get();
-	}
+    @Override
+    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+        return DoomSounds.BARON_HURT.get();
+    }
 
-	@Override
-	protected SoundEvent getDeathSound() {
-		return DoomSounds.BARON_DEATH.get();
-	}
+    @Override
+    protected SoundEvent getDeathSound() {
+        return DoomSounds.BARON_DEATH.get();
+    }
 
-	@Override
-	public int getMaxSpawnClusterSize() {
-		return 1;
-	}
+    @Override
+    public int getMaxSpawnClusterSize() {
+        return 1;
+    }
 }

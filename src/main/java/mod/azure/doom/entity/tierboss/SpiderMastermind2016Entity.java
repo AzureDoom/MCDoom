@@ -92,7 +92,7 @@ public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 
 	@Override
 	public BrainActivityGroup<SpiderMastermindEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 40));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod((owner, entity) -> 1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 40));
 	}
 
 	@Override

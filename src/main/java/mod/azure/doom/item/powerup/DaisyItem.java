@@ -1,11 +1,6 @@
 package mod.azure.doom.item.powerup;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.util.registry.DoomItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -25,6 +20,10 @@ import net.minecraftforge.common.util.LazyOptional;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.type.capability.ICurio;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class DaisyItem extends Item {
 
@@ -49,14 +48,14 @@ public class DaisyItem extends Item {
 
 			@Override
 			public void onEquip(String identifier, int index, LivingEntity livingEntity) {
-				if (livingEntity instanceof Player && DoomConfig.SERVER.enable_daisy_effects.get()) {
+				if (livingEntity instanceof Player && DoomMod.config.enable_daisy_effects) {
 					startPowers((Player) livingEntity);
 				}
 			}
 
 			@Override
 			public void onUnequip(String identifier, int index, LivingEntity livingEntity) {
-				if (livingEntity instanceof Player && DoomConfig.SERVER.enable_daisy_effects.get()) {
+				if (livingEntity instanceof Player && DoomMod.config.enable_daisy_effects) {
 					stopPowers((Player) livingEntity);
 				}
 			}

@@ -1,7 +1,5 @@
 package mod.azure.doom.entity.tierheavy;
 
-import java.util.List;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -9,7 +7,7 @@ import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.entity.task.DemonMeleeAttack;
@@ -49,132 +47,134 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
+import java.util.List;
+
 public class Hellknight2016Entity extends DemonEntity implements SmartBrainOwner<Hellknight2016Entity> {
 
-	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-	public Hellknight2016Entity(EntityType<? extends Hellknight2016Entity> entityType, Level worldIn) {
-		super(entityType, worldIn);
-	}
+    public Hellknight2016Entity(EntityType<? extends Hellknight2016Entity> entityType, Level worldIn) {
+        super(entityType, worldIn);
+    }
 
-	@Override
-	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving() && !isAggressive() && this.onGround())
-				return event.setAndContinue(DoomAnimationsDefault.WALKING);
-			if (isAggressive() && this.walkAnimation.speed() > 0.35F && this.onGround() && !this.swinging)
-				return event.setAndContinue(DoomAnimationsDefault.RUN);
-			if (dead || getHealth() < 0.01 || isDeadOrDying())
-				return event.setAndContinue(DoomAnimationsDefault.DEATH);
-			return event.setAndContinue(DoomAnimationsDefault.IDLE);
-		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("walk"))
-				if (level().isClientSide())
-					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
-			if (event.getKeyframeData().getSound().matches("attack"))
-				if (level().isClientSide())
-					level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		}).triggerableAnim("attack", RawAnimation.begin().then("jumpattack", LoopType.PLAY_ONCE)));
-	}
+    @Override
+    public void registerControllers(ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+            if (event.isMoving() && !isAggressive() && this.onGround())
+                return event.setAndContinue(DoomAnimationsDefault.WALKING);
+            if (isAggressive() && this.walkAnimation.speed() > 0.35F && this.onGround() && !this.swinging)
+                return event.setAndContinue(DoomAnimationsDefault.RUN);
+            if (dead || getHealth() < 0.01 || isDeadOrDying())
+                return event.setAndContinue(DoomAnimationsDefault.DEATH);
+            return event.setAndContinue(DoomAnimationsDefault.IDLE);
+        }).setSoundKeyframeHandler(event -> {
+            if (event.getKeyframeData().getSound().matches("walk"))
+                if (level().isClientSide())
+                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+            if (event.getKeyframeData().getSound().matches("attack"))
+                if (level().isClientSide())
+                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+        }).triggerableAnim("attack", RawAnimation.begin().then("jumpattack", LoopType.PLAY_ONCE)));
+    }
 
-	@Override
-	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return cache;
-	}
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
 
-	@Override
-	protected void customServerAiStep() {
-		tickBrain(this);
-		super.customServerAiStep();
-	}
+    @Override
+    protected void customServerAiStep() {
+        tickBrain(this);
+        super.customServerAiStep();
+    }
 
-	@Override
-	protected Brain.Provider<?> brainProvider() {
-		return new SmartBrainProvider<>(this);
-	}
+    @Override
+    protected Brain.Provider<?> brainProvider() {
+        return new SmartBrainProvider<>(this);
+    }
 
-	@Override
-	public List<ExtendedSensor<Hellknight2016Entity>> getSensors() {
-		return ObjectArrayList.of(new NearbyLivingEntitySensor<Hellknight2016Entity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<Hellknight2016Entity>());
-	}
+    @Override
+    public List<ExtendedSensor<Hellknight2016Entity>> getSensors() {
+        return ObjectArrayList.of(new NearbyLivingEntitySensor<Hellknight2016Entity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<Hellknight2016Entity>());
+    }
 
-	@Override
-	public BrainActivityGroup<Hellknight2016Entity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>());
-	}
+    @Override
+    public BrainActivityGroup<Hellknight2016Entity> getCoreTasks() {
+        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>());
+    }
 
-	@Override
-	public BrainActivityGroup<Hellknight2016Entity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<Hellknight2016Entity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.75f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
-	}
+    @Override
+    public BrainActivityGroup<Hellknight2016Entity> getIdleTasks() {
+        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<Hellknight2016Entity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.75f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+    }
 
-	@Override
-	public BrainActivityGroup<Hellknight2016Entity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(1.25F), new DemonMeleeAttack<>(5));
-	}
+    @Override
+    public BrainActivityGroup<Hellknight2016Entity> getFightTasks() {
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod((owner, entity) -> 1.25F), new DemonMeleeAttack<>(5));
+    }
 
-	@Override
-	public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
-		return this.getBbWidth() * 1.5f * (this.getBbWidth() * 1.5f + livingEntity.getBbWidth());
-	}
+    @Override
+    public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
+        return this.getBbWidth() * 1.5f * (this.getBbWidth() * 1.5f + livingEntity.getBbWidth());
+    }
 
-	@Override
-	public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
-		var distance = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
-		return distance <= this.getMeleeAttackRangeSqr(livingEntity);
-	}
+    @Override
+    public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
+        var distance = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+        return distance <= this.getMeleeAttackRangeSqr(livingEntity);
+    }
 
-	@Override
-	public int getMaxFallDistance() {
-		return 99;
-	}
+    @Override
+    public int getMaxFallDistance() {
+        return 99;
+    }
 
-	@Override
-	protected void updateControlFlags() {
-		final boolean flag = getTarget() != null && hasLineOfSight(getTarget());
-		goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
-		super.updateControlFlags();
-	}
+    @Override
+    protected void updateControlFlags() {
+        final boolean flag = getTarget() != null && hasLineOfSight(getTarget());
+        goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
+        super.updateControlFlags();
+    }
 
-	@Override
-	protected void tickDeath() {
-		++deathTime;
-		if (deathTime == 30) {
-			remove(RemovalReason.KILLED);
-			dropExperience();
-		}
-	}
+    @Override
+    protected void tickDeath() {
+        ++deathTime;
+        if (deathTime == 30) {
+            remove(RemovalReason.KILLED);
+            dropExperience();
+        }
+    }
 
-	@Override
-	protected int calculateFallDamage(float fallDistance, float damageMultiplier) {
-		return 0;
-	}
+    @Override
+    protected int calculateFallDamage(float fallDistance, float damageMultiplier) {
+        return 0;
+    }
 
-	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomConfig.SERVER.hellknight2016_health.get()).add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.hellknight2016_melee_damage.get()).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
-	}
+    public static AttributeSupplier.Builder createMobAttributes() {
+        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomMod.config.hellknight2016_health).add(Attributes.ATTACK_DAMAGE, DoomMod.config.hellknight2016_melee_damage).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+    }
 
-	protected boolean shouldDrown() {
-		return false;
-	}
+    protected boolean shouldDrown() {
+        return false;
+    }
 
-	protected boolean shouldBurnInDay() {
-		return false;
-	}
+    protected boolean shouldBurnInDay() {
+        return false;
+    }
 
-	@Override
-	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
-		return 2.75F;
-	}
+    @Override
+    protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
+        return 2.75F;
+    }
 
-	@Override
-	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return DoomSounds.HELLKNIGHT_HURT.get();
-	}
+    @Override
+    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+        return DoomSounds.HELLKNIGHT_HURT.get();
+    }
 
-	@Override
-	protected SoundEvent getDeathSound() {
-		return DoomSounds.HELLKNIGHT_DEATH.get();
-	}
+    @Override
+    protected SoundEvent getDeathSound() {
+        return DoomSounds.HELLKNIGHT_DEATH.get();
+    }
 
 }

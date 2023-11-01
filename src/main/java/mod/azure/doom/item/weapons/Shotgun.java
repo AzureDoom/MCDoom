@@ -1,15 +1,12 @@
 package mod.azure.doom.item.weapons;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.animatable.client.RenderProvider;
 import mod.azure.azurelib.items.BaseGunItem;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.render.weapons.SGRender;
-import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.ShotgunShellEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
@@ -28,6 +25,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class Shotgun extends DoomBaseItem {
 
@@ -53,7 +53,7 @@ public class Shotgun extends DoomBaseItem {
 					var enchantlevel = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
 					if (result != null) {
 						if (result.getEntity()instanceof LivingEntity livingEntity)
-							livingEntity.hurt(playerentity.damageSources().playerAttack(playerentity), DoomConfig.SERVER.shotgun_damage.get().floatValue() + enchantlevel * 2.0F);
+							livingEntity.hurt(playerentity.damageSources().playerAttack(playerentity), DoomMod.config.shotgun_damage + enchantlevel * 2.0F);
 					} else {
 						final var shell = createArrow(worldIn, stack, playerentity);
 						shell.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 1.0F * 3.0F, 1.0F);
@@ -103,7 +103,7 @@ public class Shotgun extends DoomBaseItem {
 
 	public ShotgunShellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
 		final float j = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		final ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter, DoomConfig.SERVER.shotgun_damage.get().floatValue() + j * 2.0F);
+		final ShotgunShellEntity arrowentity = new ShotgunShellEntity(worldIn, shooter, DoomMod.config.shotgun_damage + j * 2.0F);
 		return arrowentity;
 	}
 

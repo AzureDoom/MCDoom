@@ -1,7 +1,5 @@
 package mod.azure.doom.entity.tiersuperheavy;
 
-import java.util.List;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -9,7 +7,7 @@ import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
@@ -31,11 +29,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
-import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -65,6 +59,8 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+
+import java.util.List;
 
 public class SummonerEntity extends DemonEntity implements SmartBrainOwner<SummonerEntity> {
 
@@ -121,7 +117,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 
 	@Override
 	public BrainActivityGroup<SummonerEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(DoomConfig.SERVER.baron_ranged_damage.get().floatValue()), new DemonMeleeAttack<>(5));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod((owner, entity) -> 1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(DoomMod.config.baron_ranged_damage), new DemonMeleeAttack<>(5));
 	}
 
 	@Override
@@ -129,7 +125,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 	}
 
 	public void spawnWave() {
-		final var waveEntries = DoomConfig.SERVER.summoner__wave_entries.get();
+		final var waveEntries = List.of(DoomMod.config.summoner__wave_entries);
 		final var r = this.getRandom().nextInt(-3, 3);
 
 		for (var k = 1; k < 5; ++k) {
@@ -207,7 +203,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
-			final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, yaw, 1, this, DoomConfig.SERVER.summoner_ranged_damage.get().floatValue());
+			final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, yaw, 1, this, DoomMod.config.summoner_ranged_damage);
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
 			level().addFreshEntity(fang);
@@ -266,7 +262,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomConfig.SERVER.summoner_health.get()).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomMod.config.summoner_health).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	protected boolean shouldDrown() {

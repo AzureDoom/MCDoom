@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import mod.azure.azurelib.Keybindings;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.util.enums.DoomTier;
@@ -99,7 +100,7 @@ public class Chainsaw extends Item {
 	private void doDamage(LivingEntity user, final Entity target) {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
-			target.hurt(user.damageSources().playerAttack((Player) user), DoomConfig.SERVER.chainsaw_damage.get().floatValue());
+			target.hurt(user.damageSources().playerAttack((Player) user), DoomMod.config.chainsaw_damage);
 			user.level().playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_ATTACKING.get(), SoundSource.PLAYERS, 0.3F, 1.0F / (user.level().random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
 		}
 	}

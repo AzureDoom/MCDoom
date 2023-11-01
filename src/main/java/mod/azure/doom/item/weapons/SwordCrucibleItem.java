@@ -1,9 +1,5 @@
 package mod.azure.doom.item.weapons;
 
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
@@ -16,13 +12,7 @@ import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.render.weapons.SwordCrucibleRender;
-import mod.azure.doom.config.DoomConfig;
-import mod.azure.doom.entity.tierboss.ArchMakyrEntity;
-import mod.azure.doom.entity.tierboss.GladiatorEntity;
-import mod.azure.doom.entity.tierboss.IconofsinEntity;
-import mod.azure.doom.entity.tierboss.MotherDemonEntity;
-import mod.azure.doom.entity.tierboss.SpiderMastermind2016Entity;
-import mod.azure.doom.entity.tierboss.SpiderMastermindEntity;
+import mod.azure.doom.entity.tierboss.*;
 import mod.azure.doom.util.packets.DoomPacketHandler;
 import mod.azure.doom.util.packets.weapons.CrucibleLoadingPacket;
 import mod.azure.doom.util.registry.DoomBlocks;
@@ -41,13 +31,17 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 public class SwordCrucibleItem extends SwordItem implements GeoItem {
 
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
 	public SwordCrucibleItem() {
-		super(DoomMod.DOOM_HIGHTEIR, 1, -2.5f, new Item.Properties().stacksTo(1).durability(DoomConfig.SERVER.crucible_max_uses.get()));
+		super(DoomMod.DOOM_HIGHTEIR, 1, -2.5f, new Item.Properties().stacksTo(1).durability(DoomMod.config.crucible_max_uses));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
@@ -68,7 +62,7 @@ public class SwordCrucibleItem extends SwordItem implements GeoItem {
 	private void doDamage(LivingEntity user, Entity target) {
 		if (target instanceof LivingEntity) {
 			target.invulnerableTime = 0;
-			target.hurt(user.damageSources().playerAttack((Player) user), target instanceof ArchMakyrEntity || target instanceof GladiatorEntity || target instanceof IconofsinEntity || target instanceof MotherDemonEntity || target instanceof SpiderMastermind2016Entity || target instanceof SpiderMastermindEntity ? DoomConfig.SERVER.crucible_damage.get().floatValue() / 10F : DoomConfig.SERVER.crucible_damage.get().floatValue());
+			target.hurt(user.damageSources().playerAttack((Player) user), target instanceof ArchMakyrEntity || target instanceof GladiatorEntity || target instanceof IconofsinEntity || target instanceof MotherDemonEntity || target instanceof SpiderMastermind2016Entity || target instanceof SpiderMastermindEntity ? DoomMod.config.crucible_damage / 10F : DoomMod.config.crucible_damage);
 		}
 	}
 

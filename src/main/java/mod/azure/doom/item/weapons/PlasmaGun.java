@@ -1,14 +1,11 @@
 package mod.azure.doom.item.weapons;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.animatable.client.RenderProvider;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.client.render.weapons.PlasmagunRender;
-import mod.azure.doom.config.DoomConfig;
 import mod.azure.doom.entity.projectiles.EnergyCellEntity;
 import mod.azure.doom.util.enums.DoomTier;
 import mod.azure.doom.util.packets.DoomPacketHandler;
@@ -27,6 +24,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class PlasmaGun extends DoomBaseItem {
 
@@ -88,7 +88,7 @@ public class PlasmaGun extends DoomBaseItem {
 
 	public EnergyCellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {
 		final float j = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		final EnergyCellEntity arrowentity = new EnergyCellEntity(worldIn, shooter, DoomConfig.SERVER.energycell_damage.get().floatValue() + j * 2.0F);
+		final EnergyCellEntity arrowentity = new EnergyCellEntity(worldIn, shooter, DoomMod.config.energycell_damage + j * 2.0F);
 		return arrowentity;
 	}
 

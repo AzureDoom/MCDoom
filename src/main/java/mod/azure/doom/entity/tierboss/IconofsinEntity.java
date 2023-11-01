@@ -1,14 +1,12 @@
 package mod.azure.doom.entity.tierboss;
 
-import java.util.List;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.entity.projectiles.entity.DoomFireEntity;
@@ -34,12 +32,7 @@ import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -67,6 +60,8 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+
+import java.util.List;
 
 public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<IconofsinEntity> {
 
@@ -198,12 +193,12 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 
 	@Override
 	public BrainActivityGroup<IconofsinEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(1.05F), new DemonProjectileAttack<>(5).attackInterval(mob -> 240), new DemonMeleeAttack<>(5));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod((owner, entity) -> 1.05F), new DemonProjectileAttack<>(5).attackInterval(mob -> 240), new DemonMeleeAttack<>(5));
 	}
 
 	public void spawnWave(int WaveAmount, LivingEntity entity) {
 		final var rand = getRandom();
-		final var waveEntries = DoomConfig.SERVER.icon_wave_entries.get();
+		final var waveEntries = List.of(DoomMod.config.icon_wave_entries);
 		for (var k = 1; k < WaveAmount; ++k) {
 			final var r = this.getRandom().nextInt(-3, 3);
 			for (var i = 0; i < 1; ++i) {
@@ -238,7 +233,7 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 		} while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
 		if (flag) {
-			final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, yaw, 1, this, DoomConfig.SERVER.icon_melee_damage.get().floatValue() + (this.getDeathState() == 1 ? DoomConfig.SERVER.motherdemon_phaseone_damage_boos.get().floatValue() : 0));
+			final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, yaw, 1, this, DoomMod.config.icon_melee_damage + (this.getDeathState() == 1 ? DoomMod.config.motherdemon_phaseone_damage_boos : 0));
 			fang.setSecondsOnFire(tickCount);
 			fang.setInvisible(false);
 			level().addFreshEntity(fang);
@@ -246,7 +241,7 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomConfig.SERVER.icon_health.get()).add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.icon_melee_damage.get()).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D).add(Attributes.KNOCKBACK_RESISTANCE, 1000.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, DoomMod.config.icon_health).add(Attributes.ATTACK_DAMAGE, DoomMod.config.icon_melee_damage).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D).add(Attributes.KNOCKBACK_RESISTANCE, 1000.0D);
 	}
 
 	@Override
@@ -397,7 +392,7 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
 	@Override
 	public boolean doHurtTarget(Entity target) {
 		level().broadcastEntityEvent(this, (byte) 4);
-		final var bl = target.hurt(damageSources().mobAttack(this), DoomConfig.SERVER.icon_melee_damage.get().floatValue() + (this.getDeathState() == 1 ? DoomConfig.SERVER.icon_phaseone_damage_boos.get().floatValue() : 0));
+		final var bl = target.hurt(damageSources().mobAttack(this), DoomMod.config.icon_melee_damage + (this.getDeathState() == 1 ? DoomMod.config.icon_phaseone_damage_boos : 0));
 		if (bl) {
 			level().explode(this, target.getX(), target.getY(), target.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
 			doEnchantDamageEffects(this, target);

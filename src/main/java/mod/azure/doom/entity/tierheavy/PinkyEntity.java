@@ -1,14 +1,11 @@
 package mod.azure.doom.entity.tierheavy;
 
-import java.util.List;
-import java.util.SplittableRandom;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.util.AzureLibUtil;
-import mod.azure.doom.config.DoomConfig;
+import mod.azure.doom.DoomMod;
 import mod.azure.doom.entity.DemonEntity;
 import mod.azure.doom.entity.DoomAnimationsDefault;
 import mod.azure.doom.util.registry.DoomSounds;
@@ -53,156 +50,159 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 
+import java.util.List;
+import java.util.SplittableRandom;
+
 public class PinkyEntity extends DemonEntity implements SmartBrainOwner<PinkyEntity> {
 
-	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(PinkyEntity.class, EntityDataSerializers.INT);
-	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(PinkyEntity.class, EntityDataSerializers.INT);
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-	public PinkyEntity(EntityType<PinkyEntity> entityType, Level worldIn) {
-		super(entityType, worldIn);
-	}
+    public PinkyEntity(EntityType<PinkyEntity> entityType, Level worldIn) {
+        super(entityType, worldIn);
+    }
 
-	@Override
-	public void registerControllers(ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-			if (event.isMoving() && !isAggressive())
-				return event.setAndContinue(DoomAnimationsDefault.WALKING);
-			if (isAggressive() && !(dead || getHealth() < 0.01 || isDeadOrDying()))
-				return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
-			if (dead || getHealth() < 0.01 || isDeadOrDying())
-				return event.setAndContinue(DoomAnimationsDefault.DEATH);
-			return event.setAndContinue(DoomAnimationsDefault.IDLE);
-		}).setSoundKeyframeHandler(event -> {
-			if (event.getKeyframeData().getSound().matches("walk"))
-				if (level().isClientSide())
-					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
-			if (event.getKeyframeData().getSound().matches("yell"))
-				if (level().isClientSide())
-					level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_YELL.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
-		}));
-	}
+    @Override
+    public void registerControllers(ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
+            if (event.isMoving() && !isAggressive())
+                return event.setAndContinue(DoomAnimationsDefault.WALKING);
+            if (isAggressive() && !(dead || getHealth() < 0.01 || isDeadOrDying()))
+                return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
+            if (dead || getHealth() < 0.01 || isDeadOrDying())
+                return event.setAndContinue(DoomAnimationsDefault.DEATH);
+            return event.setAndContinue(DoomAnimationsDefault.IDLE);
+        }).setSoundKeyframeHandler(event -> {
+            if (event.getKeyframeData().getSound().matches("walk"))
+                if (level().isClientSide())
+                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_STEP.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+            if (event.getKeyframeData().getSound().matches("yell"))
+                if (level().isClientSide())
+                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), DoomSounds.PINKY_YELL.get(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+        }));
+    }
 
-	@Override
-	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return cache;
-	}
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
 
-	@Override
-	protected void tickDeath() {
-		++deathTime;
-		if (deathTime == 80) {
-			remove(RemovalReason.KILLED);
-			dropExperience();
-		}
-	}
+    @Override
+    protected void tickDeath() {
+        ++deathTime;
+        if (deathTime == 80) {
+            remove(RemovalReason.KILLED);
+            dropExperience();
+        }
+    }
 
-	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(VARIANT, 0);
-	}
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        entityData.define(VARIANT, 0);
+    }
 
-	@Override
-	public void readAdditionalSaveData(CompoundTag tag) {
-		super.readAdditionalSaveData(tag);
-		setVariant(tag.getInt("Variant"));
-	}
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        setVariant(tag.getInt("Variant"));
+    }
 
-	@Override
-	public void addAdditionalSaveData(CompoundTag tag) {
-		super.addAdditionalSaveData(tag);
-		tag.putInt("Variant", getVariant());
-	}
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putInt("Variant", getVariant());
+    }
 
-	public int getVariant() {
-		return Mth.clamp(entityData.get(VARIANT), 1, 4);
-	}
+    public int getVariant() {
+        return Mth.clamp(entityData.get(VARIANT), 1, 4);
+    }
 
-	public void setVariant(int variant) {
-		entityData.set(VARIANT, variant);
-	}
+    public void setVariant(int variant) {
+        entityData.set(VARIANT, variant);
+    }
 
-	public int getVariants() {
-		return 4;
-	}
+    public int getVariants() {
+        return 4;
+    }
 
-	@Override
-	protected void customServerAiStep() {
-		tickBrain(this);
-		super.customServerAiStep();
-	}
+    @Override
+    protected void customServerAiStep() {
+        tickBrain(this);
+        super.customServerAiStep();
+    }
 
-	@Override
-	protected Brain.Provider<?> brainProvider() {
-		return new SmartBrainProvider<>(this);
-	}
+    @Override
+    protected Brain.Provider<?> brainProvider() {
+        return new SmartBrainProvider<>(this);
+    }
 
-	@Override
-	public List<ExtendedSensor<PinkyEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyLivingEntitySensor<PinkyEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<PinkyEntity>());
-	}
+    @Override
+    public List<ExtendedSensor<PinkyEntity>> getSensors() {
+        return ObjectArrayList.of(new NearbyLivingEntitySensor<PinkyEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<PinkyEntity>());
+    }
 
-	@Override
-	public BrainActivityGroup<PinkyEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>());
-	}
+    @Override
+    public BrainActivityGroup<PinkyEntity> getCoreTasks() {
+        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>());
+    }
 
-	@Override
-	public BrainActivityGroup<PinkyEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<PinkyEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.75f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
-	}
+    @Override
+    public BrainActivityGroup<PinkyEntity> getIdleTasks() {
+        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<PinkyEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.75f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+    }
 
-	@Override
-	public BrainActivityGroup<PinkyEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod(1.75F), new AnimatableMeleeAttack<>(0));
-	}
+    @Override
+    public BrainActivityGroup<PinkyEntity> getFightTasks() {
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod((owner, entity) -> 1.75F), new AnimatableMeleeAttack<>(0));
+    }
 
-	@Override
-	public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
-		return this.getBbWidth() * 1.5f * (this.getBbWidth() * 1.5f + livingEntity.getBbWidth());
-	}
+    @Override
+    public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
+        return this.getBbWidth() * 1.5f * (this.getBbWidth() * 1.5f + livingEntity.getBbWidth());
+    }
 
-	@Override
-	public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
-		var distance = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
-		return distance <= this.getMeleeAttackRangeSqr(livingEntity);
-	}
+    @Override
+    public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
+        var distance = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+        return distance <= this.getMeleeAttackRangeSqr(livingEntity);
+    }
 
-	@Override
-	protected void registerGoals() {
-	}
+    @Override
+    protected void registerGoals() {
+    }
 
-	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
-		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-		final SplittableRandom random = new SplittableRandom();
-		final int var = random.nextInt(0, 5);
-		setVariant(var);
-		return spawnDataIn;
-	}
+    @Override
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
+        spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+        final SplittableRandom random = new SplittableRandom();
+        final int var = random.nextInt(0, 5);
+        setVariant(var);
+        return spawnDataIn;
+    }
 
-	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MAX_HEALTH, DoomConfig.SERVER.pinky_health.get()).add(Attributes.ATTACK_DAMAGE, DoomConfig.SERVER.pinky_melee_damage.get()).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 5.0D);
-	}
+    public static AttributeSupplier.Builder createMobAttributes() {
+        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MAX_HEALTH, DoomMod.config.pinky_health).add(Attributes.ATTACK_DAMAGE, DoomMod.config.pinky_melee_damage).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 5.0D);
+    }
 
-	@Override
-	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return DoomSounds.PINKY_HURT.get();
-	}
+    @Override
+    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+        return DoomSounds.PINKY_HURT.get();
+    }
 
-	@Override
-	protected SoundEvent getDeathSound() {
-		return DoomSounds.PINKY_DEATH.get();
-	}
+    @Override
+    protected SoundEvent getDeathSound() {
+        return DoomSounds.PINKY_DEATH.get();
+    }
 
-	@Override
-	public int getMaxSpawnClusterSize() {
-		return 7;
-	}
+    @Override
+    public int getMaxSpawnClusterSize() {
+        return 7;
+    }
 
-	@Override
-	public int getArmorValue() {
-		return getVariant() == 3 ? 3 : 0;
-	}
+    @Override
+    public int getArmorValue() {
+        return getVariant() == 3 ? 3 : 0;
+    }
 
 }
