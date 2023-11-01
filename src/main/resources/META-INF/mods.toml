@@ -37,4 +37,10 @@ description='''${mod_description}'''
     mandatory=true 
     versionRange="[1.12,)" 
     ordering="NONE"
-    side="BOTH"    
+    side="BOTH"
+[[dependencies.${mod_id}]]
+    modId="cpapireforged"
+    mandatory=true
+    versionRange="[1.0.2,)"
+    ordering="NONE"
+    side="BOTH"
