@@ -129,7 +129,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
 	}
 
 	public void spawnWave() {
-		final var waveEntries = Arrays.asList(DoomMod.config.summoner__wave_entries);
+		final var waveEntries = Arrays.asList(DoomMod.config.summoner_wave_entries);
 		final var r = this.getRandom().nextInt(-3, 3);
 
 		for (var k = 1; k < 5; ++k) {
