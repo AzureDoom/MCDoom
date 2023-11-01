@@ -1,6 +1,6 @@
-v.6.0.7
+v.6.0.8
 
 ## This mod is now a NeoForge mod, if it works with Forge: Great. If it doesn't, it doesn't ##
 
-- Sets required AzureLib version to 2.0.0.
-- Updates LightBlock code to AzureLib 2.0.0 changes.
+- Change to AzureLib LightBlock/Entity now that it's multiloader compatible.
+- Change configuration file to use .json file managed by AzureLib, which offers an ingame editor!
