@@ -754,7 +754,8 @@ public class DoomConfig {
     @Configurable.DecimalRange(min = 1)
     public float summoner_ranged_damage = 3;
     @Configurable
-    public String[] summoner__wave_entries = {"doom:imp", "doom:lost_soul", "doom:stone_imp"};
+    @Configurable.Synchronized
+    public String[] summoner_wave_entries = {"doom:imp", "doom:lost_soul", "doom:stone_imp"};
 
     @Configurable
     public double prowler_health = 15;
@@ -986,5 +987,6 @@ public class DoomConfig {
     @Configurable
     public double gorenest_health = 5;
     @Configurable
+    @Configurable.Synchronized
     public String[] gorenest_wave_entries = {"doom:hellknight", "doom:possessed_scientist", "doom:imp", "doom:pinky", "doom:cacodemon", "doom:chaingunner", "doom:gargoyle", "doom:hellknight2016", "doom:lost_soul", "doom:possessed_soldier", "doom:shotgunguy", "doom:unwilling", "doom:zombieman", "doom:arachnotron", "doom:archvile", "doom:mechazombie", "doom:painelemental", "doom:mancubus"};
 }
