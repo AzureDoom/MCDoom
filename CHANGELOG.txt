@@ -1,3 +1,3 @@
-v.6.0.6
+v.6.0.8
 
-- Bumps Required AzureLib version to 1.0.32
+- Change to AzureLib LightBlock/Entity now that it's multiloader compatible.
