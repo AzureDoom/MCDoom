@@ -88,10 +88,9 @@ public class DShotgun extends DoomBaseItem {
 
     @Override
     public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-        if (world.isClientSide)
-            if (stack.getItem() instanceof DShotgun)
-                while (Keybindings.RELOAD.consumeClick() && selected)
-                    DoomPacketHandler.DSG.sendToServer(new DSGLoadingPacket(slot));
+        if (world.isClientSide && entity instanceof Player player && player.getMainHandItem().getItem() instanceof DShotgun)
+            if (Keybindings.RELOAD.isDown() && selected && !player.getCooldowns().isOnCooldown(stack.getItem()))
+                DoomPacketHandler.DSG.sendToServer(new DSGLoadingPacket(slot));
     }
 
     public ShotgunShellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {

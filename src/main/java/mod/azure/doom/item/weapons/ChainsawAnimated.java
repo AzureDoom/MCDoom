@@ -87,10 +87,9 @@ public class ChainsawAnimated extends Item implements GeoItem {
         if (selected && stack.getMaxDamage() < stack.getMaxDamage() - 1) {
             world.playSound((Player) null, user.getX(), user.getY(), user.getZ(), DoomSounds.CHAINSAW_IDLE.get(), SoundSource.PLAYERS, 0.05F, 1.0F / (world.random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
         }
-        if (world.isClientSide)
-            if (stack.getItem() instanceof ChainsawAnimated)
-                while (Keybindings.RELOAD.consumeClick() && selected)
-                    DoomPacketHandler.CHAINSAW_ETERNAL.sendToServer(new ChainsawEternalLoadingPacket(slot));
+        if (world.isClientSide && entity instanceof Player player1 && player1.getMainHandItem().getItem() instanceof ChainsawAnimated)
+            if (Keybindings.RELOAD.isDown() && selected && !player.getCooldowns().isOnCooldown(stack.getItem()))
+                DoomPacketHandler.CHAINSAW_ETERNAL.sendToServer(new ChainsawEternalLoadingPacket(slot));
     }
 
     @Override

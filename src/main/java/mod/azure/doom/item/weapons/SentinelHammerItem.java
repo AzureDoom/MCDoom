@@ -38,113 +38,112 @@ import java.util.function.Supplier;
 
 public class SentinelHammerItem extends SwordItem implements GeoItem {
 
-	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
-	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-	public SentinelHammerItem() {
-		super(DoomMod.DOOM_HIGHTEIR, 1, -2.5f, new Item.Properties().stacksTo(1).durability(DoomMod.config.sentinelhammer_max_uses));
-		SingletonGeoAnimatable.registerSyncedAnimatable(this);
-	}
+    public SentinelHammerItem() {
+        super(DoomMod.DOOM_HIGHTEIR, 1, -2.5f, new Item.Properties().stacksTo(1).durability(DoomMod.config.sentinelhammer_max_uses));
+        SingletonGeoAnimatable.registerSyncedAnimatable(this);
+    }
 
-	@Override
-	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(Component.translatable("Ammo: " + (stack.getMaxDamage() - stack.getDamageValue() - 1) + " / " + (stack.getMaxDamage() - 1)).withStyle(ChatFormatting.ITALIC));
-		super.appendHoverText(stack, worldIn, tooltip, flagIn);
-	}
+    @Override
+    public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.add(Component.translatable("Ammo: " + (stack.getMaxDamage() - stack.getDamageValue() - 1) + " / " + (stack.getMaxDamage() - 1)).withStyle(ChatFormatting.ITALIC));
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+    }
 
-	private void doDamage(LivingEntity user, final Entity target) {
-		if (target instanceof LivingEntity) {
-			target.invulnerableTime = 0;
-			((LivingEntity) target).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 1000, 2));
-			target.hurt(user.damageSources().playerAttack((Player) user), DoomMod.config.sentinelhammer_damage);
-		}
-	}
+    private void doDamage(LivingEntity user, final Entity target) {
+        if (target instanceof LivingEntity) {
+            target.invulnerableTime = 0;
+            ((LivingEntity) target).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 1000, 2));
+            target.hurt(user.damageSources().playerAttack((Player) user), DoomMod.config.sentinelhammer_damage);
+        }
+    }
 
-	@Override
-	public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-		controllers.add(new AnimationController<>(this, "popup_controller", 0, state -> PlayState.CONTINUE));
-	}
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "popup_controller", 0, state -> PlayState.CONTINUE));
+    }
 
-	@Override
-	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return cache;
-	}
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
 
-	@Override
-	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity miner) {
-		if (miner instanceof Player playerentity) {
-			if (stack.getDamageValue() < stack.getMaxDamage() - 1) {
-				if (playerentity.getMainHandItem().getItem() instanceof SentinelHammerItem) {
-					final AABB aabb = new AABB(miner.blockPosition().above()).inflate(5D, 5D, 5D);
-					miner.getCommandSenderWorld().getEntities(miner, aabb).forEach(e -> doDamage(playerentity, e));
-					stack.hurtAndBreak(1, miner, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
-					final AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(miner.level(), miner.getX(), playerentity.getY(), playerentity.getZ());
-					areaeffectcloudentity.setParticle(ParticleTypes.CRIT);
-					areaeffectcloudentity.setRadius(5.0F);
-					areaeffectcloudentity.setDuration(20);
-					areaeffectcloudentity.setPos(playerentity.getX(), playerentity.getY(), playerentity.getZ());
-					playerentity.level().addFreshEntity(areaeffectcloudentity);
-				}
-			}
-		}
-		return stack.getDamageValue() < stack.getMaxDamage() - 1 ? true : false;
-	}
+    @Override
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity miner) {
+        if (miner instanceof Player playerentity) {
+            if (stack.getDamageValue() < stack.getMaxDamage() - 1) {
+                if (playerentity.getMainHandItem().getItem() instanceof SentinelHammerItem) {
+                    final AABB aabb = new AABB(miner.blockPosition().above()).inflate(5D, 5D, 5D);
+                    miner.getCommandSenderWorld().getEntities(miner, aabb).forEach(e -> doDamage(playerentity, e));
+                    stack.hurtAndBreak(1, miner, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
+                    final AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(miner.level(), miner.getX(), playerentity.getY(), playerentity.getZ());
+                    areaeffectcloudentity.setParticle(ParticleTypes.CRIT);
+                    areaeffectcloudentity.setRadius(5.0F);
+                    areaeffectcloudentity.setDuration(20);
+                    areaeffectcloudentity.setPos(playerentity.getX(), playerentity.getY(), playerentity.getZ());
+                    playerentity.level().addFreshEntity(areaeffectcloudentity);
+                }
+            }
+        }
+        return stack.getDamageValue() < stack.getMaxDamage() - 1 ? true : false;
+    }
 
-	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		if (world.isClientSide)
-			if (stack.getItem() instanceof SentinelHammerItem)
-				while (Keybindings.RELOAD.consumeClick() && selected)
-					DoomPacketHandler.SENTINELHAMMER.sendToServer(new SentinelHammerLoadingPacket(slot));
-	}
+    @Override
+    public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
+        if (world.isClientSide && entity instanceof Player player && player.getMainHandItem().getItem() instanceof SentinelHammerItem)
+            if (Keybindings.RELOAD.isDown() && selected && !player.getCooldowns().isOnCooldown(stack.getItem()))
+                DoomPacketHandler.SENTINELHAMMER.sendToServer(new SentinelHammerLoadingPacket(slot));
+    }
 
-	public static void reload(Player user, InteractionHand hand) {
-		if (user.getItemInHand(hand).getItem() instanceof SentinelHammerItem) {
-			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0 && user.getInventory().countItem(DoomItems.ARGENT_ENERGY.get()) > 0) {
-				removeAmmo(DoomItems.ARGENT_ENERGY.get(), user);
-				user.getItemInHand(hand).hurtAndBreak(-5, user, s -> user.broadcastBreakEvent(hand));
-				user.getItemInHand(hand).setPopTime(3);
-			}
-		}
-	}
+    public static void reload(Player user, InteractionHand hand) {
+        if (user.getItemInHand(hand).getItem() instanceof SentinelHammerItem) {
+            while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0 && user.getInventory().countItem(DoomItems.ARGENT_ENERGY.get()) > 0) {
+                removeAmmo(DoomItems.ARGENT_ENERGY.get(), user);
+                user.getItemInHand(hand).hurtAndBreak(-5, user, s -> user.broadcastBreakEvent(hand));
+                user.getItemInHand(hand).setPopTime(3);
+            }
+        }
+    }
 
-	public static void removeAmmo(Item ammo, Player Player) {
-		if (!Player.isCreative()) {
-			for (final ItemStack item : Player.getInventory().offhand) {
-				if (item.getItem() == ammo) {
-					item.shrink(1);
-					break;
-				}
-				for (final ItemStack item1 : Player.getInventory().items) {
-					if (item1.getItem() == ammo) {
-						item1.shrink(1);
-						break;
-					}
-				}
-			}
-		}
-	}
+    public static void removeAmmo(Item ammo, Player Player) {
+        if (!Player.isCreative()) {
+            for (final ItemStack item : Player.getInventory().offhand) {
+                if (item.getItem() == ammo) {
+                    item.shrink(1);
+                    break;
+                }
+                for (final ItemStack item1 : Player.getInventory().items) {
+                    if (item1.getItem() == ammo) {
+                        item1.shrink(1);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public int getUseDuration(ItemStack stack) {
-		return 72000;
-	}
+    @Override
+    public int getUseDuration(ItemStack stack) {
+        return 72000;
+    }
 
-	@Override
-	public void createRenderer(Consumer<Object> consumer) {
-		consumer.accept(new RenderProvider() {
-			private final SentinelHammerRender renderer = new SentinelHammerRender();
+    @Override
+    public void createRenderer(Consumer<Object> consumer) {
+        consumer.accept(new RenderProvider() {
+            private final SentinelHammerRender renderer = new SentinelHammerRender();
 
-			@Override
-			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return renderer;
-			}
-		});
-	}
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return renderer;
+            }
+        });
+    }
 
-	@Override
-	public Supplier<Object> getRenderProvider() {
-		return renderProvider;
-	}
+    @Override
+    public Supplier<Object> getRenderProvider() {
+        return renderProvider;
+    }
 
 }

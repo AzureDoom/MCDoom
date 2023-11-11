@@ -84,10 +84,9 @@ public class DPlasmaRifle extends DoomBaseItem {
 
     @Override
     public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-        if (world.isClientSide)
-            if (stack.getItem() instanceof DPlasmaRifle)
-                while (Keybindings.RELOAD.consumeClick() && selected)
-                    DoomPacketHandler.DPLASMARIFLE.sendToServer(new DPlasmaLoadingPacket(slot));
+        if (world.isClientSide && entity instanceof Player player && player.getMainHandItem().getItem() instanceof DPlasmaRifle)
+            if (Keybindings.RELOAD.isDown() && selected && !player.getCooldowns().isOnCooldown(stack.getItem()))
+                DoomPacketHandler.DPLASMARIFLE.sendToServer(new DPlasmaLoadingPacket(slot));
     }
 
     public EnergyCellEntity createArrow(Level worldIn, ItemStack stack, LivingEntity shooter) {

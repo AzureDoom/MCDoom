@@ -85,15 +85,10 @@ public class AxeMarauderItem extends SwordItem {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        final Player playerentity = (Player) entityIn;
-        if (worldIn.isClientSide) {
-            if (playerentity.getMainHandItem().getItem() instanceof AxeMarauderItem) {
-                while (Keybindings.RELOAD.consumeClick() && isSelected) {
-                    DoomPacketHandler.MARAUDERAXE.sendToServer(new AxeMarauderLoadingPacket(itemSlot));
-                }
-            }
-        }
+    public void inventoryTick(ItemStack stack, Level world, Entity entity, int itemSlot, boolean selected) {
+        if (world.isClientSide && entity instanceof Player player && player.getMainHandItem().getItem() instanceof AxeMarauderItem)
+            if (Keybindings.RELOAD.isDown() && selected && !player.getCooldowns().isOnCooldown(stack.getItem()))
+                DoomPacketHandler.MARAUDERAXE.sendToServer(new AxeMarauderLoadingPacket(itemSlot));
     }
 
     @Override

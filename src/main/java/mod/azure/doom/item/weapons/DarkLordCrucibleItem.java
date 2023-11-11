@@ -117,10 +117,9 @@ public class DarkLordCrucibleItem extends SwordItem implements GeoItem {
     @Override
     public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
         final Player playerentity = (Player) entity;
-        if (world.isClientSide)
-            if (stack.getItem() instanceof DarkLordCrucibleItem)
-                while (Keybindings.RELOAD.consumeClick() && selected)
-                    DoomPacketHandler.DARKLORDCRUCIBLE.sendToServer(new DarkLordCrucibleLoadingPacket(slot));
+        if (world.isClientSide && entity instanceof Player player && player.getMainHandItem().getItem() instanceof DarkLordCrucibleItem)
+            if (Keybindings.RELOAD.isDown() && selected && !player.getCooldowns().isOnCooldown(stack.getItem()))
+                DoomPacketHandler.DARKLORDCRUCIBLE.sendToServer(new DarkLordCrucibleLoadingPacket(slot));
         if (!world.isClientSide)
             if (playerentity.getMainHandItem().is(this) && selected)
                 triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) world), "shoot_controller", "open");
