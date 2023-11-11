@@ -1,6 +1,5 @@
-v.6.0.8
+v.6.0.9
 
 ## This mod is now a NeoForge mod, if it works with Forge: Great. If it doesn't, it doesn't ##
 
-- Change to AzureLib LightBlock/Entity now that it's multiloader compatible.
-- Change configuration file to use .json file managed by AzureLib, which offers an ingame editor!
+- Fixes weapon reloading.
