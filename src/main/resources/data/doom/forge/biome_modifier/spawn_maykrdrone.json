@@ -1,9 +1,9 @@
 {
   "type": "doom:mobspawns",
-  "biomes": "#minecraft:is_nether",
+  "biomes": "#doom:makyr_biomes",
   "spawn": {
-    "type": "doom:imp",
-    "maxCount": 4,
+    "type": "doom:maykr_drone",
+    "maxCount": 2,
     "minCount": 1,
     "weight": 15
   }
