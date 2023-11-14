@@ -1,5 +1,6 @@
-v.6.0.9
+v.6.0.10
 
 ## This mod is now a NeoForge mod, if it works with Forge: Great. If it doesn't, it doesn't ##
 
-- Fixes weapon reloading.
+- Fixes Imps spawning in place of Blood Maykrs and Maykr Drones in the end.
+- Adds missing tags for tools.
