@@ -1,9 +1,0 @@
-{
-  "entities": [
-    "player"
-  ],
-  "slots": [
-    "hand/glove",
-    "legs/belt"
-  ]
-}
