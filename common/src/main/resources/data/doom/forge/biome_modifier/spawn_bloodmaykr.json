@@ -1,0 +1,10 @@
+{
+  "type": "doom:mobspawns",
+  "biomes": "#doom:makyr_biomes",
+  "spawn": {
+    "type": "doom:blood_maykr",
+    "maxCount": 1,
+    "minCount": 1,
+    "weight": 15
+  }
+}

@@ -1,0 +1,191 @@
+plugins {
+    id 'idea'
+    id 'maven-publish'
+    id 'net.neoforged.gradle'
+    id 'org.spongepowered.mixin'
+    id 'com.matthewprenger.cursegradle'
+    id 'com.modrinth.minotaur'
+}
+
+base {
+    archivesName = "${mod_name}-neo-${minecraft_version}"
+}
+
+mixin {
+    add(sourceSets.main, "doom.refmap.json")
+
+    config("doom.mixins.json")
+    config("doom.forge.mixins.json")
+}
+
+minecraft {
+    mappings channel: 'official', version: minecraft_version
+
+    copyIdeResources = true //Calls processResources when in dev
+
+    // Automatically enable forge AccessTransformers if the file exists
+    // This location is hardcoded in Forge and can not be changed.
+    // https://github.com/MinecraftForge/MinecraftForge/blob/be1698bb1554f9c8fa2f58e32b9ab70bc4385e60/fmlloader/src/main/java/net/minecraftforge/fml/loading/moddiscovery/ModFile.java#L123
+    if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
+        accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    }
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            mods {
+                modClientRun {
+                    source sourceSets.main
+                    source project(":common").sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            mods {
+                modServerRun {
+                    source sourceSets.main
+                    source project(":common").sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            mods {
+                modDataRun {
+                    source sourceSets.main
+                    source project(":common").sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+sourceSets.main.resources.srcDir 'src/generated/resources'
+
+repositories {
+    maven { url 'https://libs.azuredoom.com:4443/mods' }
+    maven { url "https://maven.theillusivec4.top/" }
+    maven { url "https://minecraft.curseforge.com/api/maven/" }
+    maven { url "https://dl.cloudsmith.io/public/tslat/sbl/maven/" }
+    maven { url "https://maven.blamejared.com" }
+    maven { url "https://cfa2.cursemaven.com" }
+    maven { url "https://maven.shedaniel.me" }
+    maven { url 'https://maven.kosmx.dev/' }
+    maven { url 'https://api.modrinth.com/maven' }
+    maven { url "https://maven.terraformersmc.com/" }
+    maven { url "https://maven.terraformersmc.com/releases" } // modmenu
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(path: ':common')
+    minecraft "net.neoforged:forge:${minecraft_version}-${neo_version}"
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+    implementation fg.deobf("mod.azure.azurelib:azurelib-neo-${minecraft_version}:${azurelib_version}")
+    implementation fg.deobf("net.kyrptonaught.customportalapi:customportalapi-reforged:${customportalsapireforged}")
+    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${rei_version}")
+    implementation fg.deobf("curse.maven:REIPC-521393:4611912")
+    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_version}")
+    implementation fg.deobf("dev.architectury:architectury-forge:${arch_version}")
+    implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-neoforge-${minecraft_version}:${sbl_version}")
+    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:0.2.1"))
+    implementation fg.deobf('maven.modrinth:better-combat:aMCXkh0U')
+    implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${project.player_anim_version}")
+    compileOnly project(":common")
+    annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
+}
+
+tasks.withType(JavaCompile).configureEach {
+    source(project(":common").sourceSets.main.allSource)
+}
+tasks.withType(Javadoc).configureEach {
+    source(project(":common").sourceSets.main.allJava)
+}
+tasks.named("sourcesJar", Jar) {
+    from(project(":common").sourceSets.main.allSource)
+}
+
+processResources {
+    from project(":common").sourceSets.main.resources
+}
+
+jar.finalizedBy('reobfJar')
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId base.archivesName.get()
+            from components.java
+            fg.component(it)
+        }
+    }
+    repositories {
+        maven {
+            url "file://" + System.getenv("local_maven")
+        }
+    }
+}
+
+if (file('key.properties').exists()) {
+    curseforge {
+
+        def curseProp = new Properties()
+        File secretPropsFile = file("key.properties")
+        curseProp.load(secretPropsFile.newInputStream())
+
+        project {
+            apiKey = curseProp.getProperty('curseKey')
+            id = "${curse_id}"
+            releaseType = "release"
+            changelogType = 'text'
+            changelog = file('CHANGELOG.txt')
+            addGameVersion("Forge")
+            addGameVersion("NeoForge")
+            addGameVersion("Java 17")
+
+            relations {
+                requiredDependency 'curios'
+                requiredDependency 'azurelib'
+                requiredDependency 'smartbrainlib'
+                requiredDependency 'custom-portal-api-reforged'
+                optionalDependency 'better-combat-by-daedelus'
+            }
+        }
+    }
+}
+
+if (file('key.properties').exists()) {
+    modrinth {
+        def modrinthProp = new Properties()
+        File secretPropsFile = file("key.properties")
+        modrinthProp.load(secretPropsFile.newInputStream())
+
+        token = modrinthProp.getProperty('modrinthKey')
+        projectId = project.modrinth_id
+        versionNumber = project.mod_version
+        uploadFile = jar
+        changelog = rootProject.file("changelog.txt").text
+        loaders = ['neoforge', 'forge']
+        dependencies {
+            required.project "azurelib"
+            required.project "smartbrainlib"
+            required.project "curios"
+            required.project "custom-portal-api-reforged"
+            optional.project "better-combat"
+        }
+    }
+}

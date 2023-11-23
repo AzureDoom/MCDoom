@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "doom:maykr_doom_chestplate"
+  },
+  "type": "minecraft:crafting_shaped",
+   "pattern": [
+        "@",
+        "#"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:quartz"
+        },
+		"@": {
+			"item": "doom:doom_chestplate"
+		}
+    }
+}

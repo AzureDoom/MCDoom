@@ -1,0 +1,34 @@
+{
+	"display": {
+		"icon": {
+			"item": "doom:doom_helmet"
+		},
+		"title": {
+			"translate": "doom.achievement.gladiator_fight"
+		},
+		"description": {
+			"translate": "doom.achievement.gladiator_fight.desc"
+		},
+		"frame": "challenge",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"parent": "minecraft:nether/root",
+	"criteria": {
+		"requirement": {
+			"trigger": "minecraft:location",
+			"conditions": {
+				"player": [
+					{
+						"condition": "minecraft:location_check",
+						"predicate": {
+							"structure": "doom:gladiator_fight"
+						}
+					}
+				]
+			}
+		}
+	}
+}
+}

@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "doom:gas_barrel"
+  },
+  "type": "minecraft:crafting_shaped",
+   "pattern": [
+        "#",
+        "$"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:gunpowder"
+        },
+        "$": {
+            "item": "minecraft:rotten_flesh"
+        }
+    }
+}

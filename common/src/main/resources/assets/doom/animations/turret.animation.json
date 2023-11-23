@@ -1,0 +1,44 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"idle": {
+			"animation_length": 0.04,
+			"bones": {
+				"eye": {
+					"position": {
+						"vector": [0, -13, 0]
+					}
+				}
+			}
+		},
+		"attacking": {
+			"loop": true,
+			"animation_length": 1,
+			"bones": {
+				"eye": {
+					"position": {
+						"0.0": {
+							"vector": [0, -13, 0]
+						},
+						"0.04": {
+							"vector": [0, "-13+math.sin(query.anim_time * 360) * 13", 0],
+							"easing": "easeInOutCirc"
+						},
+						"0.24": {
+							"vector": [0, -0.03, 0]
+						},
+						"0.76": {
+							"vector": [0, -0.03, 0]
+						},
+						"0.96": {
+							"vector": [0, "-13+math.sin(query.anim_time * 360) * 13", 0]
+						},
+						"1.0": {
+							"vector": [0, -13, 0]
+						}
+					}
+				}
+			}
+		}
+	}
+}

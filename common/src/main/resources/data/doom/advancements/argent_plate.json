@@ -1,0 +1,37 @@
+{
+	"parent": "doom:argent",
+	"display": {
+		"icon": {
+			"item": "doom:argent_plate"
+		},
+		"title": {
+			"translate": "doom.achievement.argent_plate"
+		},
+		"description": {
+			"translate": "doom.achievement.argent_plate.desc"
+		},
+		"frame": "task",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"argent_plate": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"doom:argent_plate"
+						]
+					}
+				]
+			}
+		}
+	},
+	"requirements": [
+		[
+			"argent_plate"
+		]
+	]
+}

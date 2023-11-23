@@ -1,0 +1,43 @@
+plugins {
+    id 'idea'
+    id 'java'
+    id 'maven-publish'
+    id 'org.spongepowered.gradle.vanilla'
+}
+base {
+    archivesName = "${mod_name}-common-${minecraft_version}"
+}
+minecraft {
+    version(minecraft_version)
+    if (file("src/main/resources/doom.aw").exists()) {
+        accessWideners(file("src/main/resources/doom.aw"))
+    }
+}
+
+repositories {
+    mavenCentral()
+	maven { url 'https://libs.azuredoom.com:4443/mods'}
+    maven { url 'https://dl.cloudsmith.io/public/tslat/sbl/maven/' }
+}
+
+dependencies {
+    compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
+    implementation group: 'org.ow2.asm', name: 'asm-tree', version: '9.5'
+    compileOnly "net.tslat.smartbrainlib:SmartBrainLib-neoforge-1.20.1:${project.sbl_version}"
+    compileOnly "mod.azure.azurelib:azurelib-neo-1.20.1:${azurelib_version}"
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId base.archivesName.get()
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "file://" + System.getenv("local_maven")
+        }
+    }
+}

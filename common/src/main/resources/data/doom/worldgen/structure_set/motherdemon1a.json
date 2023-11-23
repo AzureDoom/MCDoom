@@ -1,0 +1,14 @@
+{
+	"structures": [
+		{
+			"structure": "doom:motherdemon1a",
+			"weight": 1
+		}
+	],
+	"placement": {
+		"salt": 1234568792,
+		"spacing": 80,
+		"separation": 20,
+		"type": "minecraft:random_spread"
+	}
+}

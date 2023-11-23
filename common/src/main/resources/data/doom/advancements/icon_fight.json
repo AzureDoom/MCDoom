@@ -1,0 +1,30 @@
+{
+	"display": {
+		"icon": {
+			"item": "doom:icon_icon"
+		},
+		"title": {
+			"translate": "doom.achievement.icon_fight"
+		},
+		"description": {
+			"translate": "doom.achievement.icon_fight.desc"
+		},
+		"frame": "challenge"
+	},
+	"parent": "minecraft:nether/root",
+	"criteria": {
+		"requirement": {
+			"trigger": "minecraft:location",
+			"conditions": {
+				"player": [
+					{
+						"condition": "minecraft:location_check",
+						"predicate": {
+							"structure": "doom:icon_fight"
+						}
+					}
+				]
+			}
+		}
+	}
+}

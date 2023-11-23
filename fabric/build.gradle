@@ -1,0 +1,169 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'maven-publish'
+    id 'fabric-loom'
+    id 'com.matthewprenger.cursegradle'
+    id 'com.modrinth.minotaur'
+}
+
+base {
+    archivesName = "${mod_name}-fabric-${minecraft_version}"
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://libs.azuredoom.com:4443/mods' }
+    maven { url 'https://dl.cloudsmith.io/public/tslat/sbl/maven/' }
+    maven { url 'https://maven.blamejared.com' }
+    maven { url 'https://api.modrinth.com/maven' }
+    maven { url "https://cfa2.cursemaven.com" }
+    maven { url "https://plugins.gradle.org/m2/" }
+    maven { url "https://maven.shedaniel.me/" }
+    maven { url "https://maven.terraformersmc.com/" }
+    maven { url "https://maven.terraformersmc.com/releases" } // modmenu
+    maven { url 'https://maven.kosmx.dev/' }
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
+    modImplementation "com.terraformersmc:modmenu:${modmenu_version}"
+    modImplementation "curse.maven:trinkets-341284:4657534"
+    modImplementation "curse.maven:cardinal-components-318449:4547791"
+    modImplementation "curse.maven:cardinal-components-base-318449:4576292"
+    modImplementation "curse.maven:cardinal-components-entity-318449:4547795"
+    modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-1.20.1:${project.sbl_version}"
+    modImplementation "mod.azure.azurelib:azurelib-fabric-1.20.1:${project.azurelib_version}"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}"
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+    modApi "dev.architectury:architectury-fabric:${project.arch_version}"
+    modApi "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_version}"
+    modImplementation "net.kyrptonaught:customportalapi:${project.customportalsapi}"
+    include "net.kyrptonaught:customportalapi:${project.customportalsapi}"
+    include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.2.1")))
+    modImplementation "maven.modrinth:better-combat:1mMMpsqV"
+    modImplementation("dev.kosmx.player-anim:player-animation-lib-fabric:${project.player_anim_version}")
+    compileOnly project(":common")
+}
+
+loom {
+    if (project(":common").file("src/main/resources/${mod_id}.aw").exists()) {
+        accessWidenerPath.set(project(":common").file("src/main/resources/${mod_id}.aw"))
+    }
+    mixin {
+        defaultRefmapName.set("${mod_id}.refmap.json")
+    }
+    runs {
+        client {
+            client()
+            setConfigName("Fabric Client")
+            ideConfigGenerated(true)
+            runDir("run")
+        }
+        server {
+            server()
+            setConfigName("Fabric Server")
+            ideConfigGenerated(true)
+            runDir("run")
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    source(project(":common").sourceSets.main.allSource)
+}
+
+processResources {
+    from project(":common").sourceSets.main.resources
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId base.archivesName.get()
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "file://" + System.getenv("local_maven")
+        }
+    }
+}
+
+// TODO: Everything below here might be fine to move to the top-level build.gradle file.
+// They were originally in the previous fabric build.gradle. - bvanseg
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 17
+}
+
+jar {
+    from "LICENSE"
+}
+
+if (file('key.properties').exists()) {
+    curseforge {
+
+        def curseProp = new Properties()
+        File secretPropsFile = file("key.properties")
+        curseProp.load(secretPropsFile.newInputStream())
+
+        project {
+            apiKey = curseProp.getProperty('curseKey')
+            id = "${curse_id}"
+            releaseType = "release"
+            changelogType = 'text'
+            changelog = file('CHANGELOG.txt')
+            addGameVersion("${minecraft_version}")
+            addGameVersion("Fabric")
+            addGameVersion("Quilt")
+            addGameVersion("Java 17")
+
+            relations {
+                requiredDependency 'fabric-api'
+                requiredDependency 'azurelib'
+                requiredDependency 'trinkets'
+                requiredDependency 'smartbrainlib'
+                optionalDependency 'better-combat-by-daedelus'
+            }
+            mainArtifact(remapJar)
+
+            afterEvaluate {
+                uploadTask.dependsOn("remapJar")
+            }
+        }
+        options {
+            forgeGradleIntegration = false
+        }
+    }
+}
+
+if (file('key.properties').exists()) {
+    modrinth {
+        def modrinthProp = new Properties()
+        File secretPropsFile = file("key.properties")
+        modrinthProp.load(secretPropsFile.newInputStream())
+
+        token = modrinthProp.getProperty('modrinthKey')
+        projectId = project.modrinth_id
+        versionNumber = project.mod_version
+        uploadFile = remapJar
+        changelog = rootProject.file("changelog.txt").text
+        gameVersions = ['1.20.1']
+        loaders = ['fabric', 'quilt']
+        dependencies {
+            required.project "azurelib"
+            required.project "trinkets"
+            required.project "fabric-api"
+            required.project "smartbrainlib"
+            optional.project "better-combat"
+            optional.project "modmenu"
+        }
+    }
+}
