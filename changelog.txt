@@ -1,10 +1,4 @@
-v7.0.0
+v7.0.1
 
-- Moved project to MultiLoader for easier updating.
-- Fixed Carcass spawning in Fabric.
-- Fixed Unmaykr Bolts missing in the creative menu tab.
-- Tweaked Archvile/Mancubus fire damage type.
-- Chainsaw is now a swing attack item.
-- Added Chainsaw integration with Better Combat.
-- Fixed the Smoke Trail of Rockets being too low.
-- Added Reload animations to all 3 Shotguns and Rocket Launcher.
+- Give the guns support for the new Incendiary Enchantment
+- Requires latest AzureLib
