@@ -36,7 +36,7 @@
     "fabric-api": "*",
     "java": ">=17",
     "minecraft": "${minecraft_version}",
-    "azurelib": ">=2.0.3",
+    "azurelib": ">=2.0.9",
     "smartbrainlib": ">=1.11",
     "trinkets": ">=3.7.0"
   }
