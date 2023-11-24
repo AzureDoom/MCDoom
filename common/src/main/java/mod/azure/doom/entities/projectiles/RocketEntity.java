@@ -158,7 +158,11 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
 
     public void doDamage() {
         level().getEntities(this, new AABB(blockPosition().above()).inflate(4)).forEach(e -> {
-            if (e instanceof LivingEntity) e.hurt(damageSources().playerAttack((Player) shooter), projectiledamage);
+            if (e instanceof LivingEntity) {
+                e.hurt(damageSources().playerAttack((Player) shooter), projectiledamage);
+                if (this.isOnFire())
+                    e.setSecondsOnFire(50);
+            }
             level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 0.0F, Level.ExplosionInteraction.NONE);
         });
 

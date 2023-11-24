@@ -176,6 +176,8 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
     private void doDamage(Entity user, Entity target) {
         if (target instanceof LivingEntity) {
             target.invulnerableTime = 0;
+            if (this.isOnFire())
+                target.setSecondsOnFire(50);
             target.hurt(damageSources().indirectMagic(this, target), MCDoom.config.grenade_damage);
             target.setDeltaMovement(target.getDeltaMovement().add(1.0, 0.6, 1.0));
         }

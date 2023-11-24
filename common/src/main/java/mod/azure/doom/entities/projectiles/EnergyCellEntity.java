@@ -131,6 +131,8 @@ public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
                 if (!level().isClientSide && entity1 instanceof LivingEntity livingEntity) {
                     EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
                     EnchantmentHelper.doPostDamageEffects(livingEntity, livingentity);
+                    if (this.isOnFire())
+                        livingEntity.setSecondsOnFire(50);
                     level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.5F, Level.ExplosionInteraction.NONE);
                     remove(RemovalReason.KILLED);
                 }

@@ -133,6 +133,8 @@ public class ChaingunBulletEntity extends AbstractArrow implements GeoEntity {
                 if (!this.level().isClientSide && entity1 instanceof LivingEntity livingEntity1) {
                     EnchantmentHelper.doPostHurtEffects(livingEntity, livingEntity1);
                     EnchantmentHelper.doPostDamageEffects(livingEntity1, livingEntity);
+                    if (this.isOnFire())
+                        livingEntity.setSecondsOnFire(50);
                     this.remove(RemovalReason.KILLED);
                 }
                 this.doPostHurtEffects(livingEntity);

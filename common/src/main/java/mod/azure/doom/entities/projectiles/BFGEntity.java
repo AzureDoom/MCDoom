@@ -167,6 +167,8 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
         this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
             var listEntity = randomElement.tryCast(e);
             if (!(e instanceof Player || e instanceof EnderDragon || e instanceof GoreNestEntity || e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity) && (e instanceof Monster || e instanceof Slime || e instanceof Phantom || e instanceof DemonEntity || e instanceof Shulker || e instanceof Hoglin || (e == listEntity))) {
+                if (this.isOnFire())
+                    e.setSecondsOnFire(50);
                 e.hurt(damageSources().playerAttack((Player) this.shooter), MCDoom.config.bfgball_damage);
                 this.setTargetedEntity(e.getId());
                 if (!this.level().isClientSide) {
@@ -186,8 +188,11 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
             }
             if (e instanceof EnderDragon enderDragon && e.isAlive())
                 enderDragon.head.hurt(damageSources().playerAttack((Player) this.shooter), MCDoom.config.bfgball_damage_dragon * 0.3F);
-            if (e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity && e.isAlive())
+            if (e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity && e.isAlive()) {
+                if (this.isOnFire())
+                    e.setSecondsOnFire(50);
                 e.hurt(damageSources().playerAttack((Player) this.shooter), MCDoom.config.bfgball_damage * 0.1F);
+            }
         });
     }
 

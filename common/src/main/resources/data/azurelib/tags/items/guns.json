@@ -1,0 +1,28 @@
+{
+  "replace": false,
+  "values": [
+    "doom:sentinelhammer",
+    "doom:chainsaw",
+    "doom:chainsaweternal",
+    "doom:chainsaw64",
+    "doom:ballista",
+    "doom:chaingun",
+    "doom:pistol",
+    "doom:plasmagun",
+    "doom:unmaykr",
+    "doom:unmaker",
+    "doom:heavycannon",
+    "doom:shotgun",
+    "doom:supershotgun",
+    "doom:cruciblesword",
+    "doom:darklordcrucible",
+    "doom:axe_marauder_open",
+    "doom:bfg_eternal",
+    "doom:bfg9000",
+    "doom:doomed_shotgun",
+    "doom:doomed_gauss",
+    "doom:doomed_plasma_rifle",
+    "doom:doomed_grenade",
+    "doom:rocketlauncher"
+  ]
+}

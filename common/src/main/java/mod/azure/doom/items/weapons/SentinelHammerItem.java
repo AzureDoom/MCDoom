@@ -24,6 +24,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
@@ -61,9 +62,11 @@ public class SentinelHammerItem extends BaseSwordItem implements GeoItem {
             }
     }
 
-    private void doDamage(LivingEntity user, final Entity target) {
+    private void doDamage(ItemStack stack, LivingEntity user, Entity target) {
         if (target instanceof LivingEntity) {
             target.invulnerableTime = 0;
+            if (EnchantmentHelper.getItemEnchantmentLevel(mod.azure.azurelib.platform.Services.PLATFORM.getIncendairyenchament(), stack) > 0)
+                target.setSecondsOnFire(100);
             ((LivingEntity) target).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 1000, 2));
             target.hurt(user.damageSources().playerAttack((Player) user), MCDoom.config.sentinelhammer_damage);
         }
@@ -83,7 +86,7 @@ public class SentinelHammerItem extends BaseSwordItem implements GeoItem {
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity miner) {
         if (miner instanceof Player playerentity && stack.getDamageValue() < stack.getMaxDamage() - 1 && playerentity.getMainHandItem().getItem() instanceof SentinelHammerItem) {
             final var aabb = new AABB(miner.blockPosition().above()).inflate(5D, 5D, 5D);
-            miner.getCommandSenderWorld().getEntities(miner, aabb).forEach(e -> doDamage(playerentity, e));
+            miner.level().getEntities(miner, aabb).forEach(e -> doDamage(stack, playerentity, e));
             stack.hurtAndBreak(1, miner, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
             final var areaeffectcloudentity = new AreaEffectCloud(miner.level(), miner.getX(), playerentity.getY(), playerentity.getZ());
             areaeffectcloudentity.setParticle(ParticleTypes.CRIT);

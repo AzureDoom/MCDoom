@@ -26,6 +26,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
@@ -74,15 +75,17 @@ public class DarkLordCrucibleItem extends BaseSwordItem implements GeoItem {
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity miner) {
         if (miner instanceof Player playerentity && stack.getDamageValue() < stack.getMaxDamage() - 1 && playerentity.getMainHandItem().getItem() instanceof DarkLordCrucibleItem) {
             final var aabb = new AABB(miner.blockPosition().above()).inflate(4D, 1D, 4D);
-            miner.getCommandSenderWorld().getEntities(miner, aabb).forEach(e -> doDamage(playerentity, e));
+            miner.level().getEntities(miner, aabb).forEach(e -> doDamage(stack, playerentity, e));
             stack.hurtAndBreak(1, miner, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
         }
         return stack.getDamageValue() < stack.getMaxDamage() - 1;
     }
 
-    private void doDamage(LivingEntity user, Entity target) {
+    private void doDamage(ItemStack stack, LivingEntity user, Entity target) {
         if (target instanceof LivingEntity) {
             target.invulnerableTime = 0;
+            if (EnchantmentHelper.getItemEnchantmentLevel(mod.azure.azurelib.platform.Services.PLATFORM.getIncendairyenchament(), stack) > 0)
+                target.setSecondsOnFire(100);
             target.hurt(user.damageSources().playerAttack((Player) user), target instanceof ArchMakyrEntity || target instanceof GladiatorEntity || target instanceof IconofsinEntity || target instanceof MotherDemonEntity || target instanceof SpiderMastermind2016Entity || target instanceof SpiderMastermindEntity ? MCDoom.config.darkcrucible_damage / 10F : MCDoom.config.darkcrucible_damage);
         }
     }

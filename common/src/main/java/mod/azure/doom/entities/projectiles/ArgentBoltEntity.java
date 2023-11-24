@@ -162,6 +162,8 @@ public class ArgentBoltEntity extends AbstractArrow {
         final AABB aabb = new AABB(this.blockPosition().above()).inflate(2D, 2D, 2D);
         this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
             if (e instanceof LivingEntity) {
+                if (this.isOnFire())
+                    e.setSecondsOnFire(50);
                 e.hurt(damageSources().playerAttack((Player) this.shooter), MCDoom.config.argent_bolt_damage);
             }
         });
@@ -187,6 +189,8 @@ public class ArgentBoltEntity extends AbstractArrow {
                 if (!this.level().isClientSide && entity1 instanceof LivingEntity livingEntity1) {
                     EnchantmentHelper.doPostHurtEffects(livingEntity, entity1);
                     EnchantmentHelper.doPostDamageEffects(livingEntity1, livingEntity);
+                    if (this.isOnFire())
+                        livingEntity.setSecondsOnFire(50);
                     this.level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.5F, Level.ExplosionInteraction.NONE);
                     this.remove(RemovalReason.KILLED);
                 }

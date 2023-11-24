@@ -19,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -54,6 +55,8 @@ public class GrenadeItem extends Item implements GeoItem {
                 final var nade = new GrenadeEntity(world, user);
                 nade.shootFromRotation(user, user.getXRot(), user.getYRot(), 0.0F, 1.05F, 1.0F);
                 nade.setBaseDamage(0);
+                if (EnchantmentHelper.getItemEnchantmentLevel(mod.azure.azurelib.platform.Services.PLATFORM.getIncendairyenchament(), itemstack) > 0)
+                    nade.setSecondsOnFire(100);
                 world.addFreshEntity(nade);
             }
             if (!user.getAbilities().instabuild) {

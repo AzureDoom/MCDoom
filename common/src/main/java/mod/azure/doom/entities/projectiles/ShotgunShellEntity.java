@@ -135,6 +135,8 @@ public class ShotgunShellEntity extends AbstractArrow implements GeoEntity {
                 if (!level().isClientSide && entity1 instanceof LivingEntity livingEntity) {
                     EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
                     EnchantmentHelper.doPostDamageEffects(livingEntity, livingentity);
+                    if (this.isOnFire())
+                        livingEntity.setSecondsOnFire(50);
                     remove(RemovalReason.KILLED);
                 }
                 doPostHurtEffects(livingentity);
