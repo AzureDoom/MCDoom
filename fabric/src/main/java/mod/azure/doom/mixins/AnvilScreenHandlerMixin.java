@@ -1,6 +1,7 @@
 package mod.azure.doom.mixins;
 
-import mod.azure.doom.items.weapons.*;
+import mod.azure.doom.items.weapons.BaseSwordItem;
+import mod.azure.doom.items.weapons.DoomBaseItem;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -25,7 +26,7 @@ public abstract class AnvilScreenHandlerMixin extends ItemCombinerMenu {
     private void updateRuinedRepair(CallbackInfo ci) {
         final var leftStack = inputSlots.getItem(0).copy();
         final var rightStack = inputSlots.getItem(1).copy();
-        if ((leftStack.getItem() instanceof DoomBaseItem || leftStack.getItem() instanceof AxeMarauderItem || leftStack.getItem() instanceof DarkLordCrucibleItem || leftStack.getItem() instanceof SwordCrucibleItem || leftStack.getItem() instanceof ChainsawAnimated || leftStack.getItem() instanceof Chainsaw) && (EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.MENDING) || EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.UNBREAKING) || EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.INFINITY_ARROWS) || EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.FLAMING_ARROWS) || EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.PUNCH_ARROWS))) {
+        if ((leftStack.getItem() instanceof DoomBaseItem || leftStack.getItem() instanceof BaseSwordItem) && EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.MENDING)) {
             final var repaired = ItemStack.EMPTY;
             resultSlots.setItem(0, repaired);
             broadcastChanges();
