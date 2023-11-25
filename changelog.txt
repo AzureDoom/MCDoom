@@ -1,4 +1,4 @@
-v7.0.1
+v7.0.2
 
-- Give the guns support for the new Incendiary Enchantment
-- Requires latest AzureLib
+- Fixes enchantment mixin
+- Fixes projectiles not properly setting entities on fire with Incendiary Enchantment
