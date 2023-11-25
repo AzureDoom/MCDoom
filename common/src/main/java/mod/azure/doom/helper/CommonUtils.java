@@ -155,4 +155,12 @@ public class CommonUtils {
     public static boolean nonCentered(ItemStack stack) {
         return MCDoom.config.enable_noncenter;
     }
+
+    public static void setOnFire(Entity projectile) {
+        if (projectile.isOnFire())
+            projectile.level().getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(2)).forEach(e -> {
+                if (e.isAlive())
+                    e.setRemainingFireTicks(90);
+            });
+    }
 }

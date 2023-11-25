@@ -8,6 +8,7 @@ import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.entities.tierboss.IconofsinEntity;
+import mod.azure.doom.helper.CommonUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -109,6 +110,7 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
     public void tick() {
         super.tick();
         if (this.tickCount >= 80) this.remove(RemovalReason.DISCARDED);
+        CommonUtils.setOnFire(this);
         if (this.level().isClientSide()) {
             if (this.useParticle() == 1)
                 this.level().addParticle(mod.azure.doom.platform.Services.PARTICLES_HELPER.getPISTOL(), true, this.getX() + (this.random.nextDouble()) * this.getBbWidth() * 0.5D, this.getY(), this.getZ() + (this.random.nextDouble()) * this.getBbWidth() * 0.5D, 0, 0, 0);

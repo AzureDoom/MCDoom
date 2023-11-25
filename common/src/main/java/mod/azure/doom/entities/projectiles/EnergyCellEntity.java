@@ -8,6 +8,7 @@ import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.entities.tierboss.IconofsinEntity;
+import mod.azure.doom.helper.CommonUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
@@ -90,6 +91,7 @@ public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
         if (this.tickCount >= 80) remove(RemovalReason.DISCARDED);
         if (level().isClientSide())
             level().addParticle(mod.azure.doom.platform.Services.PARTICLES_HELPER.getPLASMA(), true, this.getX() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, this.getY(), this.getZ() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, 0, 0, 0);
+        CommonUtils.setOnFire(this);
     }
 
     @Override
@@ -132,7 +134,7 @@ public class EnergyCellEntity extends AbstractArrow implements GeoEntity {
                     EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
                     EnchantmentHelper.doPostDamageEffects(livingEntity, livingentity);
                     if (this.isOnFire())
-                        livingEntity.setSecondsOnFire(50);
+                        livingentity.setSecondsOnFire(50);
                     level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.5F, Level.ExplosionInteraction.NONE);
                     remove(RemovalReason.KILLED);
                 }

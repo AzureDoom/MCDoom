@@ -121,7 +121,8 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
         CommonUtils.spawnLightSource(this, isInsideWaterBlock);
         if (this.tickCount >= 80) this.remove(RemovalReason.DISCARDED);
         var aabb = new AABB(this.blockPosition().above()).inflate(24D, 24D, 24D);
-        this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
+        CommonUtils.setOnFire(this);
+        this.level().getEntities(this, aabb).forEach(e -> {
             var listEntity = randomElement.tryCast(e);
             if (!(e instanceof Player || e instanceof EnderDragon || e instanceof GoreNestEntity || e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity) && (e instanceof Monster || e instanceof Slime || e instanceof Phantom || e instanceof DemonEntity || e instanceof Shulker || e instanceof Hoglin || (e == listEntity)) && e.isAlive()) {
                 e.hurt(damageSources().explosion(this, shooter), MCDoom.config.bfgball_damage_aoe);

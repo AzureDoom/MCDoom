@@ -81,6 +81,7 @@ public class UnmaykrBoltEntity extends AbstractArrow {
         CommonUtils.spawnLightSource(this, isInsideWaterBlock);
         if (level().isClientSide())
             level().addParticle(mod.azure.doom.platform.Services.PARTICLES_HELPER.getUNMAYKR(), true, this.getX() + random.nextDouble() * getBbWidth() * 0.5D, this.getY(), this.getZ() + random.nextDouble() * getBbWidth() * 0.5D, 0, 0, 0);
+        CommonUtils.setOnFire(this);
     }
 
     @Override
@@ -123,7 +124,7 @@ public class UnmaykrBoltEntity extends AbstractArrow {
                     EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
                     EnchantmentHelper.doPostDamageEffects(livingEntity, livingentity);
                     if (this.isOnFire())
-                        livingEntity.setSecondsOnFire(50);
+                        livingentity.setSecondsOnFire(50);
                     remove(RemovalReason.KILLED);
                 }
                 doPostHurtEffects(livingentity);

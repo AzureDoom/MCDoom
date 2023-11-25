@@ -125,6 +125,7 @@ public class ArgentBoltEntity extends AbstractArrow {
         if (this.ticksInAir >= 80) this.remove(RemovalReason.DISCARDED);
         var isInsideWaterBlock = level().isWaterAt(blockPosition());
         CommonUtils.spawnLightSource(this, isInsideWaterBlock);
+        CommonUtils.setOnFire(this);
         if (this.level().isClientSide())
             this.level().addParticle(this.useParticle() ? ParticleTypes.ANGRY_VILLAGER : ParticleTypes.FLASH, true, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
     }
