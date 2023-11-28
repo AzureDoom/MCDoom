@@ -1,4 +1,5 @@
-v7.0.2
+v7.0.3
 
-- Fixes enchantment mixin
-- Fixes projectiles not properly setting entities on fire with Incendiary Enchantment
+- Tweaks demon damage.
+- Fixes Incendiary Enchantment setting player on fire.
+- Adds weapons to BackSlot tags.
