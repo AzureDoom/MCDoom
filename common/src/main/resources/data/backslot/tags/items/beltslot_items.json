@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "doom:cruciblesword",
+    "doom:darklordcrucible",
+    "doom:chainsaw",
+    "doom:chainsaweternal",
+    "doom:chainsaw64",
+    "doom:doomed_grenade",
+    "doom:pistol"
+  ]
+}
