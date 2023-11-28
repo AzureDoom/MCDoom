@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -156,10 +157,10 @@ public class CommonUtils {
         return MCDoom.config.enable_noncenter;
     }
 
-    public static void setOnFire(Entity projectile) {
+    public static void setOnFire(Projectile projectile) {
         if (projectile.isOnFire())
             projectile.level().getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(2)).forEach(e -> {
-                if (e.isAlive())
+                if (e.isAlive() && !(e instanceof Player))
                     e.setRemainingFireTicks(90);
             });
     }
