@@ -161,7 +161,9 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        return !(source == damageSources().inWall() || source == damageSources().onFire() || source == damageSources().inFire());
+        if (source == damageSources().inWall() || source == damageSources().onFire() || source == damageSources().inFire())
+            return false;
+        return super.hurt(source, amount);
     }
 
     @Override
