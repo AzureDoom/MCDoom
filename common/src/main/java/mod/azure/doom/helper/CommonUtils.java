@@ -160,8 +160,7 @@ public class CommonUtils {
     public static void setOnFire(Projectile projectile) {
         if (projectile.isOnFire())
             projectile.level().getEntitiesOfClass(LivingEntity.class, projectile.getBoundingBox().inflate(2)).forEach(e -> {
-                if (e.isAlive() && !(e instanceof Player))
-                    e.setRemainingFireTicks(90);
+                if (e.isAlive() && !(e instanceof Player)) e.setRemainingFireTicks(90);
             });
     }
 }
