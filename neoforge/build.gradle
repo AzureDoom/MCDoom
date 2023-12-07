@@ -103,7 +103,7 @@ dependencies {
     implementation fg.deobf("dev.architectury:architectury-forge:${arch_version}")
     implementation fg.deobf("net.tslat.smartbrainlib:SmartBrainLib-neoforge-${minecraft_version}:${sbl_version}")
     implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:0.2.1"))
-    implementation fg.deobf('maven.modrinth:better-combat:aMCXkh0U')
+    implementation fg.deobf('maven.modrinth:better-combat:hNenqXi9')
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${project.player_anim_version}")
     compileOnly project(":common")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
