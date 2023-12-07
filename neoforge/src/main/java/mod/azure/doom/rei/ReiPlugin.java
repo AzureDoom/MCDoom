@@ -5,11 +5,12 @@ import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.forge.REIPlugin;
+import me.shedaniel.rei.forge.REIPluginClient;
 import mod.azure.doom.MCDoom;
 import mod.azure.doom.recipes.GunTableRecipe;
 import net.minecraftforge.api.distmarker.Dist;
 
-@REIPlugin(value = Dist.CLIENT)
+@REIPluginClient
 public class ReiPlugin implements REIClientPlugin {
 
     public static final CategoryIdentifier<DoomDisplay> CRAFTING = CategoryIdentifier.of(MCDoom.modResource("crafting"));
