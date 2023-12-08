@@ -26,7 +26,7 @@ public class LivingEntityMixin {
         if (MCDoom.config.enable_soulcube_effects) {
             var stack = TrinketsApi.getTrinketComponent(livingEntity).map(component -> {
                 List<Tuple<SlotReference, ItemStack>> res = component.getEquipped(FabricDoomItems.SOULCUBE);
-                return res.size() > 0 ? res.get(0).getB() : ItemStack.EMPTY;
+                return !res.isEmpty() ? res.get(0).getB() : ItemStack.EMPTY;
             }).orElse(ItemStack.EMPTY);
 
             if (!stack.isEmpty()) {
