@@ -9,8 +9,7 @@ import mod.azure.doom.items.argent.ArgentEnergyItem;
 import mod.azure.doom.items.argent.ArgentPlateItem;
 import mod.azure.doom.items.armor.ArmorTypeEnum;
 import mod.azure.doom.items.armor.DoomArmor;
-import mod.azure.doom.items.blockitems.GuntableBlockItem;
-import mod.azure.doom.items.blockitems.TotemBlockItem;
+import mod.azure.doom.items.blockitems.DoomBlockItem;
 import mod.azure.doom.items.enums.DAMat;
 import mod.azure.doom.items.powerup.*;
 import mod.azure.doom.items.tools.*;
@@ -28,8 +27,10 @@ public record NeoDoomItems() {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MCDoom.MOD_ID);
 
     // BLOCKS
-    public static final RegistryObject<Item> TOTEM = ITEMS.register("totem", () -> new TotemBlockItem(NeoDoomBlocks.TOTEM.get(), new Item.Properties()));
-    public static final RegistryObject<Item> GUN_TABLE = ITEMS.register("gun_table", () -> new GuntableBlockItem(NeoDoomBlocks.GUN_TABLE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> TOTEM = ITEMS.register("totem", () -> new DoomBlockItem(NeoDoomBlocks.TOTEM.get(), new Item.Properties(), "totem") {
+    });
+    public static final RegistryObject<Item> GUN_TABLE = ITEMS.register("gun_table", () -> new DoomBlockItem(NeoDoomBlocks.GUN_TABLE.get(), new Item.Properties(), "gun_table") {
+    });
     public static final RegistryObject<Item> ITEM = ITEMS.register("barrel", () -> new BlockItem(NeoDoomBlocks.BARREL_BLOCK.get(), new Item.Properties()));
     public static final RegistryObject<Item> ARGENT_BLOCK = ITEMS.register("argent_block", () -> new BlockItem(NeoDoomBlocks.ARGENT_BLOCK.get(), new Item.Properties()));
     public static final RegistryObject<Item> ARGENT_LAMP_BLOCK = ITEMS.register("argent_lamp_block", () -> new BlockItem(NeoDoomBlocks.ARGENT_LAMP_BLOCK.get(), new Item.Properties()));

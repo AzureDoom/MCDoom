@@ -2,8 +2,7 @@ package mod.azure.doom.registry;
 
 import mod.azure.doom.MCDoom;
 import mod.azure.doom.blocks.*;
-import mod.azure.doom.items.blockitems.GuntableBlockItem;
-import mod.azure.doom.items.blockitems.TotemBlockItem;
+import mod.azure.doom.items.blockitems.DoomBlockItem;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
@@ -70,9 +69,11 @@ public record FabricDoomBlocks() {
 
     public static void initialize() {
         Registry.register(BuiltInRegistries.BLOCK, MCDoom.modResource("gun_table"), GUN_TABLE);
-        Registry.register(BuiltInRegistries.ITEM, MCDoom.modResource("gun_table"), new GuntableBlockItem(GUN_TABLE, new Item.Properties()));
+        Registry.register(BuiltInRegistries.ITEM, MCDoom.modResource("gun_table"), new DoomBlockItem(GUN_TABLE, new Item.Properties(), "gun_table") {
+        });
         Registry.register(BuiltInRegistries.BLOCK, MCDoom.modResource("totem"), TOTEM);
-        Registry.register(BuiltInRegistries.ITEM, MCDoom.modResource("totem"), new TotemBlockItem(TOTEM, new Item.Properties()));
+        Registry.register(BuiltInRegistries.ITEM, MCDoom.modResource("totem"), new DoomBlockItem(TOTEM, new Item.Properties(), "totem") {
+        });
         Registry.register(BuiltInRegistries.BLOCK, MCDoom.modResource("argent_block"), ARGENT_BLOCK);
         Registry.register(BuiltInRegistries.ITEM, MCDoom.modResource("argent_block"), new BlockItem(ARGENT_BLOCK, new Item.Properties()));
         Registry.register(BuiltInRegistries.BLOCK, MCDoom.modResource("jump_pad"), JUMP_PAD);
