@@ -3,7 +3,7 @@ package mod.azure.doom.client.render.armors;
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.renderer.GeoArmorRenderer;
 import mod.azure.doom.client.models.armor.DoomModel;
-import mod.azure.doom.items.armor.ArmorTypeEnum;
+import mod.azure.doom.items.enums.ArmorTypeEnum;
 import mod.azure.doom.items.armor.DoomArmor;
 
 public class DoomRender<T extends DoomArmor> extends GeoArmorRenderer<T> {

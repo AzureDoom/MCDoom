@@ -8,6 +8,7 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.client.render.armors.DoomRender;
+import mod.azure.doom.items.enums.ArmorTypeEnum;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.network.chat.Component;
