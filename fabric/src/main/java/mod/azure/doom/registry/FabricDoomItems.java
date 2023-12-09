@@ -4,10 +4,12 @@ import mod.azure.azurelib.items.AzureSpawnEgg;
 import mod.azure.doom.MCDoom;
 import mod.azure.doom.items.E1M1MusicDisc;
 import mod.azure.doom.items.UnopenedItem;
+import mod.azure.doom.items.ammo.AmmoItem;
 import mod.azure.doom.items.argent.ArgentEnergyItem;
 import mod.azure.doom.items.argent.ArgentPlateItem;
-import mod.azure.doom.items.enums.ArmorTypeEnum;
 import mod.azure.doom.items.armor.DoomArmor;
+import mod.azure.doom.items.enums.AmmoEnum;
+import mod.azure.doom.items.enums.ArmorTypeEnum;
 import mod.azure.doom.items.enums.DAMat;
 import mod.azure.doom.items.enums.DoomTier;
 import mod.azure.doom.items.powerup.*;
@@ -27,15 +29,15 @@ public record FabricDoomItems() {
     public static BFG9000 BFG;
     public static BFG BFG_ETERNAL;
     public static DaisyItem DAISY;
-    public static Rocket ROCKET;
+    public static AmmoItem ROCKET;
     public static DGauss DGAUSS;
     public static Ballista BALLISTA;
     public static Chaingun CHAINGUN;
     public static Chainsaw CHAINSAW;
     public static PistolItem PISTOL;
     public static DShotgun DSG;
-    public static ClipAmmo BULLETS;
-    public static BFGCell BFG_CELL;
+    public static AmmoItem BULLETS;
+    public static AmmoItem BFG_CELL;
     public static Unmaykr UNMAYKR;
     public static Unmaker UNMAKER;
     public static Chainsaw CHAINSAW64;
@@ -48,15 +50,15 @@ public record FabricDoomItems() {
     public static GrenadeItem GRENADE;
     public static HeavyCannon HEAVYCANNON;
     public static Item ICON_ICON;
-    public static ArgentBolt ARGENT_BOLT;
+    public static AmmoItem ARGENT_BOLT;
     public static ArgentPaxel ARGENT_PAXEL;
     public static ArgentSword ARGENT_SWORD;
     public static PowerSphereItem POWER;
     public static Item GAS_BARREL;
-    public static EnergyCell ENERGY_CELLS;
+    public static AmmoItem ENERGY_CELLS;
     public static ArgentShovel ARGENT_SHOVEL;
-    public static ShellAmmo SHOTGUN_SHELLS;
-    public static UnmaykrBolt UNMAKRY_BOLT;
+    public static AmmoItem SHOTGUN_SHELLS;
+    public static AmmoItem UNMAKRY_BOLT;
     public static UnopenedItem AXE_CLOSED;
     public static ArgentPickaxe ARGENT_PICKAXE;
     public static ArgentPlateItem ARGENT_PLATE;
@@ -66,7 +68,7 @@ public record FabricDoomItems() {
     public static RocketLauncher ROCKETLAUNCHER;
     public static ArgentEnergyItem ARGENT_ENERGY;
     public static InmortalSphereItem INMORTAL;
-    public static ChaingunAmmo CHAINGUN_BULLETS;
+    public static AmmoItem CHAINGUN_BULLETS;
     public static SwordCrucibleItem CRUCIBLESWORD;
     public static InvisibleSphereItem INVISIBLE;
     public static ChainsawAnimated CHAINSAW_ETERNAL;
@@ -251,15 +253,15 @@ public record FabricDoomItems() {
         BFG = item("bfg9000", new BFG9000());
         BFG_ETERNAL = item("bfg_eternal", new BFG());
         DAISY = item("daisy", new DaisyItem());
-        ROCKET = item("rocket", new Rocket());
+        ROCKET = item("rocket", new AmmoItem(AmmoEnum.ROCKET));
         DGAUSS = item("doomed_gauss", new DGauss());
         BALLISTA = item("ballista", new Ballista());
         CHAINGUN = item("chaingun", new Chaingun());
         CHAINSAW = item("chainsaw", new Chainsaw());
         PISTOL = item("pistol", new PistolItem());
         DSG = item("doomed_shotgun", new DShotgun());
-        BULLETS = item("bullets", new ClipAmmo());
-        BFG_CELL = item("bfg_cell", new BFGCell());
+        BULLETS = item("bullets", new AmmoItem(AmmoEnum.CLIP));
+        BFG_CELL = item("bfg_cell", new AmmoItem(AmmoEnum.BFG_CELL));
         UNMAYKR = item("unmaykr", new Unmaykr("white"));
         UNMAKER = item("unmaker", new Unmaker("demon"));
         CHAINSAW64 = item("chainsaw64", new Chainsaw());
@@ -272,15 +274,15 @@ public record FabricDoomItems() {
         GRENADE = item("doomed_grenade", new GrenadeItem());
         HEAVYCANNON = item("heavycannon", new HeavyCannon());
         ICON_ICON = item("icon_icon", new Item(new Item.Properties()));
-        ARGENT_BOLT = item("argent_bolt", new ArgentBolt());
+        ARGENT_BOLT = item("argent_bolt", new AmmoItem(AmmoEnum.ARGENT_BOLT));
         ARGENT_PAXEL = item("argent_paxel", new ArgentPaxel(DoomTier.DOOM));
         ARGENT_SWORD = item("argent_sword", new ArgentSword(DoomTier.DOOM));
         POWER = item("powersphere", new PowerSphereItem());
         GAS_BARREL = item("gas_barrel", new Item(new Item.Properties()));
-        ENERGY_CELLS = item("energy_cells", new EnergyCell());
+        ENERGY_CELLS = item("energy_cells", new AmmoItem(AmmoEnum.ENGERY));
         ARGENT_SHOVEL = item("argent_shovel", new ArgentShovel(DoomTier.DOOM));
-        SHOTGUN_SHELLS = item("shotgun_shells", new ShellAmmo());
-        UNMAKRY_BOLT = item("unmaykr_bolt", new UnmaykrBolt());
+        SHOTGUN_SHELLS = item("shotgun_shells", new AmmoItem(AmmoEnum.SHELL));
+        UNMAKRY_BOLT = item("unmaykr_bolt", new AmmoItem(AmmoEnum.UNMAYKR_BOLT));
         AXE_CLOSED = item("axe_marauder_closed", new UnopenedItem());
         ARGENT_PICKAXE = item("argent_pickaxe", new ArgentPickaxe(DoomTier.DOOM));
         ARGENT_PLATE = item("argent_plate", new ArgentPlateItem());
@@ -290,7 +292,7 @@ public record FabricDoomItems() {
         ROCKETLAUNCHER = item("rocketlauncher", new RocketLauncher());
         ARGENT_ENERGY = item("argent_energy", new ArgentEnergyItem());
         INMORTAL = item("inmortalsphere", new InmortalSphereItem());
-        CHAINGUN_BULLETS = item("chaingunbullets", new ChaingunAmmo());
+        CHAINGUN_BULLETS = item("chaingunbullets", new AmmoItem(AmmoEnum.CHAINGUN));
         CRUCIBLESWORD = item("cruciblesword", new SwordCrucibleItem());
         INVISIBLE = item("invisiblesphere", new InvisibleSphereItem());
         CHAINSAW_ETERNAL = item("chainsaweternal", new ChainsawAnimated());
@@ -354,108 +356,211 @@ public record FabricDoomItems() {
 
     public static void initArmor() {
         // Armor
-        DOOM_HELMET = item("doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.DOOM) { });
-        DOOM_CHESTPLATE = item("doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.DOOM) { });
-        DOOM_LEGGINGS = item("doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.DOOM) { });
-        DOOM_BOOTS = item("doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.DOOM) { });
-        PRAETOR_DOOM_HELMET = item("praetor_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.PRAETOR) { });
-        PRAETOR_DOOM_CHESTPLATE = item("praetor_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.PRAETOR) { });
-        PRAETOR_DOOM_LEGGINGS = item("praetor_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.PRAETOR) { });
-        PRAETOR_DOOM_BOOTS = item("praetor_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.PRAETOR) { });
-        ASTRO_DOOM_HELMET = item("astro_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.ASTRO) { });
-        ASTRO_DOOM_CHESTPLATE = item("astro_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.ASTRO) { });
-        ASTRO_DOOM_LEGGINGS = item("astro_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.ASTRO) { });
-        ASTRO_DOOM_BOOTS = item("astro_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.ASTRO) { });
-        CRIMSON_DOOM_HELMET = item("crimson_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.CRIMSON) { });
-        CRIMSON_DOOM_CHESTPLATE = item("crimson_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.CRIMSON) { });
-        CRIMSON_DOOM_LEGGINGS = item("crimson_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.CRIMSON) { });
-        CRIMSON_DOOM_BOOTS = item("crimson_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.CRIMSON) { });
-        MIDNIGHT_DOOM_HELMET = item("midnight_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.MIDNIGHT) { });
-        MIDNIGHT_DOOM_CHESTPLATE = item("midnight_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.MIDNIGHT) { });
-        MIDNIGHT_DOOM_LEGGINGS = item("midnight_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.MIDNIGHT) { });
-        MIDNIGHT_DOOM_BOOTS = item("midnight_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.MIDNIGHT) { });
-        DEMONIC_DOOM_HELMET = item("demonic_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.DEMONIC) { });
-        DEMONIC_DOOM_CHESTPLATE = item("demonic_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.DEMONIC) { });
-        DEMONIC_DOOM_LEGGINGS = item("demonic_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.DEMONIC) { });
-        DEMONIC_DOOM_BOOTS = item("demonic_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.DEMONIC) { });
-        DEMONCIDE_DOOM_HELMET = item("demoncide_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.DEMONCIDE) { });
-        DEMONCIDE_DOOM_CHESTPLATE = item("demoncide_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.DEMONCIDE) { });
-        DEMONCIDE_DOOM_LEGGINGS = item("demoncide_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.DEMONCIDE) { });
-        DEMONCIDE_DOOM_BOOTS = item("demoncide_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.DEMONCIDE) { });
-        SENTINEL_DOOM_HELMET = item("sentinel_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.SENTINEL) { });
-        SENTINEL_DOOM_CHESTPLATE = item("sentinel_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.SENTINEL) { });
-        SENTINEL_DOOM_LEGGINGS = item("sentinel_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.SENTINEL) { });
-        SENTINEL_DOOM_BOOTS = item("sentinel_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.SENTINEL) { });
-        EMBER_DOOM_HELMET = item("ember_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.EMBER) { });
-        EMBER_DOOM_CHESTPLATE = item("ember_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.EMBER) { });
-        EMBER_DOOM_LEGGINGS = item("ember_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.EMBER) { });
-        EMBER_DOOM_BOOTS = item("ember_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.EMBER) { });
-        ZOMBIE_DOOM_HELMET = item("zombie_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.ZOMBIE) { });
-        ZOMBIE_DOOM_CHESTPLATE = item("zombie_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.ZOMBIE) { });
-        ZOMBIE_DOOM_LEGGINGS = item("zombie_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.ZOMBIE) { });
-        ZOMBIE_DOOM_BOOTS = item("zombie_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.ZOMBIE) { });
-        PHOBOS_DOOM_HELMET = item("phobos_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.PHOBOS) { });
-        PHOBOS_DOOM_CHESTPLATE = item("phobos_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.PHOBOS) { });
-        PHOBOS_DOOM_LEGGINGS = item("phobos_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.PHOBOS) { });
-        PHOBOS_DOOM_BOOTS = item("phobos_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.PHOBOS) { });
-        NIGHTMARE_DOOM_HELMET = item("nightmare_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.NIGHTMARE) { });
-        NIGHTMARE_DOOM_CHESTPLATE = item("nightmare_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.NIGHTMARE) { });
-        NIGHTMARE_DOOM_LEGGINGS = item("nightmare_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.NIGHTMARE) { });
-        NIGHTMARE_DOOM_BOOTS = item("nightmare_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.NIGHTMARE) { });
-        PURPLEPONY_DOOM_HELMET = item("purplepony_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.PURPLE_PONY) { });
-        PURPLEPONY_DOOM_CHESTPLATE = item("purplepony_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.PURPLE_PONY) { });
-        PURPLEPONY_DOOM_LEGGINGS = item("purplepony_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.PURPLE_PONY) { });
-        PURPLEPONY_DOOM_BOOTS = item("purplepony_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.PURPLE_PONY) { });
-        DOOMICORN_DOOM_HELMET = item("doomicorn_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.DOOMICORN) { });
-        DOOMICORN_DOOM_CHESTPLATE = item("doomicorn_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.DOOMICORN) { });
-        DOOMICORN_DOOM_LEGGINGS = item("doomicorn_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.DOOMICORN) { });
-        DOOMICORN_DOOM_BOOTS = item("doomicorn_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.DOOMICORN) { });
-        GOLD_DOOM_HELMET = item("gold_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.GOLD) { });
-        GOLD_DOOM_CHESTPLATE = item("gold_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.GOLD) { });
-        GOLD_DOOM_LEGGINGS = item("gold_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.GOLD) { });
-        GOLD_DOOM_BOOTS = item("gold_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.GOLD) { });
-        TWENTY_FIVE_DOOM_HELMET = item("twenty_five_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.TWENTYFIVE) { });
-        TWENTY_FIVE_DOOM_CHESTPLATE = item("twenty_five_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.TWENTYFIVE) { });
-        TWENTY_FIVE_DOOM_LEGGINGS = item("twenty_five_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.TWENTYFIVE) { });
-        TWENTY_FIVE_DOOM_BOOTS = item("twenty_five_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.TWENTYFIVE) { });
-        BRONZE_DOOM_HELMET = item("bronze_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.BRONZE) { });
-        BRONZE_DOOM_CHESTPLATE = item("bronze_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.BRONZE) { });
-        BRONZE_DOOM_LEGGINGS = item("bronze_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.BRONZE) { });
-        BRONZE_DOOM_BOOTS = item("bronze_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.BRONZE) { });
-        CULTIST_DOOM_HELMET = item("cultist_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.CULTIST) { });
-        CULTIST_DOOM_CHESTPLATE = item("cultist_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.CULTIST) { });
-        CULTIST_DOOM_LEGGINGS = item("cultist_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.CULTIST) { });
-        CULTIST_DOOM_BOOTS = item("cultist_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.CULTIST) { });
-        MAYKR_DOOM_HELMET = item("maykr_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.MAYKR) { });
-        MAYKR_DOOM_CHESTPLATE = item("maykr_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.MAYKR) { });
-        MAYKR_DOOM_LEGGINGS = item("maykr_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.MAYKR) { });
-        MAYKR_DOOM_BOOTS = item("maykr_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.MAYKR) { });
-        PAINTER_DOOM_HELMET = item("painter_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.PAINTER) { });
-        PAINTER_DOOM_CHESTPLATE = item("painter_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.PAINTER) { });
-        CLASSIC_DOOM_HELMET = item("classic_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.CLASSIC_GREEN) { });
-        CLASSIC_DOOM_CHESTPLATE = item("classic_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.CLASSIC_GREEN) { });
-        CLASSIC_DOOM_LEGGINGS = item("classic_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.CLASSIC_GREEN) { });
-        CLASSIC_RED_DOOM_CHESTPLATE = item("classic_red_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.CLASSIC_RED) { });
-        CLASSIC_RED_DOOM_LEGGINGS = item("classic_red_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.CLASSIC_RED) { });
-        CLASSIC_INDIGO_DOOM_CHESTPLATE = item("classic_black_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.CLASSIC_INDIGO) { });
-        CLASSIC_INDIGO_DOOM_LEGGINGS = item("classic_black_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.CLASSIC_INDIGO) { });
-        CLASSIC_BRONZE_DOOM_CHESTPLATE = item("classic_bronze_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.CLASSIC_BRONZE) { });
-        CLASSIC_BRONZE_DOOM_LEGGINGS = item("classic_bronze_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.CLASSIC_BRONZE) { });
-        CLASSIC_DOOM_BOOTS = item("classic_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.CLASSIC_GREEN) { });
-        MULLET_DOOM_HELMET1 = item("redneck_doom1_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.MULLET1) { });
-        MULLET_DOOM_CHESTPLATE1 = item("redneck_doom1_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.MULLET1) { });
-        MULLET_DOOM_CHESTPLATE2 = item("redneck_doom2_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.MULLET2) { });
-        MULLET_DOOM_CHESTPLATE3 = item("redneck_doom3_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.MULLET3) { });
-        MULLET_DOOM_LEGGINGS1 = item("redneck_doom1_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.MULLET1) { });
-        MULLET_DOOM_BOOTS1 = item("redneck_doom1_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.MULLET1) { });
-        HOTROD_HELMET = item("hotrod_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.HOTROD) { });
-        HOTROD_CHESTPLATE = item("hotrod_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.HOTROD) { });
-        HOTROD_LEGGINGS = item("hotrod_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.HOTROD) { });
-        HOTROD_BOOTS = item("hotrod_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.HOTROD) { });
-        SANTA_HELMET = item("santa_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.SANTA) { });
-        DARKLORD_HELMET = item("darklord_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.DARK_LORD) { });
-        DARKLORD_CHESTPLATE = item("darklord_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.DARK_LORD) { });
-        DARKLORD_LEGGINGS = item("darklord_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.DARK_LORD) { });
-        DARKLORD_BOOTS = item("darklord_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.DARK_LORD) { });
+        DOOM_HELMET = item("doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.DOOM) {
+        });
+        DOOM_CHESTPLATE = item("doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.DOOM) {
+        });
+        DOOM_LEGGINGS = item("doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.DOOM) {
+        });
+        DOOM_BOOTS = item("doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.DOOM) {
+        });
+        PRAETOR_DOOM_HELMET = item("praetor_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.PRAETOR) {
+        });
+        PRAETOR_DOOM_CHESTPLATE = item("praetor_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.PRAETOR) {
+        });
+        PRAETOR_DOOM_LEGGINGS = item("praetor_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.PRAETOR) {
+        });
+        PRAETOR_DOOM_BOOTS = item("praetor_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.PRAETOR) {
+        });
+        ASTRO_DOOM_HELMET = item("astro_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.ASTRO) {
+        });
+        ASTRO_DOOM_CHESTPLATE = item("astro_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.ASTRO) {
+        });
+        ASTRO_DOOM_LEGGINGS = item("astro_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.ASTRO) {
+        });
+        ASTRO_DOOM_BOOTS = item("astro_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.ASTRO) {
+        });
+        CRIMSON_DOOM_HELMET = item("crimson_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.CRIMSON) {
+        });
+        CRIMSON_DOOM_CHESTPLATE = item("crimson_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.CRIMSON) {
+        });
+        CRIMSON_DOOM_LEGGINGS = item("crimson_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.CRIMSON) {
+        });
+        CRIMSON_DOOM_BOOTS = item("crimson_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.CRIMSON) {
+        });
+        MIDNIGHT_DOOM_HELMET = item("midnight_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.MIDNIGHT) {
+        });
+        MIDNIGHT_DOOM_CHESTPLATE = item("midnight_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.MIDNIGHT) {
+        });
+        MIDNIGHT_DOOM_LEGGINGS = item("midnight_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.MIDNIGHT) {
+        });
+        MIDNIGHT_DOOM_BOOTS = item("midnight_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.MIDNIGHT) {
+        });
+        DEMONIC_DOOM_HELMET = item("demonic_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.DEMONIC) {
+        });
+        DEMONIC_DOOM_CHESTPLATE = item("demonic_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.DEMONIC) {
+        });
+        DEMONIC_DOOM_LEGGINGS = item("demonic_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.DEMONIC) {
+        });
+        DEMONIC_DOOM_BOOTS = item("demonic_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.DEMONIC) {
+        });
+        DEMONCIDE_DOOM_HELMET = item("demoncide_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.DEMONCIDE) {
+        });
+        DEMONCIDE_DOOM_CHESTPLATE = item("demoncide_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.DEMONCIDE) {
+        });
+        DEMONCIDE_DOOM_LEGGINGS = item("demoncide_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.DEMONCIDE) {
+        });
+        DEMONCIDE_DOOM_BOOTS = item("demoncide_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.DEMONCIDE) {
+        });
+        SENTINEL_DOOM_HELMET = item("sentinel_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.SENTINEL) {
+        });
+        SENTINEL_DOOM_CHESTPLATE = item("sentinel_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.SENTINEL) {
+        });
+        SENTINEL_DOOM_LEGGINGS = item("sentinel_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.SENTINEL) {
+        });
+        SENTINEL_DOOM_BOOTS = item("sentinel_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.SENTINEL) {
+        });
+        EMBER_DOOM_HELMET = item("ember_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.EMBER) {
+        });
+        EMBER_DOOM_CHESTPLATE = item("ember_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.EMBER) {
+        });
+        EMBER_DOOM_LEGGINGS = item("ember_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.EMBER) {
+        });
+        EMBER_DOOM_BOOTS = item("ember_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.EMBER) {
+        });
+        ZOMBIE_DOOM_HELMET = item("zombie_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.ZOMBIE) {
+        });
+        ZOMBIE_DOOM_CHESTPLATE = item("zombie_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.ZOMBIE) {
+        });
+        ZOMBIE_DOOM_LEGGINGS = item("zombie_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.ZOMBIE) {
+        });
+        ZOMBIE_DOOM_BOOTS = item("zombie_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.ZOMBIE) {
+        });
+        PHOBOS_DOOM_HELMET = item("phobos_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.PHOBOS) {
+        });
+        PHOBOS_DOOM_CHESTPLATE = item("phobos_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.PHOBOS) {
+        });
+        PHOBOS_DOOM_LEGGINGS = item("phobos_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.PHOBOS) {
+        });
+        PHOBOS_DOOM_BOOTS = item("phobos_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.PHOBOS) {
+        });
+        NIGHTMARE_DOOM_HELMET = item("nightmare_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.NIGHTMARE) {
+        });
+        NIGHTMARE_DOOM_CHESTPLATE = item("nightmare_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.NIGHTMARE) {
+        });
+        NIGHTMARE_DOOM_LEGGINGS = item("nightmare_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.NIGHTMARE) {
+        });
+        NIGHTMARE_DOOM_BOOTS = item("nightmare_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.NIGHTMARE) {
+        });
+        PURPLEPONY_DOOM_HELMET = item("purplepony_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.PURPLE_PONY) {
+        });
+        PURPLEPONY_DOOM_CHESTPLATE = item("purplepony_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.PURPLE_PONY) {
+        });
+        PURPLEPONY_DOOM_LEGGINGS = item("purplepony_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.PURPLE_PONY) {
+        });
+        PURPLEPONY_DOOM_BOOTS = item("purplepony_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.PURPLE_PONY) {
+        });
+        DOOMICORN_DOOM_HELMET = item("doomicorn_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.DOOMICORN) {
+        });
+        DOOMICORN_DOOM_CHESTPLATE = item("doomicorn_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.DOOMICORN) {
+        });
+        DOOMICORN_DOOM_LEGGINGS = item("doomicorn_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.DOOMICORN) {
+        });
+        DOOMICORN_DOOM_BOOTS = item("doomicorn_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.DOOMICORN) {
+        });
+        GOLD_DOOM_HELMET = item("gold_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.GOLD) {
+        });
+        GOLD_DOOM_CHESTPLATE = item("gold_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.GOLD) {
+        });
+        GOLD_DOOM_LEGGINGS = item("gold_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.GOLD) {
+        });
+        GOLD_DOOM_BOOTS = item("gold_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.GOLD) {
+        });
+        TWENTY_FIVE_DOOM_HELMET = item("twenty_five_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.TWENTYFIVE) {
+        });
+        TWENTY_FIVE_DOOM_CHESTPLATE = item("twenty_five_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.TWENTYFIVE) {
+        });
+        TWENTY_FIVE_DOOM_LEGGINGS = item("twenty_five_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.TWENTYFIVE) {
+        });
+        TWENTY_FIVE_DOOM_BOOTS = item("twenty_five_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.TWENTYFIVE) {
+        });
+        BRONZE_DOOM_HELMET = item("bronze_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.BRONZE) {
+        });
+        BRONZE_DOOM_CHESTPLATE = item("bronze_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.BRONZE) {
+        });
+        BRONZE_DOOM_LEGGINGS = item("bronze_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.BRONZE) {
+        });
+        BRONZE_DOOM_BOOTS = item("bronze_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.BRONZE) {
+        });
+        CULTIST_DOOM_HELMET = item("cultist_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.CULTIST) {
+        });
+        CULTIST_DOOM_CHESTPLATE = item("cultist_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.CULTIST) {
+        });
+        CULTIST_DOOM_LEGGINGS = item("cultist_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.CULTIST) {
+        });
+        CULTIST_DOOM_BOOTS = item("cultist_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.CULTIST) {
+        });
+        MAYKR_DOOM_HELMET = item("maykr_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.MAYKR) {
+        });
+        MAYKR_DOOM_CHESTPLATE = item("maykr_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.MAYKR) {
+        });
+        MAYKR_DOOM_LEGGINGS = item("maykr_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.MAYKR) {
+        });
+        MAYKR_DOOM_BOOTS = item("maykr_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.MAYKR) {
+        });
+        PAINTER_DOOM_HELMET = item("painter_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.PAINTER) {
+        });
+        PAINTER_DOOM_CHESTPLATE = item("painter_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.PAINTER) {
+        });
+        CLASSIC_DOOM_HELMET = item("classic_doom_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.CLASSIC_GREEN) {
+        });
+        CLASSIC_DOOM_CHESTPLATE = item("classic_doom_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.CLASSIC_GREEN) {
+        });
+        CLASSIC_DOOM_LEGGINGS = item("classic_doom_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.CLASSIC_GREEN) {
+        });
+        CLASSIC_RED_DOOM_CHESTPLATE = item("classic_red_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.CLASSIC_RED) {
+        });
+        CLASSIC_RED_DOOM_LEGGINGS = item("classic_red_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.CLASSIC_RED) {
+        });
+        CLASSIC_INDIGO_DOOM_CHESTPLATE = item("classic_black_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.CLASSIC_INDIGO) {
+        });
+        CLASSIC_INDIGO_DOOM_LEGGINGS = item("classic_black_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.CLASSIC_INDIGO) {
+        });
+        CLASSIC_BRONZE_DOOM_CHESTPLATE = item("classic_bronze_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.CLASSIC_BRONZE) {
+        });
+        CLASSIC_BRONZE_DOOM_LEGGINGS = item("classic_bronze_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.CLASSIC_BRONZE) {
+        });
+        CLASSIC_DOOM_BOOTS = item("classic_doom_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.CLASSIC_GREEN) {
+        });
+        MULLET_DOOM_HELMET1 = item("redneck_doom1_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.MULLET1) {
+        });
+        MULLET_DOOM_CHESTPLATE1 = item("redneck_doom1_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.MULLET1) {
+        });
+        MULLET_DOOM_CHESTPLATE2 = item("redneck_doom2_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.MULLET2) {
+        });
+        MULLET_DOOM_CHESTPLATE3 = item("redneck_doom3_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.MULLET3) {
+        });
+        MULLET_DOOM_LEGGINGS1 = item("redneck_doom1_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.MULLET1) {
+        });
+        MULLET_DOOM_BOOTS1 = item("redneck_doom1_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.MULLET1) {
+        });
+        HOTROD_HELMET = item("hotrod_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.HOTROD) {
+        });
+        HOTROD_CHESTPLATE = item("hotrod_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.HOTROD) {
+        });
+        HOTROD_LEGGINGS = item("hotrod_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.HOTROD) {
+        });
+        HOTROD_BOOTS = item("hotrod_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.HOTROD) {
+        });
+        SANTA_HELMET = item("santa_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.SANTA) {
+        });
+        DARKLORD_HELMET = item("darklord_helmet", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.HELMET, ArmorTypeEnum.DARK_LORD) {
+        });
+        DARKLORD_CHESTPLATE = item("darklord_chestplate", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.CHESTPLATE, ArmorTypeEnum.DARK_LORD) {
+        });
+        DARKLORD_LEGGINGS = item("darklord_leggings", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.LEGGINGS, ArmorTypeEnum.DARK_LORD) {
+        });
+        DARKLORD_BOOTS = item("darklord_boots", new DoomArmor(DAMat.DOOM_ARMOR, ArmorItem.Type.BOOTS, ArmorTypeEnum.DARK_LORD) {
+        });
     }
 }

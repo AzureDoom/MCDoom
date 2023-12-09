@@ -4,11 +4,13 @@ import mod.azure.doom.MCDoom;
 import mod.azure.doom.NeoForgeMCDoomMod;
 import mod.azure.doom.items.E1M1MusicDisc;
 import mod.azure.doom.items.UnopenedItem;
+import mod.azure.doom.items.ammo.AmmoItem;
 import mod.azure.doom.items.argent.ArgentEnergyItem;
 import mod.azure.doom.items.argent.ArgentPlateItem;
-import mod.azure.doom.items.enums.ArmorTypeEnum;
 import mod.azure.doom.items.armor.DoomArmor;
 import mod.azure.doom.items.blockitems.DoomBlockItem;
+import mod.azure.doom.items.enums.AmmoEnum;
+import mod.azure.doom.items.enums.ArmorTypeEnum;
 import mod.azure.doom.items.enums.DAMat;
 import mod.azure.doom.items.powerup.*;
 import mod.azure.doom.items.tools.*;
@@ -81,14 +83,14 @@ public record NeoDoomItems() {
     public static final RegistryObject<Item> JUMP_PAD = ITEMS.register("jump_pad", () -> new BlockItem(NeoDoomBlocks.JUMP_PAD.get(), new Item.Properties()));
 
     // AMMO
-    public static final RegistryObject<Item> SHOTGUN_SHELLS = ITEMS.register("shotgun_shells", ShellAmmo::new);
-    public static final RegistryObject<Item> ARGENT_BOLT = ITEMS.register("argent_bolt", ArgentBolt::new);
-    public static final RegistryObject<Item> UNMAKRY_BOLT = ITEMS.register("unmaykr_bolt", UnmaykrBolt::new);
-    public static final RegistryObject<Item> ENERGY_CELLS = ITEMS.register("energy_cells", EnergyCell::new);
-    public static final RegistryObject<Item> CHAINGUN_BULLETS = ITEMS.register("chaingunbullets", ChaingunAmmo::new);
-    public static final RegistryObject<ClipAmmo> BULLETS = ITEMS.register("bullets", ClipAmmo::new);
-    public static final RegistryObject<Item> BFG_CELL = ITEMS.register("bfg_cell", BFGCell::new);
-    public static final RegistryObject<Item> ROCKET = ITEMS.register("rocket", Rocket::new);
+    public static final RegistryObject<Item> SHOTGUN_SHELLS = ITEMS.register("shotgun_shells", () -> new AmmoItem(AmmoEnum.SHELL));
+    public static final RegistryObject<Item> ARGENT_BOLT = ITEMS.register("argent_bolt", () -> new AmmoItem(AmmoEnum.ARGENT_BOLT));
+    public static final RegistryObject<Item> UNMAKRY_BOLT = ITEMS.register("unmaykr_bolt", () -> new AmmoItem(AmmoEnum.UNMAYKR_BOLT));
+    public static final RegistryObject<Item> ENERGY_CELLS = ITEMS.register("energy_cells", () -> new AmmoItem(AmmoEnum.ENGERY));
+    public static final RegistryObject<Item> CHAINGUN_BULLETS = ITEMS.register("chaingunbullets", () -> new AmmoItem(AmmoEnum.CHAINGUN));
+    public static final RegistryObject<Item> BULLETS = ITEMS.register("bullets", () -> new AmmoItem(AmmoEnum.CLIP));
+    public static final RegistryObject<Item> BFG_CELL = ITEMS.register("bfg_cell", () -> new AmmoItem(AmmoEnum.BFG_CELL));
+    public static final RegistryObject<Item> ROCKET = ITEMS.register("rocket", () -> new AmmoItem(AmmoEnum.ROCKET));
     public static final RegistryObject<Item> GAS_BARREL = ITEMS.register("gas_barrel", () -> new Item(new Item.Properties()));
 
     // MISC
