@@ -4,6 +4,7 @@ import mod.azure.doom.recipes.GunTableRecipe;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class GunTableOutputSlot extends Slot {
     private final DoomGunInventory gunTableInventory;
@@ -17,19 +18,19 @@ public class GunTableOutputSlot extends Slot {
     }
 
     @Override
-    public boolean mayPlace(ItemStack stack) {
+    public boolean mayPlace(@NotNull ItemStack stack) {
         return false;
     }
 
     @Override
-    public ItemStack remove(int amount) {
+    public @NotNull ItemStack remove(int amount) {
         if (this.hasItem()) this.removeCount += Math.min(amount, this.getItem().getCount());
 
         return super.remove(amount);
     }
 
     @Override
-    protected void onQuickCraft(ItemStack stack, int amount) {
+    protected void onQuickCraft(@NotNull ItemStack stack, int amount) {
         this.removeCount += amount;
         this.checkTakeAchievements(stack);
     }
@@ -41,7 +42,7 @@ public class GunTableOutputSlot extends Slot {
     }
 
     @Override
-    public void onTake(Player player, ItemStack stack) {
+    public void onTake(Player player, @NotNull ItemStack stack) {
         this.checkTakeAchievements(stack);
         var optionalGunTableRecipe = player.level().getRecipeManager().getRecipeFor(GunTableRecipe.Type.INSTANCE, gunTableInventory, player.level());
         if (optionalGunTableRecipe.isPresent()) {

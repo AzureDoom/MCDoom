@@ -4,7 +4,6 @@ import mod.azure.doom.platform.Services;
 import mod.azure.doom.recipes.GunTableRecipe;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -12,9 +11,11 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GunTableScreenHandler extends AbstractContainerMenu {
     protected final Inventory playerInventory;
@@ -55,7 +56,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
         if (!world.isClientSide()) {
             var serverPlayerEntity = (ServerPlayer) player;
             var itemStack = ItemStack.EMPTY;
-            var optional = world.getServer().getRecipeManager().getRecipeFor(GunTableRecipe.Type.INSTANCE, craftingInventory, world);
+            var optional = Objects.requireNonNull(world.getServer()).getRecipeManager().getRecipeFor(GunTableRecipe.Type.INSTANCE, craftingInventory, world);
             if (optional.isPresent()) itemStack = optional.get().assemble(craftingInventory, level.registryAccess());
 
             craftingInventory.setItem(5, itemStack);
@@ -63,34 +64,34 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
         }
     }
 
-    public void onContentChanged(Container inventory) {
+    public void onContentChanged() {
         this.context.execute((world, blockPos) -> updateResult(this.containerId, world, this.playerInventory.player, this.gunTableInventory));
     }
 
     @Override
-    public boolean stillValid(Player player) {
+    public boolean stillValid(@NotNull Player player) {
         return stillValid(context, player, Services.BLOCKS_HELPER.getGunTable());
     }
 
     @Override
-    public boolean canTakeItemForPickAll(ItemStack stack, Slot slot) {
+    public boolean canTakeItemForPickAll(@NotNull ItemStack stack, @NotNull Slot slot) {
         return false;
     }
 
-    public ItemStack quickMoveStack(Player player, int index) {
+    public @NotNull ItemStack quickMoveStack(@NotNull Player player, int index) {
         var itemStack = ItemStack.EMPTY;
         var slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
+        if (slot.hasItem()) {
             var itemStack2 = slot.getItem();
             itemStack = itemStack2.copy();
             if (index == 2) {
                 if (!this.moveItemStackTo(itemStack2, 3, 39, true)) return ItemStack.EMPTY;
                 slot.onQuickCraft(itemStack2, itemStack);
-            } else if (index != 0 && index != 1 && index >= 3 && index < 30)
+            } else if (index >= 3 && index < 30)
                 if (!this.moveItemStackTo(itemStack2, 30, 39, false)) return ItemStack.EMPTY;
-                else if (index >= 30 && index < 39 && !this.moveItemStackTo(itemStack2, 3, 30, false))
-                    return ItemStack.EMPTY;
-                else if (!this.moveItemStackTo(itemStack2, 3, 39, false)) return ItemStack.EMPTY;
+                else {
+                    if (!this.moveItemStackTo(itemStack2, 3, 39, false)) return ItemStack.EMPTY;
+                }
 
             if (itemStack2.isEmpty()) slot.set(ItemStack.EMPTY);
             else slot.setChanged();
@@ -128,8 +129,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
                 var ingredient = gunTableRecipe.getIngredientForSlot(i);
                 if (!ingredient.isEmpty()) {
                     var possibleItems = ingredient.getItems();
-                    if (possibleItems != null)
-                        moveFromInventoryToPaymentSlot(i, new ItemStack(possibleItems[0].getItem(), gunTableRecipe.countRequired(i)));
+                    moveFromInventoryToPaymentSlot(i, new ItemStack(possibleItems[0].getItem(), gunTableRecipe.countRequired(i)));
                 }
             }
         }
@@ -160,7 +160,7 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
     }
 
     @Override
-    public void removed(Player player) {
+    public void removed(@NotNull Player player) {
         super.removed(player);
         if (!this.playerInventory.player.level().isClientSide) {
             if (player.isAlive() && (!(player instanceof ServerPlayer serverPlayer) || !serverPlayer.hasDisconnected())) {

@@ -20,11 +20,11 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.ToIntFunction;
 
@@ -39,8 +39,6 @@ public class GunTableBlock extends Block implements EntityBlock {
     private static final VoxelShape Z_AXIS_AABB = Shapes.or(YBASE1, YBASE2);
     public static final BooleanProperty light = RedstoneTorchBlock.LIT;
 
-    public static final IntegerProperty LIGHT_LEVEL = BlockStateProperties.AGE_15;
-
     public GunTableBlock() {
         super(Properties.of().sound(SoundType.METAL).explosionResistance(30).strength(4.0f).lightLevel(litBlockEmission(15)).noOcclusion());
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.WEST));
@@ -51,17 +49,17 @@ public class GunTableBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
         return Services.ENTITIES_HELPER.getGunTableEntity().create(pos, state);
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) {
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.MODEL;
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public @NotNull InteractionResult use(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         if (!world.isClientSide) {
             var screenHandlerFactory = state.getMenuProvider(world, pos);
             if (screenHandlerFactory != null) player.openMenu(screenHandlerFactory);
@@ -70,12 +68,12 @@ public class GunTableBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public MenuProvider getMenuProvider(BlockState state, Level world, BlockPos pos) {
+    public MenuProvider getMenuProvider(@NotNull BlockState state, Level world, @NotNull BlockPos pos) {
         return (MenuProvider) world.getBlockEntity(pos);
     }
 
     @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
+    public void onRemove(BlockState state, @NotNull Level world, @NotNull BlockPos pos, BlockState newState, boolean moved) {
         if (state.getBlock() != newState.getBlock()) {
             var blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof GunBlockEntity gunBlockEntity) {
@@ -92,7 +90,7 @@ public class GunTableBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public BlockState rotate(BlockState state, Rotation rot) {
+    public @NotNull BlockState rotate(BlockState state, Rotation rot) {
         return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
     }
 
@@ -102,13 +100,13 @@ public class GunTableBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         var direction = state.getValue(FACING);
         return direction.getAxis() == Direction.Axis.X ? X_AXIS_AABB : Z_AXIS_AABB;
     }
 
     @Override
-    public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
+    public boolean canSurvive(BlockState state, @NotNull LevelReader world, @NotNull BlockPos pos) {
         var direction = state.getValue(FACING);
         return direction.getAxis() == Direction.Axis.X ? world.getBlockState(pos.south()).isAir() && world.getBlockState(pos.north()).isAir() : world.getBlockState(pos.east()).isAir() && world.getBlockState(pos.west()).isAir();
     }

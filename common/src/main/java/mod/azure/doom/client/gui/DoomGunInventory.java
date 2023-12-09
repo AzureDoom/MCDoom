@@ -5,6 +5,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class DoomGunInventory implements Container {
     private final GunTableScreenHandler container;
@@ -29,30 +30,30 @@ public class DoomGunInventory implements Container {
     }
 
     @Override
-    public ItemStack getItem(int slot) {
+    public @NotNull ItemStack getItem(int slot) {
         return this.stacks.get(slot);
     }
 
     @Override
-    public ItemStack removeItem(int slot, int amount) {
+    public @NotNull ItemStack removeItem(int slot, int amount) {
         var itemStack = ContainerHelper.removeItem(this.stacks, slot, amount);
-        if (!itemStack.isEmpty() && slot != 5) this.container.onContentChanged(this);
+        if (!itemStack.isEmpty() && slot != 5) this.container.onContentChanged();
         return itemStack;
     }
 
     @Override
-    public ItemStack removeItemNoUpdate(int slot) {
+    public @NotNull ItemStack removeItemNoUpdate(int slot) {
         return ContainerHelper.takeItem(this.stacks, slot);
     }
 
     @Override
-    public void setItem(int slot, ItemStack stack) {
+    public void setItem(int slot, @NotNull ItemStack stack) {
         this.stacks.set(slot, stack);
-        if (slot != 5) container.onContentChanged(this);
+        if (slot != 5) container.onContentChanged();
     }
 
     @Override
-    public boolean stillValid(Player player) {
+    public boolean stillValid(@NotNull Player player) {
         return true;
     }
 

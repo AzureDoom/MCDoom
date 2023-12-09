@@ -21,6 +21,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class GunBlockEntity extends BlockEntity implements ImplementedInventory, MenuProvider, GeoBlockEntity {
 
@@ -42,13 +43,13 @@ public class GunBlockEntity extends BlockEntity implements ImplementedInventory,
     }
 
     @Override
-    public void load(CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         ContainerHelper.loadAllItems(nbt, items);
     }
 
     @Override
-    public void saveAdditional(CompoundTag nbt) {
+    public void saveAdditional(@NotNull CompoundTag nbt) {
         super.saveAdditional(nbt);
         ContainerHelper.saveAllItems(nbt, items);
     }
@@ -59,12 +60,12 @@ public class GunBlockEntity extends BlockEntity implements ImplementedInventory,
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return Component.translatable("block.doom.gun_table");
     }
 
     @Override
-    public AbstractContainerMenu createMenu(int syncId, Inventory inventory, Player player) {
+    public AbstractContainerMenu createMenu(int syncId, @NotNull Inventory inventory, @NotNull Player player) {
         return new GunTableScreenHandler(syncId, inventory, ContainerLevelAccess.create(level, worldPosition));
     }
 }

@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.ToIntFunction;
 
@@ -25,12 +26,12 @@ public class JumppadBlock extends Block {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return Shapes.box(0.00f, 0.0f, 0.00f, 1.0f, 0.2f, 1.0f);
     }
 
     @Override
-    public void updateEntityAfterFallOn(BlockGetter worldIn, Entity entityIn) {
+    public void updateEntityAfterFallOn(@NotNull BlockGetter worldIn, @NotNull Entity entityIn) {
         this.jumpEntity(entityIn);
     }
 
@@ -40,7 +41,7 @@ public class JumppadBlock extends Block {
     }
 
     @Override
-    public void stepOn(Level worldIn, BlockPos pos, BlockState state, Entity entityIn) {
+    public void stepOn(@NotNull Level worldIn, @NotNull BlockPos pos, @NotNull BlockState state, Entity entityIn) {
         var d0 = Math.abs(entityIn.getDeltaMovement().y);
         var d1 = 1.4D + d0 * 0.2D;
         entityIn.setDeltaMovement(entityIn.getDeltaMovement().multiply(d1, 1.0D, 0.5D));

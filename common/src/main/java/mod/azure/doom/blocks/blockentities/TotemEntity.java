@@ -39,7 +39,7 @@ public class TotemEntity extends BlockEntity implements GeoBlockEntity {
     }
 
     public static void tick(Level world, BlockPos pos, BlockState state, TotemEntity blockEntity) {
-        if (blockEntity.level.getGameTime() % 80L == 0L)
+        if (blockEntity.level != null && blockEntity.level.getGameTime() % 80L == 0L)
             blockEntity.applyEffects();
         if (world != null && world.isClientSide()) {
             final double x = pos.getX() + 1.0D * (blockEntity.random.nextDouble() - 0.25D) * 2.0D;
@@ -57,6 +57,7 @@ public class TotemEntity extends BlockEntity implements GeoBlockEntity {
     }
 
     private void applyEffects() {
+        assert level != null;
         if (!level.isClientSide) {
             final var axisalignedbb = new AABB(worldPosition).inflate(40).expandTowards(0.0D, level.getMaxBuildHeight(), 0.0D);
             final var list = level.getEntitiesOfClass(DemonEntity.class, axisalignedbb);
@@ -69,6 +70,7 @@ public class TotemEntity extends BlockEntity implements GeoBlockEntity {
     }
 
     private void removeEffects() {
+        assert level != null;
         if (!level.isClientSide) {
             final var axisalignedbb = new AABB(worldPosition).inflate(40).expandTowards(0.0D, level.getMaxBuildHeight(), 0.0D);
             final var list = level.getEntitiesOfClass(DemonEntity.class, axisalignedbb);

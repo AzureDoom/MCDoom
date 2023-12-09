@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Items;
@@ -22,7 +21,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public class BarrelBlock extends Block {
     public static final DirectionProperty direction = HorizontalDirectionalBlock.FACING;
@@ -30,51 +29,50 @@ public class BarrelBlock extends Block {
 
     public BarrelBlock() {
         super(Properties.of().sound(SoundType.METAL).instabreak().noOcclusion());
-        this.registerDefaultState(this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.valueOf(true)));
+        this.registerDefaultState(this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.TRUE));
     }
 
     @Override
-    public boolean dropFromExplosion(Explosion explosionIn) {
+    public boolean dropFromExplosion(@NotNull Explosion explosionIn) {
         return false;
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        explode(worldIn, pos, null);
+    public void neighborChanged(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Block blockIn, @NotNull BlockPos fromPos, boolean isMoving) {
+        explode(worldIn, pos);
         worldIn.removeBlock(pos, false);
     }
 
     @Override
-    public void wasExploded(Level worldIn, BlockPos pos, Explosion explosionIn) {
+    public void wasExploded(Level worldIn, @NotNull BlockPos pos, @NotNull Explosion explosionIn) {
         if (!worldIn.isClientSide) {
-            var tntentity = new BarrelEntity(worldIn, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, explosionIn.getIndirectSourceEntity());
+            var tntentity = new BarrelEntity(worldIn, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
             worldIn.addFreshEntity(tntentity);
         }
     }
 
-    private static void explode(Level level, BlockPos blockPos, @Nullable LivingEntity livingEntity) {
+    private static void explode(Level level, BlockPos blockPos) {
         if (level.isClientSide) return;
-        var primedTnt = new BarrelEntity(level, blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5, livingEntity);
+        var primedTnt = new BarrelEntity(level, blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
         level.addFreshEntity(primedTnt);
     }
 
     @Override
-    public void playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
-        if (!worldIn.isClientSide() && !player.isCreative()) explode(worldIn, pos, null);
+    public void playerWillDestroy(Level worldIn, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player) {
+        if (!worldIn.isClientSide() && !player.isCreative()) explode(worldIn, pos);
 
         super.playerWillDestroy(worldIn, pos, state, player);
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, Player player, @NotNull InteractionHand handIn, @NotNull BlockHitResult hit) {
         var itemstack = player.getItemInHand(handIn);
-        var item = itemstack.getItem();
-        if (item != Items.FLINT_AND_STEEL && item != Items.FIRE_CHARGE)
+        if (!itemstack.is(Items.FLINT_AND_STEEL) && !itemstack.is(Items.FIRE_CHARGE))
             return super.use(state, worldIn, pos, player, handIn, hit);
         else {
-            explode(worldIn, pos, player);
+            explode(worldIn, pos);
             worldIn.setBlock(pos, Blocks.AIR.defaultBlockState(), 11);
-            if (!player.isCreative()) if (item == Items.FLINT_AND_STEEL)
+            if (!player.isCreative() && !itemstack.is(Items.FLINT_AND_STEEL))
                 itemstack.hurtAndBreak(1, player, player1 -> player1.broadcastBreakEvent(handIn));
             else itemstack.shrink(1);
 
@@ -83,11 +81,10 @@ public class BarrelBlock extends Block {
     }
 
     @Override
-    public void onProjectileHit(Level level, BlockState blockState, BlockHitResult blockHitResult, Projectile projectile) {
+    public void onProjectileHit(Level level, @NotNull BlockState blockState, @NotNull BlockHitResult blockHitResult, @NotNull Projectile projectile) {
         if (!level.isClientSide) {
             var blockPos = blockHitResult.getBlockPos();
-            var entity = projectile.getOwner();
-            explode(level, blockPos, entity instanceof LivingEntity livingEntity ? livingEntity : null);
+            explode(level, blockPos);
             level.removeBlock(blockPos, false);
         }
     }
@@ -98,12 +95,12 @@ public class BarrelBlock extends Block {
     }
 
     @Override
-    public BlockState rotate(BlockState state, Rotation rot) {
+    public @NotNull BlockState rotate(BlockState state, Rotation rot) {
         return state.setValue(direction, rot.rotate(state.getValue(direction)));
     }
 
     @Override
-    public BlockState mirror(BlockState state, Mirror mirrorIn) {
+    public @NotNull BlockState mirror(BlockState state, Mirror mirrorIn) {
         return state.rotate(mirrorIn.getRotation(state.getValue(direction)));
     }
 
@@ -113,7 +110,7 @@ public class BarrelBlock extends Block {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return Shapes.box(0.06f, 0f, 0.06f, 0.94f, 1.0f, 0.94f);
     }
 

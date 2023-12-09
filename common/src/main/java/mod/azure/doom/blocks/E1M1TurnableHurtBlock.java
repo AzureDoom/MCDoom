@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.ToIntFunction;
 
@@ -22,11 +22,9 @@ public class E1M1TurnableHurtBlock extends Block {
     public static final DirectionProperty direction = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty light = RedstoneTorchBlock.LIT;
 
-    public static final IntegerProperty LIGHT_LEVEL = BlockStateProperties.AGE_15;
-
     public E1M1TurnableHurtBlock() {
         super(Properties.of().sound(SoundType.METAL).lightLevel(litBlockEmission(15)));
-        this.registerDefaultState(this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.valueOf(true)));
+        this.registerDefaultState(this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.TRUE));
     }
 
     private static ToIntFunction<BlockState> litBlockEmission(int lightLevel) {
@@ -39,12 +37,12 @@ public class E1M1TurnableHurtBlock extends Block {
     }
 
     @Override
-    public BlockState rotate(BlockState state, Rotation rot) {
+    public @NotNull BlockState rotate(BlockState state, Rotation rot) {
         return state.setValue(direction, rot.rotate(state.getValue(direction)));
     }
 
     @Override
-    public BlockState mirror(BlockState state, Mirror mirrorIn) {
+    public @NotNull BlockState mirror(BlockState state, Mirror mirrorIn) {
         return state.rotate(mirrorIn.getRotation(state.getValue(direction)));
     }
 
@@ -54,7 +52,7 @@ public class E1M1TurnableHurtBlock extends Block {
     }
 
     @Override
-    public void stepOn(Level worldIn, BlockPos pos, BlockState state, Entity entityIn) {
+    public void stepOn(@NotNull Level worldIn, @NotNull BlockPos pos, @NotNull BlockState state, Entity entityIn) {
         if (!entityIn.fireImmune() && entityIn instanceof LivingEntity livingEntity && !EnchantmentHelper.hasFrostWalker(livingEntity))
             entityIn.hurt(entityIn.damageSources().hotFloor(), 1.0F);
         super.stepOn(worldIn, pos, state, entityIn);

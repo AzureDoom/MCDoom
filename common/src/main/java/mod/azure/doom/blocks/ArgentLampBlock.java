@@ -6,13 +6,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.ToIntFunction;
 
 public class ArgentLampBlock extends Block {
-
-    public static final IntegerProperty LIGHT_LEVEL = BlockStateProperties.AGE_15;
 
     public ArgentLampBlock() {
         super(Properties.of().sound(SoundType.BONE_BLOCK).lightLevel(litBlockEmission(15)));
@@ -23,7 +21,7 @@ public class ArgentLampBlock extends Block {
     }
 
     @Override
-    public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
+    public int getLightBlock(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
         return 15;
     }
 

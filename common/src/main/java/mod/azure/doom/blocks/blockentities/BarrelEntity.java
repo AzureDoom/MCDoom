@@ -7,12 +7,10 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class BarrelEntity extends Entity {
-
-    private LivingEntity causingEntity;
 
     public BarrelEntity(EntityType<? extends BarrelEntity> entityType, Level world) {
         super(entityType, world);
@@ -23,7 +21,7 @@ public class BarrelEntity extends Entity {
         level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 4.0F, true, Level.ExplosionInteraction.NONE);
     }
 
-    public BarrelEntity(Level worldIn, double x, double y, double z, LivingEntity igniter) {
+    public BarrelEntity(Level worldIn, double x, double y, double z) {
         this(Services.ENTITIES_HELPER.getBarrelEntity(), worldIn);
         this.absMoveTo(x, y, z);
         final var d = level().random.nextDouble() * 6.2831854820251465D;
@@ -31,11 +29,6 @@ public class BarrelEntity extends Entity {
         xo = x;
         yo = y;
         zo = z;
-        causingEntity = igniter;
-    }
-
-    public LivingEntity getCausingEntity() {
-        return causingEntity;
     }
 
     @Override
@@ -45,7 +38,7 @@ public class BarrelEntity extends Entity {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return new ClientboundAddEntityPacket(this);
     }
 
@@ -55,11 +48,11 @@ public class BarrelEntity extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag nbt) {
+    protected void readAdditionalSaveData(@NotNull CompoundTag nbt) {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag nbt) {
+    protected void addAdditionalSaveData(@NotNull CompoundTag nbt) {
     }
 
     @Override

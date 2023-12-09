@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -88,7 +89,7 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
     }
 
     @Override
-    public void render(GuiGraphics matrices, int mouseX, int mouseY, float delta) {
+    public void render(@NotNull GuiGraphics matrices, int mouseX, int mouseY, float delta) {
         this.renderBackground(matrices);
         super.render(matrices, mouseX, mouseY, delta);
         List<GunTableRecipe> tradeOfferList = this.menu.getRecipes();
@@ -111,7 +112,7 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
                         int n = yPos + 2;
                         this.renderIngredients(matrices, gunTableRecipe, xPos, n);
 
-                        this.renderArrow(matrices, gunTableRecipe, i + 22, n);
+                        this.renderArrow();
                         matrices.renderFakeItem(output, i + 24 + 68, n);
                         matrices.renderItemDecorations(this.font, output, i + 24 + 68, n);
                         yPos += 20;
@@ -134,7 +135,7 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
         this.renderTooltip(matrices, mouseX, mouseY);
     }
 
-    private void renderArrow(GuiGraphics matrices, GunTableRecipe tradeOffer, int x, int y) {
+    private void renderArrow() {
         RenderSystem.enableBlend();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, TEXTURE);
@@ -214,17 +215,8 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 
         public void renderToolTip(GuiGraphics matrices, int mouseX, int mouseY) {
             if (this.isHovered && menu.getRecipes().size() > this.index + indexStartOffset) {
-                ItemStack stack;
-                if (mouseX < this.getX() + 20) {
-                    stack = menu.getRecipes().get(this.index + indexStartOffset).output;
-                    renderTooltip(matrices, mouseX, mouseY);
-                } else if (mouseX < this.getX() + 50 && mouseX > this.getX() + 30) {
-                    stack = menu.getRecipes().get(this.index + indexStartOffset).output;
-                    if (!stack.isEmpty()) {
-                        renderTooltip(matrices, mouseX, mouseY);
-                    }
-                } else if (mouseX > this.getX() + 65) {
-                    stack = menu.getRecipes().get(this.index + indexStartOffset).output;
+                ItemStack stack = menu.getRecipes().get(this.index + indexStartOffset).output;
+                if ((mouseX < this.getX() + 20) || (mouseX > this.getX() + 65) || mouseX < this.getX() + 50 && mouseX > this.getX() + 30 && (!stack.isEmpty())) {
                     renderTooltip(matrices, mouseX, mouseY);
                 }
             }
