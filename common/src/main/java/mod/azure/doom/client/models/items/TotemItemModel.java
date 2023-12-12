@@ -2,22 +2,22 @@ package mod.azure.doom.client.models.items;
 
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.doom.MCDoom;
-import mod.azure.doom.items.blockitems.TotemBlockItem;
+import mod.azure.doom.items.blockitems.DoomBlockItem;
 import net.minecraft.resources.ResourceLocation;
 
-public class TotemItemModel extends GeoModel<TotemBlockItem> {
+public class TotemItemModel extends GeoModel<DoomBlockItem> {
     @Override
-    public ResourceLocation getAnimationResource(TotemBlockItem entity) {
+    public ResourceLocation getAnimationResource(DoomBlockItem entity) {
         return MCDoom.modResource("animations/totem.animation.json");
     }
 
     @Override
-    public ResourceLocation getModelResource(TotemBlockItem animatable) {
+    public ResourceLocation getModelResource(DoomBlockItem animatable) {
         return MCDoom.modResource("geo/totem.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(TotemBlockItem entity) {
+    public ResourceLocation getTextureResource(DoomBlockItem entity) {
         return MCDoom.modResource("textures/block/totem.png");
     }
 }

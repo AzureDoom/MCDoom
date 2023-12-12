@@ -1,6 +1,5 @@
 package mod.azure.doom.entities.tierboss;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.object.PlayState;
@@ -11,31 +10,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
-import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
-import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
-import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.StrafeTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
-import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
-
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
 
@@ -51,16 +30,17 @@ public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
                 return event.setAndContinue(DoomAnimationsDefault.WALKING);
             return event.setAndContinue(isDead ? DoomAnimationsDefault.DEATH : DoomAnimationsDefault.IDLE);
         }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("walk"))
-                if (level().isClientSide())
-                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), mod.azure.doom.platform.Services.SOUNDS_HELPER.getSPIDERDEMON_AMBIENT(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
-        })).add(new AnimationController<>(this, "attackController", 0, event -> {
-            return PlayState.STOP;
-        }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("attack"))
-                if (level().isClientSide())
-                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), mod.azure.doom.platform.Services.SOUNDS_HELPER.getPLASMA_FIRING(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
-        }).triggerableAnim("ranged", DoomAnimationsDefault.ATTACKING));
+            if (event.getKeyframeData().getSound().matches("walk") && (level().isClientSide()))
+                level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                        mod.azure.doom.platform.Services.SOUNDS_HELPER.getSPIDERDEMON_AMBIENT(), SoundSource.HOSTILE,
+                        0.25F, 1.0F, false);
+        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).setSoundKeyframeHandler(
+                event -> {
+                    if (event.getKeyframeData().getSound().matches("attack") && (level().isClientSide()))
+                        level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                                mod.azure.doom.platform.Services.SOUNDS_HELPER.getPLASMA_FIRING(), SoundSource.HOSTILE,
+                                0.25F, 1.0F, false);
+                }).triggerableAnim("ranged", DoomAnimationsDefault.ATTACKING));
     }
 
     @Override
@@ -70,32 +50,15 @@ public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
     }
 
     @Override
-    protected Brain.Provider<?> brainProvider() {
-        return new SmartBrainProvider<>(this);
-    }
-
-    @Override
-    public List<ExtendedSensor<SpiderMastermindEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyLivingEntitySensor<SpiderMastermindEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<SpiderMastermindEntity>());
-    }
-
-    @Override
-    public BrainActivityGroup<SpiderMastermindEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new StrafeTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
-    }
-
-    @Override
-    public BrainActivityGroup<SpiderMastermindEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<SpiderMastermindEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player player && player.isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
-    }
-
-    @Override
     public BrainActivityGroup<SpiderMastermindEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 40));
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
+                        (target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F),
+                new DemonProjectileAttack<>(7).attackInterval(mob -> 40));
     }
 
     @Override
-    protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
+    protected float getStandingEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions dimensions) {
         return 2.5F;
     }
 }

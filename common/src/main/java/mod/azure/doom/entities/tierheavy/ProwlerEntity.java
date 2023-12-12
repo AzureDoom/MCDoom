@@ -52,13 +52,15 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.SplittableRandom;
 
 public class ProwlerEntity extends DemonEntity implements SmartBrainOwner<ProwlerEntity> {
 
-    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(ProwlerEntity.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(ProwlerEntity.class,
+            EntityDataSerializers.INT);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     private int targetChangeTime;
 
@@ -66,8 +68,11 @@ public class ProwlerEntity extends DemonEntity implements SmartBrainOwner<Prowle
         super(entityType, worldIn);
     }
 
-    public static AttributeSupplier.Builder createMobAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, MCDoom.config.prowler_health).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.ATTACK_DAMAGE, MCDoom.config.prowler_melee_damage).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+    public static AttributeSupplier.@NotNull Builder createMobAttributes() {
+        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH,
+                MCDoom.config.prowler_health).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.ATTACK_DAMAGE,
+                MCDoom.config.prowler_melee_damage).add(Attributes.MOVEMENT_SPEED, 0.25D).add(
+                Attributes.ATTACK_KNOCKBACK, 0.0D);
     }
 
     @Override
@@ -78,9 +83,8 @@ public class ProwlerEntity extends DemonEntity implements SmartBrainOwner<Prowle
             if (dead || getHealth() < 0.01 || isDeadOrDying())
                 return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        })).add(new AnimationController<>(this, "attackController", 0, event -> {
-            return PlayState.STOP;
-        }).triggerableAnim("ranged", DoomAnimationsDefault.ATTACK).triggerableAnim("melee", DoomAnimationsDefault.MELEE));
+        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
+                "ranged", DoomAnimationsDefault.ATTACK).triggerableAnim("melee", DoomAnimationsDefault.MELEE));
     }
 
     @Override
@@ -98,28 +102,42 @@ public class ProwlerEntity extends DemonEntity implements SmartBrainOwner<Prowle
     }
 
     @Override
-    protected Brain.Provider<?> brainProvider() {
+    protected Brain.@NotNull Provider<?> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
 
     @Override
     public List<ExtendedSensor<ProwlerEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyLivingEntitySensor<ProwlerEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<ProwlerEntity>());
+        return ObjectArrayList.of(new NearbyLivingEntitySensor<ProwlerEntity>().setPredicate(
+                        (target, entity) -> target.isAlive() && entity.hasLineOfSight(
+                                target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
+                new UnreachableTargetSensor<ProwlerEntity>());
     }
 
     @Override
     public BrainActivityGroup<ProwlerEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new StrafeTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
+        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300),
+                new FloatToSurfaceOfFluid<>(), new StrafeTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
     }
 
     @Override
     public BrainActivityGroup<ProwlerEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<ProwlerEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player player && player.isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<ProwlerEntity>(
+                        new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()),
+                        new SetPlayerLookTarget<>().stopIf(
+                                target -> !target.isAlive() || target instanceof Player player && player.isCreative()),
+                        new SetRandomLookTarget<>()),
+                new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f),
+                        new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
     }
 
     @Override
     public BrainActivityGroup<ProwlerEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F), new DemonProjectileAttack<>(7).attackDamage(MCDoom.config.prowler_ranged_damage).attackInterval(mob -> 80), new DemonMeleeAttack<>(5));
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
+                        (target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F),
+                new DemonProjectileAttack<>(7).attackDamage(MCDoom.config.prowler_ranged_damage).attackInterval(
+                        mob -> 80), new DemonMeleeAttack<>(5));
     }
 
     @Override
@@ -127,10 +145,14 @@ public class ProwlerEntity extends DemonEntity implements SmartBrainOwner<Prowle
         if (level().isClientSide) {
             if (getVariant() == 1)
                 for (var i = 0; i < 2; ++i)
-                    level().addParticle(ParticleTypes.PORTAL, getRandomX(0.5D), getRandomY() - 0.25D, getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), (random.nextDouble() - 0.5D) * 2.0D);
+                    level().addParticle(ParticleTypes.PORTAL, getRandomX(0.5D), getRandomY() - 0.25D, getRandomZ(0.5D),
+                            (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(),
+                            (random.nextDouble() - 0.5D) * 2.0D);
             else
                 for (var i = 0; i < 2; ++i)
-                    level().addParticle(ParticleTypes.COMPOSTER, getRandomX(0.5D), getRandomY() - 0.25D, getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), (random.nextDouble() - 0.5D) * 2.0D);
+                    level().addParticle(ParticleTypes.COMPOSTER, getRandomX(0.5D), getRandomY() - 0.25D,
+                            getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(),
+                            (random.nextDouble() - 0.5D) * 2.0D);
         }
         jumping = false;
         if (!level().isClientSide)
@@ -154,7 +176,8 @@ public class ProwlerEntity extends DemonEntity implements SmartBrainOwner<Prowle
 
     public boolean teleport() {
         if (!level().isClientSide() && isAlive())
-            return this.teleport(this.getX() + (random.nextDouble() - 0.5D) * 16.0D, this.getY() + (random.nextInt(64) - 16), this.getZ() + (random.nextDouble() - 0.5D) * 16.0D);
+            return this.teleport(this.getX() + (random.nextDouble() - 0.5D) * 16.0D,
+                    this.getY() + (random.nextInt(64) - 16), this.getZ() + (random.nextDouble() - 0.5D) * 16.0D);
         else
             return false;
     }
@@ -162,7 +185,8 @@ public class ProwlerEntity extends DemonEntity implements SmartBrainOwner<Prowle
     private boolean teleport(double x, double y, double z) {
         final var blockpos$mutableblockpos = new BlockPos.MutableBlockPos(x, y, z);
 
-        while (blockpos$mutableblockpos.getY() > level().getMinBuildHeight() && !level().getBlockState(blockpos$mutableblockpos).blocksMotion())
+        while (blockpos$mutableblockpos.getY() > level().getMinBuildHeight() && !level().getBlockState(
+                blockpos$mutableblockpos).blocksMotion())
             blockpos$mutableblockpos.move(Direction.DOWN);
 
         final var blockstate = level().getBlockState(blockpos$mutableblockpos);
@@ -184,13 +208,13 @@ public class ProwlerEntity extends DemonEntity implements SmartBrainOwner<Prowle
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
+    public void readAdditionalSaveData(@NotNull CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         setVariant(tag.getInt("Variant"));
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
+    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putInt("Variant", getVariant());
     }
@@ -208,7 +232,7 @@ public class ProwlerEntity extends DemonEntity implements SmartBrainOwner<Prowle
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
         spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
         final SplittableRandom random = new SplittableRandom();
         final int var = random.nextInt(0, 3);

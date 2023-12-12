@@ -16,12 +16,14 @@ public class PinkyModel extends GeoModel<PinkyEntity> {
 
     @Override
     public ResourceLocation getTextureResource(PinkyEntity object) {
-        return MCDoom.modResource("textures/entity/" + (object.getVariant() == 4 ? "pinky_green" : object.getVariant() == 2 ? "pinky-64" : object.getVariant() == 3 ? "pinky2016" : "pinky-texturemap") + ".png");
+        return MCDoom.modResource(
+                "textures/entity/" + (object.getVariant() == 4 ? "pinky_green" : object.getVariant() == 2 ? "pinky-64" : object.getVariant() == 3 ? "pinky2016" : "pinky-texturemap") + ".png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(PinkyEntity object) {
-        return new ResourceLocation(MCDoom.MOD_ID, "animations/" + (object.getVariant() == 3 ? "pinky2016." : "pinky_") + "animation.json");
+        return new ResourceLocation(MCDoom.MOD_ID,
+                "animations/" + (object.getVariant() == 3 ? "pinky2016." : "pinky_") + "animation.json");
     }
 
     @Override

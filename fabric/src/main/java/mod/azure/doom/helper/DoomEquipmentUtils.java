@@ -63,7 +63,8 @@ public class DoomEquipmentUtils {
         for (final var encodedEnchant : encodedEnchants.split(",")) {
             final var enchantItem = encodedEnchant.split(">");
             final var enchantKey = enchantItem[0].split(":");
-            enchants.put(BuiltInRegistries.ENCHANTMENT.get(new ResourceLocation(enchantKey[0], enchantKey[1])), Integer.parseInt(enchantItem[1]));
+            enchants.put(BuiltInRegistries.ENCHANTMENT.get(new ResourceLocation(enchantKey[0], enchantKey[1])),
+                    Integer.parseInt(enchantItem[1]));
         }
         return enchants.isEmpty() ? null : enchants;
     }
@@ -105,6 +106,7 @@ public class DoomEquipmentUtils {
 
     public static boolean isVanillaItemStackBreaking(ItemStack breakingStack, Item vanillaItem) {
         var item = new ItemStack(vanillaItem);
-        return !item.isEmpty() && breakingStack.is(item.getItem()) && breakingStack.getMaxDamage() - breakingStack.getDamageValue() <= 0;
+        return !item.isEmpty() && breakingStack.is(
+                item.getItem()) && breakingStack.getMaxDamage() - breakingStack.getDamageValue() <= 0;
     }
 }

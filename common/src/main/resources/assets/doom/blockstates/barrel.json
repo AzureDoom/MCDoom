@@ -1,7 +1,7 @@
 {
-	"variants": {
-		"": {
-			"model": "doom:block/barrel"
-		}
-	}
+  "variants": {
+    "": {
+      "model": "doom:block/barrel"
+    }
+  }
 }

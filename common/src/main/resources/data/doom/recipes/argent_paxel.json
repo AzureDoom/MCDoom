@@ -1,25 +1,25 @@
 {
-	"result": {
-		"item": "doom:argent_paxel"
-	},
-	"type": "minecraft:crafting_shaped",
-	"pattern": [
-		"AQ$",
-		" I ",
-		" I "
-	],
-	"key": {
-		"I": {
-			"item": "minecraft:stick"
-		},
-		"$": {
-			"item": "doom:argent_axe"
-		},
-		"Q": {
-			"item": "doom:argent_shovel"
-		},
-		"A": {
-			"item": "doom:argent_pickaxe"
-		}
-	}
+  "result": {
+    "item": "doom:argent_paxel"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AQ$",
+    " I ",
+    " I "
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:stick"
+    },
+    "$": {
+      "item": "doom:argent_axe"
+    },
+    "Q": {
+      "item": "doom:argent_shovel"
+    },
+    "A": {
+      "item": "doom:argent_pickaxe"
+    }
+  }
 }

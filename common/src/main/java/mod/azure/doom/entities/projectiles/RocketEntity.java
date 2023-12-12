@@ -28,11 +28,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
 public class RocketEntity extends AbstractArrow implements GeoEntity {
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    public SoundEvent hitSound = getDefaultHitGroundSoundEvent();
     private LivingEntity shooter;
     private float projectiledamage;
     private int idleTicks = 0;
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    public SoundEvent hitSound = getDefaultHitGroundSoundEvent();
 
     public RocketEntity(EntityType<? extends RocketEntity> entityType, Level world) {
         super(entityType, world);
@@ -104,7 +104,8 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
         final var isInsideWaterBlock = level().isWaterAt(blockPosition());
         CommonUtils.spawnLightSource(this, isInsideWaterBlock);
         if (level().isClientSide())
-            level().addParticle(ParticleTypes.SMOKE, true, this.getX() + random.nextDouble() * getBbWidth() * 0.5D, this.getY(0.5), this.getZ() + random.nextDouble() * getBbWidth() * 0.5D, 0, 0, 0);
+            level().addParticle(ParticleTypes.SMOKE, true, this.getX() + random.nextDouble() * getBbWidth() * 0.5D,
+                    this.getY(0.5), this.getZ() + random.nextDouble() * getBbWidth() * 0.5D, 0, 0, 0);
     }
 
     @Override
@@ -130,7 +131,8 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
         areaeffectcloudentity.setDuration(1);
         areaeffectcloudentity.absMoveTo(this.getX(), this.getY(), this.getZ());
         level().addFreshEntity(areaeffectcloudentity);
-        level().playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0F, 1.5F);
+        level().playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE,
+                SoundSource.PLAYERS, 1.0F, 1.5F);
         super.remove(reason);
     }
 

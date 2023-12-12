@@ -17,10 +17,6 @@ public class BarrelEntity extends Entity {
         blocksBuilding = true;
     }
 
-    protected void explode() {
-        level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 4.0F, true, Level.ExplosionInteraction.NONE);
-    }
-
     public BarrelEntity(Level worldIn, double x, double y, double z) {
         this(Services.ENTITIES_HELPER.getBarrelEntity(), worldIn);
         this.absMoveTo(x, y, z);
@@ -29,6 +25,11 @@ public class BarrelEntity extends Entity {
         xo = x;
         yo = y;
         zo = z;
+    }
+
+    protected void explode() {
+        level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 4.0F, true,
+                Level.ExplosionInteraction.NONE);
     }
 
     @Override

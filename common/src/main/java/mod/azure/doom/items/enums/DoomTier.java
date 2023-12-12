@@ -4,11 +4,13 @@ import mod.azure.doom.platform.Services;
 import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
 public enum DoomTier implements Tier {
-    DOOM(18, 1561, 16.0F, 3.0F, 30, () -> Ingredient.of(Services.ITEMS_HELPER.getArgentEngery())), DOOM_HIGHTEIR(6, 0, 16.0F, -1.9F, 30, () -> Ingredient.of(Services.ITEMS_HELPER.getArgentBlock()));
+    DOOM(18, 1561, 16.0F, 3.0F, 30, () -> Ingredient.of(Services.ITEMS_HELPER.getArgentEngery())), DOOM_HIGHTEIR(6, 0,
+            16.0F, -1.9F, 30, () -> Ingredient.of(Services.ITEMS_HELPER.getArgentBlock()));
 
     private final int harvestLevel;
     private final int maxUses;
@@ -17,7 +19,7 @@ public enum DoomTier implements Tier {
     private final int enchantability;
     private final LazyLoadedValue<Ingredient> repairMaterial;
 
-    private DoomTier(int harvestLevelIn, int maxUsesIn, float efficiencyIn, float attackDamageIn, int enchantabilityIn, Supplier<Ingredient> repairMaterialIn) {
+    DoomTier(int harvestLevelIn, int maxUsesIn, float efficiencyIn, float attackDamageIn, int enchantabilityIn, Supplier<Ingredient> repairMaterialIn) {
         harvestLevel = harvestLevelIn;
         maxUses = maxUsesIn;
         efficiency = efficiencyIn;
@@ -52,7 +54,7 @@ public enum DoomTier implements Tier {
     }
 
     @Override
-    public Ingredient getRepairIngredient() {
+    public @NotNull Ingredient getRepairIngredient() {
         return repairMaterial.get();
     }
 

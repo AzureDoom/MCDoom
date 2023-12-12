@@ -12,12 +12,23 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
 public class IconStructure extends Structure {
 
-    public static final Codec<IconStructure> CODEC = RecordCodecBuilder.<IconStructure>mapCodec(instance -> instance.group(Structure.settingsCodec(instance), StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool), ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName), Codec.intRange(0, 4).fieldOf("size").forGetter(structure -> structure.size), HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight), Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> structure.projectStartToHeightmap), Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter)).apply(instance, IconStructure::new)).codec();
+    public static final Codec<IconStructure> CODEC = RecordCodecBuilder.<IconStructure>mapCodec(
+            instance -> instance.group(Structure.settingsCodec(instance),
+                    StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
+                    ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(
+                            structure -> structure.startJigsawName),
+                    Codec.intRange(0, 4).fieldOf("size").forGetter(structure -> structure.size),
+                    HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
+                    Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(
+                            structure -> structure.projectStartToHeightmap),
+                    Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(
+                            structure -> structure.maxDistanceFromCenter)).apply(instance, IconStructure::new)).codec();
     private final Holder<StructureTemplatePool> startPool;
     private final Optional<ResourceLocation> startJigsawName;
     private final int size;
@@ -36,12 +47,14 @@ public class IconStructure extends Structure {
     }
 
     @Override
-    public Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
-        return JigsawPlacement.addPieces(context, startPool, startJigsawName, size, new BlockPos(context.chunkPos().getMinBlockX(), -63, context.chunkPos().getMinBlockZ()), false, projectStartToHeightmap, maxDistanceFromCenter);
+    public @NotNull Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
+        return JigsawPlacement.addPieces(context, startPool, startJigsawName, size,
+                new BlockPos(context.chunkPos().getMinBlockX(), -63, context.chunkPos().getMinBlockZ()), false,
+                projectStartToHeightmap, maxDistanceFromCenter);
     }
 
     @Override
-    public StructureType<?> type() {
+    public @NotNull StructureType<?> type() {
         return Services.STRUCTURES_HELPER.getIconStructure();
     }
 }

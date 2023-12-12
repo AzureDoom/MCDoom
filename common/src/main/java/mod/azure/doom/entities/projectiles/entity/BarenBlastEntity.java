@@ -21,26 +21,28 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
 public class BarenBlastEntity extends AbstractHurtingProjectile implements GeoEntity {
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     private float directHitDamage = 0F;
     private LivingEntity shooter;
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public BarenBlastEntity(EntityType<? extends BarenBlastEntity> entity, Level level) {
         super(entity, level);
     }
 
-    public void setDirectHitDamage(float directHitDamage) {
-        this.directHitDamage = directHitDamage;
-    }
-
     public BarenBlastEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, float directHitDamage) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getBarenBlastEntity(), shooter, accelX, accelY, accelZ, worldIn);
+        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getBarenBlastEntity(), shooter, accelX, accelY, accelZ,
+                worldIn);
         this.shooter = shooter;
         this.directHitDamage = directHitDamage;
     }
 
     public BarenBlastEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getBarenBlastEntity(), x, y, z, accelX, accelY, accelZ, worldIn);
+        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getBarenBlastEntity(), x, y, z, accelX, accelY, accelZ,
+                worldIn);
+    }
+
+    public void setDirectHitDamage(float directHitDamage) {
+        this.directHitDamage = directHitDamage;
     }
 
     @Override

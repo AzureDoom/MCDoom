@@ -53,13 +53,15 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.SplittableRandom;
 
 public class MancubusEntity extends DemonEntity implements SmartBrainOwner<MancubusEntity> {
 
-    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(MancubusEntity.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(MancubusEntity.class,
+            EntityDataSerializers.INT);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     private int attackTimer;
 
@@ -67,8 +69,11 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
         super(entityType, worldIn);
     }
 
-    public static AttributeSupplier.Builder createMobAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MAX_HEALTH, MCDoom.config.mancubus_health).add(Attributes.ATTACK_DAMAGE, 4.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+    public static AttributeSupplier.@NotNull Builder createMobAttributes() {
+        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(
+                Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MAX_HEALTH, MCDoom.config.mancubus_health).add(
+                Attributes.ATTACK_DAMAGE, 4.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK,
+                0.0D);
     }
 
     @Override
@@ -82,20 +87,26 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
         }).setSoundKeyframeHandler(event -> {
             if (event.getKeyframeData().getSound().matches("walk"))
                 if (level().isClientSide())
-                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+                    level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                            mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F,
+                            1.0F, false);
             if (event.getKeyframeData().getSound().matches("talk"))
                 if (level().isClientSide())
-                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), mod.azure.doom.platform.Services.SOUNDS_HELPER.getMANCUBUS_STEP(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
-        })).add(new AnimationController<>(this, "attackController", 0, event -> {
-            return PlayState.STOP;
-        }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("attack"))
-                if (level().isClientSide())
-                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.FIRECHARGE_USE, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-            if (event.getKeyframeData().getSound().matches("flames"))
-                if (level().isClientSide())
-                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.FIRECHARGE_USE, SoundSource.HOSTILE, 0.25F, 1.0F, true);
-        }).triggerableAnim("ranged", DoomAnimationsDefault.ATTACKING).triggerableAnim("melee", DoomAnimationsDefault.GROUND));
+                    level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                            mod.azure.doom.platform.Services.SOUNDS_HELPER.getMANCUBUS_STEP(), SoundSource.HOSTILE,
+                            0.25F, 1.0F, false);
+        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).setSoundKeyframeHandler(
+                event -> {
+                    if (event.getKeyframeData().getSound().matches("attack"))
+                        if (level().isClientSide())
+                            level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.FIRECHARGE_USE,
+                                    SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                    if (event.getKeyframeData().getSound().matches("flames"))
+                        if (level().isClientSide())
+                            level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.FIRECHARGE_USE,
+                                    SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                }).triggerableAnim("ranged", DoomAnimationsDefault.ATTACKING).triggerableAnim("melee",
+                DoomAnimationsDefault.GROUND));
     }
 
     @Override
@@ -119,28 +130,41 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
     }
 
     @Override
-    protected Brain.Provider<?> brainProvider() {
+    protected Brain.@NotNull Provider<?> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
 
     @Override
     public List<ExtendedSensor<MancubusEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyLivingEntitySensor<MancubusEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<MancubusEntity>());
+        return ObjectArrayList.of(new NearbyLivingEntitySensor<MancubusEntity>().setPredicate(
+                        (target, entity) -> target.isAlive() && entity.hasLineOfSight(
+                                target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
+                new UnreachableTargetSensor<MancubusEntity>());
     }
 
     @Override
     public BrainActivityGroup<MancubusEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new StrafeTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
+        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300),
+                new FloatToSurfaceOfFluid<>(), new StrafeTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
     }
 
     @Override
     public BrainActivityGroup<MancubusEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<MancubusEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player player && player.isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.8f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<MancubusEntity>(
+                        new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()),
+                        new SetPlayerLookTarget<>().stopIf(
+                                target -> !target.isAlive() || target instanceof Player player && player.isCreative()),
+                        new SetRandomLookTarget<>()),
+                new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.8f),
+                        new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
     }
 
     @Override
     public BrainActivityGroup<MancubusEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 0.85F), new DemonProjectileAttack<>(7).attackInterval(mob -> 120), new DemonMeleeAttack<>(5));
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
+                        (target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 0.85F),
+                new DemonProjectileAttack<>(7).attackInterval(mob -> 120), new DemonMeleeAttack<>(5));
     }
 
     @Override
@@ -175,7 +199,8 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
         } while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
         if (flag) {
-            final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, yaw, 1, this, MCDoom.config.mancubus_ranged_damage);
+            final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, yaw, 1, this,
+                    MCDoom.config.mancubus_ranged_damage);
             fang.setSecondsOnFire(tickCount);
             fang.setInvisible(false);
             level().addFreshEntity(fang);
@@ -196,7 +221,7 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
     }
 
     @Override
-    protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
+    protected float getStandingEyeHeight(@NotNull Pose poseIn, @NotNull EntityDimensions sizeIn) {
         return 2.80F;
     }
 
@@ -205,7 +230,7 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
     }
 
     @Override
-    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+    protected SoundEvent getHurtSound(@NotNull DamageSource damageSourceIn) {
         return mod.azure.doom.platform.Services.SOUNDS_HELPER.getMANCUBUS_HURT();
     }
 
@@ -221,13 +246,13 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
+    public void readAdditionalSaveData(@NotNull CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         setVariant(tag.getInt("Variant"));
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
+    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putInt("Variant", getVariant());
     }
@@ -245,7 +270,7 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
         spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
         final var random = new SplittableRandom();
         final var var = random.nextInt(0, 6);

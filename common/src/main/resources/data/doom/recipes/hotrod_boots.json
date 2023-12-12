@@ -3,16 +3,16 @@
     "item": "doom:hotrod_boots"
   },
   "type": "minecraft:crafting_shaped",
-   "pattern": [
-        "@",
-        "#"
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:blaze_powder"
-        },
-		"@": {
-			"item": "doom:doom_boots"
-		}
+  "pattern": [
+    "@",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:blaze_powder"
+    },
+    "@": {
+      "item": "doom:doom_boots"
     }
+  }
 }

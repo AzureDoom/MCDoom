@@ -20,9 +20,8 @@ import java.util.List;
 
 public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandler> {
     private static final ResourceLocation TEXTURE = MCDoom.modResource("textures/gui/gun_table_gui.png");
-
-    private int selectedIndex;
     private final WidgetButtonPage[] offers = new WidgetButtonPage[7];
+    private int selectedIndex;
     private int indexStartOffset;
     private boolean scrolling;
 
@@ -58,7 +57,8 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 
     @Override
     protected void renderLabels(GuiGraphics matrices, int mouseX, int mouseY) {
-        matrices.drawString(this.font, this.title, (75 + this.imageWidth / 2 - this.font.width(this.title) / 2), 6, 4210752, false);
+        matrices.drawString(this.font, this.title, (75 + this.imageWidth / 2 - this.font.width(this.title) / 2), 6,
+                4210752, false);
     }
 
     protected void renderBg(GuiGraphics matrices, float delta, int mouseX, int mouseY) {
@@ -105,10 +105,11 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 
             while (true) {
                 for (GunTableRecipe gunTableRecipe : tradeOfferList)
-                    if (this.canScroll(tradeOfferList.size()) && (m < this.indexStartOffset || m >= 7 + this.indexStartOffset)) {
+                    if (this.canScroll(
+                            tradeOfferList.size()) && (m < this.indexStartOffset || m >= 7 + this.indexStartOffset)) {
                         ++m;
                     } else {
-                        ItemStack output = gunTableRecipe.output;
+                        ItemStack output = gunTableRecipe.output();
                         int n = yPos + 2;
                         this.renderIngredients(matrices, gunTableRecipe, xPos, n);
 
@@ -193,7 +194,8 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
         this.scrolling = false;
         var i = (this.width - this.imageWidth) / 2;
         var j = (this.height - this.imageHeight) / 2;
-        if (this.canScroll(this.menu.getRecipes().size()) && mouseX > (i + 94) && mouseX < (i + 94 + 6) && mouseY > (j + 18) && mouseY <= (j + 18 + 139 + 1))
+        if (this.canScroll(
+                this.menu.getRecipes().size()) && mouseX > (i + 94) && mouseX < (i + 94 + 6) && mouseY > (j + 18) && mouseY <= (j + 18 + 139 + 1))
             this.scrolling = true;
 
         return super.mouseClicked(mouseX, mouseY, button);
@@ -215,7 +217,7 @@ public class GunTableScreen extends AbstractContainerScreen<GunTableScreenHandle
 
         public void renderToolTip(GuiGraphics matrices, int mouseX, int mouseY) {
             if (this.isHovered && menu.getRecipes().size() > this.index + indexStartOffset) {
-                ItemStack stack = menu.getRecipes().get(this.index + indexStartOffset).output;
+                ItemStack stack = menu.getRecipes().get(this.index + indexStartOffset).output();
                 if ((mouseX < this.getX() + 20) || (mouseX > this.getX() + 65) || mouseX < this.getX() + 50 && mouseX > this.getX() + 30 && (!stack.isEmpty())) {
                     renderTooltip(matrices, mouseX, mouseY);
                 }

@@ -1,21 +1,21 @@
 {
-	"type": "doom:gun_table",
-	"pattern": "abc",
-	"key": {
-		"a": {
-			"item": "minecraft:nether_star",
-			"count": 10
-		},
-		"b": {
-			"item": "doom:argent_plate",
-			"count": 4
-		},
-		"c": {
-			"item": "minecraft:phantom_membrane",
-			"count": 6
-		}
-	},
-	"result": {
-		"item": "doom:unmaykr"
-	}
+  "type": "doom:gun_table",
+  "pattern": "abc",
+  "key": {
+    "a": {
+      "item": "minecraft:nether_star",
+      "count": 10
+    },
+    "b": {
+      "item": "doom:argent_plate",
+      "count": 4
+    },
+    "c": {
+      "item": "minecraft:phantom_membrane",
+      "count": 6
+    }
+  },
+  "result": {
+    "item": "doom:unmaykr"
+  }
 }

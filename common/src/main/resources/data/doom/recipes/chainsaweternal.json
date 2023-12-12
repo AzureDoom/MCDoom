@@ -1,21 +1,21 @@
 {
-	"type": "doom:gun_table",
-	"pattern": "abc",
-	"key": {
-		"a": {
-			"item": "minecraft:iron_ingot",
-			"count": 3
-		},
-		"b": {
-			"item": "minecraft:redstone",
-			"count": 3
-		},
-		"c": {
-			"item": "doom:gas_barrel",
-			"count": 1
-		}
-	},
-	"result": {
-		"item": "doom:chainsaweternal"
-	}
+  "type": "doom:gun_table",
+  "pattern": "abc",
+  "key": {
+    "a": {
+      "item": "minecraft:iron_ingot",
+      "count": 3
+    },
+    "b": {
+      "item": "minecraft:redstone",
+      "count": 3
+    },
+    "c": {
+      "item": "doom:gas_barrel",
+      "count": 1
+    }
+  },
+  "result": {
+    "item": "doom:chainsaweternal"
+  }
 }

@@ -3,16 +3,16 @@
     "item": "doom:zombie_doom_leggings"
   },
   "type": "minecraft:crafting_shaped",
-   "pattern": [
-        "@",
-        "#"
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:rotten_flesh"
-        },
-		"@": {
-			"item": "doom:doom_leggings"
-		}
+  "pattern": [
+    "@",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:rotten_flesh"
+    },
+    "@": {
+      "item": "doom:doom_leggings"
     }
+  }
 }

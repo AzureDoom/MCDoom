@@ -58,22 +58,31 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<GladiatorEntity> {
 
-    public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(GladiatorEntity.class, EntityDataSerializers.INT);
-    public static final EntityDataAccessor<Integer> TEXTURE = SynchedEntityData.defineId(GladiatorEntity.class, EntityDataSerializers.INT);
-    private final ServerBossEvent bossInfo = (ServerBossEvent) new ServerBossEvent(getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.NOTCHED_20).setDarkenScreen(false).setCreateWorldFog(false);
+    public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(GladiatorEntity.class,
+            EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> TEXTURE = SynchedEntityData.defineId(GladiatorEntity.class,
+            EntityDataSerializers.INT);
+    private final ServerBossEvent bossInfo = (ServerBossEvent) new ServerBossEvent(getDisplayName(),
+            BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.NOTCHED_20).setDarkenScreen(false).setCreateWorldFog(
+            false);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public GladiatorEntity(EntityType<? extends DemonEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
-    public static AttributeSupplier.Builder createMobAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.MAX_HEALTH, MCDoom.config.gladiator_health).add(Attributes.ATTACK_DAMAGE, MCDoom.config.gladiator_melee_damage).add(Attributes.KNOCKBACK_RESISTANCE, 0.9f).add(Attributes.ATTACK_KNOCKBACK, 1.0D);
+    public static AttributeSupplier.@NotNull Builder createMobAttributes() {
+        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MOVEMENT_SPEED,
+                0.25D).add(Attributes.MAX_HEALTH, MCDoom.config.gladiator_health).add(Attributes.ATTACK_DAMAGE,
+                MCDoom.config.gladiator_melee_damage).add(Attributes.KNOCKBACK_RESISTANCE, 0.9f).add(
+                Attributes.ATTACK_KNOCKBACK, 1.0D);
     }
 
     @Override
@@ -91,14 +100,20 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
                 event.getController().setAnimationSpeed(1.5);
                 return event.setAndContinue(RawAnimation.begin().thenLoop("walking_phasetwo"));
             }
-            return event.setAndContinue(RawAnimation.begin().thenLoop(event.getAnimatable().getDeathState() == 0 ? "idle_phaseone" : "idle_phasetwo"));
+            return event.setAndContinue(RawAnimation.begin().thenLoop(
+                    event.getAnimatable().getDeathState() == 0 ? "idle_phaseone" : "idle_phasetwo"));
         }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("walk"))
-                if (level().isClientSide())
-                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
-        })).add(new AnimationController<>(this, "attackController", 0, event -> {
-            return PlayState.STOP;
-        }).triggerableAnim("ranged", DoomAnimationsDefault.SHIELD).triggerableAnim("mace", DoomAnimationsDefault.MELEE_PHASETWOTHREE).triggerableAnim("meleeone", DoomAnimationsDefault.MELEE_PHASEONE).triggerableAnim("meleetwo", DoomAnimationsDefault.MELEE_PHASEONETWO).triggerableAnim("melee2one", DoomAnimationsDefault.MELEE_PHASETWOONE).triggerableAnim("melee2two", DoomAnimationsDefault.MELEE_PHASETWOTWO));
+            if (event.getKeyframeData().getSound().matches("walk")) if (level().isClientSide())
+                level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                        mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F,
+                        1.0F, false);
+        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
+                "ranged", DoomAnimationsDefault.SHIELD).triggerableAnim("mace",
+                DoomAnimationsDefault.MELEE_PHASETWOTHREE).triggerableAnim("meleeone",
+                DoomAnimationsDefault.MELEE_PHASEONE).triggerableAnim("meleetwo",
+                DoomAnimationsDefault.MELEE_PHASEONETWO).triggerableAnim("melee2one",
+                DoomAnimationsDefault.MELEE_PHASETWOONE).triggerableAnim("melee2two",
+                DoomAnimationsDefault.MELEE_PHASETWOTWO));
     }
 
     @Override
@@ -107,10 +122,9 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
     }
 
     @Override
-    public void die(DamageSource source) {
+    public void die(@NotNull DamageSource source) {
         if (!level().isClientSide) {
-            if (source == damageSources().fellOutOfWorld())
-                setDeathState(1);
+            if (source == damageSources().fellOutOfWorld()) setDeathState(1);
             if (this.getDeathState() == 0) {
                 final var areaeffectcloudentity = new AreaEffectCloud(level(), this.getX(), this.getY(), this.getZ());
                 areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
@@ -119,11 +133,10 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
                 areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
                 level().addFreshEntity(areaeffectcloudentity);
                 goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
-                setLastHurtMob(getLastHurtByMob());
+                setLastHurtMob(Objects.requireNonNull(getLastHurtByMob()));
                 level().broadcastEntityEvent(this, (byte) 3);
             }
-            if (this.getDeathState() == 1)
-                super.die(source);
+            if (this.getDeathState() == 1) super.die(source);
         }
     }
 
@@ -163,16 +176,15 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(@NotNull CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        if (hasCustomName())
-            bossInfo.setName(getDisplayName());
+        if (hasCustomName()) bossInfo.setName(getDisplayName());
         setTextureState(compound.getInt("Texture"));
         setDeathState(compound.getInt("Phase"));
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
+    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putInt("Phase", getDeathState());
         tag.putInt("Texture", getTextureState());
@@ -191,34 +203,47 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
         if (!level().isClientSide) {
             if (this.getDeathState() == 0)
                 this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1000000, 0, false, false));
-            else
-                removeEffect(MobEffects.DAMAGE_RESISTANCE);
+            else removeEffect(MobEffects.DAMAGE_RESISTANCE);
         }
     }
 
     @Override
-    protected Brain.Provider<?> brainProvider() {
+    protected Brain.@NotNull Provider<?> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
 
     @Override
     public List<ExtendedSensor<GladiatorEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyLivingEntitySensor<GladiatorEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<GladiatorEntity>());
+        return ObjectArrayList.of(new NearbyLivingEntitySensor<GladiatorEntity>().setPredicate(
+                        (target, entity) -> target.isAlive() && entity.hasLineOfSight(
+                                target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
+                new UnreachableTargetSensor<GladiatorEntity>());
     }
 
     @Override
     public BrainActivityGroup<GladiatorEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new StrafeTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
+        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300),
+                new FloatToSurfaceOfFluid<>(), new StrafeTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
     }
 
     @Override
     public BrainActivityGroup<GladiatorEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<GladiatorEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player player && player.isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.75f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<>(
+                        new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()),
+                        new SetPlayerLookTarget<>().stopIf(
+                                target -> !target.isAlive() || target instanceof Player player && player.isCreative()),
+                        new SetRandomLookTarget<>()),
+                new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.75f),
+                        new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
     }
 
     @Override
     public BrainActivityGroup<GladiatorEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 0.85F), new DemonProjectileAttack<>(30).attackInterval(mob -> 80).attackDamage(MCDoom.config.cyberdemon_ranged_damage), new DemonMeleeAttack<>(5));
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
+                        (target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 0.85F),
+                new DemonProjectileAttack<>(30).attackInterval(mob -> 80).attackDamage(
+                        MCDoom.config.cyberdemon_ranged_damage), new DemonMeleeAttack<>(5));
     }
 
     @Override
@@ -233,11 +258,13 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
     @Override
     public boolean doHurtTarget(Entity target) {
         level().broadcastEntityEvent(this, (byte) 4);
-        final var bl = target.hurt(damageSources().mobAttack(this), (float) MCDoom.config.gladiator_melee_damage + (this.getDeathState() == 1 ? MCDoom.config.gladiator_phaseone_damage_boost : 0));
+        final var bl = target.hurt(damageSources().mobAttack(this),
+                (float) MCDoom.config.gladiator_melee_damage + (this.getDeathState() == 1 ? MCDoom.config.gladiator_phaseone_damage_boost : 0));
         if (bl) {
             target.setDeltaMovement(target.getDeltaMovement().multiply(1.4f, 1.4f, 1.4f));
             doEnchantDamageEffects(this, target);
-            level().explode(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
+            level().explode(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false,
+                    Level.ExplosionInteraction.BLOCK);
             target.invulnerableTime = 0;
         }
         return true;
@@ -245,18 +272,20 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
 
     public boolean tryAttack1(Entity target) {
         level().broadcastEntityEvent(this, (byte) 4);
-        final var bl = target.hurt(damageSources().mobAttack(this), (float) MCDoom.config.gladiator_melee_damage + (this.getDeathState() == 1 ? MCDoom.config.gladiator_phaseone_damage_boost : 0));
+        final var bl = target.hurt(damageSources().mobAttack(this),
+                (float) MCDoom.config.gladiator_melee_damage + (this.getDeathState() == 1 ? MCDoom.config.gladiator_phaseone_damage_boost : 0));
         if (bl) {
             target.setDeltaMovement(target.getDeltaMovement().multiply(1.4f, 1.4f, 1.4f));
             doEnchantDamageEffects(this, target);
-            level().explode(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
+            level().explode(this, this.getX(), this.getY() + 5D, this.getZ(), 3.0F, false,
+                    Level.ExplosionInteraction.BLOCK);
             target.invulnerableTime = 0;
         }
         return true;
     }
 
     @Override
-    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+    protected SoundEvent getHurtSound(@NotNull DamageSource damageSourceIn) {
         return mod.azure.doom.platform.Services.SOUNDS_HELPER.getBARON_HURT();
     }
 
@@ -270,13 +299,13 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
     }
 
     @Override
-    public void startSeenByPlayer(ServerPlayer player) {
+    public void startSeenByPlayer(@NotNull ServerPlayer player) {
         super.startSeenByPlayer(player);
         bossInfo.addPlayer(player);
     }
 
     @Override
-    public void stopSeenByPlayer(ServerPlayer player) {
+    public void stopSeenByPlayer(@NotNull ServerPlayer player) {
         super.stopSeenByPlayer(player);
         bossInfo.removePlayer(player);
     }
@@ -298,14 +327,12 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
     public void baseTick() {
         super.baseTick();
         final AABB aabb = new AABB(blockPosition().above()).inflate(64D, 64D, 64D);
-        getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
+        level().getEntities(this, aabb).forEach(e -> {
             if (e instanceof GladiatorEntity && e.tickCount < 1) {
                 e.remove(RemovalReason.KILLED);
             }
-            if (e instanceof Player) {
-                if (!((Player) e).isCreative())
-                    if (!e.isSpectator())
-                        setTarget((LivingEntity) e);
+            if (e instanceof Player player && (!player.isCreative() && (!player.isSpectator()))) {
+                setTarget((LivingEntity) e);
             }
         });
     }
@@ -320,12 +347,12 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
     }
 
     @Override
-    public void knockback(double p_147241_, double p_147242_, double p_147243_) {
+    public void knockback(double x, double y, double z) {
         super.knockback(0, 0, 0);
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurt(@NotNull DamageSource source, float amount) {
         return getAttckingState() != 1 && getAttckingState() != 4 && super.hurt(source, amount);
     }
 

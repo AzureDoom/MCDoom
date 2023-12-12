@@ -20,7 +20,8 @@ public record NeoDoomBlocks() {
 
     public static final RegistryObject<Block> ARGENT_BLOCK = BLOCKS.register("argent_block", ArgentBlock::new);
 
-    public static final RegistryObject<Block> ARGENT_LAMP_BLOCK = BLOCKS.register("argent_lamp_block", ArgentLampBlock::new);
+    public static final RegistryObject<Block> ARGENT_LAMP_BLOCK = BLOCKS.register("argent_lamp_block",
+            ArgentLampBlock::new);
 
     public static final RegistryObject<Block> DOOM_SAND = BLOCKS.register("doom_sand", DoomSandBlock::new);
 
@@ -47,10 +48,18 @@ public record NeoDoomBlocks() {
     public static final RegistryObject<Block> E1M1_2 = BLOCKS.register("e1m1_block2", ArgentLampBlock::new);
     public static final RegistryObject<Block> E1M1_3 = BLOCKS.register("e1m1_block3", ArgentLampBlock::new);
     public static final RegistryObject<Block> E1M1_4 = BLOCKS.register("e1m1_block4", ArgentLampBlock::new);
+    public static final RegistryObject<Block> E1M1_8 = BLOCKS.register("e1m1_block8",
+            () -> new E1M1StairsBlock(E1M1_4.get().defaultBlockState(), BlockBehaviour.Properties.copy(E1M1_4.get())));
     public static final RegistryObject<Block> E1M1_5 = BLOCKS.register("e1m1_block5", ArgentLampBlock::new);
+    public static final RegistryObject<Block> E1M1_7 = BLOCKS.register("e1m1_block7",
+            () -> new E1M1StairsBlock(E1M1_5.get().defaultBlockState(), BlockBehaviour.Properties.copy(E1M1_5.get())));
+    public static final RegistryObject<Block> E1M1_27 = BLOCKS.register("e1m1_block27",
+            () -> new E1M1StairsBlock(E1M1_5.get().defaultBlockState(), BlockBehaviour.Properties.copy(E1M1_5.get())));
+    public static final RegistryObject<Block> E1M1_28 = BLOCKS.register("e1m1_block28",
+            () -> new E1M1StairsBlock(E1M1_5.get().defaultBlockState(), BlockBehaviour.Properties.copy(E1M1_5.get())));
+    public static final RegistryObject<Block> E1M1_29 = BLOCKS.register("e1m1_block29",
+            () -> new E1M1StairsBlock(E1M1_5.get().defaultBlockState(), BlockBehaviour.Properties.copy(E1M1_5.get())));
     public static final RegistryObject<Block> E1M1_6 = BLOCKS.register("e1m1_block6", ArgentLampBlock::new);
-    public static final RegistryObject<Block> E1M1_7 = BLOCKS.register("e1m1_block7", () -> new E1M1StairsBlock(E1M1_5.get().defaultBlockState(), BlockBehaviour.Properties.copy(E1M1_5.get())));
-    public static final RegistryObject<Block> E1M1_8 = BLOCKS.register("e1m1_block8", () -> new E1M1StairsBlock(E1M1_4.get().defaultBlockState(), BlockBehaviour.Properties.copy(E1M1_4.get())));
     public static final RegistryObject<Block> E1M1_9 = BLOCKS.register("e1m1_block9", E1M1TurnableBlock::new);
     public static final RegistryObject<Block> E1M1_10 = BLOCKS.register("e1m1_block10", E1M1TurnableBlock::new);
     public static final RegistryObject<Block> E1M1_11 = BLOCKS.register("e1m1_block11", E1M1TurnableHurtBlock::new);
@@ -69,9 +78,6 @@ public record NeoDoomBlocks() {
     public static final RegistryObject<Block> E1M1_24 = BLOCKS.register("e1m1_block24", E1M1TurnableBlock::new);
     public static final RegistryObject<Block> E1M1_25 = BLOCKS.register("e1m1_block25", E1M1TurnableBlock::new);
     public static final RegistryObject<Block> E1M1_26 = BLOCKS.register("e1m1_block26", E1M1TurnableBlock::new);
-    public static final RegistryObject<Block> E1M1_27 = BLOCKS.register("e1m1_block27", () -> new E1M1StairsBlock(E1M1_5.get().defaultBlockState(), BlockBehaviour.Properties.copy(E1M1_5.get())));
-    public static final RegistryObject<Block> E1M1_28 = BLOCKS.register("e1m1_block28", () -> new E1M1StairsBlock(E1M1_5.get().defaultBlockState(), BlockBehaviour.Properties.copy(E1M1_5.get())));
-    public static final RegistryObject<Block> E1M1_29 = BLOCKS.register("e1m1_block29", () -> new E1M1StairsBlock(E1M1_5.get().defaultBlockState(), BlockBehaviour.Properties.copy(E1M1_5.get())));
 
 
 }

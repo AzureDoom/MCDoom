@@ -1,6 +1,6 @@
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "doom:item/cultist_helmet"
-    }
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "doom:item/cultist_helmet"
+  }
 }

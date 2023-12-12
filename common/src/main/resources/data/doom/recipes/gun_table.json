@@ -1,22 +1,22 @@
 {
-	"type": "minecraft:crafting_shaped",
-	"pattern": [
-		"   ",
-		"CEC",
-		"OOO"
-	],
-	"key": {
-		"O": {
-			"item": "minecraft:iron_block"
-		},
-		"E": {
-			"item": "minecraft:anvil"
-		},
-		"C": {
-			"item": "minecraft:comparator"
-		}
-	},
-	"result": {
-		"item": "doom:gun_table"
-	}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "CEC",
+    "OOO"
+  ],
+  "key": {
+    "O": {
+      "item": "minecraft:iron_block"
+    },
+    "E": {
+      "item": "minecraft:anvil"
+    },
+    "C": {
+      "item": "minecraft:comparator"
+    }
+  },
+  "result": {
+    "item": "doom:gun_table"
+  }
 }

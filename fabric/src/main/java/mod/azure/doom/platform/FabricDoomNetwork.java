@@ -5,6 +5,8 @@ import mod.azure.doom.network.C2SMessageSelectCraft;
 import mod.azure.doom.platform.services.DoomNetwork;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class FabricDoomNetwork implements DoomNetwork {
     @Override
@@ -14,153 +16,40 @@ public class FabricDoomNetwork implements DoomNetwork {
 
     @Override
     public void registerClientReceiverPackets() {
-
     }
 
     @Override
-    public void reloadBallista(int slot) {
+    public void reload(int slot) {
         final var passedData = new FriendlyByteBuf(Unpooled.buffer());
         passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.BALLISTA, passedData);
+        ClientPlayNetworking.send(DoomNetwork.RELOAD, passedData);
     }
 
     @Override
-    public void reloadBFG(int slot) {
+    public void shoot(int slot) {
         final var passedData = new FriendlyByteBuf(Unpooled.buffer());
         passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.BFG, passedData);
+        ClientPlayNetworking.send(DoomNetwork.SHOOT, passedData);
     }
 
     @Override
-    public void reloadBFG9000(int slot) {
+    public void changeFireMode(@NotNull ItemStack stack) {
         final var passedData = new FriendlyByteBuf(Unpooled.buffer());
         passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.BFG9000, passedData);
+        ClientPlayNetworking.send(DoomNetwork.FIREMODE, passedData);
     }
 
     @Override
-    public void reloadChaingun(int slot) {
+    public void hook(int slot) {
         final var passedData = new FriendlyByteBuf(Unpooled.buffer());
         passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.CHAINGUN, passedData);
+        ClientPlayNetworking.send(DoomNetwork.HOOK, passedData);
     }
 
     @Override
-    public void reloadDGauss(int slot) {
+    public void reloadMelee(int slot) {
         final var passedData = new FriendlyByteBuf(Unpooled.buffer());
         passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.DGAUSS, passedData);
-    }
-
-    @Override
-    public void reloadDPlamsa(int slot) {
-        final var passedData = new FriendlyByteBuf(Unpooled.buffer());
-        passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.DPLASMARIFLE, passedData);
-    }
-
-    @Override
-    public void reloadDSG(int slot) {
-        final var passedData = new FriendlyByteBuf(Unpooled.buffer());
-        passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.DSG, passedData);
-    }
-
-    @Override
-    public void reloadHeavy(int slot) {
-        final var passedData = new FriendlyByteBuf(Unpooled.buffer());
-        passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.HEAVYCANNON, passedData);
-    }
-
-    @Override
-    public void reloadPistol(int slot) {
-        final var passedData = new FriendlyByteBuf(Unpooled.buffer());
-        passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.PISTOL, passedData);
-    }
-
-    @Override
-    public void reloadPlasma(int slot) {
-        final var passedData = new FriendlyByteBuf(Unpooled.buffer());
-        passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.PLASMA, passedData);
-    }
-
-    @Override
-    public void reloadRocket(int slot) {
-        final var passedData = new FriendlyByteBuf(Unpooled.buffer());
-        passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.ROCKETLAUNCHER, passedData);
-    }
-
-    @Override
-    public void reloadSG(int slot) {
-        final var passedData = new FriendlyByteBuf(Unpooled.buffer());
-        passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.SHOTGUN, passedData);
-    }
-
-    @Override
-    public void reloadSSG(int slot) {
-        final var passedData = new FriendlyByteBuf(Unpooled.buffer());
-        passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.SUPERSHOTGUN, passedData);
-    }
-
-    @Override
-    public void reloadUnmaker(int slot) {
-        final var passedData = new FriendlyByteBuf(Unpooled.buffer());
-        passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.UNMAKER, passedData);
-    }
-
-    @Override
-    public void reloadUnmaykr(int slot) {
-        final var passedData = new FriendlyByteBuf(Unpooled.buffer());
-        passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.UNMAYKR, passedData);
-    }
-
-    @Override
-    public void reloadAxe(int slot) {
-        final var passedData = new FriendlyByteBuf(Unpooled.buffer());
-        passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.MARAUDERAXE, passedData);
-    }
-
-    @Override
-    public void reloadDLCrucible(int slot) {
-        final var passedData = new FriendlyByteBuf(Unpooled.buffer());
-        passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.DARKLORDCRUCIBLE, passedData);
-    }
-
-    @Override
-    public void reloadSentinel(int slot) {
-        final var passedData = new FriendlyByteBuf(Unpooled.buffer());
-        passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.SENTINELHAMMER, passedData);
-    }
-
-    @Override
-    public void reloadCrucible(int slot) {
-        final var passedData = new FriendlyByteBuf(Unpooled.buffer());
-        passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.CRUCIBLE, passedData);
-    }
-
-    @Override
-    public void reloadChainsaw(int slot) {
-        final var passedData = new FriendlyByteBuf(Unpooled.buffer());
-        passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.CHAINSAW, passedData);
-    }
-
-    @Override
-    public void reloadChainsawA(int slot) {
-        final var passedData = new FriendlyByteBuf(Unpooled.buffer());
-        passedData.writeBoolean(true);
-        ClientPlayNetworking.send(DoomNetwork.CHAINSAW_ETERNAL, passedData);
+        ClientPlayNetworking.send(DoomNetwork.RELOAD_MELEE, passedData);
     }
 }

@@ -35,7 +35,8 @@ import net.minecraft.world.phys.EntityHitResult;
 
 public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 
-    private static final EntityDataAccessor<Boolean> SPINNING = SynchedEntityData.defineId(GrenadeEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> SPINNING = SynchedEntityData.defineId(GrenadeEntity.class,
+            EntityDataSerializers.BOOLEAN);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     public SoundEvent hitSound = getDefaultHitGroundSoundEvent();
     protected String type;
@@ -109,7 +110,8 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
         areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
         level().addFreshEntity(areaeffectcloudentity);
         explode();
-        level().playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0F, 1.5F);
+        level().playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE,
+                SoundSource.PLAYERS, 1.0F, 1.5F);
         super.remove(reason);
     }
 

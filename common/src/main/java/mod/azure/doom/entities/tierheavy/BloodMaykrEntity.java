@@ -51,6 +51,7 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -63,8 +64,11 @@ public class BloodMaykrEntity extends DemonEntity implements SmartBrainOwner<Blo
         moveControl = new DemonFloatControl(this);
     }
 
-    public static AttributeSupplier.Builder createMobAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, MCDoom.config.bloodmaykr_health).add(Attributes.ATTACK_DAMAGE, 5.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.FLYING_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+    public static AttributeSupplier.@NotNull Builder createMobAttributes() {
+        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH,
+                MCDoom.config.bloodmaykr_health).add(Attributes.ATTACK_DAMAGE, 5.0D).add(Attributes.MOVEMENT_SPEED,
+                0.25D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.FLYING_SPEED, 0.25D).add(
+                Attributes.ATTACK_KNOCKBACK, 0.0D);
     }
 
     @Override
@@ -73,9 +77,9 @@ public class BloodMaykrEntity extends DemonEntity implements SmartBrainOwner<Blo
             if (dead || getHealth() < 0.01 || isDeadOrDying())
                 return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        })).add(new AnimationController<>(this, "attackController", 0, event -> {
-            return PlayState.STOP;
-        }).triggerableAnim("ranged", RawAnimation.begin().then("attacking_weapon", LoopType.PLAY_ONCE)).triggerableAnim("melee", DoomAnimationsDefault.MELEE));
+        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
+                "ranged", RawAnimation.begin().then("attacking_weapon", LoopType.PLAY_ONCE)).triggerableAnim("melee",
+                DoomAnimationsDefault.MELEE));
     }
 
     @Override
@@ -99,33 +103,48 @@ public class BloodMaykrEntity extends DemonEntity implements SmartBrainOwner<Blo
     }
 
     @Override
-    protected Brain.Provider<?> brainProvider() {
+    protected Brain.@NotNull Provider<?> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
 
     @Override
     public List<ExtendedSensor<BloodMaykrEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyLivingEntitySensor<BloodMaykrEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<BloodMaykrEntity>());
+        return ObjectArrayList.of(new NearbyLivingEntitySensor<BloodMaykrEntity>().setPredicate(
+                        (target, entity) -> target.isAlive() && entity.hasLineOfSight(
+                                target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
+                new UnreachableTargetSensor<BloodMaykrEntity>());
     }
 
     @Override
     public BrainActivityGroup<BloodMaykrEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new StayWithinDistanceOfAttackTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
+        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300),
+                new FloatToSurfaceOfFluid<>(), new StayWithinDistanceOfAttackTarget<>().speedMod(0.25F),
+                new MoveToWalkTarget<>());
     }
 
     @Override
     public BrainActivityGroup<BloodMaykrEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<BloodMaykrEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player player && player.isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<BloodMaykrEntity>(
+                        new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()),
+                        new SetPlayerLookTarget<>().stopIf(
+                                target -> !target.isAlive() || target instanceof Player player && player.isCreative()),
+                        new SetRandomLookTarget<>()),
+                new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f),
+                        new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
     }
 
     @Override
     public BrainActivityGroup<BloodMaykrEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(MCDoom.config.bloodmaykr_ranged_damage), new DemonMeleeAttack<>(5));
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
+                        (target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F),
+                new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(
+                        MCDoom.config.bloodmaykr_ranged_damage), new DemonMeleeAttack<>(5));
     }
 
     @Override
     protected void registerGoals() {
-        goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
+        goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this));
     }
 
     @Override
@@ -135,7 +154,7 @@ public class BloodMaykrEntity extends DemonEntity implements SmartBrainOwner<Blo
     }
 
     @Override
-    protected PathNavigation createNavigation(Level worldIn) {
+    protected @NotNull PathNavigation createNavigation(@NotNull Level worldIn) {
         final var flyingpathnavigator = new FlyingPathNavigation(this, worldIn);
         flyingpathnavigator.setCanOpenDoors(false);
         flyingpathnavigator.setCanFloat(true);
@@ -148,7 +167,7 @@ public class BloodMaykrEntity extends DemonEntity implements SmartBrainOwner<Blo
     }
 
     @Override
-    protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
+    protected void checkFallDamage(double y, boolean onGroundIn, @NotNull BlockState state, @NotNull BlockPos pos) {
     }
 
     /**
@@ -165,7 +184,7 @@ public class BloodMaykrEntity extends DemonEntity implements SmartBrainOwner<Blo
     }
 
     @Override
-    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+    protected SoundEvent getHurtSound(@NotNull DamageSource damageSourceIn) {
         return mod.azure.doom.platform.Services.SOUNDS_HELPER.getMAKYR_HURT();
     }
 

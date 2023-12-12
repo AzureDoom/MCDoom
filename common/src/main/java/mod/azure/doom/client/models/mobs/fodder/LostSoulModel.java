@@ -11,18 +11,38 @@ import net.minecraft.util.Mth;
 
 public class LostSoulModel extends GeoModel<LostSoulEntity> {
 
-    private static final ResourceLocation[] TEX = {MCDoom.modResource("textures/entity/lost_soul_fire_1.png"), MCDoom.modResource("textures/entity/lost_soul_fire_2.png"), MCDoom.modResource("textures/entity/lost_soul_fire_3.png"), MCDoom.modResource("textures/entity/lost_soul_fire_4.png"), MCDoom.modResource("textures/entity/lost_soul_fire_5.png"), MCDoom.modResource("textures/entity/lost_soul_fire_6.png"), MCDoom.modResource("textures/entity/lost_soul_fire_7.png"),
+    private static final ResourceLocation[] TEX = {MCDoom.modResource(
+            "textures/entity/lost_soul_fire_1.png"), MCDoom.modResource(
+            "textures/entity/lost_soul_fire_2.png"), MCDoom.modResource(
+            "textures/entity/lost_soul_fire_3.png"), MCDoom.modResource(
+            "textures/entity/lost_soul_fire_4.png"), MCDoom.modResource(
+            "textures/entity/lost_soul_fire_5.png"), MCDoom.modResource(
+            "textures/entity/lost_soul_fire_6.png"), MCDoom.modResource("textures/entity/lost_soul_fire_7.png"),
             MCDoom.modResource("textures/entity/lost_soul_fire_8.png")};
 
-    private static final ResourceLocation[] TEX1 = {MCDoom.modResource("textures/entity/lost_soul_green_fire_1.png"), MCDoom.modResource("textures/entity/lost_soul_green_fire_2.png"), MCDoom.modResource("textures/entity/lost_soul_green_fire_3.png"), MCDoom.modResource("textures/entity/lost_soul_green_fire_4.png"), MCDoom.modResource("textures/entity/lost_soul_green_fire_5.png"), MCDoom.modResource("textures/entity/lost_soul_green_fire_6.png"),
-            MCDoom.modResource("textures/entity/lost_soul_green_fire_7.png"), MCDoom.modResource("textures/entity/lost_soul_green_fire_8.png")};
+    private static final ResourceLocation[] TEX1 = {MCDoom.modResource(
+            "textures/entity/lost_soul_green_fire_1.png"), MCDoom.modResource(
+            "textures/entity/lost_soul_green_fire_2.png"), MCDoom.modResource(
+            "textures/entity/lost_soul_green_fire_3.png"), MCDoom.modResource(
+            "textures/entity/lost_soul_green_fire_4.png"), MCDoom.modResource(
+            "textures/entity/lost_soul_green_fire_5.png"), MCDoom.modResource(
+            "textures/entity/lost_soul_green_fire_6.png"),
+            MCDoom.modResource("textures/entity/lost_soul_green_fire_7.png"), MCDoom.modResource(
+            "textures/entity/lost_soul_green_fire_8.png")};
 
-    private static final ResourceLocation[] TEX64 = {MCDoom.modResource("textures/entity/lost_soul_64_fire_1.png"), MCDoom.modResource("textures/entity/lost_soul_64_fire_2.png"), MCDoom.modResource("textures/entity/lost_soul_64_fire_3.png"), MCDoom.modResource("textures/entity/lost_soul_64_fire_4.png"), MCDoom.modResource("textures/entity/lost_soul_64_fire_5.png"), MCDoom.modResource("textures/entity/lost_soul_64_fire_6.png"),
-            MCDoom.modResource("textures/entity/lost_soul_64_fire_7.png"), MCDoom.modResource("textures/entity/lost_soul_64_fire_8.png")};
+    private static final ResourceLocation[] TEX64 = {MCDoom.modResource(
+            "textures/entity/lost_soul_64_fire_1.png"), MCDoom.modResource(
+            "textures/entity/lost_soul_64_fire_2.png"), MCDoom.modResource(
+            "textures/entity/lost_soul_64_fire_3.png"), MCDoom.modResource(
+            "textures/entity/lost_soul_64_fire_4.png"), MCDoom.modResource(
+            "textures/entity/lost_soul_64_fire_5.png"), MCDoom.modResource("textures/entity/lost_soul_64_fire_6.png"),
+            MCDoom.modResource("textures/entity/lost_soul_64_fire_7.png"), MCDoom.modResource(
+            "textures/entity/lost_soul_64_fire_8.png")};
 
     @Override
     public ResourceLocation getModelResource(LostSoulEntity object) {
-        return object.getVariant() == 3 ? MCDoom.modResource("geo/lostsoul64.geo.json") : MCDoom.modResource("geo/lostsoul.geo.json");
+        return object.getVariant() == 3 ? MCDoom.modResource("geo/lostsoul64.geo.json") : MCDoom.modResource(
+                "geo/lostsoul.geo.json");
     }
 
     @Override

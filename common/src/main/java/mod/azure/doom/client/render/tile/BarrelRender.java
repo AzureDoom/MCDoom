@@ -8,10 +8,12 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class BarrelRender extends EntityRenderer<BarrelEntity> {
 
-    protected static final ResourceLocation TEXTURE = new ResourceLocation(MCDoom.MOD_ID, "textures/blocks/barrel_explode.png");
+    protected static final ResourceLocation TEXTURE = new ResourceLocation(MCDoom.MOD_ID,
+            "textures/blocks/barrel_explode.png");
 
     public BarrelRender(EntityRendererProvider.Context context) {
         super(context);
@@ -19,7 +21,7 @@ public class BarrelRender extends EntityRenderer<BarrelEntity> {
     }
 
     @Override
-    public void render(BarrelEntity entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+    public void render(@NotNull BarrelEntity entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, @NotNull MultiBufferSource bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         matrixStackIn.translate(0.0D, 0.5D, 0.0D);
         matrixStackIn.mulPose(Axis.YP.rotationDegrees(-90.0F));
@@ -30,7 +32,7 @@ public class BarrelRender extends EntityRenderer<BarrelEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(BarrelEntity entity) {
+    public @NotNull ResourceLocation getTextureLocation(@NotNull BarrelEntity entity) {
         return TEXTURE;
     }
 }

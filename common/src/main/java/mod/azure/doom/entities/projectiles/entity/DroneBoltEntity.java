@@ -22,12 +22,14 @@ public class DroneBoltEntity extends AbstractHurtingProjectile {
     }
 
     public DroneBoltEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, float directHitDamage) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getDroneBoltEntity(), shooter, accelX, accelY, accelZ, worldIn);
+        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getDroneBoltEntity(), shooter, accelX, accelY, accelZ,
+                worldIn);
         this.directHitDamage = directHitDamage;
     }
 
     public DroneBoltEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getDroneBoltEntity(), x, y, z, accelX, accelY, accelZ, worldIn);
+        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getDroneBoltEntity(), x, y, z, accelX, accelY, accelZ,
+                worldIn);
     }
 
     public void setDirectHitDamage(float directHitDamage) {
@@ -55,7 +57,8 @@ public class DroneBoltEntity extends AbstractHurtingProjectile {
     }
 
     protected void explode() {
-        level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, false, MCDoom.config.enable_block_breaking ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
+        level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, false,
+                MCDoom.config.enable_block_breaking ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
     }
 
     @Override

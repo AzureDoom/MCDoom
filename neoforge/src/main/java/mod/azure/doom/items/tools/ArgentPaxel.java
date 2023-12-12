@@ -32,7 +32,9 @@ import java.util.stream.Stream;
 
 public class ArgentPaxel extends DiggerItem {
 
-    private static final Set<ToolAction> PAXEL_ACTIONS = Stream.of(ToolActions.PICKAXE_DIG, ToolActions.AXE_DIG, ToolActions.AXE_STRIP, ToolActions.AXE_SCRAPE, ToolActions.AXE_WAX_OFF, ToolActions.SHOVEL_DIG, ToolActions.SHOVEL_FLATTEN).collect(Collectors.toCollection(Sets::newIdentityHashSet));
+    private static final Set<ToolAction> PAXEL_ACTIONS = Stream.of(ToolActions.PICKAXE_DIG, ToolActions.AXE_DIG,
+            ToolActions.AXE_STRIP, ToolActions.AXE_SCRAPE, ToolActions.AXE_WAX_OFF, ToolActions.SHOVEL_DIG,
+            ToolActions.SHOVEL_FLATTEN).collect(Collectors.toCollection(Sets::newIdentityHashSet));
 
     public ArgentPaxel(Tier tier) {
         super(8, -2.4F, tier, DoomTags.PAXEL_BLOCKS, new Properties().stacksTo(1));
@@ -45,7 +47,8 @@ public class ArgentPaxel extends DiggerItem {
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        return state.is(BlockTags.MINEABLE_WITH_PICKAXE) || state.is(BlockTags.MINEABLE_WITH_AXE) || state.is(BlockTags.MINEABLE_WITH_SHOVEL);
+        return state.is(BlockTags.MINEABLE_WITH_PICKAXE) || state.is(BlockTags.MINEABLE_WITH_AXE) || state.is(
+                BlockTags.MINEABLE_WITH_SHOVEL);
     }
 
     @Override
@@ -59,9 +62,12 @@ public class ArgentPaxel extends DiggerItem {
         final BlockPos blockpos = context.getClickedPos();
         final Player player = context.getPlayer();
         final BlockState blockstate = level.getBlockState(blockpos);
-        final Optional<BlockState> optional = Optional.ofNullable(blockstate.getToolModifiedState(context, ToolActions.AXE_STRIP, false));
-        final Optional<BlockState> optional1 = Optional.ofNullable(blockstate.getToolModifiedState(context, ToolActions.AXE_SCRAPE, false));
-        final Optional<BlockState> optional2 = Optional.ofNullable(blockstate.getToolModifiedState(context, ToolActions.AXE_WAX_OFF, false));
+        final Optional<BlockState> optional = Optional.ofNullable(
+                blockstate.getToolModifiedState(context, ToolActions.AXE_STRIP, false));
+        final Optional<BlockState> optional1 = Optional.ofNullable(
+                blockstate.getToolModifiedState(context, ToolActions.AXE_SCRAPE, false));
+        final Optional<BlockState> optional2 = Optional.ofNullable(
+                blockstate.getToolModifiedState(context, ToolActions.AXE_WAX_OFF, false));
         final BlockState optional3 = blockstate.getToolModifiedState(context, ToolActions.SHOVEL_FLATTEN, false);
         final ItemStack itemstack = context.getItemInHand();
         Optional<BlockState> optional4 = Optional.empty();
@@ -79,7 +85,8 @@ public class ArgentPaxel extends DiggerItem {
         } else if (optional3 != null && level.isEmptyBlock(blockpos.above())) {
             level.playSound(player, blockpos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
             optional4 = Optional.ofNullable(optional3);
-        } else if (blockstate.getBlock() instanceof CampfireBlock && Boolean.TRUE.equals(blockstate.getValue(CampfireBlock.LIT))) {
+        } else if (blockstate.getBlock() instanceof CampfireBlock && Boolean.TRUE.equals(
+                blockstate.getValue(CampfireBlock.LIT))) {
             if (!level.isClientSide()) {
                 level.levelEvent((Player) null, 1009, blockpos, 0);
             }
@@ -102,7 +109,8 @@ public class ArgentPaxel extends DiggerItem {
 
     @Override
     public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        tooltip.add(Component.translatable("doom.argent_powered.text").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.ITALIC));
+        tooltip.add(Component.translatable("doom.argent_powered.text").withStyle(ChatFormatting.RED).withStyle(
+                ChatFormatting.ITALIC));
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 

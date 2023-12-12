@@ -2,6 +2,7 @@ package mod.azure.doom.recipes;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class DoomSpecialCraftingRecipe implements GunRecipes {
     private final ResourceLocation id;
@@ -11,7 +12,7 @@ public abstract class DoomSpecialCraftingRecipe implements GunRecipes {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public @NotNull ResourceLocation getId() {
         return id;
     }
 

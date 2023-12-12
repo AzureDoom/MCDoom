@@ -1,29 +1,45 @@
 {
-	"format_version": "1.8.0",
-	"animations": {
-		"idle": {
-			"loop": true,
-			"animation_length": 2,
-			"bones": {
-				"totem": {
-					"scale": {
-						"vector": [0.37, 0.37, 0.37]
-					}
-				},
-				"cube": {
-					"rotation": {
-						"vector": ["math.sin(query.anim_time * 180) * 180", "math.cos(query.anim_time * 180) * 180", "math.sin(query.anim_time * 180) * 180"]
-					},
-					"scale": {
-						"vector": [0.85, 0.85, 0.85]
-					}
-				},
-				"top": {
-					"position": {
-						"vector": [0, "Math.cos(query.anim_time * 180) * 0.5", 0]
-					}
-				}
-			}
-		}
-	}
+  "format_version": "1.8.0",
+  "animations": {
+    "idle": {
+      "loop": true,
+      "animation_length": 2,
+      "bones": {
+        "totem": {
+          "scale": {
+            "vector": [
+              0.37,
+              0.37,
+              0.37
+            ]
+          }
+        },
+        "cube": {
+          "rotation": {
+            "vector": [
+              "math.sin(query.anim_time * 180) * 180",
+              "math.cos(query.anim_time * 180) * 180",
+              "math.sin(query.anim_time * 180) * 180"
+            ]
+          },
+          "scale": {
+            "vector": [
+              0.85,
+              0.85,
+              0.85
+            ]
+          }
+        },
+        "top": {
+          "position": {
+            "vector": [
+              0,
+              "Math.cos(query.anim_time * 180) * 0.5",
+              0
+            ]
+          }
+        }
+      }
+    }
+  }
 }

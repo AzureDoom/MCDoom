@@ -5,14 +5,14 @@
     32,
     16
   ],
-	"overrides": [
-		{
-			"predicate": {
-				"nocenter": 1
-			},
-			"model": "doom:item/chaingun_nocenter"
-		}
-	],
+  "overrides": [
+    {
+      "predicate": {
+        "nocenter": 1
+      },
+      "model": "doom:item/chaingun_nocenter"
+    }
+  ],
   "display": {
     "thirdperson_righthand": {
       "rotation": [

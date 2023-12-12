@@ -10,24 +10,12 @@ import java.util.EnumSet;
 
 public class RandomFlyConvergeOnTargetGoal extends Goal {
     private final DemonEntity parentEntity;
-    private double flySpeed = 1;
-    private double convergeDistance = 200;
-    private double convergenceAdherence = 0.25;
 
     /**
-     * @param entity
-     * @param flySpeed             The flying speed of the entity.
-     * @param convergeDistance     The distance in blocks from the target at which
-     *                             the entity starts to trend towards moving back
-     *                             towards it.
-     * @param convergenceAdherence The strength of the convergence. Max value is 1,
-     *                             default 0.25.
+     * @param entity Entity that is flying
      */
-    public RandomFlyConvergeOnTargetGoal(DemonEntity entity, double flySpeed, double convergeDistance, double convergenceAdherence) {
+    public RandomFlyConvergeOnTargetGoal(DemonEntity entity) {
         this.parentEntity = entity;
-        this.flySpeed = flySpeed;
-        this.convergeDistance = convergeDistance * convergeDistance;
-        this.convergenceAdherence = convergenceAdherence;
         this.setFlags(EnumSet.of(Flag.MOVE));
     }
 
@@ -50,7 +38,7 @@ public class RandomFlyConvergeOnTargetGoal extends Goal {
     }
 
     public boolean shouldConverge(LivingEntity target) {
-        return target != null && this.parentEntity.distanceToSqr(target) >= convergeDistance;
+        return target != null && this.parentEntity.distanceToSqr(target) >= 225;
     }
 
     @Override
@@ -63,15 +51,16 @@ public class RandomFlyConvergeOnTargetGoal extends Goal {
         double d2 = this.parentEntity.getZ() + ((random.nextFloat() * 2.0F - 1.0F) * 2.0F);
 
         if (converge) {
+            assert target != null;
             double xDifference = target.getX() - this.parentEntity.getX();
             double yDifference = target.getY() - this.parentEntity.getY();
             double zDifference = target.getZ() - this.parentEntity.getZ();
             double maxAbs = Math.max(Math.abs(xDifference), Math.abs(yDifference));
             maxAbs = Math.max(maxAbs, Math.abs(zDifference));
-            d0 += 2 * xDifference / maxAbs * convergenceAdherence;
-            d1 += 2 * yDifference / maxAbs * convergenceAdherence;
-            d2 += 2 * zDifference / maxAbs * convergenceAdherence;
+            d0 += 2 * xDifference / maxAbs * 0.5;
+            d1 += 2 * yDifference / maxAbs * 0.5;
+            d2 += 2 * zDifference / maxAbs * 0.5;
         }
-        this.parentEntity.getMoveControl().setWantedPosition(d0, d1, d2, flySpeed);
+        this.parentEntity.getMoveControl().setWantedPosition(d0, d1, d2, 2);
     }
 }

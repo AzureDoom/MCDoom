@@ -1,21 +1,21 @@
 {
   "replace": false,
   "values": [
-	"doom:bfg9000",
-	"doom:shotgun",
-	"doom:bfg_eternal",
-	"doom:unmaykr",
-	"doom:ballista",
-	"doom:pistol",
-	"doom:chaingun",
-	"doom:rocketlauncher",
-	"doom:chainsaw",
-	"doom:chainsaw64",
-	"doom:plasmagun",
-	"doom:supershotgun",
-	"doom:heavycannon",
-	"doom:axe_marauder_open",
-	"doom:cruciblesword",
-	"doom:chainsaweternal"
+    "doom:bfg9000",
+    "doom:shotgun",
+    "doom:bfg_eternal",
+    "doom:unmaykr",
+    "doom:ballista",
+    "doom:pistol",
+    "doom:chaingun",
+    "doom:rocketlauncher",
+    "doom:chainsaw",
+    "doom:chainsaw64",
+    "doom:plasmagun",
+    "doom:supershotgun",
+    "doom:heavycannon",
+    "doom:axe_marauder_open",
+    "doom:cruciblesword",
+    "doom:chainsaweternal"
   ]
 }

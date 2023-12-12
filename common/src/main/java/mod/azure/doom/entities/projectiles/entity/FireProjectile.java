@@ -28,12 +28,14 @@ public class FireProjectile extends AbstractHurtingProjectile {
     }
 
     public FireProjectile(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, float directHitDamage) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getFireEntity(), shooter, accelX, accelY, accelZ, worldIn);
+        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getFireEntity(), shooter, accelX, accelY, accelZ,
+                worldIn);
         this.directHitDamage = directHitDamage;
     }
 
     public FireProjectile(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getFireEntity(), x, y, z, accelX, accelY, accelZ, worldIn);
+        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getFireEntity(), x, y, z, accelX, accelY, accelZ,
+                worldIn);
     }
 
     public void setDirectHitDamage(float directHitDamage) {
@@ -60,8 +62,12 @@ public class FireProjectile extends AbstractHurtingProjectile {
         final var isInsideWaterBlock = level().isWaterAt(blockPosition());
         CommonUtils.spawnLightSource(this, isInsideWaterBlock);
         if (level().isClientSide()) {
-            level().addParticle(ParticleTypes.FLAME, true, this.getX() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, this.getY(), this.getZ() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, 0, 0, 0);
-            level().addParticle(ParticleTypes.SMOKE, true, this.getX() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, this.getY(), this.getZ() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, 0, 0, 0);
+            level().addParticle(ParticleTypes.FLAME, true,
+                    this.getX() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, this.getY(),
+                    this.getZ() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, 0, 0, 0);
+            level().addParticle(ParticleTypes.SMOKE, true,
+                    this.getX() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, this.getY(),
+                    this.getZ() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, 0, 0, 0);
         }
     }
 

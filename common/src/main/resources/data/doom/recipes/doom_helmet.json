@@ -3,17 +3,17 @@
     "item": "doom:doom_helmet"
   },
   "type": "minecraft:crafting_shaped",
-   "pattern": [
-        " $ ",
-        "###",
-        "#$#"
-    ],
-    "key": {
-        "#": {
-            "item": "doom:argent_plate"
-        },
-        "$": {
-            "item": "doom:argent_energy"
-        }
+  "pattern": [
+    " $ ",
+    "###",
+    "#$#"
+  ],
+  "key": {
+    "#": {
+      "item": "doom:argent_plate"
+    },
+    "$": {
+      "item": "doom:argent_energy"
     }
+  }
 }

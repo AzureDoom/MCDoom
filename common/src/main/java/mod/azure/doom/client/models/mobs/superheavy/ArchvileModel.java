@@ -12,22 +12,31 @@ import net.minecraft.util.Mth;
 
 public class ArchvileModel extends GeoModel<ArchvileEntity> {
 
-    private static final ResourceLocation[] TEX = {MCDoom.modResource("textures/entity/archvile_flame_1.png"), MCDoom.modResource("textures/entity/archvile_flame_2.png"), MCDoom.modResource("textures/entity/archvile_flame_3.png"), MCDoom.modResource("textures/entity/archvile_flame_4.png"), MCDoom.modResource("textures/entity/archvile_flame_5.png"), MCDoom.modResource("textures/entity/archvile_flame_6.png"), MCDoom.modResource("textures/entity/archvile_flame_7.png"),
+    private static final ResourceLocation[] TEX = {MCDoom.modResource(
+            "textures/entity/archvile_flame_1.png"), MCDoom.modResource(
+            "textures/entity/archvile_flame_2.png"), MCDoom.modResource(
+            "textures/entity/archvile_flame_3.png"), MCDoom.modResource(
+            "textures/entity/archvile_flame_4.png"), MCDoom.modResource(
+            "textures/entity/archvile_flame_5.png"), MCDoom.modResource(
+            "textures/entity/archvile_flame_6.png"), MCDoom.modResource("textures/entity/archvile_flame_7.png"),
             MCDoom.modResource("textures/entity/archvile_flame_8.png")};
 
     @Override
     public ResourceLocation getModelResource(ArchvileEntity object) {
-        return new ResourceLocation(MCDoom.MOD_ID, "geo/" + (object.getVariant() == 1 ? "archvile" : "archvileeternal") + ".geo.json");
+        return new ResourceLocation(MCDoom.MOD_ID,
+                "geo/" + (object.getVariant() == 1 ? "archvile" : "archvileeternal") + ".geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(ArchvileEntity object) {
-        return (object.getVariant() == 1 ? (object.getAttckingState() == 1 ? TEX[(object.getFlameTimer())] : MCDoom.modResource("textures/entity/archvile.png")) : MCDoom.modResource("textures/entity/archvileeternal.png"));
+        return (object.getVariant() == 1 ? (object.getAttckingState() == 1 ? TEX[(object.getFlameTimer())] : MCDoom.modResource(
+                "textures/entity/archvile.png")) : MCDoom.modResource("textures/entity/archvileeternal.png"));
     }
 
     @Override
     public ResourceLocation getAnimationResource(ArchvileEntity object) {
-        return new ResourceLocation(MCDoom.MOD_ID, "animations/" + (object.getVariant() == 1 ? "archvile_" : "archvileeternal.") + "animation.json");
+        return new ResourceLocation(MCDoom.MOD_ID,
+                "animations/" + (object.getVariant() == 1 ? "archvile_" : "archvileeternal.") + "animation.json");
     }
 
     @Override

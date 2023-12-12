@@ -17,7 +17,8 @@ public class HellknightModel extends GeoModel<HellknightEntity> {
 
     @Override
     public ResourceLocation getTextureResource(HellknightEntity object) {
-        return new ResourceLocation(MCDoom.MOD_ID, "textures/entity/hellknight-" + (object.getVariant() == 2 ? "64" : "texturemap") + ".png");
+        return new ResourceLocation(MCDoom.MOD_ID,
+                "textures/entity/hellknight-" + (object.getVariant() == 2 ? "64" : "texturemap") + ".png");
     }
 
     @Override

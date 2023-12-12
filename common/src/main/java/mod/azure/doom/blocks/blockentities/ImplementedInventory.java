@@ -9,8 +9,6 @@ import org.jetbrains.annotations.NotNull;
 
 public interface ImplementedInventory extends Container {
 
-    NonNullList<ItemStack> getItems();
-
     static ImplementedInventory of(NonNullList<ItemStack> items) {
         return () -> items;
     }
@@ -18,6 +16,8 @@ public interface ImplementedInventory extends Container {
     static ImplementedInventory ofSize(int size) {
         return of(NonNullList.withSize(size, ItemStack.EMPTY));
     }
+
+    NonNullList<ItemStack> getItems();
 
     @Override
     default int getContainerSize() {

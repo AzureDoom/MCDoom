@@ -6,7 +6,10 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azure.doom.entities.tierboss.DoomBoss;
 import mod.azure.doom.helper.PlayerProperties;
+import mod.azure.doom.platform.Services;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -14,6 +17,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,16 +29,23 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class MeatHookEntity extends AbstractArrow implements GeoEntity {
-    private static final EntityDataAccessor<Integer> HOOKED_ENTITY_ID = SynchedEntityData.defineId(MeatHookEntity.class, EntityDataSerializers.INT);
-    public static final EntityDataAccessor<Float> FORCED_YAW = SynchedEntityData.defineId(MeatHookEntity.class, EntityDataSerializers.FLOAT);
+    public static final EntityDataAccessor<Float> FORCED_YAW = SynchedEntityData.defineId(MeatHookEntity.class,
+            EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> HOOKED_ENTITY_ID = SynchedEntityData.defineId(MeatHookEntity.class,
+            EntityDataSerializers.INT);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     private double maxRange = 0D;
     private double maxSpeed = 0D;
     private boolean isPulling = false;
     private Entity hookedEntity;
     private ItemStack stack;
+    private int attachTimer = 0;
+
+    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(MeatHookEntity.class,
+            EntityDataSerializers.INT);
 
     public MeatHookEntity(EntityType<? extends AbstractArrow> type, Player owner, Level world) {
         super(type, owner, world);
@@ -78,22 +89,50 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        entityData.define(HOOKED_ENTITY_ID, 0);
-        entityData.define(FORCED_YAW, 0f);
+        this.entityData.define(HOOKED_ENTITY_ID, 0);
+        this.entityData.define(FORCED_YAW, 0f);
+        this.entityData.define(VARIANT, 0);
+    }
+
+    public Integer getVariant() {
+        return this.entityData.get(VARIANT);
+    }
+
+    public void setVariant(Integer variant) {
+        this.entityData.set(VARIANT, variant);
     }
 
     @Override
     public void tick() {
         super.tick();
+        this.setNoGravity(true);
+        if (this.tickCount >= 80) this.kill();
+        if (!this.level().isClientSide()) this.attachTimer++;
+        if (this.getVariant() == 0) {
+            this.doMeatHook();
+        }
+        if (this.getVariant() == 1 && getOwner() instanceof final Player owner) {
+            this.doMicrowaveBeam(owner);
+        }
+        if (this.getVariant() == 1)
+            this.level().addParticle(Services.PARTICLES_HELPER.getPLASMA(), true, this.getX(), this.getY(), this.getZ(),
+                    0, 0, 0);
+    }
+
+    private void doMeatHook() {
+        if (this.tickCount % 16 == 2)
+            this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.CHAIN_PLACE,
+                    SoundSource.PLAYERS, 0.5F, 1.0F);
         if (getOwner() instanceof final Player owner) {
             setYRot(entityData.get(FORCED_YAW));
 
             if (isPulling && tickCount % 2 == 0)
-                level().playSound(null, getOwner().blockPosition(), SoundEvents.CHAIN_PLACE, SoundSource.PLAYERS, 1F, 1F);
+                level().playSound(null, getOwner().blockPosition(), SoundEvents.CHAIN_PLACE, SoundSource.PLAYERS, 1F,
+                        1F);
 
             if (!level().isClientSide()) {
-                if (owner.isDeadOrDying() || !((PlayerProperties) owner).hasMeatHook() || owner.distanceTo(this) > maxRange)
-                    kill();
+                if (owner.isDeadOrDying() || !((PlayerProperties) owner).hasMeatHook() || owner.distanceTo(
+                        this) > maxRange) kill();
 
                 if (hookedEntity != null) {
                     if (hookedEntity.isRemoved()) {
@@ -102,48 +141,88 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
                     } else this.absMoveTo(hookedEntity.getX(), hookedEntity.getY(0.8D), hookedEntity.getZ());
                 }
 
-                if (owner.getOffhandItem() == stack) {
-                    if (isPulling) {
-                        Entity target = owner;
-                        Entity origin = this;
+                if (owner.getMainHandItem() == stack && isPulling) {
+                    Entity target = owner;
+                    Entity origin = this;
 
-                        if (owner.isScoping() && hookedEntity != null) {
-                            target = hookedEntity;
-                            origin = owner;
-                        }
-                        final var pullSpeed = 0.75D;
-                        final var distance = origin.position().subtract(target.position().add(0, target.getBbHeight() / 2, 0));
-                        var motion = distance.normalize().scale(pullSpeed * distance.length() / 6D);
-
-                        if (Math.abs(distance.y) < 0.01D) {
-                            motion = new Vec3(motion.x, 0, motion.z);
-                            kill();
-                        }
-                        if (new Vec3(distance.x, 0, distance.z).length() < new Vec3(target.getBbWidth() / 2, 0, target.getBbWidth() / 2).length() / 1.4) {
-                            motion = new Vec3(motion.x, motion.y, motion.z);
-                            kill();
-                        }
-                        target.fallDistance = 0;
-                        target.setDeltaMovement(motion);
-                        target.hurtMarked = true;
+                    if (owner.isScoping() && hookedEntity != null) {
+                        target = hookedEntity;
+                        origin = owner;
                     }
-                } else {
-                    kill();
+                    final var pullSpeed = 0.75D;
+                    final var distance = origin.position().subtract(
+                            target.position().add(0, target.getBbHeight() / 2, 0));
+                    var motion = distance.normalize().scale(pullSpeed * distance.length() / 6D);
+
+                    if (Math.abs(distance.y) < 0.01D) {
+                        motion = new Vec3(motion.x, 0, motion.z);
+                        kill();
+                    }
+                    if (new Vec3(distance.x, 0, distance.z).length() < new Vec3(target.getBbWidth() / 2, 0,
+                            target.getBbWidth() / 2).length() / 1.4) {
+                        motion = new Vec3(motion.x, motion.y, motion.z);
+                        kill();
+                    }
+                    target.fallDistance = 0;
+                    target.setDeltaMovement(motion);
+                    target.hurtMarked = true;
                 }
             }
-        } else {
-            kill();
         }
+    }
+
+    private void doMicrowaveBeam(Player owner) {
+        setYRot(entityData.get(FORCED_YAW));
+        if (!level().isClientSide()) {
+            if (owner.isDeadOrDying() || !((PlayerProperties) owner).hasMeatHook() || owner.distanceTo(this) > maxRange)
+                kill();
+
+            if (hookedEntity != null) {
+                if (hookedEntity.isRemoved()) {
+                    hookedEntity = null;
+                    onClientRemoval();
+                } else if (!(hookedEntity instanceof Player) && !(hookedEntity instanceof DoomBoss)) {
+                    this.attachTimer++;
+                    this.startRiding(hookedEntity);
+                    hookedEntity.setGlowingTag(true);
+                    hookedEntity.setDeltaMovement(0, 0, 0);
+                }
+            }
+        }
+        if (hookedEntity != null && this.attachTimer >= 80 && this.getVariant() == 1) {
+            this.explode(hookedEntity);
+            if (!level().isClientSide()) {
+                ((PlayerProperties) owner).setHasMeatHook(false);
+            }
+            this.remove(RemovalReason.DISCARDED);
+        }
+    }
+
+    protected void explode(Entity entity) {
+        if (entity instanceof LivingEntity livingEntity)
+            livingEntity.hurt(damageSources().playerAttack((Player) this.getOwner()), Float.MAX_VALUE);
+        var areaeffectcloudentity = new AreaEffectCloud(this.level(), this.getX(), this.getY(), this.getZ());
+        areaeffectcloudentity.setParticle(ParticleTypes.FLASH);
+        areaeffectcloudentity.setRadius(6);
+        areaeffectcloudentity.setDuration(1);
+        areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
+        this.level().addFreshEntity(areaeffectcloudentity);
+        level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS,
+                1.0F, 1.5F);
     }
 
     @Override
     public void kill() {
         if (!level().isClientSide() && getOwner() instanceof final Player owner) {
             ((PlayerProperties) owner).setHasMeatHook(false);
-            owner.setNoGravity(false);
         }
 
         super.kill();
+    }
+
+    @Override
+    public void remove(@NotNull RemovalReason reason) {
+        super.remove(reason);
     }
 
     @Override
@@ -165,8 +244,8 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
         isPulling = true;
-
-        if (!level().isClientSide() && getOwner() instanceof final Player owner && hookedEntity == null) {
+        if (this.getVariant() == 1) this.kill();
+        if (!level().isClientSide() && getOwner() instanceof final Player owner && hookedEntity == null && this.getVariant() == 0) {
             owner.setNoGravity(true);
         }
     }

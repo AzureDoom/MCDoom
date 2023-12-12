@@ -10,14 +10,13 @@ import mod.azure.doom.MCDoom;
 import mod.azure.doom.entities.DemonEntity;
 import mod.azure.doom.entities.DoomAnimationsDefault;
 import mod.azure.doom.entities.task.DemonProjectileAttack;
-import mod.azure.doom.entities.tiersuperheavy.BaronEntity;
-import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -44,6 +43,7 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -55,12 +55,11 @@ public class SpiderMastermindEntity extends DemonEntity implements SmartBrainOwn
         super(entityType, worldIn);
     }
 
-    public static boolean spawning(EntityType<BaronEntity> p_223337_0_, Level p_223337_1_, MobSpawnType reason, BlockPos p_223337_3_, RandomSource p_223337_4_) {
-        return p_223337_1_.getDifficulty() != Difficulty.PEACEFUL;
-    }
-
-    public static AttributeSupplier.Builder createMobAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.MAX_HEALTH, MCDoom.config.spider_mastermind_health).add(Attributes.ATTACK_DAMAGE, MCDoom.config.spider_mastermind_melee_damage).add(Attributes.KNOCKBACK_RESISTANCE, 0.8f).add(Attributes.ATTACK_KNOCKBACK, 1.0D);
+    public static AttributeSupplier.@NotNull Builder createMobAttributes() {
+        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MOVEMENT_SPEED,
+                0.25D).add(Attributes.MAX_HEALTH, MCDoom.config.spider_mastermind_health).add(Attributes.ATTACK_DAMAGE,
+                MCDoom.config.spider_mastermind_melee_damage).add(Attributes.KNOCKBACK_RESISTANCE, 0.8f).add(
+                Attributes.ATTACK_KNOCKBACK, 1.0D);
     }
 
     @Override
@@ -71,16 +70,17 @@ public class SpiderMastermindEntity extends DemonEntity implements SmartBrainOwn
                 return event.setAndContinue(DoomAnimationsDefault.WALKING);
             return event.setAndContinue(isDead ? DoomAnimationsDefault.DEATH : DoomAnimationsDefault.IDLE);
         }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("walk"))
-                if (level().isClientSide())
-                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), mod.azure.doom.platform.Services.SOUNDS_HELPER.getSPIDERDEMON_AMBIENT(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
-        })).add(new AnimationController<>(this, "attackController", 0, event -> {
-            return PlayState.STOP;
-        }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("attack"))
-                if (level().isClientSide())
-                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), mod.azure.doom.platform.Services.SOUNDS_HELPER.getPLASMA_FIRING(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
-        }).triggerableAnim("ranged", DoomAnimationsDefault.ATTACKING));
+            if (event.getKeyframeData().getSound().matches("walk") && (level().isClientSide()))
+                level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                        mod.azure.doom.platform.Services.SOUNDS_HELPER.getSPIDERDEMON_AMBIENT(), SoundSource.HOSTILE,
+                        0.25F, 1.0F, false);
+        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).setSoundKeyframeHandler(
+                event -> {
+                    if (event.getKeyframeData().getSound().matches("attack") && (level().isClientSide()))
+                        level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                                mod.azure.doom.platform.Services.SOUNDS_HELPER.getPLASMA_FIRING(), SoundSource.HOSTILE,
+                                0.25F, 1.0F, false);
+                }).triggerableAnim("ranged", DoomAnimationsDefault.ATTACKING));
     }
 
     @Override
@@ -95,32 +95,45 @@ public class SpiderMastermindEntity extends DemonEntity implements SmartBrainOwn
     }
 
     @Override
-    protected Brain.Provider<?> brainProvider() {
+    protected Brain.@NotNull Provider<?> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
 
     @Override
     public List<ExtendedSensor<SpiderMastermindEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyLivingEntitySensor<SpiderMastermindEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<SpiderMastermindEntity>());
+        return ObjectArrayList.of(new NearbyLivingEntitySensor<SpiderMastermindEntity>().setPredicate(
+                        (target, entity) -> target.isAlive() && entity.hasLineOfSight(
+                                target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
+                new UnreachableTargetSensor<>());
     }
 
     @Override
     public BrainActivityGroup<SpiderMastermindEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new StrafeTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
+        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300),
+                new FloatToSurfaceOfFluid<>(), new StrafeTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
     }
 
     @Override
     public BrainActivityGroup<SpiderMastermindEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<SpiderMastermindEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player player && player.isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<>(
+                        new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()),
+                        new SetPlayerLookTarget<>().stopIf(
+                                target -> !target.isAlive() || target instanceof Player player && player.isCreative()),
+                        new SetRandomLookTarget<>()),
+                new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f),
+                        new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
     }
 
     @Override
     public BrainActivityGroup<SpiderMastermindEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 10));
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
+                        (target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F),
+                new DemonProjectileAttack<>(7).attackInterval(mob -> 10));
     }
 
     @Override
-    protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
+    protected float getStandingEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions dimensions) {
         return 1.74F;
     }
 
@@ -133,7 +146,7 @@ public class SpiderMastermindEntity extends DemonEntity implements SmartBrainOwn
     }
 
     @Override
-    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+    protected SoundEvent getHurtSound(@NotNull DamageSource damageSourceIn) {
         return mod.azure.doom.platform.Services.SOUNDS_HELPER.getSPIDERDEMON_HURT();
     }
 

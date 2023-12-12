@@ -18,7 +18,8 @@ public class ProwlerModel extends GeoModel<ProwlerEntity> {
 
     @Override
     public ResourceLocation getTextureResource(ProwlerEntity object) {
-        return new ResourceLocation(MCDoom.MOD_ID, "textures/entity/" + (object.getVariant() == 2 ? "prowler_cursed" : "prowler") + ".png");
+        return new ResourceLocation(MCDoom.MOD_ID,
+                "textures/entity/" + (object.getVariant() == 2 ? "prowler_cursed" : "prowler") + ".png");
     }
 
     @Override

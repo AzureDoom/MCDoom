@@ -13,10 +13,10 @@ import org.apache.logging.log4j.Logger;
  *
  * @see mod.azure.azurelib.util.AzureLibUtil
  */
-public class MCDoom {
-    public static final Logger LOGGER = LogManager.getLogger(AzureLib.MOD_ID);
-    public static final String MOD_ID = "doom";
+public record MCDoom() {
 
+    public static final String MOD_ID = "doom";
+    public static final Logger LOGGER = LogManager.getLogger(AzureLib.MOD_ID);
     public static DoomConfig config;
 
     public static final ResourceLocation modResource(String name) {

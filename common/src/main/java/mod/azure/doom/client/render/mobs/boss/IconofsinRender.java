@@ -17,7 +17,8 @@ public class IconofsinRender extends GeoEntityRenderer<IconofsinEntity> {
 
     @Override
     public void preRender(PoseStack poseStack, IconofsinEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
+                packedOverlay, red, green, blue, alpha);
         final float health = animatable.getHealth();
         final float maxhealth = animatable.getMaxHealth();
         poseStack.scale(2F, 2F, 2F);

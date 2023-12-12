@@ -1,24 +1,24 @@
 {
-	"type": "minecraft:crafting_shaped",
-	"pattern": [
-		"asa",
-		"ptp"
-	],
-	"key": {
-		"a": {
-			"item": "doom:argent_energy"
-		},
-		"p": {
-			"item": "minecraft:polished_blackstone_pressure_plate"
-		},
-		"s": {
-			"item": "minecraft:slime_block"
-		},
-		"t": {
-			"item": "minecraft:piston"
-		}
-	},
-	"result": {
-		"item": "doom:jump_pad"
-	}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "asa",
+    "ptp"
+  ],
+  "key": {
+    "a": {
+      "item": "doom:argent_energy"
+    },
+    "p": {
+      "item": "minecraft:polished_blackstone_pressure_plate"
+    },
+    "s": {
+      "item": "minecraft:slime_block"
+    },
+    "t": {
+      "item": "minecraft:piston"
+    }
+  },
+  "result": {
+    "item": "doom:jump_pad"
+  }
 }

@@ -18,7 +18,8 @@ public class BaronModel extends GeoModel<BaronEntity> {
 
     @Override
     public ResourceLocation getTextureResource(BaronEntity object) {
-        return MCDoom.modResource("textures/entity/baronofhell-" + (object.getVariant() == 2 ? "green" : object.getVariant() == 3 ? "64" : "texturemap") + ".png");
+        return MCDoom.modResource(
+                "textures/entity/baronofhell-" + (object.getVariant() == 2 ? "green" : object.getVariant() == 3 ? "64" : "texturemap") + ".png");
     }
 
     @Override

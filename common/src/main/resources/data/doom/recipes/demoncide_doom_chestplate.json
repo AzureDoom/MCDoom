@@ -3,16 +3,16 @@
     "item": "doom:demoncide_doom_chestplate"
   },
   "type": "minecraft:crafting_shaped",
-   "pattern": [
-        "@",
-        "#"
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:emerald"
-        },
-		"@": {
-			"item": "doom:doom_chestplate"
-		}
+  "pattern": [
+    "@",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:emerald"
+    },
+    "@": {
+      "item": "doom:doom_chestplate"
     }
+  }
 }

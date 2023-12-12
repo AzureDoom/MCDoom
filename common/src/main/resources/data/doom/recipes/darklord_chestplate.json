@@ -1,17 +1,17 @@
 {
-	"type": "doom:gun_table",
-	"pattern": "ab",
-	"key": {
-		"a": {
-			"item": "doom:doom_chestplate",
-			"count": 1
-		},
-		"b": {
-			"item": "doom:argent_plate",
-			"count": 15
-		}
-	},
-	"result": {
-		"item": "doom:darklord_chestplate"
-	}
+  "type": "doom:gun_table",
+  "pattern": "ab",
+  "key": {
+    "a": {
+      "item": "doom:doom_chestplate",
+      "count": 1
+    },
+    "b": {
+      "item": "doom:argent_plate",
+      "count": 15
+    }
+  },
+  "result": {
+    "item": "doom:darklord_chestplate"
+  }
 }

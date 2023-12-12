@@ -3,16 +3,16 @@
     "item": "doom:gold_doom_chestplate"
   },
   "type": "minecraft:crafting_shaped",
-   "pattern": [
-        "@",
-        "#"
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:gold_ingot"
-        },
-		"@": {
-			"item": "doom:doom_chestplate"
-		}
+  "pattern": [
+    "@",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:gold_ingot"
+    },
+    "@": {
+      "item": "doom:doom_chestplate"
     }
+  }
 }

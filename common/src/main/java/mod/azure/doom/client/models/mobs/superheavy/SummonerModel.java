@@ -15,7 +15,8 @@ public class SummonerModel extends GeoModel<SummonerEntity> {
 
     @Override
     public ResourceLocation getTextureResource(SummonerEntity object) {
-        return new ResourceLocation(MCDoom.MOD_ID, "textures/entity/" + (object.getVariant() == 2 ? "summoner_red" : "summoner") + ".png");
+        return new ResourceLocation(MCDoom.MOD_ID,
+                "textures/entity/" + (object.getVariant() == 2 ? "summoner_red" : "summoner") + ".png");
     }
 
     @Override

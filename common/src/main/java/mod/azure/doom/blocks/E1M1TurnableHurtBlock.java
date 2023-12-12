@@ -24,7 +24,8 @@ public class E1M1TurnableHurtBlock extends Block {
 
     public E1M1TurnableHurtBlock() {
         super(Properties.of().sound(SoundType.METAL).lightLevel(litBlockEmission(15)));
-        this.registerDefaultState(this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.TRUE));
+        this.registerDefaultState(
+                this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.TRUE));
     }
 
     private static ToIntFunction<BlockState> litBlockEmission(int lightLevel) {
@@ -53,7 +54,8 @@ public class E1M1TurnableHurtBlock extends Block {
 
     @Override
     public void stepOn(@NotNull Level worldIn, @NotNull BlockPos pos, @NotNull BlockState state, Entity entityIn) {
-        if (!entityIn.fireImmune() && entityIn instanceof LivingEntity livingEntity && !EnchantmentHelper.hasFrostWalker(livingEntity))
+        if (!entityIn.fireImmune() && entityIn instanceof LivingEntity livingEntity && !EnchantmentHelper.hasFrostWalker(
+                livingEntity))
             entityIn.hurt(entityIn.damageSources().hotFloor(), 1.0F);
         super.stepOn(worldIn, pos, state, entityIn);
     }

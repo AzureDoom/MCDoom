@@ -41,7 +41,8 @@ public class PossessedWorkerRender extends GeoEntityRenderer<PossessedScientistE
                 poseStack.mulPose(Axis.YP.rotationDegrees(-30));
                 poseStack.mulPose(Axis.ZP.rotationDegrees(0));
                 poseStack.translate(0.02D, -0.8D, -0.1D);
-                super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
+                super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight,
+                        packedOverlay);
             }
         });
     }

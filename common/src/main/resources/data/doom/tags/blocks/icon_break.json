@@ -1,15 +1,15 @@
 {
-	"replace": "false",
-	"values": [
-		"#logs",
-		"#leaves",
-		"#planks",
-		"#wooden_slabs",
-		"#wooden_stairs",
-		"#wooden_fences",
-		"#fence_gates",
-		"#beds",
-		"#walls",
-		"#wart_blocks"
-	]
+  "replace": "false",
+  "values": [
+    "#logs",
+    "#leaves",
+    "#planks",
+    "#wooden_slabs",
+    "#wooden_stairs",
+    "#wooden_fences",
+    "#fence_gates",
+    "#beds",
+    "#walls",
+    "#wart_blocks"
+  ]
 }

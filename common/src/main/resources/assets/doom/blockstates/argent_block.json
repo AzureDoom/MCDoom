@@ -1,7 +1,7 @@
 {
-	"variants": {
-		"": {
-			"model": "doom:block/argent_block"
-		}
-	}
+  "variants": {
+    "": {
+      "model": "doom:block/argent_block"
+    }
+  }
 }

@@ -1,4 +1,9 @@
 {
-  "entities": ["player"],
-  "slots": ["belt", "charm"]
+  "entities": [
+    "player"
+  ],
+  "slots": [
+    "belt",
+    "charm"
+  ]
 }

@@ -22,27 +22,29 @@ import net.minecraft.world.phys.EntityHitResult;
 
 public class EnergyCellMobEntity extends AbstractHurtingProjectile implements GeoEntity {
 
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     private float directHitDamage = 3F;
     private LivingEntity shooter;
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public EnergyCellMobEntity(EntityType<? extends EnergyCellMobEntity> type, Level level) {
         super(type, level);
     }
 
-    public void setDirectHitDamage(float directHitDamage) {
-        this.directHitDamage = directHitDamage;
-    }
-
     public EnergyCellMobEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, float directHitDamage) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getEnergyCellMobEntity(), shooter, accelX, accelY, accelZ, worldIn);
+        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getEnergyCellMobEntity(), shooter, accelX, accelY,
+                accelZ, worldIn);
         this.shooter = shooter;
         walkDist = 3.0F;
         this.directHitDamage = directHitDamage;
     }
 
     public EnergyCellMobEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getEnergyCellMobEntity(), x, y, z, accelX, accelY, accelZ, worldIn);
+        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getEnergyCellMobEntity(), x, y, z, accelX, accelY,
+                accelZ, worldIn);
+    }
+
+    public void setDirectHitDamage(float directHitDamage) {
+        this.directHitDamage = directHitDamage;
     }
 
     @Override

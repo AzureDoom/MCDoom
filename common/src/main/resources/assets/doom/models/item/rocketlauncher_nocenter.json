@@ -1,119 +1,119 @@
 {
-	"credit": "Made with Blockbench",
-	"parent": "builtin/entity",
-	"texture_size": [
-		128,
-		128
-	],
-	"overrides": [
-		{
-			"predicate": {
-				"nocenter": 1
-			},
-			"model": "doom:item/rocketlauncher_nocenter"
-		}
-	],
-	"display": {
-		"thirdperson_righthand": {
-			"translation": [
-				0.25,
-				-2.75,
-				0
-			],
-			"scale": [
-				0.5,
-				0.5,
-				0.5
-			]
-		},
-		"thirdperson_lefthand": {
-			"translation": [
-				0.25,
-				-2.75,
-				0
-			],
-			"scale": [
-				0.5,
-				0.5,
-				0.5
-			]
-		},
-		"firstperson_righthand": {
-			"rotation": [
-				10,
-				0,
-				0
-			],
-			"translation": [
-				0.0,
-				-7.55,
-				0.5
-			]
-		},
-		"firstperson_lefthand": {
-			"rotation": [
-				10,
-				0,
-				0
-			],
-			"translation": [
-				0.0,
-				-7.55,
-				0.5
-			]
-		},
-		"ground": {
-			"translation": [
-				0,
-				0.5,
-				-4
-			],
-			"scale": [
-				0.7,
-				0.7,
-				0.7
-			]
-		},
-		"gui": {
-			"rotation": [
-				52,
-				-42,
-				22
-			],
-			"translation": [
-				2.5,
-				-1,
-				0
-			],
-			"scale": [
-				0.3,
-				0.3,
-				0.3
-			]
-		},
-		"head": {
-			"scale": [
-				0,
-				0,
-				0
-			]
-		},
-		"fixed": {
-			"rotation": [
-				0,
-				-90,
-				0
-			],
-			"translation": [
-				2.25,
-				-1.5,
-				0
-			],
-			"scale": [
-				0.3,
-				0.3,
-				0.3
-			]
-		}
-	}
+  "credit": "Made with Blockbench",
+  "parent": "builtin/entity",
+  "texture_size": [
+    128,
+    128
+  ],
+  "overrides": [
+    {
+      "predicate": {
+        "nocenter": 1
+      },
+      "model": "doom:item/rocketlauncher_nocenter"
+    }
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "translation": [
+        0.25,
+        -2.75,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "thirdperson_lefthand": {
+      "translation": [
+        0.25,
+        -2.75,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        10,
+        0,
+        0
+      ],
+      "translation": [
+        0.0,
+        -7.55,
+        0.5
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        10,
+        0,
+        0
+      ],
+      "translation": [
+        0.0,
+        -7.55,
+        0.5
+      ]
+    },
+    "ground": {
+      "translation": [
+        0,
+        0.5,
+        -4
+      ],
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    },
+    "gui": {
+      "rotation": [
+        52,
+        -42,
+        22
+      ],
+      "translation": [
+        2.5,
+        -1,
+        0
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ]
+    },
+    "head": {
+      "scale": [
+        0,
+        0,
+        0
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        -90,
+        0
+      ],
+      "translation": [
+        2.25,
+        -1.5,
+        0
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ]
+    }
+  }
 }

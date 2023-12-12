@@ -1,7 +1,7 @@
 {
-	"variants": {
-		"": {
-			"model": "doom:block/jump_pad"
-		}
-	}
+  "variants": {
+    "": {
+      "model": "doom:block/jump_pad"
+    }
+  }
 }

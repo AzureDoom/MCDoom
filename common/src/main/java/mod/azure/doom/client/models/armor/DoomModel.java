@@ -2,8 +2,8 @@ package mod.azure.doom.client.models.armor;
 
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.doom.MCDoom;
-import mod.azure.doom.items.enums.ArmorTypeEnum;
 import mod.azure.doom.items.armor.DoomArmor;
+import mod.azure.doom.items.enums.ArmorTypeEnum;
 import net.minecraft.resources.ResourceLocation;
 
 public class DoomModel<T extends DoomArmor> extends GeoModel<T> {

@@ -8,7 +8,8 @@ import java.util.ServiceLoader;
 
 public class Services {
 
-    public static final GeoRenderPhaseEventFactory GEO_RENDER_PHASE_EVENT_FACTORY = load(GeoRenderPhaseEventFactory.class);
+    public static final GeoRenderPhaseEventFactory GEO_RENDER_PHASE_EVENT_FACTORY = load(
+            GeoRenderPhaseEventFactory.class);
     public static final DoomNetwork NETWORK = load(DoomNetwork.class);
     public static final IPlatformHelper PLATFORM = load(IPlatformHelper.class);
     public static final DoomItemsHelper ITEMS_HELPER = load(DoomItemsHelper.class);

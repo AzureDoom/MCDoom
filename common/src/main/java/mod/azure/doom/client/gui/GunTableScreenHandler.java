@@ -18,11 +18,11 @@ import java.util.List;
 import java.util.Objects;
 
 public class GunTableScreenHandler extends AbstractContainerMenu {
+    protected static Level level;
     protected final Inventory playerInventory;
     protected final DoomGunInventory gunTableInventory;
     protected final ContainerLevelAccess context;
     protected int recipeIndex;
-    protected static Level level;
 
     // client
     public GunTableScreenHandler(int syncId, Inventory playerInventory) {
@@ -56,7 +56,8 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
         if (!world.isClientSide()) {
             var serverPlayerEntity = (ServerPlayer) player;
             var itemStack = ItemStack.EMPTY;
-            var optional = Objects.requireNonNull(world.getServer()).getRecipeManager().getRecipeFor(GunTableRecipe.Type.INSTANCE, craftingInventory, world);
+            var optional = Objects.requireNonNull(world.getServer()).getRecipeManager().getRecipeFor(
+                    GunTableRecipe.Type.INSTANCE, craftingInventory, world);
             if (optional.isPresent()) itemStack = optional.get().assemble(craftingInventory, level.registryAccess());
 
             craftingInventory.setItem(5, itemStack);
@@ -65,7 +66,8 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
     }
 
     public void onContentChanged() {
-        this.context.execute((world, blockPos) -> updateResult(this.containerId, world, this.playerInventory.player, this.gunTableInventory));
+        this.context.execute((world, blockPos) -> updateResult(this.containerId, world, this.playerInventory.player,
+                this.gunTableInventory));
     }
 
     @Override
@@ -105,7 +107,8 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
     }
 
     public List<GunTableRecipe> getRecipes() {
-        var list = new ArrayList<>(playerInventory.player.level().getRecipeManager().getAllRecipesFor(GunTableRecipe.Type.INSTANCE));
+        var list = new ArrayList<>(
+                playerInventory.player.level().getRecipeManager().getAllRecipesFor(GunTableRecipe.Type.INSTANCE));
         list.sort(null);
         return list;
     }
@@ -129,7 +132,8 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
                 var ingredient = gunTableRecipe.getIngredientForSlot(i);
                 if (!ingredient.isEmpty()) {
                     var possibleItems = ingredient.getItems();
-                    moveFromInventoryToPaymentSlot(i, new ItemStack(possibleItems[0].getItem(), gunTableRecipe.countRequired(i)));
+                    moveFromInventoryToPaymentSlot(i,
+                            new ItemStack(possibleItems[0].getItem(), gunTableRecipe.countRequired(i)));
                 }
             }
         }
@@ -156,7 +160,8 @@ public class GunTableScreenHandler extends AbstractContainerMenu {
     }
 
     private boolean equals(ItemStack itemStack, ItemStack otherItemStack) {
-        return itemStack.getItem() == otherItemStack.getItem() && ItemStack.isSameItemSameTags(itemStack, otherItemStack);
+        return itemStack.getItem() == otherItemStack.getItem() && ItemStack.isSameItemSameTags(itemStack,
+                otherItemStack);
     }
 
     @Override

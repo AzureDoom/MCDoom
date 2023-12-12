@@ -4,6 +4,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.RecordItem;
+import org.jetbrains.annotations.NotNull;
 
 public class E1M1MusicDisc extends RecordItem {
 
@@ -12,7 +13,7 @@ public class E1M1MusicDisc extends RecordItem {
     }
 
     @Override
-    public boolean isFoil(ItemStack stack) {
+    public boolean isFoil(@NotNull ItemStack stack) {
         return false;
     }
 

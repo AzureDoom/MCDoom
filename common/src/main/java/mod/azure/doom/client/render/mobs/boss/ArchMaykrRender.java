@@ -22,7 +22,8 @@ public class ArchMaykrRender extends GeoEntityRenderer<ArchMakyrEntity> {
 
     @Override
     public void preRender(PoseStack poseStack, ArchMakyrEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
+                packedOverlay, red, green, blue, alpha);
         if (animatable.getEntityData().get(ArchMakyrEntity.DEATH_STATE) == 5) {
             model.getBone("rWing4").get().setHidden(true);
             if (animatable.getVariant() == 1) {

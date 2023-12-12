@@ -45,6 +45,7 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -56,8 +57,11 @@ public class Hellknight2016Entity extends DemonEntity implements SmartBrainOwner
         super(entityType, worldIn);
     }
 
-    public static AttributeSupplier.Builder createMobAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, MCDoom.config.hellknight2016_health).add(Attributes.ATTACK_DAMAGE, MCDoom.config.hellknight2016_melee_damage).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+    public static AttributeSupplier.@NotNull Builder createMobAttributes() {
+        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH,
+                MCDoom.config.hellknight2016_health).add(Attributes.ATTACK_DAMAGE,
+                MCDoom.config.hellknight2016_melee_damage).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(
+                Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
     }
 
     @Override
@@ -73,10 +77,13 @@ public class Hellknight2016Entity extends DemonEntity implements SmartBrainOwner
         }).setSoundKeyframeHandler(event -> {
             if (event.getKeyframeData().getSound().matches("walk"))
                 if (level().isClientSide())
-                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+                    level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                            mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F,
+                            1.0F, false);
             if (event.getKeyframeData().getSound().matches("attack"))
                 if (level().isClientSide())
-                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_ATTACK_CRIT,
+                            SoundSource.HOSTILE, 0.25F, 1.0F, false);
         }).triggerableAnim("attack", RawAnimation.begin().then("jumpattack", LoopType.PLAY_ONCE)));
     }
 
@@ -92,28 +99,40 @@ public class Hellknight2016Entity extends DemonEntity implements SmartBrainOwner
     }
 
     @Override
-    protected Brain.Provider<?> brainProvider() {
+    protected Brain.@NotNull Provider<?> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
 
     @Override
     public List<ExtendedSensor<Hellknight2016Entity>> getSensors() {
-        return ObjectArrayList.of(new NearbyLivingEntitySensor<Hellknight2016Entity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<Hellknight2016Entity>());
+        return ObjectArrayList.of(new NearbyLivingEntitySensor<Hellknight2016Entity>().setPredicate(
+                        (target, entity) -> target.isAlive() && entity.hasLineOfSight(
+                                target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
+                new UnreachableTargetSensor<Hellknight2016Entity>());
     }
 
     @Override
     public BrainActivityGroup<Hellknight2016Entity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>());
+        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300),
+                new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>());
     }
 
     @Override
     public BrainActivityGroup<Hellknight2016Entity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<Hellknight2016Entity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player player && player.isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.75f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<Hellknight2016Entity>(
+                        new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()),
+                        new SetPlayerLookTarget<>().stopIf(
+                                target -> !target.isAlive() || target instanceof Player player && player.isCreative()),
+                        new SetRandomLookTarget<>()),
+                new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.75f),
+                        new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
     }
 
     @Override
     public BrainActivityGroup<Hellknight2016Entity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.75F), new DemonMeleeAttack<>(15));
+        return BrainActivityGroup.fightTasks(
+                new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.75F), new DemonMeleeAttack<>(15));
     }
 
     @Override
@@ -162,12 +181,12 @@ public class Hellknight2016Entity extends DemonEntity implements SmartBrainOwner
     }
 
     @Override
-    protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
+    protected float getStandingEyeHeight(@NotNull Pose poseIn, @NotNull EntityDimensions sizeIn) {
         return 2.75F;
     }
 
     @Override
-    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+    protected SoundEvent getHurtSound(@NotNull DamageSource damageSourceIn) {
         return mod.azure.doom.platform.Services.SOUNDS_HELPER.getHELLKNIGHT_HURT();
     }
 

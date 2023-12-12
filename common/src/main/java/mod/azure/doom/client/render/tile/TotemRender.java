@@ -5,7 +5,7 @@ import mod.azure.doom.blocks.blockentities.TotemEntity;
 import mod.azure.doom.client.models.tile.TotemModel;
 
 public class TotemRender extends GeoBlockRenderer<TotemEntity> {
-	public TotemRender() {
-		super(new TotemModel());
-	}
+    public TotemRender() {
+        super(new TotemModel());
+    }
 }

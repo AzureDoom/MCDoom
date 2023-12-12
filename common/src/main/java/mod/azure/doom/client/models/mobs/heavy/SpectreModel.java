@@ -17,12 +17,14 @@ public class SpectreModel extends GeoModel<SpectreEntity> {
 
     @Override
     public ResourceLocation getTextureResource(SpectreEntity object) {
-        return MCDoom.modResource("textures/entity/" + (object.getVariant() == 2 ? "pinky-texturemap" : object.getVariant() == 3 ? "pinky_green" : "pinky2016") + ".png");
+        return MCDoom.modResource(
+                "textures/entity/" + (object.getVariant() == 2 ? "pinky-texturemap" : object.getVariant() == 3 ? "pinky_green" : "pinky2016") + ".png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(SpectreEntity object) {
-        return new ResourceLocation(MCDoom.MOD_ID, "animations/" + (object.getVariant() > 1 ? "pinky_" : "pinky2016.") + "animation.json");
+        return new ResourceLocation(MCDoom.MOD_ID,
+                "animations/" + (object.getVariant() > 1 ? "pinky_" : "pinky2016.") + "animation.json");
     }
 
     @Override
@@ -33,7 +35,8 @@ public class SpectreModel extends GeoModel<SpectreEntity> {
         var entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
 
         if (head != null) {
-            head.setRotX((entityData.headPitch() + (animatable.getVariant() == 1 ? 90 : 30)) * ((float) Math.PI / 360F));
+            head.setRotX(
+                    (entityData.headPitch() + (animatable.getVariant() == 1 ? 90 : 30)) * ((float) Math.PI / 360F));
             head.setRotY(entityData.netHeadYaw() * ((float) Math.PI / 500F));
         }
     }

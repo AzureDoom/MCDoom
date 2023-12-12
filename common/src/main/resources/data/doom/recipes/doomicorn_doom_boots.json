@@ -3,16 +3,16 @@
     "item": "doom:doomicorn_doom_boots"
   },
   "type": "minecraft:crafting_shaped",
-   "pattern": [
-        "@",
-        "#"
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:shulker_shell"
-        },
-		"@": {
-			"item": "doom:doom_boots"
-		}
+  "pattern": [
+    "@",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:shulker_shell"
+    },
+    "@": {
+      "item": "doom:doom_boots"
     }
+  }
 }

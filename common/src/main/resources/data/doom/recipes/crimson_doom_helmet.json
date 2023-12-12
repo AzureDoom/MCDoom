@@ -3,16 +3,16 @@
     "item": "doom:crimson_doom_helmet"
   },
   "type": "minecraft:crafting_shaped",
-   "pattern": [
-        "@",
-        "#"
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:red_dye"
-        },
-		"@": {
-			"item": "doom:doom_helmet"
-		}
+  "pattern": [
+    "@",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:red_dye"
+    },
+    "@": {
+      "item": "doom:doom_helmet"
     }
+  }
 }

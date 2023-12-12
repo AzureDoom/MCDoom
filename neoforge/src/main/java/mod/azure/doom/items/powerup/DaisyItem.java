@@ -32,9 +32,14 @@ public class DaisyItem extends Item {
         super(new Properties().stacksTo(1));
     }
 
+    public static boolean isRingInCuriosSlot(ItemStack belt, LivingEntity player) {
+        return CuriosApi.getCurio(belt).isPresent();
+    }
+
     @Override
     public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        tooltip.add(Component.translatable("doom.daisy1.text").withStyle(ChatFormatting.YELLOW).withStyle(ChatFormatting.ITALIC));
+        tooltip.add(Component.translatable("doom.daisy1.text").withStyle(ChatFormatting.YELLOW).withStyle(
+                ChatFormatting.ITALIC));
         tooltip.add(Component.translatable("doom.daisy2.text").withStyle(ChatFormatting.ITALIC));
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
@@ -78,7 +83,8 @@ public class DaisyItem extends Item {
 
             @Override
             public boolean canEquip(SlotContext slotContext) {
-                return !CuriosApi.getCuriosHelper().findFirstCurio(slotContext.entity(), NeoDoomItems.DAISY.get()).isPresent();
+                return !CuriosApi.getCuriosHelper().findFirstCurio(slotContext.entity(),
+                        NeoDoomItems.DAISY.get()).isPresent();
             }
 
             @Override
@@ -97,9 +103,5 @@ public class DaisyItem extends Item {
                 return CuriosCapability.ITEM.orEmpty(cap, curioOpt);
             }
         };
-    }
-
-    public static boolean isRingInCuriosSlot(ItemStack belt, LivingEntity player) {
-        return CuriosApi.getCurio(belt).isPresent();
     }
 }

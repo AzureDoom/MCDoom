@@ -12,6 +12,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
@@ -27,20 +28,8 @@ public abstract class CustomDelayedMeleeBehaviour<E extends DemonEntity> extends
         runFor(entity -> Math.max(delayTicks, 60));
     }
 
-    /**
-     * A callback for when the delayed action is called.
-     *
-     * @param callback The callback
-     * @return this
-     */
-    public final CustomDelayedMeleeBehaviour<E> whenActivating(Consumer<E> callback) {
-        this.delayedCallback = callback;
-
-        return this;
-    }
-
     @Override
-    protected final void start(ServerLevel level, E entity, long gameTime) {
+    protected final void start(@NotNull ServerLevel level, @NotNull E entity, long gameTime) {
         if (this.delayTime > 0) {
             this.delayFinishedAt = gameTime + this.delayTime;
             super.start(level, entity, gameTime);
@@ -52,28 +41,18 @@ public abstract class CustomDelayedMeleeBehaviour<E extends DemonEntity> extends
         if (!(entity instanceof MarauderEntity)) entity.triggerAnim("livingController", "melee");
         if (entity instanceof MarauderEntity marauder) {
             marauder.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 100, false, false));
-            marauder.triggerAnim("attackController", switch (marauder.getRandom().nextInt(3)) {
-                case 0 -> "cut";
-                case 1 -> "cut";
-                case 2 -> "hook";
-                default -> "cut";
-            });
+            marauder.triggerAnim("attackController", marauder.getRandom().nextInt(3) == 2 ? "hook" : "cut");
         }
         if (entity instanceof MancubusEntity mancubusEntity) mancubusEntity.setAttackingState(3);
         if (entity instanceof DoomHunterEntity doomHunterEntity) doomHunterEntity.setAttackingState(3);
 
         if (entity instanceof GladiatorEntity gladiatorEntity) {
             if (gladiatorEntity.getDeathState() == 0)
-                gladiatorEntity.triggerAnim("attackController", switch (gladiatorEntity.getRandom().nextInt(2)) {
-                    case 0 -> "meleeone";
-                    case 1 -> "meleetwo";
-                    default -> "meleeone";
-                });
-            else gladiatorEntity.triggerAnim("attackController", switch (gladiatorEntity.getRandom().nextInt(2)) {
-                case 0 -> "melee2one";
-                case 1 -> "melee2two";
-                default -> "melee2one";
-            });
+                gladiatorEntity.triggerAnim("attackController",
+                        gladiatorEntity.getRandom().nextInt(3) == 1 ? "meleetwo" : "meleeone");
+            else
+                gladiatorEntity.triggerAnim("attackController",
+                        gladiatorEntity.getRandom().nextInt(3) == 1 ? "melee2two" : "melee2one");
             gladiatorEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 100, false, false));
         }
 
@@ -88,15 +67,17 @@ public abstract class CustomDelayedMeleeBehaviour<E extends DemonEntity> extends
         if (entity instanceof Hellknight2016Entity hellknight2016) {
             hellknight2016.triggerAnim("livingController", "attack");
             if (hellknight2016.getTarget() != null && !hellknight2016.level().isClientSide()) {
-                var vec3d2 = new Vec3(hellknight2016.getTarget().getX() - hellknight2016.getX(), 0.0, hellknight2016.getTarget().getZ() - hellknight2016.getZ());
+                var vec3d2 = new Vec3(hellknight2016.getTarget().getX() - hellknight2016.getX(), 0.0,
+                        hellknight2016.getTarget().getZ() - hellknight2016.getZ());
                 vec3d2 = vec3d2.normalize().scale(0.8).add(hellknight2016.getDeltaMovement().scale(0.4));
                 hellknight2016.setDeltaMovement(vec3d2.x, 0.6F, vec3d2.z);
             }
         }
+
     }
 
     @Override
-    protected final void stop(ServerLevel level, E entity, long gameTime) {
+    protected final void stop(@NotNull ServerLevel level, @NotNull E entity, long gameTime) {
         super.stop(level, entity, gameTime);
 
         this.delayFinishedAt = 0;
@@ -109,7 +90,7 @@ public abstract class CustomDelayedMeleeBehaviour<E extends DemonEntity> extends
     }
 
     @Override
-    protected final void tick(ServerLevel level, E entity, long gameTime) {
+    protected final void tick(@NotNull ServerLevel level, @NotNull E entity, long gameTime) {
         super.tick(level, entity, gameTime);
 
         if (this.delayFinishedAt <= gameTime) {

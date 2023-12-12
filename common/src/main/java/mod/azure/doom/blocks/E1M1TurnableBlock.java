@@ -19,7 +19,8 @@ public class E1M1TurnableBlock extends Block {
 
     public E1M1TurnableBlock() {
         super(Properties.of().sound(SoundType.METAL).lightLevel(litBlockEmission(15)));
-        this.registerDefaultState(this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.TRUE));
+        this.registerDefaultState(
+                this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.TRUE));
     }
 
     private static ToIntFunction<BlockState> litBlockEmission(int lightLevel) {

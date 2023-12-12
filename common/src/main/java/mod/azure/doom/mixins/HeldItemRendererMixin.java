@@ -35,13 +35,16 @@ public abstract class HeldItemRendererMixin {
     @Inject(method = "tick", at = @At("TAIL"))
     public void cancelAnimation(CallbackInfo ci) {
         final var clientPlayerEntity = minecraft.player;
+        assert clientPlayerEntity != null;
         final var itemStack = clientPlayerEntity.getMainHandItem();
         final var itemStack2 = clientPlayerEntity.getOffhandItem();
-        if (mainHandItem.getItem() instanceof DoomBaseItem && itemStack.getItem() instanceof DoomBaseItem && ItemStack.isSameItem(mainHandItem, itemStack)) {
+        if (mainHandItem.getItem() instanceof DoomBaseItem && itemStack.getItem() instanceof DoomBaseItem && ItemStack.isSameItem(
+                mainHandItem, itemStack)) {
             mainHandHeight = 1;
             mainHandItem = itemStack;
         }
-        if (offHandItem.getItem() instanceof DoomBaseItem && itemStack2.getItem() instanceof DoomBaseItem && ItemStack.isSameItem(offHandItem, itemStack2)) {
+        if (offHandItem.getItem() instanceof DoomBaseItem && itemStack2.getItem() instanceof DoomBaseItem && ItemStack.isSameItem(
+                offHandItem, itemStack2)) {
             offHandHeight = 1;
             offHandItem = itemStack2;
         }

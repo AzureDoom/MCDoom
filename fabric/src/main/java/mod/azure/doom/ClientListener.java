@@ -1,5 +1,7 @@
 package mod.azure.doom;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import mod.azure.doom.client.DoomKeyBinds;
 import mod.azure.doom.client.gui.GunTableScreen;
 import mod.azure.doom.client.render.mobs.ambient.CueBallRender;
 import mod.azure.doom.client.render.mobs.ambient.GoreNestRender;
@@ -22,19 +24,28 @@ import mod.azure.doom.registry.FabricDoomItems;
 import mod.azure.doom.registry.FabricDoomParticles;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
+import org.lwjgl.glfw.GLFW;
 
 public final class ClientListener implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        DoomKeyBinds.HOOK = new KeyMapping("key.doom.meathook", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_H,
+                "category.doom.binds");
+        KeyBindingHelper.registerKeyBinding(DoomKeyBinds.HOOK);
+        DoomKeyBinds.FIRETYPE = new KeyMapping("key.doom.firetype", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_G,
+                "category.doom.binds");
+        KeyBindingHelper.registerKeyBinding(DoomKeyBinds.FIRETYPE);
         this.initItemPlacement();
         this.initMobRenders();
         MenuScreens.register(FabricMCDoomMod.SCREEN_HANDLER_TYPE, GunTableScreen::new);
@@ -94,16 +105,11 @@ public final class ClientListener implements ClientModInitializer {
         EntityRendererRegistry.register(FabricDoomEntities.REVENANT2016, Revenant2016Render::new);
         EntityRendererRegistry.register(FabricDoomEntities.GLADIATOR, GladiatorRender::new);
         EntityRendererRegistry.register(FabricDoomEntities.CARCASS, CarcassRender::new);
-        EntityRendererRegistry.register(FabricDoomEntities.ARGENT_BOLT, ArgentBoltRender::new);
         EntityRendererRegistry.register(FabricDoomEntities.GRENADE, GrenadeRender::new);
-        EntityRendererRegistry.register(FabricDoomEntities.SHOTGUN_SHELL, ShotgunShellRender::new);
-        EntityRendererRegistry.register(FabricDoomEntities.ENERGY_CELL, EnergyCellRender::new);
         EntityRendererRegistry.register(FabricDoomEntities.BFG_CELL, BFGCellRender::new);
         EntityRendererRegistry.register(FabricDoomEntities.ROCKET, RocketRender::new);
         EntityRendererRegistry.register(FabricDoomEntities.BARENBLAST, BarenBlastRender::new);
         EntityRendererRegistry.register(FabricDoomEntities.BULLETS, BulletsRender::new);
-        EntityRendererRegistry.register(FabricDoomEntities.CHAINGUN_BULLET, ChaingunBulletRender::new);
-        EntityRendererRegistry.register(FabricDoomEntities.UNMAYKR, UnmaykrBulletRender::new);
         EntityRendererRegistry.register(FabricDoomEntities.ROCKET_MOB, RocketMobRender::new);
         EntityRendererRegistry.register(FabricDoomEntities.ENERGY_CELL_MOB, EnergyCellMobRender::new);
         EntityRendererRegistry.register(FabricDoomEntities.CHAINGUN_MOB, ChaingunMobRender::new);
@@ -112,34 +118,54 @@ public final class ClientListener implements ClientModInitializer {
         EntityRendererRegistry.register(FabricDoomEntities.DRONEBOLT_MOB, DroneBoltRender::new);
         EntityRendererRegistry.register(FabricDoomEntities.BLOODBOLT_MOB, BloodBoltRender::new);
         EntityRendererRegistry.register(FabricDoomEntities.FIRE_MOB, FireProjectileRender::new);
-        BlockEntityRenderers.register(FabricDoomEntities.TOTEM, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new TotemRender());
-        BlockEntityRenderers.register(FabricDoomEntities.GUN_TABLE_ENTITY, (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new GunCraftingRender());
+        BlockEntityRenderers.register(FabricDoomEntities.TOTEM,
+                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new TotemRender());
+        BlockEntityRenderers.register(FabricDoomEntities.GUN_TABLE_ENTITY,
+                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new GunCraftingRender());
         BlockRenderLayerMap.INSTANCE.putBlock(FabricDoomBlocks.JUMP_PAD, RenderType.translucent());
         EntityRendererRegistry.register(FabricDoomEntities.MEATHOOOK_ENTITY, MeatHookEntityRenderer::new);
     }
 
     public void initItemPlacement() {
         // Crucible
-        ItemProperties.register(FabricDoomItems.CRUCIBLESWORD, new ResourceLocation("broken"), (itemStack, clientWorld, livingEntity, seed) ->
-                CommonUtils.isUsable(itemStack) ? 0.0F : 1.0F);
+        ItemProperties.register(FabricDoomItems.CRUCIBLESWORD, new ResourceLocation("broken"),
+                (itemStack, clientWorld, livingEntity, seed) ->
+                        CommonUtils.isUsable(itemStack) ? 0.0F : 1.0F);
         // Marauder Axe
-        ItemProperties.register(FabricDoomItems.AXE_OPEN, new ResourceLocation("broken"), (itemStack, clientWorld, livingEntity, seed) -> itemStack.getDamageValue() < itemStack.getMaxDamage() - 1 ? 0.0F : 1.0F);
+        ItemProperties.register(FabricDoomItems.AXE_OPEN, new ResourceLocation("broken"),
+                (itemStack, clientWorld, livingEntity, seed) -> itemStack.getDamageValue() < itemStack.getMaxDamage() - 1 ? 0.0F : 1.0F);
         // NonCenter
-        ItemProperties.register(FabricDoomItems.SG, new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F);
-        ItemProperties.register(FabricDoomItems.ROCKETLAUNCHER, new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F);
-        ItemProperties.register(FabricDoomItems.PLASMAGUN, new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F);
-        ItemProperties.register(FabricDoomItems.HEAVYCANNON, new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F);
-        ItemProperties.register(FabricDoomItems.UNMAYKR, new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F);
-        ItemProperties.register(FabricDoomItems.UNMAKER, new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F);
-        ItemProperties.register(FabricDoomItems.CHAINGUN, new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F);
-        ItemProperties.register(FabricDoomItems.BFG_ETERNAL, new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F);
-        ItemProperties.register(FabricDoomItems.BALLISTA, new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F);
-        ItemProperties.register(FabricDoomItems.SSG, new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F);
-        ItemProperties.register(FabricDoomItems.PISTOL, new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F);
-        ItemProperties.register(FabricDoomItems.DPLASMARIFLE, new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F);
-        ItemProperties.register(FabricDoomItems.DGAUSS, new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F);
-        ItemProperties.register(FabricDoomItems.DSG, new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F);
-        ItemProperties.register(FabricDoomItems.CHAINSAW, new ResourceLocation("stalled"), (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.isUsable(itemStack) ? 0.0F : 1.0F);
-        ItemProperties.register(FabricDoomItems.CHAINSAW64, new ResourceLocation("stalled"), (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.isUsable(itemStack) ? 0.0F : 1.0F);
+        ItemProperties.register(FabricDoomItems.SG, new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered() ? 1.0F : 0.0F);
+        ItemProperties.register(FabricDoomItems.ROCKETLAUNCHER, new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered() ? 1.0F : 0.0F);
+        ItemProperties.register(FabricDoomItems.PLASMAGUN, new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered() ? 1.0F : 0.0F);
+        ItemProperties.register(FabricDoomItems.HEAVYCANNON, new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered() ? 1.0F : 0.0F);
+        ItemProperties.register(FabricDoomItems.UNMAYKR, new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered() ? 1.0F : 0.0F);
+        ItemProperties.register(FabricDoomItems.UNMAKER, new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered() ? 1.0F : 0.0F);
+        ItemProperties.register(FabricDoomItems.CHAINGUN, new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered() ? 1.0F : 0.0F);
+        ItemProperties.register(FabricDoomItems.BFG_ETERNAL, new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered() ? 1.0F : 0.0F);
+        ItemProperties.register(FabricDoomItems.BALLISTA, new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered() ? 1.0F : 0.0F);
+        ItemProperties.register(FabricDoomItems.SSG, new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered() ? 1.0F : 0.0F);
+        ItemProperties.register(FabricDoomItems.PISTOL, new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered() ? 1.0F : 0.0F);
+        ItemProperties.register(FabricDoomItems.DPLASMARIFLE, new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered() ? 1.0F : 0.0F);
+        ItemProperties.register(FabricDoomItems.DGAUSS, new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered() ? 1.0F : 0.0F);
+        ItemProperties.register(FabricDoomItems.DSG, new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.nonCentered() ? 1.0F : 0.0F);
+        ItemProperties.register(FabricDoomItems.CHAINSAW, new ResourceLocation("stalled"),
+                (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.isUsable(itemStack) ? 0.0F : 1.0F);
+        ItemProperties.register(FabricDoomItems.CHAINSAW64, new ResourceLocation("stalled"),
+                (itemStack, clientWorld, livingEntity, seed) -> CommonUtils.isUsable(itemStack) ? 0.0F : 1.0F);
     }
 }

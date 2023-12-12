@@ -10,7 +10,8 @@ import java.util.function.ToIntFunction;
 public class ArgentBlock extends Block {
 
     public ArgentBlock() {
-        super(Properties.of().explosionResistance(30).strength(4.0F).sound(SoundType.METAL).lightLevel(litBlockEmission(15)));
+        super(Properties.of().explosionResistance(30).strength(4.0F).sound(SoundType.METAL).lightLevel(
+                litBlockEmission(15)));
     }
 
     private static ToIntFunction<BlockState> litBlockEmission(int lightLevel) {

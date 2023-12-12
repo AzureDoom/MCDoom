@@ -1,17 +1,17 @@
 {
-	"type": "doom:gun_table",
-	"pattern": "ab",
-	"key": {
-		"a": {
-			"item": "doom:doom_leggings",
-			"count": 1
-		},
-		"b": {
-			"item": "doom:argent_plate",
-			"count": 15
-		}
-	},
-	"result": {
-		"item": "doom:darklord_leggings"
-	}
+  "type": "doom:gun_table",
+  "pattern": "ab",
+  "key": {
+    "a": {
+      "item": "doom:doom_leggings",
+      "count": 1
+    },
+    "b": {
+      "item": "doom:argent_plate",
+      "count": 15
+    }
+  },
+  "result": {
+    "item": "doom:darklord_leggings"
+  }
 }

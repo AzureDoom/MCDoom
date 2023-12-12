@@ -1,21 +1,21 @@
 {
-	"type": "doom:gun_table",
-	"pattern": "abc",
-	"key": {
-		"a": {
-			"item": "doom:argent_energy",
-			"count": 50
-		},
-		"b": {
-			"item": "minecraft:nether_star",
-			"count": 3
-		},
-		"c": {
-			"item": "doom:argent_plate",
-			"count": 15
-		}
-	},
-	"result": {
-		"item": "doom:bfg9000"
-	}
+  "type": "doom:gun_table",
+  "pattern": "abc",
+  "key": {
+    "a": {
+      "item": "doom:argent_energy",
+      "count": 50
+    },
+    "b": {
+      "item": "minecraft:nether_star",
+      "count": 3
+    },
+    "c": {
+      "item": "doom:argent_plate",
+      "count": 15
+    }
+  },
+  "result": {
+    "item": "doom:bfg9000"
+  }
 }

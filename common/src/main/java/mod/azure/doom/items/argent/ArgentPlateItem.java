@@ -6,6 +6,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -16,8 +17,9 @@ public class ArgentPlateItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, Level level, List<Component> list, TooltipFlag tooltipFlag) {
-        list.add(Component.translatable("doom.argent_plate.text").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.ITALIC));
+    public void appendHoverText(@NotNull ItemStack itemStack, Level level, List<Component> list, @NotNull TooltipFlag tooltipFlag) {
+        list.add(Component.translatable("doom.argent_plate.text").withStyle(ChatFormatting.RED).withStyle(
+                ChatFormatting.ITALIC));
         super.appendHoverText(itemStack, level, list, tooltipFlag);
     }
 

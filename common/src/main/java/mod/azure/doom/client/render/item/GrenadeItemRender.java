@@ -6,8 +6,8 @@ import mod.azure.doom.items.weapons.GrenadeItem;
 
 public class GrenadeItemRender extends GeoItemRenderer<GrenadeItem> {
 
-	public GrenadeItemRender() {
-		super(new GrenadeItemModel());
-	}
+    public GrenadeItemRender() {
+        super(new GrenadeItemModel());
+    }
 
 }

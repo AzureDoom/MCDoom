@@ -10,7 +10,13 @@ import net.minecraft.resources.ResourceLocation;
 
 public class DoomHunterModel extends GeoModel<DoomHunterEntity> {
 
-    private static final ResourceLocation[] TEX = {MCDoom.modResource("textures/entity/doomhunter.png"), MCDoom.modResource("textures/entity/doomhunter_1.png"), MCDoom.modResource("textures/entity/doomhunter_2.png"), MCDoom.modResource("textures/entity/doomhunter_3.png"), MCDoom.modResource("textures/entity/doomhunter_4.png"), MCDoom.modResource("textures/entity/doomhunter_5.png"), MCDoom.modResource("textures/entity/doomhunter_6.png"),
+    private static final ResourceLocation[] TEX = {MCDoom.modResource(
+            "textures/entity/doomhunter.png"), MCDoom.modResource(
+            "textures/entity/doomhunter_1.png"), MCDoom.modResource(
+            "textures/entity/doomhunter_2.png"), MCDoom.modResource(
+            "textures/entity/doomhunter_3.png"), MCDoom.modResource(
+            "textures/entity/doomhunter_4.png"), MCDoom.modResource(
+            "textures/entity/doomhunter_5.png"), MCDoom.modResource("textures/entity/doomhunter_6.png"),
             MCDoom.modResource("textures/entity/doomhunter_7.png")};
 
     @Override

@@ -18,15 +18,15 @@ public class DoomDisplay implements Display {
     public final GunTableRecipe recipe2;
 
     public DoomDisplay(GunTableRecipe recipe) {
-        input = Arrays.stream(recipe.ingredients).map(Pair::getLeft).map(EntryIngredients::ofIngredient).toList();
-        count = Arrays.stream(recipe.ingredients).map(Pair::getRight).toList();
-        output = EntryIngredients.of(recipe.output);
+        input = Arrays.stream(recipe.ingredients()).map(Pair::getLeft).map(EntryIngredients::ofIngredient).toList();
+        count = Arrays.stream(recipe.ingredients()).map(Pair::getRight).toList();
+        output = EntryIngredients.of(recipe.output());
         recipe2 = recipe;
     }
 
     @Override
     public List<EntryIngredient> getInputEntries() {
-        return Arrays.stream(recipe2.ingredients).map(Pair::getLeft).map(EntryIngredients::ofIngredient).toList();
+        return Arrays.stream(recipe2.ingredients()).map(Pair::getLeft).map(EntryIngredients::ofIngredient).toList();
     }
 
     @Override

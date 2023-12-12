@@ -1,15 +1,15 @@
 {
-	"name": "doom:motherdemon4",
-	"fallback": "minecraft:empty",
-	"elements": [
-		{
-			"weight": 1,
-			"element": {
-				"location": "doom:motherdemon3a",
-				"processors": "doom:randomize_stonebrick",
-				"projection": "rigid",
-				"element_type": "minecraft:single_pool_element"
-			}
-		}
-	]
+  "name": "doom:motherdemon4",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "doom:motherdemon3a",
+        "processors": "doom:randomize_stonebrick",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
 }

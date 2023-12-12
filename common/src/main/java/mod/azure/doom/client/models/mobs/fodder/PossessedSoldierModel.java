@@ -11,16 +11,22 @@ import net.minecraft.util.Mth;
 
 public class PossessedSoldierModel extends GeoModel<PossessedSoldierEntity> {
 
-    private static final ResourceLocation[] TEX = {MCDoom.modResource("textures/entity/possessedsoldier-eternal_flames_1.png"), MCDoom.modResource("textures/entity/possessedsoldier-eternal_flames_2.png")};
+    private static final ResourceLocation[] TEX = {MCDoom.modResource(
+            "textures/entity/possessedsoldier-eternal_flames_1.png"), MCDoom.modResource(
+            "textures/entity/possessedsoldier-eternal_flames_2.png")};
 
     @Override
     public ResourceLocation getModelResource(PossessedSoldierEntity object) {
-        return new ResourceLocation(MCDoom.MOD_ID, "geo/" + (object.getVariant() == 3 ? "possessedsoldier-shield" : object.getVariant() == 2 ? "possessedsoldier-eternal" : "possessedsoldier") + ".geo.json");
+        return new ResourceLocation(MCDoom.MOD_ID,
+                "geo/" + (object.getVariant() == 3 ? "possessedsoldier-shield" : object.getVariant() == 2 ? "possessedsoldier-eternal" : "possessedsoldier") + ".geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(PossessedSoldierEntity object) {
-        return (object.getVariant() == 2 && object.isAggressive() ? TEX[(object.getFlameTimer())] : object.getVariant() == 2 && !object.isAggressive() ? MCDoom.modResource("textures/entity/possessedsoldier-eternal.png") : object.getVariant() == 3 ? MCDoom.modResource("textures/entity/possessedsoldier-shield.png") : MCDoom.modResource("textures/entity/possessedsoldier.png"));
+        return (object.getVariant() == 2 && object.isAggressive() ? TEX[(object.getFlameTimer())] : object.getVariant() == 2 && !object.isAggressive() ? MCDoom.modResource(
+                "textures/entity/possessedsoldier-eternal.png") : object.getVariant() == 3 ? MCDoom.modResource(
+                "textures/entity/possessedsoldier-shield.png") : MCDoom.modResource(
+                "textures/entity/possessedsoldier.png"));
     }
 
     @Override

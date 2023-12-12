@@ -3,16 +3,16 @@
     "item": "doom:maykr_doom_helmet"
   },
   "type": "minecraft:crafting_shaped",
-   "pattern": [
-        "@",
-        "#"
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:quartz"
-        },
-		"@": {
-			"item": "doom:doom_helmet"
-		}
+  "pattern": [
+    "@",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:quartz"
+    },
+    "@": {
+      "item": "doom:doom_helmet"
     }
+  }
 }

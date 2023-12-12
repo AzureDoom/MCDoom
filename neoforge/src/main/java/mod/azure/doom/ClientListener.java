@@ -1,5 +1,7 @@
 package mod.azure.doom;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import mod.azure.doom.client.DoomKeyBinds;
 import mod.azure.doom.client.gui.GunTableScreen;
 import mod.azure.doom.client.render.mobs.ambient.CueBallRender;
 import mod.azure.doom.client.render.mobs.ambient.GoreNestRender;
@@ -15,8 +17,11 @@ import mod.azure.doom.client.render.tile.BarrelRender;
 import mod.azure.doom.client.render.tile.GunCraftingRender;
 import mod.azure.doom.client.render.tile.TotemRender;
 import mod.azure.doom.helper.CommonUtils;
-import mod.azure.doom.registry.*;
+import mod.azure.doom.registry.NeoDoomBlocks;
 import mod.azure.doom.registry.NeoDoomEntities;
+import mod.azure.doom.registry.NeoDoomItems;
+import mod.azure.doom.registry.NeoDoomScreens;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -24,9 +29,11 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import org.lwjgl.glfw.GLFW;
 
 @EventBusSubscriber(modid = MCDoom.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientListener {
@@ -35,16 +42,12 @@ public class ClientListener {
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(NeoDoomEntities.GLADIATOR_MACE.get(), GladiatorMaceRender::new);
         event.registerEntityRenderer(NeoDoomEntities.MEATHOOOK_ENTITY.get(), MeatHookEntityRenderer::new);
-        event.registerEntityRenderer(NeoDoomEntities.SHOTGUN_SHELL.get(), ShotgunShellRender::new);
-        event.registerEntityRenderer(NeoDoomEntities.ARGENT_BOLT.get(), ArgentBoltRender::new);
         event.registerEntityRenderer(NeoDoomEntities.GRENADE.get(), GrenadeRender::new);
         event.registerEntityRenderer(NeoDoomEntities.DRONEBOLT_MOB.get(), DroneBoltRender::new);
         event.registerEntityRenderer(NeoDoomEntities.FIRE_MOB.get(), FireProjectileRender::new);
-        event.registerEntityRenderer(NeoDoomEntities.UNMAYKR.get(), UnmaykrBulletRender::new);
         event.registerEntityRenderer(NeoDoomEntities.BULLETS.get(), BulletsRender::new);
         event.registerEntityRenderer(NeoDoomEntities.BFG_CELL.get(), BFGCellRender::new);
         event.registerEntityRenderer(NeoDoomEntities.ROCKET.get(), RocketRender::new);
-        event.registerEntityRenderer(NeoDoomEntities.CHAINGUN_BULLET.get(), ChaingunBulletRender::new);
         event.registerEntityRenderer(NeoDoomEntities.BLOODBOLT_MOB.get(), BloodBoltRender::new);
         event.registerEntityRenderer(NeoDoomEntities.BARENBLAST.get(), BarenBlastRender::new);
         event.registerEntityRenderer(NeoDoomEntities.LOST_SOUL.get(), LostSoulRender::new);
@@ -70,7 +73,6 @@ public class ClientListener {
         event.registerEntityRenderer(NeoDoomEntities.POSSESSEDSCIENTIST.get(), PossessedScientistRender::new);
         event.registerEntityRenderer(NeoDoomEntities.POSSESSEDSOLDIER.get(), PossessedSoldierRender::new);
         event.registerEntityRenderer(NeoDoomEntities.ENERGY_CELL_MOB.get(), EnergyCellMobRender::new);
-        event.registerEntityRenderer(NeoDoomEntities.ENERGY_CELL.get(), EnergyCellRender::new);
         event.registerEntityRenderer(NeoDoomEntities.ROCKET_MOB.get(), RocketMobRender::new);
         event.registerEntityRenderer(NeoDoomEntities.CHAINGUN_MOB.get(), ChaingunMobRender::new);
         event.registerEntityRenderer(NeoDoomEntities.GORE_NEST.get(), GoreNestRender::new);
@@ -112,25 +114,53 @@ public class ClientListener {
         ItemBlockRenderTypes.setRenderLayer(NeoDoomBlocks.JUMP_PAD.get(), RenderType.translucent());
         MenuScreens.register(NeoDoomScreens.SCREEN_HANDLER_TYPE.get(), GunTableScreen::new);
         // Crucible
-        ItemProperties.register(NeoDoomItems.CRUCIBLESWORD.get(), new ResourceLocation("broken"), (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.isUsable(itemStack) ? 0.0F : 1.0F));
+        ItemProperties.register(NeoDoomItems.CRUCIBLESWORD.get(), new ResourceLocation("broken"),
+                (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.isUsable(itemStack) ? 0.0F : 1.0F));
         // Marauder Axe
-        ItemProperties.register(NeoDoomItems.AXE_OPEN.get(), new ResourceLocation("broken"), (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.isUsable(itemStack) ? 0.0F : 1.0F));
+        ItemProperties.register(NeoDoomItems.AXE_OPEN.get(), new ResourceLocation("broken"),
+                (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.isUsable(itemStack) ? 0.0F : 1.0F));
         // NonCenter
-        ItemProperties.register(NeoDoomItems.SG.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F));
-        ItemProperties.register(NeoDoomItems.ROCKETLAUNCHER.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F));
-        ItemProperties.register(NeoDoomItems.PLASMAGUN.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F));
-        ItemProperties.register(NeoDoomItems.HEAVYCANNON.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F));
-        ItemProperties.register(NeoDoomItems.UNMAKER.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F));
-        ItemProperties.register(NeoDoomItems.UNMAYKR.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F));
-        ItemProperties.register(NeoDoomItems.CHAINGUN.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F));
-        ItemProperties.register(NeoDoomItems.BFG_ETERNAL.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F));
-        ItemProperties.register(NeoDoomItems.BALLISTA.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F));
-        ItemProperties.register(NeoDoomItems.SSG.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F));
-        ItemProperties.register(NeoDoomItems.PISTOL.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F));
-        ItemProperties.register(NeoDoomItems.DPLASMARIFLE.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F));
-        ItemProperties.register(NeoDoomItems.DGAUSS.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F));
-        ItemProperties.register(NeoDoomItems.DSG.get(), new ResourceLocation("nocenter"), (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered(itemStack) ? 1.0F : 0.0F));
-        ItemProperties.register(NeoDoomItems.CHAINSAW.get(), new ResourceLocation("stalled"), (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.isUsable(itemStack) ? 0.0F : 1.0F));
-        ItemProperties.register(NeoDoomItems.CHAINSAW64.get(), new ResourceLocation("stalled"), (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.isUsable(itemStack) ? 0.0F : 1.0F));
+        ItemProperties.register(NeoDoomItems.SG.get(), new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered() ? 1.0F : 0.0F));
+        ItemProperties.register(NeoDoomItems.ROCKETLAUNCHER.get(), new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered() ? 1.0F : 0.0F));
+        ItemProperties.register(NeoDoomItems.PLASMAGUN.get(), new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered() ? 1.0F : 0.0F));
+        ItemProperties.register(NeoDoomItems.HEAVYCANNON.get(), new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered() ? 1.0F : 0.0F));
+        ItemProperties.register(NeoDoomItems.UNMAKER.get(), new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered() ? 1.0F : 0.0F));
+        ItemProperties.register(NeoDoomItems.UNMAYKR.get(), new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered() ? 1.0F : 0.0F));
+        ItemProperties.register(NeoDoomItems.CHAINGUN.get(), new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered() ? 1.0F : 0.0F));
+        ItemProperties.register(NeoDoomItems.BFG_ETERNAL.get(), new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered() ? 1.0F : 0.0F));
+        ItemProperties.register(NeoDoomItems.BALLISTA.get(), new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered() ? 1.0F : 0.0F));
+        ItemProperties.register(NeoDoomItems.SSG.get(), new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered() ? 1.0F : 0.0F));
+        ItemProperties.register(NeoDoomItems.PISTOL.get(), new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered() ? 1.0F : 0.0F));
+        ItemProperties.register(NeoDoomItems.DPLASMARIFLE.get(), new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered() ? 1.0F : 0.0F));
+        ItemProperties.register(NeoDoomItems.DGAUSS.get(), new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered() ? 1.0F : 0.0F));
+        ItemProperties.register(NeoDoomItems.DSG.get(), new ResourceLocation("nocenter"),
+                (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.nonCentered() ? 1.0F : 0.0F));
+        ItemProperties.register(NeoDoomItems.CHAINSAW.get(), new ResourceLocation("stalled"),
+                (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.isUsable(itemStack) ? 0.0F : 1.0F));
+        ItemProperties.register(NeoDoomItems.CHAINSAW64.get(), new ResourceLocation("stalled"),
+                (itemStack, clientWorld, livingEntity, seed) -> (CommonUtils.isUsable(itemStack) ? 0.0F : 1.0F));
+    }
+
+    @SubscribeEvent
+    public static void registerKeys(final RegisterKeyMappingsEvent event) {
+        DoomKeyBinds.HOOK = new KeyMapping("key.doom.meathook", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_H,
+                "category.doom.binds");
+        event.register(DoomKeyBinds.HOOK);
+        DoomKeyBinds.FIRETYPE = new KeyMapping("key.doom.firetype", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_G,
+                "category.doom.binds");
+        event.register(DoomKeyBinds.FIRETYPE);
     }
 }

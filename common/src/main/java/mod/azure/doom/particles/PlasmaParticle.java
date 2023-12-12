@@ -4,11 +4,9 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
-
-import java.util.Random;
+import org.jetbrains.annotations.NotNull;
 
 public class PlasmaParticle extends TextureSheetParticle {
-    static final Random RANDOM = new Random();
     private final SpriteSet sprites;
 
     PlasmaParticle(ClientLevel clientWorld, double x, double y, double z, double velocityX, double velocityY, double velocityZ, SpriteSet spriteSet) {
@@ -22,7 +20,7 @@ public class PlasmaParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
+    public @NotNull ParticleRenderType getRenderType() {
         return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
@@ -53,7 +51,7 @@ public class PlasmaParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(SimpleParticleType defaultParticleType, ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
+        public Particle createParticle(@NotNull SimpleParticleType defaultParticleType, @NotNull ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
             final var glowParticle = new PlasmaParticle(clientWorld, d, e, f, 0.0D, 0.0D, 0.0D, sprites1);
             glowParticle.setColor(1.0F, 0.9F, 1.0F);
             glowParticle.setParticleSpeed(g * 0.25D, h * 0.25D, i * 0.25D);

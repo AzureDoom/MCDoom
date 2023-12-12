@@ -21,20 +21,22 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
 public class GladiatorMaceEntity extends AbstractHurtingProjectile implements GeoEntity {
-    private LivingEntity shooter;
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    private LivingEntity shooter;
 
     public GladiatorMaceEntity(EntityType<? extends GladiatorMaceEntity> entity, Level level) {
         super(entity, level);
     }
 
     public GladiatorMaceEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getGlaiatorMaceEntity(), shooter, accelX, accelY, accelZ, worldIn);
+        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getGlaiatorMaceEntity(), shooter, accelX, accelY, accelZ,
+                worldIn);
         this.shooter = shooter;
     }
 
     public GladiatorMaceEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getGlaiatorMaceEntity(), x, y, z, accelX, accelY, accelZ, worldIn);
+        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getGlaiatorMaceEntity(), x, y, z, accelX, accelY, accelZ,
+                worldIn);
     }
 
     @Override
@@ -82,7 +84,9 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
             final var entity2 = getOwner();
             entity.setSecondsOnFire(5);
             if (!(entity instanceof DemonEntity))
-                entity.hurt(damageSources().mobAttack((LivingEntity) entity2), MCDoom.config.gladiator_ranged_damage + (shooter.getEntityData().get(GladiatorEntity.DEATH_STATE) == 1 ? MCDoom.config.gladiator_phaseone_damage_boost : 0));
+                entity.hurt(damageSources().mobAttack((LivingEntity) entity2),
+                        MCDoom.config.gladiator_ranged_damage + (shooter.getEntityData().get(
+                                GladiatorEntity.DEATH_STATE) == 1 ? MCDoom.config.gladiator_phaseone_damage_boost : 0));
             if (entity2 instanceof LivingEntity livingEntity) {
                 if (!(entity instanceof DemonEntity)) doEnchantDamageEffects(livingEntity, entity);
                 remove(RemovalReason.DISCARDED);

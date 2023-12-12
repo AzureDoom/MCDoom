@@ -18,7 +18,8 @@ public class ShotgunguyModel extends GeoModel<ShotgunguyEntity> {
 
     @Override
     public ResourceLocation getTextureResource(ShotgunguyEntity object) {
-        return new ResourceLocation(MCDoom.MOD_ID, "textures/entity/" + (object.getVariant() == 2 ? "shotgunguy64" : "shotgunguy") + ".png");
+        return new ResourceLocation(MCDoom.MOD_ID,
+                "textures/entity/" + (object.getVariant() == 2 ? "shotgunguy64" : "shotgunguy") + ".png");
     }
 
     @Override

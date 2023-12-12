@@ -42,11 +42,6 @@ public class FabricDoomEntitiesHelper implements DoomEntitiesHelper {
     }
 
     @Override
-    public EntityType<ArgentBoltEntity> getArgentBoltEntity() {
-        return FabricDoomEntities.ARGENT_BOLT;
-    }
-
-    @Override
     public EntityType<DroneBoltEntity> getDroneBoltEntity() {
         return FabricDoomEntities.DRONEBOLT_MOB;
     }
@@ -54,21 +49,6 @@ public class FabricDoomEntitiesHelper implements DoomEntitiesHelper {
     @Override
     public EntityType<BloodBoltEntity> getBloodBoltEntity() {
         return FabricDoomEntities.BLOODBOLT_MOB;
-    }
-
-    @Override
-    public EntityType<UnmaykrBoltEntity> getUnmakyrBoltEntity() {
-        return FabricDoomEntities.UNMAYKR;
-    }
-
-    @Override
-    public EntityType<ShotgunShellEntity> getShotgunEntity() {
-        return FabricDoomEntities.SHOTGUN_SHELL;
-    }
-
-    @Override
-    public EntityType<EnergyCellEntity> getEngeryCellEntity() {
-        return FabricDoomEntities.ENERGY_CELL;
     }
 
     @Override
@@ -89,11 +69,6 @@ public class FabricDoomEntitiesHelper implements DoomEntitiesHelper {
     @Override
     public EntityType<BulletEntity> getBulletEntity() {
         return FabricDoomEntities.BULLETS;
-    }
-
-    @Override
-    public EntityType<ChaingunBulletEntity> getChaingunBulletEntity() {
-        return FabricDoomEntities.CHAINGUN_BULLET;
     }
 
     @Override

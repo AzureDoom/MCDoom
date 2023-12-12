@@ -41,6 +41,7 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -50,6 +51,13 @@ public class ArmoredBaronEntity extends DemonEntity implements SmartBrainOwner<A
 
     public ArmoredBaronEntity(EntityType<ArmoredBaronEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
+    }
+
+    public static AttributeSupplier.@NotNull Builder createMobAttributes() {
+        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH,
+                MCDoom.config.armoredbaron_health).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(
+                Attributes.ATTACK_DAMAGE, MCDoom.config.armoredbaron_melee_damage).add(Attributes.MOVEMENT_SPEED,
+                0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
     }
 
     @Override
@@ -62,11 +70,16 @@ public class ArmoredBaronEntity extends DemonEntity implements SmartBrainOwner<A
             return event.setAndContinue(RawAnimation.begin().thenLoop("idle_armor"));
         }).setSoundKeyframeHandler(event -> {
             if (level().isClientSide() && event.getKeyframeData().getSound().matches("walk"))
-                level().playLocalSound(this.getX(), this.getY(), this.getZ(), mod.azure.doom.platform.Services.SOUNDS_HELPER.getCYBERDEMON_STEP(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
-        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).setSoundKeyframeHandler(event -> {
-            if (level().isClientSide() && event.getKeyframeData().getSound().matches("attack"))
-                level().playLocalSound(this.getX(), this.getY(), this.getZ(), mod.azure.doom.platform.Services.SOUNDS_HELPER.getBARON_AMBIENT(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
-        }).triggerableAnim("melee", RawAnimation.begin().then("melee_armor", LoopType.PLAY_ONCE)));
+                level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                        mod.azure.doom.platform.Services.SOUNDS_HELPER.getCYBERDEMON_STEP(), SoundSource.HOSTILE, 0.25F,
+                        1.0F, false);
+        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).setSoundKeyframeHandler(
+                event -> {
+                    if (level().isClientSide() && event.getKeyframeData().getSound().matches("attack"))
+                        level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                                mod.azure.doom.platform.Services.SOUNDS_HELPER.getBARON_AMBIENT(), SoundSource.HOSTILE,
+                                0.25F, 1.0F, false);
+                }).triggerableAnim("melee", RawAnimation.begin().then("melee_armor", LoopType.PLAY_ONCE)));
     }
 
     @Override
@@ -81,32 +94,40 @@ public class ArmoredBaronEntity extends DemonEntity implements SmartBrainOwner<A
     }
 
     @Override
-    protected Brain.Provider<?> brainProvider() {
+    protected Brain.@NotNull Provider<?> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
 
     @Override
     public List<ExtendedSensor<ArmoredBaronEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyLivingEntitySensor<ArmoredBaronEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<ArmoredBaronEntity>());
+        return ObjectArrayList.of(new NearbyLivingEntitySensor<ArmoredBaronEntity>().setPredicate(
+                        (target, entity) -> target.isAlive() && entity.hasLineOfSight(
+                                target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
+                new UnreachableTargetSensor<ArmoredBaronEntity>());
     }
 
     @Override
     public BrainActivityGroup<ArmoredBaronEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>());
+        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300),
+                new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>());
     }
 
     @Override
     public BrainActivityGroup<ArmoredBaronEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<ArmoredBaronEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player player && player.isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<ArmoredBaronEntity>(
+                        new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()),
+                        new SetPlayerLookTarget<>().stopIf(
+                                target -> !target.isAlive() || target instanceof Player player && player.isCreative()),
+                        new SetRandomLookTarget<>()),
+                new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f),
+                        new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
     }
 
     @Override
     public BrainActivityGroup<ArmoredBaronEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F), new DemonMeleeAttack<>(5));
-    }
-
-    public static AttributeSupplier.Builder createMobAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, MCDoom.config.armoredbaron_health).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.ATTACK_DAMAGE, MCDoom.config.armoredbaron_melee_damage).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
+                        (target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F), new DemonMeleeAttack<>(5));
     }
 
     protected boolean shouldDrown() {
@@ -118,7 +139,7 @@ public class ArmoredBaronEntity extends DemonEntity implements SmartBrainOwner<A
     }
 
     @Override
-    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+    protected SoundEvent getHurtSound(@NotNull DamageSource damageSourceIn) {
         return mod.azure.doom.platform.Services.SOUNDS_HELPER.getBARON_HURT();
     }
 

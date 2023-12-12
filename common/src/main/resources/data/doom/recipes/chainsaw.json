@@ -1,17 +1,17 @@
 {
-	"type": "doom:gun_table",
-	"pattern": "ab",
-	"key": {
-		"a": {
-			"item": "minecraft:iron_ingot",
-			"count": 3
-		},
-		"b": {
-			"item": "doom:gas_barrel",
-			"count": 1
-		}
-	},
-	"result": {
-		"item": "doom:chainsaw"
-	}
+  "type": "doom:gun_table",
+  "pattern": "ab",
+  "key": {
+    "a": {
+      "item": "minecraft:iron_ingot",
+      "count": 3
+    },
+    "b": {
+      "item": "doom:gas_barrel",
+      "count": 1
+    }
+  },
+  "result": {
+    "item": "doom:chainsaw"
+  }
 }

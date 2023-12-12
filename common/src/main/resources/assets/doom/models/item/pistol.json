@@ -5,14 +5,14 @@
     128,
     64
   ],
-	"overrides": [
-		{
-			"predicate": {
-				"nocenter": 1
-			},
-			"model": "doom:item/pistol_nocenter"
-		}
-	],
+  "overrides": [
+    {
+      "predicate": {
+        "nocenter": 1
+      },
+      "model": "doom:item/pistol_nocenter"
+    }
+  ],
   "display": {
     "thirdperson_righthand": {
       "translation": [

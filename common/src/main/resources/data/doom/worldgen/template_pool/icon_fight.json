@@ -1,15 +1,15 @@
 {
-	"name": "doom:icon_fight/side_pool",
-	"fallback": "minecraft:empty",
-	"elements": [
-		{
-			"weight": 1,
-			"element": {
-				"location": "doom:icon_fight",
-				"processors": "doom:randomize_stonebrick",
-				"projection": "rigid",
-				"element_type": "minecraft:single_pool_element"
-			}
-		}
-	]
+  "name": "doom:icon_fight/side_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "doom:icon_fight",
+        "processors": "doom:randomize_stonebrick",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
 }

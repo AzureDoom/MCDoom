@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
@@ -26,20 +27,8 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
         runFor(entity -> Math.max(delayTicks, 60));
     }
 
-    /**
-     * A callback for when the delayed action is called.
-     *
-     * @param callback The callback
-     * @return this
-     */
-    public final CustomDelayedRangedBehaviour<E> whenActivating(Consumer<E> callback) {
-        this.delayedCallback = callback;
-
-        return this;
-    }
-
     @Override
-    protected final void start(ServerLevel level, E entity, long gameTime) {
+    protected final void start(@NotNull ServerLevel level, @NotNull E entity, long gameTime) {
         if (this.delayTime > 0) {
             this.delayFinishedAt = gameTime + this.delayTime;
             super.start(level, entity, gameTime);
@@ -49,11 +38,7 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
         }
         if (entity instanceof MarauderEntity marauder) {
             marauder.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 100, false, false));
-            marauder.triggerAnim("attackController", switch (marauder.getRandom().nextInt(3)) {
-                case 0 -> "ranged";
-                case 1 -> "slash";
-                default -> "ranged";
-            });
+            marauder.triggerAnim("attackController", marauder.getRandom().nextInt(3) == 1 ? "slash" : "ranged");
         }
         if (entity instanceof ArchvileEntity)
             entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120, 100, false, false));
@@ -78,7 +63,7 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
     }
 
     @Override
-    protected final void stop(ServerLevel level, E entity, long gameTime) {
+    protected final void stop(@NotNull ServerLevel level, @NotNull E entity, long gameTime) {
         super.stop(level, entity, gameTime);
 
         this.delayFinishedAt = 0;
@@ -91,7 +76,7 @@ public abstract class CustomDelayedRangedBehaviour<E extends DemonEntity> extend
     }
 
     @Override
-    protected final void tick(ServerLevel level, E entity, long gameTime) {
+    protected final void tick(@NotNull ServerLevel level, @NotNull E entity, long gameTime) {
         super.tick(level, entity, gameTime);
 
         if (this.delayFinishedAt <= gameTime) {

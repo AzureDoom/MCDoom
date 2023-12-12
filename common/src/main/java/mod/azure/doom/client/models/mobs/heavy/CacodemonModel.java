@@ -13,17 +13,20 @@ public class CacodemonModel extends GeoModel<CacodemonEntity> {
 
     @Override
     public ResourceLocation getModelResource(CacodemonEntity object) {
-        return MCDoom.modResource("geo/" + (object.getVariant() == 1 ? "cacodemon64" : object.getVariant() >= 3 ? "cacodemoneternal" : "cacodemon") + ".geo.json");
+        return MCDoom.modResource(
+                "geo/" + (object.getVariant() == 1 ? "cacodemon64" : object.getVariant() >= 3 ? "cacodemoneternal" : "cacodemon") + ".geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(CacodemonEntity object) {
-        return new ResourceLocation(MCDoom.MOD_ID, "textures/entity/" + (object.getVariant() == 1 ? "cacodemon64" : object.getVariant() == 3 ? "cacodemoneternal" : object.getVariant() == 4 ? "cacodemon2016" : "cacodemon") + ".png");
+        return new ResourceLocation(MCDoom.MOD_ID,
+                "textures/entity/" + (object.getVariant() == 1 ? "cacodemon64" : object.getVariant() == 3 ? "cacodemoneternal" : object.getVariant() == 4 ? "cacodemon2016" : "cacodemon") + ".png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(CacodemonEntity object) {
-        return new ResourceLocation(MCDoom.MOD_ID, "animations/" + (object.getVariant() == 3 ? "cacodemoneternal." : "cacodemon_") + "animation.json");
+        return new ResourceLocation(MCDoom.MOD_ID,
+                "animations/" + (object.getVariant() == 3 ? "cacodemoneternal." : "cacodemon_") + "animation.json");
     }
 
     @Override

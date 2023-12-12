@@ -23,20 +23,22 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
 public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEntity {
-    private float directHitDamage = 2;
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    private float directHitDamage = 2;
 
     public BloodBoltEntity(EntityType<BloodBoltEntity> entity, Level level) {
         super(entity, level);
     }
 
     public BloodBoltEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, float directHitDamage) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getBloodBoltEntity(), shooter, accelX, accelY, accelZ, worldIn);
+        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getBloodBoltEntity(), shooter, accelX, accelY, accelZ,
+                worldIn);
         this.directHitDamage = directHitDamage;
     }
 
     public BloodBoltEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getBloodBoltEntity(), x, y, z, accelX, accelY, accelZ, worldIn);
+        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getBloodBoltEntity(), x, y, z, accelX, accelY, accelZ,
+                worldIn);
     }
 
     @Override

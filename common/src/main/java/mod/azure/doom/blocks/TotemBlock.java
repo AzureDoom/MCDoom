@@ -27,15 +27,21 @@ public class TotemBlock extends BaseEntityBlock implements EntityBlock {
 
     public static final BooleanProperty light = RedstoneTorchBlock.LIT;
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    private static final VoxelShape X_LENGTH1 = Block.box(5.299999999999999, 0, 5.3000000000000025, 10.7, 15.9, 10.600000000000001);
-    private static final VoxelShape X_LENGTH2 = Block.box(-0.20000000000000107, 10.100000000000001, 5.3000000000000025, 16.200000000000003, 15.4, 10.600000000000001);
-    private static final VoxelShape Y_LENGTH1 = Block.box(5.3000000000000025, 0, 5.299999999999999, 10.600000000000001, 15.9, 10.7);
-    private static final VoxelShape Y_LENGTH2 = Block.box(5.3000000000000025, 10.100000000000001, -0.20000000000000107, 10.600000000000001, 15.4, 16.200000000000003);
+    private static final VoxelShape X_LENGTH1 = Block.box(5.299999999999999, 0, 5.3000000000000025, 10.7, 15.9,
+            10.600000000000001);
+    private static final VoxelShape X_LENGTH2 = Block.box(-0.20000000000000107, 10.100000000000001, 5.3000000000000025,
+            16.200000000000003, 15.4, 10.600000000000001);
+    private static final VoxelShape Y_LENGTH1 = Block.box(5.3000000000000025, 0, 5.299999999999999, 10.600000000000001,
+            15.9, 10.7);
+    private static final VoxelShape Y_LENGTH2 = Block.box(5.3000000000000025, 10.100000000000001, -0.20000000000000107,
+            10.600000000000001, 15.4, 16.200000000000003);
     private static final VoxelShape X_AXIS_AABB = Shapes.or(X_LENGTH1, X_LENGTH2);
     private static final VoxelShape Z_AXIS_AABB = Shapes.or(Y_LENGTH1, Y_LENGTH2);
 
     public TotemBlock() {
-        super(Properties.of().sound(SoundType.BONE_BLOCK).noOcclusion().requiresCorrectToolForDrops().explosionResistance(30).strength(4.0F).lightLevel(litBlockEmission(15)));
+        super(Properties.of().sound(
+                SoundType.BONE_BLOCK).noOcclusion().requiresCorrectToolForDrops().explosionResistance(30).strength(
+                4.0F).lightLevel(litBlockEmission(15)));
     }
 
     private static ToIntFunction<BlockState> litBlockEmission(int lightLevel) {

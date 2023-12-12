@@ -41,11 +41,6 @@ public class NeoForgeDoomEntitiesHelper implements DoomEntitiesHelper {
     }
 
     @Override
-    public EntityType<ArgentBoltEntity> getArgentBoltEntity() {
-        return NeoDoomEntities.ARGENT_BOLT.get();
-    }
-
-    @Override
     public EntityType<DroneBoltEntity> getDroneBoltEntity() {
         return NeoDoomEntities.DRONEBOLT_MOB.get();
     }
@@ -53,21 +48,6 @@ public class NeoForgeDoomEntitiesHelper implements DoomEntitiesHelper {
     @Override
     public EntityType<BloodBoltEntity> getBloodBoltEntity() {
         return NeoDoomEntities.BLOODBOLT_MOB.get();
-    }
-
-    @Override
-    public EntityType<UnmaykrBoltEntity> getUnmakyrBoltEntity() {
-        return NeoDoomEntities.UNMAYKR.get();
-    }
-
-    @Override
-    public EntityType<ShotgunShellEntity> getShotgunEntity() {
-        return NeoDoomEntities.SHOTGUN_SHELL.get();
-    }
-
-    @Override
-    public EntityType<EnergyCellEntity> getEngeryCellEntity() {
-        return NeoDoomEntities.ENERGY_CELL.get();
     }
 
     @Override
@@ -88,11 +68,6 @@ public class NeoForgeDoomEntitiesHelper implements DoomEntitiesHelper {
     @Override
     public EntityType<BulletEntity> getBulletEntity() {
         return NeoDoomEntities.BULLETS.get();
-    }
-
-    @Override
-    public EntityType<ChaingunBulletEntity> getChaingunBulletEntity() {
-        return NeoDoomEntities.CHAINGUN_BULLET.get();
     }
 
     @Override

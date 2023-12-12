@@ -29,7 +29,14 @@ public class BarrelBlock extends Block {
 
     public BarrelBlock() {
         super(Properties.of().sound(SoundType.METAL).instabreak().noOcclusion());
-        this.registerDefaultState(this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.TRUE));
+        this.registerDefaultState(
+                this.stateDefinition.any().setValue(direction, Direction.NORTH).setValue(light, Boolean.TRUE));
+    }
+
+    private static void explode(Level level, BlockPos blockPos) {
+        if (level.isClientSide) return;
+        var primedTnt = new BarrelEntity(level, blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
+        level.addFreshEntity(primedTnt);
     }
 
     @Override
@@ -49,12 +56,6 @@ public class BarrelBlock extends Block {
             var tntentity = new BarrelEntity(worldIn, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
             worldIn.addFreshEntity(tntentity);
         }
-    }
-
-    private static void explode(Level level, BlockPos blockPos) {
-        if (level.isClientSide) return;
-        var primedTnt = new BarrelEntity(level, blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
-        level.addFreshEntity(primedTnt);
     }
 
     @Override

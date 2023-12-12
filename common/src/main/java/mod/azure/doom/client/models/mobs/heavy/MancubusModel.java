@@ -19,12 +19,14 @@ public class MancubusModel extends GeoModel<MancubusEntity> {
 
     @Override
     public ResourceLocation getModelResource(MancubusEntity object) {
-        return MCDoom.modResource("geo/" + (object.getVariant() == 2 ? d64 : object.getVariant() == 3 ? d2016 : object.getVariant() == 4 ? classic : object.getVariant() == 5 ? d2016 : classic) + ".geo.json");
+        return MCDoom.modResource(
+                "geo/" + (object.getVariant() == 2 ? d64 : object.getVariant() == 3 ? d2016 : object.getVariant() == 4 ? classic : object.getVariant() == 5 ? d2016 : classic) + ".geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(MancubusEntity object) {
-        return MCDoom.modResource("textures/entity/" + (object.getVariant() == 2 ? d64 : object.getVariant() == 3 ? d2016 : object.getVariant() == 4 ? classiccyber : object.getVariant() == 5 ? d2016cyber : classic) + ".png");
+        return MCDoom.modResource(
+                "textures/entity/" + (object.getVariant() == 2 ? d64 : object.getVariant() == 3 ? d2016 : object.getVariant() == 4 ? classiccyber : object.getVariant() == 5 ? d2016cyber : classic) + ".png");
     }
 
     @Override

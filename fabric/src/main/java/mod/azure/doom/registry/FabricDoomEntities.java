@@ -31,8 +31,8 @@ import java.util.List;
 
 public record FabricDoomEntities() {
 
-    public static List<EntityType<? extends Entity>> ENTITY_TYPES = new LinkedList();
-    public static List<EntityType<? extends Entity>> ENTITY_THAT_USE_ITEM_RENDERS = new LinkedList();
+    public static List<EntityType<? extends Entity>> ENTITY_TYPES = new LinkedList<>();
+    public static List<EntityType<? extends Entity>> ENTITY_THAT_USE_ITEM_RENDERS = new LinkedList<>();
     public static BlockEntityType<TotemEntity> TOTEM;
     public static BlockEntityType<IconBlockEntity> ICON;
     public static BlockEntityType<GunBlockEntity> GUN_TABLE_ENTITY;
@@ -42,17 +42,12 @@ public record FabricDoomEntities() {
      * Projectiles
      */
     public static EntityType<DoomFireEntity> FIRING;
-    public static EntityType<ArgentBoltEntity> ARGENT_BOLT;
     public static EntityType<DroneBoltEntity> DRONEBOLT_MOB;
     public static EntityType<BloodBoltEntity> BLOODBOLT_MOB;
-    public static EntityType<UnmaykrBoltEntity> UNMAYKR;
-    public static EntityType<ShotgunShellEntity> SHOTGUN_SHELL;
-    public static EntityType<EnergyCellEntity> ENERGY_CELL;
     public static EntityType<BFGEntity> BFG_CELL;
     public static EntityType<RocketEntity> ROCKET;
     public static EntityType<BarenBlastEntity> BARENBLAST;
     public static EntityType<BulletEntity> BULLETS;
-    public static EntityType<ChaingunBulletEntity> CHAINGUN_BULLET;
     public static EntityType<RocketMobEntity> ROCKET_MOB;
     public static EntityType<GladiatorMaceEntity> GLADIATOR_MACE;
     public static EntityType<EnergyCellMobEntity> ENERGY_CELL_MOB;
@@ -115,7 +110,9 @@ public record FabricDoomEntities() {
     public static EntityType<CarcassEntity> CARCASS;
 
     private static <T extends Entity> EntityType<T> projectile(EntityType.EntityFactory<T> factory, String id, float height, float width) {
-        final var type = FabricEntityTypeBuilder.<T>create(MobCategory.MISC, factory).dimensions(new EntityDimensions(height, width, true)).disableSummon().spawnableFarFromPlayer().trackRangeBlocks(90).trackedUpdateRate(1).build();
+        final var type = FabricEntityTypeBuilder.create(MobCategory.MISC, factory).dimensions(
+                new EntityDimensions(height, width, true)).disableSummon().spawnableFarFromPlayer().trackRangeBlocks(
+                90).trackedUpdateRate(1).build();
         Registry.register(BuiltInRegistries.ENTITY_TYPE, MCDoom.modResource(id), type);
         ENTITY_TYPES.add(type);
         ENTITY_THAT_USE_ITEM_RENDERS.add(type);
@@ -124,50 +121,54 @@ public record FabricDoomEntities() {
     }
 
     private static <T extends Entity> EntityType<T> blockentity(String id, EntityType.EntityFactory<T> factory, float height, float width) {
-        final var type = FabricEntityTypeBuilder.<T>create(MobCategory.MISC, factory).dimensions(EntityDimensions.scalable(height, width)).fireImmune().trackedUpdateRate(1).trackRangeBlocks(90).build();
+        final var type = FabricEntityTypeBuilder.create(MobCategory.MISC, factory).dimensions(
+                EntityDimensions.scalable(height, width)).fireImmune().trackedUpdateRate(1).trackRangeBlocks(
+                90).build();
         Registry.register(BuiltInRegistries.ENTITY_TYPE, MCDoom.modResource(id), type);
 
         return type;
     }
 
     private static <T extends Entity> EntityType<T> mob(String id, EntityType.EntityFactory<T> factory, float height, float width) {
-        final var type = FabricEntityTypeBuilder.<T>create(MobCategory.MONSTER, factory).dimensions(EntityDimensions.scalable(height, width)).fireImmune().trackedUpdateRate(1).trackRangeBlocks(90).build();
+        final var type = FabricEntityTypeBuilder.create(MobCategory.MONSTER, factory).dimensions(
+                EntityDimensions.scalable(height, width)).fireImmune().trackedUpdateRate(1).trackRangeBlocks(
+                90).build();
         Registry.register(BuiltInRegistries.ENTITY_TYPE, MCDoom.modResource(id), type);
 
         return type;
     }
 
     public static void initialize() {
-        ICON = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, MCDoom.modResource("icon"), FabricBlockEntityTypeBuilder.create(IconBlockEntity::new, Services.BLOCKS_HELPER.getWall1()).build(null));
-        TOTEM = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, MCDoom.modResource("totem"), FabricBlockEntityTypeBuilder.create(TotemEntity::new, Services.BLOCKS_HELPER.getTotem()).build(null));
-        GUN_TABLE_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, MCDoom.modResource("guntable"), FabricBlockEntityTypeBuilder.create(GunBlockEntity::new, Services.BLOCKS_HELPER.getGunTable()).build(null));
+        ICON = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, MCDoom.modResource("icon"),
+                FabricBlockEntityTypeBuilder.create(IconBlockEntity::new, Services.BLOCKS_HELPER.getWall1()).build(
+                        null));
+        TOTEM = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, MCDoom.modResource("totem"),
+                FabricBlockEntityTypeBuilder.create(TotemEntity::new, Services.BLOCKS_HELPER.getTotem()).build(null));
+        GUN_TABLE_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, MCDoom.modResource("guntable"),
+                FabricBlockEntityTypeBuilder.create(GunBlockEntity::new, Services.BLOCKS_HELPER.getGunTable()).build(
+                        null));
         BARREL = blockentity("barrel", BarrelEntity::new, 0.98F, 0.98F);
-        FIRING = projectile(DoomFireEntity::new, "archvile_firing", 2.0F, 2.0F);
-        ARGENT_BOLT = projectile(ArgentBoltEntity::new, "argent_bolt", 2.0F, 2.0F);
-        DRONEBOLT_MOB = projectile(DroneBoltEntity::new, "dronebolt_mob", 2.0F, 2.0F);
+        FIRING = projectile(DoomFireEntity::new, "archvile_firing", 0.5F, 0.5F);
+        DRONEBOLT_MOB = projectile(DroneBoltEntity::new, "dronebolt_mob", 0.5F, 0.5F);
         BLOODBOLT_MOB = projectile(BloodBoltEntity::new, "bloodbolt_mob", 0.5F, 0.5F);
-        UNMAYKR = projectile(UnmaykrBoltEntity::new, "unmaykr_bolt", 2.0F, 2.0F);
-        SHOTGUN_SHELL = projectile(ShotgunShellEntity::new, "shotgun_shell", 2.0F, 2.0F);
-        ENERGY_CELL = projectile(EnergyCellEntity::new, "energy_cell", 2.0F, 2.0F);
-        BFG_CELL = projectile(BFGEntity::new, "bfg_cell", 2.0F, 2.0F);
-        ROCKET = projectile(RocketEntity::new, "rocket", 2.0F, 2.0F);
-        BARENBLAST = projectile(BarenBlastEntity::new, "barenblast", 2.0F, 2.0F);
-        BULLETS = projectile(BulletEntity::new, "bullets", 2.0F, 2.0F);
-        CHAINGUN_BULLET = projectile(ChaingunBulletEntity::new, "chaingunbullets", 2.0F, 2.0F);
-        ROCKET_MOB = projectile(RocketMobEntity::new, "rocket_mob", 2.0F, 2.0F);
-        GLADIATOR_MACE = projectile(GladiatorMaceEntity::new, "gladiator_mace", 2.0F, 2.0F);
-        ENERGY_CELL_MOB = projectile(EnergyCellMobEntity::new, "energy_cell_mob", 2.0F, 2.0F);
-        GRENADE = projectile(GrenadeEntity::new, "doomed_grenade", 2.0F, 2.0F);
-        CHAINGUN_MOB = projectile(ChaingunMobEntity::new, "chaingun_mob", 2.0F, 2.0F);
-        FIRE_MOB = projectile(FireProjectile::new, "fire_projectile", 2.0F, 2.0F);
-        MEATHOOOK_ENTITY = projectile(MeatHookEntity::new, "meathook", 2.0F, 2.0F);
+        BFG_CELL = projectile(BFGEntity::new, "bfg_cell", 0.5F, 0.5F);
+        ROCKET = projectile(RocketEntity::new, "rocket", 0.5F, 0.5F);
+        BARENBLAST = projectile(BarenBlastEntity::new, "barenblast", 0.5F, 0.5F);
+        BULLETS = projectile(BulletEntity::new, "bullets", 0.5F, 0.5F);
+        ROCKET_MOB = projectile(RocketMobEntity::new, "rocket_mob", 0.5F, 0.5F);
+        GLADIATOR_MACE = projectile(GladiatorMaceEntity::new, "gladiator_mace", 0.5F, 0.5F);
+        ENERGY_CELL_MOB = projectile(EnergyCellMobEntity::new, "energy_cell_mob", 0.5F, 0.5F);
+        GRENADE = projectile(GrenadeEntity::new, "doomed_grenade", 0.5F, 0.5F);
+        CHAINGUN_MOB = projectile(ChaingunMobEntity::new, "chaingun_mob", 0.5F, 0.5F);
+        FIRE_MOB = projectile(FireProjectile::new, "fire_projectile", 0.5F, 0.5F);
+        MEATHOOOK_ENTITY = projectile(MeatHookEntity::new, "meathook", 0.5F, 0.5F);
         CARCASS = mob("carcass", CarcassEntity::new, 0.6f, 1.95F);
         IMP = mob("imp", ImpEntity::new, 0.6f, 1.95F);
         PINKY = mob("pinky", PinkyEntity::new, 1.7f, 2.2F);
         SPECTRE = mob("spectre", SpectreEntity::new, 1.7f, 2.2F);
         LOST_SOUL = mob("lost_soul", LostSoulEntity::new, 1.0F, 1.0F);
         LOST_SOUL_ETERNAL = mob("lost_soul_eternal", LostSoulEntity::new, 1.5F, 1.5F);
-        CACODEMON = mob("cacodemon", CacodemonEntity::new, 2.0F, 2.0F);
+        CACODEMON = mob("cacodemon", CacodemonEntity::new, 0.5F, 0.5F);
         ARCHVILE = mob("archvile", ArchvileEntity::new, 0.9F, 3.3F);
         BARON = mob("baron", BaronEntity::new, 1.3f, 3.9F);
         MANCUBUS = mob("mancubus", MancubusEntity::new, 2.3F, 3.0F);
@@ -179,7 +180,7 @@ public record FabricDoomEntities() {
         CHAINGUNNER = mob("chaingunner", ChaingunnerEntity::new, 0.75f, 2.1F);
         MARAUDER = mob("marauder", MarauderEntity::new, 1.5f, 2.6F);
         SHOTGUNGUY = mob("shotgunguy", ShotgunguyEntity::new, 0.75f, 2.1F);
-        PAIN = mob("painelemental", PainEntity::new, 2.0F, 2.0F);
+        PAIN = mob("painelemental", PainEntity::new, 0.5F, 0.5F);
         HELLKNIGHT = mob("hellknight", HellknightEntity::new, 1.4F, 3.5F);
         HELLKNIGHT2016 = mob("hellknight2016", Hellknight2016Entity::new, 1.8F, 3.0F);
         DREADKNIGHT = mob("dreadknight", Hellknight2016Entity::new, 1.8F, 3.0F);

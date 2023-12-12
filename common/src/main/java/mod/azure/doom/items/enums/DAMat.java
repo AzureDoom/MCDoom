@@ -8,11 +8,15 @@ import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
 public enum DAMat implements ArmorMaterial {
-    DOOM_ARMOR("doomweapon:doom_armor", 500, new int[]{MCDoom.config.doom_armor_boots_stat, MCDoom.config.doom_armor_leggings_stat, MCDoom.config.doom_armor_chestplate_stat, MCDoom.config.doom_armor_head_stat}, 40, SoundEvents.ARMOR_EQUIP_GENERIC, MCDoom.config.doom_armor_toughness, MCDoom.config.doom_armor_knockbackResistance, () -> Ingredient.of(Services.ITEMS_HELPER.getArgentEngery()));
+    DOOM_ARMOR("doomweapon:doom_armor", 500,
+            new int[]{MCDoom.config.doom_armor_boots_stat, MCDoom.config.doom_armor_leggings_stat, MCDoom.config.doom_armor_chestplate_stat, MCDoom.config.doom_armor_head_stat},
+            40, SoundEvents.ARMOR_EQUIP_GENERIC, MCDoom.config.doom_armor_toughness,
+            MCDoom.config.doom_armor_knockbackResistance, () -> Ingredient.of(Services.ITEMS_HELPER.getArgentEngery()));
 
     private static final int[] BASE_DURABILITY = {MCDoom.config.doom_armor_boots_stat, MCDoom.config.doom_armor_leggings_stat, MCDoom.config.doom_armor_chestplate_stat, MCDoom.config.doom_armor_head_stat};
     private final String name;
@@ -24,7 +28,7 @@ public enum DAMat implements ArmorMaterial {
     private final float knockbackResistance;
     private final LazyLoadedValue<Ingredient> repairIngredientSupplier;
 
-    private DAMat(String name, int durabilityMultiplier, int[] protectionAmounts, int enchantability, SoundEvent equipSound, float toughness, float knockbackResistance, Supplier<Ingredient> supplier) {
+    DAMat(String name, int durabilityMultiplier, int[] protectionAmounts, int enchantability, SoundEvent equipSound, float toughness, float knockbackResistance, Supplier<Ingredient> supplier) {
         this.name = name;
         this.durabilityMultiplier = durabilityMultiplier;
         this.protectionAmounts = protectionAmounts;
@@ -36,17 +40,17 @@ public enum DAMat implements ArmorMaterial {
     }
 
     @Override
-    public SoundEvent getEquipSound() {
+    public @NotNull SoundEvent getEquipSound() {
         return equipSound;
     }
 
     @Override
-    public Ingredient getRepairIngredient() {
+    public @NotNull Ingredient getRepairIngredient() {
         return repairIngredientSupplier.get();
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return name;
     }
 

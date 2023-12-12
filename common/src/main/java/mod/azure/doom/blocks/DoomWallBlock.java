@@ -35,24 +35,13 @@ public class DoomWallBlock extends BaseEntityBlock {
     private static BlockPattern iconPatternFull;
 
     public DoomWallBlock() {
-        super(Properties.of().explosionResistance(30).strength(4.0F).sound(SoundType.METAL).lightLevel(litBlockEmission(15)));
+        super(Properties.of().explosionResistance(30).strength(4.0F).sound(SoundType.METAL).lightLevel(
+                litBlockEmission(15)));
         this.registerDefaultState(this.stateDefinition.any().setValue(light, Boolean.TRUE));
     }
 
     private static ToIntFunction<BlockState> litBlockEmission(int lightLevel) {
         return lightLevel1 -> BlockStateProperties.MAX_LEVEL_15;
-    }
-
-    @Override
-    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
-        builder.add(light);
-    }
-
-    @Override
-    public void setPlacedBy(@NotNull Level worldIn, @NotNull BlockPos pos, @NotNull BlockState state, LivingEntity placer, @NotNull ItemStack stack) {
-        super.setPlacedBy(worldIn, pos, state, placer, stack);
-        var tileentity = worldIn.getBlockEntity(pos);
-        if (tileentity instanceof IconBlockEntity iconBlockEntity) checkIconSpawn(worldIn, pos, iconBlockEntity);
     }
 
     public static void checkIconSpawn(Level worldIn, BlockPos pos, IconBlockEntity tileEntityIn) {
@@ -72,13 +61,15 @@ public class DoomWallBlock extends BaseEntityBlock {
                     var witherentity = Services.ENTITIES_HELPER.getIconofSinEntity().create(worldIn);
                     var blockpos = patternHelper.getBlock(1, 2, 0).getPos();
                     assert witherentity != null;
-                    witherentity.moveTo(blockpos.getX() + 0.5D, blockpos.getY() + 0.55D, blockpos.getZ() + 0.5D, patternHelper.getForwards().getAxis() == Direction.Axis.X ? 0.0F : 90.0F, 0.0F);
+                    witherentity.moveTo(blockpos.getX() + 0.5D, blockpos.getY() + 0.55D, blockpos.getZ() + 0.5D,
+                            patternHelper.getForwards().getAxis() == Direction.Axis.X ? 0.0F : 90.0F, 0.0F);
                     witherentity.yBodyRot = patternHelper.getForwards().getAxis() == Direction.Axis.X ? 0.0F : 90.0F;
                     witherentity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 4));
                     witherentity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 200, 4));
                     worldIn.addFreshEntity(witherentity);
 
-                    for (ServerPlayer serverplayerentity : worldIn.getEntitiesOfClass(ServerPlayer.class, witherentity.getBoundingBox().inflate(50.0D)))
+                    for (ServerPlayer serverplayerentity : worldIn.getEntitiesOfClass(ServerPlayer.class,
+                            witherentity.getBoundingBox().inflate(50.0D)))
                         CriteriaTriggers.SUMMONED_ENTITY.trigger(serverplayerentity, witherentity);
 
                     for (var k = 0; k < blockpattern.getWidth(); ++k)
@@ -96,9 +87,37 @@ public class DoomWallBlock extends BaseEntityBlock {
 
     public static BlockPattern getOrCreateIconFull() {
         if (iconPatternFull == null) {
-            iconPatternFull = BlockPatternBuilder.start().aisle("!@#$", "%^&*", "()-_", "+=12").where('!', BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall1()))).where('@', BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall2()))).where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall3()))).where('$', BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall4()))).where('%', BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall5()))).where('^', BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall6()))).where('&', BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall7()))).where('*', BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall8()))).where('(', BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall9()))).where(')', BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall10()))).where('-', BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall11()))).where('_', BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall12()))).where('+', BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall13()))).where('=', BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall14()))).where('1', BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall15()))).where('2', BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall16()))).build();
+            iconPatternFull = BlockPatternBuilder.start().aisle("!@#$", "%^&*", "()-_", "+=12").where('!',
+                    BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall1()))).where('@',
+                    BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall2()))).where('#',
+                    BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall3()))).where('$',
+                    BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall4()))).where('%',
+                    BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall5()))).where('^',
+                    BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall6()))).where('&',
+                    BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall7()))).where('*',
+                    BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall8()))).where('(',
+                    BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall9()))).where(')',
+                    BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall10()))).where('-',
+                    BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall11()))).where('_',
+                    BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall12()))).where('+',
+                    BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall13()))).where('=',
+                    BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall14()))).where('1',
+                    BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall15()))).where('2',
+                    BlockInWorld.hasState(BlockStatePredicate.forBlock(Services.BLOCKS_HELPER.getWall16()))).build();
         }
         return iconPatternFull;
+    }
+
+    @Override
+    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
+        builder.add(light);
+    }
+
+    @Override
+    public void setPlacedBy(@NotNull Level worldIn, @NotNull BlockPos pos, @NotNull BlockState state, LivingEntity placer, @NotNull ItemStack stack) {
+        super.setPlacedBy(worldIn, pos, state, placer, stack);
+        var tileentity = worldIn.getBlockEntity(pos);
+        if (tileentity instanceof IconBlockEntity iconBlockEntity) checkIconSpawn(worldIn, pos, iconBlockEntity);
     }
 
     @Override

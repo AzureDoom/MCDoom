@@ -16,12 +16,12 @@ minecraft {
 
 repositories {
     mavenCentral()
-	maven { url 'https://libs.azuredoom.com:4443/mods'}
+    maven { url 'https://libs.azuredoom.com:4443/mods' }
     maven { url 'https://dl.cloudsmith.io/public/tslat/sbl/maven/' }
 }
 
 dependencies {
-    compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
+    compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     implementation group: 'org.ow2.asm', name: 'asm-tree', version: '9.5'
     compileOnly "net.tslat.smartbrainlib:SmartBrainLib-neoforge-1.20.1:${project.sbl_version}"

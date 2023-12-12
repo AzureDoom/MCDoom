@@ -28,16 +28,6 @@ public class TotemEntity extends BlockEntity implements GeoBlockEntity {
         super(Services.ENTITIES_HELPER.getTotemEntity(), pos, state);
     }
 
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return cache;
-    }
-
-    @Override
-    public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, event -> event.setAndContinue(RawAnimation.begin().thenLoop("idle"))));
-    }
-
     public static void tick(Level world, BlockPos pos, BlockState state, TotemEntity blockEntity) {
         if (blockEntity.level != null && blockEntity.level.getGameTime() % 80L == 0L)
             blockEntity.applyEffects();
@@ -46,8 +36,21 @@ public class TotemEntity extends BlockEntity implements GeoBlockEntity {
             final double y = pos.getY() + 1.0D * (blockEntity.random.nextDouble() - 0.5D) * 2.0D;
             final double z = pos.getZ() + 1.0D * (blockEntity.random.nextDouble() - 0.25D) * 2.0D;
             for (var k = 0; k < 4; ++k)
-                world.addParticle(DustParticleOptions.REDSTONE, x, y, z, (blockEntity.random.nextDouble() - 0.5D) * 2.0D, -blockEntity.random.nextDouble(), (blockEntity.random.nextDouble() - 0.5D) * 2.0D);
+                world.addParticle(DustParticleOptions.REDSTONE, x, y, z,
+                        (blockEntity.random.nextDouble() - 0.5D) * 2.0D, -blockEntity.random.nextDouble(),
+                        (blockEntity.random.nextDouble() - 0.5D) * 2.0D);
         }
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
+
+    @Override
+    public void registerControllers(ControllerRegistrar controllers) {
+        controllers.add(
+                new AnimationController<>(this, event -> event.setAndContinue(RawAnimation.begin().thenLoop("idle"))));
     }
 
     @Override
@@ -59,7 +62,8 @@ public class TotemEntity extends BlockEntity implements GeoBlockEntity {
     private void applyEffects() {
         assert level != null;
         if (!level.isClientSide) {
-            final var axisalignedbb = new AABB(worldPosition).inflate(40).expandTowards(0.0D, level.getMaxBuildHeight(), 0.0D);
+            final var axisalignedbb = new AABB(worldPosition).inflate(40).expandTowards(0.0D, level.getMaxBuildHeight(),
+                    0.0D);
             final var list = level.getEntitiesOfClass(DemonEntity.class, axisalignedbb);
             for (final var entity : list) {
                 entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000, 1));
@@ -72,7 +76,8 @@ public class TotemEntity extends BlockEntity implements GeoBlockEntity {
     private void removeEffects() {
         assert level != null;
         if (!level.isClientSide) {
-            final var axisalignedbb = new AABB(worldPosition).inflate(40).expandTowards(0.0D, level.getMaxBuildHeight(), 0.0D);
+            final var axisalignedbb = new AABB(worldPosition).inflate(40).expandTowards(0.0D, level.getMaxBuildHeight(),
+                    0.0D);
             final var list = level.getEntitiesOfClass(DemonEntity.class, axisalignedbb);
             for (final var entity : list) {
                 entity.setGlowingTag(false);

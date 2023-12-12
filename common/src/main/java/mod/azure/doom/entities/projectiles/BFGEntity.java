@@ -15,6 +15,7 @@ import mod.azure.doom.entities.tierboss.GladiatorEntity;
 import mod.azure.doom.entities.tierboss.IconofsinEntity;
 import mod.azure.doom.entities.tierboss.MotherDemonEntity;
 import mod.azure.doom.helper.CommonUtils;
+import mod.azure.doom.platform.Services;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.Packet;
@@ -23,7 +24,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -41,6 +41,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -49,18 +50,16 @@ import java.util.Random;
 
 public class BFGEntity extends AbstractArrow implements GeoEntity {
 
-    private static final EntityDataAccessor<Integer> TARGET_ENTITY = SynchedEntityData.defineId(BFGEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> TARGET_ENTITY = SynchedEntityData.defineId(BFGEntity.class,
+            EntityDataSerializers.INT);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();
     Random rand = new Random();
-    List<? extends String> whitelistEntries = Arrays.asList(MCDoom.config.bfg_damage_mob_whitelist);
+    List<String> whitelistEntries = Arrays.asList(MCDoom.config.bfg_damage_mob_whitelist);
     int randomIndex = rand.nextInt(whitelistEntries.size());
     ResourceLocation randomElement1 = new ResourceLocation(whitelistEntries.get(randomIndex));
     EntityType<?> randomElement = BuiltInRegistries.ENTITY_TYPE.get(randomElement1);
-    private LivingEntity cachedBeamTarget;
-    private LivingEntity shooter;
     private int idleTicks = 0;
-    private int beamTicks;
+    private LivingEntity cachedBeamTarget;
 
     public BFGEntity(EntityType<? extends BFGEntity> entityType, Level world) {
         super(entityType, world);
@@ -68,23 +67,14 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
     }
 
     public BFGEntity(Level world, LivingEntity owner) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getBFGEtntity(), owner, world);
-        this.shooter = owner;
-    }
-
-    protected BFGEntity(EntityType<? extends BFGEntity> type, double x, double y, double z, Level world) {
-        this(type, world);
-    }
-
-    protected BFGEntity(EntityType<? extends BFGEntity> type, LivingEntity owner, Level world) {
-        this(type, owner.getX(), owner.getEyeY() - 0.10000000149011612D, owner.getZ(), world);
+        super(Services.ENTITIES_HELPER.getBFGEtntity(), owner, world);
         this.setOwner(owner);
-        if (owner instanceof Player) this.pickup = Pickup.DISALLOWED;
     }
 
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, event -> event.setAndContinue(RawAnimation.begin().thenLoop("idle"))));
+        controllers.add(
+                new AnimationController<>(this, event -> event.setAndContinue(RawAnimation.begin().thenLoop("idle"))));
     }
 
     @Override
@@ -93,7 +83,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return EntityPacket.createPacket(this);
     }
 
@@ -103,7 +93,7 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    protected void doPostHurtEffects(LivingEntity living) {
+    protected void doPostHurtEffects(@NotNull LivingEntity living) {
         super.doPostHurtEffects(living);
         if (!(living instanceof Player) && !(living instanceof IconofsinEntity)) {
             living.setDeltaMovement(0, 0, 0);
@@ -116,29 +106,30 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
         var idleOpt = 100;
         if (getDeltaMovement().lengthSqr() < 0.01) idleTicks++;
         else idleTicks = 0;
-        if (idleOpt <= 0 || idleTicks < idleOpt) super.tick();
+        if (idleTicks < idleOpt) super.tick();
         var isInsideWaterBlock = level().isWaterAt(blockPosition());
         CommonUtils.spawnLightSource(this, isInsideWaterBlock);
         if (this.tickCount >= 80) this.remove(RemovalReason.DISCARDED);
-        var aabb = new AABB(this.blockPosition().above()).inflate(24D, 24D, 24D);
         CommonUtils.setOnFire(this);
-        this.level().getEntities(this, aabb).forEach(e -> {
+        this.level().getEntitiesOfClass(LivingEntity.class,
+                new AABB(this.blockPosition().above()).inflate(24D, 24D, 24D)).forEach(e -> {
             var listEntity = randomElement.tryCast(e);
             if (!(e instanceof Player || e instanceof EnderDragon || e instanceof GoreNestEntity || e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity) && (e instanceof Monster || e instanceof Slime || e instanceof Phantom || e instanceof DemonEntity || e instanceof Shulker || e instanceof Hoglin || (e == listEntity)) && e.isAlive()) {
-                e.hurt(damageSources().explosion(this, shooter), MCDoom.config.bfgball_damage_aoe);
+                e.hurt(damageSources().explosion(this, this.getOwner()), MCDoom.config.bfgball_damage_aoe);
                 this.setTargetedEntity(e.getId());
             }
             if (e instanceof EnderDragon enderDragon && e.isAlive()) {
-                enderDragon.head.hurt(damageSources().playerAttack((Player) this.shooter), MCDoom.config.bfgball_damage_dragon * 0.3F);
+                enderDragon.head.hurt(damageSources().playerAttack((Player) this.getOwner()),
+                        MCDoom.config.bfgball_damage_dragon * 0.3F);
                 this.setTargetedEntity(e.getId());
             }
             if (e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity && e.isAlive())
-                e.hurt(damageSources().playerAttack((Player) this.shooter), MCDoom.config.bfgball_damage_aoe * 0.1F);
+                e.hurt(damageSources().playerAttack((Player) this.getOwner()), MCDoom.config.bfgball_damage_aoe * 0.1F);
         });
     }
 
     @Override
-    public ItemStack getPickupItem() {
+    public @NotNull ItemStack getPickupItem() {
         return Items.AIR.getDefaultInstance();
     }
 
@@ -148,51 +139,53 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult blockHitResult) {
+    protected void onHitBlock(@NotNull BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
         if (!this.level().isClientSide()) this.remove(RemovalReason.DISCARDED);
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult entityHitResult) {
+    protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         if (!this.level().isClientSide) {
             this.doDamage();
-            this.level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, MCDoom.config.enable_block_breaking ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
+            this.level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F,
+                    MCDoom.config.enable_block_breaking ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
             this.remove(RemovalReason.KILLED);
         }
-        this.playSound(mod.azure.doom.platform.Services.SOUNDS_HELPER.getBFG_HIT(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+        this.playSound(mod.azure.doom.platform.Services.SOUNDS_HELPER.getBFG_HIT(), 1.0F,
+                1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
     }
 
     public void doDamage() {
-        var aabb = new AABB(this.blockPosition().above()).inflate(24D, 24D, 24D);
-        this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
+        this.level().getEntitiesOfClass(LivingEntity.class,
+                new AABB(this.blockPosition().above()).inflate(24D, 24D, 24D)).forEach(e -> {
             var listEntity = randomElement.tryCast(e);
             if (!(e instanceof Player || e instanceof EnderDragon || e instanceof GoreNestEntity || e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity) && (e instanceof Monster || e instanceof Slime || e instanceof Phantom || e instanceof DemonEntity || e instanceof Shulker || e instanceof Hoglin || (e == listEntity))) {
-                if (this.isOnFire())
-                    e.setSecondsOnFire(50);
-                e.hurt(damageSources().playerAttack((Player) this.shooter), MCDoom.config.bfgball_damage);
+                if (this.isOnFire()) e.setSecondsOnFire(50);
+                e.hurt(damageSources().playerAttack((Player) this.getOwner()), MCDoom.config.bfgball_damage);
                 this.setTargetedEntity(e.getId());
                 if (!this.level().isClientSide) {
-                    var list1 = this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D));
-                    var areaeffectcloudentity = new AreaEffectCloud(e.level(), e.getX(), e.getY(), e.getZ());
-                    areaeffectcloudentity.setParticle(ParticleTypes.TOTEM_OF_UNDYING);
-                    areaeffectcloudentity.setRadius(3.0F);
-                    areaeffectcloudentity.setDuration(10);
+                    var list1 = this.level().getEntitiesOfClass(LivingEntity.class,
+                            this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D));
+                    var areaEffectCloud = new AreaEffectCloud(e.level(), e.getX(), e.getY(), e.getZ());
+                    areaEffectCloud.setParticle(ParticleTypes.TOTEM_OF_UNDYING);
+                    areaEffectCloud.setRadius(3.0F);
+                    areaEffectCloud.setDuration(10);
                     if (!list1.isEmpty()) {
                         for (var livingentity : list1) {
                             var d0 = this.distanceToSqr(livingentity);
-                            if (d0 < 16.0D) areaeffectcloudentity.setPos(e.getX(), e.getEyeY(), e.getZ());
+                            if (d0 < 16.0D) areaEffectCloud.setPos(e.getX(), e.getEyeY(), e.getZ());
                         }
                     }
-                    e.level().addFreshEntity(areaeffectcloudentity);
+                    e.level().addFreshEntity(areaEffectCloud);
                 }
             }
             if (e instanceof EnderDragon enderDragon && e.isAlive())
-                enderDragon.head.hurt(damageSources().playerAttack((Player) this.shooter), MCDoom.config.bfgball_damage_dragon * 0.3F);
+                enderDragon.head.hurt(damageSources().playerAttack((Player) this.getOwner()),
+                        MCDoom.config.bfgball_damage_dragon * 0.3F);
             if (e instanceof IconofsinEntity || e instanceof ArchMakyrEntity || e instanceof GladiatorEntity || e instanceof MotherDemonEntity && e.isAlive()) {
-                if (this.isOnFire())
-                    e.setSecondsOnFire(50);
-                e.hurt(damageSources().playerAttack((Player) this.shooter), MCDoom.config.bfgball_damage * 0.1F);
+                if (this.isOnFire()) e.setSecondsOnFire(50);
+                e.hurt(damageSources().playerAttack((Player) this.getOwner()), MCDoom.config.bfgball_damage * 0.1F);
             }
         });
     }
@@ -209,9 +202,8 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
 
     @Nullable
     public LivingEntity getTargetedEntity() {
-        if (!this.hasTargetedEntity()) {
-            return null;
-        } else if (this.level().isClientSide) {
+        if (!this.hasTargetedEntity()) return null;
+        if (this.level().isClientSide) {
             if (this.cachedBeamTarget != null) return this.cachedBeamTarget;
             else {
                 var entity = this.level().getEntity(this.entityData.get(TARGET_ENTITY));
@@ -227,16 +219,8 @@ public class BFGEntity extends AbstractArrow implements GeoEntity {
         this.entityData.set(TARGET_ENTITY, entityId);
     }
 
-    public float getBeamProgress(float tickDelta) {
-        return (this.beamTicks + tickDelta) / this.getWarmupTime();
-    }
-
-    public int getWarmupTime() {
-        return 80;
-    }
-
     @Override
-    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> key) {
         super.onSyncedDataUpdated(key);
         if (TARGET_ENTITY.equals(key)) this.cachedBeamTarget = null;
     }

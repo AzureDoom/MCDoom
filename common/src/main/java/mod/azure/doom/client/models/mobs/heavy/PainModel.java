@@ -13,17 +13,20 @@ public class PainModel extends GeoModel<PainEntity> {
 
     @Override
     public ResourceLocation getModelResource(PainEntity object) {
-        return new ResourceLocation(MCDoom.MOD_ID, "geo/" + (object.getVariant() == 2 ? "pain64" : object.getVariant() == 3 ? "paineternal" : "pain") + ".geo.json");
+        return new ResourceLocation(MCDoom.MOD_ID,
+                "geo/" + (object.getVariant() == 2 ? "pain64" : object.getVariant() == 3 ? "paineternal" : "pain") + ".geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(PainEntity object) {
-        return MCDoom.modResource("textures/entity/" + (object.getVariant() == 2 ? (object.getAttckingState() == 2 ? "painelemental64-attacking" : "painelemental64-normal") : object.getVariant() == 3 ? "paineternal" : (object.getAttckingState() == 1 ? "painelemental-attacking" : "painelemental-normal")) + ".png");
+        return MCDoom.modResource(
+                "textures/entity/" + (object.getVariant() == 2 ? (object.getAttckingState() == 2 ? "painelemental64-attacking" : "painelemental64-normal") : object.getVariant() == 3 ? "paineternal" : (object.getAttckingState() == 1 ? "painelemental-attacking" : "painelemental-normal")) + ".png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(PainEntity object) {
-        return new ResourceLocation(MCDoom.MOD_ID, "animations/" + (object.getVariant() == 3 ? "paineternal." : "pain_") + "animation.json");
+        return new ResourceLocation(MCDoom.MOD_ID,
+                "animations/" + (object.getVariant() == 3 ? "paineternal." : "pain_") + "animation.json");
     }
 
     @Override

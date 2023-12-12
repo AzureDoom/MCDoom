@@ -48,21 +48,26 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.SplittableRandom;
 
 public class PinkyEntity extends DemonEntity implements SmartBrainOwner<PinkyEntity> {
 
-    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(PinkyEntity.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(PinkyEntity.class,
+            EntityDataSerializers.INT);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public PinkyEntity(EntityType<PinkyEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
     }
 
-    public static AttributeSupplier.Builder createMobAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MAX_HEALTH, MCDoom.config.pinky_health).add(Attributes.ATTACK_DAMAGE, MCDoom.config.pinky_melee_damage).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 5.0D);
+    public static AttributeSupplier.@NotNull Builder createMobAttributes() {
+        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(
+                Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.MAX_HEALTH, MCDoom.config.pinky_health).add(
+                Attributes.ATTACK_DAMAGE, MCDoom.config.pinky_melee_damage).add(Attributes.MOVEMENT_SPEED, 0.25D).add(
+                Attributes.ATTACK_KNOCKBACK, 5.0D);
     }
 
     @Override
@@ -78,10 +83,14 @@ public class PinkyEntity extends DemonEntity implements SmartBrainOwner<PinkyEnt
         }).setSoundKeyframeHandler(event -> {
             if (event.getKeyframeData().getSound().matches("walk"))
                 if (level().isClientSide())
-                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+                    level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                            mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F,
+                            1.0F, false);
             if (event.getKeyframeData().getSound().matches("yell"))
                 if (level().isClientSide())
-                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_YELL(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+                    level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                            mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_YELL(), SoundSource.HOSTILE, 0.25F,
+                            1.0F, false);
         }));
     }
 
@@ -106,13 +115,13 @@ public class PinkyEntity extends DemonEntity implements SmartBrainOwner<PinkyEnt
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
+    public void readAdditionalSaveData(@NotNull CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         setVariant(tag.getInt("Variant"));
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
+    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putInt("Variant", getVariant());
     }
@@ -136,28 +145,40 @@ public class PinkyEntity extends DemonEntity implements SmartBrainOwner<PinkyEnt
     }
 
     @Override
-    protected Brain.Provider<?> brainProvider() {
+    protected Brain.@NotNull Provider<?> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
 
     @Override
     public List<ExtendedSensor<PinkyEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyLivingEntitySensor<PinkyEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<PinkyEntity>());
+        return ObjectArrayList.of(new NearbyLivingEntitySensor<PinkyEntity>().setPredicate(
+                        (target, entity) -> target.isAlive() && entity.hasLineOfSight(
+                                target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
+                new UnreachableTargetSensor<PinkyEntity>());
     }
 
     @Override
     public BrainActivityGroup<PinkyEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>());
+        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300),
+                new FloatToSurfaceOfFluid<>(), new MoveToWalkTarget<>());
     }
 
     @Override
     public BrainActivityGroup<PinkyEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<PinkyEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player player && player.isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.75f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<PinkyEntity>(
+                        new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()),
+                        new SetPlayerLookTarget<>().stopIf(
+                                target -> !target.isAlive() || target instanceof Player player && player.isCreative()),
+                        new SetRandomLookTarget<>()),
+                new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(0.75f),
+                        new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
     }
 
     @Override
     public BrainActivityGroup<PinkyEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.75F), new AnimatableMeleeAttack<>(0));
+        return BrainActivityGroup.fightTasks(
+                new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive()),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.75F), new AnimatableMeleeAttack<>(0));
     }
 
     @Override
@@ -176,7 +197,7 @@ public class PinkyEntity extends DemonEntity implements SmartBrainOwner<PinkyEnt
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
         spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
         final SplittableRandom random = new SplittableRandom();
         final int var = random.nextInt(0, 5);
@@ -185,7 +206,7 @@ public class PinkyEntity extends DemonEntity implements SmartBrainOwner<PinkyEnt
     }
 
     @Override
-    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+    protected SoundEvent getHurtSound(@NotNull DamageSource damageSourceIn) {
         return mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_HURT();
     }
 

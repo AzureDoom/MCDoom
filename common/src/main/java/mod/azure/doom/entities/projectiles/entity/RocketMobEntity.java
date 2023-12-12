@@ -22,27 +22,29 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
 public class RocketMobEntity extends AbstractHurtingProjectile implements GeoEntity {
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     private float directHitDamage = 5F;
     private LivingEntity shooter;
     private int idleTicks = 0;
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public RocketMobEntity(EntityType<? extends RocketMobEntity> entity, Level level) {
         super(entity, level);
     }
 
-    public void setDirectHitDamage(float directHitDamage) {
-        this.directHitDamage = directHitDamage;
-    }
-
     public RocketMobEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, float directHitDamage) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getRocketMobEntity(), shooter, accelX, accelY, accelZ, worldIn);
+        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getRocketMobEntity(), shooter, accelX, accelY, accelZ,
+                worldIn);
         this.shooter = shooter;
         this.directHitDamage = directHitDamage;
     }
 
     public RocketMobEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getRocketMobEntity(), x, y, z, accelX, accelY, accelZ, worldIn);
+        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getRocketMobEntity(), x, y, z, accelX, accelY, accelZ,
+                worldIn);
+    }
+
+    public void setDirectHitDamage(float directHitDamage) {
+        this.directHitDamage = directHitDamage;
     }
 
     @Override
@@ -127,7 +129,8 @@ public class RocketMobEntity extends AbstractHurtingProjectile implements GeoEnt
         final var isInsideWaterBlock = level().isWaterAt(blockPosition());
         CommonUtils.spawnLightSource(this, isInsideWaterBlock);
         if (level().isClientSide())
-            level().addParticle(ParticleTypes.SMOKE, true, this.getX() + random.nextDouble() * getBbWidth() * 0.5D, this.getY(0.5), this.getZ() + random.nextDouble() * getBbWidth() * 0.5D, 0, 0, 0);
+            level().addParticle(ParticleTypes.SMOKE, true, this.getX() + random.nextDouble() * getBbWidth() * 0.5D,
+                    this.getY(0.5), this.getZ() + random.nextDouble() * getBbWidth() * 0.5D, 0, 0, 0);
     }
 
 }

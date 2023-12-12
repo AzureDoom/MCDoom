@@ -5,14 +5,14 @@
     128,
     96
   ],
-	"overrides": [
-		{
-			"predicate": {
-				"nocenter": 1
-			},
-			"model": "doom:item/doomed_gauss_nocenter"
-		}
-	],
+  "overrides": [
+    {
+      "predicate": {
+        "nocenter": 1
+      },
+      "model": "doom:item/doomed_gauss_nocenter"
+    }
+  ],
   "display": {
     "thirdperson_righthand": {
       "translation": [

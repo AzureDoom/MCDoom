@@ -22,7 +22,8 @@ public class DoomHunterRender extends GeoEntityRenderer<DoomHunterEntity> {
 
     @Override
     public void preRender(PoseStack poseStack, DoomHunterEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
+                packedOverlay, red, green, blue, alpha);
         if (animatable.getEntityData().get(DoomHunterEntity.DEATH_STATE) == 0)
             model.getBone("sled").get().setHidden(false);
         if (animatable.getEntityData().get(DoomHunterEntity.DEATH_STATE) == 1)

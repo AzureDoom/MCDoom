@@ -41,7 +41,8 @@ public class ChaingunnerRender extends GeoEntityRenderer<ChaingunnerEntity> {
                 poseStack.mulPose(Axis.YP.rotationDegrees(0));
                 poseStack.mulPose(Axis.ZP.rotationDegrees(0));
                 poseStack.translate(0.0D, 0.0D, -0.2D);
-                super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
+                super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight,
+                        packedOverlay);
             }
         });
     }

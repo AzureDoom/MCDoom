@@ -3,16 +3,16 @@
     "item": "doom:classic_bronze_chestplate"
   },
   "type": "minecraft:crafting_shaped",
-   "pattern": [
-        "@",
-        "#"
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:orange_dye"
-        },
-		"@": {
-			"item": "doom:classic_doom_chestplate"
-		}
+  "pattern": [
+    "@",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:orange_dye"
+    },
+    "@": {
+      "item": "doom:classic_doom_chestplate"
     }
+  }
 }

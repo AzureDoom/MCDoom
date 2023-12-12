@@ -49,7 +49,10 @@ public class DemonFlyControl extends MoveControl {
             final var blockpos = mob.blockPosition();
             final var blockstate = mob.level().getBlockState(blockpos);
             final var voxelshape = blockstate.getCollisionShape(mob.level(), blockpos);
-            if (d2 > mob.getEyeHeight() && d0 * d0 + d1 * d1 < Math.max(1.0F, mob.getBbWidth()) || !voxelshape.isEmpty() && mob.getY() < voxelshape.max(Direction.Axis.Y) + blockpos.getY() && !blockstate.is(BlockTags.DOORS) && !blockstate.is(BlockTags.FENCES))
+            if (d2 > mob.getEyeHeight() && d0 * d0 + d1 * d1 < Math.max(1.0F,
+                    mob.getBbWidth()) || !voxelshape.isEmpty() && mob.getY() < voxelshape.max(
+                    Direction.Axis.Y) + blockpos.getY() && !blockstate.is(BlockTags.DOORS) && !blockstate.is(
+                    BlockTags.FENCES))
                 operation = Operation.JUMPING;
         } else if (operation == Operation.JUMPING) {
             mob.setSpeed((float) 0.25D);

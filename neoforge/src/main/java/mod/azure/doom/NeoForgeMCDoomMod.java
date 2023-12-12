@@ -29,10 +29,14 @@ import java.util.List;
 @Mod(MCDoom.MOD_ID)
 public final class NeoForgeMCDoomMod {
 
-    public static NeoForgeMCDoomMod instance;
     public static final TagKey<Block> ARGENT_TAG = BlockTags.create(MCDoom.modResource("needs_argent_tool"));
-    public static final Tier ARGENT_TIER = TierSortingRegistry.registerTier(new ForgeTier(17, 5000, 18, 3.0F, 30, ARGENT_TAG, () -> Ingredient.of(NeoDoomItems.ARGENT_BLOCK.get())), MCDoom.modResource("argent"), List.of(Tiers.NETHERITE), List.of());
-    public static final Tier DOOM_HIGHTEIR = TierSortingRegistry.registerTier(new ForgeTier(17, 0, 30, -1.9F, 0, ARGENT_TAG, () -> Ingredient.of(NeoDoomItems.ARGENT_BLOCK.get())), MCDoom.modResource("doom_highertier"), List.of(Tiers.NETHERITE), List.of());
+    public static final Tier ARGENT_TIER = TierSortingRegistry.registerTier(
+            new ForgeTier(17, 5000, 18, 3.0F, 30, ARGENT_TAG, () -> Ingredient.of(NeoDoomItems.ARGENT_BLOCK.get())),
+            MCDoom.modResource("argent"), List.of(Tiers.NETHERITE), List.of());
+    public static final Tier DOOM_HIGHTEIR = TierSortingRegistry.registerTier(
+            new ForgeTier(17, 0, 30, -1.9F, 0, ARGENT_TAG, () -> Ingredient.of(NeoDoomItems.ARGENT_BLOCK.get())),
+            MCDoom.modResource("doom_highertier"), List.of(Tiers.NETHERITE), List.of());
+    public static NeoForgeMCDoomMod instance;
 
 
     public NeoForgeMCDoomMod() {
@@ -59,6 +63,8 @@ public final class NeoForgeMCDoomMod {
 
     private void setup(final FMLCommonSetupEvent event) {
         Services.NETWORK.registerClientReceiverPackets();
-        CustomPortalBuilder.beginPortal().frameBlock(NeoDoomBlocks.E1M1_1.get()).lightWithItem(NeoDoomItems.ARGENT_ENERGY.get()).destDimID(MCDoom.modResource("doom_hell")).tintColor(139, 0, 0).registerPortal();
+        CustomPortalBuilder.beginPortal().frameBlock(NeoDoomBlocks.E1M1_1.get()).lightWithItem(
+                NeoDoomItems.ARGENT_ENERGY.get()).destDimID(MCDoom.modResource("doom_hell")).tintColor(139, 0,
+                0).registerPortal();
     }
 }

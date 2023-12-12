@@ -13,19 +13,21 @@ import net.minecraft.core.BlockPos;
 
 public class RocketMobRender extends GeoEntityRenderer<RocketMobEntity> {
 
-	public RocketMobRender(EntityRendererProvider.Context renderManagerIn) {
-		super(renderManagerIn, new RocketMobModel());
-	}
+    public RocketMobRender(EntityRendererProvider.Context renderManagerIn) {
+        super(renderManagerIn, new RocketMobModel());
+    }
 
-	protected int getBlockLightLevel(RocketMobEntity entityIn, BlockPos partialTicks) {
-		return 15;
-	}
+    protected int getBlockLightLevel(RocketMobEntity entityIn, BlockPos partialTicks) {
+        return 15;
+    }
 
-	@Override
-	public void preRender(PoseStack poseStack, RocketMobEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		RenderUtils.faceRotation(poseStack, animatable, partialTick);
-		poseStack.scale(animatable.tickCount > 2 ? 0.5F : 0.0F, animatable.tickCount > 2 ? 0.5F : 0.0F, animatable.tickCount > 2 ? 0.5F : 0.0F);
-		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
-	}
+    @Override
+    public void preRender(PoseStack poseStack, RocketMobEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        RenderUtils.faceRotation(poseStack, animatable, partialTick);
+        poseStack.scale(animatable.tickCount > 2 ? 0.5F : 0.0F, animatable.tickCount > 2 ? 0.5F : 0.0F,
+                animatable.tickCount > 2 ? 0.5F : 0.0F);
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
+                packedOverlay, red, green, blue, alpha);
+    }
 
 }

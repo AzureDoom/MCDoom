@@ -3,16 +3,16 @@
     "item": "doom:classic_bronze_leggings"
   },
   "type": "minecraft:crafting_shaped",
-   "pattern": [
-        "@",
-        "#"
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:orange_dye"
-        },
-		"@": {
-			"item": "doom:classic_doom_leggings"
-		}
+  "pattern": [
+    "@",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:orange_dye"
+    },
+    "@": {
+      "item": "doom:classic_doom_leggings"
     }
+  }
 }

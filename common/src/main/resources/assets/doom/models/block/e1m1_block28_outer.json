@@ -1,9 +1,9 @@
 {
-    "parent": "block/outer_stairs",
-    "textures": {
-		"particle": "doom:block/e1m1_wall",
-        "bottom": "doom:block/e1m1_blue_floor",
-        "top": "doom:block/e1m1_brown_wall",
-        "side": "doom:block/e1m1_brown_wall"
-    }
+  "parent": "block/outer_stairs",
+  "textures": {
+    "particle": "doom:block/e1m1_wall",
+    "bottom": "doom:block/e1m1_blue_floor",
+    "top": "doom:block/e1m1_brown_wall",
+    "side": "doom:block/e1m1_brown_wall"
+  }
 }

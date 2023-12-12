@@ -28,7 +28,10 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -57,18 +60,26 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class SummonerEntity extends DemonEntity implements SmartBrainOwner<SummonerEntity> {
 
+    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(SummonerEntity.class,
+            EntityDataSerializers.INT);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
     private int targetChangeTime;
-    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(SummonerEntity.class, EntityDataSerializers.INT);
 
     public SummonerEntity(EntityType<SummonerEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
+    }
+
+    public static AttributeSupplier.@NotNull Builder createMobAttributes() {
+        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH,
+                MCDoom.config.summoner_health).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED,
+                0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
     }
 
     @Override
@@ -81,11 +92,15 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
         }).setSoundKeyframeHandler(event -> {
             if (level().isClientSide()) {
                 if (event.getKeyframeData().getSound().matches("attack"))
-                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), mod.azure.doom.platform.Services.SOUNDS_HELPER.getARCHVILE_SCREAM(), SoundSource.HOSTILE, 0.25F, 1.0F, false);
+                    level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                            mod.azure.doom.platform.Services.SOUNDS_HELPER.getARCHVILE_SCREAM(), SoundSource.HOSTILE,
+                            0.25F, 1.0F, false);
                 if (event.getKeyframeData().getSound().matches("walk"))
-                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PHANTOM_SWOOP, SoundSource.HOSTILE, 0.25F, 1.0F, false);
+                    level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PHANTOM_SWOOP,
+                            SoundSource.HOSTILE, 0.25F, 1.0F, false);
             }
-        }).triggerableAnim("ranged", RawAnimation.begin().then("summon", LoopType.PLAY_ONCE)).triggerableAnim("attacking", DoomAnimationsDefault.MELEE));
+        }).triggerableAnim("ranged", RawAnimation.begin().then("summon", LoopType.PLAY_ONCE)).triggerableAnim(
+                "attacking", DoomAnimationsDefault.MELEE));
     }
 
     @Override
@@ -94,28 +109,42 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
     }
 
     @Override
-    protected Brain.Provider<?> brainProvider() {
+    protected Brain.@NotNull Provider<?> brainProvider() {
         return new SmartBrainProvider<>(this);
     }
 
     @Override
     public List<ExtendedSensor<SummonerEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyLivingEntitySensor<SummonerEntity>().setPredicate((target, entity) -> target.isAlive() && entity.hasLineOfSight(target) && !(target instanceof DemonEntity)), new HurtBySensor<>(), new UnreachableTargetSensor<SummonerEntity>());
+        return ObjectArrayList.of(new NearbyLivingEntitySensor<SummonerEntity>().setPredicate(
+                        (target, entity) -> target.isAlive() && entity.hasLineOfSight(
+                                target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
+                new UnreachableTargetSensor<>());
     }
 
     @Override
     public BrainActivityGroup<SummonerEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300), new FloatToSurfaceOfFluid<>(), new StrafeTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
+        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new LookAtTargetSink(40, 300),
+                new FloatToSurfaceOfFluid<>(), new StrafeTarget<>().speedMod(0.25F), new MoveToWalkTarget<>());
     }
 
     @Override
     public BrainActivityGroup<SummonerEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<SummonerEntity>(new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player player && player.isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
+        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<SummonerEntity>(
+                        new TargetOrRetaliate<>().alertAlliesWhen((mob, entity) -> this.isAggressive()),
+                        new SetPlayerLookTarget<>().stopIf(
+                                target -> !target.isAlive() || target instanceof Player player && player.isCreative()),
+                        new SetRandomLookTarget<>()),
+                new OneRandomBehaviour<>(new SetRandomWalkTarget<>().setRadius(20).speedModifier(1.0f),
+                        new Idle<>().runFor(entity -> entity.getRandom().nextInt(300, 600))));
     }
 
     @Override
     public BrainActivityGroup<SummonerEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf((target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F), new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(MCDoom.config.baron_ranged_damage), new DemonMeleeAttack<>(5));
+        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().invalidateIf(
+                        (target, entity) -> !target.isAlive() || !entity.hasLineOfSight(target)),
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F),
+                new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(
+                        MCDoom.config.baron_ranged_damage), new DemonMeleeAttack<>(5));
     }
 
     @Override
@@ -132,6 +161,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
                 final var randomElement1 = new ResourceLocation(waveEntries.get(randomIndex));
                 final var randomElement = BuiltInRegistries.ENTITY_TYPE.get(randomElement1);
                 final var waveentity = randomElement.create(level());
+                assert waveentity != null;
                 waveentity.setPos(this.getX() + r, this.getY() + 0.5D, this.getZ() + r);
                 level().addFreshEntity(waveentity);
             }
@@ -143,21 +173,19 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
         tickBrain(this);
         if (level().isDay() && tickCount >= targetChangeTime + 600) {
             final var f = getLightLevelDependentMagicValue();
-            if (f > 0.5F && level().canSeeSky(blockPosition()) && random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F)
-                setTarget((LivingEntity) null);
+            if (f > 0.5F && level().canSeeSky(blockPosition()) && random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
+                teleportRandomly();
+            }
         }
-
         super.customServerAiStep();
     }
 
-    protected boolean teleportRandomly() {
+    protected void teleportRandomly() {
         if (!level().isClientSide() && isAlive()) {
             final double d0 = this.getX() + (random.nextDouble() - 0.5D) * 10.0D;
             final double d1 = this.getY() + (random.nextInt(64) - 10);
             final double d2 = this.getZ() + (random.nextDouble() - 0.5D) * 10.0D;
-            return teleport(d0, d1, d2);
-        } else {
-            return false;
+            teleport(d0, d1, d2);
         }
     }
 
@@ -173,7 +201,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
         else return false;
     }
 
-    public void spawnFlames(double x, double z, double maxY, double y, float yaw, int warmup) {
+    public void spawnFlames(double x, double z, double maxY, double y, float yaw) {
         var blockpos = BlockPos.containing(x, y, z);
         var flag = false;
         var d0 = 0.0D;
@@ -193,7 +221,8 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
         } while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
         if (flag) {
-            final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, yaw, 1, this, MCDoom.config.summoner_ranged_damage);
+            final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, yaw, 1, this,
+                    MCDoom.config.summoner_ranged_damage);
             fang.setSecondsOnFire(tickCount);
             fang.setInvisible(false);
             level().addFreshEntity(fang);
@@ -216,13 +245,13 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(@NotNull CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         setVariant(compound.getInt("Variant"));
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
+    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putInt("Variant", getVariant());
     }
@@ -240,19 +269,10 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
         spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
         setVariant(random.nextInt());
         return spawnDataIn;
-    }
-
-    @Override
-    public MobType getMobType() {
-        return MobType.UNDEAD;
-    }
-
-    public static AttributeSupplier.Builder createMobAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH, MCDoom.config.summoner_health).add(Attributes.ATTACK_DAMAGE, 0.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
     }
 
     protected boolean shouldDrown() {
@@ -276,7 +296,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
     }
 
     @Override
-    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+    protected SoundEvent getHurtSound(@NotNull DamageSource damageSourceIn) {
         return mod.azure.doom.platform.Services.SOUNDS_HELPER.getARCHVILE_HURT();
     }
 

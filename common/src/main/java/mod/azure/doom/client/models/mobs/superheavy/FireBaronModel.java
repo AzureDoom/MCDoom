@@ -10,7 +10,9 @@ import net.minecraft.resources.ResourceLocation;
 
 public class FireBaronModel extends GeoModel<FireBaronEntity> {
 
-    private static final ResourceLocation[] TEX = {MCDoom.modResource("textures/entity/firebaron.png"), MCDoom.modResource("textures/entity/firebaron_1.png"), MCDoom.modResource("textures/entity/firebaron_2.png")};
+    private static final ResourceLocation[] TEX = {MCDoom.modResource(
+            "textures/entity/firebaron.png"), MCDoom.modResource("textures/entity/firebaron_1.png"), MCDoom.modResource(
+            "textures/entity/firebaron_2.png")};
 
     @Override
     public ResourceLocation getModelResource(FireBaronEntity object) {

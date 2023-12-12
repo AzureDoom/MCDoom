@@ -9,7 +9,8 @@ import mod.azure.doom.recipes.GunTableRecipe;
 
 public class ReiPlugin implements REIClientPlugin {
 
-    public static final CategoryIdentifier<DoomDisplay> CRAFTING = CategoryIdentifier.of(MCDoom.modResource("crafting"));
+    public static final CategoryIdentifier<DoomDisplay> CRAFTING = CategoryIdentifier.of(
+            MCDoom.modResource("crafting"));
 
     @Override
     public void registerCategories(CategoryRegistry registry) {

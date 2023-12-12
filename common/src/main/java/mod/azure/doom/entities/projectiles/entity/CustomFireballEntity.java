@@ -36,7 +36,8 @@ public class CustomFireballEntity extends LargeFireball {
         super.onHitBlock(result);
         if (!this.level().isClientSide()) {
             var bl = MCDoom.config.enable_block_breaking;
-            this.level().explode(null, this.getX(), this.getY(), this.getZ(), 1, true, bl ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
+            this.level().explode(null, this.getX(), this.getY(), this.getZ(), 1, true,
+                    bl ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
             this.discard();
         }
     }

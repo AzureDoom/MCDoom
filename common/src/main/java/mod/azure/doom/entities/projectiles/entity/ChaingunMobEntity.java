@@ -20,12 +20,14 @@ public class ChaingunMobEntity extends AbstractHurtingProjectile {
     }
 
     public ChaingunMobEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, float directHitDamage) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getChaingunBulletMobEntity(), shooter, accelX, accelY, accelZ, worldIn);
+        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getChaingunBulletMobEntity(), shooter, accelX, accelY,
+                accelZ, worldIn);
         this.directHitDamage = directHitDamage;
     }
 
     public ChaingunMobEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getChaingunBulletMobEntity(), x, y, z, accelX, accelY, accelZ, worldIn);
+        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getChaingunBulletMobEntity(), x, y, z, accelX, accelY,
+                accelZ, worldIn);
     }
 
     @Override
@@ -33,7 +35,8 @@ public class ChaingunMobEntity extends AbstractHurtingProjectile {
         super.tick();
         if (tickCount >= 80) remove(RemovalReason.DISCARDED);
         if (level().isClientSide())
-            level().addParticle(ParticleTypes.SMOKE, true, this.getX() + random.nextDouble() * getBbWidth() * 0.5D, this.getY(), this.getZ() + random.nextDouble() * getBbWidth() * 0.5D, 0, 0, 0);
+            level().addParticle(ParticleTypes.SMOKE, true, this.getX() + random.nextDouble() * getBbWidth() * 0.5D,
+                    this.getY(), this.getZ() + random.nextDouble() * getBbWidth() * 0.5D, 0, 0, 0);
     }
 
     @Override

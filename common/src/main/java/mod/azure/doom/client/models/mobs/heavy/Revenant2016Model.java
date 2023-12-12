@@ -11,12 +11,28 @@ import net.minecraft.util.Mth;
 
 public class Revenant2016Model extends GeoModel<Revenant2016Entity> {
 
-    private static final ResourceLocation[] TEX = {MCDoom.modResource("textures/entity/revenant.png"), MCDoom.modResource("textures/entity/revenant_1.png"), MCDoom.modResource("textures/entity/revenant_2.png"), MCDoom.modResource("textures/entity/revenant_3.png"), MCDoom.modResource("textures/entity/revenant_4.png"), MCDoom.modResource("textures/entity/revenant_5.png"), MCDoom.modResource("textures/entity/revenant_6.png"), MCDoom.modResource("textures/entity/revenant_7.png")};
+    private static final ResourceLocation[] TEX = {MCDoom.modResource(
+            "textures/entity/revenant.png"), MCDoom.modResource("textures/entity/revenant_1.png"), MCDoom.modResource(
+            "textures/entity/revenant_2.png"), MCDoom.modResource("textures/entity/revenant_3.png"), MCDoom.modResource(
+            "textures/entity/revenant_4.png"), MCDoom.modResource("textures/entity/revenant_5.png"), MCDoom.modResource(
+            "textures/entity/revenant_6.png"), MCDoom.modResource("textures/entity/revenant_7.png")};
 
-    private static final ResourceLocation[] TEX2 = {MCDoom.modResource("textures/entity/revenant_golden.png"), MCDoom.modResource("textures/entity/revenant_golden_1.png"), MCDoom.modResource("textures/entity/revenant_golden_2.png"), MCDoom.modResource("textures/entity/revenant_golden_3.png"), MCDoom.modResource("textures/entity/revenant_golden_4.png"), MCDoom.modResource("textures/entity/revenant_golden_5.png"), MCDoom.modResource("textures/entity/revenant_golden_6.png"),
+    private static final ResourceLocation[] TEX2 = {MCDoom.modResource(
+            "textures/entity/revenant_golden.png"), MCDoom.modResource(
+            "textures/entity/revenant_golden_1.png"), MCDoom.modResource(
+            "textures/entity/revenant_golden_2.png"), MCDoom.modResource(
+            "textures/entity/revenant_golden_3.png"), MCDoom.modResource(
+            "textures/entity/revenant_golden_4.png"), MCDoom.modResource(
+            "textures/entity/revenant_golden_5.png"), MCDoom.modResource("textures/entity/revenant_golden_6.png"),
             MCDoom.modResource("textures/entity/revenant_golden_7.png")};
 
-    private static final ResourceLocation[] TEX3 = {MCDoom.modResource("textures/entity/revenant2016.png"), MCDoom.modResource("textures/entity/revenant2016_1.png"), MCDoom.modResource("textures/entity/revenant2016_2.png"), MCDoom.modResource("textures/entity/revenant2016_3.png"), MCDoom.modResource("textures/entity/revenant2016_4.png"), MCDoom.modResource("textures/entity/revenant2016_5.png"), MCDoom.modResource("textures/entity/revenant2016_6.png"),
+    private static final ResourceLocation[] TEX3 = {MCDoom.modResource(
+            "textures/entity/revenant2016.png"), MCDoom.modResource(
+            "textures/entity/revenant2016_1.png"), MCDoom.modResource(
+            "textures/entity/revenant2016_2.png"), MCDoom.modResource(
+            "textures/entity/revenant2016_3.png"), MCDoom.modResource(
+            "textures/entity/revenant2016_4.png"), MCDoom.modResource(
+            "textures/entity/revenant2016_5.png"), MCDoom.modResource("textures/entity/revenant2016_6.png"),
             MCDoom.modResource("textures/entity/revenant2016_7.png")};
 
     @Override

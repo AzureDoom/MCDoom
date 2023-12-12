@@ -1,6 +1,6 @@
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "doom:item/demonic_leggings"
-    }
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "doom:item/demonic_leggings"
+  }
 }

@@ -1,7 +1,7 @@
 {
-	"variants": {
-		"": {
-			"model": "doom:block/icon_wall1"
-		}
-	}
+  "variants": {
+    "": {
+      "model": "doom:block/icon_wall1"
+    }
+  }
 }

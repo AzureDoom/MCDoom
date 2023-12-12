@@ -1,19 +1,19 @@
 {
-	"result": {
-		"item": "doom:argent_lamp_block"
-	},
-	"type": "minecraft:crafting_shaped",
-	"pattern": [
-		" $ ",
-		"$C$",
-		" $ "
-	],
-	"key": {
-		"$": {
-			"item": "minecraft:iron_bars"
-		},
-		"C": {
-			"item": "doom:argent_block"
-		}
-	}
+  "result": {
+    "item": "doom:argent_lamp_block"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " $ ",
+    "$C$",
+    " $ "
+  ],
+  "key": {
+    "$": {
+      "item": "minecraft:iron_bars"
+    },
+    "C": {
+      "item": "doom:argent_block"
+    }
+  }
 }

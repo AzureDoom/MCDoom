@@ -18,7 +18,8 @@ public class ZombiemanModel extends GeoModel<ZombiemanEntity> {
 
     @Override
     public ResourceLocation getTextureResource(ZombiemanEntity object) {
-        return new ResourceLocation(MCDoom.MOD_ID, "textures/entity/" + (object.getVariant() == 2 ? "zombieman64" : "eternalzombiemen") + ".png");
+        return new ResourceLocation(MCDoom.MOD_ID,
+                "textures/entity/" + (object.getVariant() == 2 ? "zombieman64" : "eternalzombiemen") + ".png");
     }
 
     @Override

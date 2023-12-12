@@ -1,59 +1,59 @@
 {
-	"type": "minecraft:entity",
-	"pools": [
-		{
-			"rolls": 1,
-			"entries": [
-				{
-					"type": "minecraft:item",
-					"name": "doom:bfg_eternal"
-				},
-				{
-					"type": "minecraft:item",
-					"name": "minecraft:netherite_scrap",
-					"functions": [
-						{
-							"function": "minecraft:set_count",
-							"count": {
-								"min": 6,
-								"max": 12
-							}
-						}
-					]
-				},
-				{
-					"type": "minecraft:item",
-					"name": "doom:argent_block",
-					"functions": [
-						{
-							"function": "minecraft:set_count",
-							"count": {
-								"min": 6,
-								"max": 12
-							}
-						}
-					]
-				}
-			],
-			"conditions": [
-				{
-					"condition": "minecraft:killed_by_player"
-				}
-			]
-		},
-		{
-			"rolls": 128,
-			"entries": [
-				{
-					"type": "minecraft:item",
-					"name": "doom:argent_block"
-				}
-			],
-			"conditions": [
-				{
-					"condition": "minecraft:killed_by_player"
-				}
-			]
-		}
-	]
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "doom:bfg_eternal"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:netherite_scrap",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 6,
+                "max": 12
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "doom:argent_block",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 6,
+                "max": 12
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player"
+        }
+      ]
+    },
+    {
+      "rolls": 128,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "doom:argent_block"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player"
+        }
+      ]
+    }
+  ]
 }

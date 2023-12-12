@@ -25,17 +25,9 @@ public interface DoomEntitiesHelper {
 
     EntityType<DoomFireEntity> getDoomFireEntity();
 
-    EntityType<ArgentBoltEntity> getArgentBoltEntity();
-
     EntityType<DroneBoltEntity> getDroneBoltEntity();
 
     EntityType<BloodBoltEntity> getBloodBoltEntity();
-
-    EntityType<UnmaykrBoltEntity> getUnmakyrBoltEntity();
-
-    EntityType<ShotgunShellEntity> getShotgunEntity();
-
-    EntityType<EnergyCellEntity> getEngeryCellEntity();
 
     EntityType<BFGEntity> getBFGEtntity();
 
@@ -44,8 +36,6 @@ public interface DoomEntitiesHelper {
     EntityType<BarenBlastEntity> getBarenBlastEntity();
 
     EntityType<BulletEntity> getBulletEntity();
-
-    EntityType<ChaingunBulletEntity> getChaingunBulletEntity();
 
     EntityType<RocketMobEntity> getRocketMobEntity();
 

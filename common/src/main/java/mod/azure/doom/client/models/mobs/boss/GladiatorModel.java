@@ -17,7 +17,8 @@ public class GladiatorModel extends GeoModel<GladiatorEntity> {
 
     @Override
     public ResourceLocation getTextureResource(GladiatorEntity object) {
-        return MCDoom.modResource("textures/entity/" + (object.getTextureState() == 1 ? "gladiator_1" : object.getTextureState() == 2 ? "gladiator_2" : "gladiator") + ".png");
+        return MCDoom.modResource(
+                "textures/entity/" + (object.getTextureState() == 1 ? "gladiator_1" : object.getTextureState() == 2 ? "gladiator_2" : "gladiator") + ".png");
     }
 
     @Override

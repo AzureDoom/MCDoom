@@ -3,17 +3,17 @@
     "item": "doom:bullets"
   },
   "type": "minecraft:crafting_shaped",
-   "pattern": [
-        " # ",
-        " $ ",
-        "   "
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:iron_ingot"
-        },
-        "$": {
-            "item": "minecraft:gunpowder"
-        }
+  "pattern": [
+    " # ",
+    " $ ",
+    "   "
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:iron_ingot"
+    },
+    "$": {
+      "item": "minecraft:gunpowder"
     }
+  }
 }

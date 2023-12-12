@@ -3,16 +3,16 @@
     "item": "doom:twenty_five_boots"
   },
   "type": "minecraft:crafting_shaped",
-   "pattern": [
-        "@",
-        "#"
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:gray_dye"
-        },
-		"@": {
-			"item": "doom:doom_boots"
-		}
+  "pattern": [
+    "@",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:gray_dye"
+    },
+    "@": {
+      "item": "doom:doom_boots"
     }
+  }
 }

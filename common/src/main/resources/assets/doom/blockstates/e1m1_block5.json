@@ -1,7 +1,7 @@
 {
-	"variants": {
-		"": {
-			"model": "doom:block/e1m1_block5"
-		}
-	}
+  "variants": {
+    "": {
+      "model": "doom:block/e1m1_block5"
+    }
+  }
 }

@@ -18,11 +18,9 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class DoomBlockItem extends BlockItem implements GeoItem {
-    private String id;
-
     private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
-
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    private String id;
 
     protected DoomBlockItem(Block block, Properties properties, String id) {
         super(block, properties);
@@ -51,15 +49,13 @@ public abstract class DoomBlockItem extends BlockItem implements GeoItem {
     @Override
     public void createRenderer(Consumer<Object> consumer) {
         consumer.accept(new RenderProvider() {
-            private GeoItemRenderer renderer;
+            private GeoItemRenderer<?> renderer;
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (renderer == null) {
-                    if (getId().equalsIgnoreCase("gun_table"))
-                        renderer = new GunCraftingItemRender();
-                    if (getId().equalsIgnoreCase("totem"))
-                        renderer = new TotemItemRender();
+                    if (getId().equalsIgnoreCase("gun_table")) renderer = new GunCraftingItemRender();
+                    if (getId().equalsIgnoreCase("totem")) renderer = new TotemItemRender();
                 }
 
                 return renderer;

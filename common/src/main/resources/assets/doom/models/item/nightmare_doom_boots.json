@@ -1,6 +1,6 @@
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "doom:item/nightmare_boots"
-    }
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "doom:item/nightmare_boots"
+  }
 }

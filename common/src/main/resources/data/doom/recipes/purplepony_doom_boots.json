@@ -3,16 +3,16 @@
     "item": "doom:purplepony_doom_boots"
   },
   "type": "minecraft:crafting_shaped",
-   "pattern": [
-        "@",
-        "#"
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:purple_dye"
-        },
-		"@": {
-			"item": "doom:doom_boots"
-		}
+  "pattern": [
+    "@",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:purple_dye"
+    },
+    "@": {
+      "item": "doom:doom_boots"
     }
+  }
 }

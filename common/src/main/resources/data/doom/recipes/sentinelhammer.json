@@ -1,25 +1,25 @@
 {
-	"type": "doom:gun_table",
-	"pattern": "abcd",
-	"key": {
-		"a": {
-			"item": "doom:argent_energy",
-			"count": 20
-		},
-		"b": {
-			"item": "doom:argent_plate",
-			"count": 4
-		},
-		"c": {
-			"item": "minecraft:iron_ingot",
-			"count": 8
-		},
-		"d": {
-			"item": "minecraft:iron_block",
-			"count": 3
-		}
-	},
-	"result": {
-		"item": "doom:sentinelhammer"
-	}
+  "type": "doom:gun_table",
+  "pattern": "abcd",
+  "key": {
+    "a": {
+      "item": "doom:argent_energy",
+      "count": 20
+    },
+    "b": {
+      "item": "doom:argent_plate",
+      "count": 4
+    },
+    "c": {
+      "item": "minecraft:iron_ingot",
+      "count": 8
+    },
+    "d": {
+      "item": "minecraft:iron_block",
+      "count": 3
+    }
+  },
+  "result": {
+    "item": "doom:sentinelhammer"
+  }
 }

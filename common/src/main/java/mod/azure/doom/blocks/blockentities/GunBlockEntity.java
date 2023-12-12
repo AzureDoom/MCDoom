@@ -39,7 +39,8 @@ public class GunBlockEntity extends BlockEntity implements ImplementedInventory,
 
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, event -> event.setAndContinue(RawAnimation.begin().thenLoop("idle"))));
+        controllers.add(
+                new AnimationController<>(this, event -> event.setAndContinue(RawAnimation.begin().thenLoop("idle"))));
     }
 
     @Override

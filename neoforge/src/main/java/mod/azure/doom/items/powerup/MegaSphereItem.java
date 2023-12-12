@@ -19,53 +19,53 @@ import java.util.List;
 
 public class MegaSphereItem extends Item {
 
-	public MegaSphereItem() {
-		super(new Properties().stacksTo(1));
-	}
+    public MegaSphereItem() {
+        super(new Properties().stacksTo(1));
+    }
 
-	@Override
-	public void onUseTick(Level worldIn, LivingEntity livingEntityIn, ItemStack stack, int count) {
-		if (livingEntityIn instanceof ServerPlayer playerentity) {
-			if (!worldIn.isClientSide)
-				livingEntityIn.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST, 600, 4));
-			livingEntityIn.heal(40);
-			livingEntityIn.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 600, 4));
-			livingEntityIn.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 600, 4));
-			if (!playerentity.getAbilities().instabuild) {
-				stack.shrink(1);
-				if (stack.isEmpty()) {
-					playerentity.getInventory().removeItem(stack);
-				}
-			}
-		}
-	}
+    @Override
+    public void onUseTick(Level worldIn, LivingEntity livingEntityIn, ItemStack stack, int count) {
+        if (livingEntityIn instanceof ServerPlayer playerentity) {
+            if (!worldIn.isClientSide)
+                livingEntityIn.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST, 600, 4));
+            livingEntityIn.heal(40);
+            livingEntityIn.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 600, 4));
+            livingEntityIn.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 600, 4));
+            if (!playerentity.getAbilities().instabuild) {
+                stack.shrink(1);
+                if (stack.isEmpty()) {
+                    playerentity.getInventory().removeItem(stack);
+                }
+            }
+        }
+    }
 
-	@Override
-	public int getUseDuration(ItemStack stack) {
-		return 7000;
-	}
+    @Override
+    public int getUseDuration(ItemStack stack) {
+        return 7000;
+    }
 
-	@Override
-	public UseAnim getUseAnimation(ItemStack stack) {
-		return UseAnim.NONE;
-	}
+    @Override
+    public UseAnim getUseAnimation(ItemStack stack) {
+        return UseAnim.NONE;
+    }
 
-	@Override
-	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
-		final ItemStack itemstack = playerIn.getItemInHand(handIn);
-		playerIn.startUsingItem(handIn);
-		return InteractionResultHolder.consume(itemstack);
-	}
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+        final ItemStack itemstack = playerIn.getItemInHand(handIn);
+        playerIn.startUsingItem(handIn);
+        return InteractionResultHolder.consume(itemstack);
+    }
 
-	@Override
-	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(Component.translatable("doom.mega.text").withStyle(ChatFormatting.ITALIC));
-		super.appendHoverText(stack, worldIn, tooltip, flagIn);
-	}
+    @Override
+    public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.add(Component.translatable("doom.mega.text").withStyle(ChatFormatting.ITALIC));
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+    }
 
-	@Override
-	public boolean isFoil(ItemStack stack) {
-		return false;
-	}
+    @Override
+    public boolean isFoil(ItemStack stack) {
+        return false;
+    }
 
 }
