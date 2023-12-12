@@ -62,7 +62,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
-public class MotherDemonEntity extends DemonEntity implements SmartBrainOwner<MotherDemonEntity> {
+public class MotherDemonEntity extends DemonEntity implements SmartBrainOwner<MotherDemonEntity>, DoomBoss {
 
     public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(MotherDemonEntity.class,
             EntityDataSerializers.INT);

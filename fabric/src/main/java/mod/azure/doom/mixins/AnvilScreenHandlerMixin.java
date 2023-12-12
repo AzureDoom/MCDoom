@@ -26,7 +26,8 @@ public abstract class AnvilScreenHandlerMixin extends ItemCombinerMenu {
     private void updateRuinedRepair(CallbackInfo ci) {
         final var leftStack = inputSlots.getItem(0).copy();
         final var rightStack = inputSlots.getItem(1).copy();
-        if ((leftStack.getItem() instanceof DoomBaseItem || leftStack.getItem() instanceof BaseSwordItem) && EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.MENDING)) {
+        if ((leftStack.getItem() instanceof DoomBaseItem || leftStack.getItem() instanceof BaseSwordItem) && EnchantmentHelper.getEnchantments(
+                rightStack).containsKey(Enchantments.MENDING)) {
             final var repaired = ItemStack.EMPTY;
             resultSlots.setItem(0, repaired);
             broadcastChanges();

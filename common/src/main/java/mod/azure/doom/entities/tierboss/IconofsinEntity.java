@@ -65,7 +65,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<IconofsinEntity> {
+public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<IconofsinEntity>, DoomBoss {
 
     public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(IconofsinEntity.class,
             EntityDataSerializers.INT);

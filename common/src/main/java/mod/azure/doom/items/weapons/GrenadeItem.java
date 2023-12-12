@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -47,7 +48,7 @@ public class GrenadeItem extends Item implements GeoItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, Player user, @NotNull InteractionHand hand) {
         final ItemStack itemstack = user.getItemInHand(hand);
         if (!user.getCooldowns().isOnCooldown(this)) {
             user.getCooldowns().addCooldown(this, 25);
@@ -55,7 +56,8 @@ public class GrenadeItem extends Item implements GeoItem {
                 final var nade = new GrenadeEntity(world, user);
                 nade.shootFromRotation(user, user.getXRot(), user.getYRot(), 0.0F, 1.05F, 1.0F);
                 nade.setBaseDamage(0);
-                if (EnchantmentHelper.getItemEnchantmentLevel(mod.azure.azurelib.platform.Services.PLATFORM.getIncendairyenchament(), itemstack) > 0)
+                if (EnchantmentHelper.getItemEnchantmentLevel(
+                        mod.azure.azurelib.platform.Services.PLATFORM.getIncendairyenchament(), itemstack) > 0)
                     nade.setSecondsOnFire(100);
                 world.addFreshEntity(nade);
             }
@@ -69,9 +71,11 @@ public class GrenadeItem extends Item implements GeoItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        tooltip.add(Component.translatable("doom.doomed_credit.text").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.ITALIC));
-        tooltip.add(Component.translatable("doom.doomed_credit1.text").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.ITALIC));
+    public void appendHoverText(@NotNull ItemStack stack, Level worldIn, List<Component> tooltip, @NotNull TooltipFlag flagIn) {
+        tooltip.add(Component.translatable("doom.doomed_credit.text").withStyle(ChatFormatting.RED).withStyle(
+                ChatFormatting.ITALIC));
+        tooltip.add(Component.translatable("doom.doomed_credit1.text").withStyle(ChatFormatting.RED).withStyle(
+                ChatFormatting.ITALIC));
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 

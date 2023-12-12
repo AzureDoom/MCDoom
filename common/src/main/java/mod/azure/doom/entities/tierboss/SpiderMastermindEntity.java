@@ -47,7 +47,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class SpiderMastermindEntity extends DemonEntity implements SmartBrainOwner<SpiderMastermindEntity> {
+public class SpiderMastermindEntity extends DemonEntity implements SmartBrainOwner<SpiderMastermindEntity>, DoomBoss {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 

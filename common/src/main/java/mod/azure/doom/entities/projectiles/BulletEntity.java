@@ -1,14 +1,11 @@
 package mod.azure.doom.entities.projectiles;
 
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.network.packet.EntityPacket;
-import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azure.doom.MCDoom;
 import mod.azure.doom.entities.tierboss.IconofsinEntity;
+import mod.azure.doom.entities.tierfodder.PossessedSoldierEntity;
 import mod.azure.doom.helper.CommonUtils;
+import mod.azure.doom.platform.Services;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -19,7 +16,8 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -28,16 +26,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.NotNull;
 
-public class BulletEntity extends AbstractArrow implements GeoEntity {
-
-    public static final EntityDataAccessor<Integer> PARTICLE = SynchedEntityData.defineId(BulletEntity.class, EntityDataSerializers.INT);
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();
+public class BulletEntity extends AbstractArrow {
+    private int idleTicks = 0;
+    private int plasmahits = 0;
+    private int attachTimer = 0;
     private float projectiledamage;
+
+    public static final EntityDataAccessor<Integer> PARTICLE = SynchedEntityData.defineId(BulletEntity.class,
+            EntityDataSerializers.INT);
 
     public BulletEntity(EntityType<? extends BulletEntity> entityType, Level world) {
         super(entityType, world);
@@ -45,32 +47,10 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
     }
 
     public BulletEntity(Level world, LivingEntity owner, float damage) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getBulletEntity(), owner, world);
-        this.projectiledamage = damage;
-    }
-
-    public BulletEntity(Level world, LivingEntity owner) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getBulletEntity(), owner, world);
-    }
-
-    protected BulletEntity(EntityType<? extends BulletEntity> type, double x, double y, double z, Level world) {
-        this(type, world);
-    }
-
-    protected BulletEntity(EntityType<? extends BulletEntity> type, LivingEntity owner, Level world) {
-        this(type, owner.getX(), owner.getEyeY() - 0.10000000149011612D, owner.getZ(), world);
+        super(Services.ENTITIES_HELPER.getBulletEntity(), owner, world);
+        this.pickup = Pickup.DISALLOWED;
         this.setOwner(owner);
-        if (owner instanceof Player) this.pickup = Pickup.DISALLOWED;
-    }
-
-    @Override
-    public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, event -> PlayState.CONTINUE));
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
+        this.projectiledamage = damage;
     }
 
     @Override
@@ -88,7 +68,7 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    protected void doPostHurtEffects(LivingEntity living) {
+    protected void doPostHurtEffects(@NotNull LivingEntity living) {
         super.doPostHurtEffects(living);
         if (!(living instanceof Player) && !(living instanceof IconofsinEntity)) {
             living.setDeltaMovement(0, 0, 0);
@@ -97,31 +77,74 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return EntityPacket.createPacket(this);
     }
 
     @Override
     protected void tickDespawn() {
-        if (this.tickCount >= 40) this.remove(RemovalReason.KILLED);
+        if (tickCount >= 40) remove(RemovalReason.KILLED);
+    }
+
+    @Override
+    protected boolean tryPickup(Player player) {
+        return false;
     }
 
     @Override
     public void tick() {
-        super.tick();
+        if (this.useParticle() >= 3) {
+            final var idleOpt = 100;
+            if (getDeltaMovement().lengthSqr() < 0.01) idleTicks++;
+            else idleTicks = 0;
+            if (idleOpt <= 0 || idleTicks < idleOpt) super.tick();
+        } else {
+            super.tick();
+        }
+        if (this.useParticle() >= 3 && this.useParticle() != 7)
+            CommonUtils.spawnLightSource(this, this.level().isWaterAt(this.blockPosition()));
         if (this.tickCount >= 80) this.remove(RemovalReason.DISCARDED);
+        if (this.inGroundTime > 1 && this.useParticle() != 7) {
+            this.kill();
+        }
+        this.pickup = Pickup.DISALLOWED;
         CommonUtils.setOnFire(this);
         if (this.level().isClientSide()) {
-            if (this.useParticle() == 1)
-                this.level().addParticle(mod.azure.doom.platform.Services.PARTICLES_HELPER.getPISTOL(), true, this.getX() + (this.random.nextDouble()) * this.getBbWidth() * 0.5D, this.getY(), this.getZ() + (this.random.nextDouble()) * this.getBbWidth() * 0.5D, 0, 0, 0);
-            if (this.useParticle() == 2)
-                this.level().addParticle(ParticleTypes.SMOKE, true, this.getX() + (this.random.nextDouble()) * this.getBbWidth() * 0.5D, this.getY(), this.getZ() + (this.random.nextDouble()) * this.getBbWidth() * 0.5D, 0, 0, 0);
+            if (this.useParticle() == 1) this.level().addParticle(Services.PARTICLES_HELPER.getPISTOL(), true,
+                    this.getX() + (this.random.nextDouble()) * this.getBbWidth() * 0.5D, this.getY(),
+                    this.getZ() + (this.random.nextDouble()) * this.getBbWidth() * 0.5D, 0, 0, 0);
+            if (this.useParticle() == 2) this.level().addParticle(ParticleTypes.SMOKE, true,
+                    this.getX() + (this.random.nextDouble()) * this.getBbWidth() * 0.5D, this.getY(),
+                    this.getZ() + (this.random.nextDouble()) * this.getBbWidth() * 0.5D, 0, 0, 0);
+            if (this.useParticle() == 3 || this.useParticle() == 7)
+                this.level().addParticle(ParticleTypes.ANGRY_VILLAGER, true, this.getX(), this.getY(), this.getZ(), 0,
+                        0, 0);
+            if (this.useParticle() == 4)
+                this.level().addParticle(ParticleTypes.FLASH, true, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+            if (this.useParticle() == 5) level().addParticle(Services.PARTICLES_HELPER.getUNMAYKR(), true,
+                    this.getX() + random.nextDouble() * getBbWidth() * 0.5D, this.getY(),
+                    this.getZ() + random.nextDouble() * getBbWidth() * 0.5D, 0, 0, 0);
+            if (this.useParticle() == 6) level().addParticle(Services.PARTICLES_HELPER.getPLASMA(), true,
+                    this.getX() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, this.getY(),
+                    this.getZ() + (random.nextDouble() * 2.0D - 1.0D) * getBbWidth() * 0.5D, 0, 0, 0);
         }
+        if (!this.level().isClientSide()) this.attachTimer++;
+        if (!this.isPassenger() && this.attachTimer >= 20 && this.useParticle() == 7) {
+            this.explode(10f);
+            this.remove(RemovalReason.DISCARDED);
+        }
+        if (this.isPassenger() && this.attachTimer >= 20 && this.useParticle() == 7) {
+            this.explode(10f);
+            this.remove(RemovalReason.DISCARDED);
+        }
+        if (this.attachTimer >= 20 && this.useParticle() != 7) this.remove(RemovalReason.DISCARDED);
+        if (this.isPassenger())
+            this.setDeltaMovement(0, 0, 0);
     }
 
     @Override
-    public ItemStack getPickupItem() {
-        return Items.AIR.getDefaultInstance();
+    public @NotNull ItemStack getPickupItem() {
+        return new ItemStack(Items.AIR);
     }
 
     @Override
@@ -130,49 +153,82 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    public void setSoundEvent(SoundEvent soundIn) {
-        this.hitSound = soundIn;
+    public void setSoundEvent(@NotNull SoundEvent soundIn) {
+        this.getDefaultHitGroundSoundEvent();
     }
 
     @Override
-    protected SoundEvent getDefaultHitGroundSoundEvent() {
+    protected @NotNull SoundEvent getDefaultHitGroundSoundEvent() {
         return SoundEvents.ARMOR_EQUIP_IRON;
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult blockHitResult) {
+    protected void onHitBlock(@NotNull BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
-        if (!this.level().isClientSide()) this.remove(RemovalReason.DISCARDED);
+        if (this.useParticle() != 7 && !this.level().isClientSide()) this.remove(RemovalReason.DISCARDED);
         this.setSoundEvent(SoundEvents.ARMOR_EQUIP_IRON);
+        if (this.useParticle() == 6) setSoundEvent(Services.SOUNDS_HELPER.getPLASMA_HIT());
     }
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         var entity = entityHitResult.getEntity();
-        if (entityHitResult.getType() != HitResult.Type.ENTITY || !(entityHitResult).getEntity().is(entity) && !this.level().isClientSide)
-            this.remove(RemovalReason.KILLED);
+        if (entityHitResult.getType() != HitResult.Type.ENTITY || !(entityHitResult).getEntity().is(
+                entity) && !this.level().isClientSide) this.remove(RemovalReason.KILLED);
         var entity1 = this.getOwner();
-        DamageSource damagesource;
-        if (entity1 == null) {
-            damagesource = damageSources().arrow(this, this);
-        } else {
-            damagesource = damageSources().arrow(this, entity1);
-            if (entity1 instanceof LivingEntity livingEntity) livingEntity.setLastHurtMob(entity);
-        }
-        if (entity.hurt(damagesource, projectiledamage)) {
-            if (entity instanceof LivingEntity livingEntity) {
-                if (!this.level().isClientSide && entity1 instanceof LivingEntity livingEntity1) {
-                    EnchantmentHelper.doPostHurtEffects(livingEntity, livingEntity1);
-                    EnchantmentHelper.doPostDamageEffects(livingEntity1, livingEntity);
-                    if (this.isOnFire())
-                        livingEntity.setSecondsOnFire(50);
-                    this.remove(RemovalReason.KILLED);
+        if (this.useParticle() != 7) {
+            if (entity.hurt(damageSources().thrown(entity, this.getOwner()), projectiledamage)) {
+                if (entity instanceof LivingEntity livingEntity) {
+                    if (!this.level().isClientSide && entity1 instanceof LivingEntity livingEntity1) {
+                        if (this.useParticle() != 7) {
+                            EnchantmentHelper.doPostHurtEffects(livingEntity, livingEntity1);
+                            EnchantmentHelper.doPostDamageEffects(livingEntity1, livingEntity);
+                        }
+                        if (this.isOnFire()) livingEntity.setSecondsOnFire(50);
+                        if (this.useParticle() == 3 || this.useParticle() == 4)
+                            this.explode(MCDoom.config.argent_bolt_damage);
+                        if (this.useParticle() == 6 && livingEntity instanceof PossessedSoldierEntity possessedSoldier && possessedSoldier.getVariant() == 3)
+                            possessedSoldier.setPlasmaHits(1);
+                        if (this.useParticle() != 7) this.remove(RemovalReason.KILLED);
+                        if (this.useParticle() == 7) this.attachTimer++;
+                    }
+                    this.doPostHurtEffects(livingEntity);
+                    if (livingEntity != entity1 && livingEntity instanceof Player && entity1 instanceof ServerPlayer serverPlayer && !this.isSilent())
+                        serverPlayer.connection.send(
+                                new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
                 }
-                this.doPostHurtEffects(livingEntity);
-                if (entity1 != null && livingEntity != entity1 && livingEntity instanceof Player && entity1 instanceof ServerPlayer serverPlayer && !this.isSilent())
-                    serverPlayer.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
             }
-        } else if (!this.level().isClientSide) this.remove(RemovalReason.KILLED);
+        } else {
+            this.startRiding(entity);
+        }
+    }
+
+    protected void explode(float damage) {
+        this.level().getEntitiesOfClass(LivingEntity.class,
+                new AABB(this.blockPosition().above()).inflate(3D, 3D, 3D)).forEach(e -> {
+            if (e != this.getOwner()) {
+                if (this.isOnFire()) e.setSecondsOnFire(50);
+                e.hurt(damageSources().playerAttack((Player) this.getOwner()), damage);
+            }
+        });
+    }
+
+    @Override
+    public void remove(@NotNull RemovalReason reason) {
+        if (this.useParticle() == 3 || this.useParticle() == 4 || this.useParticle() == 7) {
+            AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level(), this.getX(), this.getY(),
+                    this.getZ());
+            areaeffectcloudentity.setParticle(ParticleTypes.LAVA);
+            areaeffectcloudentity.setRadius(6);
+            areaeffectcloudentity.setDuration(1);
+            areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
+            this.level().addFreshEntity(areaeffectcloudentity);
+            level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE,
+                    SoundSource.PLAYERS, 1.0F, 1.5F);
+            super.remove(reason);
+        } else {
+            super.remove(reason);
+        }
     }
 
     @Override

@@ -68,7 +68,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
-public class ArchMakyrEntity extends DemonEntity implements SmartBrainOwner<ArchMakyrEntity> {
+public class ArchMakyrEntity extends DemonEntity implements SmartBrainOwner<ArchMakyrEntity>, DoomBoss {
 
     public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(ArchMakyrEntity.class,
             EntityDataSerializers.INT);
