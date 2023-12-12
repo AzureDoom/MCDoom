@@ -5,6 +5,12 @@ import mod.azure.doom.registry.NeoDoomItems;
 import net.minecraft.world.item.Item;
 
 public class NeoForgeDoomItemsHelper implements DoomItemsHelper {
+
+    @Override
+    public Enchantment getStickEnchantment() {
+        return NeoDoomEchantments.STICKY_MOD.get();
+    }
+
     @Override
     public Item getArgentEngery() {
         return NeoDoomItems.ARGENT_ENERGY.get();

@@ -57,6 +57,7 @@ public final class NeoForgeMCDoomMod {
         NeoDoomScreens.CONTAIN.register(modEventBus);
         NeoDoomRecipes.SERIAL.register(modEventBus);
         NeoDoomParticles.PARTICLES.register(modEventBus);
+        NeoDoomEchantments.ENCHANTMENTS.register(modEventBus);
         NeoDoomStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
         ModEntitySpawn.SERIALIZER.register(modEventBus);
     }

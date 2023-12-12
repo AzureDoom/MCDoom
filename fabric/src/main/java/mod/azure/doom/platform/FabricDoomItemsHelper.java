@@ -6,6 +6,12 @@ import mod.azure.doom.registry.FabricDoomItems;
 import net.minecraft.world.item.Item;
 
 public class FabricDoomItemsHelper implements DoomItemsHelper {
+
+    @Override
+    public Enchantment getStickEnchantment() {
+        return FabricDoomEnchantments.STICKY_MOD;
+    }
+
     @Override
     public Item getArgentEngery() {
         return FabricDoomItems.ARGENT_ENERGY;
