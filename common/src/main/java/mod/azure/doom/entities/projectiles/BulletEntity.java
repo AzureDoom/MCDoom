@@ -20,16 +20,14 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.*;
 import org.jetbrains.annotations.NotNull;
 
 public class BulletEntity extends AbstractArrow {
@@ -116,7 +114,7 @@ public class BulletEntity extends AbstractArrow {
             if (this.useParticle() == 2) this.level().addParticle(ParticleTypes.SMOKE, true,
                     this.getX() + (this.random.nextDouble()) * this.getBbWidth() * 0.5D, this.getY(),
                     this.getZ() + (this.random.nextDouble()) * this.getBbWidth() * 0.5D, 0, 0, 0);
-            if (this.useParticle() == 3 || this.useParticle() == 7)
+            if (this.useParticle() == 3 || this.useParticle() == 7 || this.useParticle() == 8)
                 this.level().addParticle(ParticleTypes.ANGRY_VILLAGER, true, this.getX(), this.getY(), this.getZ(), 0,
                         0, 0);
             if (this.useParticle() == 4)
@@ -138,8 +136,21 @@ public class BulletEntity extends AbstractArrow {
             this.remove(RemovalReason.DISCARDED);
         }
         if (this.attachTimer >= 20 && this.useParticle() != 7) this.remove(RemovalReason.DISCARDED);
-        if (this.isPassenger())
-            this.setDeltaMovement(0, 0, 0);
+        if (this.isPassenger()) this.setDeltaMovement(0, 0, 0);
+        if (this.useParticle() == 8) {
+            var livingEntities = level().getEntitiesOfClass(
+                    Monster.class, new AABB(this.getX() - 6.0, this.getY() - 6.0, this.getZ() - 6.0, this.getX() + 6.0,
+                            this.getY() + 6.0, this.getZ() + 6.0), entity1 -> entity1 != this.getOwner());
+            if (!livingEntities.isEmpty()) {
+                var first = livingEntities.get(0);
+                var entityPos = new Vec3(first.getX(), first.getY() + first.getEyeHeight(), first.getZ());
+                var newPath = entityPos.subtract(this.getX(), this.getY() + this.getEyeHeight(),
+                        this.getZ()).normalize().add(
+                        this.getDeltaMovement().normalize().multiply(4.0, 4.0, 4.0)).normalize();
+                var speed = this.getDeltaMovement().length();
+                this.setDeltaMovement(newPath.multiply(speed, speed, speed));
+            }
+        }
     }
 
     @Override
@@ -191,6 +202,7 @@ public class BulletEntity extends AbstractArrow {
                             possessedSoldier.setPlasmaHits(1);
                         if (this.useParticle() != 7) this.remove(RemovalReason.KILLED);
                         if (this.useParticle() == 7) this.attachTimer++;
+                        if (this.useParticle() == 8) this.explode(20f);
                     }
                     this.doPostHurtEffects(livingEntity);
                     if (livingEntity != entity1 && livingEntity instanceof Player && entity1 instanceof ServerPlayer serverPlayer && !this.isSilent())
@@ -216,8 +228,7 @@ public class BulletEntity extends AbstractArrow {
     @Override
     public void remove(@NotNull RemovalReason reason) {
         if (this.useParticle() == 3 || this.useParticle() == 4 || this.useParticle() == 7) {
-            AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level(), this.getX(), this.getY(),
-                    this.getZ());
+            var areaeffectcloudentity = new AreaEffectCloud(this.level(), this.getX(), this.getY(), this.getZ());
             areaeffectcloudentity.setParticle(ParticleTypes.LAVA);
             areaeffectcloudentity.setRadius(6);
             areaeffectcloudentity.setDuration(1);

@@ -62,6 +62,7 @@ public final class FabricMCDoomMod implements ModInitializer {
         FabricDoomItems.initArmor();
         FabricDoomItems.initEggs();
         FabricDoomSounds.initialize();
+        FabricDoomEnchantments.initialize();
         MobSpawn.addSpawnEntries();
         MobAttributes.initialize();
         Networking.registerMessages();

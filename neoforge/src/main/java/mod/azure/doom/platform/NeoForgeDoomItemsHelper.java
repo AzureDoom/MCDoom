@@ -1,10 +1,16 @@
 package mod.azure.doom.platform;
 
 import mod.azure.doom.platform.services.DoomItemsHelper;
+import mod.azure.doom.registry.NeoDoomEchantments;
 import mod.azure.doom.registry.NeoDoomItems;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 public class NeoForgeDoomItemsHelper implements DoomItemsHelper {
+    @Override
+    public Enchantment getMicroEnchantment() {
+        return NeoDoomEchantments.MICRO_MOD.get();
+    }
 
     @Override
     public Enchantment getStickEnchantment() {

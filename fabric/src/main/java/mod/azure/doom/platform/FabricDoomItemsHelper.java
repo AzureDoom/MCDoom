@@ -2,10 +2,16 @@ package mod.azure.doom.platform;
 
 import mod.azure.doom.platform.services.DoomItemsHelper;
 import mod.azure.doom.registry.FabricDoomBlocks;
+import mod.azure.doom.registry.FabricDoomEnchantments;
 import mod.azure.doom.registry.FabricDoomItems;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 public class FabricDoomItemsHelper implements DoomItemsHelper {
+    @Override
+    public Enchantment getMicroEnchantment() {
+        return FabricDoomEnchantments.MICRO_MOD;
+    }
 
     @Override
     public Enchantment getStickEnchantment() {

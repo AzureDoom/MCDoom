@@ -302,7 +302,9 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
                         player.level().addFreshEntity(hookshot);
                     }
                     ((PlayerProperties) player).setHasMeatHook(!((PlayerProperties) player).hasMeatHook());
-                    level.playSound(null, player.getX(), player.getY(), player.getZ(), getFiringSound(), SoundSource.PLAYERS,
+                    itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(player.getUsedItemHand()));
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(), getFiringSound(),
+                            SoundSource.PLAYERS,
                             0.25F, 1.3F);
                 } else {
                     bullet = CommonUtils.createBullet(level, itemStack, player, MCDoom.config.energycell_damage);
@@ -315,6 +317,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
                     bullet = CommonUtils.createBullet(level, itemStack, player, MCDoom.config.bullet_damage);
                     ((BulletEntity) bullet).setParticle(7);
                     bullet.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.0F, 1.0F);
+                    itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(player.getUsedItemHand()));
                     player.getCooldowns().addCooldown(this, 30);
                     level.playSound(null, player.getX(), player.getY(), player.getZ(),
                             Services.SOUNDS_HELPER.getHEAVY_CANNON(), SoundSource.PLAYERS, 0.25F, 1.3F);
@@ -338,7 +341,11 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
                     bullet = CommonUtils.createBullet(level, itemStack, player, MCDoom.config.bullet_damage);
                     ((BulletEntity) bullet).setParticle(8);
                     bullet.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.0F, 1.0F);
-                    player.getCooldowns().addCooldown(this, 30);
+                    player.getCooldowns().addCooldown(this, this.getCoolDown());
+                    itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(player.getUsedItemHand()));
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(), getFiringSound(),
+                            SoundSource.PLAYERS,
+                            0.25F, 1.3F);
                 } else {
                     bullet = CommonUtils.createBullet(level, itemStack, player, MCDoom.config.bullet_damage);
                     ((BulletEntity) bullet).setParticle(2);
