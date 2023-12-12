@@ -90,20 +90,28 @@ public class PossessedSoldierEntity extends DemonEntity implements SmartBrainOwn
                 return event.setAndContinue(DoomAnimationsDefault.WALKING);
             if (!onGround() && !onGround() && getVariant() == 2 && !isDead)
                 return event.setAndContinue(DoomAnimationsDefault.FLYING);
-            if (isDead)
-                return event.setAndContinue(DoomAnimationsDefault.DEATH);
+            if (isDead) return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
         }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("walk")) if (level().isClientSide())
-                level().playLocalSound(this.getX(), this.getY(), this.getZ(),
-                        mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F,
-                        1.0F, false);
-            if (event.getKeyframeData().getSound().matches("attack")) if (level().isClientSide())
-                level().playLocalSound(this.getX(), this.getY(), this.getZ(),
-                        mod.azure.doom.platform.Services.SOUNDS_HELPER.getPISTOL_HIT(), SoundSource.HOSTILE, 0.25F,
-                        1.0F, false);
+            if (level().isClientSide()) {
+                if (event.getKeyframeData().getSound().matches("walk"))
+                    level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                            mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F,
+                            1.0F, false);
+                if (event.getKeyframeData().getSound().matches("attack"))
+                    level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                            mod.azure.doom.platform.Services.SOUNDS_HELPER.getPISTOL_HIT(), SoundSource.HOSTILE, 0.25F,
+                            1.0F, false);
+            }
         })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
-                "ranged", DoomAnimationsDefault.ATTACKING).triggerableAnim("melee", DoomAnimationsDefault.MELEE));
+                "ranged", DoomAnimationsDefault.ATTACKING).triggerableAnim("melee",
+                DoomAnimationsDefault.MELEE).triggerableAnim("death", DoomAnimationsDefault.DEATH));
+    }
+
+    @Override
+    protected void tickDeath() {
+        super.tickDeath();
+        this.triggerAnim("livingController", "death");
     }
 
     @Override
