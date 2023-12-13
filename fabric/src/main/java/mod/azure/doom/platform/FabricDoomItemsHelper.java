@@ -14,6 +14,11 @@ public class FabricDoomItemsHelper implements DoomItemsHelper {
     }
 
     @Override
+    public Enchantment getMicrowaveEnchantment() {
+        return FabricDoomEnchantments.MICROWAVE_MOD;
+    }
+
+    @Override
     public Enchantment getStickEnchantment() {
         return FabricDoomEnchantments.STICKY_MOD;
     }

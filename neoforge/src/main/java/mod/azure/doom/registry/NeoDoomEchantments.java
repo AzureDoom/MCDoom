@@ -2,6 +2,7 @@ package mod.azure.doom.registry;
 
 import mod.azure.doom.MCDoom;
 import mod.azure.doom.enchantments.MicroMissilesEnchantment;
+import mod.azure.doom.enchantments.MicrowaveBeamEnchantment;
 import mod.azure.doom.enchantments.StickyBombEnchantment;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -14,6 +15,8 @@ public class NeoDoomEchantments {
             ForgeRegistries.ENCHANTMENTS, MCDoom.MOD_ID);
     public static final RegistryObject<Enchantment> MICRO_MOD = ENCHANTMENTS.register("microattachment",
             () -> new MicroMissilesEnchantment(EquipmentSlot.MAINHAND));
+    public static final RegistryObject<Enchantment> MICROWAVE_MOD = ENCHANTMENTS.register("microwaveattachment",
+            () -> new MicrowaveBeamEnchantment(EquipmentSlot.MAINHAND));
     public static final RegistryObject<Enchantment> STICKY_MOD = ENCHANTMENTS.register("stickyattachment",
             () -> new StickyBombEnchantment(EquipmentSlot.MAINHAND));
 }

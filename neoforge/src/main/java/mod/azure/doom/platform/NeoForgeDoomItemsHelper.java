@@ -13,6 +13,11 @@ public class NeoForgeDoomItemsHelper implements DoomItemsHelper {
     }
 
     @Override
+    public Enchantment getMicrowaveEnchantment() {
+        return NeoDoomEchantments.MICROWAVE_MOD.get();
+    }
+
+    @Override
     public Enchantment getStickEnchantment() {
         return NeoDoomEchantments.STICKY_MOD.get();
     }

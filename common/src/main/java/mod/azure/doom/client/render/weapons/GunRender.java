@@ -31,6 +31,8 @@ public class GunRender<T extends Item & GeoItem> extends GeoItemRenderer<T> {
             bone.setHidden(!currentItemStack.getTag().getBoolean("isAltFiring"));
         if (gunTypeEnum == GunTypeEnum.HEAVYCANNON && bone.getName().equals("normal"))
             bone.setHidden(currentItemStack.getTag().getBoolean("isAltFiring"));
+        if (gunTypeEnum == GunTypeEnum.PLAMSA && bone.getName().equals("wave"))
+            bone.setHidden(!currentItemStack.getTag().getBoolean("isAltFiring"));
         super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick,
                 packedLight, packedOverlay, red, green, blue, alpha);
     }

@@ -9,7 +9,7 @@ import mod.azure.azurelib.util.RenderUtils;
 import mod.azure.doom.MCDoom;
 import mod.azure.doom.client.models.projectiles.MeatHookEntityModel;
 import mod.azure.doom.entities.projectiles.MeatHookEntity;
-import mod.azure.doom.platform.Services;
+import mod.azure.doom.items.weapons.DoomBaseItem;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -24,7 +24,7 @@ public class MeatHookEntityRenderer extends GeoEntityRenderer<MeatHookEntity> {
             MCDoom.modResource("textures/entity/chain.png"));
 
     private static final RenderType PLASMA_LAYER = RenderType.entitySmoothCutout(
-            MCDoom.modResource("textures/entity/chain.png"));
+            MCDoom.modResource("textures/entity/plasma_beam.png"));
 
     public MeatHookEntityRenderer(EntityRendererProvider.Context context) {
         super(context, new MeatHookEntityModel());
@@ -46,7 +46,7 @@ public class MeatHookEntityRenderer extends GeoEntityRenderer<MeatHookEntity> {
     @Override
     public void render(MeatHookEntity hookshot, float yaw, float tickDelta, PoseStack poseStack, MultiBufferSource provider, int light) {
         super.render(hookshot, yaw, tickDelta, poseStack, provider, light);
-        if (hookshot.getOwner() instanceof Player player) {
+        if (hookshot.getOwner() instanceof Player player && player.getMainHandItem().getItem() instanceof DoomBaseItem) {
             poseStack.pushPose();
             var bodyYawToRads = Math.toRadians(player.yBodyRot);
             var radius = MCDoom.config.enable_noncenter ? -0.8D : 0.0D;

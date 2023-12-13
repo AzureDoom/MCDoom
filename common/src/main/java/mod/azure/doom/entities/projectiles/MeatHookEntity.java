@@ -106,7 +106,7 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
     public void tick() {
         super.tick();
         this.setNoGravity(true);
-        if (this.tickCount >= 80) this.kill();
+        if (this.tickCount >= 80 && !this.isPassenger()) this.kill();
         if (!this.level().isClientSide()) this.attachTimer++;
         if (this.getVariant() == 0) {
             this.doMeatHook();
@@ -173,6 +173,7 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
 
     private void doMicrowaveBeam(Player owner) {
         setYRot(entityData.get(FORCED_YAW));
+        if (!(hookedEntity instanceof LivingEntity)) return;
         if (!level().isClientSide()) {
             if (owner.isDeadOrDying() || !((PlayerProperties) owner).hasMeatHook() || owner.distanceTo(this) > maxRange)
                 kill();
@@ -184,12 +185,21 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
                 } else if (!(hookedEntity instanceof Player) && !(hookedEntity instanceof DoomBoss)) {
                     this.attachTimer++;
                     this.startRiding(hookedEntity);
+                    for (var i = 0; i < 2; ++i) {
+                        ((LivingEntity) hookedEntity).level().addParticle(ParticleTypes.ELECTRIC_SPARK,
+                                hookedEntity.getRandomX(0.5D), hookedEntity.getRandomY() - 0.25D,
+                                hookedEntity.getRandomZ(0.5D),
+                                (((LivingEntity) hookedEntity).getRandom().nextDouble() - 0.5D) * 2.0D,
+                                -((LivingEntity) hookedEntity).getRandom().nextDouble(),
+                                (((LivingEntity) hookedEntity).getRandom().nextDouble() - 0.5D) * 2.0D);
+                    }
                     hookedEntity.setGlowingTag(true);
                     hookedEntity.setDeltaMovement(0, 0, 0);
+                    hookedEntity.setIsInPowderSnow(true);
                 }
             }
         }
-        if (hookedEntity != null && this.attachTimer >= 80 && this.getVariant() == 1) {
+        if (hookedEntity != null && this.attachTimer >= (((LivingEntity) hookedEntity).getHealth()) && this.getVariant() == 1) {
             this.explode(hookedEntity);
             if (!level().isClientSide()) {
                 ((PlayerProperties) owner).setHasMeatHook(false);
@@ -202,8 +212,8 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
         if (entity instanceof LivingEntity livingEntity)
             livingEntity.hurt(damageSources().playerAttack((Player) this.getOwner()), Float.MAX_VALUE);
         var areaeffectcloudentity = new AreaEffectCloud(this.level(), this.getX(), this.getY(), this.getZ());
-        areaeffectcloudentity.setParticle(ParticleTypes.FLASH);
-        areaeffectcloudentity.setRadius(6);
+        areaeffectcloudentity.setParticle(ParticleTypes.ELECTRIC_SPARK);
+        areaeffectcloudentity.setRadius(3);
         areaeffectcloudentity.setDuration(1);
         areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
         this.level().addFreshEntity(areaeffectcloudentity);
