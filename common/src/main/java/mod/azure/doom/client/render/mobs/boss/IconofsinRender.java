@@ -3,13 +3,13 @@ package mod.azure.doom.client.render.mobs.boss;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.azure.azurelib.cache.object.BakedGeoModel;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mod.azure.doom.client.models.mobs.boss.IconofsinModel;
+import mod.azure.doom.client.render.mobs.DoomMobRender;
 import mod.azure.doom.entities.tierboss.IconofsinEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
-public class IconofsinRender extends GeoEntityRenderer<IconofsinEntity> {
+public class IconofsinRender extends DoomMobRender<IconofsinEntity> {
 
     public IconofsinRender(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new IconofsinModel());
@@ -189,11 +189,6 @@ public class IconofsinRender extends GeoEntityRenderer<IconofsinEntity> {
                 model.getBone("rToe3Armor_1").get().setHidden(true);
             }
         }
-    }
-
-    @Override
-    protected float getDeathMaxRotation(IconofsinEntity entityLivingBaseIn) {
-        return 0.0F;
     }
 
 }

@@ -3,21 +3,16 @@ package mod.azure.doom.client.render.mobs.boss;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.azure.azurelib.cache.object.BakedGeoModel;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mod.azure.doom.client.models.mobs.boss.ArchMaykrModel;
+import mod.azure.doom.client.render.mobs.DoomMobRender;
 import mod.azure.doom.entities.tierboss.ArchMakyrEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
-public class ArchMaykrRender extends GeoEntityRenderer<ArchMakyrEntity> {
+public class ArchMaykrRender extends DoomMobRender<ArchMakyrEntity> {
 
     public ArchMaykrRender(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ArchMaykrModel());
-    }
-
-    @Override
-    protected float getDeathMaxRotation(ArchMakyrEntity entityLivingBaseIn) {
-        return 0.0F;
     }
 
     @Override

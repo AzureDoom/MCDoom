@@ -3,21 +3,16 @@ package mod.azure.doom.client.render.mobs.superheavy;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.azure.azurelib.cache.object.BakedGeoModel;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mod.azure.doom.client.models.mobs.superheavy.DoomHunterModel;
+import mod.azure.doom.client.render.mobs.DoomMobRender;
 import mod.azure.doom.entities.tiersuperheavy.DoomHunterEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
-public class DoomHunterRender extends GeoEntityRenderer<DoomHunterEntity> {
+public class DoomHunterRender extends DoomMobRender<DoomHunterEntity> {
 
     public DoomHunterRender(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new DoomHunterModel());
-    }
-
-    @Override
-    protected float getDeathMaxRotation(DoomHunterEntity entityLivingBaseIn) {
-        return 0.0F;
     }
 
     @Override

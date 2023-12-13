@@ -3,9 +3,9 @@ package mod.azure.doom.client.render.mobs.fodder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import mod.azure.azurelib.cache.object.GeoBone;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mod.azure.azurelib.renderer.layer.BlockAndItemGeoLayer;
 import mod.azure.doom.client.models.mobs.fodder.PossessedScientistModel;
+import mod.azure.doom.client.render.mobs.DoomMobRender;
 import mod.azure.doom.entities.tierfodder.PossessedScientistEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
 
-public class PossessedScientistRender extends GeoEntityRenderer<PossessedScientistEntity> {
+public class PossessedScientistRender extends DoomMobRender<PossessedScientistEntity> {
 
     public PossessedScientistRender(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new PossessedScientistModel());
@@ -45,11 +45,6 @@ public class PossessedScientistRender extends GeoEntityRenderer<PossessedScienti
                         packedOverlay);
             }
         });
-    }
-
-    @Override
-    protected float getDeathMaxRotation(PossessedScientistEntity entityLivingBaseIn) {
-        return 0.0F;
     }
 
 }

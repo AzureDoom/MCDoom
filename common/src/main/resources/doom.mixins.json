@@ -12,7 +12,9 @@
   ],
   "client": [
     "ClientPlayNetworkHandlerMixin",
+    "GeoEntityRendererMixin",
     "HeldItemRendererMixin",
+    "LivingEntityRenderMixin",
     "WeaponRenderingMixin"
   ]
 }

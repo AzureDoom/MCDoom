@@ -3,22 +3,17 @@ package mod.azure.doom.client.render.mobs.heavy;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.azure.azurelib.cache.object.BakedGeoModel;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mod.azure.doom.client.models.mobs.heavy.SpectreModel;
+import mod.azure.doom.client.render.mobs.DoomMobRender;
 import mod.azure.doom.entities.tierheavy.SpectreEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
-public class SpectreRender extends GeoEntityRenderer<SpectreEntity> {
+public class SpectreRender extends DoomMobRender<SpectreEntity> {
 
     public SpectreRender(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new SpectreModel());
-    }
-
-    @Override
-    protected float getDeathMaxRotation(SpectreEntity entityLivingBaseIn) {
-        return 0.0F;
     }
 
     @Override
