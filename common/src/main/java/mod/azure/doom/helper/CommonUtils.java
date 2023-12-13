@@ -95,16 +95,16 @@ public class CommonUtils {
 
     public static BulletEntity createBullet(Level worldIn, ItemStack stack, LivingEntity shooter, float damage) {
         final var enchantment = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-        return new BulletEntity(worldIn, shooter, damage + enchantment * 2.0F);
+        return new BulletEntity(worldIn, shooter, damage + enchantment * 2.0F){};
     }
 
     public static RocketEntity createRocket(Level worldIn, ItemStack stack, LivingEntity shooter) {
         final var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-        return new RocketEntity(worldIn, shooter, MCDoom.config.rocket_damage + enchantlevel * 2.0F);
+        return new RocketEntity(worldIn, shooter, MCDoom.config.rocket_damage + enchantlevel * 2.0F){};
     }
 
     public static BFGEntity createBFG(Level worldIn, LivingEntity shooter) {
-        return new BFGEntity(worldIn, shooter);
+        return new BFGEntity(worldIn, shooter){};
     }
 
     public static boolean isUsable(ItemStack stack) {
