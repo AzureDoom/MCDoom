@@ -128,7 +128,6 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
         ++deathTime;
         if (deathTime == 35) {
             remove(RemovalReason.KILLED);
-            dropExperience();
         }
     }
 
