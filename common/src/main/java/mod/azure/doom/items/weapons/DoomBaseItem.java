@@ -50,7 +50,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class DoomBaseItem extends Item implements GeoItem {
-    private int clipSize;
     protected final GunTypeEnum gunTypeEnum;
     private static final String firing = "firing";
     private static final String controller = "controller";
@@ -60,7 +59,6 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
     protected DoomBaseItem(GunTypeEnum gunTypeEnum, int maxClipSize) {
         super(new Item.Properties().stacksTo(1).durability(maxClipSize + 1));
         this.gunTypeEnum = gunTypeEnum;
-        this.clipSize = maxClipSize;
         SingletonGeoAnimatable.registerSyncedAnimatable(this);
     }
 
@@ -80,15 +78,15 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
                 stack.getItem()) && stack.getItem() instanceof DoomBaseItem gunItem && gunItem.getGunTypeEnum() == GunTypeEnum.SUPERSHOTGUN) {
             player.getCooldowns().addCooldown(gunItem, 5);
             if (!((PlayerProperties) player).hasMeatHook()) {
-                final var hookshot = new MeatHookEntity(player.level(), player);
-                hookshot.shootFromRotation(player, player.getXRot(), player.getYRot() + 10, 0.0F, 20.0F, 1.0F);
-                hookshot.setProperties(stack, MCDoom.config.max_meathook_distance, 100, player.getXRot(),
+                final var hookShot = new MeatHookEntity(player.level(), player);
+                hookShot.shootFromRotation(player, player.getXRot(), player.getYRot() + 10, 0.0F, 20.0F, 1.0F);
+                hookShot.setProperties(stack, MCDoom.config.max_meathook_distance, 100, player.getXRot(),
                         player.getYRot(), 0f, 1.5F);
-                hookshot.getEntityData().set(MeatHookEntity.FORCED_YAW, player.getYRot());
-                hookshot.setVariant(0);
+                hookShot.getEntityData().set(MeatHookEntity.FORCED_YAW, player.getYRot());
+                hookShot.setVariant(0);
                 player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.CHAIN_FALL,
                         SoundSource.PLAYERS, 1.5F, 1.3F);
-                player.level().addFreshEntity(hookshot);
+                player.level().addFreshEntity(hookShot);
             }
             ((PlayerProperties) player).setHasMeatHook(!((PlayerProperties) player).hasMeatHook());
         }
@@ -262,7 +260,8 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
         player.getCooldowns().addCooldown(this, this.getCoolDown());
         CommonUtils.spawnLightSource(player, player.level().isWaterAt(player.blockPosition()));
         itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(player.getUsedItemHand()));
-        if (this.getFiringSound() != null && !itemStack.getTag().getBoolean("isAltFiring"))
+        if (this.getFiringSound() != null && itemStack.getTag() != null && !itemStack.getTag().getBoolean(
+                "isAltFiring"))
             level.playSound(null, player.getX(), player.getY(), player.getZ(), getFiringSound(), SoundSource.PLAYERS,
                     0.25F, 1.3F);
         Projectile bullet = null;
@@ -287,16 +286,16 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
                 bullet.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.0F, 1.0F);
             }
             case DPLASMA, PLAMSA -> {
-                if (itemStack.getTag().getBoolean("isAltFiring")) {
+                if (itemStack.getTag() != null && itemStack.getTag().getBoolean("isAltFiring")) {
                     player.getCooldowns().addCooldown(this, 30);
                     if (!((PlayerProperties) player).hasMeatHook()) {
-                        final var hookshot = new MeatHookEntity(player.level(), player);
-                        hookshot.shootFromRotation(player, player.getXRot(), player.getYRot() + 10, 0.0F, 20.0F, 1.0F);
-                        hookshot.setProperties(itemStack, MCDoom.config.max_meathook_distance, 100, player.getXRot(),
+                        final var hookShot = new MeatHookEntity(player.level(), player);
+                        hookShot.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 20.0F, 1.0F);
+                        hookShot.setProperties(itemStack, MCDoom.config.max_meathook_distance, 100, player.getXRot(),
                                 player.getYRot(), 0f, 1.5F);
-                        hookshot.getEntityData().set(MeatHookEntity.FORCED_YAW, player.getYRot());
-                        hookshot.setVariant(1);
-                        player.level().addFreshEntity(hookshot);
+                        hookShot.getEntityData().set(MeatHookEntity.FORCED_YAW, player.getYRot());
+                        hookShot.setVariant(1);
+                        player.level().addFreshEntity(hookShot);
                     }
                     ((PlayerProperties) player).setHasMeatHook(!((PlayerProperties) player).hasMeatHook());
                     itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(player.getUsedItemHand()));
@@ -311,7 +310,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
                 }
             }
             case DSHOTGUN -> {
-                if (itemStack.getTag().getBoolean("isAltFiring")) {
+                if (itemStack.getTag() != null && itemStack.getTag().getBoolean("isAltFiring")) {
                     bullet = CommonUtils.createBullet(level, itemStack, player, MCDoom.config.bullet_damage);
                     ((BulletEntity) bullet).setParticle(7);
                     bullet.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.0F, 1.0F);
@@ -337,7 +336,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
                 bullet.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.0F, 1.0F);
             }
             case HEAVYCANNON -> {
-                if (itemStack.getTag().getBoolean("isAltFiring")) {
+                if (itemStack.getTag() != null && itemStack.getTag().getBoolean("isAltFiring")) {
                     bullet = CommonUtils.createBullet(level, itemStack, player, MCDoom.config.bullet_damage);
                     ((BulletEntity) bullet).setParticle(8);
                     bullet.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.0F, 1.0F);
@@ -410,7 +409,8 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
                 stack) > 0 || EnchantmentHelper.getItemEnchantmentLevel(Services.ITEMS_HELPER.getStickEnchantment(),
                 stack) > 0 || EnchantmentHelper.getItemEnchantmentLevel(Services.ITEMS_HELPER.getMicrowaveEnchantment(),
                 stack) > 0) {
-            stack.getTag().putBoolean("isAltFiring", !stack.getOrCreateTag().getBoolean("isAltFiring"));
+            if (stack.getTag() != null)
+                stack.getTag().putBoolean("isAltFiring", !stack.getOrCreateTag().getBoolean("isAltFiring"));
             player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.LEVER_CLICK,
                     SoundSource.PLAYERS, 0.25F, 1.3F);
             player.sendSystemMessage(Component.literal("Changing Fire Mode"));
@@ -471,7 +471,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
     }
 
     @Override
-    public boolean mineBlock(ItemStack itemStack, Level level, BlockState blockState, BlockPos blockPos, LivingEntity livingEntity) {
+    public boolean mineBlock(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull BlockState blockState, @NotNull BlockPos blockPos, @NotNull LivingEntity livingEntity) {
         return false;
     }
 
@@ -486,7 +486,7 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
             tooltip.add(Component.translatable("doom.doomed_credit1.text").withStyle(ChatFormatting.RED).withStyle(
                     ChatFormatting.ITALIC));
         }
-        if (itemStack.getTag().contains("isAltFiring")) {
+        if (itemStack.getTag() != null && itemStack.getTag().contains("isAltFiring")) {
             tooltip.add(Component.translatable(
                     "Alt Fire: " + itemStack.getOrCreateTag().getBoolean("isAltFiring")).withStyle(
                     ChatFormatting.ITALIC));
@@ -519,12 +519,9 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
     @Override
     public void createRenderer(Consumer<Object> consumer) {
         consumer.accept(new RenderProvider() {
-            private final GunRender<DoomBaseItem> renderer = null;
-
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                if (renderer == null) return new GunRender<DoomBaseItem>(getGunTypeEnum());
-                return this.renderer;
+                return new GunRender<DoomBaseItem>(getGunTypeEnum());
             }
         });
     }
