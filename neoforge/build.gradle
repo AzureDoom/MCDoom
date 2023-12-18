@@ -3,8 +3,7 @@ plugins {
     id 'maven-publish'
     id 'net.neoforged.gradle'
     id 'org.spongepowered.mixin'
-    id 'com.matthewprenger.cursegradle'
-    id 'com.modrinth.minotaur'
+    id "me.modmuss50.mod-publish-plugin" version "0.4.0"
 }
 
 base {
@@ -141,51 +140,50 @@ publishing {
 }
 
 if (file('key.properties').exists()) {
-    curseforge {
-
-        def curseProp = new Properties()
+    publishMods {
+        def releaseProp = new Properties()
         File secretPropsFile = file("key.properties")
-        curseProp.load(secretPropsFile.newInputStream())
+        releaseProp.load(secretPropsFile.newInputStream())
+        file = jar.archiveFile
+        changelog = rootProject.file("changelog.txt").text
+        type = STABLE
+        modLoaders.add("neoforge")
+        modLoaders.add("forge")
 
-        project {
-            apiKey = curseProp.getProperty('curseKey')
-            id = "${curse_id}"
-            releaseType = "release"
-            changelogType = 'text'
-            changelog = file('CHANGELOG.txt')
-            addGameVersion("Forge")
-            addGameVersion("NeoForge")
-            addGameVersion("Java 17")
-
-            relations {
-                requiredDependency 'curios'
-                requiredDependency 'azurelib'
-                requiredDependency 'smartbrainlib'
-                requiredDependency 'custom-portal-api-reforged'
-                optionalDependency 'better-combat-by-daedelus'
+        curseforge {
+            projectId = project.curse_id
+            projectSlug = project.projectSlug
+            accessToken = releaseProp.getProperty("curseKey")
+            minecraftVersions.add("${minecraft_version}")
+            requires {
+                slug = "azurelib"
+            }
+            requires {
+                slug = "curios"
+            }
+            requires {
+                slug = "smartbrainlib"
+            }
+            requires {
+                slug = "custom-portal-api-reforged"
             }
         }
-    }
-}
-
-if (file('key.properties').exists()) {
-    modrinth {
-        def modrinthProp = new Properties()
-        File secretPropsFile = file("key.properties")
-        modrinthProp.load(secretPropsFile.newInputStream())
-
-        token = modrinthProp.getProperty('modrinthKey')
-        projectId = project.modrinth_id
-        versionNumber = project.mod_version
-        uploadFile = jar
-        changelog = rootProject.file("changelog.txt").text
-        loaders = ['neoforge', 'forge']
-        dependencies {
-            required.project "azurelib"
-            required.project "smartbrainlib"
-            required.project "curios"
-            required.project "custom-portal-api-reforged"
-            optional.project "better-combat"
+        modrinth {
+            projectId = project.modrinth_id
+            accessToken = releaseProp.getProperty('modrinthKey')
+            minecraftVersions.add("${minecraft_version}")
+            requires {
+                slug = "azurelib"
+            }
+            requires {
+                slug = "curios"
+            }
+            requires {
+                slug = "smartbrainlib"
+            }
+            requires {
+                slug = "custom-portal-api-reforged"
+            }
         }
     }
 }
