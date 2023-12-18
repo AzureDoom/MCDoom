@@ -46,18 +46,31 @@ public class MeatHookEntityRenderer extends GeoEntityRenderer<MeatHookEntity> {
     @Override
     public void render(MeatHookEntity hookshot, float yaw, float tickDelta, PoseStack poseStack, MultiBufferSource provider, int light) {
         super.render(hookshot, yaw, tickDelta, poseStack, provider, light);
-        if (hookshot.getOwner() instanceof Player player && player.getMainHandItem().getItem() instanceof DoomBaseItem) {
+        if (hookshot.getOwner() instanceof Player player && player.getMainHandItem().getItem() instanceof DoomBaseItem gunItem) {
             poseStack.pushPose();
-            var bodyYawToRads = Math.toRadians(player.yBodyRot);
-            var radius = MCDoom.config.enable_noncenter ? -0.8D : 0.0D;
-            var startX = player.getX() + radius * Math.cos(bodyYawToRads);
-            var startY = player.getY() + (player.getBbHeight() / 2D);
-            var startZ = player.getZ() + radius * Math.sin(bodyYawToRads);
-            var distanceX = (float) (startX - hookshot.getX());
-            var distanceY = (float) (startY - hookshot.getY());
-            var distanceZ = (float) (startZ - hookshot.getZ());
-            renderChain(hookshot, distanceX, distanceY, distanceZ, tickDelta, hookshot.tickCount, poseStack, provider,
-                    light);
+            if (hookshot.getVariant() == 1) {
+                var bodyYawToRads = Math.toRadians(player.yBodyRot);
+                var radius = MCDoom.config.enable_noncenter ? -0.35D : 0.0D;
+                var startX = player.getX() + radius * Math.cos(bodyYawToRads);
+                var startY = player.getY(0.75);
+                var startZ = player.getZ() + radius * Math.sin(bodyYawToRads);
+                var distanceX = (float) (startX - hookshot.getX());
+                var distanceY = (float) (startY - hookshot.getY());
+                var distanceZ = (float) (startZ - hookshot.getZ());
+                renderChain(hookshot, distanceX, distanceY, distanceZ, tickDelta, hookshot.tickCount, poseStack,
+                        provider, light);
+            } else {
+                var bodyYawToRads = Math.toRadians(player.yBodyRot);
+                var radius = MCDoom.config.enable_noncenter ? -0.8D : 0.0D;
+                var startX = player.getX() + radius * Math.cos(bodyYawToRads);
+                var startY = player.getY() + (player.getBbHeight() / 2D);
+                var startZ = player.getZ() + radius * Math.sin(bodyYawToRads);
+                var distanceX = (float) (startX - hookshot.getX());
+                var distanceY = (float) (startY - hookshot.getY());
+                var distanceZ = (float) (startZ - hookshot.getZ());
+                renderChain(hookshot, distanceX, distanceY, distanceZ, tickDelta, hookshot.tickCount, poseStack,
+                        provider, light);
+            }
             poseStack.popPose();
         }
     }

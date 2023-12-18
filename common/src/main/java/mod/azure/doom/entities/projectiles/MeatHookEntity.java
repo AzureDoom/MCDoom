@@ -14,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -106,7 +107,7 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
     public void tick() {
         super.tick();
         this.setNoGravity(true);
-        if (this.tickCount >= 80 && !this.isPassenger()) this.kill();
+        if (this.tickCount >= 40 && !this.isPassenger()) this.kill();
         if (!this.level().isClientSide()) this.attachTimer++;
         if (this.getVariant() == 0) {
             this.doMeatHook();
@@ -114,9 +115,6 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
         if (this.getVariant() == 1 && getOwner() instanceof final Player owner) {
             this.doMicrowaveBeam(owner);
         }
-        if (this.getVariant() == 1)
-            this.level().addParticle(Services.PARTICLES_HELPER.getPLASMA(), true, this.getX(), this.getY(), this.getZ(),
-                    0, 0, 0);
     }
 
     private void doMeatHook() {
@@ -186,9 +184,8 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
                     this.attachTimer++;
                     this.startRiding(hookedEntity);
                     for (var i = 0; i < 2; ++i) {
-                        ((LivingEntity) hookedEntity).level().addParticle(ParticleTypes.ELECTRIC_SPARK,
-                                hookedEntity.getRandomX(0.5D), hookedEntity.getRandomY() - 0.25D,
-                                hookedEntity.getRandomZ(0.5D),
+                        hookedEntity.level().addParticle(ParticleTypes.ELECTRIC_SPARK, hookedEntity.getRandomX(0.5D),
+                                hookedEntity.getRandomY() - 0.25D, hookedEntity.getRandomZ(0.5D),
                                 (((LivingEntity) hookedEntity).getRandom().nextDouble() - 0.5D) * 2.0D,
                                 -((LivingEntity) hookedEntity).getRandom().nextDouble(),
                                 (((LivingEntity) hookedEntity).getRandom().nextDouble() - 0.5D) * 2.0D);
@@ -231,11 +228,6 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    public void remove(@NotNull RemovalReason reason) {
-        super.remove(reason);
-    }
-
-    @Override
     public boolean shouldRenderAtSqrDistance(double distance) {
         return true;
     }
@@ -246,12 +238,12 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    protected ItemStack getPickupItem() {
+    protected @NotNull ItemStack getPickupItem() {
         return ItemStack.EMPTY;
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult blockHitResult) {
+    protected void onHitBlock(@NotNull BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
         isPulling = true;
         if (this.getVariant() == 1) this.kill();
@@ -261,7 +253,7 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult entityHitResult) {
+    protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         if (!level().isClientSide() && getOwner() instanceof final Player owner && entityHitResult.getEntity() != owner && (entityHitResult.getEntity() instanceof LivingEntity || entityHitResult.getEntity() instanceof EnderDragonPart) && hookedEntity == null) {
             hookedEntity = entityHitResult.getEntity();
             entityData.set(HOOKED_ENTITY_ID, hookedEntity.getId() + 1);
@@ -270,7 +262,7 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
+    public void readAdditionalSaveData(@NotNull CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         entityData.set(FORCED_YAW, tag.getFloat("ForcedYaw"));
 
@@ -283,7 +275,7 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
+    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putFloat("ForcedYaw", entityData.get(FORCED_YAW));
         tag.putDouble("maxRange", maxRange);
