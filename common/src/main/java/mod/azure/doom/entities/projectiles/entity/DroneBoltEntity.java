@@ -12,6 +12,7 @@ import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.NotNull;
 
 public class DroneBoltEntity extends AbstractHurtingProjectile {
 
@@ -27,17 +28,8 @@ public class DroneBoltEntity extends AbstractHurtingProjectile {
         this.directHitDamage = directHitDamage;
     }
 
-    public DroneBoltEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getDroneBoltEntity(), x, y, z, accelX, accelY, accelZ,
-                worldIn);
-    }
-
-    public void setDirectHitDamage(float directHitDamage) {
-        this.directHitDamage = directHitDamage;
-    }
-
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return EntityPacket.createPacket(this);
     }
 
@@ -47,7 +39,7 @@ public class DroneBoltEntity extends AbstractHurtingProjectile {
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult result) {
+    protected void onHitBlock(@NotNull BlockHitResult result) {
         super.onHitBlock(result);
         if (!level().isClientSide()) {
             explode();
@@ -62,7 +54,7 @@ public class DroneBoltEntity extends AbstractHurtingProjectile {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult entityHitResult) {
+    protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         if (!level().isClientSide()) {
             final var entity = entityHitResult.getEntity();

@@ -390,7 +390,7 @@ public class ArchMakyrEntity extends DemonEntity implements SmartBrainOwner<Arch
             this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 10, false, false));
     }
 
-    public void spawnFlames(double x, double z, double maxY, double y, float yaw) {
+    public void spawnFlames(double x, double z, double maxY, double y) {
         var blockpos = BlockPos.containing(x, y, z);
         var flag = false;
         var d0 = 0.0D;
@@ -410,7 +410,7 @@ public class ArchMakyrEntity extends DemonEntity implements SmartBrainOwner<Arch
         } while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
         if (flag) {
-            final var fire = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, yaw, 1, this,
+            final var fire = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, 1, this,
                     MCDoom.config.archmaykr_ranged_damage + getExtraDamage());
             fire.setSecondsOnFire(tickCount);
             fire.setInvisible(false);

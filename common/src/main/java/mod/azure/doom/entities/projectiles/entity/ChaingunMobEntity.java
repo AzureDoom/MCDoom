@@ -11,23 +11,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.NotNull;
 
 public class ChaingunMobEntity extends AbstractHurtingProjectile {
-    private float directHitDamage = 3F;
 
-    public ChaingunMobEntity(EntityType<? extends ChaingunMobEntity> p_i50160_1_, Level p_i50160_2_) {
-        super(p_i50160_1_, p_i50160_2_);
-    }
-
-    public ChaingunMobEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, float directHitDamage) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getChaingunBulletMobEntity(), shooter, accelX, accelY,
-                accelZ, worldIn);
-        this.directHitDamage = directHitDamage;
-    }
-
-    public ChaingunMobEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getChaingunBulletMobEntity(), x, y, z, accelX, accelY,
-                accelZ, worldIn);
+    public ChaingunMobEntity(EntityType<? extends ChaingunMobEntity> entity, Level level) {
+        super(entity, level);
     }
 
     @Override
@@ -44,12 +33,8 @@ public class ChaingunMobEntity extends AbstractHurtingProjectile {
         return false;
     }
 
-    public void setDirectHitDamage(float directHitDamage) {
-        this.directHitDamage = directHitDamage;
-    }
-
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return EntityPacket.createPacket(this);
     }
 
@@ -59,11 +44,12 @@ public class ChaingunMobEntity extends AbstractHurtingProjectile {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult entityHitResult) {
+    protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         if (!level().isClientSide()) {
             final var entity = entityHitResult.getEntity();
             final var entity2 = getOwner();
+            float directHitDamage = 3F;
             if (!(entity instanceof DemonEntity))
                 entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
             if (entity2 instanceof LivingEntity livingEntity) {

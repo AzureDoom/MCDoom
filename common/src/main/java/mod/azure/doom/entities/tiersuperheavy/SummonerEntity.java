@@ -201,7 +201,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
         else return false;
     }
 
-    public void spawnFlames(double x, double z, double maxY, double y, float yaw) {
+    public void spawnFlames(double x, double z, double maxY, double y) {
         var blockpos = BlockPos.containing(x, y, z);
         var flag = false;
         var d0 = 0.0D;
@@ -221,7 +221,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
         } while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
         if (flag) {
-            final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, yaw, 1, this,
+            final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, 1, this,
                     MCDoom.config.summoner_ranged_damage);
             fang.setSecondsOnFire(tickCount);
             fang.setInvisible(false);

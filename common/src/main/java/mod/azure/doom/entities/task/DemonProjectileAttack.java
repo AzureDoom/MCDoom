@@ -138,9 +138,8 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
                             entity.getZ() + Mth.sin((float) Mth.atan2(this.target.getZ() - entity.getZ(),
                                     this.target.getX() - summonerEntity.getX())) * (1.25D * (j + 1)),
                             Math.min(this.target.getY(), summonerEntity.getY()),
-                            Math.max(this.target.getY(), summonerEntity.getY()) + 1.0D,
-                            (float) Mth.atan2(this.target.getZ() - entity.getZ(),
-                                    this.target.getX() - summonerEntity.getX()));
+                            Math.max(this.target.getY(), summonerEntity.getY()) + 1.0D
+                    );
             else // spawn wave
                 summonerEntity.spawnWave();
         }
@@ -204,19 +203,19 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
             for (var j = 0; j < 15; ++j) {
                 float h = f + j * 3.1415927F * 0.4F;
                 archvileEntity.spawnFlames(archvileEntity.getX() + Mth.cos(h) * 1.5D,
-                        archvileEntity.getZ() + Mth.sin(h) * 1.5D, d, e, h);
+                        archvileEntity.getZ() + Mth.sin(h) * 1.5D, d, e);
             }
 
             for (var j = 0; j < 18; ++j) {
                 float h = f + j * 3.1415927F * 2.0F / 8.0F + 1.2566371F;
                 archvileEntity.spawnFlames(archvileEntity.getX() + Mth.cos(h) * 2.5D,
-                        archvileEntity.getZ() + Mth.sin(h) * 2.5D, d, e, h);
+                        archvileEntity.getZ() + Mth.sin(h) * 2.5D, d, e);
             }
         } else // shoot ball
             for (var j = 0; j < 26; ++j) {
                 final double l1 = 1.25D * (j + 1);
                 archvileEntity.spawnFlames(archvileEntity.getX() + Mth.cos(f) * l1,
-                        archvileEntity.getZ() + Mth.sin(f) * l1, d, e, f);
+                        archvileEntity.getZ() + Mth.sin(f) * l1, d, e);
             }
     }
 
@@ -235,7 +234,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
                             this.target.getX() + Mth.cos(f1) * this.target.getRandom().nextDouble() * 1.5D,
                             this.target.getZ() + Mth.sin(f1) * this.target.getRandom().nextDouble() * 1.5D,
                             Math.min(this.target.getY(), this.target.getY()),
-                            Math.max(this.target.getY(), this.target.getY()) + 1.0D, f1);
+                            Math.max(this.target.getY(), this.target.getY()) + 1.0D);
             }
             this.target.setDeltaMovement(this.target.getDeltaMovement().multiply(0.4f, 1.4f, 0.4f));
         } else { // shoot fireballs
@@ -264,9 +263,8 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
                                 (float) Mth.atan2(this.target.getZ() - doomHunterEntity.getZ(),
                                         this.target.getX() - doomHunterEntity.getX())) * 1.25D * (l + 1),
                         Math.min(this.target.getY(), this.target.getY()),
-                        Math.max(this.target.getY(), this.target.getY()) + 1.0D,
-                        (float) Mth.atan2(this.target.getZ() - doomHunterEntity.getZ(),
-                                this.target.getX() - doomHunterEntity.getX()));
+                        Math.max(this.target.getY(), this.target.getY()) + 1.0D
+                );
             }
         }
         if (doomHunterEntity.getDeathState() == 0) {
@@ -304,7 +302,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
                             this.target.getX() + Mth.cos(f1) * this.target.getRandom().nextDouble() * 1.5D,
                             this.target.getZ() + Mth.sin(f1) * this.target.getRandom().nextDouble() * 1.5D,
                             Math.min(this.target.getY(), this.target.getY()),
-                            Math.max(this.target.getY(), this.target.getY()) + 1.0D, f1);
+                            Math.max(this.target.getY(), this.target.getY()) + 1.0D);
             }
             this.target.setDeltaMovement(this.target.getDeltaMovement().multiply(0.4f, 1.4f, 0.4f));
         }
@@ -322,7 +320,7 @@ public class DemonProjectileAttack<E extends DemonEntity> extends CustomDelayedR
                             this.target.getX() + Mth.cos(f1) * this.target.getRandom().nextDouble() * 1.5D,
                             this.target.getZ() + Mth.sin(f1) * this.target.getRandom().nextDouble() * 1.5D,
                             Math.min(this.target.getY(), this.target.getY()),
-                            Math.max(this.target.getY(), this.target.getY()) + 1.0D, f1);
+                            Math.max(this.target.getY(), this.target.getY()) + 1.0D);
             }
             if (iconEntity.getHealth() < (iconEntity.getMaxHealth() * 0.50))
                 iconEntity.setAttackingState(6); // no armor

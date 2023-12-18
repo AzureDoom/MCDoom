@@ -104,7 +104,7 @@ public class DemonMeleeAttack<E extends DemonEntity> extends CustomDelayedMeleeB
                 float h2 = (float) Mth.atan2(target.getZ() - entity.getZ(),
                         target.getX() - entity.getX()) + j * (float) Math.PI * 0.4F;
                 mancubusEntity.spawnFlames(entity.getX() + Mth.cos(h2) * 1.5D, entity.getZ() + Mth.sin(h2) * 1.5D,
-                        Math.min(target.getY(), entity.getY()), Math.max(target.getY(), entity.getY()) + 1.0D, h2, 0);
+                        Math.min(target.getY(), entity.getY()), Math.max(target.getY(), entity.getY()) + 1.0D, 0);
             }
         } else if (entity instanceof CueBallEntity cueballEntity) {
             if (cueballEntity.getVariant() != 3) cueballEntity.setFuseSpeed(1);

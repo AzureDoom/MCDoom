@@ -3,7 +3,6 @@ package mod.azure.doom.entities.projectiles.entity;
 import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.doom.entities.DemonEntity;
 import mod.azure.doom.helper.CommonUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -16,11 +15,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.NotNull;
 
 public class FireProjectile extends AbstractHurtingProjectile {
 
     private float directHitDamage = 2;
-    private BlockPos lightBlockPos = null;
     private int idleTicks = 0;
 
     public FireProjectile(EntityType<FireProjectile> entitytype, Level world) {
@@ -33,17 +32,8 @@ public class FireProjectile extends AbstractHurtingProjectile {
         this.directHitDamage = directHitDamage;
     }
 
-    public FireProjectile(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getFireEntity(), x, y, z, accelX, accelY, accelZ,
-                worldIn);
-    }
-
-    public void setDirectHitDamage(float directHitDamage) {
-        this.directHitDamage = directHitDamage;
-    }
-
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return EntityPacket.createPacket(this);
     }
 
@@ -72,32 +62,30 @@ public class FireProjectile extends AbstractHurtingProjectile {
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult blockHitResult) {
+    protected void onHitBlock(@NotNull BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
         final var blockpos = blockHitResult.getBlockPos().relative(blockHitResult.getDirection());
         if (!level().isClientSide) {
             return;
         }
         final var entity = getOwner();
-        if (!(entity instanceof Mob) || level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
-            if (level().isEmptyBlock(blockpos))
-                level().setBlockAndUpdate(blockpos, BaseFireBlock.getState(level(), blockpos));
+        if (!(entity instanceof Mob) || level().getGameRules().getBoolean(
+                GameRules.RULE_MOBGRIEFING) && (level().isEmptyBlock(blockpos))) {
+            level().setBlockAndUpdate(blockpos, BaseFireBlock.getState(level(), blockpos));
         }
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult entityHitResult) {
+    protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         if (!level().isClientSide) {
             final var entity = entityHitResult.getEntity();
             final var entity1 = getOwner();
             remove(RemovalReason.KILLED);
-            if (entity1 instanceof LivingEntity) {
-                if (!(entity instanceof DemonEntity)) {
-                    entity.hurt(damageSources().mobAttack((LivingEntity) entity1), directHitDamage);
-                    entity.setSecondsOnFire(15);
-                    doEnchantDamageEffects((LivingEntity) entity1, entity);
-                }
+            if (entity1 instanceof LivingEntity livingEntity && (!(entity instanceof DemonEntity))) {
+                entity.hurt(damageSources().mobAttack(livingEntity), directHitDamage);
+                entity.setSecondsOnFire(15);
+                doEnchantDamageEffects(livingEntity, entity);
             }
         }
     }

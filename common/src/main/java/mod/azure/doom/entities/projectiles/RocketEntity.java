@@ -9,6 +9,7 @@ import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.entities.tierboss.IconofsinEntity;
 import mod.azure.doom.helper.CommonUtils;
+import mod.azure.doom.platform.Services;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -26,10 +27,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.NotNull;
 
 public class RocketEntity extends AbstractArrow implements GeoEntity {
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    public SoundEvent hitSound = getDefaultHitGroundSoundEvent();
     private LivingEntity shooter;
     private float projectiledamage;
     private int idleTicks = 0;
@@ -39,25 +40,10 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
         pickup = Pickup.DISALLOWED;
     }
 
-    public RocketEntity(Level world, LivingEntity owner) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getRocketEntity(), owner, world);
-        shooter = owner;
-    }
-
     public RocketEntity(Level world, LivingEntity owner, float damage) {
         super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getRocketEntity(), owner, world);
         shooter = owner;
         projectiledamage = damage;
-    }
-
-    protected RocketEntity(EntityType<? extends RocketEntity> type, double x, double y, double z, Level world) {
-        this(type, world);
-    }
-
-    protected RocketEntity(EntityType<? extends RocketEntity> type, LivingEntity owner, Level world) {
-        this(type, owner.getX(), owner.getEyeY() - 0.10000000149011612D, owner.getZ(), world);
-        setOwner(owner);
-        if (owner instanceof Player) pickup = Pickup.DISALLOWED;
     }
 
     @Override
@@ -71,7 +57,7 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    protected void doPostHurtEffects(LivingEntity living) {
+    protected void doPostHurtEffects(@NotNull LivingEntity living) {
         super.doPostHurtEffects(living);
         if (!(living instanceof Player) && !(living instanceof IconofsinEntity)) {
             living.setDeltaMovement(0, 0, 0);
@@ -80,7 +66,7 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return EntityPacket.createPacket(this);
     }
 
@@ -114,30 +100,30 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    public void setSoundEvent(SoundEvent soundIn) {
-        hitSound = soundIn;
+    public void setSoundEvent(@NotNull SoundEvent soundIn) {
+        this.getDefaultHitGroundSoundEvent();
     }
 
     @Override
-    protected SoundEvent getDefaultHitGroundSoundEvent() {
-        return mod.azure.doom.platform.Services.SOUNDS_HELPER.getROCKET_HIT();
+    protected @NotNull SoundEvent getDefaultHitGroundSoundEvent() {
+        return Services.SOUNDS_HELPER.getROCKET_HIT();
     }
 
     @Override
-    public void remove(RemovalReason reason) {
+    public void remove(@NotNull RemovalReason reason) {
         final var areaeffectcloudentity = new AreaEffectCloud(level(), this.getX(), this.getY(), this.getZ());
         areaeffectcloudentity.setParticle(ParticleTypes.LAVA);
         areaeffectcloudentity.setRadius(6);
         areaeffectcloudentity.setDuration(1);
         areaeffectcloudentity.absMoveTo(this.getX(), this.getY(), this.getZ());
         level().addFreshEntity(areaeffectcloudentity);
-        level().playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE,
+        level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE,
                 SoundSource.PLAYERS, 1.0F, 1.5F);
         super.remove(reason);
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult blockHitResult) {
+    protected void onHitBlock(@NotNull BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
         if (!level().isClientSide()) {
             doDamage();
@@ -146,7 +132,7 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult entityHitResult) {
+    protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         if (!level().isClientSide()) {
             doDamage();
             remove(RemovalReason.DISCARDED);
@@ -154,7 +140,7 @@ public class RocketEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    public ItemStack getPickupItem() {
+    public @NotNull ItemStack getPickupItem() {
         return Items.AIR.getDefaultInstance();
     }
 

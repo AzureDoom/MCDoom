@@ -10,6 +10,7 @@ import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.MCDoom;
 import mod.azure.doom.entities.tierheavy.CacodemonEntity;
+import mod.azure.doom.platform.Services;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -32,13 +33,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.NotNull;
 
 public class GrenadeEntity extends AbstractArrow implements GeoEntity {
 
     private static final EntityDataAccessor<Boolean> SPINNING = SynchedEntityData.defineId(GrenadeEntity.class,
             EntityDataSerializers.BOOLEAN);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    public SoundEvent hitSound = getDefaultHitGroundSoundEvent();
     protected String type;
     private LivingEntity shooter;
 
@@ -50,23 +51,6 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
     public GrenadeEntity(Level world, LivingEntity owner) {
         super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getGranadeEntity(), owner, world);
         shooter = owner;
-    }
-
-    protected GrenadeEntity(EntityType<? extends GrenadeEntity> type, double x, double y, double z, Level world) {
-        this(type, world);
-    }
-
-    protected GrenadeEntity(EntityType<? extends GrenadeEntity> type, LivingEntity owner, Level world) {
-        this(type, owner.getX(), owner.getEyeY() - 0.10000000149011612D, owner.getZ(), world);
-        setOwner(owner);
-        shooter = owner;
-        if (owner instanceof Player) pickup = Pickup.DISALLOWED;
-    }
-
-    public GrenadeEntity(Level world, LivingEntity user, boolean spinning) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getGranadeEntity(), user, world);
-        entityData.set(SPINNING, spinning);
-        shooter = user;
     }
 
     @Override
@@ -97,12 +81,12 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return EntityPacket.createPacket(this);
     }
 
     @Override
-    public void remove(RemovalReason reason) {
+    public void remove(@NotNull RemovalReason reason) {
         final var areaeffectcloudentity = new AreaEffectCloud(level(), this.getX(), this.getY(), this.getZ());
         areaeffectcloudentity.setParticle(ParticleTypes.FLAME);
         areaeffectcloudentity.setRadius(6);
@@ -110,7 +94,7 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
         areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
         level().addFreshEntity(areaeffectcloudentity);
         explode();
-        level().playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE,
+        level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE,
                 SoundSource.PLAYERS, 1.0F, 1.5F);
         super.remove(reason);
     }
@@ -121,13 +105,13 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(@NotNull CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("State", isSpinning());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(@NotNull CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         setSpinning(compound.getBoolean("State"));
     }
@@ -141,17 +125,17 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    public void setSoundEvent(SoundEvent soundIn) {
-        hitSound = soundIn;
+    public void setSoundEvent(@NotNull SoundEvent soundIn) {
+        this.getDefaultHitGroundSoundEvent();
     }
 
     @Override
-    protected SoundEvent getDefaultHitGroundSoundEvent() {
-        return mod.azure.doom.platform.Services.SOUNDS_HELPER.getBEEP();
+    protected @NotNull SoundEvent getDefaultHitGroundSoundEvent() {
+        return Services.SOUNDS_HELPER.getBEEP();
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult blockHitResult) {
+    protected void onHitBlock(@NotNull BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
         if (!level().isClientSide() && tickCount >= 46) remove(RemovalReason.DISCARDED);
     }
@@ -172,10 +156,10 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
     }
 
     protected void explode() {
-        level().getEntities(this, new AABB(blockPosition().above()).inflate(8)).forEach(e -> doDamage(this, e));
+        level().getEntities(this, new AABB(blockPosition().above()).inflate(8)).forEach(this::doDamage);
     }
 
-    private void doDamage(Entity user, Entity target) {
+    private void doDamage(Entity target) {
         if (target instanceof LivingEntity) {
             target.invulnerableTime = 0;
             if (this.isOnFire())
@@ -186,7 +170,7 @@ public class GrenadeEntity extends AbstractArrow implements GeoEntity {
     }
 
     @Override
-    public ItemStack getPickupItem() {
+    public @NotNull ItemStack getPickupItem() {
         return new ItemStack(Items.AIR);
     }
 

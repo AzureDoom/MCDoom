@@ -21,6 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.NotNull;
 
 public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEntity {
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
@@ -34,11 +35,6 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
         super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getBloodBoltEntity(), shooter, accelX, accelY, accelZ,
                 worldIn);
         this.directHitDamage = directHitDamage;
-    }
-
-    public BloodBoltEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getBloodBoltEntity(), x, y, z, accelX, accelY, accelZ,
-                worldIn);
     }
 
     @Override
@@ -57,7 +53,7 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return EntityPacket.createPacket(this);
     }
 
@@ -66,17 +62,13 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
         return !isInWater();
     }
 
-    public void setDirectHitDamage(float directHitDamage) {
-        this.directHitDamage = directHitDamage;
-    }
-
     @Override
-    protected ParticleOptions getTrailParticle() {
+    protected @NotNull ParticleOptions getTrailParticle() {
         return ParticleTypes.PORTAL;
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult result) {
+    protected void onHitBlock(@NotNull BlockHitResult result) {
         super.onHitBlock(result);
         if (!level().isClientSide()) {
             explode();
@@ -86,7 +78,7 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult entityHitResult) {
+    protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         if (!level().isClientSide()) {
             final var entity = entityHitResult.getEntity();
@@ -94,8 +86,7 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
             if (!(entity instanceof DemonEntity))
                 entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
             if (entity2 instanceof LivingEntity livingEntity) {
-                if (!(entity instanceof DemonEntity))
-                    doEnchantDamageEffects(livingEntity, entity);
+                if (!(entity instanceof DemonEntity)) doEnchantDamageEffects(livingEntity, entity);
                 remove(RemovalReason.DISCARDED);
             }
         }
@@ -103,10 +94,10 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
     }
 
     protected void explode() {
-        level().getEntities(this, new AABB(blockPosition().above()).inflate(8)).forEach(e -> doDamage(this, e));
+        level().getEntities(this, new AABB(blockPosition().above()).inflate(8)).forEach(this::doDamage);
     }
 
-    private void doDamage(Entity user, Entity target) {
+    private void doDamage(Entity target) {
         if (target instanceof LivingEntity) {
             target.invulnerableTime = 0;
             target.hurt(damageSources().indirectMagic(this, target), directHitDamage);
@@ -116,8 +107,7 @@ public class BloodBoltEntity extends AbstractHurtingProjectile implements GeoEnt
     @Override
     public void tick() {
         super.tick();
-        if (tickCount >= 80)
-            remove(RemovalReason.DISCARDED);
+        if (tickCount >= 80) remove(RemovalReason.DISCARDED);
     }
 
     @Override

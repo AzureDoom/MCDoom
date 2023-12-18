@@ -85,7 +85,7 @@ public class BulletEntity extends AbstractArrow {
     }
 
     @Override
-    protected boolean tryPickup(Player player) {
+    protected boolean tryPickup(@NotNull Player player) {
         return false;
     }
 
@@ -138,8 +138,8 @@ public class BulletEntity extends AbstractArrow {
         if (this.attachTimer >= 20 && this.useParticle() != 7) this.remove(RemovalReason.DISCARDED);
         if (this.isPassenger()) this.setDeltaMovement(0, 0, 0);
         if (this.useParticle() == 8) {
-            var livingEntities = level().getEntitiesOfClass(
-                    Monster.class, new AABB(this.getX() - 6.0, this.getY() - 6.0, this.getZ() - 6.0, this.getX() + 6.0,
+            var livingEntities = level().getEntitiesOfClass(Monster.class,
+                    new AABB(this.getX() - 6.0, this.getY() - 6.0, this.getZ() - 6.0, this.getX() + 6.0,
                             this.getY() + 6.0, this.getZ() + 6.0), entity1 -> entity1 != this.getOwner());
             if (!livingEntities.isEmpty()) {
                 var first = livingEntities.get(0);
@@ -188,27 +188,27 @@ public class BulletEntity extends AbstractArrow {
                 entity) && !this.level().isClientSide) this.remove(RemovalReason.KILLED);
         var entity1 = this.getOwner();
         if (this.useParticle() != 7) {
-            if (entity.hurt(damageSources().thrown(entity, this.getOwner()), projectiledamage)) {
-                if (entity instanceof LivingEntity livingEntity) {
-                    if (!this.level().isClientSide && entity1 instanceof LivingEntity livingEntity1) {
-                        if (this.useParticle() != 7) {
-                            EnchantmentHelper.doPostHurtEffects(livingEntity, livingEntity1);
-                            EnchantmentHelper.doPostDamageEffects(livingEntity1, livingEntity);
-                        }
-                        if (this.isOnFire()) livingEntity.setSecondsOnFire(50);
-                        if (this.useParticle() == 3 || this.useParticle() == 4)
-                            this.explode(MCDoom.config.argent_bolt_damage);
-                        if (this.useParticle() == 6 && livingEntity instanceof PossessedSoldierEntity possessedSoldier && possessedSoldier.getVariant() == 3)
-                            possessedSoldier.setPlasmaHits(1);
-                        if (this.useParticle() != 7) this.remove(RemovalReason.KILLED);
-                        if (this.useParticle() == 7) this.attachTimer++;
-                        if (this.useParticle() == 8) this.explode(20f);
+            if (entity.hurt(damageSources().thrown(entity, this.getOwner()),
+                    projectiledamage) && (entity instanceof LivingEntity livingEntity)) {
+                if (!this.level().isClientSide && entity1 instanceof LivingEntity livingEntity1) {
+                    if (this.useParticle() != 7) {
+                        EnchantmentHelper.doPostHurtEffects(livingEntity, livingEntity1);
+                        EnchantmentHelper.doPostDamageEffects(livingEntity1, livingEntity);
                     }
-                    this.doPostHurtEffects(livingEntity);
-                    if (livingEntity != entity1 && livingEntity instanceof Player && entity1 instanceof ServerPlayer serverPlayer && !this.isSilent())
-                        serverPlayer.connection.send(
-                                new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
+                    if (this.isOnFire()) livingEntity.setSecondsOnFire(50);
+                    if (this.useParticle() == 3 || this.useParticle() == 4)
+                        this.explode(MCDoom.config.argent_bolt_damage);
+                    if (this.useParticle() == 6 && livingEntity instanceof PossessedSoldierEntity possessedSoldier && possessedSoldier.getVariant() == 3)
+                        possessedSoldier.setPlasmaHits(1);
+                    if (this.useParticle() != 7) this.remove(RemovalReason.KILLED);
+                    if (this.useParticle() == 7) this.attachTimer++;
+                    if (this.useParticle() == 8) this.explode(20f);
                 }
+                this.doPostHurtEffects(livingEntity);
+                if (livingEntity != entity1 && livingEntity instanceof Player && entity1 instanceof ServerPlayer serverPlayer && !this.isSilent())
+                    serverPlayer.connection.send(
+                            new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
+
             }
         } else {
             this.startRiding(entity);

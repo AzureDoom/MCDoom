@@ -217,7 +217,7 @@ public class MotherDemonEntity extends DemonEntity implements SmartBrainOwner<Mo
         return 9.05F;
     }
 
-    public void spawnFlames(double x, double z, double maxY, double y, float yaw) {
+    public void spawnFlames(double x, double z, double maxY, double y) {
         var blockpos = BlockPos.containing(x, y, z);
         var flag = false;
         var d0 = 0.0D;
@@ -237,7 +237,7 @@ public class MotherDemonEntity extends DemonEntity implements SmartBrainOwner<Mo
         } while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
         if (flag) {
-            final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, yaw, 1, this,
+            final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, 1, this,
                     MCDoom.config.motherdemon_ranged_damage + (entityData.get(
                             DEATH_STATE) == 1 ? MCDoom.config.motherdemon_phaseone_damage_boos : 0));
             fang.setSecondsOnFire(tickCount);

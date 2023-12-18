@@ -19,6 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.NotNull;
 
 public class EnergyCellMobEntity extends AbstractHurtingProjectile implements GeoEntity {
 
@@ -38,15 +39,6 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements Ge
         this.directHitDamage = directHitDamage;
     }
 
-    public EnergyCellMobEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getEnergyCellMobEntity(), x, y, z, accelX, accelY,
-                accelZ, worldIn);
-    }
-
-    public void setDirectHitDamage(float directHitDamage) {
-        this.directHitDamage = directHitDamage;
-    }
-
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, event -> PlayState.CONTINUE));
@@ -63,7 +55,7 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements Ge
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return EntityPacket.createPacket(this);
     }
 
@@ -73,7 +65,7 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements Ge
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult result) {
+    protected void onHitBlock(@NotNull BlockHitResult result) {
         super.onHitBlock(result);
         if (!level().isClientSide()) {
             explode();
@@ -83,7 +75,7 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements Ge
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult entityHitResult) {
+    protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         if (!level().isClientSide()) {
             final var entity = entityHitResult.getEntity();
@@ -100,10 +92,10 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements Ge
     }
 
     protected void explode() {
-        level().getEntities(this, new AABB(blockPosition().above()).inflate(8)).forEach(e -> doDamage(this, e));
+        level().getEntities(this, new AABB(blockPosition().above()).inflate(8)).forEach(this::doDamage);
     }
 
-    private void doDamage(Entity user, Entity target) {
+    private void doDamage(Entity target) {
         if (target instanceof LivingEntity) {
             target.invulnerableTime = 0;
             target.hurt(damageSources().indirectMagic(this, target), directHitDamage);

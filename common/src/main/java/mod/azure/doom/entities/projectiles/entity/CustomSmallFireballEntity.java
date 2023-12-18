@@ -5,10 +5,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.SmallFireball;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.NotNull;
 
 public class CustomSmallFireballEntity extends SmallFireball {
 
-    private float directHitDamage = 5.0F;
+    private final float directHitDamage;
 
     public CustomSmallFireballEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, float directHitDamage) {
         super(worldIn, shooter, accelX, accelY, accelZ);
@@ -16,7 +17,7 @@ public class CustomSmallFireballEntity extends SmallFireball {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult entityHitResult) {
+    protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         if (!level().isClientSide()) {
             final var entity = entityHitResult.getEntity();
             final var entity2 = getOwner();

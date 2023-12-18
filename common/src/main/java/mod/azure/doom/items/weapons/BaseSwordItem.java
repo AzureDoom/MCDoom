@@ -1,6 +1,5 @@
 package mod.azure.doom.items.weapons;
 
-import mod.azure.azurelib.AzureLib;
 import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
@@ -40,6 +39,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +47,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class BaseSwordItem extends SwordItem implements GeoItem {
-    private static final String firing = "firing";
     private static final String controller = "controller";
     protected final MeleeWeaponEnum meleeWeaponEnum;
     private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
@@ -63,7 +62,6 @@ public abstract class BaseSwordItem extends SwordItem implements GeoItem {
         if (user.getItemInHand(hand).getItem() instanceof BaseSwordItem swordItem) {
             while (!user.isCreative() && user.getItemInHand(
                     hand).getDamageValue() != 0 && user.getInventory().countItem(swordItem.getAmmoType()) > 0) {
-                AzureLib.LOGGER.info(swordItem.getAmmoType().toString());
                 CommonUtils.removeAmmo(swordItem.getAmmoType(), user);
                 user.getCooldowns().addCooldown(swordItem, 5);
                 user.getItemInHand(hand).hurtAndBreak(-5, user, s -> user.broadcastBreakEvent(hand));
@@ -91,7 +89,7 @@ public abstract class BaseSwordItem extends SwordItem implements GeoItem {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
+    public void inventoryTick(@NotNull ItemStack stack, Level level, @NotNull Entity entity, int slot, boolean selected) {
         final var playerentity = (Player) entity;
         if (!level.isClientSide && (this.meleeWeaponEnum == MeleeWeaponEnum.CRUCIBLE || this.meleeWeaponEnum == MeleeWeaponEnum.DARK_CRUCIBLE)) {
             if (playerentity.getMainHandItem().is(this) && selected) {
@@ -101,7 +99,7 @@ public abstract class BaseSwordItem extends SwordItem implements GeoItem {
         if (!level.isClientSide && this.meleeWeaponEnum == MeleeWeaponEnum.ETERNAL_CHAINSAW) {
             triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) level), controller, "running");
         }
-        if (level.isClientSide && entity instanceof Player player && player.getMainHandItem().getItem() instanceof BaseSwordItem && selected) {
+        if (level.isClientSide && playerentity.getMainHandItem().getItem() instanceof BaseSwordItem && selected) {
             if (Keybindings.RELOAD.consumeClick()) {
                 Services.NETWORK.reloadMelee(slot);
             }
@@ -109,15 +107,13 @@ public abstract class BaseSwordItem extends SwordItem implements GeoItem {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity livingEntity) {
+    public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity livingEntity) {
         if (livingEntity instanceof Player playerentity && stack.getDamageValue() < stack.getMaxDamage() - 1 && playerentity.getMainHandItem().getItem() instanceof BaseSwordItem swordItem) {
             final var aabb = new AABB(playerentity.blockPosition().above()).inflate(5D, 5D, 5D);
             playerentity.level().getEntities(playerentity, aabb).forEach(e -> doDamage(stack, playerentity, e));
             if (swordItem.getmeleeWeaponEnum() == MeleeWeaponEnum.CHAINSAW || swordItem.getmeleeWeaponEnum() == MeleeWeaponEnum.CHAINSAW_64 || swordItem.getmeleeWeaponEnum() == MeleeWeaponEnum.ETERNAL_CHAINSAW) {
                 playerentity.level().getEntities(playerentity, aabb).forEach(e -> doDeathCheck(playerentity, e, stack));
                 playerentity.level().getEntities(playerentity, aabb).forEach(this::addParticle);
-            }
-            if (swordItem.getmeleeWeaponEnum() == MeleeWeaponEnum.ETERNAL_CHAINSAW) {
             }
             stack.hurtAndBreak(1, playerentity, p -> p.broadcastBreakEvent(playerentity.getUsedItemHand()));
             if (swordItem.getmeleeWeaponEnum() == MeleeWeaponEnum.SENTINEL_HAMMER) {
@@ -134,7 +130,7 @@ public abstract class BaseSwordItem extends SwordItem implements GeoItem {
     }
 
     private void doDamage(ItemStack stack, LivingEntity user, Entity target) {
-        if (target instanceof LivingEntity) {
+        if (target instanceof LivingEntity livingEntity) {
             target.invulnerableTime = 0;
             if (EnchantmentHelper.getItemEnchantmentLevel(
                     mod.azure.azurelib.platform.Services.PLATFORM.getIncendairyenchament(), stack) > 0)
@@ -146,22 +142,16 @@ public abstract class BaseSwordItem extends SwordItem implements GeoItem {
                             Services.SOUNDS_HELPER.getCHAINSAW_ATTACKING(), SoundSource.PLAYERS, 0.3F,
                             1.0F / (user.level().random.nextFloat() * 0.4F + 1.2F) + 0.25F * 0.5F);
                 }
-                case MARAUDER_AXE -> {
-                    target.hurt(user.damageSources().playerAttack((Player) user),
-                            target instanceof ArchMakyrEntity || target instanceof GladiatorEntity || target instanceof IconofsinEntity || target instanceof MotherDemonEntity || target instanceof SpiderMastermind2016Entity || target instanceof SpiderMastermindEntity ? MCDoom.config.marauder_axe_item_damage / 10F : MCDoom.config.marauder_axe_item_damage);
-                }
-                case DARK_CRUCIBLE -> {
-                    target.hurt(user.damageSources().playerAttack((Player) user),
-                            target instanceof ArchMakyrEntity || target instanceof GladiatorEntity || target instanceof IconofsinEntity || target instanceof MotherDemonEntity || target instanceof SpiderMastermind2016Entity || target instanceof SpiderMastermindEntity ? MCDoom.config.darkcrucible_damage / 10F : MCDoom.config.darkcrucible_damage);
-                }
+                case MARAUDER_AXE -> target.hurt(user.damageSources().playerAttack((Player) user),
+                        target instanceof ArchMakyrEntity || target instanceof GladiatorEntity || target instanceof IconofsinEntity || target instanceof MotherDemonEntity || target instanceof SpiderMastermindEntity ? MCDoom.config.marauder_axe_item_damage / 10F : MCDoom.config.marauder_axe_item_damage);
+                case DARK_CRUCIBLE -> target.hurt(user.damageSources().playerAttack((Player) user),
+                        target instanceof ArchMakyrEntity || target instanceof GladiatorEntity || target instanceof IconofsinEntity || target instanceof MotherDemonEntity || target instanceof SpiderMastermindEntity ? MCDoom.config.darkcrucible_damage / 10F : MCDoom.config.darkcrucible_damage);
                 case SENTINEL_HAMMER -> {
-                    ((LivingEntity) target).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 1000, 2));
+                    livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 1000, 2));
                     target.hurt(user.damageSources().playerAttack((Player) user), MCDoom.config.sentinelhammer_damage);
                 }
-                case CRUCIBLE -> {
-                    target.hurt(user.damageSources().playerAttack((Player) user),
-                            target instanceof ArchMakyrEntity || target instanceof GladiatorEntity || target instanceof IconofsinEntity || target instanceof MotherDemonEntity || target instanceof SpiderMastermind2016Entity || target instanceof SpiderMastermindEntity ? MCDoom.config.crucible_damage / 10F : MCDoom.config.crucible_damage);
-                }
+                case CRUCIBLE -> target.hurt(user.damageSources().playerAttack((Player) user),
+                        target instanceof ArchMakyrEntity || target instanceof GladiatorEntity || target instanceof IconofsinEntity || target instanceof MotherDemonEntity || target instanceof SpiderMastermindEntity ? MCDoom.config.crucible_damage / 10F : MCDoom.config.crucible_damage);
             }
         }
     }
@@ -170,14 +160,13 @@ public abstract class BaseSwordItem extends SwordItem implements GeoItem {
         final var givenList = Arrays.asList(Services.ITEMS_HELPER.getChaingunBullets(),
                 Services.ITEMS_HELPER.getShells(), Services.ITEMS_HELPER.getArgentBolts(),
                 Services.ITEMS_HELPER.getEngeryCell(), Services.ITEMS_HELPER.getRocket());
-        if (target instanceof DemonEntity && !(target instanceof Player) && ((LivingEntity) target).isDeadOrDying() && user instanceof Player playerentity && stack.getDamageValue() < stack.getMaxDamage() - 1 && !playerentity.getCooldowns().isOnCooldown(
-                this))
-            for (@SuppressWarnings("unused") final var i = 0; i < 5; ) {
-                final var randomIndex = user.getRandom().nextInt(givenList.size());
-                final var randomElement = givenList.get(randomIndex);
-                target.spawnAtLocation(randomElement);
-                break;
-            }
+        if (target instanceof DemonEntity && ((LivingEntity) target).isDeadOrDying() && user instanceof Player playerentity && stack.getDamageValue() < stack.getMaxDamage() - 1 && !playerentity.getCooldowns().isOnCooldown(
+                this)) for (@SuppressWarnings("unused") final var i = 0; i < 5; ) {
+            final var randomIndex = user.getRandom().nextInt(givenList.size());
+            final var randomElement = givenList.get(randomIndex);
+            target.spawnAtLocation(randomElement);
+            break;
+        }
     }
 
     private void addParticle(Entity target) {
@@ -187,12 +176,12 @@ public abstract class BaseSwordItem extends SwordItem implements GeoItem {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(@NotNull ItemStack stack) {
         return 72000;
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(@NotNull ItemStack stack, Level worldIn, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
         if (this.getmeleeWeaponEnum() == MeleeWeaponEnum.CHAINSAW || this.getmeleeWeaponEnum() == MeleeWeaponEnum.CHAINSAW_64 || this.getmeleeWeaponEnum() == MeleeWeaponEnum.ETERNAL_CHAINSAW) {
             tooltip.add(Component.translatable(
                     "Fuel: " + (stack.getMaxDamage() - stack.getDamageValue() - 1) + " / " + (stack.getMaxDamage() - 1)).withStyle(

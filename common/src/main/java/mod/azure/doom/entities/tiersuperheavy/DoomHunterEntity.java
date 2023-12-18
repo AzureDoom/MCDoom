@@ -153,7 +153,7 @@ public class DoomHunterEntity extends DemonEntity implements SmartBrainOwner<Doo
     protected void registerGoals() {
     }
 
-    public void spawnFlames(double x, double z, double maxY, double y, float yaw) {
+    public void spawnFlames(double x, double z, double maxY, double y) {
         var blockpos = BlockPos.containing(x, y, z);
         var flag = false;
         var d0 = 0.0D;
@@ -173,7 +173,7 @@ public class DoomHunterEntity extends DemonEntity implements SmartBrainOwner<Doo
         } while (blockpos.getY() >= Mth.floor(maxY) - 1);
 
         if (flag) {
-            final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, yaw, 1, this,
+            final var fang = new DoomFireEntity(level(), x, blockpos.getY() + d0, z, 1, this,
                     MCDoom.config.doomhunter_ranged_damage + (this.getDeathState() == 1 ? MCDoom.config.doomhunter_extra_phase_two_damage : 0));
             fang.setSecondsOnFire(tickCount);
             fang.setInvisible(false);

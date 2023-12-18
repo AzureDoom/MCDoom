@@ -19,6 +19,7 @@ import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.NotNull;
 
 public class GladiatorMaceEntity extends AbstractHurtingProjectile implements GeoEntity {
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
@@ -32,11 +33,6 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
         super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getGlaiatorMaceEntity(), shooter, accelX, accelY, accelZ,
                 worldIn);
         this.shooter = shooter;
-    }
-
-    public GladiatorMaceEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
-        super(mod.azure.doom.platform.Services.ENTITIES_HELPER.getGlaiatorMaceEntity(), x, y, z, accelX, accelY, accelZ,
-                worldIn);
     }
 
     @Override
@@ -60,7 +56,7 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return EntityPacket.createPacket(this);
     }
 
@@ -70,14 +66,14 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult result) {
+    protected void onHitBlock(@NotNull BlockHitResult result) {
         super.onHitBlock(result);
         if (!level().isClientSide()) remove(RemovalReason.DISCARDED);
         this.playSound(SoundEvents.NETHERITE_BLOCK_HIT, 1.0F, 1.2F / (random.nextFloat() * 0.2F + 0.9F));
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult entityHitResult) {
+    protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         if (!level().isClientSide()) {
             final var entity = entityHitResult.getEntity();
