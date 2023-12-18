@@ -32,7 +32,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class BulletEntity extends AbstractArrow {
     private int idleTicks = 0;
-    private int plasmahits = 0;
     private int attachTimer = 0;
     private float projectiledamage;
 
