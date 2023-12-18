@@ -79,7 +79,7 @@ public class CyberdemonEntity extends DemonEntity implements SmartBrainOwner<Cyb
             if ((event.getAnimatable().getAttckingState() == 1 || this.swinging) && !(dead || getHealth() < 0.01 || isDeadOrDying()))
                 return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        }).setSoundKeyframeHandler(event -> {
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH).setSoundKeyframeHandler(event -> {
             if (event.getKeyframeData().getSound().matches("walk") && (level().isClientSide()))
                 level().playLocalSound(this.getX(), this.getY(), this.getZ(),
                         mod.azure.doom.platform.Services.SOUNDS_HELPER.getCYBERDEMON_STEP(), SoundSource.HOSTILE, 0.25F,

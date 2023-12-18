@@ -71,19 +71,18 @@ public class Hellknight2016Entity extends DemonEntity implements SmartBrainOwner
                 return event.setAndContinue(DoomAnimationsDefault.WALKING);
             if (isAggressive() && this.walkAnimation.speed() > 0.35F && this.onGround() && !this.swinging)
                 return event.setAndContinue(DoomAnimationsDefault.RUN);
-            if (dead || getHealth() < 0.01 || isDeadOrDying())
-                return event.setAndContinue(DoomAnimationsDefault.DEATH);
+            if (dead || getHealth() < 0.01 || isDeadOrDying()) return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("walk"))
-                if (level().isClientSide())
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH).setSoundKeyframeHandler(event -> {
+            if (level().isClientSide()) {
+                if (event.getKeyframeData().getSound().matches("walk"))
                     level().playLocalSound(this.getX(), this.getY(), this.getZ(),
                             mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F,
                             1.0F, false);
-            if (event.getKeyframeData().getSound().matches("attack"))
-                if (level().isClientSide())
+                if (event.getKeyframeData().getSound().matches("attack"))
                     level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_ATTACK_CRIT,
                             SoundSource.HOSTILE, 0.25F, 1.0F, false);
+            }
         }).triggerableAnim("attack", RawAnimation.begin().then("jumpattack", LoopType.PLAY_ONCE)));
     }
 
@@ -108,7 +107,7 @@ public class Hellknight2016Entity extends DemonEntity implements SmartBrainOwner
         return ObjectArrayList.of(new NearbyLivingEntitySensor<Hellknight2016Entity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<Hellknight2016Entity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override
@@ -156,15 +155,6 @@ public class Hellknight2016Entity extends DemonEntity implements SmartBrainOwner
         final boolean flag = getTarget() != null && hasLineOfSight(getTarget());
         goalSelector.setControlFlag(Goal.Flag.LOOK, flag);
         super.updateControlFlags();
-    }
-
-    @Override
-    protected void tickDeath() {
-        ++deathTime;
-        if (deathTime == 30) {
-            remove(RemovalReason.KILLED);
-            dropExperience();
-        }
     }
 
     @Override

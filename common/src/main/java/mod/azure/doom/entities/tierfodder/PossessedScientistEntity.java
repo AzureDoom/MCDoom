@@ -69,12 +69,11 @@ public class PossessedScientistEntity extends DemonEntity implements GeoEntity, 
             if (event.isMoving() && !isDead && !this.swinging)
                 return event.setAndContinue(DoomAnimationsDefault.WALK);
             return event.setAndContinue(isDead ? DoomAnimationsDefault.DEATH2 : DoomAnimationsDefault.IDLE);
-        }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("walk"))
-                if (level().isClientSide())
-                    level().playLocalSound(this.getX(), this.getY(), this.getZ(),
-                            mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F,
-                            1.0F, false);
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH).setSoundKeyframeHandler(event -> {
+            if (event.getKeyframeData().getSound().matches("walk") && (level().isClientSide()))
+                level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                        mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F,
+                        1.0F, false);
         })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
                 "ranged", DoomAnimationsDefault.ATTACK).triggerableAnim("melee", DoomAnimationsDefault.ATTACK));
     }
@@ -82,15 +81,6 @@ public class PossessedScientistEntity extends DemonEntity implements GeoEntity, 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
-    }
-
-    @Override
-    protected void tickDeath() {
-        ++deathTime;
-        if (deathTime == 40) {
-            remove(RemovalReason.KILLED);
-            dropExperience();
-        }
     }
 
     @Override
@@ -109,7 +99,7 @@ public class PossessedScientistEntity extends DemonEntity implements GeoEntity, 
         return ObjectArrayList.of(new NearbyLivingEntitySensor<PossessedScientistEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<PossessedScientistEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override

@@ -8,6 +8,7 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.MCDoom;
 import mod.azure.doom.entities.DemonEntity;
+import mod.azure.doom.entities.DoomAnimationsDefault;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -25,11 +26,12 @@ import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 public class GoreNestEntity extends DemonEntity implements GeoEntity {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    public int spawnTimer = 0;
+    private int spawnTimer = 0;
 
     public GoreNestEntity(EntityType<? extends GoreNestEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
@@ -43,12 +45,12 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
 
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, event -> {
+        controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
             if (dead || getHealth() < 0.01 || isDeadOrDying())
                 return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
             event.getController().setAnimationSpeed(0.25);
             return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
-        }));
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH));
     }
 
     @Override
@@ -71,16 +73,7 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
     }
 
     @Override
-    protected void tickDeath() {
-        ++deathTime;
-        if (deathTime == 60) {
-            remove(RemovalReason.KILLED);
-            dropExperience();
-        }
-    }
-
-    @Override
-    protected void actuallyHurt(DamageSource source, float damageAmount) {
+    protected void actuallyHurt(@NotNull DamageSource source, float damageAmount) {
         if (source == damageSources().genericKill()) remove(Entity.RemovalReason.KILLED);
 
         if (!(source.getEntity() instanceof Player)) setHealth(5.0F);
@@ -111,7 +104,7 @@ public class GoreNestEntity extends DemonEntity implements GeoEntity {
         for (var k = 1; k < 5; ++k) {
             final var waveentity = BuiltInRegistries.ENTITY_TYPE.get(
                     new ResourceLocation(waveEntries.get(getRandom().nextInt(waveEntries.size())))).create(level());
-            waveentity.setPos(this.getX() + random, this.getY() + 0.5D, this.getZ() + random);
+            Objects.requireNonNull(waveentity).setPos(this.getX() + random, this.getY() + 0.5D, this.getZ() + random);
             level().addFreshEntity(waveentity);
         }
     }

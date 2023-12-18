@@ -63,7 +63,6 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
     public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(MancubusEntity.class,
             EntityDataSerializers.INT);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    private int attackTimer;
 
     public MancubusEntity(EntityType<MancubusEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
@@ -79,32 +78,30 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-            if (event.isMoving())
-                return event.setAndContinue(DoomAnimationsDefault.WALKING);
-            if (dead || getHealth() < 0.01 || isDeadOrDying())
-                return event.setAndContinue(DoomAnimationsDefault.DEATH);
+            if (event.isMoving()) return event.setAndContinue(DoomAnimationsDefault.WALKING);
+            if (dead || getHealth() < 0.01 || isDeadOrDying()) return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("walk"))
-                if (level().isClientSide())
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH).setSoundKeyframeHandler(event -> {
+            if (level().isClientSide()) {
+                if (event.getKeyframeData().getSound().matches("walk"))
                     level().playLocalSound(this.getX(), this.getY(), this.getZ(),
                             mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F,
                             1.0F, false);
-            if (event.getKeyframeData().getSound().matches("talk"))
-                if (level().isClientSide())
+                if (event.getKeyframeData().getSound().matches("talk"))
                     level().playLocalSound(this.getX(), this.getY(), this.getZ(),
                             mod.azure.doom.platform.Services.SOUNDS_HELPER.getMANCUBUS_STEP(), SoundSource.HOSTILE,
                             0.25F, 1.0F, false);
+            }
         })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).setSoundKeyframeHandler(
                 event -> {
-                    if (event.getKeyframeData().getSound().matches("attack"))
-                        if (level().isClientSide())
+                    if (level().isClientSide()) {
+                        if (event.getKeyframeData().getSound().matches("attack"))
                             level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.FIRECHARGE_USE,
                                     SoundSource.HOSTILE, 0.25F, 1.0F, true);
-                    if (event.getKeyframeData().getSound().matches("flames"))
-                        if (level().isClientSide())
+                        if (event.getKeyframeData().getSound().matches("flames"))
                             level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.FIRECHARGE_USE,
                                     SoundSource.HOSTILE, 0.25F, 1.0F, true);
+                    }
                 }).triggerableAnim("ranged", DoomAnimationsDefault.ATTACKING).triggerableAnim("melee",
                 DoomAnimationsDefault.GROUND));
     }
@@ -112,15 +109,6 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
-    }
-
-    @Override
-    protected void tickDeath() {
-        ++deathTime;
-        if (deathTime == 80) {
-            remove(RemovalReason.KILLED);
-            dropExperience();
-        }
     }
 
     @Override
@@ -139,7 +127,7 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
         return ObjectArrayList.of(new NearbyLivingEntitySensor<MancubusEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<MancubusEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override
@@ -178,7 +166,7 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
         super.updateControlFlags();
     }
 
-    public void spawnFlames(double x, double z, double maxY, double y, int warmup) {
+    public void spawnFlames(double x, double z, double maxY, double y) {
         var blockpos = BlockPos.containing(x, y, z);
         var flag = false;
         var d0 = 0.0D;
@@ -189,8 +177,7 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
                 if (!level().isEmptyBlock(blockpos)) {
                     final var blockstate1 = level().getBlockState(blockpos);
                     final var voxelshape = blockstate1.getCollisionShape(level(), blockpos);
-                    if (!voxelshape.isEmpty())
-                        d0 = voxelshape.max(Direction.Axis.Y);
+                    if (!voxelshape.isEmpty()) d0 = voxelshape.max(Direction.Axis.Y);
                 }
                 flag = true;
                 break;
@@ -223,10 +210,6 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
     @Override
     protected float getStandingEyeHeight(@NotNull Pose poseIn, @NotNull EntityDimensions sizeIn) {
         return 2.80F;
-    }
-
-    public int getAttackTimer() {
-        return attackTimer;
     }
 
     @Override
@@ -273,8 +256,8 @@ public class MancubusEntity extends DemonEntity implements SmartBrainOwner<Mancu
     public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
         spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
         final var random = new SplittableRandom();
-        final var var = random.nextInt(0, 6);
-        setVariant(var);
+        final var nextInt = random.nextInt(0, 6);
+        setVariant(nextInt);
         return spawnDataIn;
     }
 

@@ -39,15 +39,16 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, GeoEntity {
-
+    protected int flameTimer;
+    private UUID targetUuid;
+    protected int targetChangeTime;
+    private static final UniformInt ANGER_TIME_RANGE = TimeUtil.rangeOfSeconds(20, 39);
     public static final EntityDataAccessor<Boolean> SCREAM = SynchedEntityData.defineId(DemonEntity.class,
             EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(DemonEntity.class,
             EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> ANGER_TIME = SynchedEntityData.defineId(DemonEntity.class,
             EntityDataSerializers.INT);
-    private static final UniformInt ANGER_TIME_RANGE = TimeUtil.rangeOfSeconds(20, 39);
-    private UUID targetUuid;
 
     protected DemonEntity(EntityType<? extends Monster> type, Level worldIn) {
         super(type, worldIn);
@@ -55,7 +56,7 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
         setMaxUpStep(1.5f);
     }
 
-    public static boolean canSpawnInDark(EntityType<? extends DemonEntity> type, LevelAccessor serverWorldAccess, MobSpawnType spawnReason, BlockPos pos, RandomSource random) {
+    public static boolean canSpawnInDark(EntityType<? extends DemonEntity> ignoredType, LevelAccessor serverWorldAccess, MobSpawnType ignoredSpawnReason, BlockPos pos, RandomSource ignoredRandom) {
         if (serverWorldAccess.getDifficulty() == Difficulty.PEACEFUL) return false;
         return !serverWorldAccess.getBlockState(pos.below()).is(Blocks.NETHER_WART_BLOCK);
     }
@@ -126,9 +127,15 @@ public abstract class DemonEntity extends Monster implements NeutralMob, Enemy, 
     @Override
     protected void tickDeath() {
         ++deathTime;
-        if (deathTime == 35) {
+        if (deathTime == 80) {
             remove(RemovalReason.KILLED);
         }
+    }
+
+    @Override
+    public void die(@NotNull DamageSource damageSource) {
+        super.die(damageSource);
+        this.triggerAnim("livingController", "death");
     }
 
     @Override

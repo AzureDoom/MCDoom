@@ -73,24 +73,22 @@ public class PinkyEntity extends DemonEntity implements SmartBrainOwner<PinkyEnt
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-            if (event.isMoving() && !isAggressive())
-                return event.setAndContinue(DoomAnimationsDefault.WALKING);
+            if (event.isMoving() && !isAggressive()) return event.setAndContinue(DoomAnimationsDefault.WALKING);
             if (isAggressive() && !(dead || getHealth() < 0.01 || isDeadOrDying()))
                 return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
-            if (dead || getHealth() < 0.01 || isDeadOrDying())
-                return event.setAndContinue(DoomAnimationsDefault.DEATH);
+            if (dead || getHealth() < 0.01 || isDeadOrDying()) return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
         }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("walk"))
-                if (level().isClientSide())
+            if (level().isClientSide()) {
+                if (event.getKeyframeData().getSound().matches("walk"))
                     level().playLocalSound(this.getX(), this.getY(), this.getZ(),
                             mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F,
                             1.0F, false);
-            if (event.getKeyframeData().getSound().matches("yell"))
-                if (level().isClientSide())
+                if (event.getKeyframeData().getSound().matches("yell"))
                     level().playLocalSound(this.getX(), this.getY(), this.getZ(),
                             mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_YELL(), SoundSource.HOSTILE, 0.25F,
                             1.0F, false);
+            }
         }));
     }
 
@@ -154,7 +152,7 @@ public class PinkyEntity extends DemonEntity implements SmartBrainOwner<PinkyEnt
         return ObjectArrayList.of(new NearbyLivingEntitySensor<PinkyEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<PinkyEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override
@@ -200,8 +198,8 @@ public class PinkyEntity extends DemonEntity implements SmartBrainOwner<PinkyEnt
     public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
         spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
         final SplittableRandom random = new SplittableRandom();
-        final int var = random.nextInt(0, 5);
-        setVariant(var);
+        final int nextInt = random.nextInt(0, 5);
+        setVariant(nextInt);
         return spawnDataIn;
     }
 

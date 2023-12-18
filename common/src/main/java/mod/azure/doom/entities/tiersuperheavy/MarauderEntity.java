@@ -64,7 +64,6 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
     public static final EntityDataAccessor<Boolean> SPAWN = SynchedEntityData.defineId(MarauderEntity.class,
             EntityDataSerializers.BOOLEAN);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    private int targetChangeTime;
 
     public MarauderEntity(EntityType<MarauderEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
@@ -209,13 +208,6 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
     }
 
     @Override
-    protected void tickDeath() {
-        super.tickDeath();
-        this.triggerAnim("attackController", "death");
-        this.triggerAnim("livingController", "death");
-    }
-
-    @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
         return (!isSpawn() || source == damageSources().genericKill()) && super.hurt(source, amount);
     }
@@ -255,13 +247,12 @@ public class MarauderEntity extends DemonEntity implements SmartBrainOwner<Marau
     }
 
     private void teleport(double x, double y, double z) {
-        final var blockpos$mutableblockpos = new BlockPos.MutableBlockPos(x, y, z);
+        final var mutableBlockPos = new BlockPos.MutableBlockPos(x, y, z);
 
-        while (blockpos$mutableblockpos.getY() > level().getMinBuildHeight() && !level().getBlockState(
-                blockpos$mutableblockpos).blocksMotion())
-            blockpos$mutableblockpos.move(Direction.DOWN);
+        while (mutableBlockPos.getY() > level().getMinBuildHeight() && !level().getBlockState(
+                mutableBlockPos).blocksMotion()) mutableBlockPos.move(Direction.DOWN);
 
-        final var blockstate = level().getBlockState(blockpos$mutableblockpos);
+        final var blockstate = level().getBlockState(mutableBlockPos);
         if (blockstate.blocksMotion() && !blockstate.getFluidState().is(FluidTags.WATER)) {
             randomTeleport(x, y, z, true);
         }

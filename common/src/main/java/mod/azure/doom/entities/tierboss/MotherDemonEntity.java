@@ -86,7 +86,8 @@ public class MotherDemonEntity extends DemonEntity implements SmartBrainOwner<Mo
     public void registerControllers(ControllerRegistrar controllers) {
         var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
         controllers.add(new AnimationController<>(this, "livingController", 0, event -> event.setAndContinue(
-                (isDead && event.getAnimatable().getDeathState() == 5) ? DoomAnimationsDefault.DEATH : (isDead && event.getAnimatable().getDeathState() < 5) ? DoomAnimationsDefault.DEATH_PHASEONE : DoomAnimationsDefault.MOVING))).add(
+                (isDead && event.getAnimatable().getDeathState() == 5) ? DoomAnimationsDefault.DEATH : (isDead && event.getAnimatable().getDeathState() < 5) ? DoomAnimationsDefault.DEATH_PHASEONE : DoomAnimationsDefault.MOVING)).triggerableAnim(
+                "death", DoomAnimationsDefault.DEATH)).add(
                 new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
                         "ranged", DoomAnimationsDefault.FIRE));
     }
@@ -134,6 +135,7 @@ public class MotherDemonEntity extends DemonEntity implements SmartBrainOwner<Mo
                 level().broadcastEntityEvent(this, (byte) 3);
             }
             if (entityData.get(DEATH_STATE) == 1) super.die(source);
+            this.triggerAnim("livingController", "death");
         }
     }
 

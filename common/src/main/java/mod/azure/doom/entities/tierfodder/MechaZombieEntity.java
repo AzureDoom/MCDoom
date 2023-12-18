@@ -11,8 +11,6 @@ import mod.azure.doom.entities.DemonEntity;
 import mod.azure.doom.entities.DoomAnimationsDefault;
 import mod.azure.doom.entities.task.DemonMeleeAttack;
 import mod.azure.doom.entities.task.DemonProjectileAttack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -68,22 +66,14 @@ public class MechaZombieEntity extends DemonEntity implements SmartBrainOwner<Me
             if (event.isMoving() && !isDead && !this.swinging)
                 return event.setAndContinue(DoomAnimationsDefault.WALKING);
             return event.setAndContinue(isDead ? DoomAnimationsDefault.DEATH : DoomAnimationsDefault.IDLE);
-        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
-                "ranged", DoomAnimationsDefault.ATTACK).triggerableAnim("melee", DoomAnimationsDefault.MELEE));
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH)).add(
+                new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
+                        "ranged", DoomAnimationsDefault.ATTACK).triggerableAnim("melee", DoomAnimationsDefault.MELEE));
     }
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
-    }
-
-    @Override
-    protected void tickDeath() {
-        ++deathTime;
-        if (deathTime == 80) {
-            remove(RemovalReason.KILLED);
-            dropExperience();
-        }
     }
 
     @Override
@@ -102,7 +92,7 @@ public class MechaZombieEntity extends DemonEntity implements SmartBrainOwner<Me
         return ObjectArrayList.of(new NearbyLivingEntitySensor<MechaZombieEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<MechaZombieEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override
@@ -129,31 +119,6 @@ public class MechaZombieEntity extends DemonEntity implements SmartBrainOwner<Me
                 new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.05F),
                 new DemonProjectileAttack<>(7).attackInterval(mob -> 80).attackDamage(
                         MCDoom.config.mechazombie_ranged_damage), new DemonMeleeAttack<>(5));
-    }
-
-    @Override
-    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        super.onSyncedDataUpdated(key);
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-    }
-
-    @Override
-    public void aiStep() {
-        super.aiStep();
-    }
-
-    @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-    }
-
-    @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
     }
 
     @Override

@@ -23,12 +23,18 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -62,8 +68,6 @@ public class ArchvileEntity extends DemonEntity implements SmartBrainOwner<Archv
     public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(ArchvileEntity.class,
             EntityDataSerializers.INT);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    public int flameTimer;
-    private int targetChangeTime;
 
     public ArchvileEntity(EntityType<ArchvileEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
@@ -82,7 +86,7 @@ public class ArchvileEntity extends DemonEntity implements SmartBrainOwner<Archv
                 return event.setAndContinue(DoomAnimationsDefault.WALKING);
             if (dead || getHealth() < 0.01 || isDeadOrDying()) return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        }).setSoundKeyframeHandler(event -> {
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH).setSoundKeyframeHandler(event -> {
             if (level().isClientSide()) {
                 if (event.getKeyframeData().getSound().matches("walk"))
                     level().playLocalSound(this.getX(), this.getY(), this.getZ(),
@@ -104,14 +108,15 @@ public class ArchvileEntity extends DemonEntity implements SmartBrainOwner<Archv
     @Override
     protected void tickDeath() {
         ++deathTime;
-        if (!level().isClientSide)
-            this.level().getEntities(this, new AABB(blockPosition().above()).inflate(64D, 64D, 64D)).forEach(e -> {
-                if (e.isAlive() && e instanceof LivingEntity) e.setGlowingTag(false);
-            });
-        if (deathTime == 50) {
-            remove(Entity.RemovalReason.KILLED);
-            dropExperience();
-        }
+        if (!level().isClientSide) this.level().getEntitiesOfClass(Monster.class,
+                new AABB(blockPosition().above()).inflate(64D, 64D, 64D)).forEach(e -> {
+            if (e.isAlive()) {
+                e.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 2, 10000, true, false));
+                e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 2, 10000, true, false));
+                e.setGlowingTag(false);
+            }
+        });
+        super.tickDeath();
     }
 
     @Override
@@ -250,8 +255,7 @@ public class ArchvileEntity extends DemonEntity implements SmartBrainOwner<Archv
         final var mutableBlockPos = new BlockPos.MutableBlockPos(x, y, z);
 
         while (mutableBlockPos.getY() > level().getMinBuildHeight() && !level().getBlockState(
-                mutableBlockPos).blocksMotion())
-            mutableBlockPos.move(Direction.DOWN);
+                mutableBlockPos).blocksMotion()) mutableBlockPos.move(Direction.DOWN);
 
         final var blockstate = level().getBlockState(mutableBlockPos);
         if (blockstate.blocksMotion() && !blockstate.getFluidState().is(FluidTags.WATER)) {

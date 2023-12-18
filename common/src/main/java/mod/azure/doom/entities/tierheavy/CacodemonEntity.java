@@ -77,27 +77,18 @@ public class CacodemonEntity extends DemonEntity implements SmartBrainOwner<Caco
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-            if (event.isMoving())
-                return event.setAndContinue(DoomAnimationsDefault.WALKING);
-            if (dead || getHealth() < 0.01 || isDeadOrDying())
-                return event.setAndContinue(DoomAnimationsDefault.DEATH);
+            if (event.isMoving()) return event.setAndContinue(DoomAnimationsDefault.WALKING);
+            if (dead || getHealth() < 0.01 || isDeadOrDying()) return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
-                "ranged", DoomAnimationsDefault.ATTACKING).triggerableAnim("melee", DoomAnimationsDefault.MELEE));
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH)).add(
+                new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
+                        "ranged", DoomAnimationsDefault.ATTACKING).triggerableAnim("melee",
+                        DoomAnimationsDefault.MELEE));
     }
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
-    }
-
-    @Override
-    protected void tickDeath() {
-        ++deathTime;
-        if (deathTime == 30) {
-            remove(RemovalReason.KILLED);
-            dropExperience();
-        }
     }
 
     @Override
@@ -133,8 +124,8 @@ public class CacodemonEntity extends DemonEntity implements SmartBrainOwner<Caco
     @Override
     public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
         spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-        final int var = this.getRandom().nextInt(0, 6);
-        setVariant(var);
+        final int nextInt = this.getRandom().nextInt(0, 6);
+        setVariant(nextInt);
         return spawnDataIn;
     }
 
@@ -154,7 +145,7 @@ public class CacodemonEntity extends DemonEntity implements SmartBrainOwner<Caco
         return ObjectArrayList.of(new NearbyLivingEntitySensor<CacodemonEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<CacodemonEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override
@@ -199,16 +190,12 @@ public class CacodemonEntity extends DemonEntity implements SmartBrainOwner<Caco
         return 1.0F;
     }
 
-    public boolean causeFallDamage(float distance, float damageMultiplier) {
-        return false;
-    }
-
     @Override
     protected void checkFallDamage(double y, boolean onGroundIn, @NotNull BlockState state, @NotNull BlockPos pos) {
     }
 
     @Override
-    public void travel(Vec3 movementInput) {
+    public void travel(@NotNull Vec3 movementInput) {
         if (isInWater()) {
             moveRelative(0.02F, movementInput);
             move(MoverType.SELF, getDeltaMovement());
@@ -220,12 +207,10 @@ public class CacodemonEntity extends DemonEntity implements SmartBrainOwner<Caco
         } else {
             final var ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
             var f = 0.91F;
-            if (onGround())
-                f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
+            if (onGround()) f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
             final var f1 = 0.16277137F / (f * f * f);
             f = 0.91F;
-            if (onGround())
-                f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
+            if (onGround()) f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
             moveRelative(onGround() ? 0.1F * f1 : 0.02F, movementInput);
             move(MoverType.SELF, getDeltaMovement());
             this.setDeltaMovement(getDeltaMovement().scale(f));

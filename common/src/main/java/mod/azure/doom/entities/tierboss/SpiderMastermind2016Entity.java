@@ -29,7 +29,7 @@ public class SpiderMastermind2016Entity extends SpiderMastermindEntity {
             if (event.isMoving() && !isDead && !this.swinging)
                 return event.setAndContinue(DoomAnimationsDefault.WALKING);
             return event.setAndContinue(isDead ? DoomAnimationsDefault.DEATH : DoomAnimationsDefault.IDLE);
-        }).setSoundKeyframeHandler(event -> {
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH).setSoundKeyframeHandler(event -> {
             if (event.getKeyframeData().getSound().matches("walk") && (level().isClientSide()))
                 level().playLocalSound(this.getX(), this.getY(), this.getZ(),
                         mod.azure.doom.platform.Services.SOUNDS_HELPER.getSPIDERDEMON_AMBIENT(), SoundSource.HOSTILE,

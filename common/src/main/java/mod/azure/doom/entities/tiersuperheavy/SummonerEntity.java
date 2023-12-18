@@ -70,7 +70,6 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
     public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(SummonerEntity.class,
             EntityDataSerializers.INT);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    private int targetChangeTime;
 
     public SummonerEntity(EntityType<SummonerEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
@@ -89,7 +88,7 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
                 return event.setAndContinue(DoomAnimationsDefault.MOVING);
             if (dead || getHealth() < 0.01 || isDeadOrDying()) return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        }).setSoundKeyframeHandler(event -> {
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH).setSoundKeyframeHandler(event -> {
             if (level().isClientSide()) {
                 if (event.getKeyframeData().getSound().matches("attack"))
                     level().playLocalSound(this.getX(), this.getY(), this.getZ(),
@@ -189,16 +188,16 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
         }
     }
 
-    private boolean teleport(double x, double y, double z) {
+    private void teleport(double x, double y, double z) {
         final var blockPos = new BlockPos.MutableBlockPos(x, y, z);
 
         while (blockPos.getY() > level().getMinBuildHeight() && !level().getBlockState(blockPos).blocksMotion())
             blockPos.move(Direction.DOWN);
 
         final var blockstate = level().getBlockState(blockPos);
-        if (blockstate.blocksMotion() && !blockstate.getFluidState().is(FluidTags.WATER))
-            return randomTeleport(x, y, z, true);
-        else return false;
+        if (blockstate.blocksMotion() && !blockstate.getFluidState().is(FluidTags.WATER)) {
+            randomTeleport(x, y, z, true);
+        }
     }
 
     public void spawnFlames(double x, double z, double maxY, double y) {
@@ -226,15 +225,6 @@ public class SummonerEntity extends DemonEntity implements SmartBrainOwner<Summo
             fang.setSecondsOnFire(tickCount);
             fang.setInvisible(false);
             level().addFreshEntity(fang);
-        }
-    }
-
-    @Override
-    protected void tickDeath() {
-        ++deathTime;
-        if (deathTime == 30) {
-            remove(RemovalReason.KILLED);
-            dropExperience();
         }
     }
 

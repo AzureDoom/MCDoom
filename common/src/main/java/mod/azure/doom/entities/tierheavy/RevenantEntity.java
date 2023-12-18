@@ -65,13 +65,12 @@ public class RevenantEntity extends DemonEntity implements SmartBrainOwner<Reven
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-            if (event.isMoving())
-                return event.setAndContinue(DoomAnimationsDefault.WALKING);
-            if (dead || getHealth() < 0.01 || isDeadOrDying())
-                return event.setAndContinue(DoomAnimationsDefault.DEATH);
+            if (event.isMoving()) return event.setAndContinue(DoomAnimationsDefault.WALKING);
+            if (dead || getHealth() < 0.01 || isDeadOrDying()) return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
-                "ranged", DoomAnimationsDefault.RANGED).triggerableAnim("melee", DoomAnimationsDefault.MELEE));
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH)).add(
+                new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
+                        "ranged", DoomAnimationsDefault.RANGED).triggerableAnim("melee", DoomAnimationsDefault.MELEE));
     }
 
     @Override
@@ -95,7 +94,7 @@ public class RevenantEntity extends DemonEntity implements SmartBrainOwner<Reven
         return ObjectArrayList.of(new NearbyLivingEntitySensor<RevenantEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<RevenantEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override

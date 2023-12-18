@@ -11,7 +11,6 @@ import mod.azure.doom.MCDoom;
 import mod.azure.doom.entities.DemonEntity;
 import mod.azure.doom.entities.DoomAnimationsDefault;
 import mod.azure.doom.entities.task.DemonMeleeAttack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -70,22 +69,14 @@ public class WhiplashEntity extends DemonEntity implements SmartBrainOwner<Whipl
             if (dead || getHealth() < 0.01 || isDeadOrDying())
                 return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim("melee",
-                DoomAnimationsDefault.ATTACKING));
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH)).add(
+                new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim("melee",
+                        DoomAnimationsDefault.ATTACKING));
     }
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
-    }
-
-    @Override
-    protected void tickDeath() {
-        ++deathTime;
-        if (deathTime == 60) {
-            remove(RemovalReason.KILLED);
-            dropExperience();
-        }
     }
 
     @Override
@@ -104,7 +95,7 @@ public class WhiplashEntity extends DemonEntity implements SmartBrainOwner<Whipl
         return ObjectArrayList.of(new NearbyLivingEntitySensor<WhiplashEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<WhiplashEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override
@@ -140,15 +131,6 @@ public class WhiplashEntity extends DemonEntity implements SmartBrainOwner<Whipl
     public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
         var distance = this.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
         return distance <= this.getMeleeAttackRangeSqr(livingEntity);
-    }
-
-    @Override
-    protected void registerGoals() {
-    }
-
-    @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
     }
 
     @Override

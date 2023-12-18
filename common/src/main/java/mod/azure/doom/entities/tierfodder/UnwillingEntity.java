@@ -13,7 +13,10 @@ import mod.azure.doom.entities.task.DemonMeleeAttack;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -63,15 +66,14 @@ public class UnwillingEntity extends DemonEntity implements SmartBrainOwner<Unwi
         controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
             if (isDead)
                 return event.setAndContinue(DoomAnimationsDefault.DEATH2);
-            if (event.isMoving() && (!isDead || !this.swinging))
+            if (event.isMoving())
                 return event.setAndContinue(DoomAnimationsDefault.WALK);
-            return event.setAndContinue(isDead ? DoomAnimationsDefault.DEATH2 : DoomAnimationsDefault.IDLE);
-        }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("walk"))
-                if (level().isClientSide())
-                    level().playLocalSound(this.getX(), this.getY(), this.getZ(),
-                            mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F,
-                            1.0F, false);
+            return event.setAndContinue(DoomAnimationsDefault.IDLE);
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH).setSoundKeyframeHandler(event -> {
+            if (event.getKeyframeData().getSound().matches("walk") && (level().isClientSide()))
+                level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                        mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F,
+                        1.0F, false);
         })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim("melee",
                 DoomAnimationsDefault.ATTACK));
     }
@@ -97,7 +99,7 @@ public class UnwillingEntity extends DemonEntity implements SmartBrainOwner<Unwi
         return ObjectArrayList.of(new NearbyLivingEntitySensor<UnwillingEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<UnwillingEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override
@@ -161,11 +163,6 @@ public class UnwillingEntity extends DemonEntity implements SmartBrainOwner<Unwi
     @Override
     protected SoundEvent getDeathSound() {
         return mod.azure.doom.platform.Services.SOUNDS_HELPER.getZOMBIEMAN_DEATH();
-    }
-
-    @Override
-    public @NotNull MobType getMobType() {
-        return MobType.UNDEAD;
     }
 
     @Override

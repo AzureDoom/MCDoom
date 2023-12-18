@@ -64,7 +64,6 @@ public class DoomHunterEntity extends DemonEntity implements SmartBrainOwner<Doo
     public static final EntityDataAccessor<Integer> DEATH_STATE = SynchedEntityData.defineId(DoomHunterEntity.class,
             EntityDataSerializers.INT);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    public int flameTimer;
 
     public DoomHunterEntity(EntityType<DoomHunterEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
@@ -89,7 +88,7 @@ public class DoomHunterEntity extends DemonEntity implements SmartBrainOwner<Doo
                 return event.setAndContinue(DoomAnimationsDefault.WALKING);
             event.getController().setAnimationSpeed(0.5);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        }).setSoundKeyframeHandler(event -> {
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH).setSoundKeyframeHandler(event -> {
             if (event.getKeyframeData().getSound().matches("phasechange") && (level().isClientSide()))
                 level().playLocalSound(this.getX(), this.getY(), this.getZ(),
                         mod.azure.doom.platform.Services.SOUNDS_HELPER.getDOOMHUNTER_PHASECHANGE(), SoundSource.HOSTILE,

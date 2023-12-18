@@ -75,19 +75,17 @@ public class ShotgunguyEntity extends DemonEntity implements SmartBrainOwner<Sho
             if (event.isMoving() && !isDead && !this.swinging)
                 return event.setAndContinue(DoomAnimationsDefault.WALKING);
             return event.setAndContinue(isDead ? DoomAnimationsDefault.DEATH : DoomAnimationsDefault.IDLE);
-        }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("walk"))
-                if (level().isClientSide())
-                    level().playLocalSound(this.getX(), this.getY(), this.getZ(),
-                            mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F,
-                            1.0F, false);
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH).setSoundKeyframeHandler(event -> {
+            if (event.getKeyframeData().getSound().matches("walk") && (level().isClientSide()))
+                level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                        mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F,
+                        1.0F, false);
         })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).setSoundKeyframeHandler(
                 event -> {
-                    if (event.getKeyframeData().getSound().matches("attack"))
-                        if (level().isClientSide())
-                            level().playLocalSound(this.getX(), this.getY(), this.getZ(),
-                                    mod.azure.doom.platform.Services.SOUNDS_HELPER.getSHOTGUN_SHOOT(),
-                                    SoundSource.HOSTILE, 0.25F, 1.0F, false);
+                    if (event.getKeyframeData().getSound().matches("attack") && (level().isClientSide()))
+                        level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                                mod.azure.doom.platform.Services.SOUNDS_HELPER.getSHOTGUN_SHOOT(), SoundSource.HOSTILE,
+                                0.25F, 1.0F, false);
                 }).triggerableAnim("ranged", DoomAnimationsDefault.RANGED).triggerableAnim("melee",
                 DoomAnimationsDefault.MELEE));
     }
@@ -113,7 +111,7 @@ public class ShotgunguyEntity extends DemonEntity implements SmartBrainOwner<Sho
         return ObjectArrayList.of(new NearbyLivingEntitySensor<ShotgunguyEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<ShotgunguyEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override

@@ -65,7 +65,6 @@ public class Revenant2016Entity extends DemonEntity implements SmartBrainOwner<R
     public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Revenant2016Entity.class,
             EntityDataSerializers.INT);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    public int flameTimer;
 
     public Revenant2016Entity(EntityType<Revenant2016Entity> entityType, Level worldIn) {
         super(entityType, worldIn);
@@ -82,25 +81,23 @@ public class Revenant2016Entity extends DemonEntity implements SmartBrainOwner<R
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-            if (dead || getHealth() < 0.01 || isDeadOrDying())
-                return event.setAndContinue(DoomAnimationsDefault.DEATH);
+            if (dead || getHealth() < 0.01 || isDeadOrDying()) return event.setAndContinue(DoomAnimationsDefault.DEATH);
             if (!isAggressive() && event.isMoving() && !(dead || getHealth() < 0.01 || isDeadOrDying()))
                 return event.setAndContinue(DoomAnimationsDefault.WALKING);
             if (isAggressive() && event.isMoving() && !(dead || getHealth() < 0.01 || isDeadOrDying()))
                 return event.setAndContinue(DoomAnimationsDefault.FLYING);
             if (!event.isCurrentAnimation(DoomAnimationsDefault.FLYING) && !event.isCurrentAnimation(
-                    DoomAnimationsDefault.WALKING))
-                return event.setAndContinue(DoomAnimationsDefault.IDLE);
+                    DoomAnimationsDefault.WALKING)) return event.setAndContinue(DoomAnimationsDefault.IDLE);
             return PlayState.CONTINUE;
-        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).setSoundKeyframeHandler(
-                event -> {
-                    if (event.getKeyframeData().getSound().matches("attack"))
-                        if (level().isClientSide())
-                            level().playLocalSound(this.getX(), this.getY(), this.getZ(),
-                                    this.getVariant() == 11 ? mod.azure.doom.platform.Services.SOUNDS_HELPER.getREVENANT_DOOT() : mod.azure.doom.platform.Services.SOUNDS_HELPER.getROCKET_FIRING(),
-                                    SoundSource.HOSTILE, 0.25F, 1.0F, false);
-                }).triggerableAnim("ranged", DoomAnimationsDefault.RANGED).triggerableAnim("melee",
-                DoomAnimationsDefault.MELEE));
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH)).add(
+                new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).setSoundKeyframeHandler(
+                        event -> {
+                            if (event.getKeyframeData().getSound().matches("attack") && (level().isClientSide()))
+                                level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                                        this.getVariant() == 11 ? mod.azure.doom.platform.Services.SOUNDS_HELPER.getREVENANT_DOOT() : mod.azure.doom.platform.Services.SOUNDS_HELPER.getROCKET_FIRING(),
+                                        SoundSource.HOSTILE, 0.25F, 1.0F, false);
+                        }).triggerableAnim("ranged", DoomAnimationsDefault.RANGED).triggerableAnim("melee",
+                        DoomAnimationsDefault.MELEE));
     }
 
     @Override
@@ -161,7 +158,7 @@ public class Revenant2016Entity extends DemonEntity implements SmartBrainOwner<R
         return ObjectArrayList.of(new NearbyLivingEntitySensor<Revenant2016Entity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<Revenant2016Entity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override
@@ -192,7 +189,7 @@ public class Revenant2016Entity extends DemonEntity implements SmartBrainOwner<R
     }
 
     @Override
-    public void travel(Vec3 movementInput) {
+    public void travel(@NotNull Vec3 movementInput) {
         if (isAggressive()) {
             if (isInWater()) {
                 moveRelative(0.02F, movementInput);
@@ -229,10 +226,6 @@ public class Revenant2016Entity extends DemonEntity implements SmartBrainOwner<R
         flyingpathnavigator.setCanFloat(true);
         flyingpathnavigator.setCanPassDoors(true);
         return flyingpathnavigator;
-    }
-
-    public boolean causeFallDamage(float distance, float damageMultiplier) {
-        return false;
     }
 
     @Override

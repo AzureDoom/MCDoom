@@ -66,8 +66,6 @@ public class CueBallEntity extends DemonEntity implements SmartBrainOwner<CueBal
     private static final EntityDataAccessor<Boolean> IGNITED = SynchedEntityData.defineId(CueBallEntity.class,
             EntityDataSerializers.BOOLEAN);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    public int flameTimer;
-    private int lastFuseTime;
     private int currentFuseTime;
     private int fuseTime = 30;
     private int explosionRadius = 4;
@@ -89,7 +87,7 @@ public class CueBallEntity extends DemonEntity implements SmartBrainOwner<CueBal
             if (dead || getHealth() < 0.01 || isDeadOrDying() && event.getAnimatable().getVariant() == 3)
                 return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        }));
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH));
     }
 
     @Override
@@ -108,18 +106,15 @@ public class CueBallEntity extends DemonEntity implements SmartBrainOwner<CueBal
         if (getVariant() != 3) {
             if (deathTime == 30) {
                 remove(RemovalReason.KILLED);
-                dropExperience();
                 if (!level().isClientSide) explode();
             }
         } else {
             if (deathTime == 5) {
                 remove(RemovalReason.KILLED);
-                dropExperience();
                 if (!level().isClientSide) {
                     final var aabb = new AABB(blockPosition().above()).inflate(24D, 24D, 24D);
-                    level().getEntities(this, aabb).forEach(e -> {
-                        if (e.isAlive() && e instanceof DemonEntity)
-                            ((LivingEntity) e).addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000, 1));
+                    level().getEntitiesOfClass(DemonEntity.class, aabb).forEach(e -> {
+                        if (e.isAlive()) e.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1000, 1));
                     });
                 }
             }
@@ -146,7 +141,7 @@ public class CueBallEntity extends DemonEntity implements SmartBrainOwner<CueBal
         return ObjectArrayList.of(new NearbyLivingEntitySensor<CueBallEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<CueBallEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override
@@ -212,7 +207,6 @@ public class CueBallEntity extends DemonEntity implements SmartBrainOwner<CueBal
         }
         if (isAlive() && getVariant() != 3) {
             int i;
-            lastFuseTime = currentFuseTime;
             if (isIgnited()) setFuseSpeed(1);
             if ((i = getFuseSpeed()) > 0 && currentFuseTime == 0) this.gameEvent(GameEvent.PRIME_FUSE);
             currentFuseTime += i;
@@ -242,7 +236,7 @@ public class CueBallEntity extends DemonEntity implements SmartBrainOwner<CueBal
     public void readAdditionalSaveData(@NotNull CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         setVariant(tag.getInt("Variant"));
-        if (entityData.get(CHARGED).booleanValue()) tag.putBoolean("powered", true);
+        if (Boolean.TRUE.equals(entityData.get(CHARGED))) tag.putBoolean("powered", true);
         tag.putShort("Fuse", (short) fuseTime);
         tag.putByte("ExplosionRadius", (byte) explosionRadius);
         tag.putBoolean("ignited", isIgnited());
@@ -283,10 +277,6 @@ public class CueBallEntity extends DemonEntity implements SmartBrainOwner<CueBal
         if (getVariant() == 3) return Component.translatable("entity.doom.screecher");
         if (getVariant() == 2) return Component.translatable("entity.doom.possessedengineer");
         return super.getCustomName();
-    }
-
-    public float getClientFuseTime(float timeDelta) {
-        return Mth.lerp(timeDelta, lastFuseTime, currentFuseTime) / (fuseTime - 2);
     }
 
     public int getFuseSpeed() {

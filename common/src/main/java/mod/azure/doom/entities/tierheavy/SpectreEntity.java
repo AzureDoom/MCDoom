@@ -74,39 +74,28 @@ public class SpectreEntity extends DemonEntity implements SmartBrainOwner<Spectr
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-            if (event.isMoving() && !isAggressive())
-                return event.setAndContinue(DoomAnimationsDefault.WALKING);
+            if (event.isMoving() && !isAggressive()) return event.setAndContinue(DoomAnimationsDefault.WALKING);
             if (isAggressive() && !(dead || getHealth() < 0.01 || isDeadOrDying()))
                 return event.setAndContinue(DoomAnimationsDefault.ATTACKING);
-            if (dead || getHealth() < 0.01 || isDeadOrDying())
-                return event.setAndContinue(DoomAnimationsDefault.DEATH);
+            if (dead || getHealth() < 0.01 || isDeadOrDying()) return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        }).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("walk"))
-                if (level().isClientSide())
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH).setSoundKeyframeHandler(event -> {
+            if (level().isClientSide()) {
+                if (event.getKeyframeData().getSound().matches("walk"))
                     level().playLocalSound(this.getX(), this.getY(), this.getZ(),
                             mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F,
                             1.0F, false);
-            if (event.getKeyframeData().getSound().matches("yell"))
-                if (level().isClientSide())
+                if (event.getKeyframeData().getSound().matches("yell"))
                     level().playLocalSound(this.getX(), this.getY(), this.getZ(),
                             mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_YELL(), SoundSource.HOSTILE, 0.25F,
                             1.0F, false);
+            }
         }));
     }
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
-    }
-
-    @Override
-    protected void tickDeath() {
-        ++deathTime;
-        if (deathTime == 80) {
-            remove(RemovalReason.KILLED);
-            dropExperience();
-        }
     }
 
     @Override
@@ -155,7 +144,7 @@ public class SpectreEntity extends DemonEntity implements SmartBrainOwner<Spectr
         return ObjectArrayList.of(new NearbyLivingEntitySensor<SpectreEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<SpectreEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override

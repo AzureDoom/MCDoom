@@ -62,8 +62,6 @@ public class LostSoulEntity extends DemonEntity implements SmartBrainOwner<LostS
     public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(LostSoulEntity.class,
             EntityDataSerializers.INT);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    public int explosionPower = 1;
-    public int flameTimer;
 
     public LostSoulEntity(EntityType<? extends LostSoulEntity> type, Level world) {
         super(type, world);
@@ -147,7 +145,7 @@ public class LostSoulEntity extends DemonEntity implements SmartBrainOwner<LostS
         return ObjectArrayList.of(new NearbyLivingEntitySensor<LostSoulEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<LostSoulEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override
@@ -195,7 +193,6 @@ public class LostSoulEntity extends DemonEntity implements SmartBrainOwner<LostS
         ++deathTime;
         if (deathTime == 5) {
             remove(RemovalReason.KILLED);
-            dropExperience();
             if (!level().isClientSide)
                 explode();
         }
@@ -203,10 +200,6 @@ public class LostSoulEntity extends DemonEntity implements SmartBrainOwner<LostS
 
     protected void explode() {
         level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, Level.ExplosionInteraction.NONE);
-    }
-
-    public boolean causeFallDamage(float distance, float damageMultiplier) {
-        return false;
     }
 
     @Override
@@ -219,7 +212,7 @@ public class LostSoulEntity extends DemonEntity implements SmartBrainOwner<LostS
     }
 
     @Override
-    public void travel(Vec3 movementInput) {
+    public void travel(@NotNull Vec3 movementInput) {
         if (isInWater()) {
             moveRelative(0.02F, movementInput);
             move(MoverType.SELF, getDeltaMovement());
@@ -287,7 +280,7 @@ public class LostSoulEntity extends DemonEntity implements SmartBrainOwner<LostS
     }
 
     @Override
-    public EntityDimensions getDimensions(Pose pose) {
+    public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
         return getVariant() == 3 ? EntityDimensions.scalable(1.0F, 1.5F) : super.getDimensions(pose);
     }
 

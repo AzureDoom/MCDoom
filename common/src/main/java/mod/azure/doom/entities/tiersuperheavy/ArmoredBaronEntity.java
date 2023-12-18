@@ -10,6 +10,7 @@ import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import mod.azure.doom.MCDoom;
 import mod.azure.doom.entities.DemonEntity;
+import mod.azure.doom.entities.DoomAnimationsDefault;
 import mod.azure.doom.entities.task.DemonMeleeAttack;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -68,7 +69,7 @@ public class ArmoredBaronEntity extends DemonEntity implements SmartBrainOwner<A
             if (dead || getHealth() < 0.01 || isDeadOrDying())
                 return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death_armor"));
             return event.setAndContinue(RawAnimation.begin().thenLoop("idle_armor"));
-        }).setSoundKeyframeHandler(event -> {
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH).setSoundKeyframeHandler(event -> {
             if (level().isClientSide() && event.getKeyframeData().getSound().matches("walk"))
                 level().playLocalSound(this.getX(), this.getY(), this.getZ(),
                         mod.azure.doom.platform.Services.SOUNDS_HELPER.getCYBERDEMON_STEP(), SoundSource.HOSTILE, 0.25F,
@@ -103,7 +104,7 @@ public class ArmoredBaronEntity extends DemonEntity implements SmartBrainOwner<A
         return ObjectArrayList.of(new NearbyLivingEntitySensor<ArmoredBaronEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<ArmoredBaronEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override

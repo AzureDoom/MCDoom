@@ -74,26 +74,17 @@ public class BloodMaykrEntity extends DemonEntity implements SmartBrainOwner<Blo
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-            if (dead || getHealth() < 0.01 || isDeadOrDying())
-                return event.setAndContinue(DoomAnimationsDefault.DEATH);
+            if (dead || getHealth() < 0.01 || isDeadOrDying()) return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
-                "ranged", RawAnimation.begin().then("attacking_weapon", LoopType.PLAY_ONCE)).triggerableAnim("melee",
-                DoomAnimationsDefault.MELEE));
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH)).add(
+                new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
+                        "ranged", RawAnimation.begin().then("attacking_weapon", LoopType.PLAY_ONCE)).triggerableAnim(
+                        "melee", DoomAnimationsDefault.MELEE));
     }
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
-    }
-
-    @Override
-    protected void tickDeath() {
-        ++deathTime;
-        if (deathTime == 30) {
-            remove(RemovalReason.KILLED);
-            dropExperience();
-        }
     }
 
     @Override
@@ -112,7 +103,7 @@ public class BloodMaykrEntity extends DemonEntity implements SmartBrainOwner<Blo
         return ObjectArrayList.of(new NearbyLivingEntitySensor<BloodMaykrEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<BloodMaykrEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override
@@ -162,10 +153,6 @@ public class BloodMaykrEntity extends DemonEntity implements SmartBrainOwner<Blo
         return flyingpathnavigator;
     }
 
-    public boolean causeFallDamage(float distance, float damageMultiplier) {
-        return false;
-    }
-
     @Override
     protected void checkFallDamage(double y, boolean onGroundIn, @NotNull BlockState state, @NotNull BlockPos pos) {
     }
@@ -194,7 +181,7 @@ public class BloodMaykrEntity extends DemonEntity implements SmartBrainOwner<Blo
     }
 
     @Override
-    public void travel(Vec3 movementInput) {
+    public void travel(@NotNull Vec3 movementInput) {
         if (isInWater()) {
             moveRelative(0.02F, movementInput);
             move(MoverType.SELF, getDeltaMovement());
@@ -206,12 +193,10 @@ public class BloodMaykrEntity extends DemonEntity implements SmartBrainOwner<Blo
         } else {
             final var ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
             var f = 0.91F;
-            if (onGround())
-                f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
+            if (onGround()) f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
             final var f1 = 0.16277137F / (f * f * f);
             f = 0.91F;
-            if (onGround())
-                f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
+            if (onGround()) f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
             moveRelative(onGround() ? 0.1F * f1 : 0.02F, movementInput);
             move(MoverType.SELF, getDeltaMovement());
             this.setDeltaMovement(getDeltaMovement().scale(f));

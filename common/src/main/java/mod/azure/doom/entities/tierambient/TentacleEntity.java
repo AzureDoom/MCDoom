@@ -57,21 +57,13 @@ public class TentacleEntity extends DemonEntity implements SmartBrainOwner<Tenta
         controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
             if (dead || getHealth() < 0.01 || isDeadOrDying()) return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        }).triggerableAnim("melee", DoomAnimationsDefault.ATTACKING));
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH).triggerableAnim("melee",
+                DoomAnimationsDefault.ATTACKING));
     }
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
-    }
-
-    @Override
-    protected void tickDeath() {
-        ++deathTime;
-        if (deathTime == 30) {
-            remove(RemovalReason.KILLED);
-            dropExperience();
-        }
     }
 
     @Override
@@ -104,7 +96,7 @@ public class TentacleEntity extends DemonEntity implements SmartBrainOwner<Tenta
         return ObjectArrayList.of(new NearbyLivingEntitySensor<TentacleEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<TentacleEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override

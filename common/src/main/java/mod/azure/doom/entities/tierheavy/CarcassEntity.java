@@ -55,38 +55,27 @@ public class CarcassEntity extends DemonEntity implements SmartBrainOwner<Carcas
     }
 
     public static AttributeSupplier.@NotNull Builder createMobAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D)
-                .add(Attributes.MAX_HEALTH, MCDoom.config.carcass_health).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f)
-                .add(Attributes.ATTACK_DAMAGE, MCDoom.config.carcass_melee_damage).add(Attributes.MOVEMENT_SPEED, 0.25D)
-                .add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+        return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 40.0D).add(Attributes.MAX_HEALTH,
+                MCDoom.config.carcass_health).add(Attributes.KNOCKBACK_RESISTANCE, 0.6f).add(Attributes.ATTACK_DAMAGE,
+                MCDoom.config.carcass_melee_damage).add(Attributes.MOVEMENT_SPEED, 0.25D).add(
+                Attributes.ATTACK_KNOCKBACK, 0.0D);
     }
 
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-            if (event.isMoving() && !this.isAggressive())
-                return event.setAndContinue(DoomAnimationsDefault.WALKING);
-            if (event.isMoving() && this.isAggressive())
-                return event.setAndContinue(DoomAnimationsDefault.RUN);
-            if (dead || getHealth() < 0.01 || isDeadOrDying())
-                return event.setAndContinue(DoomAnimationsDefault.DEATH);
+            if (event.isMoving() && !this.isAggressive()) return event.setAndContinue(DoomAnimationsDefault.WALKING);
+            if (event.isMoving() && this.isAggressive()) return event.setAndContinue(DoomAnimationsDefault.RUN);
+            if (dead || getHealth() < 0.01 || isDeadOrDying()) return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim("melee",
-                DoomAnimationsDefault.MELEE).triggerableAnim("ranged", DoomAnimationsDefault.RANGED));
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH)).add(
+                new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim("melee",
+                        DoomAnimationsDefault.MELEE).triggerableAnim("ranged", DoomAnimationsDefault.RANGED));
     }
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
-    }
-
-    @Override
-    protected void tickDeath() {
-        ++deathTime;
-        if (deathTime == 50) {
-            remove(RemovalReason.KILLED);
-            dropExperience();
-        }
     }
 
     @Override
@@ -105,7 +94,7 @@ public class CarcassEntity extends DemonEntity implements SmartBrainOwner<Carcas
         return ObjectArrayList.of(new NearbyLivingEntitySensor<CarcassEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<CarcassEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override

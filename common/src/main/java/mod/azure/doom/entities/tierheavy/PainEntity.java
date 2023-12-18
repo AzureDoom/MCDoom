@@ -56,6 +56,7 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PainEntity extends DemonEntity implements SmartBrainOwner<PainEntity> {
 
@@ -80,11 +81,12 @@ public class PainEntity extends DemonEntity implements SmartBrainOwner<PainEntit
         controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
             if (event.isMoving() && hurtTime == 0 && !isAggressive())
                 return event.setAndContinue(DoomAnimationsDefault.WALKING);
-            if (dead || getHealth() < 0.01 || isDeadOrDying())
-                return event.setAndContinue(DoomAnimationsDefault.DEATH);
+            if (dead || getHealth() < 0.01 || isDeadOrDying()) return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
-                "ranged", DoomAnimationsDefault.ATTACKING).triggerableAnim("melee", DoomAnimationsDefault.MELEE));
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH)).add(
+                new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
+                        "ranged", DoomAnimationsDefault.ATTACKING).triggerableAnim("melee",
+                        DoomAnimationsDefault.MELEE));
     }
 
     @Override
@@ -145,7 +147,7 @@ public class PainEntity extends DemonEntity implements SmartBrainOwner<PainEntit
         return ObjectArrayList.of(new NearbyLivingEntitySensor<PainEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<PainEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override
@@ -186,21 +188,17 @@ public class PainEntity extends DemonEntity implements SmartBrainOwner<PainEntit
             remove(RemovalReason.KILLED);
             dropExperience();
             if (!level().isClientSide()) {
-                final var lost_soul = Services.ENTITIES_HELPER.getLostSoulEntity().create(level());
-                lost_soul.moveTo(this.getX(), this.getY(), this.getZ(), 0, 0);
-                level().addFreshEntity(lost_soul);
-                final var lost_soul1 = Services.ENTITIES_HELPER.getLostSoulEntity().create(level());
-                lost_soul1.moveTo(this.getX(), this.getY(), this.getZ(), 0, 0);
-                level().addFreshEntity(lost_soul1);
-                final var lost_soul2 = Services.ENTITIES_HELPER.getLostSoulEntity().create(level());
-                lost_soul2.moveTo(this.getX(), this.getY(), this.getZ(), 0, 0);
-                level().addFreshEntity(lost_soul2);
+                final var lostSoul = Services.ENTITIES_HELPER.getLostSoulEntity().create(level());
+                Objects.requireNonNull(lostSoul).moveTo(this.getX(), this.getY(), this.getZ(), 0, 0);
+                level().addFreshEntity(lostSoul);
+                final var lostSoul1 = Services.ENTITIES_HELPER.getLostSoulEntity().create(level());
+                Objects.requireNonNull(lostSoul1).moveTo(this.getX(), this.getY(), this.getZ(), 0, 0);
+                level().addFreshEntity(lostSoul1);
+                final var lostSoul2 = Services.ENTITIES_HELPER.getLostSoulEntity().create(level());
+                Objects.requireNonNull(lostSoul2).moveTo(this.getX(), this.getY(), this.getZ(), 0, 0);
+                level().addFreshEntity(lostSoul2);
             }
         }
-    }
-
-    public int getFireballStrength() {
-        return 1;
     }
 
     @Override
@@ -208,16 +206,12 @@ public class PainEntity extends DemonEntity implements SmartBrainOwner<PainEntit
         return true;
     }
 
-    public boolean causeFallDamage(float distance, float damageMultiplier) {
-        return false;
-    }
-
     @Override
     protected void checkFallDamage(double y, boolean onGroundIn, @NotNull BlockState state, @NotNull BlockPos pos) {
     }
 
     @Override
-    public void travel(Vec3 movementInput) {
+    public void travel(@NotNull Vec3 movementInput) {
         if (isInWater()) {
             moveRelative(0.02F, movementInput);
             move(MoverType.SELF, getDeltaMovement());
@@ -229,12 +223,10 @@ public class PainEntity extends DemonEntity implements SmartBrainOwner<PainEntit
         } else {
             final var ground = BlockPos.containing(this.getX(), this.getY() - 1.0D, this.getZ());
             var f = 0.91F;
-            if (onGround())
-                f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
+            if (onGround()) f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
             final var f1 = 0.16277137F / (f * f * f);
             f = 0.91F;
-            if (onGround())
-                f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
+            if (onGround()) f = level().getBlockState(ground).getBlock().getFriction() * 0.91F;
             moveRelative(onGround() ? 0.1F * f1 : 0.02F, movementInput);
             move(MoverType.SELF, getDeltaMovement());
             this.setDeltaMovement(getDeltaMovement().scale(f));
@@ -268,11 +260,6 @@ public class PainEntity extends DemonEntity implements SmartBrainOwner<PainEntit
     @Override
     protected SoundEvent getDeathSound() {
         return mod.azure.doom.platform.Services.SOUNDS_HELPER.getPAIN_DEATH();
-    }
-
-    @Override
-    public @NotNull MobType getMobType() {
-        return MobType.UNDEAD;
     }
 
     @Override

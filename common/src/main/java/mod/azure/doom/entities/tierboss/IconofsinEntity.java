@@ -101,7 +101,7 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
             if ((event.getAnimatable().getDeathState() == 1) || (!event.isMoving() && hurtMarked && event.getAnimatable().getDeathState() == 1))
                 return event.setAndContinue(DoomAnimationsDefault.IDLE_NOHELMET);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        }).setSoundKeyframeHandler(event -> {
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH).setSoundKeyframeHandler(event -> {
             if (event.getKeyframeData().getSound().matches("walk") && (level().isClientSide()))
                 level().playLocalSound(this.getX(), this.getY(), this.getZ(),
                         mod.azure.doom.platform.Services.SOUNDS_HELPER.getCYBERDEMON_STEP(), SoundSource.HOSTILE, 0.25F,
@@ -155,6 +155,7 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
                 level().broadcastEntityEvent(this, (byte) 3);
             }
             if (this.getDeathState() == 1) super.die(source);
+            this.triggerAnim("livingController", "death");
         }
     }
 

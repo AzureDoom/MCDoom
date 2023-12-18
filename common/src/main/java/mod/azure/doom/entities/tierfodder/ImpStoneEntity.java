@@ -68,21 +68,12 @@ public class ImpStoneEntity extends DemonEntity implements SmartBrainOwner<ImpSt
             if (dead || getHealth() < 0.01 || isDeadOrDying())
                 return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        }));
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH));
     }
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
-    }
-
-    @Override
-    protected void tickDeath() {
-        ++deathTime;
-        if (deathTime == 50) {
-            remove(RemovalReason.KILLED);
-            dropExperience();
-        }
     }
 
     @Override
@@ -109,7 +100,7 @@ public class ImpStoneEntity extends DemonEntity implements SmartBrainOwner<ImpSt
         return ObjectArrayList.of(new NearbyLivingEntitySensor<ImpStoneEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<ImpStoneEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override

@@ -93,10 +93,11 @@ public class ArchMakyrEntity extends DemonEntity implements SmartBrainOwner<Arch
 
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
-        var isDead = this.dead || this.getHealth() < 0.01 || this.isDeadOrDying();
-        controllers.add(new AnimationController<>(this, "livingController", 0, event -> event.setAndContinue(
-                (isDead && this.getDeathState() == 5) ? DoomAnimationsDefault.DEATH : (isDead && this.getDeathState() < 5) ? DoomAnimationsDefault.DEATH_PHASEONE : DoomAnimationsDefault.FLYING))).add(
-                new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
+        controllers.add(new AnimationController<>(this, "livingController", 0,
+                        event -> event.setAndContinue((DoomAnimationsDefault.FLYING))).triggerableAnim("death",
+                        this.getDeathState() < 5 ? DoomAnimationsDefault.DEATH_PHASEONE : DoomAnimationsDefault.DEATH))
+                //Attack Stuff
+                .add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
                         "ranged", DoomAnimationsDefault.ATTACKING_AOE));
     }
 

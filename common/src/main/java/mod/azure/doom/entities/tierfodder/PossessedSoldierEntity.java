@@ -68,8 +68,7 @@ public class PossessedSoldierEntity extends DemonEntity implements SmartBrainOwn
     public static final EntityDataAccessor<Integer> PLASMA_HITS = SynchedEntityData.defineId(
             PossessedSoldierEntity.class, EntityDataSerializers.INT);
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    public int flameTimer;
-    public int hitCount;
+    protected int hitCount;
 
     public PossessedSoldierEntity(EntityType<PossessedSoldierEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
@@ -88,11 +87,10 @@ public class PossessedSoldierEntity extends DemonEntity implements SmartBrainOwn
         controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
             if (event.isMoving() && !isDead && !this.swinging)
                 return event.setAndContinue(DoomAnimationsDefault.WALKING);
-            if (!onGround() && !onGround() && getVariant() == 2 && !isDead)
-                return event.setAndContinue(DoomAnimationsDefault.FLYING);
+            if (!onGround() && getVariant() == 2 && !isDead) return event.setAndContinue(DoomAnimationsDefault.FLYING);
             if (isDead) return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        }).setSoundKeyframeHandler(event -> {
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH).setSoundKeyframeHandler(event -> {
             if (level().isClientSide()) {
                 if (event.getKeyframeData().getSound().matches("walk"))
                     level().playLocalSound(this.getX(), this.getY(), this.getZ(),
@@ -104,14 +102,7 @@ public class PossessedSoldierEntity extends DemonEntity implements SmartBrainOwn
                             1.0F, false);
             }
         })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
-                "ranged", DoomAnimationsDefault.ATTACKING).triggerableAnim("melee",
-                DoomAnimationsDefault.MELEE).triggerableAnim("death", DoomAnimationsDefault.DEATH));
-    }
-
-    @Override
-    protected void tickDeath() {
-        super.tickDeath();
-        this.triggerAnim("livingController", "death");
+                "ranged", DoomAnimationsDefault.ATTACKING).triggerableAnim("melee", DoomAnimationsDefault.MELEE));
     }
 
     @Override
@@ -185,7 +176,7 @@ public class PossessedSoldierEntity extends DemonEntity implements SmartBrainOwn
         return ObjectArrayList.of(new NearbyLivingEntitySensor<PossessedSoldierEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<PossessedSoldierEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override
@@ -217,7 +208,7 @@ public class PossessedSoldierEntity extends DemonEntity implements SmartBrainOwn
     }
 
     @Override
-    public void travel(Vec3 movementInput) {
+    public void travel(@NotNull Vec3 movementInput) {
         if (isAggressive() && getVariant() == 2) {
             if (isInWater()) {
                 moveRelative(0.02F, movementInput);

@@ -78,8 +78,10 @@ public class HellknightEntity extends DemonEntity implements SmartBrainOwner<Hel
             if (event.isMoving() && !isDead && !this.swinging)
                 return event.setAndContinue(DoomAnimationsDefault.WALKING);
             return event.setAndContinue(isDead ? DoomAnimationsDefault.DEATH : DoomAnimationsDefault.IDLE);
-        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
-                "ranged", DoomAnimationsDefault.ATTACKING).triggerableAnim("melee", DoomAnimationsDefault.MELEE));
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH)).add(
+                new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
+                        "ranged", DoomAnimationsDefault.ATTACKING).triggerableAnim("melee",
+                        DoomAnimationsDefault.MELEE));
     }
 
     @Override
@@ -103,7 +105,7 @@ public class HellknightEntity extends DemonEntity implements SmartBrainOwner<Hel
         return ObjectArrayList.of(new NearbyLivingEntitySensor<HellknightEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<HellknightEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override

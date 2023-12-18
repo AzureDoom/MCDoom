@@ -73,11 +73,11 @@ public class GargoyleEntity extends DemonEntity implements SmartBrainOwner<Gargo
         controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
             if (isDead)
                 return event.setAndContinue(DoomAnimationsDefault.DEATH);
-            if (!isAggressive() && event.isMoving() && !isDead)
+            if (!isAggressive() && event.isMoving())
                 return event.setAndContinue(DoomAnimationsDefault.WALKING);
-            if (isAggressive() && !this.swinging && event.isMoving() && !isDead)
+            if (isAggressive() && !this.swinging && event.isMoving())
                 return event.setAndContinue(DoomAnimationsDefault.FLYING);
-            if (!event.isCurrentAnimation(DoomAnimationsDefault.FLYING) && !isDead && !event.isCurrentAnimation(
+            if (!event.isCurrentAnimation(DoomAnimationsDefault.FLYING) && !event.isCurrentAnimation(
                     DoomAnimationsDefault.WALKING) && !event.isCurrentAnimation(DoomAnimationsDefault.ATTACKING))
                 return event.setAndContinue(DoomAnimationsDefault.IDLE);
             return PlayState.CONTINUE;
@@ -90,17 +90,6 @@ public class GargoyleEntity extends DemonEntity implements SmartBrainOwner<Gargo
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
-    }
-
-    @Override
-    protected void tickDeath() {
-        ++deathTime;
-        this.triggerAnim("livingController", "death");
-        this.triggerAnim("attackController", "death");
-        if (deathTime == 50) {
-            remove(RemovalReason.KILLED);
-            dropExperience();
-        }
     }
 
     @Override
@@ -119,7 +108,7 @@ public class GargoyleEntity extends DemonEntity implements SmartBrainOwner<Gargo
         return ObjectArrayList.of(new NearbyLivingEntitySensor<GargoyleEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<GargoyleEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override
@@ -163,16 +152,12 @@ public class GargoyleEntity extends DemonEntity implements SmartBrainOwner<Gargo
         return flyingpathnavigator;
     }
 
-    public boolean causeFallDamage(float distance, float damageMultiplier) {
-        return false;
-    }
-
     @Override
     protected void checkFallDamage(double y, boolean onGroundIn, @NotNull BlockState state, @NotNull BlockPos pos) {
     }
 
     @Override
-    public void travel(Vec3 movementInput) {
+    public void travel(@NotNull Vec3 movementInput) {
         if (isAggressive()) {
             if (isInWater()) {
                 moveRelative(0.02F, movementInput);

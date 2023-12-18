@@ -80,22 +80,13 @@ public class ImpEntity extends DemonEntity implements SmartBrainOwner<ImpEntity>
             if (dead || getHealth() < 0.01 || isDeadOrDying())
                 return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH)).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
                 "ranged", DoomAnimationsDefault.ATTACK).triggerableAnim("melee", DoomAnimationsDefault.MELEE));
     }
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
-    }
-
-    @Override
-    protected void tickDeath() {
-        ++deathTime;
-        if (deathTime == 60) {
-            remove(RemovalReason.KILLED);
-            dropExperience();
-        }
     }
 
     @Override
@@ -114,7 +105,7 @@ public class ImpEntity extends DemonEntity implements SmartBrainOwner<ImpEntity>
         return ObjectArrayList.of(new NearbyLivingEntitySensor<ImpEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<ImpEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override

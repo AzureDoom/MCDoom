@@ -53,9 +53,9 @@ public class TurretEntity extends DemonEntity implements SmartBrainOwner<TurretE
 
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-            return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        }).triggerableAnim("ranged", DoomAnimationsDefault.ATTACKING));
+        controllers.add(new AnimationController<>(this, "livingController", 0,
+                event -> event.setAndContinue(DoomAnimationsDefault.IDLE)).triggerableAnim("ranged",
+                DoomAnimationsDefault.ATTACKING));
     }
 
     @Override
@@ -88,7 +88,7 @@ public class TurretEntity extends DemonEntity implements SmartBrainOwner<TurretE
         return ObjectArrayList.of(new NearbyLivingEntitySensor<TurretEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<TurretEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override

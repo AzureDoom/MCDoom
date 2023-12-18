@@ -74,27 +74,18 @@ public class ArachnotronEntity extends DemonEntity implements SmartBrainOwner<Ar
     @Override
     public void registerControllers(ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "livingController", 0, event -> {
-            if (event.isMoving())
-                return event.setAndContinue(DoomAnimationsDefault.WALKING);
-            if (dead || getHealth() < 0.01 || isDeadOrDying())
-                return event.setAndContinue(DoomAnimationsDefault.DEATH);
+            if (event.isMoving()) return event.setAndContinue(DoomAnimationsDefault.WALKING);
+            if (dead || getHealth() < 0.01 || isDeadOrDying()) return event.setAndContinue(DoomAnimationsDefault.DEATH);
             return event.setAndContinue(DoomAnimationsDefault.IDLE);
-        })).add(new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
-                "ranged", DoomAnimationsDefault.ATTACKING).triggerableAnim("melee", DoomAnimationsDefault.MELEE));
+        }).triggerableAnim("death", DoomAnimationsDefault.DEATH)).add(
+                new AnimationController<>(this, "attackController", 0, event -> PlayState.STOP).triggerableAnim(
+                        "ranged", DoomAnimationsDefault.ATTACKING).triggerableAnim("melee",
+                        DoomAnimationsDefault.MELEE));
     }
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
-    }
-
-    @Override
-    protected void tickDeath() {
-        ++deathTime;
-        if (deathTime == 50) {
-            remove(RemovalReason.KILLED);
-            dropExperience();
-        }
     }
 
     @Override
@@ -113,7 +104,7 @@ public class ArachnotronEntity extends DemonEntity implements SmartBrainOwner<Ar
         return ObjectArrayList.of(new NearbyLivingEntitySensor<ArachnotronEntity>().setPredicate(
                         (target, entity) -> target.isAlive() && entity.hasLineOfSight(
                                 target) && !(target instanceof DemonEntity)), new HurtBySensor<>(),
-                new UnreachableTargetSensor<ArachnotronEntity>());
+                new UnreachableTargetSensor<>());
     }
 
     @Override
@@ -145,21 +136,6 @@ public class ArachnotronEntity extends DemonEntity implements SmartBrainOwner<Ar
     @Override
     protected float getStandingEyeHeight(@NotNull Pose poseIn, @NotNull EntityDimensions sizeIn) {
         return 1.0F;
-    }
-
-    @Override
-    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        super.onSyncedDataUpdated(key);
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-    }
-
-    @Override
-    public void aiStep() {
-        super.aiStep();
     }
 
     @Override
@@ -237,7 +213,7 @@ public class ArachnotronEntity extends DemonEntity implements SmartBrainOwner<Ar
     }
 
     @Override
-    public void travel(Vec3 movementInput) {
+    public void travel(@NotNull Vec3 movementInput) {
         if (tickCount % 10 == 0) {
             refreshDimensions();
         }
@@ -245,7 +221,7 @@ public class ArachnotronEntity extends DemonEntity implements SmartBrainOwner<Ar
     }
 
     @Override
-    public EntityDimensions getDimensions(Pose pose) {
+    public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
         return getVariant() == 2 ? EntityDimensions.scalable(4.0F, 3.0F) : super.getDimensions(pose);
     }
 
