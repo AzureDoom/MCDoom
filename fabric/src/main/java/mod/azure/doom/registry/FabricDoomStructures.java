@@ -2,8 +2,6 @@ package mod.azure.doom.registry;
 
 import com.mojang.serialization.Codec;
 import mod.azure.doom.MCDoom;
-import mod.azure.doom.structures.HellChurchStructure;
-import mod.azure.doom.structures.IconStructure;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -20,8 +18,8 @@ public record FabricDoomStructures() {
     public static StructureType<?> ARCHMAYKR;
 
     public static void registerStructureFeatures() {
-        HELL_CHURCH = register(MCDoom.modResource("hell_church"), HellChurchStructure.CODEC);
-        ICON_FIGHT = register(MCDoom.modResource("icon_fight"), IconStructure.CODEC);
+        HELL_CHURCH = register(MCDoom.modResource("hell_church"), JigsawStructure.CODEC);
+        ICON_FIGHT = register(MCDoom.modResource("icon_fight"), JigsawStructure.CODEC);
         GLADIATOR_FIGHT = register(MCDoom.modResource("gladiator_fight"), JigsawStructure.CODEC);
         MOTHERDEMON = register(MCDoom.modResource("motherdemon1a"), JigsawStructure.CODEC);
         ARCHMAYKR = register(MCDoom.modResource("archmakyr"), JigsawStructure.CODEC);
