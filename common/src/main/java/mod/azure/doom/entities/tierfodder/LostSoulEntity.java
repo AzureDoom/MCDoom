@@ -242,8 +242,6 @@ public class LostSoulEntity extends DemonEntity implements SmartBrainOwner<LostS
     public void aiStep() {
         super.aiStep();
         flameTimer = (flameTimer + 1) % 8;
-        if (!this.level().isClientSide())
-            CommonUtils.spawnLightSource(this, level().isWaterAt(blockPosition()));
     }
 
     @Override
