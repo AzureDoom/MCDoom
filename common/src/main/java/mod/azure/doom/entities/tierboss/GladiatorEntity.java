@@ -61,7 +61,6 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 
 public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<GladiatorEntity>, DoomBoss {
 
@@ -104,7 +103,7 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
                     event.getAnimatable().getDeathState() == 0 ? "idle_phaseone" : "idle_phasetwo"));
         }).triggerableAnim("death", RawAnimation.begin().thenLoop(
                 this.getDeathState() == 0 ? "idle_phaseone" : "idle_phasetwo")).setSoundKeyframeHandler(event -> {
-            if (event.getKeyframeData().getSound().matches("walk")) if (level().isClientSide())
+            if (event.getKeyframeData().getSound().matches("walk") && level().isClientSide())
                 level().playLocalSound(this.getX(), this.getY(), this.getZ(),
                         mod.azure.doom.platform.Services.SOUNDS_HELPER.getPINKY_STEP(), SoundSource.HOSTILE, 0.25F,
                         1.0F, false);
@@ -134,7 +133,6 @@ public class GladiatorEntity extends DemonEntity implements SmartBrainOwner<Glad
                 areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
                 level().addFreshEntity(areaeffectcloudentity);
                 goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
-                setLastHurtMob(Objects.requireNonNull(getLastHurtByMob()));
                 level().broadcastEntityEvent(this, (byte) 3);
             }
             if (this.getDeathState() == 1) super.die(source);

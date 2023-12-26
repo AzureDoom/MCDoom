@@ -66,7 +66,6 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 
 public class ArchMakyrEntity extends DemonEntity implements SmartBrainOwner<ArchMakyrEntity>, DoomBoss {
 
@@ -161,7 +160,6 @@ public class ArchMakyrEntity extends DemonEntity implements SmartBrainOwner<Arch
                 areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
                 level().addFreshEntity(areaeffectcloudentity);
                 goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
-                setLastHurtMob(Objects.requireNonNull(getLastHurtByMob()));
                 level().broadcastEntityEvent(this, (byte) 3);
             }
             if (entityData.get(DEATH_STATE) == 5) super.die(source);

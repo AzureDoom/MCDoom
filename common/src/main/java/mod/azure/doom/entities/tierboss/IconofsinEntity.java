@@ -63,7 +63,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<IconofsinEntity>, DoomBoss {
 
@@ -151,7 +150,6 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
                 areaeffectcloudentity.setPos(this.getX(), this.getY(), this.getZ());
                 level().addFreshEntity(areaeffectcloudentity);
                 goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
-                setLastHurtMob(Objects.requireNonNull(getLastHurtByMob()));
                 level().broadcastEntityEvent(this, (byte) 3);
             }
             if (this.getDeathState() == 1) super.die(source);
@@ -220,10 +218,10 @@ public class IconofsinEntity extends DemonEntity implements SmartBrainOwner<Icon
                 new DemonProjectileAttack<>(5).attackInterval(mob -> 240), new DemonMeleeAttack<>(5));
     }
 
-    public void spawnWave(int WaveAmount, LivingEntity entity) {
+    public void spawnWave(int waveAmount, LivingEntity entity) {
         final var rand = getRandom();
         final var waveEntries = Arrays.asList(MCDoom.config.icon_wave_entries);
-        for (var k = 1; k < WaveAmount; ++k) {
+        for (var k = 1; k < waveAmount; ++k) {
             final var r = this.getRandom().nextInt(-3, 3);
             for (var i = 0; i < 1; ++i) {
                 final var randomIndex = rand.nextInt(waveEntries.size());
