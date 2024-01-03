@@ -73,7 +73,7 @@ public class RocketMobEntity extends AbstractHurtingProjectile implements GeoEnt
     protected void onHitBlock(@NotNull BlockHitResult result) {
         super.onHitBlock(result);
         if (!level().isClientSide()) {
-            explode();
+            level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 3.0F, Level.ExplosionInteraction.NONE);
             remove(RemovalReason.DISCARDED);
         }
         this.playSound(Services.SOUNDS_HELPER.getROCKET_HIT(), 1.0F, 1.2F / (random.nextFloat() * 0.2F + 0.9F));
@@ -86,6 +86,7 @@ public class RocketMobEntity extends AbstractHurtingProjectile implements GeoEnt
             final var entity = entityHitResult.getEntity();
             final var entity2 = getOwner();
             entity.setSecondsOnFire(5);
+            this.explode();
             if (!(entity instanceof DemonEntity))
                 entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
             if (entity2 instanceof LivingEntity livingEntity) {
@@ -97,9 +98,10 @@ public class RocketMobEntity extends AbstractHurtingProjectile implements GeoEnt
     }
 
     protected void explode() {
-        level().getEntities(this, new AABB(blockPosition().above()).inflate(4)).forEach(e -> {
-            if (e instanceof LivingEntity) e.hurt(damageSources().sonicBoom(this), directHitDamage);
-            level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 0.0F, Level.ExplosionInteraction.NONE);
+        level().getEntitiesOfClass(LivingEntity.class, new AABB(blockPosition().above()).inflate(4)).forEach(e -> {
+            if (!(e instanceof DemonEntity)) {
+                e.hurt(damageSources().sonicBoom(this), directHitDamage);
+            }
         });
     }
 
