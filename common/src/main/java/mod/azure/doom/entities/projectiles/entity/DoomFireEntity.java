@@ -93,7 +93,7 @@ public class DoomFireEntity extends Entity implements GeoEntity {
                 return;
 
             target.invulnerableTime = 0;
-            target.hurt(damageSources().indirectMagic(this, target), damage);
+            target.hurt(damageSources().lava(), damage);
         }
     }
 
@@ -114,7 +114,6 @@ public class DoomFireEntity extends Entity implements GeoEntity {
                     BaseFireBlock.getState(level(), blockPosition().above()));
         level().getEntities(this, new AABB(blockPosition().above()).inflate(1)).forEach(e -> {
             if (e.isAlive() && !(e instanceof DemonEntity)) {
-                e.hurt(damageSources().lava(), damage);
                 e.setRemainingFireTicks(60);
             }
         });

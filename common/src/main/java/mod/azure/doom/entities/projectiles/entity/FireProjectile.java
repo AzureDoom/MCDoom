@@ -83,7 +83,7 @@ public class FireProjectile extends AbstractHurtingProjectile {
             final var entity1 = getOwner();
             remove(RemovalReason.KILLED);
             if (entity1 instanceof LivingEntity livingEntity && (!(entity instanceof DemonEntity))) {
-                entity.hurt(damageSources().mobAttack(livingEntity), directHitDamage);
+                entity.hurt(damageSources().lava(), directHitDamage);
                 entity.setSecondsOnFire(15);
                 doEnchantDamageEffects(livingEntity, entity);
             }
