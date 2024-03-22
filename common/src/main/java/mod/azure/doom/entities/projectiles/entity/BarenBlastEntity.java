@@ -79,7 +79,7 @@ public class BarenBlastEntity extends AbstractHurtingProjectile implements GeoEn
         if (!level().isClientSide()) {
             final var entity = entityHitResult.getEntity();
             final var entity2 = getOwner();
-            if (!(entity instanceof DemonEntity))
+            if (!(entity instanceof DemonEntity) && entity instanceof LivingEntity)
                 entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
             if (entity2 instanceof LivingEntity livingEntity) {
                 if (!(entity instanceof DemonEntity)) doEnchantDamageEffects(livingEntity, entity);

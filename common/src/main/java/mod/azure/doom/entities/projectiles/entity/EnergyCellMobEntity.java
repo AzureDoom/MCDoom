@@ -80,11 +80,10 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements Ge
         if (!level().isClientSide()) {
             final var entity = entityHitResult.getEntity();
             final var entity2 = getOwner();
-            if (!(entity instanceof DemonEntity))
+            if (!(entity instanceof DemonEntity) && entity instanceof LivingEntity)
                 entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
             if (entity2 instanceof LivingEntity livingEntity) {
-                if (!(entity2 instanceof DemonEntity))
-                    doEnchantDamageEffects(livingEntity, entity);
+                if (!(entity2 instanceof DemonEntity)) doEnchantDamageEffects(livingEntity, entity);
                 remove(RemovalReason.DISCARDED);
             }
         }
@@ -113,8 +112,7 @@ public class EnergyCellMobEntity extends AbstractHurtingProjectile implements Ge
     @Override
     public void tick() {
         super.tick();
-        if (tickCount >= 80)
-            remove(RemovalReason.DISCARDED);
+        if (tickCount >= 80) remove(RemovalReason.DISCARDED);
     }
 
     @Override

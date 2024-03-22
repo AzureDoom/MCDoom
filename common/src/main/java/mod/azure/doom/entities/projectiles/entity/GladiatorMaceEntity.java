@@ -79,7 +79,7 @@ public class GladiatorMaceEntity extends AbstractHurtingProjectile implements Ge
             final var entity = entityHitResult.getEntity();
             final var entity2 = getOwner();
             entity.setSecondsOnFire(5);
-            if (!(entity instanceof DemonEntity))
+            if (!(entity instanceof DemonEntity) && entity instanceof LivingEntity)
                 entity.hurt(damageSources().mobAttack((LivingEntity) entity2),
                         MCDoom.config.gladiator_ranged_damage + (shooter.getEntityData().get(
                                 GladiatorEntity.DEATH_STATE) == 1 ? MCDoom.config.gladiator_phaseone_damage_boost : 0));
