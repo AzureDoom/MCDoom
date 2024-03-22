@@ -222,6 +222,7 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
     public void kill() {
         if (!level().isClientSide() && getOwner() instanceof final Player owner) {
             ((PlayerProperties) owner).setHasMeatHook(false);
+            owner.setNoGravity(false);
         }
 
         super.kill();
