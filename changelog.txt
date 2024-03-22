@@ -1,5 +1,5 @@
-v7.0.6
+v7.0.7
 *** Final 1.20.1 version to be pushed. Moving to 1.20.4 NeoForge/Fabric ***
 
-- Fixes Rockets from Revenant crashing the game.
-- Tweaks Archvile damage.
+- Fixes Floating caused when using Meathook.
+- Fixes crash if demon projectiles hit another.
