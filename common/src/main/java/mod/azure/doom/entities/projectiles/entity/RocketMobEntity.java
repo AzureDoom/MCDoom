@@ -87,8 +87,9 @@ public class RocketMobEntity extends AbstractHurtingProjectile implements GeoEnt
             final var entity2 = getOwner();
             entity.setSecondsOnFire(5);
             this.explode();
-            if (!(entity instanceof DemonEntity) && entity instanceof LivingEntity)
-                entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
+            if (entity instanceof LivingEntity livingEntity && (!(entity instanceof DemonEntity))) {
+                livingEntity.hurt(damageSources().mobProjectile(this, livingEntity), directHitDamage);
+            }
             if (entity2 instanceof LivingEntity livingEntity) {
                 if (!(entity instanceof DemonEntity)) doEnchantDamageEffects(livingEntity, entity);
                 remove(RemovalReason.DISCARDED);

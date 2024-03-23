@@ -59,8 +59,9 @@ public class DroneBoltEntity extends AbstractHurtingProjectile {
         if (!level().isClientSide()) {
             final var entity = entityHitResult.getEntity();
             final var entity2 = getOwner();
-            if (!(entity instanceof DemonEntity) && entity instanceof LivingEntity)
-                entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
+            if (entity instanceof LivingEntity livingEntity && (!(entity instanceof DemonEntity))) {
+                livingEntity.hurt(damageSources().mobProjectile(this, livingEntity), directHitDamage);
+            }
             if (entity2 instanceof LivingEntity livingEntity) {
                 if (!(entity instanceof DemonEntity)) doEnchantDamageEffects(livingEntity, entity);
                 remove(RemovalReason.DISCARDED);

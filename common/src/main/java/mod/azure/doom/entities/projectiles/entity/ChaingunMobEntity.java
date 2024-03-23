@@ -50,8 +50,9 @@ public class ChaingunMobEntity extends AbstractHurtingProjectile {
             final var entity = entityHitResult.getEntity();
             final var entity2 = getOwner();
             float directHitDamage = 3F;
-            if (!(entity instanceof DemonEntity) && entity instanceof LivingEntity)
-                entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
+            if (entity instanceof LivingEntity livingEntity && (!(entity instanceof DemonEntity))) {
+                livingEntity.hurt(damageSources().mobProjectile(this, livingEntity), directHitDamage);
+            }
             if (entity2 instanceof LivingEntity livingEntity) {
                 if (!(entity instanceof DemonEntity)) doEnchantDamageEffects(livingEntity, entity);
                 remove(RemovalReason.DISCARDED);
