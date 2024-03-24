@@ -299,8 +299,9 @@ public abstract class DoomBaseItem extends Item implements GeoItem {
                     }
                     ((PlayerProperties) player).setHasMeatHook(!((PlayerProperties) player).hasMeatHook());
                     itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(player.getUsedItemHand()));
-                    level.playSound(null, player.getX(), player.getY(), player.getZ(), getFiringSound(),
-                            SoundSource.PLAYERS, 0.25F, 1.3F);
+                    if (((PlayerProperties) player).hasMeatHook())
+                        level.playSound(null, player.getX(), player.getY(), player.getZ(), getFiringSound(),
+                                SoundSource.PLAYERS, 0.25F, 1.3F);
                 } else {
                     bullet = CommonUtils.createBullet(level, itemStack, player, MCDoom.config.energycell_damage);
                     ((BulletEntity) bullet).setParticle(6);

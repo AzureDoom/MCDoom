@@ -6,8 +6,10 @@ import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
+import mod.azure.doom.MCDoom;
 import mod.azure.doom.entities.tierboss.DoomBoss;
 import mod.azure.doom.helper.PlayerProperties;
+import mod.azure.doom.platform.Services;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -29,6 +31,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class MeatHookEntity extends AbstractArrow implements GeoEntity {
     public static final EntityDataAccessor<Float> FORCED_YAW = SynchedEntityData.defineId(MeatHookEntity.class,
@@ -112,6 +116,47 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
         }
         if (this.getVariant() == 1 && getOwner() instanceof final Player owner) {
             this.doMicrowaveBeam(owner);
+            if (this.level().isClientSide && this.getOwner() instanceof Player) this.renderParticles();
+        }
+    }
+
+    private long lastUpdateTime = 0L;
+
+    private void renderParticles() {
+        var bodyYawToRads = Math.toRadians(Objects.requireNonNull((LivingEntity) getOwner()).yBodyRot);
+        var radius = MCDoom.config.enable_noncenter ? -0.15D : 0.0D + 5;
+        var playerX = getOwner().getX() + radius * Math.cos(bodyYawToRads);
+        var playerY = getOwner().getY(0.8);
+        var playerZ = getOwner().getZ() + radius * Math.sin(bodyYawToRads);
+
+        // Calculate arrow direction
+        var lookVector = getOwner().getLookAngle();
+        double arrowX = playerX + lookVector.x * 10; // Adjust distance as needed
+        double arrowY = playerY + lookVector.y * 10; // Adjust distance as needed
+        double arrowZ = playerZ + lookVector.z * 10; // Adjust distance as needed
+
+        // Calculate direction vector between player and arrow
+        double directionX = arrowX - playerX;
+        double directionY = arrowY - playerY;
+        double directionZ = arrowZ - playerZ;
+
+        // Calculate step values for particle interpolation
+        double stepX = directionX / 15; // 10 particles between player and arrow
+        double stepY = directionY / 15;
+        double stepZ = directionZ / 15;
+
+        // Spawn custom particles between player and arrow position
+        for (int i = 0; i < 20; i++) {
+            double offsetX = this.level().random.nextDouble() * 0.2 - 0.1; // Randomize X offset
+            double offsetY = this.level().random.nextDouble() * 0.2 - 0.1; // Randomize Y offset
+            double offsetZ = this.level().random.nextDouble() * 0.2 - 0.1; // Randomize Z offset
+
+            double particleX = playerX + stepX * i + offsetX;
+            double particleY = playerY + stepY * i + offsetY;
+            double particleZ = playerZ + stepZ * i + offsetZ;
+
+            this.level().addParticle(ParticleTypes.ELECTRIC_SPARK, particleX, particleY, particleZ, 0, 0, 0);
+            this.level().addParticle(ParticleTypes.DOLPHIN, particleX, particleY, particleZ, 0, 0, 0);
         }
     }
 
@@ -168,6 +213,13 @@ public class MeatHookEntity extends AbstractArrow implements GeoEntity {
     }
 
     private void doMicrowaveBeam(Player owner) {
+        var currentTime = System.currentTimeMillis();
+        // Check if enough time has elapsed since the last update
+        if (currentTime - lastUpdateTime >= 300L) {
+            lastUpdateTime = currentTime;
+            this.level().playSound(null, this.getX(), this.getY(), this.getZ(),
+                    Services.SOUNDS_HELPER.getMicrowaveBeam(), SoundSource.PLAYERS, 0.5F, 1.0F);
+        }
         setYRot(entityData.get(FORCED_YAW));
         if (!(hookedEntity instanceof LivingEntity)) return;
         if (!level().isClientSide()) {
