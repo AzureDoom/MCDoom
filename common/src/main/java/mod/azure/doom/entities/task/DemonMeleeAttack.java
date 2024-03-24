@@ -66,7 +66,7 @@ public class DemonMeleeAttack<E extends DemonEntity> extends CustomDelayedMeleeB
         this.target = BrainUtils.getTargetOfEntity(entity);
 
         assert this.target != null;
-        return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(this.target);
+        return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(this.target) && !entity.isFreezing();
     }
 
     @Override
