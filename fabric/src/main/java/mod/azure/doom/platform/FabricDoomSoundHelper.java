@@ -6,6 +6,11 @@ import net.minecraft.sounds.SoundEvent;
 
 public class FabricDoomSoundHelper implements DoomSoundsHelper {
     @Override
+    public SoundEvent getMicrowaveBeam() {
+        return FabricDoomSounds.MICROWAVE_BEAM;
+    }
+
+    @Override
     public SoundEvent getEMPTY() {
         return FabricDoomSounds.EMPTY;
     }

@@ -784,5 +784,12 @@
         "name": "doom:crucible_axe_left"
       }
     ]
+  },
+  "doom.microwave": {
+    "sounds": [
+      {
+        "name": "doom:microwave"
+      }
+    ]
   }
 }

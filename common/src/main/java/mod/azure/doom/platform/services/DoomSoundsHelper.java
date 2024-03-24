@@ -3,6 +3,8 @@ package mod.azure.doom.platform.services;
 import net.minecraft.sounds.SoundEvent;
 
 public interface DoomSoundsHelper {
+
+    SoundEvent getMicrowaveBeam();
     SoundEvent getEMPTY();
 
     SoundEvent getBEEP();

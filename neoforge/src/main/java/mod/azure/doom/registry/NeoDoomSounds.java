@@ -10,6 +10,9 @@ public record NeoDoomSounds() {
     public static final DeferredRegister<SoundEvent> MOD_SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS,
             MCDoom.MOD_ID);
 
+    public static final RegistryObject<SoundEvent> MICROWAVE_BEAM = MOD_SOUNDS.register("doom.microwave",
+            () -> SoundEvent.createVariableRangeEvent(MCDoom.modResource("doom.microwave")));
+
     public static final RegistryObject<SoundEvent> EMPTY = MOD_SOUNDS.register("doom.emptyclip",
             () -> SoundEvent.createVariableRangeEvent(MCDoom.modResource("doom.emptyclip")));
     public static final RegistryObject<SoundEvent> BEEP = MOD_SOUNDS.register("doom.grenadeabouttoexplode",

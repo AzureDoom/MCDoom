@@ -6,6 +6,11 @@ import net.minecraft.sounds.SoundEvent;
 
 public class NeoForgeDoomSoundHelper implements DoomSoundsHelper {
     @Override
+    public SoundEvent getMicrowaveBeam() {
+        return NeoDoomSounds.MICROWAVE_BEAM.get();
+    }
+
+    @Override
     public SoundEvent getEMPTY() {
         return NeoDoomSounds.EMPTY.get();
     }

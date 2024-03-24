@@ -116,6 +116,7 @@ public record FabricDoomSounds() {
     public static SoundEvent MOTHER_DEATH;
     public static SoundEvent MOTHER_ATTACK;
     public static SoundEvent MOTHER_HURT;
+    public static SoundEvent MICROWAVE_BEAM;
 
     static SoundEvent of(String id) {
         final var sound = SoundEvent.createVariableRangeEvent(MCDoom.modResource(id));
@@ -125,6 +126,7 @@ public record FabricDoomSounds() {
 
 
     public static void initialize() {
+        MICROWAVE_BEAM = of("doom.microwave");
         EMPTY = of("doom.emptyclip");
         BEEP = of("doom.grenadeabouttoexplode");
         BFG_FIRING = of("doom.bfg_firing");
