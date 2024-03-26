@@ -45,16 +45,20 @@ public class CueballModel extends GeoModel<CueBallEntity> {
 
         if (left_arm != null)
             left_arm.setRotX(
-                    Mth.cos(animatable.walkAnimation.position() * 0.6662F + 3.1415927F) * 2.0F * animatable.walkAnimation.speed() * 0.5F);
+                    Mth.cos(animatable.walkAnimation.position(
+                            animationState.getPartialTick()) * 0.6662F + 3.1415927F) * 2.0F * animatable.walkAnimation.speed() * 0.5F);
         if (right_arm != null)
             right_arm.setRotX(
-                    Mth.cos(animatable.walkAnimation.position() * 0.6662F + 3.1415927F) * -2.0F * animatable.walkAnimation.speed() * 0.5F);
+                    Mth.cos(animatable.walkAnimation.position(
+                            animationState.getPartialTick()) * 0.6662F + 3.1415927F) * -2.0F * animatable.walkAnimation.speed() * 0.5F);
         if (left_leg != null)
             left_leg.setRotX(
-                    Mth.cos(animatable.walkAnimation.position() * 0.6662F + 3.1415927F) * 2.0F * animatable.walkAnimation.speed() * 0.5F);
+                    Mth.cos(animatable.walkAnimation.position(
+                            animationState.getPartialTick()) * 0.6662F + 3.1415927F) * 2.0F * animatable.walkAnimation.speed() * 0.5F);
         if (right_leg != null)
             right_leg.setRotX(
-                    Mth.cos(animatable.walkAnimation.position() * 0.6662F) * 1.4F * animatable.walkAnimation.speed() * 0.5F);
+                    Mth.cos(animatable.walkAnimation.position(
+                            animationState.getPartialTick()) * 0.6662F) * 1.4F * animatable.walkAnimation.speed() * 0.5F);
     }
 
     @Override
